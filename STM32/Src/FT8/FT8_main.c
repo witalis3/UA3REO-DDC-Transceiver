@@ -2,7 +2,7 @@
 #include "Process_DSP.h"
 #include "decode_ft8.h"
 #include <stdbool.h>
-//#include "WF_Table.h"
+// #include "WF_Table.h"
 #include "FT8_GUI.h"
 #include "arm_math.h"
 #include "locator_ft8.h"
@@ -32,8 +32,9 @@ void process_data(void);
 void update_synchronization(void);
 
 void InitFT8_Decoder(void) {
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 	LCD_busy = true; //
 
 	// draw the GUI
@@ -61,26 +62,36 @@ void InitFT8_Decoder(void) {
 	Update_FT8_Menu_Cursor(); // show the menu cursor
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band == BANDID_80m || band == 5 || band == 7 || band == 8) // 80m
+	if (band == BANDID_80m || band == 5 || band == 7 || band == 8) { // 80m
 		FT8_BND_Freq = FT8_Freq_80M;
-	if (band == BANDID_40m || band == 13) // 40m
+	}
+	if (band == BANDID_40m || band == 13) { // 40m
 		FT8_BND_Freq = FT8_Freq_40M;
-	if (band == BANDID_30m || band == 14 || band == 16) // 30m
+	}
+	if (band == BANDID_30m || band == 14 || band == 16) { // 30m
 		FT8_BND_Freq = FT8_Freq_30M;
-	if (band == BANDID_20m || band == 17 || band == 19) // 20m
+	}
+	if (band == BANDID_20m || band == 17 || band == 19) { // 20m
 		FT8_BND_Freq = FT8_Freq_20M;
-	if (band == BANDID_17m || band == 20 || band == 22) // 17m
+	}
+	if (band == BANDID_17m || band == 20 || band == 22) { // 17m
 		FT8_BND_Freq = FT8_Freq_17M;
-	if (band == BANDID_15m || band == 24) // 15m
+	}
+	if (band == BANDID_15m || band == 24) { // 15m
 		FT8_BND_Freq = FT8_Freq_15M;
-	if (band == BANDID_12m || band == 26) // 12m
+	}
+	if (band == BANDID_12m || band == 26) { // 12m
 		FT8_BND_Freq = FT8_Freq_12M;
-	if (band == BANDID_10m) // 10m
+	}
+	if (band == BANDID_10m) { // 10m
 		FT8_BND_Freq = FT8_Freq_10M;
-	if (band == BANDID_6m) // 6m
+	}
+	if (band == BANDID_6m) { // 6m
 		FT8_BND_Freq = FT8_Freq_6M;
-	if (band == BANDID_2m || band == BANDID_Marine) // 2m
+	}
+	if (band == BANDID_2m || band == BANDID_Marine) { // 2m
 		FT8_BND_Freq = FT8_Freq_2M;
+	}
 
 	receive_sequence();
 	cursor_freq = (uint16_t)((float)(cursor_line + ft8_min_bin) * ft8_shift);
@@ -93,11 +104,13 @@ void InitFT8_Decoder(void) {
 void MenagerFT8(void) {
 	char ctmp[20] = {0};
 
-	if (decode_flag == 0)
+	if (decode_flag == 0) {
 		process_data();
+	}
 
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 	LCD_busy = true;
 
 	if (DSP_Flag == 1) {
@@ -122,13 +135,15 @@ void MenagerFT8(void) {
 
 			bool send_message_done = false;
 			// 80
-			if (ft8_xmit_counter == 80 + offset_index)
+			if (ft8_xmit_counter == 80 + offset_index) {
 				send_message_done = true;
+			}
 
 			uint32_t Time = RTC->TR;
 			uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
-			if (ft8_xmit_counter > offset_index && (Seconds == 14 || Seconds == 29 || Seconds == 44 || Seconds == 59)) // 15s marker
+			if (ft8_xmit_counter > offset_index && (Seconds == 14 || Seconds == 29 || Seconds == 44 || Seconds == 59)) { // 15s marker
 				send_message_done = true;
+			}
 
 			if (send_message_done) // send mesage is done!
 			{
@@ -216,8 +231,9 @@ void update_synchronization(void) {
 	uint8_t Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
 	uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
 
-	if (Seconds >= 60)        // Fix the seconds
+	if (Seconds >= 60) {      // Fix the seconds
 		Seconds = Seconds - 60; // it is efect of the time correction
+	}
 
 	if (Seconds_Old != Seconds) // update the time on screen only when change
 	{
@@ -254,21 +270,25 @@ void update_synchronization(void) {
 
 // analyzer events to the encoder
 void FT8_EncRotate(int8_t direction) {
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 	LCD_busy = true;
 
 	cursor_line += direction;
 
-	if (cursor_line < 1)
+	if (cursor_line < 1) {
 		cursor_line = 1;
-	if (cursor_line > ft8_buffer - 50)
+	}
+	if (cursor_line > ft8_buffer - 50) {
 		cursor_line = ft8_buffer - 50;
+	}
 
 	cursor_freq = (uint16_t)((float)(cursor_line + ft8_min_bin) * ft8_shift);
 
-	if (TRX_Tune)
+	if (TRX_Tune) {
 		set_Xmit_Freq(FT8_BND_Freq, cursor_freq);
+	}
 
 	FT8_Print_Freq(); // Print the new frequency
 
@@ -277,8 +297,9 @@ void FT8_EncRotate(int8_t direction) {
 
 void FT8_Enc2Rotate(int8_t direction) {
 
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 	LCD_busy = true;
 
 	Enc2Rotate_Menager(direction, num_decoded_msg);
@@ -287,8 +308,9 @@ void FT8_Enc2Rotate(int8_t direction) {
 }
 
 void FT8_Enc2Click(void) {
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 	LCD_busy = true;
 
 	cursor_line -= 1; // Bug fix (pressing the encoder causes one + 1 step of the main encoder)

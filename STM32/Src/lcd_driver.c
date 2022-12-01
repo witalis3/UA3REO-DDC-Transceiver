@@ -27,16 +27,20 @@ void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_
 	if ((x >= buffer_w) ||           // Clip right
 	    (y >= buffer_h) ||           // Clip bottom
 	    ((x + size_w * zoom) < 0) || // Clip left
-	    ((y + size_h * zoom) < 0))   // Clip top
+	    ((y + size_h * zoom) < 0)) { // Clip top
 		return;
+	}
 
-	if ((x + size_w * zoom) >= buffer_w || (y + size_h * zoom) >= buffer_h)
+	if ((x + size_w * zoom) >= buffer_w || (y + size_h * zoom) >= buffer_h) {
 		return;
+	}
 
-	if (c < 32) // non-printable
+	if (c < 32) { // non-printable
 		return;
-	if (!_cp437 && (c >= 176))
+	}
+	if (!_cp437 && (c >= 176)) {
 		c++; // Handle 'classic' charset behavior
+	}
 
 	if (size > 0) {
 		for (int8_t j = 0; j < size_h; j++) // y line out
@@ -46,21 +50,23 @@ void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_
 				uint16_t *point = buffer + buffer_w * (y + j * (s_y + 1)) + x;
 				for (int8_t i = 0; i < size_w; i++) {
 					// x line out
-					if (i == 5)
+					if (i == 5) {
 						line = 0x0;
-					else {
-						if (size > 0)
+					} else {
+						if (size > 0) {
 							line = rastr_font[(c * 5) + i]; // read font
-						else
+						} else {
 							line = rastr_font_4x6[(c * 5) + i]; // read font
+						}
 					}
 					line >>= j;
 					for (int8_t s_x = 0; s_x < zoom; s_x++) // x size scale
 					{
-						if (line & 0x1)
+						if (line & 0x1) {
 							*point = color; // font pixel
-						else
+						} else {
 							*point = bg; // background pixel
+						}
 						point++;
 					}
 				}
@@ -73,10 +79,11 @@ void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_
 			line = rastr_font_4x6[((c - 0x20) * 6) + j]; // read font
 			uint16_t *point = buffer + buffer_w * (y + j) + x;
 			for (int8_t i = 0; i < size_w; i++) {
-				if (line & 0x8)
+				if (line & 0x8) {
 					*point = color; // font pixel
-				else
+				} else {
 					*point = bg; // background pixel
+				}
 				point++;
 
 				line <<= 1;
@@ -111,13 +118,16 @@ void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color,
 	if ((x >= LCD_WIDTH) ||              // Clip right
 	    (y >= LCD_HEIGHT) ||             // Clip bottom
 	    ((x + size_w * zoom - 1) < 0) || // Clip left
-	    ((y + size_h * zoom - 1) < 0))   // Clip top
+	    ((y + size_h * zoom - 1) < 0)) { // Clip top
 		return;
+	}
 
-	if (c < 32) // non-printable
+	if (c < 32) { // non-printable
 		return;
-	if (!_cp437 && (c >= 176))
+	}
+	if (!_cp437 && (c >= 176)) {
 		c++; // Handle 'classic' charset behavior
+	}
 
 	LCDDriver_SetCursorAreaPosition(x, y, x + size_w * zoom - 1, y + size_h * zoom - 1); // char area
 	if (size > 0) {
@@ -127,18 +137,19 @@ void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color,
 			{
 				for (int8_t i = 0; i < size_w; i++) {
 					// x line out
-					if (i == 5)
+					if (i == 5) {
 						line = 0x0;
-					else {
+					} else {
 						line = rastr_font[(c * 5) + i]; // read font
 					}
 					line >>= j;
 					for (int8_t s_x = 0; s_x < zoom; s_x++) // x size scale
 					{
-						if (line & 0x1)
+						if (line & 0x1) {
 							LCDDriver_SendData16(color); // font pixel
-						else
+						} else {
 							LCDDriver_SendData16(bg); // background pixel
+						}
 					}
 				}
 			}
@@ -149,10 +160,11 @@ void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color,
 		{
 			line = rastr_font_4x6[((c - 0x20) * 6) + j]; // read font
 			for (int8_t i = 0; i < size_w; i++) {
-				if (line & 0x8)
+				if (line & 0x8) {
 					LCDDriver_SendData16(color); // font pixel
-				else
+				} else {
 					LCDDriver_SendData16(bg); // background pixel
+				}
 
 				line <<= 1;
 			}
@@ -186,10 +198,12 @@ void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t co
 	uint8_t bit = 0;
 	int16_t ys1 = y + glyph->yOffset;
 	int16_t ys2 = y + glyph->yOffset + glyph->height - 1;
-	if (ys1 < 0)
+	if (ys1 < 0) {
 		ys1 = 0;
-	if (ys2 < 0)
+	}
+	if (ys2 < 0) {
 		ys2 = 0;
+	}
 	LCDDriver_SetCursorAreaPosition(x, (uint16_t)ys1, x + glyph->xAdvance - 1, (uint16_t)ys2); // char area
 
 	for (uint8_t yy = 0; yy < glyph->height; yy++) {
@@ -220,8 +234,9 @@ void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color
 		if (c == '\n') {
 			text_cursor_x = 0;
 			text_cursor_y += gfxFont->yAdvance;
-			if (text_cursor_y > LCD_HEIGHT)
+			if (text_cursor_y > LCD_HEIGHT) {
 				return;
+			}
 		} else if (c != '\r') {
 			if ((c >= gfxFont->first) && (c <= gfxFont->last)) {
 				const GFXglyph *glyph = (GFXglyph *)&gfxFont->glyph[c - gfxFont->first];
@@ -263,14 +278,18 @@ static void LCDDriver_charBounds(char c, uint16_t *x, uint16_t *y, int16_t *minx
 				*y += gfxFont->yAdvance;
 			}
 			int16_t x1 = *x + glyph->xOffset, y1 = *y + glyph->yOffset, x2 = x1 + glyph->width - 1, y2 = y1 + glyph->height - 1;
-			if (x1 < *minx)
+			if (x1 < *minx) {
 				*minx = x1;
-			if (y1 < *miny)
+			}
+			if (y1 < *miny) {
 				*miny = y1;
-			if (x2 > *maxx)
+			}
+			if (x2 > *maxx) {
 				*maxx = x2;
-			if (y2 > *maxy)
+			}
+			if (y2 > *maxy) {
 				*maxy = y2;
+			}
 			*x += glyph->xAdvance;
 		}
 	}
@@ -338,27 +357,31 @@ void LCDDriver_printImage_RLECompressed(uint16_t x, uint16_t y, const tIMAGE *im
 			uint16_t count = (-(int16_t)image->data[i]);
 			i++;
 			for (uint16_t p = 0; p < count; p++) {
-				if (image->data[i] == transparent_color)
+				if (image->data[i] == transparent_color) {
 					LCDDriver_SendData16(bg_color);
-				else
+				} else {
 					LCDDriver_SendData16(image->data[i]);
+				}
 				decoded++;
 				i++;
-				if (pixels <= decoded)
+				if (pixels <= decoded) {
 					return;
+				}
 			}
 		} else // repeats
 		{
 			uint16_t count = ((int16_t)image->data[i]);
 			i++;
 			for (uint16_t p = 0; p < count; p++) {
-				if (image->data[i] == transparent_color)
+				if (image->data[i] == transparent_color) {
 					LCDDriver_SendData16(bg_color);
-				else
+				} else {
 					LCDDriver_SendData16(image->data[i]);
+				}
 				decoded++;
-				if (pixels <= decoded)
+				if (pixels <= decoded) {
 					return;
+				}
 			}
 			i++;
 		}
@@ -392,18 +415,21 @@ void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t l
 			}
 			RLEStream_state = 1;
 
-			if (processed >= len)
+			if (processed >= len) {
 				return;
+			}
 
 			for (; nr_count_p < nr_count;) {
 				LCDDriver_SendData16(data[processed]);
 				RLEStream_decoded++;
 				nr_count_p++;
 				processed++;
-				if (RLEStream_pixels <= RLEStream_decoded)
+				if (RLEStream_pixels <= RLEStream_decoded) {
 					return;
-				if (processed >= len && nr_count_p < nr_count)
+				}
+				if (processed >= len && nr_count_p < nr_count) {
 					return;
+				}
 			}
 			RLEStream_state = 0;
 		} else if ((((int16_t)data[processed] > 0) && (RLEStream_state == 0)) || (RLEStream_state == 2)) // repeats
@@ -415,20 +441,23 @@ void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t l
 			}
 			RLEStream_state = 2;
 
-			if (processed >= len)
+			if (processed >= len) {
 				return;
+			}
 
 			for (; r_count_p < r_count;) {
 				LCDDriver_SendData16(data[processed]);
 				r_count_p++;
 				RLEStream_decoded++;
-				if (RLEStream_pixels <= RLEStream_decoded)
+				if (RLEStream_pixels <= RLEStream_decoded) {
 					return;
+				}
 			}
 			processed++;
 			RLEStream_state = 0;
-		} else
+		} else {
 			processed++;
+		}
 	}
 }
 
@@ -436,12 +465,15 @@ inline uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t a
 	uint8_t r = ((color >> 11) & 0x1F) + add_r;
 	uint8_t g = ((color >> 5) & 0x3F) + (uint8_t)(add_g << 1);
 	uint8_t b = ((color >> 0) & 0x1F) + add_b;
-	if (r > 31)
+	if (r > 31) {
 		r = 31;
-	if (g > 63)
+	}
+	if (g > 63) {
 		g = 63;
-	if (b > 31)
+	}
+	if (b > 31) {
 		b = 31;
+	}
 	return (uint16_t)((r << 11) | (g << 5) | b);
 }
 
@@ -449,12 +481,15 @@ inline uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity) {
 	uint8_t r = (uint8_t)((float32_t)((color1 >> 11) & 0x1F) * (1.0f - opacity) + (float32_t)((color2 >> 11) & 0x1F) * opacity);
 	uint8_t g = (uint8_t)((float32_t)((color1 >> 5) & 0x3F) * (1.0f - opacity) + (float32_t)((color2 >> 5) & 0x3F) * opacity);
 	uint8_t b = (uint8_t)((float32_t)((color1 >> 0) & 0x1F) * (1.0f - opacity) + (float32_t)((color2 >> 0) & 0x1F) * opacity);
-	if (r > 31)
+	if (r > 31) {
 		r = 31;
-	if (g > 63)
+	}
+	if (g > 63) {
 		g = 63;
-	if (b > 31)
+	}
+	if (b > 31) {
 		b = 31;
+	}
 	return (uint16_t)(r << 11) | (uint16_t)(g << 5) | (uint16_t)b;
 }
 

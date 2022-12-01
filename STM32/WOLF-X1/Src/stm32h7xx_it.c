@@ -602,12 +602,14 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 		FPGA_fpgadata_stuffclock();      // parameters and other services
 	} else if (GPIO_Pin == GPIO_PIN_2) // Main encoder
 	{
-		if (TRX_Inited)
+		if (TRX_Inited) {
 			FRONTPANEL_ENCODER_checkRotate();
+		}
 	} else if (GPIO_Pin == GPIO_PIN_7) // PTT
 	{
-		if (TRX_Inited)
+		if (TRX_Inited) {
 			TRX_ptt_change();
+		}
 	} else if (GPIO_Pin == GPIO_PIN_1) // KEY DOT
 	{
 		CW_key_change();

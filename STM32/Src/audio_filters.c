@@ -416,38 +416,50 @@ void ReinitAudioFilters(void) {
 	// parameters
 	uint32_t hpf_tx_width = 300;  // default settings
 	uint32_t hpf_rx1_width = 300; // default settings
-	if (CurrentVFO->HPF_RX_Filter_Width > 0)
+	if (CurrentVFO->HPF_RX_Filter_Width > 0) {
 		hpf_rx1_width = CurrentVFO->HPF_RX_Filter_Width;
-	if (CurrentVFO->HPF_TX_Filter_Width > 0)
+	}
+	if (CurrentVFO->HPF_TX_Filter_Width > 0) {
 		hpf_tx_width = CurrentVFO->HPF_TX_Filter_Width;
+	}
 	//
 	uint32_t hpf_rx2_width = 300; // default settings
-	if (SecondaryVFO->HPF_RX_Filter_Width > 0)
+	if (SecondaryVFO->HPF_RX_Filter_Width > 0) {
 		hpf_rx2_width = SecondaryVFO->HPF_RX_Filter_Width;
+	}
 	//
 	uint32_t lpf_rx1_width = 2700; // default settings
-	if (CurrentVFO->LPF_RX_Filter_Width > 0)
+	if (CurrentVFO->LPF_RX_Filter_Width > 0) {
 		lpf_rx1_width = CurrentVFO->LPF_RX_Filter_Width;
-	if (lpf_rx1_width < hpf_rx1_width && CurrentVFO->HPF_RX_Filter_Width > 0)
+	}
+	if (lpf_rx1_width < hpf_rx1_width && CurrentVFO->HPF_RX_Filter_Width > 0) {
 		lpf_rx1_width = hpf_rx1_width + 100;
-	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW)
+	}
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW) {
 		lpf_rx1_width /= 2;
+	}
 	//
 	uint32_t lpf_rx2_width = 2700; // default settings
-	if (SecondaryVFO->LPF_RX_Filter_Width > 0)
+	if (SecondaryVFO->LPF_RX_Filter_Width > 0) {
 		lpf_rx2_width = SecondaryVFO->LPF_RX_Filter_Width;
-	if (lpf_rx2_width < hpf_rx2_width && SecondaryVFO->HPF_RX_Filter_Width > 0)
+	}
+	if (lpf_rx2_width < hpf_rx2_width && SecondaryVFO->HPF_RX_Filter_Width > 0) {
 		lpf_rx2_width = hpf_rx2_width + 100;
-	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW)
+	}
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW) {
 		lpf_rx2_width /= 2;
+	}
 	//
 	uint32_t lpf_tx_width = 2700; // default settings
-	if (CurrentVFO->LPF_TX_Filter_Width > 0)
+	if (CurrentVFO->LPF_TX_Filter_Width > 0) {
 		lpf_tx_width = CurrentVFO->LPF_TX_Filter_Width;
-	if (lpf_tx_width < hpf_tx_width)
+	}
+	if (lpf_tx_width < hpf_tx_width) {
 		lpf_tx_width = hpf_tx_width + 100;
-	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW)
+	}
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW) {
 		lpf_tx_width /= 2;
+	}
 	//
 
 	// Decimator filters
@@ -455,17 +467,21 @@ void ReinitAudioFilters(void) {
 	uint32_t decim_iir_filter_width = 20000;
 
 #if HRDW_HAS_DUAL_RX
-	if (lpf_rx1_width < 5000 && (!TRX.Dual_RX || lpf_rx2_width < 5000))
+	if (lpf_rx1_width < 5000 && (!TRX.Dual_RX || lpf_rx2_width < 5000)) {
 		decim_iir_filter_width = 5000;
+	}
 #else
-	if (lpf_rx1_width < 5000 && (true || lpf_rx2_width < 5000))
+	if (lpf_rx1_width < 5000 && (true || lpf_rx2_width < 5000)) {
 		decim_iir_filter_width = 5000;
+	}
 #endif
 
-	if (TRX_GetRXSampleRateENUM == TRX_SAMPLERATE_K192)
+	if (TRX_GetRXSampleRateENUM == TRX_SAMPLERATE_K192) {
 		decim_iir_filter_stages = 5;
-	if (TRX_GetRXSampleRateENUM == TRX_SAMPLERATE_K384)
+	}
+	if (TRX_GetRXSampleRateENUM == TRX_SAMPLERATE_K384) {
 		decim_iir_filter_stages = 3;
+	}
 	iir_filter_t *filter = biquad_create(decim_iir_filter_stages);
 	biquad_init_lowpass(filter, TRX_GetRXSampleRate, 20000);
 	fill_biquad_coeffs(filter, DECIMATE_IIR_Coeffs, decim_iir_filter_stages);
@@ -586,33 +602,41 @@ void ReinitAudioFilters(void) {
 
 // initialize the manual Notch filter
 void InitNotchFilter(void) {
-	if (CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width)
+	if (CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width) {
 		CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
-	if (SecondaryVFO->NotchFC > SecondaryVFO->LPF_RX_Filter_Width)
+	}
+	if (SecondaryVFO->NotchFC > SecondaryVFO->LPF_RX_Filter_Width) {
 		SecondaryVFO->NotchFC = SecondaryVFO->LPF_RX_Filter_Width;
+	}
 
 	int16_t rx1_notch_width_hz = 100;
 	int16_t rx2_notch_width_hz = 100;
 	int16_t rx1_notch_pos = CurrentVFO->NotchFC;
 	int16_t rx2_notch_pos = SecondaryVFO->NotchFC;
 
-	if (CurrentVFO->Mode == TRX_MODE_CW)
+	if (CurrentVFO->Mode == TRX_MODE_CW) {
 		rx1_notch_pos = (TRX.CW_Pitch + CurrentVFO->NotchFC - CurrentVFO->LPF_RX_Filter_Width / 2);
-	if (SecondaryVFO->Mode == TRX_MODE_CW)
+	}
+	if (SecondaryVFO->Mode == TRX_MODE_CW) {
 		rx2_notch_pos = (TRX.CW_Pitch + SecondaryVFO->NotchFC - SecondaryVFO->LPF_RX_Filter_Width / 2);
+	}
 
 	int16_t rx1_notch_pos_f1 = rx1_notch_pos - rx1_notch_width_hz / 2;
 	int16_t rx1_notch_pos_f2 = rx1_notch_pos + rx1_notch_width_hz / 2;
 	int16_t rx2_notch_pos_f1 = rx2_notch_pos - rx2_notch_width_hz / 2;
 	int16_t rx2_notch_pos_f2 = rx2_notch_pos + rx2_notch_width_hz / 2;
-	if (rx1_notch_pos_f1 < 50)
+	if (rx1_notch_pos_f1 < 50) {
 		rx1_notch_pos_f1 = 50;
-	if (rx2_notch_pos_f1 < 50)
+	}
+	if (rx2_notch_pos_f1 < 50) {
 		rx2_notch_pos_f1 = 50;
-	if (rx1_notch_pos_f2 > TRX_SAMPLERATE / 2)
+	}
+	if (rx1_notch_pos_f2 > TRX_SAMPLERATE / 2) {
 		rx1_notch_pos_f2 = TRX_SAMPLERATE / 2;
-	if (rx2_notch_pos_f2 > TRX_SAMPLERATE / 2)
+	}
+	if (rx2_notch_pos_f2 > TRX_SAMPLERATE / 2) {
 		rx2_notch_pos_f2 = TRX_SAMPLERATE / 2;
+	}
 
 	iir_filter_t *filter = biquad_create(NOTCH_STAGES);
 	biquad_init_bandstop(filter, TRX_SAMPLERATE, rx1_notch_pos_f1, rx1_notch_pos_f2);

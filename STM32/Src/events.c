@@ -31,8 +31,9 @@
 
 void EVENTS_do_WSPR(void) // 1,4648 hz
 {
-	if (SYSMENU_wspr_opened)
+	if (SYSMENU_wspr_opened) {
 		WSPR_DoFastEvents();
+	}
 }
 
 void EVENTS_do_WIFI(void) // 1000 hz
@@ -45,10 +46,11 @@ void EVENTS_do_WIFI(void) // 1000 hz
 	} else {
 #if HRDW_HAS_WIFI
 		// we work with WiFi by timer, or send it if it is turned off (to turn it on, we need a restart)
-		if (WIFI.Enabled)
+		if (WIFI.Enabled) {
 			WIFI_Process();
-		else
+		} else {
 			WIFI_GoSleep();
+		}
 #endif
 	}
 }
@@ -60,8 +62,9 @@ void EVENTS_do_FFT(void) // 1000 hz
 		return;
 	}
 
-	if (FFT_need_fft)
+	if (FFT_need_fft) {
 		FFT_doFFT();
+	}
 
 #if HRDW_HAS_USB_CAT
 	ua3reo_dev_cat_parseCommand();
@@ -70,8 +73,9 @@ void EVENTS_do_FFT(void) // 1000 hz
 
 void EVENTS_do_AUDIO_PROCESSOR(void) // 20 000 hz
 {
-	if (!Processor_NeedTXBuffer && !Processor_NeedRXBuffer)
+	if (!Processor_NeedTXBuffer && !Processor_NeedRXBuffer) {
 		return;
+	}
 
 	if (TRX_on_TX) {
 		processTxAudio();
@@ -80,8 +84,9 @@ void EVENTS_do_AUDIO_PROCESSOR(void) // 20 000 hz
 	}
 
 	// in the spectrum analyzer mode, we raise its processing to priority, performing together with the audio processor
-	if (SYSMENU_spectrum_opened)
+	if (SYSMENU_spectrum_opened) {
 		LCD_doEvents();
+	}
 
 #if FT8_SUPPORT
 	if (FT8_DecodeActiveFlg) {
@@ -105,8 +110,9 @@ void EVENTS_do_USB_FIFO(void) // 1000 hz
 void EVENTS_do_PERIPHERAL(void) // 1000 hz
 {
 #if HRDW_HAS_SD
-	if (SD_BusyByUSB)
+	if (SD_BusyByUSB) {
 		return;
+	}
 #endif
 
 	// FRONT PANEL SPI
@@ -118,10 +124,12 @@ void EVENTS_do_PERIPHERAL(void) // 1000 hz
 	}
 
 	// EEPROM SPI
-	if (NeedSaveCalibration) // save calibration data to EEPROM
+	if (NeedSaveCalibration) { // save calibration data to EEPROM
 		SaveCalibration();
-	if (NeedSaveWiFi) // save WiFi settings data to EEPROM
+	}
+	if (NeedSaveWiFi) { // save WiFi settings data to EEPROM
 		SaveWiFiSettings();
+	}
 
 #if HRDW_HAS_SD
 	// SD-Card SPI
@@ -143,8 +151,9 @@ void EVENTS_do_ENC(void) // 20 0000 hz
 		ENC2first = false;
 	}
 	if (ENC2lastClkVal != ENCODER2_CLKVal) {
-		if (TRX_Inited)
+		if (TRX_Inited) {
 			FRONTPANEL_ENCODER2_checkRotate();
+		}
 		ENC2lastClkVal = ENCODER2_CLKVal;
 	}
 
@@ -153,8 +162,9 @@ void EVENTS_do_ENC(void) // 20 0000 hz
 	bool TOUCH_Int_Now = HAL_GPIO_ReadPin(ENC2SW_AND_TOUCHPAD_GPIO_Port, ENC2SW_AND_TOUCHPAD_Pin);
 	if (TOUCH_Int_Last != TOUCH_Int_Now) {
 		TOUCH_Int_Last = TOUCH_Int_Now;
-		if (TOUCH_Int_Now)
+		if (TOUCH_Int_Now) {
 			TOUCHPAD_reserveInterrupt();
+		}
 	}
 	return;
 #endif
@@ -163,14 +173,17 @@ void EVENTS_do_ENC(void) // 20 0000 hz
 void EVENTS_do_PREPROCESS(void) // 1000 hz
 {
 	// audio buffer RX preprocessor
-	if (!TRX_on_TX)
+	if (!TRX_on_TX) {
 		preProcessRxAudio();
+	}
 
-	if (FFT_new_buffer_ready)
+	if (FFT_new_buffer_ready) {
 		FFT_bufferPrepare();
+	}
 
-	if (NeedProcessDecoder)
+	if (NeedProcessDecoder) {
 		DECODER_Process();
+	}
 }
 
 void EVENTS_do_EVERY_10ms(void) // 100 hz
@@ -260,25 +273,30 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 	APROC_doVOX();
 
 	// if the settings have changed, update the parameters in the FPGA
-	if (NeedSaveSettings)
+	if (NeedSaveSettings) {
 		FPGA_NeedSendParams = true;
+	}
 
 	// there was a request to reinitialize audio and notch filters
-	if (NeedReinitNotch)
+	if (NeedReinitNotch) {
 		InitNotchFilter();
-	if (NeedReinitAudioFilters)
+	}
+	if (NeedReinitAudioFilters) {
 		ReinitAudioFilters();
+	}
 
 	// Process touchpad frequency changing
 	TRX_setFrequencySlowly_Process();
 
 	// emulate PTT over CAT/Software
-	if (TRX_ptt_soft != TRX_old_ptt_soft)
+	if (TRX_ptt_soft != TRX_old_ptt_soft) {
 		TRX_ptt_change();
+	}
 
 	// emulate the key via the COM port
-	if (CW_key_serial != CW_old_key_serial)
+	if (CW_key_serial != CW_old_key_serial) {
 		CW_key_change();
+	}
 
 	// update the state of the RF-Unit board
 	RF_UNIT_UpdateState(false);
@@ -288,66 +306,7 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 	TOUCHPAD_ProcessInterrupt();
 #endif
 
-	static bool needLCDDoEvents = true;
-	if (ms10_30_counter >= 3) // every 30ms
-	{
-		ms10_30_counter = 0;
-		LCD_UpdateQuery.StatusInfoBar = true;
-		// update information on LCD
-		needLCDDoEvents = true;
-	} else if (LCD_UpdateQuery.FreqInfo) // Redraw freq fast
-		needLCDDoEvents = true;
-
-	if (needLCDDoEvents && LCD_doEvents())
-		needLCDDoEvents = false;
-
-	static uint8_t needPrintFFT = 0;
-	if (needPrintFFT < 10 && (ms10_10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec
-	{
-		ms10_10_counter = 0;
-		needPrintFFT++;
-	}
-
-	if (needPrintFFT > 0 && !LCD_UpdateQuery.Background && FFT_printFFT()) // draw FFT
-		needPrintFFT--;
-
-	// restart USB if there is no activity (off) to find a new connection
-	if (TRX_Inited && ((USB_LastActiveTime + USB_RESTART_TIMEOUT < HAL_GetTick()))) // || (USB_LastActiveTime == 0)
-		USBD_Restart();
-}
-
-void EVENTS_do_EVERY_100ms(void) // 10 hz
-{
-	// every 100ms we receive data from FPGA (amplitude, ADC overload, etc.)
-	FPGA_NeedGetParams = true;
-
-	// Detect FPGA stuck error
-	static float32_t old_FPGA_Audio_Buffer_RX1_I = 0;
-	static float32_t old_FPGA_Audio_Buffer_RX1_Q = 0;
-	float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
-	float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
-	static uint16_t fpga_stuck_errors = 0;
-	if (FPGA_Audio_Buffer_RX1_I_current[0] == old_FPGA_Audio_Buffer_RX1_I || FPGA_Audio_Buffer_RX1_Q_current[0] == old_FPGA_Audio_Buffer_RX1_Q)
-		fpga_stuck_errors++;
-	else
-		fpga_stuck_errors = 0;
-	if (fpga_stuck_errors > 5 && !TRX_on_TX && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM) // && !SD_PlayInProcess
-	{
-		println("[ERR] IQ stuck error, restart disabled");
-		fpga_stuck_errors = 0;
-		// FPGA_NeedRestart_RX = true;
-	}
-	old_FPGA_Audio_Buffer_RX1_I = FPGA_Audio_Buffer_RX1_I_current[0];
-	old_FPGA_Audio_Buffer_RX1_Q = FPGA_Audio_Buffer_RX1_Q_current[0];
-
-	// Process AutoGain feature
-	TRX_DoAutoGain();
-
-	// Process Scaner
-	if (TRX_ScanMode)
-		TRX_ProcessScanMode();
-
-		// Process LCD dimmer
+	// Process LCD dimmer
 #ifdef HAS_BRIGHTNESS_CONTROL
 	static bool LCD_Dimmer_State = false;
 	if (!LCD_busy) {
@@ -363,6 +322,71 @@ void EVENTS_do_EVERY_100ms(void) // 10 hz
 		LCD_busy = false;
 	}
 #endif
+
+	static bool needLCDDoEvents = true;
+	if (ms10_30_counter >= 3) // every 30ms
+	{
+		ms10_30_counter = 0;
+		LCD_UpdateQuery.StatusInfoBar = true;
+		// update information on LCD
+		needLCDDoEvents = true;
+	} else if (LCD_UpdateQuery.FreqInfo) { // Redraw freq fast
+		needLCDDoEvents = true;
+	}
+
+	if (needLCDDoEvents && LCD_doEvents()) {
+		needLCDDoEvents = false;
+	}
+
+	static uint8_t needPrintFFT = 0;
+	if (needPrintFFT < 10 && (ms10_10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec
+	{
+		ms10_10_counter = 0;
+		needPrintFFT++;
+	}
+
+	if (needPrintFFT > 0 && !LCD_UpdateQuery.Background && FFT_printFFT()) { // draw FFT
+		needPrintFFT--;
+	}
+
+	// restart USB if there is no activity (off) to find a new connection
+	if (TRX_Inited && ((USB_LastActiveTime + USB_RESTART_TIMEOUT < HAL_GetTick()))) { // || (USB_LastActiveTime == 0)
+		USBD_Restart();
+	}
+}
+
+void EVENTS_do_EVERY_100ms(void) // 10 hz
+{
+	// every 100ms we receive data from FPGA (amplitude, ADC overload, etc.)
+	FPGA_NeedGetParams = true;
+
+	// Detect FPGA stuck error
+	static float32_t old_FPGA_Audio_Buffer_RX1_I = 0;
+	static float32_t old_FPGA_Audio_Buffer_RX1_Q = 0;
+	float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
+	float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
+	static uint16_t fpga_stuck_errors = 0;
+	if (FPGA_Audio_Buffer_RX1_I_current[0] == old_FPGA_Audio_Buffer_RX1_I || FPGA_Audio_Buffer_RX1_Q_current[0] == old_FPGA_Audio_Buffer_RX1_Q) {
+		fpga_stuck_errors++;
+	} else {
+		fpga_stuck_errors = 0;
+	}
+	if (fpga_stuck_errors > 5 && !TRX_on_TX && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM) // && !SD_PlayInProcess
+	{
+		println("[ERR] IQ stuck error, restart disabled");
+		fpga_stuck_errors = 0;
+		// FPGA_NeedRestart_RX = true;
+	}
+	old_FPGA_Audio_Buffer_RX1_I = FPGA_Audio_Buffer_RX1_I_current[0];
+	old_FPGA_Audio_Buffer_RX1_Q = FPGA_Audio_Buffer_RX1_Q_current[0];
+
+	// Process AutoGain feature
+	TRX_DoAutoGain();
+
+	// Process Scaner
+	if (TRX_ScanMode) {
+		TRX_ProcessScanMode();
+	}
 
 	// reset error flags
 	CODEC_Buffer_underrun = false;
@@ -415,8 +439,9 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		}
 		if (TRX.FFT_DXCluster && ((HAL_GetTick() - TRX_DXCluster_UpdateTime) > DXCLUSTER_UPDATE_TIME || TRX_DXCluster_UpdateTime == 0)) // get and show dx cluster
 		{
-			if (WIFI_getDXCluster_background())
+			if (WIFI_getDXCluster_background()) {
 				TRX_DXCluster_UpdateTime = HAL_GetTick();
+			}
 			maySendIQ = false;
 		}
 		WIFI_maySendIQ = maySendIQ;
@@ -490,8 +515,9 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 	}
 
 	// Save Settings to Backup Memory
-	if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET))
+	if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET)) {
 		SaveSettings();
+	}
 
 	// Reset counters
 	tim6_delay = HAL_GetTick();

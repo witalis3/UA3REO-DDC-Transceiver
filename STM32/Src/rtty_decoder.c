@@ -53,10 +53,11 @@ static float32_t RTTYDecoder_decayavg(float32_t average, float32_t input, int we
 
 void RTTYDecoder_Init(void) {
 	// speed
-	if (TRX.RTTY_Speed == 45)
+	if (TRX.RTTY_Speed == 45) {
 		RTTY_oneBitSampleCount = (uint16_t)roundf((float32_t)TRX_SAMPLERATE / 45.45f);
-	else
+	} else {
 		RTTY_oneBitSampleCount = (uint16_t)roundf((float32_t)TRX_SAMPLERATE / (float32_t)TRX.RTTY_Speed);
+	}
 
 	// RTTY LPF Filter
 	iir_filter_t *filter = biquad_create(RTTY_LPF_STAGES);
@@ -144,8 +145,9 @@ void RTTYDecoder_Process(float32_t *bufferIn) {
 					// print(charResult);
 					char str[2] = {0};
 					str[0] = charResult;
-					if (strlen(RTTY_Decoder_Text) >= RTTY_DECODER_STRLEN)
+					if (strlen(RTTY_Decoder_Text) >= RTTY_DECODER_STRLEN) {
 						shiftTextLeft(RTTY_Decoder_Text, 1);
+					}
 					strcat(RTTY_Decoder_Text, str);
 					LCD_UpdateQuery.TextBar = true;
 					break;

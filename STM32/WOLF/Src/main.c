@@ -262,30 +262,38 @@ int main(void) {
 	bool go_dfu = false;
 
 #ifdef FRONTPANEL_SMALL_V1
-	if (PERIPH_FrontPanel_Buttons[15].state) // soft reset (MENU)
+	if (PERIPH_FrontPanel_Buttons[15].state) { // soft reset (MENU)
 		reset_settings = true;
-	if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[0].state) // Very hard reset (MENU+PRE)
+	}
+	if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[0].state) { // Very hard reset (MENU+PRE)
 		reset_calibrations = true;
+	}
 #endif
 #ifdef FRONTPANEL_BIG_V1
-	if (PERIPH_FrontPanel_Buttons[15].state) // soft reset (F1)
+	if (PERIPH_FrontPanel_Buttons[15].state) { // soft reset (F1)
 		reset_settings = true;
-	if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) // Very hard reset (F1+F8)
+	}
+	if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) { // Very hard reset (F1+F8)
 		reset_calibrations = true;
+	}
 #endif
 #ifdef FRONTPANEL_WF_100D
-	if (PERIPH_FrontPanel_Buttons[10].state) // go DFU (MENU)
+	if (PERIPH_FrontPanel_Buttons[10].state) { // go DFU (MENU)
 		go_dfu = true;
-	if (PERIPH_FrontPanel_Buttons[13].state) // soft reset (F1)
+	}
+	if (PERIPH_FrontPanel_Buttons[13].state) { // soft reset (F1)
 		reset_settings = true;
-	if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[3].state) // Very hard reset (F1+F8)
+	}
+	if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[3].state) { // Very hard reset (F1+F8)
 		reset_calibrations = true;
+	}
 #endif
 
-	if (reset_settings)
+	if (reset_settings) {
 		LoadSettings(true);
-	else
+	} else {
 		LoadSettings(false);
+	}
 
 	// DFU bootloader
 	if (TRX.NeedGoToBootloader || go_dfu) {
@@ -297,14 +305,16 @@ int main(void) {
 	}
 
 	println("[OK] Calibration & WiFi loading");
-	if (reset_calibrations)
+	if (reset_calibrations) {
 		LoadCalibration(true);
-	else
+	} else {
 		LoadCalibration(false);
+	}
 
 #ifdef FRONTPANEL_WF_100D
-	if (CALIBRATE.RF_unit_type != RF_UNIT_WF_100D)
+	if (CALIBRATE.RF_unit_type != RF_UNIT_WF_100D) {
 		LoadCalibration(true);
+	}
 #endif
 
 	TRX.Locked = false;
@@ -369,11 +379,12 @@ int main(void) {
 	HAL_TIM_Base_Start_IT(&htim17);
 	println("[OK] FPGA init");
 #ifdef FRONTPANEL_SMALL_V1
-	if (PERIPH_FrontPanel_Buttons[19].state) // fpga bus test (MODE+)
+	if (PERIPH_FrontPanel_Buttons[19].state) { // fpga bus test (MODE+)
 		FPGA_Init(true, false);
-	if (PERIPH_FrontPanel_Buttons[20].state) // fpga firmware test (MODE-)
+	}
+	if (PERIPH_FrontPanel_Buttons[20].state) { // fpga firmware test (MODE-)
 		FPGA_Init(false, true);
-	else
+	} else
 #endif
 		FPGA_Init(false, false);
 	println("[OK] WIFI timer TIM3 init");
@@ -383,8 +394,9 @@ int main(void) {
 
 // Tisho
 #if defined(FRONTPANEL_BIG_V1)
-	if (CALIBRATE.INA226_EN) //	if INA226 is activated then initialise
+	if (CALIBRATE.INA226_EN) { //	if INA226 is activated then initialise
 		INA226_Init();
+	}
 #endif // Tisho end of change
 
 	// while(true){HAL_Delay(3000); SCB->AIRCR = 0x05FA0004; } //debug restart
@@ -1543,8 +1555,9 @@ static void MX_FMC_Init(void) {
 	Timing.AccessMode = FMC_ACCESS_MODE_A;
 	// fast timings in lcd_driver_RA8875.c
 #endif
-	if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK)
+	if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK) {
 		Error_Handler();
+	}
 	HAL_SetFMCMemorySwappingConfig(FMC_SWAPBMAP_SDRAM_SRAM);
 
 	/* USER CODE END FMC_Init 2 */
@@ -1722,8 +1735,9 @@ int fputc(int ch, FILE *f) {
 #pragma unused(f)
 
 	// SWD
-	if (SWD_DEBUG_ENABLED)
+	if (SWD_DEBUG_ENABLED) {
 		ITM_SendChar((uint32_t)ch);
+	}
 
 	// USB
 	if (USB_DEBUG_ENABLED) {

@@ -18,12 +18,15 @@ static int unpack28(uint32_t n28, uint8_t ip, uint8_t i3, char *result) {
 	// Check for special tokens DE, QRZ, CQ, CQ_nnn, CQ_aaaa
 	if (n28 < NTOKENS) {
 		if (n28 <= 2) {
-			if (n28 == 0)
+			if (n28 == 0) {
 				strcpy(result, "DE");
-			if (n28 == 1)
+			}
+			if (n28 == 1) {
 				strcpy(result, "QRZ");
-			if (n28 == 2)
+			}
+			if (n28 == 2) {
 				strcpy(result, "CQ");
+			}
 			return 0; // Success
 		}
 		if (n28 <= 1002) {
@@ -40,8 +43,9 @@ static int unpack28(uint32_t n28, uint8_t ip, uint8_t i3, char *result) {
 			aaaa[4] = '\0';
 			for (int i = 3; /* */; --i) {
 				aaaa[i] = charn(n % 27, 4);
-				if (i == 0)
+				if (i == 0) {
 					break;
+				}
 				n /= 27;
 			}
 
@@ -85,8 +89,9 @@ static int unpack28(uint32_t n28, uint8_t ip, uint8_t i3, char *result) {
 
 	// Skip trailing and leading whitespace in case of a short callsign
 	strcpy(result, trim(callsign));
-	if (result[0] == '\0')
+	if (result[0] == '\0') {
 		return -1;
+	}
 
 	// Check if we should append /R or /P suffix
 	if (ip) {
@@ -164,15 +169,15 @@ static int unpack_type1(const uint8_t *a77, uint8_t i3, char *field1, char *fiel
 		int irpt = igrid4 - MAXGRID4;
 
 		// Check special cases first
-		if (irpt == 1)
+		if (irpt == 1) {
 			field3[0] = '\0';
-		else if (irpt == 2)
+		} else if (irpt == 2) {
 			strcpy(field3, "RRR");
-		else if (irpt == 3)
+		} else if (irpt == 3) {
 			strcpy(field3, "RR73");
-		else if (irpt == 4)
+		} else if (irpt == 4) {
 			strcpy(field3, "73");
-		else {
+		} else {
 			char *dst = field3;
 			// Extract signal report as a two digit number with a + or - sign
 			if (ir > 0) {
@@ -270,8 +275,9 @@ static int unpack_nonstandard(const uint8_t *a77, char *field1, char *field2, ch
 
 	for (int i = 10; /* no condition */; --i) {
 		c11[i] = charn(n58 % 38, 5);
-		if (i == 0)
+		if (i == 0) {
 			break;
+		}
 		n58 /= 38;
 	}
 
@@ -289,13 +295,13 @@ static int unpack_nonstandard(const uint8_t *a77, char *field1, char *field2, ch
 
 	if (icq == 0) {
 		strcpy(field1, trim(call_1));
-		if (nrpt == 1)
+		if (nrpt == 1) {
 			strcpy(field3, "RRR");
-		else if (nrpt == 2)
+		} else if (nrpt == 2) {
 			strcpy(field3, "RR73");
-		else if (nrpt == 3)
+		} else if (nrpt == 3) {
 			strcpy(field3, "73");
-		else {
+		} else {
 			field3[0] = '\0';
 		}
 	} else {
@@ -359,8 +365,9 @@ int unpack77(const uint8_t *a77, char *message) {
 	char field2[14];
 	char field3[7];
 	int rc = unpack77_fields(a77, field1, field2, field3);
-	if (rc < 0)
+	if (rc < 0) {
 		return rc;
+	}
 
 	char *dst = message;
 	// int msg_sz = strlen(field1) + strlen(field2) + strlen(field3) + 2;

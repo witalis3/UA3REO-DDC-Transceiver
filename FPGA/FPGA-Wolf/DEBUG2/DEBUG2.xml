@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2022.05.19.19:26:26"
- outputDirectory="D:/Dropbox/Develop/Projects/WOLF/FPGA/DEBUG2/">
+ date="2022.11.27.13:36:12"
+ outputDirectory="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/DEBUG2/">
  <perimeter>
   <parameter
      name="AUTO_GENERATION_ID"
@@ -36,34 +36,34 @@
   <interface name="probes" kind="conduit" start="0">
    <property name="associatedClock" value="" />
    <property name="associatedReset" value="" />
-   <port name="probe" direction="input" role="probe" width="1" />
+   <port name="probe" direction="input" role="probe" width="3" />
   </interface>
  </perimeter>
  <entity
    path=""
-   parameterizationKey="DEBUG2:1.0:AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1652973986,AUTO_UNIQUE_ID=(altera_in_system_sources_probes:18.1:create_source_clock=false,create_source_clock_enable=false,device_family=Cyclone IV E,enable_metastability=NO,gui_use_auto_index=true,instance_id=DBG2,probe_width=1,sld_auto_instance_index=YES,sld_instance_index=0,source_initial_value=0,source_width=0)"
+   parameterizationKey="DEBUG2:1.0:AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1669541770,AUTO_UNIQUE_ID=(altera_in_system_sources_probes:18.1:create_source_clock=false,create_source_clock_enable=false,device_family=Cyclone IV E,enable_metastability=NO,gui_use_auto_index=true,instance_id=DBG2,probe_width=3,sld_auto_instance_index=YES,sld_instance_index=0,source_initial_value=0,source_width=0)"
    instancePathKey="DEBUG2"
    kind="DEBUG2"
    version="1.0"
    name="DEBUG2">
-  <parameter name="AUTO_GENERATION_ID" value="1652973986" />
+  <parameter name="AUTO_GENERATION_ID" value="1669541770" />
   <parameter name="AUTO_DEVICE" value="EP4CE22E22C8" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone IV E" />
   <parameter name="AUTO_UNIQUE_ID" value="" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="8" />
   <generatedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/DEBUG2/synthesis/DEBUG2.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/DEBUG2/synthesis/DEBUG2.v"
        type="VERILOG" />
   </generatedFiles>
   <childGeneratedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/DEBUG2/synthesis/submodules/altsource_probe_top.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/DEBUG2/synthesis/submodules/altsource_probe_top.v"
        type="VERILOG"
        attributes="" />
   </childGeneratedFiles>
   <sourceFiles>
-   <file path="D:/Dropbox/Develop/Projects/WOLF/FPGA/DEBUG2.qsys" />
+   <file path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/DEBUG2.qsys" />
   </sourceFiles>
   <childSourceFiles>
    <file
@@ -90,7 +90,7 @@
  </entity>
  <entity
    path="submodules/"
-   parameterizationKey="altera_in_system_sources_probes:18.1:create_source_clock=false,create_source_clock_enable=false,device_family=Cyclone IV E,enable_metastability=NO,gui_use_auto_index=true,instance_id=DBG2,probe_width=1,sld_auto_instance_index=YES,sld_instance_index=0,source_initial_value=0,source_width=0"
+   parameterizationKey="altera_in_system_sources_probes:18.1:create_source_clock=false,create_source_clock_enable=false,device_family=Cyclone IV E,enable_metastability=NO,gui_use_auto_index=true,instance_id=DBG2,probe_width=3,sld_auto_instance_index=YES,sld_instance_index=0,source_initial_value=0,source_width=0"
    instancePathKey="DEBUG2:.:in_system_sources_probes_0"
    kind="altera_in_system_sources_probes"
    version="18.1"
@@ -100,7 +100,7 @@
   <parameter name="source_initial_value" value="0" />
   <parameter name="sld_auto_instance_index" value="YES" />
   <parameter name="sld_instance_index" value="0" />
-  <parameter name="probe_width" value="1" />
+  <parameter name="probe_width" value="3" />
   <parameter name="source_width" value="0" />
   <parameter name="create_source_clock_enable" value="false" />
   <parameter name="device_family" value="Cyclone IV E" />
@@ -108,7 +108,7 @@
   <parameter name="gui_use_auto_index" value="true" />
   <generatedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/DEBUG2/synthesis/submodules/altsource_probe_top.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/DEBUG2/synthesis/submodules/altsource_probe_top.v"
        type="VERILOG"
        attributes="" />
   </generatedFiles>

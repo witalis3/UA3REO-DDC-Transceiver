@@ -62,10 +62,11 @@ void CWDecoder_Init(void) {
 	// decimator
 	arm_fir_decimate_init_f32(&CWDEC_DECIMATE, CW_DEC_FirDecimate.numTaps, CWDECODER_MAGNIFY, CW_DEC_FirDecimate.pCoeffs, CWDEC_decimState, DECODER_PACKET_SIZE);
 	// Blackman-Harris window function
-	for (uint_fast16_t i = 0; i < CWDECODER_FFT_SAMPLES; i++)
+	for (uint_fast16_t i = 0; i < CWDECODER_FFT_SAMPLES; i++) {
 		CWDEC_window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f)) +
 		                              0.14128f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f)) -
 		                              0.01168f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f));
+	}
 }
 
 // start CW decoder for the data block
@@ -74,15 +75,23 @@ void CWDecoder_Process(float32_t *bufferIn) {
 	dma_memset(CWDEC_FFTBuffer, 0x00, sizeof(CWDEC_FFTBuffer));
 	// copy the incoming data for the next work
 	dma_memcpy(CWDEC_InputBuffer, bufferIn, sizeof(CWDEC_InputBuffer));
+	// fill sin if on TX (from DC)
+	if (TRX_on_TX) {
+		static float32_t cw_decoder_signal_gen_index = 0;
+		for (uint_fast16_t i = 0; i < DECODER_PACKET_SIZE; i++) {
+			CWDEC_InputBuffer[i] *= generateSin(1.0f, &cw_decoder_signal_gen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
+		}
+	}
 	// Decimator
 	arm_fir_decimate_f32(&CWDEC_DECIMATE, CWDEC_InputBuffer, CWDEC_InputBuffer, DECODER_PACKET_SIZE);
 	// Fill the unnecessary part of the buffer with zeros
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++) {
 		if (i < CWDECODER_FFT_SAMPLES) {
-			if (i < (CWDECODER_FFT_SAMPLES - CWDECODER_ZOOMED_SAMPLES)) // offset old data
+			if (i < (CWDECODER_FFT_SAMPLES - CWDECODER_ZOOMED_SAMPLES)) { // offset old data
 				CWDEC_FFTBufferCharge[i] = CWDEC_FFTBufferCharge[(i + CWDECODER_ZOOMED_SAMPLES)];
-			else // Add new data to the FFT buffer for calculation
+			} else { // Add new data to the FFT buffer for calculation
 				CWDEC_FFTBufferCharge[i] = CWDEC_InputBuffer[i - (CWDECODER_FFT_SAMPLES - CWDECODER_ZOOMED_SAMPLES)];
+			}
 
 			CWDEC_FFTBuffer[i * 2] = CWDEC_window_multipliers[i] * CWDEC_FFTBufferCharge[i]; // + Window function for FFT
 			CWDEC_FFTBuffer[i * 2 + 1] = 0.0f;
@@ -96,9 +105,11 @@ void CWDecoder_Process(float32_t *bufferIn) {
 	arm_cfft_f32(&CWDECODER_FFT_Inst, CWDEC_FFTBuffer, 0, 0);
 	arm_cmplx_mag_f32(CWDEC_FFTBuffer, CWDEC_FFTBuffer, CWDECODER_FFTSIZE);
 
-	for (uint16_t i = 0; i < CWDECODER_FFTSIZE; i++)
-		if (isinff(CWDEC_FFTBuffer[i]))
+	for (uint16_t i = 0; i < CWDECODER_FFTSIZE; i++) {
+		if (isinff(CWDEC_FFTBuffer[i])) {
 			return;
+		}
+	}
 
 	// Debug CWDecoder
 	/*for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE_HALF; i ++)
@@ -119,19 +130,21 @@ void CWDecoder_Process(float32_t *bufferIn) {
 	static float32_t maxValueAvg = 0;
 	// if(isinff(maxValueAvg)) maxValueAvg = 0;
 	maxValueAvg = maxValueAvg * CWDECODER_MAX_SLIDE + maxValue * (1.0f - CWDECODER_MAX_SLIDE);
-	if (maxValueAvg < maxValue)
+	if (maxValueAvg < maxValue) {
 		maxValueAvg = maxValue;
+	}
 
 	// Normalize the frequency response to one
-	if (maxValueAvg > 0.0f)
+	if (maxValueAvg > 0.0f) {
 		arm_scale_f32(&CWDEC_FFTBuffer[1], 1.0f / maxValueAvg, &CWDEC_FFTBuffer[1], (CWDECODER_SPEC_PART - 1));
+	}
 
 	// println(maxValue, " ", maxValueAvg, " ", CWDEC_FFTBuffer[maxIndex], " ", maxIndex);
 
 	if (CWDEC_FFTBuffer[maxIndex] > CWDECODER_MAX_THRES && (maxValue > meanValue * (float32_t)TRX.CW_Decoder_Threshold)) // signal is active
 	{
 		// print("s");
-		// prinln(maxValue / meanValue);
+		// println(maxValue / meanValue);
 		realstate = true;
 	} else // signal is not active
 	{
@@ -180,8 +193,9 @@ void CWDecoder_Process(float32_t *bufferIn) {
 			code[0] = '\0';
 			last_space = true;
 		}
-		if (CWDECODER_DEBUG)
+		if (CWDECODER_DEBUG) {
 			print("s");
+		}
 		stop = true;
 	}
 
@@ -205,38 +219,44 @@ static void CWDecoder_Recognise(void) {
 			char_time = dash_time;
 			word_time = dot_time * 7.0f;
 			strcat(code, ".");
-			if (CWDECODER_DEBUG)
+			if (CWDECODER_DEBUG) {
 				print(".");
+			}
 		} else if (highduration >= (dash_time * CWDECODER_ERROR_DIFF)) {
 			dash_time = dash_time * 0.7f + highduration * 0.3f; // averaging
 			dot_time = dash_time / 3.0f;
 			char_time = dash_time;
 			word_time = dot_time * 7.0f;
 			strcat(code, "-");
-			if (CWDECODER_DEBUG)
+			if (CWDECODER_DEBUG) {
 				print("-");
+			}
 		} else {
 			dash_time *= CWDECODER_WPM_UP_SPEED;
 			// if(CWDECODER_DEBUG)
 			// sendToDebug_strln("e");
 		}
 		CW_Decoder_WPM = (uint16_t)((float32_t)CW_Decoder_WPM * 0.7f + (1200.0f / (float32_t)dot_time) * 0.3f); //// the most precise we can do ;o)
-		if (CW_Decoder_WPM > CWDECODER_MAX_WPM)
+		if (CW_Decoder_WPM > CWDECODER_MAX_WPM) {
 			CW_Decoder_WPM = CWDECODER_MAX_WPM;
+		}
 	}
 	if (filteredstate == true) {
 		float32_t lacktime = 1.0f;
-		if (CW_Decoder_WPM > 30) //  when high speeds we have to have a little more pause before new letter or new word
+		if (CW_Decoder_WPM > 30) { //  when high speeds we have to have a little more pause before new letter or new word
 			lacktime = 1.2f;
-		if (CW_Decoder_WPM > 35)
+		}
+		if (CW_Decoder_WPM > 35) {
 			lacktime = 1.5f;
+		}
 
 		if (lowduration > (char_time * CWDECODER_ERROR_SPACE_DIFF * lacktime) && lowduration < (char_time * (2.0f - CWDECODER_ERROR_SPACE_DIFF) * lacktime)) // char space
 		{
 			CWDecoder_Decode();
 			last_space = false;
-			if (CWDECODER_DEBUG)
+			if (CWDECODER_DEBUG) {
 				print("c");
+			}
 		} else if (lowduration > (word_time * CWDECODER_ERROR_SPACE_DIFF * lacktime)) // word space
 		{
 			CWDecoder_Decode();
@@ -244,127 +264,134 @@ static void CWDecoder_Recognise(void) {
 				CWDecoder_PrintChar(" ");
 				last_space = true;
 			}
-			if (CWDECODER_DEBUG)
+			if (CWDECODER_DEBUG) {
 				println("w");
+			}
 		} else {
 			// if(CWDECODER_DEBUG)
 			// sendToDebug_strln("e");
 		}
 	}
-	if (strlen(code) >= (CWDECODER_MAX_CODE_SIZE - 1))
+	if (strlen(code) >= (CWDECODER_MAX_CODE_SIZE - 1)) {
 		code[0] = '\0';
+	}
 }
 
 // decode from morse to symbols
 static void CWDecoder_Decode(void) {
-	if (code[0] == '\0')
+	if (code[0] == '\0') {
 		return;
+	}
 
-	if (strcmp(code, ".-") == 0) // А
+	if (strcmp(code, ".-") == 0) { // А
 		CWDecoder_PrintChar("A");
-	else if (strcmp(code, "-...") == 0) // Б
+	} else if (strcmp(code, "-...") == 0) { // Б
 		CWDecoder_PrintChar("B");
-	else if (strcmp(code, "-.-.") == 0) // Ц
+	} else if (strcmp(code, "-.-.") == 0) { // Ц
 		CWDecoder_PrintChar("C");
-	else if (strcmp(code, "-..") == 0) // Д
+	} else if (strcmp(code, "-..") == 0) { // Д
 		CWDecoder_PrintChar("D");
-	else if (strcmp(code, ".") == 0) // Е
+	} else if (strcmp(code, ".") == 0) { // Е
 		CWDecoder_PrintChar("E");
-	else if (strcmp(code, "..-.") == 0) // Ф
+	} else if (strcmp(code, "..-.") == 0) { // Ф
 		CWDecoder_PrintChar("F");
-	else if (strcmp(code, "--.") == 0) // Г
+	} else if (strcmp(code, "--.") == 0) { // Г
 		CWDecoder_PrintChar("G");
-	else if (strcmp(code, "....") == 0) // Х
+	} else if (strcmp(code, "....") == 0) { // Х
 		CWDecoder_PrintChar("H");
-	else if (strcmp(code, "..") == 0) // И
+	} else if (strcmp(code, "..") == 0) { // И
 		CWDecoder_PrintChar("I");
-	else if (strcmp(code, ".---") == 0) // Й
+	} else if (strcmp(code, ".---") == 0) { // Й
 		CWDecoder_PrintChar("J");
-	else if (strcmp(code, "-.-") == 0) // К
+	} else if (strcmp(code, "-.-") == 0) { // К
 		CWDecoder_PrintChar("K");
-	else if (strcmp(code, ".-..") == 0) // Л
+	} else if (strcmp(code, ".-..") == 0) { // Л
 		CWDecoder_PrintChar("L");
-	else if (strcmp(code, "--") == 0) // М
+	} else if (strcmp(code, "--") == 0) { // М
 		CWDecoder_PrintChar("M");
-	else if (strcmp(code, "-.") == 0) // Н
+	} else if (strcmp(code, "-.") == 0) { // Н
 		CWDecoder_PrintChar("N");
-	else if (strcmp(code, "---") == 0) // О
+	} else if (strcmp(code, "---") == 0) { // О
 		CWDecoder_PrintChar("O");
-	else if (strcmp(code, ".--.") == 0) // П
+	} else if (strcmp(code, ".--.") == 0) { // П
 		CWDecoder_PrintChar("P");
-	else if (strcmp(code, "--.-") == 0) // Щ
+	} else if (strcmp(code, "--.-") == 0) { // Щ
 		CWDecoder_PrintChar("Q");
-	else if (strcmp(code, ".-.") == 0) // Р
+	} else if (strcmp(code, ".-.") == 0) { // Р
 		CWDecoder_PrintChar("R");
-	else if (strcmp(code, "...") == 0) // С
+	} else if (strcmp(code, "...") == 0) { // С
 		CWDecoder_PrintChar("S");
-	else if (strcmp(code, "-") == 0) // Т
+	} else if (strcmp(code, "-") == 0) { // Т
 		CWDecoder_PrintChar("T");
-	else if (strcmp(code, "..-") == 0) // У
+	} else if (strcmp(code, "..-") == 0) { // У
 		CWDecoder_PrintChar("U");
-	else if (strcmp(code, "...-") == 0) // Ж
+	} else if (strcmp(code, "...-") == 0) { // Ж
 		CWDecoder_PrintChar("V");
-	else if (strcmp(code, ".--") == 0) // В
+	} else if (strcmp(code, ".--") == 0) { // В
 		CWDecoder_PrintChar("W");
-	else if (strcmp(code, "-..-") == 0) // Ъ,Ь
+	} else if (strcmp(code, "-..-") == 0) { // Ъ,Ь
 		CWDecoder_PrintChar("X");
-	else if (strcmp(code, "-.--") == 0) // Ы
+	} else if (strcmp(code, "-.--") == 0) { // Ы
 		CWDecoder_PrintChar("Y");
-	else if (strcmp(code, "--..") == 0) // З
+	} else if (strcmp(code, "--..") == 0) { // З
 		CWDecoder_PrintChar("Z");
+	}
 
-	else if (strcmp(code, ".----") == 0)
+	else if (strcmp(code, ".----") == 0) {
 		CWDecoder_PrintChar("1");
-	else if (strcmp(code, "..---") == 0)
+	} else if (strcmp(code, "..---") == 0) {
 		CWDecoder_PrintChar("2");
-	else if (strcmp(code, "...--") == 0)
+	} else if (strcmp(code, "...--") == 0) {
 		CWDecoder_PrintChar("3");
-	else if (strcmp(code, "....-") == 0)
+	} else if (strcmp(code, "....-") == 0) {
 		CWDecoder_PrintChar("4");
-	else if (strcmp(code, ".....") == 0)
+	} else if (strcmp(code, ".....") == 0) {
 		CWDecoder_PrintChar("5");
-	else if (strcmp(code, "-....") == 0)
+	} else if (strcmp(code, "-....") == 0) {
 		CWDecoder_PrintChar("6");
-	else if (strcmp(code, "--...") == 0)
+	} else if (strcmp(code, "--...") == 0) {
 		CWDecoder_PrintChar("7");
-	else if (strcmp(code, "---..") == 0)
+	} else if (strcmp(code, "---..") == 0) {
 		CWDecoder_PrintChar("8");
-	else if (strcmp(code, "----.") == 0)
+	} else if (strcmp(code, "----.") == 0) {
 		CWDecoder_PrintChar("9");
-	else if (strcmp(code, "-----") == 0)
+	} else if (strcmp(code, "-----") == 0) {
 		CWDecoder_PrintChar("0");
+	}
 
-	else if (strcmp(code, "..--..") == 0)
+	else if (strcmp(code, "..--..") == 0) {
 		CWDecoder_PrintChar("?");
-	else if (strcmp(code, ".-.-.-") == 0)
+	} else if (strcmp(code, ".-.-.-") == 0) {
 		CWDecoder_PrintChar(".");
-	else if (strcmp(code, "--..--") == 0)
+	} else if (strcmp(code, "--..--") == 0) {
 		CWDecoder_PrintChar(",");
-	else if (strcmp(code, "-.-.--") == 0)
+	} else if (strcmp(code, "-.-.--") == 0) {
 		CWDecoder_PrintChar("!");
-	else if (strcmp(code, ".--.-.") == 0)
+	} else if (strcmp(code, ".--.-.") == 0) {
 		CWDecoder_PrintChar("@");
-	else if (strcmp(code, "---...") == 0)
+	} else if (strcmp(code, "---...") == 0) {
 		CWDecoder_PrintChar(":");
-	else if (strcmp(code, "-....-") == 0)
+	} else if (strcmp(code, "-....-") == 0) {
 		CWDecoder_PrintChar("-");
-	else if (strcmp(code, "-..-.") == 0)
+	} else if (strcmp(code, "-..-.") == 0) {
 		CWDecoder_PrintChar("/");
+	}
 
-	else if (strcmp(code, "-.--.") == 0)
+	else if (strcmp(code, "-.--.") == 0) {
 		CWDecoder_PrintChar("(");
-	else if (strcmp(code, "-.--.-") == 0)
+	} else if (strcmp(code, "-.--.-") == 0) {
 		CWDecoder_PrintChar(")");
-	else if (strcmp(code, ".-...") == 0)
+	} else if (strcmp(code, ".-...") == 0) {
 		CWDecoder_PrintChar("_");
-	else if (strcmp(code, "...-..-") == 0)
+	} else if (strcmp(code, "...-..-") == 0) {
 		CWDecoder_PrintChar("$");
-	else if (strcmp(code, "...-.-") == 0)
+	} else if (strcmp(code, "...-.-") == 0) {
 		CWDecoder_PrintChar(">");
-	else if (strcmp(code, ".-.-.") == 0)
+	} else if (strcmp(code, ".-.-.") == 0) {
 		CWDecoder_PrintChar("<");
-	else if (strcmp(code, "...-.") == 0)
+	} else if (strcmp(code, "...-.") == 0) {
 		CWDecoder_PrintChar("~");
+	}
 
 	else if (strcmp(code, "---.") == 0) // Ч
 	{
@@ -398,8 +425,9 @@ static void CWDecoder_Decode(void) {
 // output the character to the resulting string
 static void CWDecoder_PrintChar(char *str) {
 	// sendToDebug_str(str);
-	if (strlen(CW_Decoder_Text) >= CWDECODER_STRLEN)
+	if (strlen(CW_Decoder_Text) >= CWDECODER_STRLEN) {
 		shiftTextLeft(CW_Decoder_Text, 1);
+	}
 	strcat(CW_Decoder_Text, str);
 	LCD_UpdateQuery.TextBar = true;
 }

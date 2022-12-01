@@ -193,10 +193,12 @@ static void FPGA_restart_TX(void) // restart FPGA modules
 
 // exchange parameters with FPGA
 void FPGA_fpgadata_stuffclock(void) {
-	if (!FPGA_NeedSendParams && !FPGA_NeedGetParams && !FPGA_NeedRestart_RX && !FPGA_NeedRestart_TX)
+	if (!FPGA_NeedSendParams && !FPGA_NeedGetParams && !FPGA_NeedRestart_RX && !FPGA_NeedRestart_TX) {
 		return;
-	if (FPGA_bus_stop)
+	}
+	if (FPGA_bus_stop) {
 		return;
+	}
 
 	// data exchange
 	if (FPGA_NeedSendParams) {
@@ -214,11 +216,13 @@ void FPGA_fpgadata_stuffclock(void) {
 
 // exchange IQ data with FPGA
 void FPGA_fpgadata_iqclock(void) {
-	if (FPGA_bus_stop)
+	if (FPGA_bus_stop) {
 		return;
+	}
 	VFO *current_vfo = CurrentVFO;
-	if (current_vfo->Mode == TRX_MODE_LOOPBACK)
+	if (current_vfo->Mode == TRX_MODE_LOOPBACK) {
 		return;
+	}
 	// data exchange
 
 	bool need_send_tx_zeroes = TRX_TX_sendZeroes < 100;
@@ -292,12 +296,14 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // TX
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_DITH);
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_SHDN);
-	if (TRX_on_TX)
+	if (TRX_on_TX) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 4, true); // shutdown ADC on TX
+	}
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX.ADC_RAND);
 	bitWrite(FPGA_fpgadata_out_tmp8, 6, TRX.ADC_PGA);
-	if (!TRX_on_TX)
+	if (!TRX_on_TX) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 7, TRX.ADC_Driver);
+	}
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 	FPGA_clockRise();
 	FPGA_clockFall();
@@ -498,8 +504,9 @@ static inline void FPGA_fpgadata_getparam(void) {
 	if (ADCDAC_OVR_StatusLatency >= 50) {
 		TRX_ADC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 0);
 		TRX_DAC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 1);
-	} else
+	} else {
 		ADCDAC_OVR_StatusLatency++;
+	}
 	/*bool IQ_overrun = bitRead(FPGA_fpgadata_in_tmp8, 2);
 	if(IQ_overrun)
 	  println("iq overrun");*/
@@ -941,8 +948,9 @@ bool FPGA_is_present(void) // check that the FPGA has firmware
 		LCD_showError("FPGA not found", true);
 		println("[ERR] FPGA not found");
 		return false;
-	} else
+	} else {
 		return true;
+	}
 }
 
 bool FPGA_spi_flash_verify(uint32_t flash_pos, uint8_t *buff, uint32_t size) // check flash memory
@@ -980,8 +988,9 @@ bool FPGA_spi_flash_verify(uint32_t flash_pos, uint8_t *buff, uint32_t size) // 
 			println("[FLASH] Verify: ", progress);
 			progress_prev = progress;
 		}
-		if (errors > 10)
+		if (errors > 10) {
 			break;
+		}
 	}
 	FPGA_spi_stop_command();
 	FPGA_spi_start_command(M25P80_DEEP_POWER_DOWN); // Go sleep

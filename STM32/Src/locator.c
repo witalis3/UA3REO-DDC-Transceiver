@@ -36,10 +36,12 @@ static void LOCINFO_keyboardHandler(uint32_t parameter) {
 	str[0] = parameter;
 	if (parameter == '<') // backspace
 	{
-		if (strlen(entered_locator) > 0)
+		if (strlen(entered_locator) > 0) {
 			entered_locator[strlen(entered_locator) - 1] = 0;
-	} else if (strlen(entered_locator) < 8)
+		}
+	} else if (strlen(entered_locator) < 8) {
 		strcat(entered_locator, str);
+	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
@@ -104,18 +106,24 @@ float32_t LOCINFO_get_latlon_from_locator(char *locator, bool return_lat) {
 	float32_t lon = -180.0f; // Positive: East, negative: West.
 	float32_t lat = -90.0f;  // Positive: North, negative: South.
 
-	if (strlen(locator) >= 1)
+	if (strlen(locator) >= 1) {
 		lon += (locator[0] - 65) * 20.0f;
-	if (strlen(locator) >= 2)
+	}
+	if (strlen(locator) >= 2) {
 		lat += (locator[1] - 65) * 10.0f;
-	if (strlen(locator) >= 3)
+	}
+	if (strlen(locator) >= 3) {
 		lon += charToInt(locator[2]) * 2.0f;
-	if (strlen(locator) >= 4)
+	}
+	if (strlen(locator) >= 4) {
 		lat += charToInt(locator[3]) * 1.0f;
-	if (strlen(locator) >= 5)
+	}
+	if (strlen(locator) >= 5) {
 		lon += (locator[4] - 65) * (5.0f / 60.0f);
-	if (strlen(locator) >= 6)
+	}
+	if (strlen(locator) >= 6) {
 		lat += (locator[5] - 65) * (2.5f / 60.0f);
+	}
 
 	// averaging
 	if (strlen(locator) >= 5) {
@@ -131,10 +139,11 @@ float32_t LOCINFO_get_latlon_from_locator(char *locator, bool return_lat) {
 		lat += 5.0f;
 	}
 
-	if (return_lat)
+	if (return_lat) {
 		return lat;
-	else
+	} else {
 		return lon;
+	}
 }
 
 float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2) {
@@ -165,8 +174,9 @@ float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32
 	arm_atan2_f32((arm_sin_f32(dLon) * arm_cos_f32(lat2)), (arm_cos_f32(lat1) * arm_sin_f32(lat2) - arm_sin_f32(lat1) * arm_cos_f32(lat2) * arm_cos_f32(dLon)), &azimuth);
 
 	azimuth = RAD2DEG(azimuth);
-	while (azimuth < 0)
+	while (azimuth < 0) {
 		azimuth += 360.0f;
+	}
 
 	return azimuth;
 }

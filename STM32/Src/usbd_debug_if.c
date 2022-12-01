@@ -188,32 +188,39 @@ uint8_t DEBUG_Transmit_FS(uint8_t *Buf, uint16_t Len) {
 }
 
 void DEBUG_Transmit_FIFO(uint8_t *data, uint16_t length) {
-	if (length <= DEBUG_TX_FIFO_BUFFER_SIZE)
+	if (length <= DEBUG_TX_FIFO_BUFFER_SIZE) {
 		for (uint16_t i = 0; i < length; i++) {
 			debug_tx_fifo[debug_tx_fifo_head] = data[i];
 			debug_tx_fifo_head++;
 			if (debug_tx_fifo_head == debug_tx_fifo_tail) {
 				uint_fast16_t tryes = 0;
-				while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512)
+				while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512) {
 					tryes++;
-				if (DEBUG_Transmit_FIFO_Events() == USBD_BUSY)
+				}
+				if (DEBUG_Transmit_FIFO_Events() == USBD_BUSY) {
 					break;
+				}
 			}
-			if (debug_tx_fifo_head >= DEBUG_TX_FIFO_BUFFER_SIZE)
+			if (debug_tx_fifo_head >= DEBUG_TX_FIFO_BUFFER_SIZE) {
 				debug_tx_fifo_head = 0;
+			}
 		}
+	}
 }
 
 SRAM static uint8_t temp_buff[DEBUG_TX_FIFO_BUFFER_SIZE] = {0};
 static bool FIFO_Events_busy = false;
 uint8_t DEBUG_Transmit_FIFO_Events(void) {
-	if (FIFO_Events_busy)
+	if (FIFO_Events_busy) {
 		return USBD_FAIL;
-	if (debug_tx_fifo_head == debug_tx_fifo_tail)
+	}
+	if (debug_tx_fifo_head == debug_tx_fifo_tail) {
 		return USBD_OK;
+	}
 	USBD_DEBUG_HandleTypeDef *hcdc = (USBD_DEBUG_HandleTypeDef *)hUsbDeviceFS.pClassDataDEBUG;
-	if (hcdc->TxState != 0)
+	if (hcdc->TxState != 0) {
 		return USBD_FAIL;
+	}
 	FIFO_Events_busy = true;
 	uint16_t indx = 0;
 	dma_memset(temp_buff, 0x00, DEBUG_TX_FIFO_BUFFER_SIZE);
@@ -223,18 +230,21 @@ uint8_t DEBUG_Transmit_FIFO_Events(void) {
 			temp_buff[indx] = debug_tx_fifo[i];
 			indx++;
 			debug_tx_fifo_tail++;
-			if (indx == DEBUG_APP_TX_DATA_SIZE)
+			if (indx == DEBUG_APP_TX_DATA_SIZE) {
 				break;
+			}
 		}
-		if (debug_tx_fifo_tail == DEBUG_TX_FIFO_BUFFER_SIZE)
+		if (debug_tx_fifo_tail == DEBUG_TX_FIFO_BUFFER_SIZE) {
 			debug_tx_fifo_tail = 0;
+		}
 	} else if (debug_tx_fifo_tail < debug_tx_fifo_head) {
 		for (uint16_t i = debug_tx_fifo_tail; i < debug_tx_fifo_head; i++) {
 			temp_buff[indx] = debug_tx_fifo[i];
 			indx++;
 			debug_tx_fifo_tail++;
-			if (indx == DEBUG_APP_TX_DATA_SIZE)
+			if (indx == DEBUG_APP_TX_DATA_SIZE) {
 				break;
+			}
 		}
 	}
 

@@ -539,7 +539,7 @@ begin
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd0; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd5; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)

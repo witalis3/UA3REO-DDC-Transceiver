@@ -82,10 +82,12 @@ int dd_to_int(const char *str, int length) {
 	}
 
 	while (i < length) {
-		if (str[i] == 0)
+		if (str[i] == 0) {
 			break;
-		if (!is_digit(str[i]))
+		}
+		if (!is_digit(str[i])) {
 			break;
+		}
 		result *= 10;
 		result += (str[i] - '0');
 		++i;
@@ -131,27 +133,32 @@ void int_to_dd(char *str, int value, int width, bool full_sign) {
 // table 5: " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ/"
 char charn(int c, int table_idx) {
 	if (table_idx != 2 && table_idx != 3) {
-		if (c == 0)
+		if (c == 0) {
 			return ' ';
+		}
 		c -= 1;
 	}
 	if (table_idx != 4) {
-		if (c < 10)
+		if (c < 10) {
 			return '0' + c;
+		}
 		c -= 10;
 	}
 	if (table_idx != 3) {
-		if (c < 26)
+		if (c < 26) {
 			return 'A' + c;
+		}
 		c -= 26;
 	}
 
 	if (table_idx == 0) {
-		if (c < 5)
+		if (c < 5) {
 			return "+-./?"[c];
+		}
 	} else if (table_idx == 5) {
-		if (c == 0)
+		if (c == 0) {
 			return '/';
+		}
 	}
 
 	return '_'; // unknown character, should never get here
@@ -161,35 +168,44 @@ char charn(int c, int table_idx) {
 int nchar(char c, int table_idx) {
 	int n = 0;
 	if (table_idx != 2 && table_idx != 3) {
-		if (c == ' ')
+		if (c == ' ') {
 			return n + 0;
+		}
 		n += 1;
 	}
 	if (table_idx != 4) {
-		if (c >= '0' && c <= '9')
+		if (c >= '0' && c <= '9') {
 			return n + (c - '0');
+		}
 		n += 10;
 	}
 	if (table_idx != 3) {
-		if (c >= 'A' && c <= 'Z')
+		if (c >= 'A' && c <= 'Z') {
 			return n + (c - 'A');
+		}
 		n += 26;
 	}
 
 	if (table_idx == 0) {
-		if (c == '+')
+		if (c == '+') {
 			return n + 0;
-		if (c == '-')
+		}
+		if (c == '-') {
 			return n + 1;
-		if (c == '.')
+		}
+		if (c == '.') {
 			return n + 2;
-		if (c == '/')
+		}
+		if (c == '/') {
 			return n + 3;
-		if (c == '?')
+		}
+		if (c == '?') {
 			return n + 4;
+		}
 	} else if (table_idx == 5) {
-		if (c == '/')
+		if (c == '/') {
 			return n + 0;
+		}
 	}
 
 	// Character not found

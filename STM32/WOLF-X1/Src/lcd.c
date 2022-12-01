@@ -112,15 +112,17 @@ void LCD_Init(void) {
 }
 
 static void LCD_displayTopButtons(bool redraw) { // display the top buttons
-	if (LCD_systemMenuOpened || LCD_window.opened)
+	if (LCD_systemMenuOpened || LCD_window.opened) {
 		return;
+	}
 	if (LCD_busy) {
 		LCD_UpdateQuery.TopButtons = true;
 		return;
 	}
 	LCD_busy = true;
-	if (redraw)
+	if (redraw) {
 		LCDDriver_Fill_RectWH(LAYOUT->TOPBUTTONS_X1, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_X2, LAYOUT->TOPBUTTONS_Y2, BG_COLOR);
+	}
 
 	// display buttons
 	bool full_redraw = redraw;
@@ -135,20 +137,24 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 		bool enabled = false;
 
 		if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].checkBool != NULL) {
-			if ((uint8_t)*PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].checkBool == 1)
+			if ((uint8_t)*PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].checkBool == 1) {
 				enabled = true;
+			}
 		}
 
 		if (strcmp((char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name, "DNR") == 0) {
-			if (CurrentVFO->DNR_Type == 0)
+			if (CurrentVFO->DNR_Type == 0) {
 				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
 				          false, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
-			if (CurrentVFO->DNR_Type == 1)
+			}
+			if (CurrentVFO->DNR_Type == 1) {
 				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "NR1", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
 				          true, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
-			if (CurrentVFO->DNR_Type == 2)
+			}
+			if (CurrentVFO->DNR_Type == 2) {
 				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "NR2", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
 				          true, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+			}
 		} else {
 			printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT,
 			          (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name, COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
@@ -158,15 +164,17 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 	}
 
 	LCD_UpdateQuery.TopButtons = false;
-	if (redraw)
+	if (redraw) {
 		LCD_UpdateQuery.TopButtonsRedraw = false;
+	}
 	LCD_busy = false;
 }
 
 static void LCD_displayBottomButtons(bool redraw) {
 	// display the bottom buttons
-	if (LCD_systemMenuOpened || LCD_window.opened)
+	if (LCD_systemMenuOpened || LCD_window.opened) {
 		return;
+	}
 	if (LCD_busy) {
 		LCD_UpdateQuery.BottomButtons = true;
 		return;
@@ -174,8 +182,9 @@ static void LCD_displayBottomButtons(bool redraw) {
 	LCD_busy = true;
 
 #if (defined(LAY_800x480))
-	if (redraw)
+	if (redraw) {
 		LCDDriver_Fill_RectWH(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LCD_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, BG_COLOR);
+	}
 	TouchpadButton_handlers_count = 0;
 	uint16_t curr_x = 0;
 	printButton(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<-", true, false, false, 0, FRONTPANEL_BUTTONHANDLER_LEFT_ARR,
@@ -193,14 +202,16 @@ static void LCD_displayBottomButtons(bool redraw) {
 #endif
 
 	LCD_UpdateQuery.BottomButtons = false;
-	if (redraw)
+	if (redraw) {
 		LCD_UpdateQuery.BottomButtonsRedraw = false;
+	}
 	LCD_busy = false;
 }
 
 static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the screen
-	if (LCD_systemMenuOpened || LCD_window.opened)
+	if (LCD_systemMenuOpened || LCD_window.opened) {
 		return;
+	}
 	if (!redraw && (LCD_last_showed_freq == CurrentVFO->Freq)
 #if (defined(LAY_800x480))
 	    && (LCD_last_showed_freq_B == SecondaryVFO->Freq)
@@ -209,8 +220,9 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 		return;
 	if (LCD_busy) {
 		LCD_UpdateQuery.FreqInfo = true;
-		if (redraw)
+		if (redraw) {
 			LCD_UpdateQuery.FreqInfoRedraw = true;
+		}
 		return;
 	}
 	LCD_busy = true;
@@ -219,10 +231,12 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 #if (defined(LAY_800x480))
 	display_freq = TRX.VFO_A.Freq;
 #endif
-	if (TRX.Custom_Transverter_Enabled)
+	if (TRX.Custom_Transverter_Enabled) {
 		display_freq += (uint64_t)CALIBRATE.Transverter_Custom_Offset_Mhz * 1000 * 1000;
-	if (TRX_on_TX && !TRX.selected_vfo)
+	}
+	if (TRX_on_TX && !TRX.selected_vfo) {
 		display_freq += TRX_XIT;
+	}
 
 	LCD_last_showed_freq = display_freq;
 	uint16_t hz = (display_freq % 1000);
@@ -237,19 +251,22 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	}
 
 	uint16_t mhz_x_offset = 0;
-	if (mhz >= 100)
+	if (mhz >= 100) {
 		mhz_x_offset = LAYOUT->FREQ_X_OFFSET_100;
-	else if (mhz >= 10)
+	} else if (mhz >= 10) {
 		mhz_x_offset = LAYOUT->FREQ_X_OFFSET_10;
-	else
+	} else {
 		mhz_x_offset = LAYOUT->FREQ_X_OFFSET_1;
+	}
 
-	if (redraw)
+	if (redraw) {
 		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP, LCD_WIDTH - LAYOUT->FREQ_LEFT_MARGIN - LAYOUT->FREQ_RIGHT_MARGIN, LAYOUT->FREQ_TOP_OFFSET + LAYOUT->FREQ_HEIGHT + 2,
 		                      BG_COLOR);
+	}
 
-	if ((mhz_x_offset - LAYOUT->FREQ_LEFT_MARGIN) > 0)
+	if ((mhz_x_offset - LAYOUT->FREQ_LEFT_MARGIN) > 0) {
 		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP, mhz_x_offset - LAYOUT->FREQ_LEFT_MARGIN - 1, LAYOUT->FREQ_TOP_OFFSET + LAYOUT->FREQ_HEIGHT + 2, BG_COLOR);
+	}
 
 	// add spaces to output the frequency
 	sprintf(LCD_freq_string_hz, "%d", hz);
@@ -273,32 +290,37 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 		int_fast8_t channel = -1;
 
 		uint16_t hz_color = COLOR->FREQ_HZ;
-		if (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP)
+		if (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP) {
 			hz_color = COLOR->ACTIVE_BORDER;
+		}
 
 		if (TRX.ChannelMode) {
 			band = getBandFromFreq(display_freq, false);
-			if (!TRX.selected_vfo)
+			if (!TRX.selected_vfo) {
 				channel = getChannelbyFreq(display_freq, false);
-			else
+			} else {
 				channel = getChannelbyFreq(display_freq, true);
+			}
 		}
 		if (TRX.ChannelMode && band >= 0 && BANDS[band].channelsCount > 0) {
-			if (band != -1 && channel != -1 && strlen((char *)BANDS[band].channels[channel].subname) > 0)
+			if (band != -1 && channel != -1 && strlen((char *)BANDS[band].channels[channel].subname) > 0) {
 				sprintf(buff, "%s", (char *)BANDS[band].channels[channel].subname);
-			else
+			} else {
 				sprintf(buff, "CH");
+			}
 			addSymbols(buff, buff, 2, " ", false);
 			LCDDriver_printText(buff, LAYOUT->FREQ_X_OFFSET_HZ + 2, LAYOUT->FREQ_Y_BASELINE_SMALL - RASTR_FONT_H * 2, COLOR->FREQ_HZ, BG_COLOR, 2);
 
-			if (band != -1 && channel != -1)
+			if (band != -1 && channel != -1) {
 				sprintf(buff, "%d", BANDS[band].channels[channel].number);
-			else
+			} else {
 				sprintf(buff, "-");
+			}
 			addSymbols(buff, buff, 2, " ", true);
 			LCDDriver_printTextFont(buff, LAYOUT->FREQ_X_OFFSET_HZ + 2 + RASTR_FONT_W * 2 * 2, LAYOUT->FREQ_Y_BASELINE_SMALL, COLOR->STATUS_MODE, BG_COLOR, LAYOUT->FREQ_CH_FONT);
-		} else
+		} else {
 			LCDDriver_printTextFont(buff, LAYOUT->FREQ_X_OFFSET_HZ, LAYOUT->FREQ_Y_BASELINE_SMALL, hz_color, BG_COLOR, LAYOUT->FREQ_SMALL_FONT);
+		}
 		LCD_last_showed_freq_hz = hz;
 	}
 
@@ -311,8 +333,9 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	NeedSaveSettings = true;
 
 	LCD_UpdateQuery.FreqInfo = false;
-	if (redraw)
+	if (redraw) {
 		LCD_UpdateQuery.FreqInfoRedraw = false;
+	}
 
 	LCD_busy = false;
 }
@@ -340,16 +363,18 @@ static void LCD_drawSMeter(void) {
 	// LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, COLOR->STATUS_BAR_LABELS, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	for (uint8_t i = 0; i <= 15; i++) {
 		uint16_t color = COLOR->STATUS_BAR_LEFT;
-		if (i >= 9)
+		if (i >= 9) {
 			color = COLOR->STATUS_BAR_RIGHT;
+		}
 		if ((i % 2) != 0 || i == 0) {
 			// LCDDriver_drawFastVLine(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)(step * i) - 1, LAYOUT->STATUS_Y_OFFSET +
 			// LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET, -4, color);
 			LCDDriver_drawFastVLine(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)(step * i), LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET, -3, color);
 			// LCDDriver_drawFastVLine(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)(step * i) + 1, LAYOUT->STATUS_Y_OFFSET +
 			// LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET, -4, color);
-		} else
+		} else {
 			LCDDriver_drawFastVLine(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)(step * i), LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET, -1, color);
+		}
 	}
 
 	// S-meter frame
@@ -367,13 +392,15 @@ static void LCD_drawSMeter(void) {
 
 static void LCD_displayStatusInfoGUI(bool redraw) {
 	// display RX / TX and s-meter
-	if (LCD_systemMenuOpened || LCD_window.opened)
+	if (LCD_systemMenuOpened || LCD_window.opened) {
 		return;
+	}
 	if (LCD_busy) {
-		if (redraw)
+		if (redraw) {
 			LCD_UpdateQuery.StatusInfoGUIRedraw = true;
-		else
+		} else {
 			LCD_UpdateQuery.StatusInfoGUI = true;
+		}
 		return;
 	}
 	LCD_busy = true;
@@ -383,10 +410,11 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	}
 
 	if (TRX_on_TX) {
-		if (TRX_Tune)
+		if (TRX_Tune) {
 			LCDDriver_printText("TU", LAYOUT->STATUS_TXRX_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_TXRX_Y_OFFSET), COLOR->STATUS_TU, BG_COLOR, 1);
-		else
+		} else {
 			LCDDriver_printText("TX", LAYOUT->STATUS_TXRX_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_TXRX_Y_OFFSET), COLOR->STATUS_TX, BG_COLOR, 1);
+		}
 
 		// frame of the SWR meter
 		const float32_t step = LAYOUT->STATUS_PMETER_WIDTH / 16.0f;
@@ -431,26 +459,28 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	// VFO indicator
 	if (!TRX.selected_vfo) // VFO-A
 	{
-		if (!TRX.Dual_RX)
+		if (!TRX.Dual_RX) {
 			printInfo(LAYOUT->STATUS_VFO_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_VFO_Y_OFFSET), LAYOUT->STATUS_VFO_BLOCK_WIDTH, LAYOUT->STATUS_VFO_BLOCK_HEIGHT, "A",
 			          COLOR->STATUS_VFO_BG, COLOR->STATUS_VFO, COLOR->STATUS_VFO, true, false, true);
-		else if (TRX.Dual_RX_Type == VFO_A_AND_B)
+		} else if (TRX.Dual_RX_Type == VFO_A_AND_B) {
 			printInfo(LAYOUT->STATUS_VFO_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_VFO_Y_OFFSET), LAYOUT->STATUS_VFO_BLOCK_WIDTH, LAYOUT->STATUS_VFO_BLOCK_HEIGHT, "A&B",
 			          COLOR->STATUS_VFO_BG, COLOR->STATUS_VFO, COLOR->STATUS_VFO, true, false, true);
-		else
+		} else {
 			printInfo(LAYOUT->STATUS_VFO_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_VFO_Y_OFFSET), LAYOUT->STATUS_VFO_BLOCK_WIDTH, LAYOUT->STATUS_VFO_BLOCK_HEIGHT, "A+B",
 			          COLOR->STATUS_VFO_BG, COLOR->STATUS_VFO, COLOR->STATUS_VFO, true, false, true);
+		}
 	} else // VFO-B
 	{
-		if (!TRX.Dual_RX)
+		if (!TRX.Dual_RX) {
 			printInfo(LAYOUT->STATUS_VFO_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_VFO_Y_OFFSET), LAYOUT->STATUS_VFO_BLOCK_WIDTH, LAYOUT->STATUS_VFO_BLOCK_HEIGHT, "B",
 			          COLOR->STATUS_VFO_BG, COLOR->STATUS_VFO, COLOR->STATUS_VFO, true, false, true);
-		else if (TRX.Dual_RX_Type == VFO_A_AND_B)
+		} else if (TRX.Dual_RX_Type == VFO_A_AND_B) {
 			printInfo(LAYOUT->STATUS_VFO_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_VFO_Y_OFFSET), LAYOUT->STATUS_VFO_BLOCK_WIDTH, LAYOUT->STATUS_VFO_BLOCK_HEIGHT, "B&A",
 			          COLOR->STATUS_VFO_BG, COLOR->STATUS_VFO, COLOR->STATUS_VFO, true, false, true);
-		else
+		} else {
 			printInfo(LAYOUT->STATUS_VFO_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_VFO_Y_OFFSET), LAYOUT->STATUS_VFO_BLOCK_WIDTH, LAYOUT->STATUS_VFO_BLOCK_HEIGHT, "B+A",
 			          COLOR->STATUS_VFO_BG, COLOR->STATUS_VFO, COLOR->STATUS_VFO, true, false, true);
+		}
 	}
 
 	// Mode indicator
@@ -464,8 +494,9 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	}
 
 	LCD_UpdateQuery.StatusInfoGUI = false;
-	if (redraw)
+	if (redraw) {
 		LCD_UpdateQuery.StatusInfoGUIRedraw = false;
+	}
 	LCD_busy = false;
 }
 
@@ -474,46 +505,57 @@ static float32_t LCD_GetSMeterValPosition(float32_t dbm, bool correct_vhf) {
 	float32_t TRX_s_meter = 0;
 
 	TRX_s_meter = (127.0f + dbm); // 127dbm - S0, 6dBm - 1S div
-	if (correct_vhf && CurrentVFO->Freq >= 144000000)
+	if (correct_vhf && CurrentVFO->Freq >= 144000000) {
 		TRX_s_meter = (147.0f + dbm); // 147dbm - S0 for frequencies above 144mhz
+	}
 
-	if (TRX_s_meter < 54.01f) // first 9 points of meter is 6 dB each
+	if (TRX_s_meter < 54.01f) { // first 9 points of meter is 6 dB each
 		TRX_s_meter = (width / 15.0f) * (TRX_s_meter / 6.0f);
-	else // the remaining 6 points, 10 dB each
+	} else { // the remaining 6 points, 10 dB each
 		TRX_s_meter = ((width / 15.0f) * 9.0f) + ((TRX_s_meter - 54.0f) / 10.0f) * (width / 15.0f);
+	}
 
 	TRX_s_meter += 1.0f;
-	if (TRX_s_meter > width)
+	if (TRX_s_meter > width) {
 		TRX_s_meter = width;
-	if (TRX_s_meter < 1.0f)
+	}
+	if (TRX_s_meter < 1.0f) {
 		TRX_s_meter = 1.0f;
+	}
 
 	return TRX_s_meter;
 }
 
 static float32_t LCD_SWR2DBM_meter(float32_t swr) {
-	if (swr < 1.0f)
+	if (swr < 1.0f) {
 		swr = 1.0f;
-	if (swr > 8.0f)
+	}
+	if (swr > 8.0f) {
 		swr = 8.0f;
+	}
 
 	float32_t swr_to_dbm = -115.0f;
-	if (swr <= 1.5f)
+	if (swr <= 1.5f) {
 		swr_to_dbm += (swr - 1.0f) * 40.0f;
-	if (swr > 1.5f && swr <= 2.0f)
+	}
+	if (swr > 1.5f && swr <= 2.0f) {
 		swr_to_dbm += 0.5f * 40.0f + (swr - 1.5f) * 20.0f;
-	if (swr > 2.0f && swr <= 3.0f)
+	}
+	if (swr > 2.0f && swr <= 3.0f) {
 		swr_to_dbm += 0.5f * 40.0f + 0.5f * 20.0f + (swr - 2.0f) * 10.0f;
-	if (swr > 3.0f)
+	}
+	if (swr > 3.0f) {
 		swr_to_dbm += 0.5f * 40.0f + 0.5f * 20.0f + 1.0f * 20.0f + (swr - 3.0f) * 10.0f;
+	}
 
 	return swr_to_dbm;
 }
 
 static void LCD_displayStatusInfoBar(bool redraw) {
 	// S-meter and other information
-	if (LCD_systemMenuOpened || LCD_window.opened)
+	if (LCD_systemMenuOpened || LCD_window.opened) {
 		return;
+	}
 	if (LCD_busy) {
 		LCD_UpdateQuery.StatusInfoBar = true;
 		return;
@@ -531,19 +573,21 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 
 		float32_t s_width = 0.0f;
 
-		if (CurrentVFO->Mode == TRX_MODE_CW)
+		if (CurrentVFO->Mode == TRX_MODE_CW) {
 			s_width = LCD_last_s_meter * 0.5f + LCD_GetSMeterValPosition(TRX_RX1_dBm_lowrate, true) * 0.5f; // smooth CW faster!
-		else
+		} else {
 			s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX1_dBm_lowrate, true) * 0.25f; // smooth the movement of the S-meter
+		}
 
 		// digital s-meter version
 		static uint32_t last_s_meter_draw_time = 0;
 		if (redraw || (LCD_last_s_meter != s_width) || (HAL_GetTick() - last_s_meter_draw_time) > 500) {
 			last_s_meter_draw_time = HAL_GetTick();
 			// clear old bar
-			if ((LCD_last_s_meter - s_width) > 0)
+			if ((LCD_last_s_meter - s_width) > 0) {
 				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)s_width, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2,
 				                      (uint16_t)(LCD_last_s_meter - s_width + 1), LAYOUT->STATUS_BAR_HEIGHT - 3, BG_COLOR);
+			}
 			// and stripe
 			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + (uint16_t)LCD_last_s_meter, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + 5, 1, LAYOUT->STATUS_SMETER_MARKER_HEIGHT,
 			                      BG_COLOR);
@@ -565,11 +609,13 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			// peak
 			static uint16_t smeter_peak_x = 0;
 			static uint32_t smeter_peak_settime = 0;
-			if (smeter_peak_x > s_width)
+			if (smeter_peak_x > s_width) {
 				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + smeter_peak_x, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, 1,
 				                      LAYOUT->STATUS_BAR_HEIGHT - 3, BG_COLOR); // clear old peak
-			if (smeter_peak_x > 0 && ((HAL_GetTick() - smeter_peak_settime) > LAYOUT->STATUS_SMETER_PEAK_HOLDTIME))
+			}
+			if (smeter_peak_x > 0 && ((HAL_GetTick() - smeter_peak_settime) > LAYOUT->STATUS_SMETER_PEAK_HOLDTIME)) {
 				smeter_peak_x--;
+			}
 			if (s_width > smeter_peak_x) {
 				smeter_peak_x = (uint16_t)s_width;
 				smeter_peak_settime = HAL_GetTick();
@@ -595,8 +641,9 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		// print dBm value
 		static float32_t TRX_RX_dBm_averaging = -120.0f;
 		TRX_RX_dBm_averaging = 0.97f * TRX_RX_dBm_averaging + 0.03f * TRX_RX1_dBm_lowrate;
-		if (TRX_RX1_dBm_lowrate > TRX_RX_dBm_averaging)
+		if (TRX_RX1_dBm_lowrate > TRX_RX_dBm_averaging) {
 			TRX_RX_dBm_averaging = TRX_RX1_dBm_lowrate;
+		}
 
 		sprintf(ctmp, "%d", (int16_t)TRX_RX_dBm_averaging);
 		addSymbols(ctmp, ctmp, 4, " ", true);
@@ -605,63 +652,65 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 
 		// print s-meter value
 		if (CurrentVFO->Freq < 144000000) {
-			if (TRX_RX_dBm_averaging <= -118.0f)
+			if (TRX_RX_dBm_averaging <= -118.0f) {
 				sprintf(ctmp, "S1");
-			else if (TRX_RX_dBm_averaging <= -112.0f)
+			} else if (TRX_RX_dBm_averaging <= -112.0f) {
 				sprintf(ctmp, "S2");
-			else if (TRX_RX_dBm_averaging <= -106.0f)
+			} else if (TRX_RX_dBm_averaging <= -106.0f) {
 				sprintf(ctmp, "S3");
-			else if (TRX_RX_dBm_averaging <= -100.0f)
+			} else if (TRX_RX_dBm_averaging <= -100.0f) {
 				sprintf(ctmp, "S4");
-			else if (TRX_RX_dBm_averaging <= -94.0f)
+			} else if (TRX_RX_dBm_averaging <= -94.0f) {
 				sprintf(ctmp, "S5");
-			else if (TRX_RX_dBm_averaging <= -88.0f)
+			} else if (TRX_RX_dBm_averaging <= -88.0f) {
 				sprintf(ctmp, "S6");
-			else if (TRX_RX_dBm_averaging <= -82.0f)
+			} else if (TRX_RX_dBm_averaging <= -82.0f) {
 				sprintf(ctmp, "S7");
-			else if (TRX_RX_dBm_averaging <= -76.0f)
+			} else if (TRX_RX_dBm_averaging <= -76.0f) {
 				sprintf(ctmp, "S8");
-			else if (TRX_RX_dBm_averaging <= -68.0f)
+			} else if (TRX_RX_dBm_averaging <= -68.0f) {
 				sprintf(ctmp, "S9");
-			else if (TRX_RX_dBm_averaging <= -58.0f)
+			} else if (TRX_RX_dBm_averaging <= -58.0f) {
 				sprintf(ctmp, "+10");
-			else if (TRX_RX_dBm_averaging <= -48.0f)
+			} else if (TRX_RX_dBm_averaging <= -48.0f) {
 				sprintf(ctmp, "+20");
-			else if (TRX_RX_dBm_averaging <= -38.0f)
+			} else if (TRX_RX_dBm_averaging <= -38.0f) {
 				sprintf(ctmp, "+30");
-			else if (TRX_RX_dBm_averaging <= -28.0f)
+			} else if (TRX_RX_dBm_averaging <= -28.0f) {
 				sprintf(ctmp, "+40");
-			else
+			} else {
 				sprintf(ctmp, "+60");
+			}
 		} else {
-			if (TRX_RX_dBm_averaging <= -138.0f)
+			if (TRX_RX_dBm_averaging <= -138.0f) {
 				sprintf(ctmp, "S1");
-			else if (TRX_RX_dBm_averaging <= -132.0f)
+			} else if (TRX_RX_dBm_averaging <= -132.0f) {
 				sprintf(ctmp, "S2");
-			else if (TRX_RX_dBm_averaging <= -126.0f)
+			} else if (TRX_RX_dBm_averaging <= -126.0f) {
 				sprintf(ctmp, "S3");
-			else if (TRX_RX_dBm_averaging <= -120.0f)
+			} else if (TRX_RX_dBm_averaging <= -120.0f) {
 				sprintf(ctmp, "S4");
-			else if (TRX_RX_dBm_averaging <= -114.0f)
+			} else if (TRX_RX_dBm_averaging <= -114.0f) {
 				sprintf(ctmp, "S5");
-			else if (TRX_RX_dBm_averaging <= -108.0f)
+			} else if (TRX_RX_dBm_averaging <= -108.0f) {
 				sprintf(ctmp, "S6");
-			else if (TRX_RX_dBm_averaging <= -102.0f)
+			} else if (TRX_RX_dBm_averaging <= -102.0f) {
 				sprintf(ctmp, "S7");
-			else if (TRX_RX_dBm_averaging <= -96.0f)
+			} else if (TRX_RX_dBm_averaging <= -96.0f) {
 				sprintf(ctmp, "S8");
-			else if (TRX_RX_dBm_averaging <= -88.0f)
+			} else if (TRX_RX_dBm_averaging <= -88.0f) {
 				sprintf(ctmp, "S9");
-			else if (TRX_RX_dBm_averaging <= -78.0f)
+			} else if (TRX_RX_dBm_averaging <= -78.0f) {
 				sprintf(ctmp, "+10");
-			else if (TRX_RX_dBm_averaging <= -68.0f)
+			} else if (TRX_RX_dBm_averaging <= -68.0f) {
 				sprintf(ctmp, "+20");
-			else if (TRX_RX_dBm_averaging <= -58.0f)
+			} else if (TRX_RX_dBm_averaging <= -58.0f) {
 				sprintf(ctmp, "+30");
-			else if (TRX_RX_dBm_averaging <= -48.0f)
+			} else if (TRX_RX_dBm_averaging <= -48.0f) {
 				sprintf(ctmp, "+40");
-			else
+			} else {
 				sprintf(ctmp, "+60");
+			}
 		}
 
 		addSymbols(ctmp, ctmp, 3, " ", true);
@@ -674,10 +723,11 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 
 		// FWD
 		float32_t TRX_Power = TRX_PWR_Forward_SMOOTHED - TRX_PWR_Backward_SMOOTHED;
-		if (TRX_Power >= 99.0f)
+		if (TRX_Power >= 99.0f) {
 			sprintf(ctmp, "%d", (uint16_t)TRX_Power);
-		else
+		} else {
 			sprintf(ctmp, "%dW", (uint16_t)TRX_Power);
+		}
 		addSymbols(ctmp, ctmp, 3, " ", true);
 		LCDDriver_printText(ctmp, LAYOUT->STATUS_TX_LABELS_FWD_X + 5 * RASTR_FONT_W, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, COLOR_RED,
 		                    BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
@@ -694,13 +744,15 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 
 		// SWR Meter
 		float32_t fwd_power = TRX_PWR_Forward_SMOOTHED;
-		if (fwd_power > CALIBRATE.MAX_RF_POWER_ON_METER)
+		if (fwd_power > CALIBRATE.MAX_RF_POWER_ON_METER) {
 			fwd_power = CALIBRATE.MAX_RF_POWER_ON_METER;
+		}
 		uint16_t ref_width = (uint16_t)(TRX_PWR_Backward_SMOOTHED * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER_ON_METER);
 		uint16_t fwd_width = (uint16_t)(fwd_power * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER_ON_METER);
 		uint16_t est_width = (uint16_t)((CALIBRATE.MAX_RF_POWER_ON_METER - fwd_power) * (LAYOUT->STATUS_PMETER_WIDTH - 2) / CALIBRATE.MAX_RF_POWER_ON_METER);
-		if (ref_width > fwd_width)
+		if (ref_width > fwd_width) {
 			ref_width = fwd_width;
+		}
 		fwd_width -= ref_width;
 		LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + 1, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, fwd_width,
 		                      LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER);
@@ -716,39 +768,44 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		LCDDriver_printText(ctmp, LAYOUT->STATUS_TX_LABELS_ALC_X + 5 * RASTR_FONT_W, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y,
 		                    COLOR->STATUS_BAR_LABELS, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 		uint16_t alc_level_width = LAYOUT->STATUS_AMETER_WIDTH * alc_level / 100;
-		if (alc_level_width > LAYOUT->STATUS_AMETER_WIDTH)
+		if (alc_level_width > LAYOUT->STATUS_AMETER_WIDTH) {
 			alc_level_width = LAYOUT->STATUS_AMETER_WIDTH;
+		}
 		LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + LAYOUT->STATUS_PMETER_WIDTH + LAYOUT->STATUS_ALC_BAR_X_OFFSET,
 		                      LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, alc_level_width, LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER);
-		if (alc_level < 100)
+		if (alc_level < 100) {
 			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + LAYOUT->STATUS_PMETER_WIDTH + LAYOUT->STATUS_ALC_BAR_X_OFFSET + alc_level_width,
 			                      LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, LAYOUT->STATUS_AMETER_WIDTH - alc_level_width,
 			                      LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_LABEL_NOTCH);
+		}
 	}
 
 	// Info labels
 	char buff[32] = "";
 	// BW HPF-LPF
 	float32_t lpf_width = 0;
-	if (CurrentVFO->Mode == TRX_MODE_CW)
+	if (CurrentVFO->Mode == TRX_MODE_CW) {
 		lpf_width = TRX.CW_LPF_Filter;
-	else if ((CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)) {
+	} else if ((CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)) {
 		lpf_width = TRX.DIGI_LPF_Filter;
 	} else if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB) {
-		if (TRX_on_TX)
+		if (TRX_on_TX) {
 			lpf_width = TRX.SSB_LPF_TX_Filter;
-		else
+		} else {
 			lpf_width = TRX.SSB_LPF_RX_Filter;
+		}
 	} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
-		if (TRX_on_TX)
+		if (TRX_on_TX) {
 			lpf_width = TRX.AM_LPF_TX_Filter;
-		else
+		} else {
 			lpf_width = TRX.AM_LPF_RX_Filter;
+		}
 	} else if (CurrentVFO->Mode == TRX_MODE_NFM) {
-		if (TRX_on_TX)
+		if (TRX_on_TX) {
 			lpf_width = TRX.FM_LPF_TX_Filter;
-		else
+		} else {
 			lpf_width = TRX.FM_LPF_RX_Filter;
+		}
 	}
 
 	if (lpf_width == 0) {
@@ -766,22 +823,24 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_BW_Y_OFFSET, COLOR->STATUS_LABEL_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	// RIT
 	uint16_t color = COLOR->STATUS_LABEL_RIT;
-	if (TRX.SPLIT_Enabled)
+	if (TRX.SPLIT_Enabled) {
 		sprintf(buff, "SPLT");
-	else if (TRX.RIT_Enabled) {
-		if (TRX_RIT == 0)
+	} else if (TRX.RIT_Enabled) {
+		if (TRX_RIT == 0) {
 			sprintf(buff, "RIT");
-		else if (TRX_RIT > 0)
+		} else if (TRX_RIT > 0) {
 			sprintf(buff, "+%d", TRX_RIT);
-		else
+		} else {
 			sprintf(buff, "%d", TRX_RIT);
+		}
 	} else if (TRX.XIT_Enabled) {
-		if (TRX_XIT == 0)
+		if (TRX_XIT == 0) {
 			sprintf(buff, "XIT");
-		else if (TRX_XIT > 0)
+		} else if (TRX_XIT > 0) {
 			sprintf(buff, "+%d", TRX_XIT);
-		else
+		} else {
 			sprintf(buff, "%d", TRX_XIT);
+		}
 	} else {
 		sprintf(buff, "RIT");
 		color = COLOR->BUTTON_INACTIVE_TEXT;
@@ -801,13 +860,13 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		// NOTCH
 		color = COLOR->STATUS_LABEL_NOTCH;
 
-		if (CurrentVFO->AutoNotchFilter)
+		if (CurrentVFO->AutoNotchFilter) {
 			sprintf(buff, "ANTCH");
-		else if (CurrentVFO->ManualNotchFilter && CurrentVFO->NotchFC < 1000)
+		} else if (CurrentVFO->ManualNotchFilter && CurrentVFO->NotchFC < 1000) {
 			sprintf(buff, "%uhz", CurrentVFO->NotchFC);
-		else if (CurrentVFO->ManualNotchFilter && CurrentVFO->NotchFC >= 1000)
+		} else if (CurrentVFO->ManualNotchFilter && CurrentVFO->NotchFC >= 1000) {
 			sprintf(buff, "%u", CurrentVFO->NotchFC);
-		else {
+		} else {
 			sprintf(buff, "NOTCH");
 			color = COLOR->BUTTON_INACTIVE_TEXT;
 		}
@@ -815,8 +874,9 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH) {
 			color = COLOR->ACTIVE_BORDER;
 
-			if (!CurrentVFO->ManualNotchFilter)
+			if (!CurrentVFO->ManualNotchFilter) {
 				sprintf(buff, "%u%%", TRX.Volume);
+			}
 
 			// if(CurrentVFO->Mode == TRX_MODE_CW)
 			// sprintf(buff, "%uWPM", TRX.CW_KEYER_WPM);
@@ -839,13 +899,15 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 
 	// FFT BW
 	uint8_t fft_zoom = TRX.FFT_Zoom;
-	if (CurrentVFO->Mode == TRX_MODE_CW)
+	if (CurrentVFO->Mode == TRX_MODE_CW) {
 		fft_zoom = TRX.FFT_ZoomCW;
+	}
 	uint16_t fft_width = FFT_current_spectrum_width_hz / 1000;
-	if (fft_width < 100)
+	if (fft_width < 100) {
 		sprintf(buff, "%dk", fft_width);
-	else
+	} else {
 		sprintf(buff, "%d", fft_width);
+	}
 	addSymbols(buff, buff, 3, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_FFT_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_FFT_BW_Y_OFFSET, COLOR->STATUS_LABELS_BW, BG_COLOR,
 	                    LAYOUT->STATUS_LABELS_FONT_SIZE);
@@ -872,8 +934,9 @@ LAYOUT->STATUS_LABEL_REC_Y_OFFSET, COLOR_RED, BG_COLOR, LAYOUT->STATUS_LABELS_FO
 // ERRORS LABELS
 #define CLEAN_SPACE LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
 	if (TRX_ADC_MAXAMPLITUDE > (ADC_FULL_SCALE * 0.499f) || TRX_ADC_MINAMPLITUDE < -(ADC_FULL_SCALE * 0.499f)) {
-		if (ADCDAC_OVR_StatusLatency >= 10)
+		if (ADCDAC_OVR_StatusLatency >= 10) {
 			TRX_ADC_OTR = true;
+		}
 	}
 
 	if (TRX_ADC_OTR && !TRX_on_TX && !TRX.ADC_SHDN) {
@@ -929,15 +992,17 @@ LAYOUT->STATUS_LABEL_REC_Y_OFFSET, COLOR_RED, BG_COLOR, LAYOUT->STATUS_LABELS_FO
 	}
 
 	LCD_UpdateQuery.StatusInfoBar = false;
-	if (redraw)
+	if (redraw) {
 		LCD_UpdateQuery.StatusInfoBarRedraw = false;
+	}
 	LCD_busy = false;
 }
 
 static void LCD_displayTextBar(void) {
 	// display the text under the waterfall
-	if (LCD_systemMenuOpened || LCD_window.opened)
+	if (LCD_systemMenuOpened || LCD_window.opened) {
 		return;
+	}
 	if (LCD_busy) {
 		LCD_UpdateQuery.TextBar = true;
 		return;
@@ -977,15 +1042,18 @@ void LCD_redraw(bool do_now) {
 	LCD_last_showed_freq_khz = 9999;
 	LCD_last_showed_freq_hz = 9999;
 	NeedWTFRedraw = true;
-	if (do_now)
+	if (do_now) {
 		LCD_doEvents();
+	}
 }
 
 bool LCD_doEvents(void) {
-	if (LCD_UpdateQuery.SystemMenuRedraw && LCD_showInfo_opened)
+	if (LCD_UpdateQuery.SystemMenuRedraw && LCD_showInfo_opened) {
 		LCD_busy = false;
-	if (LCD_busy)
+	}
+	if (LCD_busy) {
 		return false;
+	}
 
 	if (LCD_UpdateQuery.Background) {
 		LCD_busy = true;
@@ -993,40 +1061,55 @@ bool LCD_doEvents(void) {
 		LCD_UpdateQuery.Background = false;
 		LCD_busy = false;
 	}
-	if (LCD_UpdateQuery.BottomButtons)
+	if (LCD_UpdateQuery.BottomButtons) {
 		LCD_displayBottomButtons(false);
-	if (LCD_UpdateQuery.BottomButtonsRedraw)
+	}
+	if (LCD_UpdateQuery.BottomButtonsRedraw) {
 		LCD_displayBottomButtons(true);
-	if (LCD_UpdateQuery.TopButtons)
+	}
+	if (LCD_UpdateQuery.TopButtons) {
 		LCD_displayTopButtons(false);
-	if (LCD_UpdateQuery.TopButtonsRedraw)
+	}
+	if (LCD_UpdateQuery.TopButtonsRedraw) {
 		LCD_displayTopButtons(true);
-	if (LCD_UpdateQuery.FreqInfo)
+	}
+	if (LCD_UpdateQuery.FreqInfo) {
 		LCD_displayFreqInfo(false);
-	if (LCD_UpdateQuery.FreqInfoRedraw)
+	}
+	if (LCD_UpdateQuery.FreqInfoRedraw) {
 		LCD_displayFreqInfo(true);
-	if (LCD_UpdateQuery.StatusInfoGUIRedraw)
+	}
+	if (LCD_UpdateQuery.StatusInfoGUIRedraw) {
 		LCD_displayStatusInfoGUI(true);
-	if (LCD_UpdateQuery.StatusInfoGUI)
+	}
+	if (LCD_UpdateQuery.StatusInfoGUI) {
 		LCD_displayStatusInfoGUI(false);
-	if (LCD_UpdateQuery.StatusInfoBar)
+	}
+	if (LCD_UpdateQuery.StatusInfoBar) {
 		LCD_displayStatusInfoBar(false);
-	if (LCD_UpdateQuery.StatusInfoBarRedraw)
+	}
+	if (LCD_UpdateQuery.StatusInfoBarRedraw) {
 		LCD_displayStatusInfoBar(true);
-	if (LCD_UpdateQuery.SystemMenu)
+	}
+	if (LCD_UpdateQuery.SystemMenu) {
 		SYSMENU_drawSystemMenu(false, false);
-	if (LCD_UpdateQuery.SystemMenuInfolines)
+	}
+	if (LCD_UpdateQuery.SystemMenuInfolines) {
 		SYSMENU_drawSystemMenu(false, true);
-	if (LCD_UpdateQuery.SystemMenuRedraw)
+	}
+	if (LCD_UpdateQuery.SystemMenuRedraw) {
 		SYSMENU_drawSystemMenu(true, false);
+	}
 	if (LCD_UpdateQuery.SystemMenuCurrent) {
 		SYSMENU_redrawCurrentItem();
 		LCD_UpdateQuery.SystemMenuCurrent = false;
 	}
-	if (LCD_UpdateQuery.TextBar)
+	if (LCD_UpdateQuery.TextBar) {
 		LCD_displayTextBar();
-	if (LCD_UpdateQuery.Tooltip)
+	}
+	if (LCD_UpdateQuery.Tooltip) {
 		LCD_printTooltip();
+	}
 	return true;
 }
 
@@ -1057,25 +1140,29 @@ static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, c
 
 void LCD_showError(char text[], bool redraw) {
 	LCD_busy = true;
-	if (!LCD_inited)
+	if (!LCD_inited) {
 		LCD_Init();
+	}
 
 	LCDDriver_Fill(COLOR_RED);
 	uint16_t x1, y1, w, h;
 	LCDDriver_getTextBounds(text, 0, 0, &x1, &y1, &w, &h, 1);
 	LCDDriver_printText(text, LCD_WIDTH / 2 - w / 2, LCD_HEIGHT / 2 - h / 2, COLOR_WHITE, COLOR_RED, 1);
-	if (redraw)
+	if (redraw) {
 		HAL_Delay(2000);
+	}
 	LCD_busy = false;
-	if (redraw)
+	if (redraw) {
 		LCD_redraw(false);
+	}
 }
 
 void LCD_showInfo(char text[], bool autohide) {
 	LCD_showInfo_opened = true;
 	LCD_busy = true;
-	if (!LCD_inited)
+	if (!LCD_inited) {
 		LCD_Init();
+	}
 	println((char *)text);
 	LCDDriver_Fill(BG_COLOR);
 	uint16_t x1, y1, w, h;
@@ -1099,8 +1186,9 @@ bool LCD_processSwipeTwoFingersTouch(uint16_t x, uint16_t y, int16_t dx, int16_t
 
 void LCD_showTooltip(char text[]) {
 	Tooltip_DiplayStartTime = HAL_GetTick();
-	if (LCD_UpdateQuery.Tooltip && strlen(Tooltip_string) != strlen(text)) // redraw old tooltip
+	if (LCD_UpdateQuery.Tooltip && strlen(Tooltip_string) != strlen(text)) { // redraw old tooltip
 		LCD_UpdateQuery.FreqInfoRedraw = true;
+	}
 	Tooltip_first_draw = true;
 	strcpy(Tooltip_string, text);
 	LCD_UpdateQuery.Tooltip = true;
@@ -1109,8 +1197,9 @@ void LCD_showTooltip(char text[]) {
 
 static void LCD_printTooltip(void) {
 	LCD_UpdateQuery.Tooltip = true;
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 	if (LCD_systemMenuOpened || LCD_window.opened) {
 		LCD_UpdateQuery.Tooltip = false;
 		return;

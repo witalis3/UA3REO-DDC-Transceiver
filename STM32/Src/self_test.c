@@ -95,16 +95,19 @@ void SELF_TEST_Draw(void) {
 		// MCP3008 test
 		pass = true;
 #ifdef HRDW_MCP3008_1
-		if (!FRONTPanel_MCP3008_1_Enabled)
+		if (!FRONTPanel_MCP3008_1_Enabled) {
 			pass = false;
+		}
 #endif
 #ifdef HRDW_MCP3008_2
-		if (!FRONTPanel_MCP3008_2_Enabled)
+		if (!FRONTPanel_MCP3008_2_Enabled) {
 			pass = false;
+		}
 #endif
 #ifdef HRDW_MCP3008_3
-		if (!FRONTPanel_MCP3008_3_Enabled)
+		if (!FRONTPanel_MCP3008_3_Enabled) {
 			pass = false;
+		}
 #endif
 		if (FPGA_bus_test_result) {
 			LCDDriver_printText("MCP3008", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
@@ -154,11 +157,13 @@ void SELF_TEST_Draw(void) {
 
 		for (uint8_t i = 0; i < 16; i++) {
 			int8_t bit = bitRead(ADC_RAW_IN, i);
-			if (bit == 0)
+			if (bit == 0) {
 				bit = -1;
+			}
 
-			if (prev_adc_state[i] != 0 && prev_adc_state[i] != bit)
+			if (prev_adc_state[i] != 0 && prev_adc_state[i] != bit) {
 				ok[i] = true;
+			}
 
 			prev_adc_state[i] = bit;
 		}
@@ -173,8 +178,8 @@ void SELF_TEST_Draw(void) {
 		LCDDriver_printText("7 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[6]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("8 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[7]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		pos_y += margin_bottom;
-		LCDDriver_printText("9 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[8]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
-		LCDDriver_printText("10 ", margin_left, pos_y, (ok[9]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+		LCDDriver_printText("9 ", margin_left, pos_y, (ok[8]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+		LCDDriver_printText("10 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[9]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("11 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[10]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("12 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[11]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 #if !defined(FRONTPANEL_LITE)
@@ -221,21 +226,26 @@ void SELF_TEST_Draw(void) {
 
 			// ADC symmetry
 			pass = true;
-			if (TRX_ADC_MINAMPLITUDE > 0)
+			if (TRX_ADC_MINAMPLITUDE > 0) {
 				pass = false;
-			if (TRX_ADC_MAXAMPLITUDE < 0)
+			}
+			if (TRX_ADC_MAXAMPLITUDE < 0) {
 				pass = false;
-			if ((abs(TRX_ADC_MINAMPLITUDE) > abs(TRX_ADC_MAXAMPLITUDE)) && (abs(TRX_ADC_MINAMPLITUDE) > (abs(TRX_ADC_MAXAMPLITUDE) * 4)))
+			}
+			if ((abs(TRX_ADC_MINAMPLITUDE) > abs(TRX_ADC_MAXAMPLITUDE)) && (abs(TRX_ADC_MINAMPLITUDE) > (abs(TRX_ADC_MAXAMPLITUDE) * 4))) {
 				pass = false;
-			if ((abs(TRX_ADC_MINAMPLITUDE) < abs(TRX_ADC_MAXAMPLITUDE)) && ((abs(TRX_ADC_MINAMPLITUDE) * 4) < abs(TRX_ADC_MAXAMPLITUDE)))
+			}
+			if ((abs(TRX_ADC_MINAMPLITUDE) < abs(TRX_ADC_MAXAMPLITUDE)) && ((abs(TRX_ADC_MINAMPLITUDE) * 4) < abs(TRX_ADC_MAXAMPLITUDE))) {
 				pass = false;
+			}
 			LCDDriver_printText("ADC Symmetry", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			SELF_TEST_printResult(pass, pos_y);
 			pos_y += margin_bottom;
 
 			current_test = 2;
-		} else
+		} else {
 			pos_y += margin_bottom * 2;
+		}
 
 		// test ADC Driver
 		if (current_test == 2) {
@@ -261,8 +271,9 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			current_test = 4;
-		} else
+		} else {
 			pos_y += margin_bottom * 2;
+		}
 
 		// test ADC PGA
 		if (current_test == 4) {
@@ -292,8 +303,9 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			current_test = 6;
-		} else
+		} else {
 			pos_y += margin_bottom * 2;
+		}
 
 		// test LNA
 		if (current_test == 6) {
@@ -323,8 +335,9 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			current_test = 0;
-		} else
+		} else {
 			pos_y += margin_bottom * 2;
+		}
 
 		// redraw loop
 		LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -361,8 +374,9 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			current_test = 2;
-		} else
+		} else {
 			pos_y += margin_bottom;
+		}
 
 		// ATT ON
 		if (current_test == 2) {
@@ -382,8 +396,9 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			current_test = 4;
-		} else
+		} else {
 			pos_y += margin_bottom;
+		}
 
 		// ATT 0.5 ON
 		if (current_test == 4) {
@@ -403,8 +418,9 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			current_test = 6;
-		} else
+		} else {
 			pos_y += margin_bottom;
+		}
 
 		// ATT 1 ON
 		if (current_test == 6) {
@@ -424,8 +440,9 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			current_test = 8;
-		} else
+		} else {
 			pos_y += margin_bottom;
+		}
 
 		// ATT 2 ON
 		if (current_test == 8) {
@@ -445,8 +462,9 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			current_test = 10;
-		} else
+		} else {
 			pos_y += margin_bottom;
+		}
 
 		// ATT 4 ON
 		if (current_test == 10) {
@@ -466,8 +484,9 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			current_test = 12;
-		} else
+		} else {
 			pos_y += margin_bottom;
+		}
 
 		// ATT 8 ON
 		if (current_test == 12) {
@@ -487,8 +506,9 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			current_test = 14;
-		} else
+		} else {
 			pos_y += margin_bottom;
+		}
 
 		// ATT 16 ON
 		if (current_test == 14) {
@@ -508,8 +528,9 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			current_test = 16;
-		} else
+		} else {
 			pos_y += margin_bottom;
+		}
 
 		// ATT 32 ON
 		if (current_test == 16) {
@@ -529,8 +550,9 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			current_test = 0;
-		} else
+		} else {
 			pos_y += margin_bottom;
+		}
 
 		// redraw loop
 		LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -548,24 +570,27 @@ static void SELF_TEST_printResult(bool result, uint16_t pos_y) {
 	char pass[] = " OK     ";
 	char error[] = " ERROR";
 
-	if (result)
+	if (result) {
 		LCDDriver_printText(pass, LCDDriver_GetCurrentXOffset(), pos_y, COLOR_GREEN, BG_COLOR, font_size);
-	else
+	} else {
 		LCDDriver_printText(error, LCDDriver_GetCurrentXOffset(), pos_y, COLOR_RED, BG_COLOR, font_size);
+	}
 }
 
 // events to the encoder
 void SELF_TEST_EncRotate(int8_t direction) {
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 
 	LCD_busy = true;
 	LCDDriver_Fill(BG_COLOR);
 	LCD_busy = false;
 
 	SELF_TEST_current_page += direction;
-	if (SELF_TEST_current_page < 0)
+	if (SELF_TEST_current_page < 0) {
 		SELF_TEST_current_page = 0;
+	}
 	if (SELF_TEST_current_page >= SELF_TEST_pages) {
 		SELF_TEST_current_page = SELF_TEST_pages - 1;
 		BUTTONHANDLER_SERVICES(0);

@@ -36,10 +36,11 @@ void drawButton(uint16_t i) {
 	// char ctmp[5] = {0};
 
 	uint16_t color;
-	if (sButtonData[i].state)
+	if (sButtonData[i].state) {
 		color = COLOR_RED;
-	else
+	} else {
 		color = COLOR_GREEN;
+	}
 
 	LCDDriver_printText(sButtonData[i].text, (FT8_button_spac_x * i) + 7, FT8_button_line + 7, COLOR_WHITE, COLOR_BLACK, 2);
 	LCDDriver_drawRectXY(FT8_button_spac_x * i, FT8_button_line, (FT8_button_spac_x * i) + FT8_button_width, FT8_button_line + FT8_button_height, color);
@@ -83,10 +84,11 @@ void FT8_Menu_Pos_Toggle(void) {
 
 	if (FT8_Menu_Idx <= FT8_Menu_Max_Idx) // cursor is in the range of the buttons
 	{
-		if (sButtonData[FT8_Menu_Idx].state)
+		if (sButtonData[FT8_Menu_Idx].state) {
 			sButtonData[FT8_Menu_Idx].state = false;
-		else
+		} else {
 			sButtonData[FT8_Menu_Idx].state = true;
+		}
 
 		switch (FT8_Menu_Idx) {
 		case 0:
@@ -96,17 +98,18 @@ void FT8_Menu_Pos_Toggle(void) {
 				Beacon_State = 0;
 			} else {
 				CQ_Flag = 0;
-				if (xmit_flag > 0) // if we are transmitting -> go to receive
+				if (xmit_flag > 0) { // if we are transmitting -> go to receive
 					receive_sequence();
+				}
 				FT8_Clear_TargetCall();
 				FT8_Clear_TX_Mess();
 			}
 			break;
 
 		case 1:
-			if (sButtonData[1].state) // Tune button pressed
+			if (sButtonData[1].state) { // Tune button pressed
 				tune_On_sequence();
-			else {
+			} else {
 				sButtonData[0].state = false; // if the "CQ" button was active disable it as well
 				receive_sequence();
 
@@ -122,10 +125,11 @@ void FT8_Menu_Pos_Toggle(void) {
 
 		//			__disable_irq();   //Disable all interrupts
 
-		if (sButtonData[0].state)
+		if (sButtonData[0].state) {
 			sButtonData[0].state = false;
-		else
+		} else {
 			sButtonData[0].state = true;
+		}
 
 		if (sButtonData[0].state) // CQ button pressed
 		{
@@ -140,8 +144,9 @@ void FT8_Menu_Pos_Toggle(void) {
 			Set_Data_Colection(1); // Set new data colection
 		} else {
 			CQ_Flag = 0;
-			if (xmit_flag > 0) // if we are transmitting -> go to receive
+			if (xmit_flag > 0) { // if we are transmitting -> go to receive
 				receive_sequence();
+			}
 			FT8_Clear_TargetCall();
 			FT8_Clear_TX_Mess();
 		}
@@ -224,8 +229,9 @@ void Enc2Rotate_Menager(int8_t direction, uint8_t decoded_msg) {
 		uint8_t Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
 		uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
 
-		if (Seconds == 0 && direction < 0)
+		if (Seconds == 0 && direction < 0) {
 			return;
+		}
 		Seconds = (uint8_t)(Seconds + direction);
 
 		if (Seconds >= 60) {
@@ -249,19 +255,22 @@ void Enc2Rotate_Menager(int8_t direction, uint8_t decoded_msg) {
 		FT8_Menu_Idx += direction;
 
 #if (defined(LAY_800x480))
-		if (decoded_msg > 11) // message_limit it is 6
+		if (decoded_msg > 11) { // message_limit it is 6
 			MessIdx = 11;
-		else
+		} else {
 			MessIdx = decoded_msg;
+		}
 #else
-		if (decoded_msg > 6)                                // message_limit it is 6
+		if (decoded_msg > 6) {                              // message_limit it is 6
 			MessIdx = 6;
-		else
+		} else {
 			MessIdx = decoded_msg;
+		}
 #endif
 
-		if (FT8_Menu_Idx > (FT8_Menu_Max_Idx + MessIdx))
+		if (FT8_Menu_Idx > (FT8_Menu_Max_Idx + MessIdx)) {
 			FT8_Menu_Idx = 0;
+		}
 
 		Update_FT8_Menu_Cursor();
 	}

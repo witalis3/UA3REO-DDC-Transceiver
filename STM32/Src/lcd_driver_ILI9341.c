@@ -278,15 +278,19 @@ void LCDDriver_setRotation(uint8_t rotate) {
 
 // Set cursor position
 inline void LCDDriver_SetCursorAreaPosition(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
-	if (x1 > LCD_WIDTH - 1)
+	if (x1 > LCD_WIDTH - 1) {
 		x1 > LCD_WIDTH - 1;
-	if (x2 > LCD_WIDTH - 1)
+	}
+	if (x2 > LCD_WIDTH - 1) {
 		x2 > LCD_WIDTH - 1;
+	}
 
-	if (y1 > LCD_HEIGHT - 1)
+	if (y1 > LCD_HEIGHT - 1) {
 		y1 > LCD_HEIGHT - 1;
-	if (y2 > LCD_HEIGHT - 1)
+	}
+	if (y2 > LCD_HEIGHT - 1) {
 		y2 > LCD_HEIGHT - 1;
+	}
 
 	LCDDriver_SendCommand(LCD_COMMAND_CASET);
 	LCDDriver_SendData16(x1);
@@ -310,17 +314,20 @@ void LCDDriver_Fill(uint16_t color) { LCDDriver_Fill_RectXY(0, 0, LCD_WIDTH, LCD
 
 // Rectangle drawing functions
 void LCDDriver_Fill_RectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color) {
-	if (x1 > (LCD_WIDTH - 1)) // Set fill area
+	if (x1 > (LCD_WIDTH - 1)) { // Set fill area
 		x1 = LCD_WIDTH - 1;
-	if (y1 > (LCD_HEIGHT - 1))
+	}
+	if (y1 > (LCD_HEIGHT - 1)) {
 		y1 = LCD_HEIGHT - 1;
+	}
 
 	// Set fill area
 	LCDDriver_SetCursorAreaPosition(x0, y0, x1, y1);
 
 	uint32_t n = ((x1 + 1) - x0) * ((y1 + 1) - y0);
-	while (n--)
+	while (n--) {
 		LCDDriver_SendData16(color);
+	}
 }
 
 void LCDDriver_Fill_RectWH(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color) { LCDDriver_Fill_RectXY(x, y, x + w, y + h, color); }
@@ -365,36 +372,46 @@ void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint
 
 void LCDDriver_drawFastHLine(uint16_t x, uint16_t y, int16_t w, uint16_t color) {
 	int16_t x2 = x + w;
-	if (x2 < 0)
+	if (x2 < 0) {
 		x2 = 0;
-	if (x2 > (LCD_WIDTH - 1))
+	}
+	if (x2 > (LCD_WIDTH - 1)) {
 		x2 = LCD_WIDTH - 1;
-	if (y < 0)
+	}
+	if (y < 0) {
 		y = 0;
-	if (y > (LCD_HEIGHT - 1))
+	}
+	if (y > (LCD_HEIGHT - 1)) {
 		y = LCD_HEIGHT - 1;
+	}
 
-	if (x2 < x)
+	if (x2 < x) {
 		LCDDriver_Fill_RectXY((uint16_t)x2, y, x, y, color);
-	else
+	} else {
 		LCDDriver_Fill_RectXY(x, y, (uint16_t)x2, y, color);
+	}
 }
 
 void LCDDriver_drawFastVLine(uint16_t x, uint16_t y, int16_t h, uint16_t color) {
 	int16_t y2 = y + h - 1;
-	if (x < 0)
+	if (x < 0) {
 		x = 0;
-	if (x > (LCD_WIDTH - 1))
+	}
+	if (x > (LCD_WIDTH - 1)) {
 		x = LCD_WIDTH - 1;
-	if (y2 < 0)
+	}
+	if (y2 < 0) {
 		y2 = 0;
-	if (y2 > (LCD_HEIGHT - 1))
+	}
+	if (y2 > (LCD_HEIGHT - 1)) {
 		y2 = LCD_HEIGHT - 1;
+	}
 
-	if (y2 < y)
+	if (y2 < y) {
 		LCDDriver_Fill_RectXY(x, (uint16_t)y2, x, y, color);
-	else
+	} else {
 		LCDDriver_Fill_RectXY(x, y, x, (uint16_t)y2, color);
+	}
 }
 
 void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color) {
@@ -420,14 +437,16 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 
 	if (y0 == y2) { // Handle awkward all-on-same-line case as its own thing
 		a = b = x0;
-		if (x1 < a)
+		if (x1 < a) {
 			a = x1;
-		else if (x1 > b)
+		} else if (x1 > b) {
 			b = x1;
-		if (x2 < a)
+		}
+		if (x2 < a) {
 			a = x2;
-		else if (x2 > b)
+		} else if (x2 > b) {
 			b = x2;
+		}
 		LCDDriver_drawFastHLine(a, y0, b - a + 1, color);
 		return;
 	}
@@ -441,10 +460,11 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 	// error there), otherwise scanline y1 is skipped here and handled
 	// in the second loop...which also avoids a /0 error here if y0=y1
 	// (flat-topped triangle).
-	if (y1 == y2)
+	if (y1 == y2) {
 		last = y1; // Include y1 scanline
-	else
+	} else {
 		last = y1 - 1; // Skip it
+	}
 
 	for (y = y0; y <= last; y++) {
 		a = x0 + sa / dy01;
@@ -455,8 +475,9 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 		a = x0 + (x1 - x0) * (y - y0) / (y1 - y0);
 		b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
 		*/
-		if (a > b)
+		if (a > b) {
 			_swap_int16_t(a, b) LCDDriver_drawFastHLine(a, y, b - a + 1, color);
+		}
 	}
 
 	// For lower part of triangle, find scanline crossings for segments
@@ -472,8 +493,9 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 		a = x1 + (x2 - x1) * (y - y1) / (y2 - y1);
 		b = x0 + (x2 - x0) * (y - y0) / (y2 - y0);
 		*/
-		if (a > b)
+		if (a > b) {
 			_swap_int16_t(a, b) LCDDriver_drawFastHLine(a, y, b - a + 1, color);
+		}
 	}
 }
 

@@ -50,9 +50,10 @@ void InitVAD(void) {
 	arm_fir_decimate_init_f32(&VAD_RX2.DECIMATE, VAD_RX2.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX2.FirDecimate.pCoeffs, VAD_RX2.decimState, VAD_BLOCK_SIZE);
 #endif
 	// Blackman window function
-	for (uint_fast16_t i = 0; i < VAD_FFT_SIZE; i++)
+	for (uint_fast16_t i = 0; i < VAD_FFT_SIZE; i++) {
 		window_multipliers[i] =
 		    ((1.0f - 0.16f) / 2) - 0.5f * arm_cos_f32((2.0f * PI * i) / ((float32_t)VAD_FFT_SIZE - 1.0f)) + (0.16f / 2) * arm_cos_f32(4.0f * PI * i / ((float32_t)VAD_FFT_SIZE - 1.0f));
+	}
 }
 
 void resetVAD(void) {
@@ -74,8 +75,9 @@ void resetVAD(void) {
 
 // run VAD for the data block
 void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
-	if (!CurrentVFO->SQL && !TRX_ScanMode)
+	if (!CurrentVFO->SQL && !TRX_ScanMode) {
 		return;
+	}
 
 #define debug false
 
@@ -94,10 +96,11 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
 	arm_fir_decimate_f32(&(VAD->DECIMATE), VAD->InputBuffer, VAD->InputBuffer, VAD_BLOCK_SIZE);
 	// Fill the unnecessary part of the buffer with zeros
 	for (uint_fast16_t i = 0; i < VAD_FFT_SIZE; i++) {
-		if (i < (VAD_FFT_SIZE - VAD_ZOOMED_SAMPLES)) // offset old data
+		if (i < (VAD_FFT_SIZE - VAD_ZOOMED_SAMPLES)) { // offset old data
 			VAD->FFTBufferCharge[i] = VAD->FFTBufferCharge[(i + VAD_ZOOMED_SAMPLES)];
-		else // Add new data to the FFT buffer for calculation
+		} else { // Add new data to the FFT buffer for calculation
 			VAD->FFTBufferCharge[i] = VAD->InputBuffer[i - (VAD_FFT_SIZE - VAD_ZOOMED_SAMPLES)];
+		}
 
 		VAD->FFTBuffer[i * 2] = window_multipliers[i] * VAD->FFTBufferCharge[i]; // + Window function for FFT
 		VAD->FFTBuffer[i * 2 + 1] = 0.0f;
@@ -124,24 +127,29 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
 	uint32_t fft_bins = VAD_FFT_SIZE / 2;
 	uint32_t trx_hpf = CurrentVFO->HPF_RX_Filter_Width;
 	uint32_t trx_lpf = CurrentVFO->LPF_RX_Filter_Width;
-	if (trx_lpf < trx_hpf || trx_lpf == 0)
+	if (trx_lpf < trx_hpf || trx_lpf == 0) {
 		trx_lpf = fft_bw;
+	}
 	uint32_t fft_hpf_bin = fft_bins * trx_hpf / fft_bw;
 	uint32_t fft_lpf_bin = fft_bins * trx_lpf / fft_bw;
-	if (fft_hpf_bin > fft_bw)
+	if (fft_hpf_bin > fft_bw) {
 		fft_hpf_bin = fft_bw;
-	if (fft_lpf_bin > fft_bw)
+	}
+	if (fft_lpf_bin > fft_bw) {
 		fft_lpf_bin = fft_bw;
+	}
 	uint32_t fft_center_bin = (fft_hpf_bin + fft_lpf_bin) / 2;
 	uint32_t fft_bin_halflen = fft_lpf_bin - fft_center_bin;
 
 	// calc power
 	float32_t power1 = 0;
 	float32_t power2 = 0;
-	for (uint32_t bin = fft_hpf_bin; bin < fft_center_bin; bin++)
+	for (uint32_t bin = fft_hpf_bin; bin < fft_center_bin; bin++) {
 		power1 += VAD->FFTBuffer[bin];
-	for (uint32_t bin = fft_center_bin; bin < fft_lpf_bin; bin++)
+	}
+	for (uint32_t bin = fft_center_bin; bin < fft_lpf_bin; bin++) {
 		power2 += VAD->FFTBuffer[bin];
+	}
 
 	// calc SFM — Spectral Flatness Measure
 	float32_t Amean1 = 0;
@@ -150,12 +158,16 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
 	arm_mean_f32(&VAD->FFTBuffer[fft_center_bin], fft_bin_halflen, &Amean2);
 	float32_t Gmean1 = 0;
 	float32_t Gmean2 = 0;
-	for (uint32_t i = 0; i < fft_center_bin; i++)
-		if (VAD->FFTBuffer[i] != 0)
+	for (uint32_t i = 0; i < fft_center_bin; i++) {
+		if (VAD->FFTBuffer[i] != 0) {
 			Gmean1 += log10f_fast(VAD->FFTBuffer[i]);
-	for (uint32_t i = fft_center_bin; i < fft_lpf_bin; i++)
-		if (VAD->FFTBuffer[i] != 0)
+		}
+	}
+	for (uint32_t i = fft_center_bin; i < fft_lpf_bin; i++) {
+		if (VAD->FFTBuffer[i] != 0) {
 			Gmean2 += log10f_fast(VAD->FFTBuffer[i]);
+		}
+	}
 	Gmean1 = Gmean1 / fft_bin_halflen;
 	Gmean1 = powf(10, Gmean1);
 	float32_t SMFdb1 = 10 * log10f_fast(Gmean1 / Amean1);
@@ -181,14 +193,18 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
 		VAD->Min_MD2 = 999.0f;
 	}
 
-	if (power1 < VAD->Min_E1)
+	if (power1 < VAD->Min_E1) {
 		VAD->Min_E1 = power1;
-	if (power2 < VAD->Min_E2)
+	}
+	if (power2 < VAD->Min_E2) {
 		VAD->Min_E2 = power2;
-	if (MD1 < VAD->Min_MD1)
+	}
+	if (MD1 < VAD->Min_MD1) {
 		VAD->Min_MD1 = MD1;
-	if (MD2 < VAD->Min_MD2)
+	}
+	if (MD2 < VAD->Min_MD2) {
 		VAD->Min_MD2 = MD2;
+	}
 
 	// calc results
 	float32_t Res_E1 = power1 / VAD->Min_E1;
@@ -211,53 +227,63 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
 	uint8_t points2 = 0;
 	if (Res_MD1 > 15.0f) {
 		points1++;
-		if (debug && (HAL_GetTick() - prevPrint) > 100)
+		if (debug && (HAL_GetTick() - prevPrint) > 100) {
 			print("M");
+		}
 		if (Res_MD1_IDX < 5) {
 			points1++;
-			if (debug && (HAL_GetTick() - prevPrint) > 100)
+			if (debug && (HAL_GetTick() - prevPrint) > 100) {
 				print("I");
+			}
 		}
 	}
 	if (Res_MD2 > 7.0f) {
 		points2++;
-		if (debug && (HAL_GetTick() - prevPrint) > 100)
+		if (debug && (HAL_GetTick() - prevPrint) > 100) {
 			print("m");
+		}
 		if (Res_MD2_IDX < 10) {
 			points2++;
-			if (debug && (HAL_GetTick() - prevPrint) > 100)
+			if (debug && (HAL_GetTick() - prevPrint) > 100) {
 				print("i");
+			}
 		}
 	}
 	if (SMFdb1 < -23.0f) {
 		points1++;
-		if (debug && (HAL_GetTick() - prevPrint) > 100)
+		if (debug && (HAL_GetTick() - prevPrint) > 100) {
 			print("S");
+		}
 	}
 	if (SMFdb2 < -4.0f) {
 		points2++;
-		if (debug && (HAL_GetTick() - prevPrint) > 100)
+		if (debug && (HAL_GetTick() - prevPrint) > 100) {
 			print("s");
+		}
 	}
 	if (Res_E1 > 10.0f) {
 		points1++;
-		if (debug && (HAL_GetTick() - prevPrint) > 100)
+		if (debug && (HAL_GetTick() - prevPrint) > 100) {
 			print("E");
+		}
 	}
 	if (Res_E2 > 10.0f) {
 		points2++;
-		if (debug && (HAL_GetTick() - prevPrint) > 100)
+		if (debug && (HAL_GetTick() - prevPrint) > 100) {
 			print("e");
+		}
 	}
 	if (Res_Equation > 20.0f) {
 		points1--;
-		if (debug && (HAL_GetTick() - prevPrint) > 100)
+		if (debug && (HAL_GetTick() - prevPrint) > 100) {
 			print("Q");
+		}
 	}
 	if (Res_Equation < 0.1f) {
 		points2--;
-		if (debug && (HAL_GetTick() - prevPrint) > 100)
+		if (debug && (HAL_GetTick() - prevPrint) > 100) {
 			print("q");
+		}
 	}
 	if (debug && (HAL_GetTick() - prevPrint) > 100) {
 		println("");
@@ -267,12 +293,14 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
 	// calculate result state
 	if (points1 > 1 && points2 > 1) {
 		VAD->state_yes_counter++;
-		if (VAD->state_no_counter > 0)
+		if (VAD->state_no_counter > 0) {
 			VAD->state_no_counter--;
+		}
 	} else {
 		VAD->state_no_counter++;
-		if (VAD->state_yes_counter > 0)
+		if (VAD->state_yes_counter > 0) {
 			VAD->state_yes_counter--;
+		}
 	}
 
 	if (!VAD->state && VAD->state_yes_counter > 10) {

@@ -20,7 +20,7 @@ refer to the applicable agreement for further details.
 */
 (header "symbol" (version "1.1"))
 (symbol
-	(rect 16 16 280 160)
+	(rect 16 16 288 160)
 	(text "vcxo_controller" (rect 5 0 66 12)(font "Arial" ))
 	(text "inst" (rect 8 128 20 140)(font "Arial" ))
 	(port
@@ -59,25 +59,32 @@ refer to the applicable agreement for further details.
 		(line (pt 0 96)(pt 16 96)(line_width 1))
 	)
 	(port
-		(pt 264 32)
+		(pt 272 32)
 		(output)
 		(text "freq_error[31..0]" (rect 0 0 66 12)(font "Arial" ))
-		(text "freq_error[31..0]" (rect 177 27 243 39)(font "Arial" ))
-		(line (pt 264 32)(pt 248 32)(line_width 3))
+		(text "freq_error[31..0]" (rect 185 27 251 39)(font "Arial" ))
+		(line (pt 272 32)(pt 256 32)(line_width 3))
 	)
 	(port
-		(pt 264 48)
+		(pt 272 48)
 		(output)
 		(text "pump" (rect 0 0 22 12)(font "Arial" ))
-		(text "pump" (rect 221 43 243 55)(font "Arial" ))
-		(line (pt 264 48)(pt 248 48)(line_width 1))
+		(text "pump" (rect 229 43 251 55)(font "Arial" ))
+		(line (pt 272 48)(pt 256 48)(line_width 1))
 	)
 	(port
-		(pt 264 64)
+		(pt 272 64)
 		(output)
 		(text "PWM[31..0]" (rect 0 0 48 12)(font "Arial" ))
-		(text "PWM[31..0]" (rect 195 59 243 71)(font "Arial" ))
-		(line (pt 264 64)(pt 248 64)(line_width 3))
+		(text "PWM[31..0]" (rect 203 59 251 71)(font "Arial" ))
+		(line (pt 272 64)(pt 256 64)(line_width 3))
+	)
+	(port
+		(pt 272 80)
+		(output)
+		(text "PWM_mode[2..0]" (rect 0 0 73 12)(font "Arial" ))
+		(text "PWM_mode[2..0]" (rect 178 75 251 87)(font "Arial" ))
+		(line (pt 272 80)(pt 256 80)(line_width 3))
 	)
 	(parameter
 		"VCXO_freq"
@@ -90,7 +97,7 @@ refer to the applicable agreement for further details.
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(drawing
-		(rectangle (rect 16 16 248 128)(line_width 1))
+		(rectangle (rect 16 16 256 128)(line_width 1))
 	)
-	(annotation_block (parameter)(rect 280 -64 380 16))
+	(annotation_block (parameter)(rect 288 -64 388 16))
 )

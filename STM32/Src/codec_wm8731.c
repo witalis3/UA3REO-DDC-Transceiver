@@ -17,8 +17,9 @@ static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value) {
 		i2c_write_u8(&I2C_CODEC, reg);                     // MSB
 		i2c_write_u8(&I2C_CODEC, value);                   // MSB
 		st = i2c_endTransmission(&I2C_CODEC);
-		if (st != 0)
+		if (st != 0) {
 			repeats++;
+		}
 		HAL_Delay(1);
 	}
 	return st;
@@ -41,11 +42,12 @@ void CODEC_TXRX_mode(void) // loopback
 	{
 		WM8731_SendI2CCommand(B8(00000001), B8(10000000)); // R0 Left Line In
 		WM8731_SendI2CCommand(B8(00000011), B8(10000000)); // R1 Right Line In
-		if (TRX.MIC_Boost)
+		if (TRX.MIC_Boost) {
 			WM8731_SendI2CCommand(B8(00001000), B8(00010101)); // R4 Analogue Audio Path Control
-		else
+		} else {
 			WM8731_SendI2CCommand(B8(00001000), B8(00010100)); // R4 Analogue Audio Path Control
-		WM8731_SendI2CCommand(B8(00001100), B8(01100001));   // R6 Power Down Control, internal crystal
+		}
+		WM8731_SendI2CCommand(B8(00001100), B8(01100001)); // R6 Power Down Control, internal crystal
 	}
 }
 

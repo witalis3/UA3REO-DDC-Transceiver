@@ -36,7 +36,7 @@ __asm(".global __use_no_heap\n\t");
 #define SRAM_ON_H743
 #endif
 
-//#define ALIGN_32BIT __attribute__((aligned(32)))
+// #define ALIGN_32BIT __attribute__((aligned(32)))
 
 // UINT from BINARY STRING
 #define HEX_(n) 0x##n##LU

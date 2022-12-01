@@ -221,8 +221,9 @@ static uint8_t CAT_Transmit_FS(uint8_t *Buf, uint16_t Len) {
 
 static void CAT_Transmit(char *data) {
 	CAT_Transmit_FS((uint8_t *)data, (uint16_t)strlen(data));
-	if (TRX.Debug_Type == TRX_DEBUG_CAT)
+	if (TRX.Debug_Type == TRX_DEBUG_CAT) {
 		println("CAT command answer: |", data, "|");
+	}
 	if (CAT_processingWiFiCommand) {
 #if HRDW_HAS_WIFI
 		WIFI_SendCatAnswer(data, CAT_processingWiFi_link_id, NULL);
@@ -242,8 +243,9 @@ void CAT_SetWIFICommand(char *data, uint32_t length, uint32_t link_id) {
 
 void ua3reo_dev_cat_parseCommand(void) {
 	USBD_CAT_ReceivePacket(&hUsbDeviceFS); // prepare next command
-	if (command_to_parse1[0] == 0 && command_to_parse2[0] == 0)
+	if (command_to_parse1[0] == 0 && command_to_parse2[0] == 0) {
 		return;
+	}
 
 	char _command_buffer[CAT_BUFFER_SIZE] = {0};
 	char *_command = _command_buffer;
@@ -255,13 +257,16 @@ void ua3reo_dev_cat_parseCommand(void) {
 		dma_memset(command_to_parse2, 0, CAT_BUFFER_SIZE);
 	}
 
-	while (*_command == '\r' || *_command == '\n' || *_command == ' ') // trim
+	while (*_command == '\r' || *_command == '\n' || *_command == ' ') { // trim
 		_command++;
-	if (strlen(_command) < 2)
+	}
+	if (strlen(_command) < 2) {
 		return;
+	}
 
-	if (TRX.Debug_Type == TRX_DEBUG_CAT)
+	if (TRX.Debug_Type == TRX_DEBUG_CAT) {
 		println("New CAT command: |", _command, "|");
+	}
 
 	char command[3] = {0};
 	strncpy(command, _command, 2);
@@ -339,17 +344,19 @@ void ua3reo_dev_cat_parseCommand(void) {
 	if (strcmp(command, "FT") == 0) // FUNCTION TX
 	{
 		if (!has_args) {
-			if (!TRX.SPLIT_Enabled)
+			if (!TRX.SPLIT_Enabled) {
 				CAT_Transmit("FT0;");
-			else
+			} else {
 				CAT_Transmit("FT1;");
+			}
 		} else {
 			if (strcmp(arguments, "0") == 0) {
 				TRX.SPLIT_Enabled = false;
 			} else if (strcmp(arguments, "1") == 0) {
 				TRX.SPLIT_Enabled = true;
-			} else
+			} else {
 				println("Unknown CAT arguments: ", _command);
+			}
 		}
 		return;
 	}
@@ -357,16 +364,18 @@ void ua3reo_dev_cat_parseCommand(void) {
 	if (strcmp(command, "VS") == 0) // VFO SELECT
 	{
 		if (!has_args) {
-			if (!TRX.selected_vfo)
+			if (!TRX.selected_vfo) {
 				CAT_Transmit("VS0;");
-			else
+			} else {
 				CAT_Transmit("VS1;");
+			}
 		} else {
 			uint8_t new_vfo = 0;
-			if (strcmp(arguments, "0") == 0)
+			if (strcmp(arguments, "0") == 0) {
 				new_vfo = 0;
-			else if (strcmp(arguments, "1") == 0)
+			} else if (strcmp(arguments, "1") == 0) {
 				new_vfo = 1;
+			}
 			if (TRX.selected_vfo != new_vfo) {
 				TRX.selected_vfo = new_vfo;
 				if (!TRX.selected_vfo) {
@@ -400,8 +409,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 
 			if (CALIBRATE.CAT_Type == CAT_FT450) {
 				strcat(answer, "IF001"); // memory channel
-				if (CurrentVFO->Freq < 10000000)
+				if (CurrentVFO->Freq < 10000000) {
 					strcat(answer, "0");
+				}
 				sprintf(ctmp, "%llu", CurrentVFO->Freq);
 				strcat(answer, ctmp);    // freq
 				strcat(answer, "+0000"); // clirifier offset
@@ -427,17 +437,19 @@ void ua3reo_dev_cat_parseCommand(void) {
 				strcat(answer, "0");      // 0: XIT OFF, 1: XIT ON
 				strcat(answer, "0");      // 0: Always 0 for the TS-480 (Memory channel bank number).
 				strcat(answer, "00");     // Memory channel number (00 ~ 99).
-				if (TRX_on_TX)            // 0: RX, 1: TX
+				if (TRX_on_TX) {          // 0: RX, 1: TX
 					strcat(answer, "1");
-				else
+				} else {
 					strcat(answer, "0");
+				}
 				char mode[3] = {0};
 				getTS2000Mode((uint8_t)CurrentVFO->Mode, mode);
-				strcat(answer, mode);  // Operating mode
-				if (!TRX.selected_vfo) // 0: VFO A 1: VFO B 2: M.CH
+				strcat(answer, mode);    // Operating mode
+				if (!TRX.selected_vfo) { // 0: VFO A 1: VFO B 2: M.CH
 					strcat(answer, "0");
-				else
+				} else {
 					strcat(answer, "1");
+				}
 				strcat(answer, "0");  // Scan status. P1/ P2 0: Scan OFF 1: Scan ON 4: Tone Scan ON 5: CTCSS Scan ON
 				strcat(answer, "0");  // 0: Simplex operation, 1: Split operation
 				strcat(answer, "0");  // 0: OFF, 1: TONE, 2: CTCSS
@@ -457,8 +469,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 		if (!has_args) {
 			char answer[30] = {0};
 			strcat(answer, "OI001"); // memory channel
-			if (SecondaryVFO->Freq < 10000000)
+			if (SecondaryVFO->Freq < 10000000) {
 				strcat(answer, "0");
+			}
 			sprintf(ctmp, "%llu", SecondaryVFO->Freq);
 			strcat(answer, ctmp);    // freq
 			strcat(answer, "+0000"); // clirifier offset
@@ -485,8 +498,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 			strcat(answer, "FA");
 
 			if (CALIBRATE.CAT_Type == CAT_FT450) {
-				if (TRX.VFO_A.Freq < 10000000)
+				if (TRX.VFO_A.Freq < 10000000) {
 					strcat(answer, "0");
+				}
 				sprintf(ctmp, "%llu", TRX.VFO_A.Freq);
 			}
 
@@ -513,8 +527,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 			strcat(answer, "FB");
 
 			if (CALIBRATE.CAT_Type == CAT_FT450) {
-				if (TRX.VFO_B.Freq < 10000000)
+				if (TRX.VFO_B.Freq < 10000000) {
 					strcat(answer, "0");
+				}
 				sprintf(ctmp, "%llu", TRX.VFO_B.Freq);
 			}
 
@@ -539,10 +554,11 @@ void ua3reo_dev_cat_parseCommand(void) {
 		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
 		} else {
-			if (strcmp(arguments, "0") == 0)
+			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("RA00;");
-			else
+			} else {
 				println("Unknown CAT arguments: ", _command);
+			}
 		}
 		return;
 	}
@@ -553,12 +569,14 @@ void ua3reo_dev_cat_parseCommand(void) {
 			println("Unknown CAT arguments: ", _command);
 		} else {
 			if (strcmp(arguments, "0") == 0) {
-				if (TRX.LNA)
+				if (TRX.LNA) {
 					CAT_Transmit("PA01;");
-				else
+				} else {
 					CAT_Transmit("PA00;");
-			} else
+				}
+			} else {
 				println("Unknown CAT arguments: ", _command);
+			}
 		}
 		return;
 	}
@@ -572,8 +590,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 				// power off
 			} else if (strcmp(arguments, "1") == 0) {
 				// power on
-			} else
+			} else {
 				println("Unknown CAT arguments: ", _command);
+			}
 		}
 		return;
 	}
@@ -584,18 +603,20 @@ void ua3reo_dev_cat_parseCommand(void) {
 			println("Unknown CAT arguments: ", _command);
 		} else {
 			if (strcmp(arguments, "0") == 0) {
-				if (TRX.RX_AGC_SSB_speed == 0 || !CurrentVFO->AGC)
+				if (TRX.RX_AGC_SSB_speed == 0 || !CurrentVFO->AGC) {
 					CAT_Transmit("GT00;");
-				else if (TRX.RX_AGC_SSB_speed == 1)
+				} else if (TRX.RX_AGC_SSB_speed == 1) {
 					CAT_Transmit("GT04;");
-				else if (TRX.RX_AGC_SSB_speed == 2)
+				} else if (TRX.RX_AGC_SSB_speed == 2) {
 					CAT_Transmit("GT03;");
-				else if (TRX.RX_AGC_SSB_speed == 3)
+				} else if (TRX.RX_AGC_SSB_speed == 3) {
 					CAT_Transmit("GT02;");
-				else
+				} else {
 					CAT_Transmit("GT01;");
-			} else
+				}
+			} else {
 				println("Unknown CAT arguments: ", _command);
+			}
 		}
 		return;
 	}
@@ -678,8 +699,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 		} else {
 			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("NB00;");
-			} else
+			} else {
 				println("Unknown CAT arguments: ", _command);
+			}
 		}
 		return;
 	}
@@ -691,8 +713,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 		} else {
 			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("NR00;");
-			} else
+			} else {
 				println("Unknown CAT arguments: ", _command);
+			}
 		}
 		return;
 	}
@@ -714,8 +737,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 		} else {
 			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("CT00;");
-			} else
+			} else {
 				println("Unknown CAT arguments: ", _command);
+			}
 		}
 		return;
 	}
@@ -727,8 +751,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 		} else {
 			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("ML00;");
-			} else
+			} else {
 				println("Unknown CAT arguments: ", _command);
+			}
 		}
 		return;
 	}
@@ -740,8 +765,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 		} else {
 			if (strcmp(arguments, "00") == 0) {
 				CAT_Transmit("BP00000;");
-			} else
+			} else {
 				println("Unknown CAT arguments: ", _command);
+			}
 		}
 		return;
 	}
@@ -763,8 +789,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 		} else {
 			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("OS00;");
-			} else
+			} else {
 				println("Unknown CAT arguments: ", _command);
+			}
 		}
 		return;
 	}
@@ -774,28 +801,29 @@ void ua3reo_dev_cat_parseCommand(void) {
 		if (!has_args) {
 		} else {
 			int8_t band = -1;
-			if (strcmp(arguments, "00") == 0)
+			if (strcmp(arguments, "00") == 0) {
 				band = BANDID_160m;
-			else if (strcmp(arguments, "01") == 0)
+			} else if (strcmp(arguments, "01") == 0) {
 				band = BANDID_80m;
-			else if (strcmp(arguments, "03") == 0)
+			} else if (strcmp(arguments, "03") == 0) {
 				band = BANDID_40m;
-			else if (strcmp(arguments, "04") == 0)
+			} else if (strcmp(arguments, "04") == 0) {
 				band = BANDID_30m;
-			else if (strcmp(arguments, "05") == 0)
+			} else if (strcmp(arguments, "05") == 0) {
 				band = BANDID_20m;
-			else if (strcmp(arguments, "06") == 0)
+			} else if (strcmp(arguments, "06") == 0) {
 				band = BANDID_17m;
-			else if (strcmp(arguments, "07") == 0)
+			} else if (strcmp(arguments, "07") == 0) {
 				band = BANDID_15m;
-			else if (strcmp(arguments, "08") == 0)
+			} else if (strcmp(arguments, "08") == 0) {
 				band = BANDID_12m;
-			else if (strcmp(arguments, "09") == 0)
+			} else if (strcmp(arguments, "09") == 0) {
 				band = BANDID_10m;
-			else if (strcmp(arguments, "10") == 0)
+			} else if (strcmp(arguments, "10") == 0) {
 				band = BANDID_6m;
-			else
+			} else {
 				println("Unknown CAT arguments: ", _command);
+			}
 			// println((uint8_t)band);
 			if (band > -1) {
 				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
@@ -836,8 +864,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
 		} else {
-			if (strcmp(arguments, "0") == 0)
+			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("NA00;");
+			}
 		}
 		return;
 	}
@@ -847,8 +876,9 @@ void ua3reo_dev_cat_parseCommand(void) {
 		if (!has_args) {
 			println("Unknown CAT arguments: ", _command);
 		} else {
-			if (strcmp(arguments, "0") == 0)
+			if (strcmp(arguments, "0") == 0) {
 				CAT_Transmit("SM0100;");
+			}
 		}
 		return;
 	}
@@ -867,12 +897,13 @@ void ua3reo_dev_cat_parseCommand(void) {
 	{
 		if (!has_args) {
 			if (CALIBRATE.CAT_Type == CAT_FT450) {
-				if (TRX_ptt_soft)
+				if (TRX_ptt_soft) {
 					CAT_Transmit("TX1;");
-				else if (TRX_ptt_hard)
+				} else if (TRX_ptt_hard) {
 					CAT_Transmit("TX2;");
-				else
+				} else {
 					CAT_Transmit("TX0;");
+				}
 			}
 
 			if (CALIBRATE.CAT_Type == CAT_TS2000) {
@@ -932,95 +963,134 @@ void ua3reo_dev_cat_parseCommand(void) {
 #endif
 
 static void getFT450Mode(uint8_t VFO_Mode, char *out) {
-	if (VFO_Mode == TRX_MODE_LSB)
+	if (VFO_Mode == TRX_MODE_LSB) {
 		strcpy(out, "1");
-	if (VFO_Mode == TRX_MODE_USB)
+	}
+	if (VFO_Mode == TRX_MODE_USB) {
 		strcpy(out, "2");
-	if (VFO_Mode == TRX_MODE_IQ)
+	}
+	if (VFO_Mode == TRX_MODE_IQ) {
 		strcpy(out, "8");
-	if (VFO_Mode == TRX_MODE_CW)
+	}
+	if (VFO_Mode == TRX_MODE_CW) {
 		strcpy(out, "3");
-	if (VFO_Mode == TRX_MODE_DIGI_L)
+	}
+	if (VFO_Mode == TRX_MODE_DIGI_L) {
 		strcpy(out, "8");
-	if (VFO_Mode == TRX_MODE_DIGI_U || VFO_Mode == TRX_MODE_RTTY)
+	}
+	if (VFO_Mode == TRX_MODE_DIGI_U || VFO_Mode == TRX_MODE_RTTY) {
 		strcpy(out, "C");
-	if (VFO_Mode == TRX_MODE_NFM)
+	}
+	if (VFO_Mode == TRX_MODE_NFM) {
 		strcpy(out, "4");
-	if (VFO_Mode == TRX_MODE_WFM)
+	}
+	if (VFO_Mode == TRX_MODE_WFM) {
 		strcpy(out, "4");
-	if (VFO_Mode == TRX_MODE_AM)
+	}
+	if (VFO_Mode == TRX_MODE_AM) {
 		strcpy(out, "5");
-	if (VFO_Mode == TRX_MODE_SAM)
+	}
+	if (VFO_Mode == TRX_MODE_SAM) {
 		strcpy(out, "5");
-	if (VFO_Mode == TRX_MODE_LOOPBACK)
+	}
+	if (VFO_Mode == TRX_MODE_LOOPBACK) {
 		strcpy(out, "8");
+	}
 }
 
 static void getTS2000Mode(uint8_t VFO_Mode, char *out) {
-	if (VFO_Mode == TRX_MODE_LSB)
+	if (VFO_Mode == TRX_MODE_LSB) {
 		strcpy(out, "1");
-	if (VFO_Mode == TRX_MODE_USB)
+	}
+	if (VFO_Mode == TRX_MODE_USB) {
 		strcpy(out, "2");
-	if (VFO_Mode == TRX_MODE_IQ)
+	}
+	if (VFO_Mode == TRX_MODE_IQ) {
 		strcpy(out, "0");
-	if (VFO_Mode == TRX_MODE_CW)
+	}
+	if (VFO_Mode == TRX_MODE_CW) {
 		strcpy(out, "3");
-	if (VFO_Mode == TRX_MODE_DIGI_L)
+	}
+	if (VFO_Mode == TRX_MODE_DIGI_L) {
 		strcpy(out, "9");
-	if (VFO_Mode == TRX_MODE_DIGI_U || VFO_Mode == TRX_MODE_RTTY)
+	}
+	if (VFO_Mode == TRX_MODE_DIGI_U || VFO_Mode == TRX_MODE_RTTY) {
 		strcpy(out, "6");
-	if (VFO_Mode == TRX_MODE_NFM)
+	}
+	if (VFO_Mode == TRX_MODE_NFM) {
 		strcpy(out, "4");
-	if (VFO_Mode == TRX_MODE_WFM)
+	}
+	if (VFO_Mode == TRX_MODE_WFM) {
 		strcpy(out, "4");
-	if (VFO_Mode == TRX_MODE_AM)
+	}
+	if (VFO_Mode == TRX_MODE_AM) {
 		strcpy(out, "5");
-	if (VFO_Mode == TRX_MODE_SAM)
+	}
+	if (VFO_Mode == TRX_MODE_SAM) {
 		strcpy(out, "5");
-	if (VFO_Mode == TRX_MODE_LOOPBACK)
+	}
+	if (VFO_Mode == TRX_MODE_LOOPBACK) {
 		strcpy(out, "0");
+	}
 }
 
 static uint8_t setFT450Mode(char *FT450_Mode) {
-	if (strcmp(FT450_Mode, "01") == 0 || strcmp(FT450_Mode, "1") == 0)
+	if (strcmp(FT450_Mode, "01") == 0 || strcmp(FT450_Mode, "1") == 0) {
 		return TRX_MODE_LSB;
-	if (strcmp(FT450_Mode, "02") == 0 || strcmp(FT450_Mode, "2") == 0)
+	}
+	if (strcmp(FT450_Mode, "02") == 0 || strcmp(FT450_Mode, "2") == 0) {
 		return TRX_MODE_USB;
-	if (strcmp(FT450_Mode, "08") == 0 || strcmp(FT450_Mode, "8") == 0)
+	}
+	if (strcmp(FT450_Mode, "08") == 0 || strcmp(FT450_Mode, "8") == 0) {
 		return TRX_MODE_IQ;
-	if (strcmp(FT450_Mode, "03") == 0 || strcmp(FT450_Mode, "3") == 0)
+	}
+	if (strcmp(FT450_Mode, "03") == 0 || strcmp(FT450_Mode, "3") == 0) {
 		return TRX_MODE_CW;
-	if (strcmp(FT450_Mode, "06") == 0 || strcmp(FT450_Mode, "6") == 0)
+	}
+	if (strcmp(FT450_Mode, "06") == 0 || strcmp(FT450_Mode, "6") == 0) {
 		return TRX_MODE_DIGI_L;
-	if (strcmp(FT450_Mode, "09") == 0 || strcmp(FT450_Mode, "9") == 0)
+	}
+	if (strcmp(FT450_Mode, "09") == 0 || strcmp(FT450_Mode, "9") == 0) {
 		return TRX_MODE_DIGI_U;
-	if (strcmp(FT450_Mode, "0C") == 0 || strcmp(FT450_Mode, "C") == 0)
+	}
+	if (strcmp(FT450_Mode, "0C") == 0 || strcmp(FT450_Mode, "C") == 0) {
 		return TRX_MODE_DIGI_U;
-	if (strcmp(FT450_Mode, "04") == 0 || strcmp(FT450_Mode, "4") == 0)
+	}
+	if (strcmp(FT450_Mode, "04") == 0 || strcmp(FT450_Mode, "4") == 0) {
 		return TRX_MODE_NFM;
-	if (strcmp(FT450_Mode, "05") == 0 || strcmp(FT450_Mode, "5") == 0)
+	}
+	if (strcmp(FT450_Mode, "05") == 0 || strcmp(FT450_Mode, "5") == 0) {
 		return TRX_MODE_SAM;
+	}
 	println("Unknown mode ", FT450_Mode);
 	return TRX_MODE_USB;
 }
 
 static uint8_t setTS2000Mode(char *TS2000_Mode) {
-	if (strcmp(TS2000_Mode, "1") == 0)
+	if (strcmp(TS2000_Mode, "1") == 0) {
 		return TRX_MODE_LSB;
-	if (strcmp(TS2000_Mode, "2") == 0)
+	}
+	if (strcmp(TS2000_Mode, "2") == 0) {
 		return TRX_MODE_USB;
-	if (strcmp(TS2000_Mode, "8") == 0)
+	}
+	if (strcmp(TS2000_Mode, "8") == 0) {
 		return TRX_MODE_IQ;
-	if (strcmp(TS2000_Mode, "3") == 0)
+	}
+	if (strcmp(TS2000_Mode, "3") == 0) {
 		return TRX_MODE_CW;
-	if (strcmp(TS2000_Mode, "9") == 0)
+	}
+	if (strcmp(TS2000_Mode, "9") == 0) {
 		return TRX_MODE_DIGI_L;
-	if (strcmp(TS2000_Mode, "6") == 0 || strcmp(TS2000_Mode, "D") == 0)
+	}
+	if (strcmp(TS2000_Mode, "6") == 0 || strcmp(TS2000_Mode, "D") == 0) {
 		return TRX_MODE_DIGI_U;
-	if (strcmp(TS2000_Mode, "4") == 0)
+	}
+	if (strcmp(TS2000_Mode, "4") == 0) {
 		return TRX_MODE_NFM;
-	if (strcmp(TS2000_Mode, "5") == 0)
+	}
+	if (strcmp(TS2000_Mode, "5") == 0) {
 		return TRX_MODE_SAM;
+	}
 	println("Unknown mode ", TS2000_Mode);
 	return TRX_MODE_USB;
 }

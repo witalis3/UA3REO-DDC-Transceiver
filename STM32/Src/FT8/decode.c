@@ -1,7 +1,7 @@
 #include "decode.h"
 #include "constants.h"
 #include <math.h>
-//#include "display.h"
+// #include "display.h"
 #include "Process_DSP.h"
 
 static float max2(float a, float b);
@@ -48,10 +48,12 @@ int find_sync(const uint8_t *power, int num_blocks, int num_bins, const uint8_t 
 				for (int m = 0; m <= 72; m += 36) {
 					for (int k = 0; k < 7; ++k) {
 						// Check for time boundaries
-						if (time_offset + k + m < 0)
+						if (time_offset + k + m < 0) {
 							continue;
-						if (time_offset + k + m >= num_blocks)
+						}
+						if (time_offset + k + m >= num_blocks) {
 							break;
+						}
 
 						int offset = ((time_offset + k + m) * 4 + alt) * num_bins + freq_offset;
 
@@ -86,8 +88,9 @@ int find_sync(const uint8_t *power, int num_blocks, int num_bins, const uint8_t 
 				score /= num_symbols;
 
 				// if(score > max_score) max_score = score;
-				if (score < min_score)
+				if (score < min_score) {
 					continue;
+				}
 
 				// If the heap is full AND the current candidate is better than
 				// the worst in the heap, we remove the worst and make space

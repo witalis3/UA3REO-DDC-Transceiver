@@ -38,8 +38,9 @@ void CPULOAD_GoToSleepMode(void) {
 }
 
 void CPULOAD_WakeUp(void) {
-	if (CPULOAD_status)
+	if (CPULOAD_status) {
 		return;
+	}
 	CPULOAD_status = true;
 	// Increase number of sleeping time in CPU cycles
 	CPULOAD_SleepingTime += DWT->CYCCNT - CPULOAD_startSleepTime;
@@ -168,8 +169,9 @@ inline bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, boo
 
 static uint32_t dma_memset32_reg = 0;
 void dma_memset32(void *dest, uint32_t val, uint32_t size) {
-	if (size == 0)
+	if (size == 0) {
 		return;
+	}
 
 	if (dma_memset32_busy) // for async calls
 	{
@@ -177,8 +179,9 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size) {
 			memset(dest, val, size * 4);
 		} else {
 			uint32_t *buf = dest;
-			while (size--)
+			while (size--) {
 				*buf++ = val;
+			}
 		}
 		return;
 	}
@@ -213,8 +216,9 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size) {
 }
 
 void dma_memcpy32(void *dest, void *src, uint32_t size) {
-	if (size == 0)
+	if (size == 0) {
 		return;
+	}
 
 	if (dma_memcpy32_busy) // for async calls
 	{

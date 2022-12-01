@@ -44,10 +44,11 @@ void GT911_RD_RegOneByte(uint16_t reg, uint8_t *buf) {
 		println("[ERR] No touchpad found on i2c bus");
 
 		// try new i2c addr if failed
-		if (gt911_i2c_addr == GT911_I2C_ADDR_1)
+		if (gt911_i2c_addr == GT911_I2C_ADDR_1) {
 			gt911_i2c_addr = GT911_I2C_ADDR_2;
-		else
+		} else {
 			gt911_i2c_addr = GT911_I2C_ADDR_1;
+		}
 	}
 }
 
@@ -99,8 +100,9 @@ bool GT911_Flash(void) {
 		config_Checksum += GT911_Config[i];
 
 		printf("0x%02X  ", GT911_Config[i]);
-		if ((i + 1) % 10 == 0)
+		if ((i + 1) % 10 == 0) {
 			printf("\r\n");
+		}
 	}
 	printf("0x%02X  0x%02X\r\nconfig_Checksum=0x%2X\r\n", GT911_Config[184], GT911_Config[185], ((~config_Checksum) + 1) & 0xff);
 
@@ -129,8 +131,9 @@ bool GT911_Flash(void) {
 			printf("\r\n*************************\r\n");
 			for (i = 0; i < sizeof(GT911_Config); i++) {
 				printf("0x%02X  ", GT911_Config[i]);
-				if ((i + 1) % 10 == 0)
+				if ((i + 1) % 10 == 0) {
 					printf("\r\n");
+				}
 			}
 
 			GT911_WR_Reg(GT911_CONFIG_REG, (uint8_t *)GT911_Config, sizeof(GT911_Config));
@@ -144,8 +147,9 @@ bool GT911_Flash(void) {
 				config_Checksum += GT911_Config[i];
 
 				printf("0x%02X  ", GT911_Config[i]);
-				if ((i + 1) % 10 == 0)
+				if ((i + 1) % 10 == 0) {
 					printf("\r\n");
+				}
 			}
 			printf("0x%02X  ", GT911_Config[184]);
 			printf("0x%02X  ", GT911_Config[185]);
@@ -216,15 +220,19 @@ void GT911_Scan(void) {
 			for (uint8_t touch_id = 0; touch_id < GT911.TouchCount; touch_id++) {
 				GT911.Y[touch_id] = 480 - GT911.Y[touch_id];
 
-				if (GT911.Y[touch_id] < 5)
+				if (GT911.Y[touch_id] < 5) {
 					GT911.Y[touch_id] = 5;
-				if (GT911.Y[touch_id] > 475)
+				}
+				if (GT911.Y[touch_id] > 475) {
 					GT911.Y[touch_id] = 475;
+				}
 
-				if (GT911.X[touch_id] < 5)
+				if (GT911.X[touch_id] < 5) {
 					GT911.X[touch_id] = 5;
-				if (GT911.X[touch_id] > 795)
+				}
+				if (GT911.X[touch_id] > 795) {
 					GT911.X[touch_id] = 795;
+				}
 
 				if (CALIBRATE.LCD_Rotate) {
 					GT911.X[touch_id] = LCD_WIDTH - GT911.X[touch_id];
@@ -244,10 +252,12 @@ void GT911_Scan(void) {
 					print_flush();
 				}
 			}
-			if (GT911.TouchCount == 1)
+			if (GT911.TouchCount == 1) {
 				TOUCHPAD_processTouch(GT911.X[0], GT911.Y[0], 0, 0);
-			if (GT911.TouchCount == 2)
+			}
+			if (GT911.TouchCount == 2) {
 				TOUCHPAD_processTouch(GT911.X[0], GT911.Y[0], GT911.X[1], GT911.Y[1]);
+			}
 		}
 	}
 }

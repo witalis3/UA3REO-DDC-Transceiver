@@ -126,8 +126,9 @@ void genft8(const uint8_t *payload, uint8_t *itone) {
 	uint8_t a91[12]; // Store 77 bits of payload + 14 bits CRC
 
 	// Copy 77 bits of payload data
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 10; i++) {
 		a91[i] = payload[i];
+	}
 
 	// Clear 3 bits after the payload to make 80 bits
 	a91[9] &= 0xF8;
@@ -165,20 +166,23 @@ void genft8(const uint8_t *payload, uint8_t *itone) {
 		// Extract 3 bits from codeword at i-th position
 		uint8_t bits3 = 0;
 
-		if (codeword[i_byte] & mask)
+		if (codeword[i_byte] & mask) {
 			bits3 |= 4;
+		}
 		if (0 == (mask >>= 1)) {
 			mask = 0x80;
 			i_byte++;
 		}
-		if (codeword[i_byte] & mask)
+		if (codeword[i_byte] & mask) {
 			bits3 |= 2;
+		}
 		if (0 == (mask >>= 1)) {
 			mask = 0x80;
 			i_byte++;
 		}
-		if (codeword[i_byte] & mask)
+		if (codeword[i_byte] & mask) {
 			bits3 |= 1;
+		}
 		if (0 == (mask >>= 1)) {
 			mask = 0x80;
 			i_byte++;

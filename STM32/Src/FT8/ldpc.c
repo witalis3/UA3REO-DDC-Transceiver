@@ -65,8 +65,9 @@ void ldpc_decode(float codeword[], int max_iters, uint8_t plain[], int *ok) {
 
 		for (int i = 0; i < FT8_LDPC_N; i++) {
 			float l = codeword[i];
-			for (int j = 0; j < 3; j++)
+			for (int j = 0; j < 3; j++) {
 				l += e[kFT8_LDPC_Mn[i][j] - 1][i];
+			}
 			plain[i] = (l > 0) ? 1 : 0;
 		}
 

@@ -901,9 +901,11 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
 
 // band number from frequency
 int8_t getBandFromFreq(uint64_t freq, bool nearest) {
-	for (int8_t b = 0; b < BANDS_COUNT; b++)
-		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq)
+	for (int8_t b = 0; b < BANDS_COUNT; b++) {
+		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq) {
 			return b;
+		}
+	}
 
 	if (nearest) {
 		int8_t near_band = 0;
@@ -930,13 +932,14 @@ uint_fast8_t getModeFromFreq(uint64_t freq) {
 	ret = CurrentVFO->Mode;
 
 	for (uint_fast16_t b = 0; b < BANDS_COUNT; b++) {
-		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq)
+		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq) {
 			for (uint_fast16_t r = 0; r < BANDS[b].regionsCount; r++) {
 				if (BANDS[b].regions[r].startFreq <= freq && freq < BANDS[b].regions[r].endFreq) {
 					ret = BANDS[b].regions[r].mode;
 					return ret;
 				}
 			}
+		}
 	}
 	return ret;
 }
@@ -945,10 +948,12 @@ int16_t getChannelbyFreq(uint64_t freq, bool txfreq) {
 	int8_t band = getBandFromFreq(freq, false);
 	if (band != -1) {
 		for (int16_t ind = 0; ind < BANDS[band].channelsCount; ind++) {
-			if (BANDS[band].channels[ind].rxFreq == freq && !txfreq)
+			if (BANDS[band].channels[ind].rxFreq == freq && !txfreq) {
 				return ind;
-			if (BANDS[band].channels[ind].txFreq == freq && txfreq)
+			}
+			if (BANDS[band].channels[ind].txFreq == freq && txfreq) {
 				return ind;
+			}
 		}
 	}
 	return -1;

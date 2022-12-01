@@ -52,13 +52,15 @@ static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC,
 void RDSDecoder_Init(void) {
 	RDS_decoder_samplerate = TRX_GetRXSampleRate;
 	// no rds in signal
-	if (RDS_decoder_samplerate < 192000)
+	if (RDS_decoder_samplerate < 192000) {
 		return;
+	}
 
 	// decimator
 	DECIMATE_FIR.M = 16;
-	if (RDS_decoder_samplerate == 384000)
+	if (RDS_decoder_samplerate == 384000) {
 		DECIMATE_FIR.M = 32;
+	}
 
 	// RDS signal filter
 	iir_filter_t *filter = biquad_create(RDS_FILTER_STAGES);
@@ -98,19 +100,22 @@ void RDSDecoder_Init(void) {
 
 void RDSDecoder_Process(float32_t *bufferIn) {
 	// reinit?
-	if (RDS_decoder_samplerate != TRX_GetRXSampleRate || RDS_decoder_mainfreq != CurrentVFO->Freq)
+	if (RDS_decoder_samplerate != TRX_GetRXSampleRate || RDS_decoder_mainfreq != CurrentVFO->Freq) {
 		RDSDecoder_Init();
+	}
 
 	// no rds in signal
-	if (RDS_decoder_samplerate < 192000)
+	if (RDS_decoder_samplerate < 192000) {
 		return;
+	}
 
 	// get pilot tone
 	arm_biquad_cascade_df2T_f32_single(&RDS_Pilot_Filter, bufferIn, RDS_pilot_buff, RDS_DECODER_PACKET_SIZE);
 
 	// multiply pilot tone
-	for (uint_fast16_t i = 0; i < RDS_DECODER_PACKET_SIZE; i++)
+	for (uint_fast16_t i = 0; i < RDS_DECODER_PACKET_SIZE; i++) {
 		RDS_pilot_buff[i] = RDS_pilot_buff[i] * RDS_pilot_buff[i] * RDS_pilot_buff[i];
+	}
 
 	// filter rds nco
 	arm_biquad_cascade_df2T_f32_single(&RDS_57kPilot_Filter, RDS_pilot_buff, RDS_pilot_buff, RDS_DECODER_PACKET_SIZE);
@@ -119,8 +124,9 @@ void RDSDecoder_Process(float32_t *bufferIn) {
 	arm_biquad_cascade_df2T_f32_single(&RDS_Signal_Filter, bufferIn, RDS_buff, RDS_DECODER_PACKET_SIZE);
 
 	// move signal to low freq
-	for (uint_fast16_t i = 0; i < RDS_DECODER_PACKET_SIZE; i++)
+	for (uint_fast16_t i = 0; i < RDS_DECODER_PACKET_SIZE; i++) {
 		RDS_buff[i] *= RDS_pilot_buff[i];
+	}
 
 	// LPF filter
 	arm_biquad_cascade_df2T_f32_single(&RDS_LPF_Filter, RDS_buff, RDS_buff, RDS_DECODER_PACKET_SIZE);
@@ -199,8 +205,9 @@ void RDSDecoder_Process(float32_t *bufferIn) {
 				filtered_state_prev = filtered_state;
 			}
 		}
-		if (!bit_out_ready)
+		if (!bit_out_ready) {
 			continue;
+		}
 
 		// shift data
 		raw_block4 <<= 1;
@@ -213,8 +220,9 @@ void RDSDecoder_Process(float32_t *bufferIn) {
 
 		// do diff
 		static bool prev_bit = false;
-		if (bit_out_state != prev_bit)
+		if (bit_out_state != prev_bit) {
 			raw_block1 |= 1;
+		}
 		prev_bit = bit_out_state;
 
 #define MaxCorrectableBits 2 // 5
@@ -226,8 +234,9 @@ void RDSDecoder_Process(float32_t *bufferIn) {
 		uint16_t _syndrome = RDS_BuildSyndrome(block4);
 		_syndrome ^= 0x3d8;
 		gotA = _syndrome == 0 ? true : false;
-		if (!gotA && RDS_ApplyFEC(&block4, _syndrome) <= MaxCorrectableBits)
+		if (!gotA && RDS_ApplyFEC(&block4, _syndrome) <= MaxCorrectableBits) {
 			gotA = true;
+		}
 
 		if (gotA) {
 			block4 = (uint16_t)((block4 >> CheckwordBitsCount) & 0xffff);
@@ -239,8 +248,9 @@ void RDSDecoder_Process(float32_t *bufferIn) {
 			_syndrome = RDS_BuildSyndrome(block3);
 			_syndrome ^= 0x3d4;
 			gotB = _syndrome == 0 ? true : false;
-			if (!gotB && RDS_ApplyFEC(&block3, _syndrome) <= MaxCorrectableBits)
+			if (!gotB && RDS_ApplyFEC(&block3, _syndrome) <= MaxCorrectableBits) {
 				gotB = true;
+			}
 
 			if (gotB) {
 				block3 = (uint16_t)((block3 >> CheckwordBitsCount) & 0xffff);
@@ -252,8 +262,9 @@ void RDSDecoder_Process(float32_t *bufferIn) {
 				_syndrome = RDS_BuildSyndrome(block2);
 				_syndrome ^= (uint16_t)((block3 & 0x800) == 0 ? 0x25c : 0x3cc);
 				gotC = _syndrome == 0 ? true : false;
-				if (!gotC && RDS_ApplyFEC(&block2, _syndrome) <= MaxCorrectableBits)
+				if (!gotC && RDS_ApplyFEC(&block2, _syndrome) <= MaxCorrectableBits) {
 					gotC = true;
+				}
 
 				if (gotC) {
 					block2 = (uint16_t)((block2 >> CheckwordBitsCount) & 0xffff);
@@ -265,8 +276,9 @@ void RDSDecoder_Process(float32_t *bufferIn) {
 					_syndrome = RDS_BuildSyndrome(block1);
 					_syndrome ^= 0x258;
 					gotD = _syndrome == 0 ? true : false;
-					if (!gotD && RDS_ApplyFEC(&block1, _syndrome) <= MaxCorrectableBits)
+					if (!gotD && RDS_ApplyFEC(&block1, _syndrome) <= MaxCorrectableBits) {
 						gotD = true;
+					}
 
 					if (gotD) {
 						block1 = (uint16_t)((block1 >> CheckwordBitsCount) & 0xffff);
@@ -303,16 +315,18 @@ static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC,
 		int index = (groupB & 0xf) * 4; // text segment
 		bool abFlag = ((groupB >> 4) & 0x1) == 1;
 
-		if (index > (RDS_STR_MAXLEN - 5))
+		if (index > (RDS_STR_MAXLEN - 5)) {
 			return;
+		}
 
 		char chr_a = cleanASCIIgarbage((char)(groupC >> 8));
 		char chr_b = cleanASCIIgarbage((char)(groupC & 0xff));
 		char chr_c = cleanASCIIgarbage((char)(groupD >> 8));
 		char chr_d = cleanASCIIgarbage((char)(groupD & 0xff));
 
-		if (chr_a == 0 || chr_b == 0 || chr_c == 0 || chr_d == 0)
+		if (chr_a == 0 || chr_b == 0 || chr_c == 0 || chr_d == 0) {
 			return;
+		}
 
 		if (abFlag) {
 			RDS_Decoder_2A[index] = chr_a;
@@ -320,18 +334,22 @@ static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC,
 			RDS_Decoder_2A[index + 2] = chr_c;
 			RDS_Decoder_2A[index + 3] = chr_d;
 
-			for (uint8_t i = 0; i < index; i++)
-				if (RDS_Decoder_2A[i] == 0)
+			for (uint8_t i = 0; i < index; i++) {
+				if (RDS_Decoder_2A[i] == 0) {
 					RDS_Decoder_2A[i] = ' ';
+				}
+			}
 		} else {
 			RDS_Decoder_2B[index] = chr_a;
 			RDS_Decoder_2B[index + 1] = chr_b;
 			RDS_Decoder_2B[index + 2] = chr_c;
 			RDS_Decoder_2B[index + 3] = chr_d;
 
-			for (uint8_t i = 0; i < index; i++)
-				if (RDS_Decoder_2B[i] == 0)
+			for (uint8_t i = 0; i < index; i++) {
+				if (RDS_Decoder_2B[i] == 0) {
 					RDS_Decoder_2B[i] = ' ';
+				}
+			}
 		}
 
 		// println("2A ", abFlag?" A ":" B ", index, ": ", str);
@@ -341,21 +359,25 @@ static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC,
 	if ((groupB & 0xf800) == 0x0000) {
 		int index = (groupB & 0x3) * 2; // text segment
 
-		if (index > (RDS_STR_MAXLEN - 5))
+		if (index > (RDS_STR_MAXLEN - 5)) {
 			return;
+		}
 
 		char chr_c = cleanASCIIgarbage((char)(groupD >> 8));
 		char chr_d = cleanASCIIgarbage((char)(groupD & 0xff));
 
-		if (chr_c == 0 || chr_d == 0)
+		if (chr_c == 0 || chr_d == 0) {
 			return;
+		}
 
 		RDS_Decoder_0A[index] = chr_c;
 		RDS_Decoder_0A[index + 1] = chr_d;
 
-		for (uint8_t i = 0; i < index; i++)
-			if (RDS_Decoder_0A[i] == 0)
+		for (uint8_t i = 0; i < index; i++) {
+			if (RDS_Decoder_0A[i] == 0) {
 				RDS_Decoder_0A[i] = ' ';
+			}
+		}
 
 		// println("0A ", index, ": ", str);
 	}

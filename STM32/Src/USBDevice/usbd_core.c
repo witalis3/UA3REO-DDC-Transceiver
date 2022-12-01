@@ -129,8 +129,9 @@ USBD_StatusTypeDef USBD_Init(USBD_HandleTypeDef *pdev, USBD_DescriptorsTypeDef *
 	/* Initialize low level driver */
 	ret = USBD_LL_Init(pdev);
 
-	if (ret == USBD_OK)
+	if (ret == USBD_OK) {
 		USBD_inited = true;
+	}
 
 	return ret;
 }
@@ -144,8 +145,9 @@ USBD_StatusTypeDef USBD_Init(USBD_HandleTypeDef *pdev, USBD_DescriptorsTypeDef *
 USBD_StatusTypeDef USBD_DeInit(USBD_HandleTypeDef *pdev) {
 	USBD_StatusTypeDef ret;
 
-	if (!USBD_inited)
+	if (!USBD_inited) {
 		return USBD_FAIL;
+	}
 
 	/* Disconnect the USB Device */
 	(void)USBD_LL_Stop(pdev);

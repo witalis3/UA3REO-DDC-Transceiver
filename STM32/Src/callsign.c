@@ -1561,10 +1561,12 @@ static void CALLSIGN_INFO_keyboardHandler(uint32_t parameter) {
 	str[0] = parameter;
 	if (parameter == '<') // backspace
 	{
-		if (entered_callsign[0] != '\0')
+		if (entered_callsign[0] != '\0') {
 			entered_callsign[strlen(entered_callsign) - 1] = 0;
-	} else if (strlen(entered_callsign) < 8)
+		}
+	} else if (strlen(entered_callsign) < 8) {
 		strcat(entered_callsign, str);
+	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
@@ -1648,8 +1650,9 @@ void CALLSIGN_INFO_EncRotate(int8_t direction) {
 
 void CALLSIGN_getInfoByCallsign(CALLSIGN_INFO_LINE **ret, char *call) {
 	*ret = NULL;
-	if (strlen(call) < 1)
+	if (strlen(call) < 1) {
 		return;
+	}
 
 	// global search
 	for (uint16_t i = 0; i < CALLSIGN_DB_GLOBAL_COUNT; i++) {

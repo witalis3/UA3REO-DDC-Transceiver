@@ -29,8 +29,9 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 
 	AN_Instance *instance = &RX1_AN_instance;
 #if HRDW_HAS_DUAL_RX
-	if (rx_id == AUDIO_RX2)
+	if (rx_id == AUDIO_RX2) {
 		instance = &RX2_AN_instance;
+	}
 #endif
 
 	dma_memcpy(&instance->lms2_reference[instance->reference_index_new], buffer,
@@ -45,24 +46,28 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 	arm_min_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &minValOut, &index);
 	arm_max_no_idx_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &maxValOut);
 	if (isnanf(minValOut) || isinff(minValOut) || isnanf(maxValOut) || isinff(maxValOut)) {
-		if (AUTO_NOTCH_DEBUG)
+		if (AUTO_NOTCH_DEBUG) {
 			println("auto notch err ", minValOut, " ", maxValOut);
+		}
 		InitAutoNotchReduction();
 		dma_memset(buffer, 0x00, sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE);
 		temporary_stop = 500;
 	}
 	arm_max_no_idx_f32(instance->lms2_Norm_instance.pCoeffs, AUTO_NOTCH_TAPS, &maxValOut);
 	if (maxValOut > 1.0f) {
-		if (AUTO_NOTCH_DEBUG)
+		if (AUTO_NOTCH_DEBUG) {
 			println("auto notch reset", maxValOut);
+		}
 		InitAutoNotchReduction();
 		temporary_stop = 500;
 	}
 
 	instance->reference_index_old += AUTO_NOTCH_BLOCK_SIZE; // move along the reference buffer
-	if (instance->reference_index_old >= AUTO_NOTCH_REFERENCE_SIZE)
+	if (instance->reference_index_old >= AUTO_NOTCH_REFERENCE_SIZE) {
 		instance->reference_index_old = 0;
+	}
 	instance->reference_index_new = instance->reference_index_old + AUTO_NOTCH_BLOCK_SIZE;
-	if (instance->reference_index_new >= AUTO_NOTCH_REFERENCE_SIZE)
+	if (instance->reference_index_new >= AUTO_NOTCH_REFERENCE_SIZE) {
 		instance->reference_index_new = 0;
+	}
 }

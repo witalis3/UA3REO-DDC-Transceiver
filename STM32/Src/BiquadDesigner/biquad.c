@@ -150,8 +150,9 @@ void biquad_init_lowpass(struct iir_filter *filter, double fs, double f) {
 		b += 3;
 	}
 
-	for (i = 0; i < (n + 1) * 2; i += 1)
+	for (i = 0; i < (n + 1) * 2; i += 1) {
 		filter->d[i] = 0;
+	}
 }
 
 void biquad_init_highpass(struct iir_filter *filter, double fs, double f) {
@@ -177,8 +178,9 @@ void biquad_init_highpass(struct iir_filter *filter, double fs, double f) {
 		b += 3;
 	}
 
-	for (i = 0; i < (n + 1) * 2; i += 1)
+	for (i = 0; i < (n + 1) * 2; i += 1) {
 		filter->d[i] = 0;
+	}
 }
 
 void biquad_init_bandpass(struct iir_filter *filter, double fs, double f1, double f2) { return biquad_init_band(filter, fs, f1, f2, 0); }
@@ -406,6 +408,7 @@ static void biquad_init_band(struct iir_filter *filter, double fs, double f1, do
 		b += filter->sect_ord + 1;
 	}
 
-	for (i = 0; i < (n + 1) * 2; i += 1)
+	for (i = 0; i < (n + 1) * 2; i += 1) {
 		filter->d[i] = 0;
+	}
 }

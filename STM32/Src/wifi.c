@@ -161,8 +161,9 @@ void WIFI_Process(void) {
 	dma_memset(tz, 0x00, sizeof(tz));
 	dma_memset(com, 0x00, sizeof(com));
 
-	if (WIFI_State == WIFI_NOTFOUND)
+	if (WIFI_State == WIFI_NOTFOUND) {
 		return;
+	}
 	if (WIFI_State == WIFI_UNDEFINED || WIFI_State == WIFI_REINIT) {
 		WIFI_Init();
 		return;
@@ -213,21 +214,24 @@ void WIFI_Process(void) {
 		break;
 	case WIFI_CONFIGURED:
 		if (strcmp(WIFI.AP_1, "WIFI-AP") == 0 && strcmp(WIFI.AP_2, "WIFI-AP") == 0 && strcmp(WIFI.AP_3, "WIFI-AP") == 0 && strcmp(WIFI.Password_1, "WIFI-PASSWORD") == 0 &&
-		    strcmp(WIFI.Password_2, "WIFI-PASSWORD") == 0 && strcmp(WIFI.Password_3, "WIFI-PASSWORD") == 0)
+		    strcmp(WIFI.Password_2, "WIFI-PASSWORD") == 0 && strcmp(WIFI.Password_3, "WIFI-PASSWORD") == 0) {
 			break;
-		if (WIFI_stop_auto_ap_list)
+		}
+		if (WIFI_stop_auto_ap_list) {
 			break;
+		}
 		WIFI_ListAP_Sync();
 		bool AP1_exist = false;
 		bool AP2_exist = false;
 		bool AP3_exist = false;
 		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++) {
-			if (strcmp((char *)WIFI_FoundedAP[i], WIFI.AP_1) == 0)
+			if (strcmp((char *)WIFI_FoundedAP[i], WIFI.AP_1) == 0) {
 				AP1_exist = true;
-			else if (strcmp((char *)WIFI_FoundedAP[i], WIFI.AP_2) == 0)
+			} else if (strcmp((char *)WIFI_FoundedAP[i], WIFI.AP_2) == 0) {
 				AP2_exist = true;
-			else if (strcmp((char *)WIFI_FoundedAP[i], WIFI.AP_3) == 0)
+			} else if (strcmp((char *)WIFI_FoundedAP[i], WIFI.AP_3) == 0) {
 				AP3_exist = true;
+			}
 		}
 		if (AP1_exist && strlen(WIFI.AP_1) > 0 && strlen(WIFI.Password_1) > 5) {
 			println("[WIFI] Start connecting to AP1: ", WIFI.AP_1);
@@ -303,38 +307,46 @@ void WIFI_Process(void) {
 		// receive commands from WIFI clients
 		if (strstr(WIFI_readedLine, "+IPD") != NULL && WIFI_ProcessingCommand != WIFI_COMM_TCP_GET_RESPONSE && WIFI_CAT_server_started) {
 			char *wifi_incoming_link_id = strchr(WIFI_readedLine, ',');
-			if (wifi_incoming_link_id == NULL)
+			if (wifi_incoming_link_id == NULL) {
 				break;
+			}
 			wifi_incoming_link_id++;
 
 			char *wifi_incoming_length = strchr(wifi_incoming_link_id, ',');
-			if (wifi_incoming_length == NULL)
+			if (wifi_incoming_length == NULL) {
 				break;
+			}
 			*wifi_incoming_length = 0x00;
 			wifi_incoming_length++;
 
 			char *wifi_incoming_data = strchr(wifi_incoming_length, ':');
-			if (wifi_incoming_data == NULL)
+			if (wifi_incoming_data == NULL) {
 				break;
+			}
 			*wifi_incoming_data = 0x00;
 			wifi_incoming_data++;
 
 			uint32_t wifi_incoming_length_uint = (uint32_t)atoi(wifi_incoming_length);
 			uint32_t wifi_incoming_link_id_uint = (uint32_t)atoi(wifi_incoming_link_id);
-			if (wifi_incoming_length_uint > 64)
+			if (wifi_incoming_length_uint > 64) {
 				wifi_incoming_length_uint = 64;
-			if (wifi_incoming_length_uint > 0)
+			}
+			if (wifi_incoming_length_uint > 0) {
 				wifi_incoming_length_uint--; // del /n char
-			if (wifi_incoming_link_id_uint > 8)
+			}
+			if (wifi_incoming_link_id_uint > 8) {
 				wifi_incoming_link_id_uint = 8;
+			}
 
 			char *wifi_incoming_data_end = wifi_incoming_data + wifi_incoming_length_uint;
 			*wifi_incoming_data_end = 0x00;
 
-			if (TRX.Debug_Type == TRX_DEBUG_WIFI)
+			if (TRX.Debug_Type == TRX_DEBUG_WIFI) {
 				println("[WIFI] Command received: ", wifi_incoming_data);
-			if (wifi_incoming_length_uint > 0)
+			}
+			if (wifi_incoming_length_uint > 0) {
 				CAT_SetWIFICommand(wifi_incoming_data, wifi_incoming_length_uint, wifi_incoming_link_id_uint);
+			}
 		}
 		if (strstr(WIFI_readedLine, "WIFI DISCONNECT") != NULL) {
 			println("[WIFI] Disconnected");
@@ -349,10 +361,11 @@ void WIFI_Process(void) {
 
 	case WIFI_TIMEOUT:
 		WIFI_TryGetLine();
-		if (WIFI_connected)
+		if (WIFI_connected) {
 			WIFI_State = WIFI_READY;
-		else
+		} else {
 			WIFI_State = WIFI_CONFIGURED;
+		}
 		break;
 
 	case WIFI_PROCESS_COMMAND:
@@ -428,8 +441,9 @@ void WIFI_Process(void) {
 						*end = 0x00;
 						if (strlen(start) > 0) {
 							strcat((char *)&WIFI_FoundedAP_InWork[WIFI_FoundedAP_Index], start);
-							if (WIFI_FoundedAP_Index < (WIFI_FOUNDED_AP_MAXCOUNT - 1))
+							if (WIFI_FoundedAP_Index < (WIFI_FOUNDED_AP_MAXCOUNT - 1)) {
 								WIFI_FoundedAP_Index++;
+							}
 						}
 					}
 					if (sysmenu_wifi_selectap1_menu_opened || sysmenu_wifi_selectap2_menu_opened || sysmenu_wifi_selectap3_menu_opened) {
@@ -475,30 +489,42 @@ void WIFI_Process(void) {
 											uint16_t year = (uint16_t)atoi(year_str);
 											uint16_t year_short = (uint16_t)atoi(year_str + 2);
 											uint16_t month = 1;
-											if (strstr(month_str, "Jan") != NULL)
+											if (strstr(month_str, "Jan") != NULL) {
 												month = 1;
-											if (strstr(month_str, "Feb") != NULL)
+											}
+											if (strstr(month_str, "Feb") != NULL) {
 												month = 2;
-											if (strstr(month_str, "Mar") != NULL)
+											}
+											if (strstr(month_str, "Mar") != NULL) {
 												month = 3;
-											if (strstr(month_str, "Apr") != NULL)
+											}
+											if (strstr(month_str, "Apr") != NULL) {
 												month = 4;
-											if (strstr(month_str, "May") != NULL)
+											}
+											if (strstr(month_str, "May") != NULL) {
 												month = 5;
-											if (strstr(month_str, "Jun") != NULL)
+											}
+											if (strstr(month_str, "Jun") != NULL) {
 												month = 6;
-											if (strstr(month_str, "Jul") != NULL)
+											}
+											if (strstr(month_str, "Jul") != NULL) {
 												month = 7;
-											if (strstr(month_str, "Aug") != NULL)
+											}
+											if (strstr(month_str, "Aug") != NULL) {
 												month = 8;
-											if (strstr(month_str, "Sep") != NULL)
+											}
+											if (strstr(month_str, "Sep") != NULL) {
 												month = 9;
-											if (strstr(month_str, "Oct") != NULL)
+											}
+											if (strstr(month_str, "Oct") != NULL) {
 												month = 10;
-											if (strstr(month_str, "Nov") != NULL)
+											}
+											if (strstr(month_str, "Nov") != NULL) {
 												month = 11;
-											if (strstr(month_str, "Dec") != NULL)
+											}
+											if (strstr(month_str, "Dec") != NULL) {
 												month = 12;
+											}
 											uint16_t day = (uint16_t)atoi(day_str);
 											// save to RTC clock
 											if (year > 2018) {
@@ -513,14 +539,18 @@ void WIFI_Process(void) {
 
 													if (secDiff < -1 || secDiff > 1) // do recalibration
 													{
-														if (secDiff < 0)
+														if (secDiff < 0) {
 															CALIBRATE.RTC_Calibration--;
-														if (secDiff > 0)
+														}
+														if (secDiff > 0) {
 															CALIBRATE.RTC_Calibration++;
-														if (CALIBRATE.RTC_Calibration < -511)
+														}
+														if (CALIBRATE.RTC_Calibration < -511) {
 															CALIBRATE.RTC_Calibration = -511;
-														if (CALIBRATE.RTC_Calibration > 511)
+														}
+														if (CALIBRATE.RTC_Calibration > 511) {
 															CALIBRATE.RTC_Calibration = 511;
+														}
 														NeedSaveCalibration = true;
 
 														RTC_Calibration();
@@ -582,8 +612,9 @@ void WIFI_Process(void) {
 							strcpy(WIFI_IP, start);
 							println("[WIFI] GOT IP: ", WIFI_IP);
 							WIFI_IP_Gotted = true;
-							if (LCD_systemMenuOpened)
+							if (LCD_systemMenuOpened) {
 								LCD_UpdateQuery.SystemMenuInfolines = true;
+							}
 						}
 					}
 				}
@@ -591,8 +622,9 @@ void WIFI_Process(void) {
 			{
 				char *istr;
 				istr = strstr(WIFI_readedLine, "+IPD");
-				if (istr != NULL)
+				if (istr != NULL) {
 					WIFI_getHTTPResponse();
+				}
 			}
 		}
 		break;
@@ -612,8 +644,9 @@ bool WIFI_AbortCallback() {
 }
 
 bool WIFI_GetSNTPTime(void (*callback)(void)) {
-	if (WIFI_State != WIFI_READY)
+	if (WIFI_State != WIFI_READY) {
 		return false;
+	}
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_GETSNTP;
 	WIFI_ProcessingCommandCallback = callback;
@@ -622,8 +655,9 @@ bool WIFI_GetSNTPTime(void (*callback)(void)) {
 }
 
 bool WIFI_GetIP(void (*callback)(void)) {
-	if (WIFI_State != WIFI_READY)
+	if (WIFI_State != WIFI_READY) {
 		return false;
+	}
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_GETIP;
 	WIFI_ProcessingCommandCallback = callback;
@@ -632,8 +666,9 @@ bool WIFI_GetIP(void (*callback)(void)) {
 }
 
 bool WIFI_ListAP(void (*callback)(void)) {
-	if (WIFI_State != WIFI_READY && WIFI_State != WIFI_CONFIGURED)
+	if (WIFI_State != WIFI_READY && WIFI_State != WIFI_CONFIGURED) {
 		return false;
+	}
 	if (WIFI_State == WIFI_CONFIGURED && !WIFI_stop_auto_ap_list && WIFI_ProcessingCommand == WIFI_COMM_LISTAP) // stop auto-connection when searching for networks
 	{
 		WIFI_stop_auto_ap_list = true;
@@ -644,8 +679,9 @@ bool WIFI_ListAP(void (*callback)(void)) {
 	WIFI_ProcessingCommandCallback = callback;
 	WIFI_FoundedAP_Index = 0;
 
-	for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
+	for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++) {
 		dma_memset((char *)&WIFI_FoundedAP_InWork[i], 0x00, sizeof WIFI_FoundedAP_InWork[i]);
+	}
 	WIFI_SendCommand("AT+CWLAP\r\n"); // List AP
 	return true;
 }
@@ -653,8 +689,9 @@ bool WIFI_ListAP(void (*callback)(void)) {
 static bool WIFI_ListAP_Sync(void) {
 	WIFI_SendCommand("AT+CWLAP\r\n"); // List AP
 	WIFI_FoundedAP_Index = 0;
-	for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
+	for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++) {
 		dma_memset((char *)&WIFI_FoundedAP_InWork[i], 0x00, sizeof WIFI_FoundedAP_InWork[i]);
+	}
 	uint32_t startTime = HAL_GetTick();
 	char *sep = "OK";
 	char *istr;
@@ -673,8 +710,9 @@ static bool WIFI_ListAP_Sync(void) {
 				strcpy((char *)&WIFI_FoundedAP[i], (char *)&WIFI_FoundedAP_InWork[i]);
 			}
 
-			if (WIFI_FoundedAP_Index > 0)
+			if (WIFI_FoundedAP_Index > 0) {
 				LCD_UpdateQuery.SystemMenuInfolines = true;
+			}
 
 			return true;
 		}
@@ -688,8 +726,9 @@ static bool WIFI_ListAP_Sync(void) {
 				if (end != NULL) {
 					*end = 0x00;
 					strcat((char *)&WIFI_FoundedAP_InWork[WIFI_FoundedAP_Index], start);
-					if (WIFI_FoundedAP_Index < (WIFI_FOUNDED_AP_MAXCOUNT - 1))
+					if (WIFI_FoundedAP_Index < (WIFI_FOUNDED_AP_MAXCOUNT - 1)) {
 						WIFI_FoundedAP_Index++;
+					}
 				}
 				if (sysmenu_wifi_selectap1_menu_opened || sysmenu_wifi_selectap2_menu_opened || sysmenu_wifi_selectap3_menu_opened) {
 					LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -702,8 +741,9 @@ static bool WIFI_ListAP_Sync(void) {
 }
 
 void WIFI_GoSleep(void) {
-	if (WIFI_State == WIFI_SLEEP)
+	if (WIFI_State == WIFI_SLEEP) {
 		return;
+	}
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_DEEPSLEEP;
 	WIFI_SendCommand("AT+GSLP=1000\r\n"); // go sleep
@@ -721,8 +761,9 @@ static void WIFI_SendCommand(char *command) {
 	HAL_UART_Transmit_IT(&HRDW_WIFI_UART, (uint8_t *)command, (uint16_t)strlen(command));
 	commandStartTime = HAL_GetTick();
 	HAL_Delay(WIFI_COMMAND_DELAY);
-	if (TRX.Debug_Type == TRX_DEBUG_WIFI) // DEBUG
+	if (TRX.Debug_Type == TRX_DEBUG_WIFI) { // DEBUG
 		print("WIFI_S: ", command);
+	}
 }
 
 static bool WIFI_WaitForOk(void) {
@@ -734,12 +775,14 @@ static bool WIFI_WaitForOk(void) {
 		if (WIFI_TryGetLine()) {
 			// OK
 			istr = strstr(WIFI_readedLine, sep);
-			if (istr != NULL)
+			if (istr != NULL) {
 				return true;
+			}
 			// ERROR
 			istr = strstr(WIFI_readedLine, sep2);
-			if (istr != NULL)
+			if (istr != NULL) {
 				return false;
+			}
 		}
 		CPULOAD_GoToSleepMode();
 		CPULOAD_WakeUp();
@@ -753,8 +796,9 @@ static bool WIFI_TryGetLine(void) {
 
 	Aligned_CleanInvalidateDCache_by_Addr((uint32_t)WIFI_AnswerBuffer, sizeof(WIFI_AnswerBuffer));
 	uint16_t dma_index = WIFI_ANSWER_BUFFER_SIZE - (uint16_t)__HAL_DMA_GET_COUNTER(HRDW_WIFI_UART.hdmarx);
-	if (WIFI_Answer_ReadIndex == dma_index)
+	if (WIFI_Answer_ReadIndex == dma_index) {
 		return false;
+	}
 
 	if (dma_index < WIFI_Answer_ReadIndex) {
 		// tail
@@ -767,16 +811,19 @@ static bool WIFI_TryGetLine(void) {
 		strncpy(tmp, &WIFI_AnswerBuffer[WIFI_Answer_ReadIndex], dma_index - WIFI_Answer_ReadIndex);
 	}
 
-	if (tmp[0] == '\0')
+	if (tmp[0] == '\0') {
 		return false;
+	}
 
 	char *istr = strchr(tmp, '\n'); // look for the end of the line
-	if (istr == NULL)
+	if (istr == NULL) {
 		return false;
+	}
 
 	uint32_t len = (uint16_t)((uint32_t)istr - (uint32_t)tmp + 1);
-	if (len > WIFI_LINE_BUFFER_SIZE)
+	if (len > WIFI_LINE_BUFFER_SIZE) {
 		return false;
+	}
 	strncpy(WIFI_readedLine, tmp, len);
 
 	WIFI_Answer_ReadIndex += len;
@@ -784,15 +831,17 @@ static bool WIFI_TryGetLine(void) {
 		WIFI_Answer_ReadIndex -= WIFI_ANSWER_BUFFER_SIZE;
 	}
 
-	if (TRX.Debug_Type == TRX_DEBUG_WIFI) // DEBUG
+	if (TRX.Debug_Type == TRX_DEBUG_WIFI) { // DEBUG
 		print("WIFI_R: ", WIFI_readedLine);
+	}
 
 	return true;
 }
 
 bool WIFI_StartCATServer(void (*callback)(void)) {
-	if (WIFI_State != WIFI_READY)
+	if (WIFI_State != WIFI_READY) {
 		return false;
+	}
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_CREATESERVER;
 	WIFI_ProcessingCommandCallback = callback;
@@ -801,8 +850,9 @@ bool WIFI_StartCATServer(void (*callback)(void)) {
 }
 
 bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void (*callback)(void)) {
-	if (WIFI_State != WIFI_READY)
+	if (WIFI_State != WIFI_READY) {
 		return false;
+	}
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_SENDTCPDATA;
 	WIFI_ProcessingCommandCallback = callback;
@@ -819,8 +869,9 @@ bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void (*callback)(void)) {
 }
 
 bool WIFI_SendIQData(uint8_t *data, uint32_t size) {
-	if (WIFI_State != WIFI_READY)
+	if (WIFI_State != WIFI_READY) {
 		return false;
+	}
 #define link_id 0
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_SENDTCPDATA;
@@ -836,8 +887,9 @@ bool WIFI_SendIQData(uint8_t *data, uint32_t size) {
 }
 
 bool WIFI_UpdateFW(void (*callback)(void)) {
-	if (WIFI_State != WIFI_READY)
+	if (WIFI_State != WIFI_READY) {
 		return false;
+	}
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_UPDATEFW;
 	WIFI_ProcessingCommandCallback = callback;
@@ -865,10 +917,11 @@ static void WIFI_getHTTPResponse(void) {
 			uint32_t len = strlen(WIFI_HTTResponseHTML);
 			while (len < response_length && len < sizeof(WIFI_HTTResponseHTML) && (HAL_GetTick() - start_time) < 5000) {
 				if (WIFI_TryGetLine()) {
-					if (len + strlen(WIFI_readedLine) < sizeof(WIFI_HTTResponseHTML))
+					if (len + strlen(WIFI_readedLine) < sizeof(WIFI_HTTResponseHTML)) {
 						strcat(WIFI_HTTResponseHTML, WIFI_readedLine);
-					else
+					} else {
 						break;
+					}
 				}
 				len = strlen(WIFI_HTTResponseHTML);
 			}
@@ -907,8 +960,9 @@ static void WIFI_getHTTPResponse(void) {
 
 			// partial callback for image printing
 			readed_body_length += strlen(WIFI_HTTResponseHTML);
-			if (WIFI_ProcessingCommandCallback == WIFI_printImage_stream_callback)
+			if (WIFI_ProcessingCommandCallback == WIFI_printImage_stream_callback) {
 				WIFI_printImage_stream_partial_callback();
+			}
 
 			// may be partial content? continue downloading
 			start_time = HAL_GetTick();
@@ -932,8 +986,9 @@ static void WIFI_getHTTPResponse(void) {
 								// update timeout start
 								start_time = HAL_GetTick();
 
-								if (WIFI_ProcessingCommandCallback == WIFI_printImage_stream_callback)
+								if (WIFI_ProcessingCommandCallback == WIFI_printImage_stream_callback) {
 									WIFI_printImage_stream_partial_callback();
+								}
 							}
 						}
 					}
@@ -941,8 +996,9 @@ static void WIFI_getHTTPResponse(void) {
 			}
 
 			// cut body on content-length
-			if (strlen(WIFI_HTTResponseHTML) > WIFI_HTTP_Response_ContentLength)
+			if (strlen(WIFI_HTTResponseHTML) > WIFI_HTTP_Response_ContentLength) {
 				WIFI_HTTResponseHTML[WIFI_HTTP_Response_ContentLength] = 0;
+			}
 
 			WIFI_ProcessingCommand = WIFI_COMM_NONE;
 			WIFI_State = WIFI_READY;
@@ -971,8 +1027,9 @@ static void WIFI_sendHTTPRequest(void) {
 }
 
 bool WIFI_getHTTPpage(char *host, char *url, void (*callback)(void), bool https, bool is_repeat) {
-	if (WIFI_State != WIFI_READY && !is_repeat)
+	if (WIFI_State != WIFI_READY && !is_repeat) {
 		return false;
+	}
 	static char _host[32] = {0};
 	static char _url[128] = {0};
 	static bool _https;
@@ -991,17 +1048,19 @@ bool WIFI_getHTTPpage(char *host, char *url, void (*callback)(void), bool https,
 
 	dma_memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
 	strcat(WIFI_HOSTuri, "AT+CIPSTART=0,");
-	if (!_https)
+	if (!_https) {
 		strcat(WIFI_HOSTuri, "\"TCP\"");
-	else
+	} else {
 		strcat(WIFI_HOSTuri, "\"SSL\"");
+	}
 	strcat(WIFI_HOSTuri, ",\"");
 	strcat(WIFI_HOSTuri, _host);
 
-	if (!_https)
+	if (!_https) {
 		strcat(WIFI_HOSTuri, "\",80,10\r\n");
-	else
+	} else {
 		strcat(WIFI_HOSTuri, "\",443,10\r\n");
+	}
 
 	dma_memset(WIFI_GETuri, 0x00, sizeof(WIFI_GETuri));
 	strcat(WIFI_GETuri, _url);
@@ -1016,15 +1075,17 @@ bool WIFI_getHTTPpage(char *host, char *url, void (*callback)(void), bool https,
 static void WIFI_printText_callback(void) {
 	LCDDriver_Fill(BG_COLOR);
 #ifdef LCD_SMALL_INTERFACE
-	if (WIFI_HTTP_Response_Status == 200)
+	if (WIFI_HTTP_Response_Status == 200) {
 		LCDDriver_printText(WIFI_HTTResponseHTML, 0, 20, FG_COLOR, BG_COLOR, 1);
-	else
+	} else {
 		LCDDriver_printText("Network error", 10, 20, FG_COLOR, BG_COLOR, 1);
+	}
 #else
-	if (WIFI_HTTP_Response_Status == 200)
+	if (WIFI_HTTP_Response_Status == 200) {
 		LCDDriver_printTextFont(WIFI_HTTResponseHTML, 0, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
-	else
+	} else {
 		LCDDriver_printTextFont("Network error", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+	}
 #endif
 }
 
@@ -1054,8 +1115,9 @@ static void WIFI_printImage_stream_partial_callback(void) {
 	{
 		istr = &WIFI_HTTResponseHTML[(WIFI_RLEStreamBuffer_index * 4)];
 		strcpy(WIFI_HTTResponseHTML, istr);
-	} else
+	} else {
 		dma_memset(WIFI_HTTResponseHTML, 0x00, sizeof(WIFI_HTTResponseHTML));
+	}
 }
 
 static void WIFI_printImage_stream_callback(void) {
@@ -1215,14 +1277,18 @@ static void WIFI_getDXCluster_background_callback(void) {
 
 						istr_l = istr_r + 1;
 
-						if (WIFI_DXCLUSTER_list_count >= WIFI_DXCLUSTER_MAX_RECORDS)
+						if (WIFI_DXCLUSTER_list_count >= WIFI_DXCLUSTER_MAX_RECORDS) {
 							end = true;
-					} else
+						}
+					} else {
 						end = true;
-				} else
+					}
+				} else {
 					end = true;
-			} else
+				}
+			} else {
 				end = true;
+			}
 		}
 
 		// for(uint16_t i = 0; i < WIFI_DXCLUSTER_list_count ; i ++)
@@ -1233,12 +1299,14 @@ static void WIFI_getDXCluster_background_callback(void) {
 }
 
 bool WIFI_getDXCluster_background(void) {
-	if (!WIFI_connected || WIFI_State != WIFI_READY)
+	if (!WIFI_connected || WIFI_State != WIFI_READY) {
 		return false;
+	}
 	char url[64] = "/trx_services/cluster.php?background&band=";
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0)
+	if (band >= 0) {
 		strcat(url, BANDS[band].name);
+	}
 	sprintf(url, "%s&timeout=%d", url, TRX.FFT_DXCluster_Timeout);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_getDXCluster_background_callback, false, false);
 	return true;
@@ -1263,8 +1331,9 @@ void WIFI_getDXCluster(void) {
 	}
 	char url[64] = "/trx_services/cluster.php?band=";
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0)
+	if (band >= 0) {
 		strcat(url, BANDS[band].name);
+	}
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false, false);
 }
 
@@ -1339,13 +1408,15 @@ static void WIFI_checkFWUpdates_callback(void) {
 		}
 	}
 	WIFI_NewFW_checked = true;
-	if (sysmenu_ota_opened)
+	if (sysmenu_ota_opened) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
 }
 
 void WIFI_checkFWUpdates(void) {
-	if (WIFI_connected && WIFI_State != WIFI_READY)
+	if (WIFI_connected && WIFI_State != WIFI_READY) {
 		return;
+	}
 	char url[128];
 	sprintf(url, "/trx_services/check_fw_updates.php?dev=0&stm32=%s&fpga=%d.%d.%d", version_string, FPGA_FW_Version[2], FPGA_FW_Version[1], FPGA_FW_Version[0]);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_checkFWUpdates_callback, false, false);
@@ -1376,7 +1447,11 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void) {
 		int32_t downloaded_kb = WIFI_downloadFileToSD_startIndex / 1024;
 		if (abs(downloaded_kb_prev - downloaded_kb) >= 10) {
 			char buff[64] = {0};
+#if LCD_SMALL_INTERFACE
+			sprintf(buff, "Download %dk", downloaded_kb);
+#else
 			sprintf(buff, "Downloading file to SD ... %dk", downloaded_kb);
+#endif
 			LCD_showInfo(buff, false);
 			downloaded_kb_prev = downloaded_kb;
 		}
@@ -1434,8 +1509,9 @@ static void WIFI_downloadFileToSD_callback(void) {
 }
 
 void WIFI_downloadFileToSD(char *url, char *filename) {
-	if (WIFI_connected && WIFI_State != WIFI_READY)
+	if (WIFI_connected && WIFI_State != WIFI_READY) {
 		return;
+	}
 	get_HTTP_tryes = 0;
 	WIFI_download_inprogress = true;
 	WIFI_downloadFileToSD_compleated = false;

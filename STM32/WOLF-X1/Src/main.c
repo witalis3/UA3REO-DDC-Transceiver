@@ -257,8 +257,9 @@ int main(void) {
 	{
 		println("MENU Button pressed");
 		LoadSettings(true);
-	} else
+	} else {
 		LoadSettings(false);
+	}
 
 	// DFU bootloader
 	if (TRX.NeedGoToBootloader || PERIPH_FrontPanel_Buttons[5].state) {
@@ -292,10 +293,11 @@ int main(void) {
 	InitProfiler();
 
 	println("[OK] Calibration loading");
-	if (PERIPH_FrontPanel_Buttons[2].state && PERIPH_FrontPanel_Buttons[0].state) // Very hard reset (MENU+F4)
+	if (PERIPH_FrontPanel_Buttons[2].state && PERIPH_FrontPanel_Buttons[0].state) { // Very hard reset (MENU+F4)
 		LoadCalibration(true);
-	else
+	} else {
 		LoadCalibration(false);
+	}
 
 	sd_crc_generate_table();
 
@@ -335,11 +337,12 @@ int main(void) {
 	HAL_TIM_Base_Start_IT(&htim17);
 	println("[OK] FPGA init");
 #ifdef FRONTPANEL_SMALL_V1
-	if (PERIPH_FrontPanel_Buttons[19].state) // fpga bus test (MODE+)
+	if (PERIPH_FrontPanel_Buttons[19].state) { // fpga bus test (MODE+)
 		FPGA_Init(true, false);
-	if (PERIPH_FrontPanel_Buttons[20].state) // fpga firmware test (MODE-)
+	}
+	if (PERIPH_FrontPanel_Buttons[20].state) { // fpga firmware test (MODE-)
 		FPGA_Init(false, true);
-	else
+	} else
 #endif
 		FPGA_Init(false, false);
 	println("[OK] WIFI timer TIM3 init");
@@ -1612,8 +1615,9 @@ int fputc(int ch, FILE *f) {
 #pragma unused(f)
 
 	// SWD
-	if (SWD_DEBUG_ENABLED)
+	if (SWD_DEBUG_ENABLED) {
 		ITM_SendChar((uint32_t)ch);
+	}
 
 	// USB
 	if (USB_DEBUG_ENABLED) {

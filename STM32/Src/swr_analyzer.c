@@ -220,16 +220,18 @@ void SWR_Draw(void) {
 	static uint32_t minSWR_Freq_tmp = 0;
 	static float32_t minSWR_SWR_tmp = 99.0f;
 
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 
 	// Wait while data is being typed
 	if ((HAL_GetTick() - tick_start_time) < SWR_StepDelay) {
 		LCD_UpdateQuery.SystemMenu = true;
 		return;
 	}
-	if (TRX_SWR == 0) //-V550
+	if (TRX_SWR == 0) { //-V550
 		return;
+	}
 	tick_start_time = HAL_GetTick();
 
 	LCD_busy = true;
@@ -241,8 +243,9 @@ void SWR_Draw(void) {
 		data[graph_sweep_x] = TRX_SWR;
 		SWR_DrawGraphCol(graph_sweep_x, true);
 		// draw a marker
-		if (graph_sweep_x == graph_selected_x)
+		if (graph_sweep_x == graph_selected_x) {
 			SWR_DrawBottomGUI();
+		}
 		// calculate minimum SWR
 		if (minSWR_SWR_tmp > TRX_SWR) {
 			minSWR_SWR_tmp = TRX_SWR;
@@ -273,31 +276,36 @@ void SWR_Draw(void) {
 // get height from data id
 static uint16_t SWR_getYfromX(uint16_t x) {
 	int32_t y = graph_start_y + (int32_t)((SWR_TopSWR - data[x]) * (float32_t)(graph_height) / (SWR_TopSWR - 1.0f));
-	if (y < graph_start_y)
+	if (y < graph_start_y) {
 		y = graph_start_y;
-	if (y > ((graph_start_y + graph_height) - 1))
+	}
+	if (y > ((graph_start_y + graph_height) - 1)) {
 		y = (graph_start_y + graph_height) - 1;
+	}
 	return (uint16_t)y;
 }
 
 // display the data column
 static void SWR_DrawGraphCol(uint16_t x, bool clear) {
-	if (x >= graph_width)
+	if (x >= graph_width) {
 		return;
+	}
 
 	if (clear) {
 		// clear
 		LCDDriver_drawFastVLine((graph_start_x + x + 1), graph_start_y, graph_height - 1, COLOR_BLACK);
 		// draw stripes behind the chart
 		int16_t vres = SWR_TopSWR;
-		for (uint8_t n = 0; n < (SWR_VParts - 1); n++)
+		for (uint8_t n = 0; n < (SWR_VParts - 1); n++) {
 			LCDDriver_drawPixel((graph_start_x + x + 1), (uint16_t)(graph_start_y + ((vres / (SWR_VParts - 1)) * n * graph_height / vres)), COLOR_DGRAY);
+		}
 	}
 	// draw the graph
-	if (x > 0)
+	if (x > 0) {
 		LCDDriver_drawLine((graph_start_x + x), SWR_getYfromX(x - 1), (graph_start_x + x + 1), SWR_getYfromX(x), COLOR_RED);
-	else
+	} else {
 		LCDDriver_drawPixel((graph_start_x + x + 1), SWR_getYfromX(x), COLOR_RED);
+	}
 }
 
 // display status at the bottom of the screen
@@ -314,19 +322,23 @@ static void SWR_DrawBottomGUI(void) {
 
 // analyzer events to the encoder
 void SWR_EncRotate(int8_t direction) {
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 	LCD_busy = true;
 	// erase the old marker
 	SWR_DrawGraphCol((uint16_t)graph_selected_x, true);
-	if (direction < 0)
+	if (direction < 0) {
 		SWR_DrawGraphCol((uint16_t)graph_selected_x + 1, false);
+	}
 	// draw a new one
 	graph_selected_x += direction;
-	if (graph_selected_x < 0)
+	if (graph_selected_x < 0) {
 		graph_selected_x = 0;
-	if (graph_selected_x > (graph_width - 1))
+	}
+	if (graph_selected_x > (graph_width - 1)) {
 		graph_selected_x = graph_width - 1;
+	}
 	SWR_DrawBottomGUI();
 	LCD_busy = false;
 }
