@@ -288,6 +288,23 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 	TOUCHPAD_ProcessInterrupt();
 #endif
 
+	// Process LCD dimmer
+#ifdef HAS_BRIGHTNESS_CONTROL
+	static bool LCD_Dimmer_State = false;
+	if (!LCD_busy) {
+		LCD_busy = true;
+		if (!LCD_Dimmer_State && TRX.LCD_SleepTimeout > 0 && TRX_Inactive_Time >= TRX.LCD_SleepTimeout) {
+			LCDDriver_setBrightness(IDLE_LCD_BRIGHTNESS);
+			LCD_Dimmer_State = true;
+		}
+		if (LCD_Dimmer_State && TRX_Inactive_Time < TRX.LCD_SleepTimeout) {
+			LCDDriver_setBrightness(TRX.LCD_Brightness);
+			LCD_Dimmer_State = false;
+		}
+		LCD_busy = false;
+	}
+#endif
+	
 	static bool needLCDDoEvents = true;
 	if (ms10_30_counter >= 3) // every 30ms
 	{
@@ -346,23 +363,6 @@ void EVENTS_do_EVERY_100ms(void) // 10 hz
 	// Process Scaner
 	if (TRX_ScanMode)
 		TRX_ProcessScanMode();
-
-		// Process LCD dimmer
-#ifdef HAS_BRIGHTNESS_CONTROL
-	static bool LCD_Dimmer_State = false;
-	if (!LCD_busy) {
-		LCD_busy = true;
-		if (!LCD_Dimmer_State && TRX.LCD_SleepTimeout > 0 && TRX_Inactive_Time >= TRX.LCD_SleepTimeout) {
-			LCDDriver_setBrightness(IDLE_LCD_BRIGHTNESS);
-			LCD_Dimmer_State = true;
-		}
-		if (LCD_Dimmer_State && TRX_Inactive_Time < TRX.LCD_SleepTimeout) {
-			LCDDriver_setBrightness(TRX.LCD_Brightness);
-			LCD_Dimmer_State = false;
-		}
-		LCD_busy = false;
-	}
-#endif
 
 	// reset error flags
 	CODEC_Buffer_underrun = false;

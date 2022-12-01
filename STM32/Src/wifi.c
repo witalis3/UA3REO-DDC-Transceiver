@@ -1376,7 +1376,11 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void) {
 		int32_t downloaded_kb = WIFI_downloadFileToSD_startIndex / 1024;
 		if (abs(downloaded_kb_prev - downloaded_kb) >= 10) {
 			char buff[64] = {0};
+			#if LCD_SMALL_INTERFACE
+			sprintf(buff, "Download %dk", downloaded_kb);
+			#else
 			sprintf(buff, "Downloading file to SD ... %dk", downloaded_kb);
+			#endif
 			LCD_showInfo(buff, false);
 			downloaded_kb_prev = downloaded_kb;
 		}
