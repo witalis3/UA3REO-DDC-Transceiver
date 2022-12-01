@@ -4266,54 +4266,6 @@ refer to the applicable agreement for further details.
 	)
 )
 (symbol
-	(rect 1656 952 1936 1128)
-	(text "VCXO_PLL" (rect 95 0 171 16)(font "Arial" (font_size 10)))
-	(text "VCXO_PLL" (rect 8 160 62 172)(font "Arial" ))
-	(port
-		(pt 0 72)
-		(input)
-		(text "inclk0" (rect 0 0 31 14)(font "Arial" (font_size 8)))
-		(text "inclk0" (rect 4 56 35 70)(font "Arial" (font_size 8)))
-		(line (pt 0 72)(pt 48 72))
-	)
-	(port
-		(pt 280 72)
-		(output)
-		(text "c0" (rect 0 0 14 14)(font "Arial" (font_size 8)))
-		(text "c0" (rect 262 56 276 70)(font "Arial" (font_size 8)))
-	)
-	(drawing
-		(text "Cyclone IV E" (rect 186 156 252 168)(font "Arial" ))
-		(text "inclk0 frequency: 12.288 MHz" (rect 58 66 205 78)(font "Arial" ))
-		(text "Operation Mode: Normal" (rect 58 82 177 94)(font "Arial" ))
-		(text "Clk " (rect 59 107 79 119)(font "Arial" ))
-		(text "Ratio" (rect 84 107 109 119)(font "Arial" ))
-		(text "Ph (dg)" (rect 117 107 152 119)(font "Arial" ))
-		(text "DC (%)" (rect 161 107 197 119)(font "Arial" ))
-		(text "c0" (rect 63 124 74 136)(font "Arial" ))
-		(text "15/1" (rect 86 124 107 136)(font "Arial" ))
-		(text "0.00" (rect 125 124 146 136)(font "Arial" ))
-		(text "50.00" (rect 166 124 193 136)(font "Arial" ))
-		(line (pt 0 0)(pt 281 0))
-		(line (pt 281 0)(pt 281 177))
-		(line (pt 0 177)(pt 281 177))
-		(line (pt 0 0)(pt 0 177))
-		(line (pt 56 105)(pt 202 105))
-		(line (pt 56 121)(pt 202 121))
-		(line (pt 56 138)(pt 202 138))
-		(line (pt 56 105)(pt 56 138))
-		(line (pt 81 105)(pt 81 138)(line_width 3))
-		(line (pt 114 105)(pt 114 138)(line_width 3))
-		(line (pt 158 105)(pt 158 138)(line_width 3))
-		(line (pt 201 105)(pt 201 138))
-		(line (pt 48 56)(pt 247 56))
-		(line (pt 247 56)(pt 247 159))
-		(line (pt 48 159)(pt 247 159))
-		(line (pt 48 56)(pt 48 159))
-		(line (pt 279 72)(pt 247 72))
-	)
-)
-(symbol
 	(rect 2384 1072 2608 1152)
 	(text "vcxo_regulator" (rect 5 0 78 12)(font "Arial" ))
 	(text "NOTCXO_REGULATOR" (rect 8 64 118 81)(font "Intel Clear" ))
@@ -4395,88 +4347,6 @@ refer to the applicable agreement for further details.
 		(line (pt 0 104)(pt 176 104))
 		(line (pt 0 0)(pt 0 104))
 	)
-)
-(symbol
-	(rect 2384 888 2656 1032)
-	(text "vcxo_controller" (rect 5 0 80 12)(font "Arial" ))
-	(text "VCXO_CONTROLLER" (rect 8 128 117 140)(font "Arial" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "vcxo_clk_in" (rect 0 0 59 12)(font "Arial" ))
-		(text "vcxo_clk_in" (rect 21 27 80 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32))
-	)
-	(port
-		(pt 0 48)
-		(input)
-		(text "tcxo_clk_in" (rect 0 0 55 12)(font "Arial" ))
-		(text "tcxo_clk_in" (rect 21 43 76 55)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48))
-	)
-	(port
-		(pt 0 64)
-		(input)
-		(text "pwm_clk_in" (rect 0 0 56 12)(font "Arial" ))
-		(text "pwm_clk_in" (rect 21 59 77 71)(font "Arial" ))
-		(line (pt 0 64)(pt 16 64))
-	)
-	(port
-		(pt 0 80)
-		(input)
-		(text "VCXO_correction[15..0]" (rect 0 0 115 12)(font "Arial" ))
-		(text "VCXO_correction[15..0]" (rect 21 75 136 87)(font "Arial" ))
-		(line (pt 0 80)(pt 16 80)(line_width 3))
-	)
-	(port
-		(pt 0 96)
-		(input)
-		(text "tx" (rect 0 0 9 12)(font "Arial" ))
-		(text "tx" (rect 21 91 30 103)(font "Arial" ))
-		(line (pt 0 96)(pt 16 96))
-	)
-	(port
-		(pt 272 32)
-		(output)
-		(text "freq_error[31..0]" (rect 0 0 80 12)(font "Arial" ))
-		(text "freq_error[31..0]" (rect 184 27 264 39)(font "Arial" ))
-		(line (pt 272 32)(pt 256 32)(line_width 3))
-	)
-	(port
-		(pt 272 48)
-		(output)
-		(text "pump" (rect 0 0 27 12)(font "Arial" ))
-		(text "pump" (rect 229 43 256 55)(font "Arial" ))
-		(line (pt 272 48)(pt 256 48))
-	)
-	(port
-		(pt 272 64)
-		(output)
-		(text "PWM[31..0]" (rect 0 0 57 12)(font "Arial" ))
-		(text "PWM[31..0]" (rect 203 59 260 71)(font "Arial" ))
-		(line (pt 272 64)(pt 256 64)(line_width 3))
-	)
-	(port
-		(pt 272 80)
-		(output)
-		(text "PWM_mode[2..0]" (rect 0 0 84 12)(font "Arial" ))
-		(text "PWM_mode[2..0]" (rect 180 75 264 87)(font "Arial" ))
-		(line (pt 272 80)(pt 256 80)(line_width 3))
-	)
-	(parameter
-		"VCXO_freq"
-		"12288000"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(parameter
-		"TCXO_freq"
-		"1228800"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(drawing
-		(rectangle (rect 16 16 256 128))
-	)
-	(annotation_block (parameter)(rect 2400 824 2600 888))
 )
 (symbol
 	(rect 2640 192 2816 400)
@@ -4949,7 +4819,7 @@ refer to the applicable agreement for further details.
 (symbol
 	(rect 112 -320 288 -128)
 	(text "adc_fifo" (rect 66 0 117 16)(font "Arial" (font_size 10)))
-	(text "ADC_FIFO" (rect 8 176 57 193)(font "Intel Clear" ))
+	(text "ADC_FIFO" (rect 8 176 63 188)(font "Arial" ))
 	(port
 		(pt 0 48)
 		(input)
@@ -5008,6 +4878,136 @@ refer to the applicable agreement for further details.
 		(line (pt 0 0)(pt 0 0))
 		(line (pt 0 0)(pt 0 0))
 		(line (pt 0 0)(pt 0 0))
+	)
+)
+(symbol
+	(rect 2384 888 2656 1032)
+	(text "vcxo_controller" (rect 5 0 80 12)(font "Arial" ))
+	(text "VCXO_CONTROLLER" (rect 8 128 117 140)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "vcxo_clk_in" (rect 0 0 59 12)(font "Arial" ))
+		(text "vcxo_clk_in" (rect 21 27 80 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "tcxo_clk_in" (rect 0 0 55 12)(font "Arial" ))
+		(text "tcxo_clk_in" (rect 21 43 76 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48))
+	)
+	(port
+		(pt 0 64)
+		(input)
+		(text "pwm_clk_in" (rect 0 0 56 12)(font "Arial" ))
+		(text "pwm_clk_in" (rect 21 59 77 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64))
+	)
+	(port
+		(pt 0 80)
+		(input)
+		(text "VCXO_correction[15..0]" (rect 0 0 115 12)(font "Arial" ))
+		(text "VCXO_correction[15..0]" (rect 21 75 136 87)(font "Arial" ))
+		(line (pt 0 80)(pt 16 80)(line_width 3))
+	)
+	(port
+		(pt 0 96)
+		(input)
+		(text "tx" (rect 0 0 9 12)(font "Arial" ))
+		(text "tx" (rect 21 91 30 103)(font "Arial" ))
+		(line (pt 0 96)(pt 16 96))
+	)
+	(port
+		(pt 272 32)
+		(output)
+		(text "freq_error[31..0]" (rect 0 0 80 12)(font "Arial" ))
+		(text "freq_error[31..0]" (rect 184 27 264 39)(font "Arial" ))
+		(line (pt 272 32)(pt 256 32)(line_width 3))
+	)
+	(port
+		(pt 272 48)
+		(output)
+		(text "pump" (rect 0 0 27 12)(font "Arial" ))
+		(text "pump" (rect 229 43 256 55)(font "Arial" ))
+		(line (pt 272 48)(pt 256 48))
+	)
+	(port
+		(pt 272 64)
+		(output)
+		(text "PWM[31..0]" (rect 0 0 57 12)(font "Arial" ))
+		(text "PWM[31..0]" (rect 203 59 260 71)(font "Arial" ))
+		(line (pt 272 64)(pt 256 64)(line_width 3))
+	)
+	(port
+		(pt 272 80)
+		(output)
+		(text "PWM_mode[2..0]" (rect 0 0 84 12)(font "Arial" ))
+		(text "PWM_mode[2..0]" (rect 180 75 264 87)(font "Arial" ))
+		(line (pt 272 80)(pt 256 80)(line_width 3))
+	)
+	(parameter
+		"VCXO_freq"
+		"12288000"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(parameter
+		"TCXO_freq"
+		"1228800"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(drawing
+		(rectangle (rect 16 16 256 128))
+	)
+	(annotation_block (parameter)(rect 2400 824 2599 881))
+)
+(symbol
+	(rect 1656 952 1896 1104)
+	(text "VCXO_PLL" (rect 88 0 164 16)(font "Arial" (font_size 10)))
+	(text "VCXO_PLL" (rect 8 136 62 148)(font "Arial" ))
+	(port
+		(pt 0 64)
+		(input)
+		(text "inclk0" (rect 0 0 31 14)(font "Arial" (font_size 8)))
+		(text "inclk0" (rect 4 50 35 64)(font "Arial" (font_size 8)))
+		(line (pt 0 64)(pt 40 64))
+	)
+	(port
+		(pt 240 64)
+		(output)
+		(text "c0" (rect 0 0 14 14)(font "Arial" (font_size 8)))
+		(text "c0" (rect 224 50 238 64)(font "Arial" (font_size 8)))
+	)
+	(drawing
+		(text "Cyclone IV E" (rect 164 136 230 148)(font "Arial" ))
+		(text "inclk0 frequency: 12.288 MHz" (rect 50 59 197 71)(font "Arial" ))
+		(text "Operation Mode: Normal" (rect 50 72 169 84)(font "Arial" ))
+		(text "Clk " (rect 51 93 71 105)(font "Arial" ))
+		(text "Ratio" (rect 72 93 97 105)(font "Arial" ))
+		(text "Ph (dg)" (rect 98 93 133 105)(font "Arial" ))
+		(text "DC (%)" (rect 132 93 168 105)(font "Arial" ))
+		(text "c0" (rect 54 107 65 119)(font "Arial" ))
+		(text "15/1" (rect 74 107 95 119)(font "Arial" ))
+		(text "0.00" (rect 104 107 125 119)(font "Arial" ))
+		(text "50.00" (rect 136 107 163 119)(font "Arial" ))
+		(line (pt 0 0)(pt 241 0))
+		(line (pt 241 0)(pt 241 153))
+		(line (pt 0 153)(pt 241 153))
+		(line (pt 0 0)(pt 0 153))
+		(line (pt 48 91)(pt 164 91))
+		(line (pt 48 104)(pt 164 104))
+		(line (pt 48 118)(pt 164 118))
+		(line (pt 48 91)(pt 48 118))
+		(line (pt 69 91)(pt 69 118)(line_width 3))
+		(line (pt 95 91)(pt 95 118)(line_width 3))
+		(line (pt 129 91)(pt 129 118)(line_width 3))
+		(line (pt 163 91)(pt 163 118))
+		(line (pt 40 48)(pt 207 48))
+		(line (pt 207 48)(pt 207 135))
+		(line (pt 40 135)(pt 207 135))
+		(line (pt 40 48)(pt 40 135))
+		(line (pt 239 64)(pt 207 64))
 	)
 )
 (connector
@@ -5840,10 +5840,6 @@ refer to the applicable agreement for further details.
 	(pt -616 -48)
 	(pt -432 -48)
 	(bus)
-)
-(connector
-	(pt 2368 784)
-	(pt 2368 920)
 )
 (connector
 	(pt 2368 920)
@@ -7225,12 +7221,6 @@ refer to the applicable agreement for further details.
 	(pt 2944 416)
 )
 (connector
-	(text "VCXO_ERROR[31..0]" (rect 2946 368 3046 385)(font "Intel Clear" ))
-	(pt 3088 384)
-	(pt 2936 384)
-	(bus)
-)
-(connector
 	(pt 5440 112)
 	(pt 5472 112)
 	(bus)
@@ -7756,30 +7746,6 @@ refer to the applicable agreement for further details.
 	(pt 2384 952)
 )
 (connector
-	(pt 1968 952)
-	(pt 1968 1024)
-)
-(connector
-	(pt 1968 1024)
-	(pt 1936 1024)
-)
-(connector
-	(pt 1600 936)
-	(pt 1600 1024)
-)
-(connector
-	(pt 1600 1024)
-	(pt 1656 1024)
-)
-(connector
-	(pt 1552 936)
-	(pt 1600 936)
-)
-(connector
-	(pt 1600 936)
-	(pt 2384 936)
-)
-(connector
 	(pt 1248 936)
 	(pt 1280 936)
 )
@@ -7808,16 +7774,6 @@ refer to the applicable agreement for further details.
 	(pt 2696 1072)
 	(pt 2696 952)
 	(bus)
-)
-(connector
-	(text "VCXO_ERROR[31..0]" (rect 2730 904 2830 921)(font "Intel Clear" ))
-	(pt 2656 920)
-	(pt 2808 920)
-	(bus)
-)
-(connector
-	(pt 2680 936)
-	(pt 2656 936)
 )
 (connector
 	(pt 2696 952)
@@ -7936,6 +7892,58 @@ refer to the applicable agreement for further details.
 	(pt 96 -232)
 	(pt 112 -232)
 )
+(connector
+	(pt 1968 952)
+	(pt 1968 1016)
+)
+(connector
+	(pt 1896 1016)
+	(pt 1968 1016)
+)
+(connector
+	(pt 1600 936)
+	(pt 1600 1016)
+)
+(connector
+	(pt 1552 936)
+	(pt 1600 936)
+)
+(connector
+	(pt 1600 936)
+	(pt 2384 936)
+)
+(connector
+	(pt 1600 1016)
+	(pt 1656 1016)
+)
+(connector
+	(pt 2384 1104)
+	(pt 2368 1104)
+)
+(connector
+	(pt 2368 784)
+	(pt 2368 920)
+)
+(connector
+	(pt 2368 920)
+	(pt 2368 1104)
+)
+(connector
+	(pt 2656 936)
+	(pt 2680 936)
+)
+(connector
+	(text "FREQ_ERROR[31..0]" (rect 2664 904 2761 921)(font "Intel Clear" ))
+	(pt 2656 920)
+	(pt 2720 920)
+	(bus)
+)
+(connector
+	(text "FREQ_ERROR[31..0]" (rect 2954 368 3051 385)(font "Intel Clear" ))
+	(pt 3088 384)
+	(pt 2952 384)
+	(bus)
+)
 (junction (pt 440 32))
 (junction (pt 440 448))
 (junction (pt -56 -16))
@@ -8032,4 +8040,5 @@ refer to the applicable agreement for further details.
 (junction (pt 96 -232))
 (junction (pt 440 -208))
 (junction (pt 96 -184))
+(junction (pt 2368 920))
 (text "110.4mhz" (rect 3704 776 3764 795)(font "Intel Clear" (font_size 8)))
