@@ -385,8 +385,9 @@ void AUTO_CALIBRATION_Draw(void) {
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 		}
 
-		if (AUTO_CALIBRATION_current_page > 9)
+		if (AUTO_CALIBRATION_current_page > 9) {
 			AUTO_CALIBRATION_current_page = 9;
+		}
 	}
 
 	if (AUTO_CALIBRATION_calibration_type == 1) // Power calibration
@@ -406,32 +407,45 @@ void AUTO_CALIBRATION_Draw(void) {
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 		}
 
-		if (AUTO_CALIBRATION_current_page == 1)
+		if (AUTO_CALIBRATION_current_page == 1) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_2200m, 137 * 1000, "2200M Calibration");
-		if (AUTO_CALIBRATION_current_page == 2)
+		}
+		if (AUTO_CALIBRATION_current_page == 2) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_160m, 1900 * 1000, "160M Calibration");
-		if (AUTO_CALIBRATION_current_page == 3)
+		}
+		if (AUTO_CALIBRATION_current_page == 3) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_80m, 3650 * 1000, "80M Calibration");
-		if (AUTO_CALIBRATION_current_page == 4)
+		}
+		if (AUTO_CALIBRATION_current_page == 4) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_40m, 7100 * 1000, "40M Calibration");
-		if (AUTO_CALIBRATION_current_page == 5)
+		}
+		if (AUTO_CALIBRATION_current_page == 5) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_30m, 10110 * 1000, "30M Calibration");
-		if (AUTO_CALIBRATION_current_page == 6)
+		}
+		if (AUTO_CALIBRATION_current_page == 6) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_20m, 14100 * 1000, "20M Calibration");
-		if (AUTO_CALIBRATION_current_page == 7)
+		}
+		if (AUTO_CALIBRATION_current_page == 7) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_17m, 18100 * 1000, "17M Calibration");
-		if (AUTO_CALIBRATION_current_page == 8)
+		}
+		if (AUTO_CALIBRATION_current_page == 8) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_15m, 21200 * 1000, "15M Calibration");
-		if (AUTO_CALIBRATION_current_page == 9)
+		}
+		if (AUTO_CALIBRATION_current_page == 9) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_12m, 24900 * 1000, "12M Calibration");
-		if (AUTO_CALIBRATION_current_page == 10)
+		}
+		if (AUTO_CALIBRATION_current_page == 10) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_cb, 27000 * 1000, "CB Calibration");
-		if (AUTO_CALIBRATION_current_page == 11)
+		}
+		if (AUTO_CALIBRATION_current_page == 11) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_10m, 28800 * 1000, "10M Calibration");
-		if (AUTO_CALIBRATION_current_page == 12)
+		}
+		if (AUTO_CALIBRATION_current_page == 12) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_6m, 52000 * 1000, "6M Calibration");
-		if (AUTO_CALIBRATION_current_page == 13)
+		}
+		if (AUTO_CALIBRATION_current_page == 13) {
 			AUTO_CALIBRATION_DoPowerCalibration(&CALIBRATE.rf_out_power_2m, 145000 * 1000, "2M Calibration");
+		}
 
 		if (AUTO_CALIBRATION_current_page == 14) // Done
 		{
@@ -453,10 +467,11 @@ void AUTO_CALIBRATION_Draw(void) {
 			pos_y += margin_bottom;
 
 			pos_y += margin_bottom;
-			if (!AUTO_CALIBRATION_finished)
+			if (!AUTO_CALIBRATION_finished) {
 				LCDDriver_printText("Calibration started", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			else
+			} else {
 				LCDDriver_printText("Calibration finished", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			}
 			pos_y += margin_bottom;
 
 			pos_y += margin_bottom;
@@ -465,8 +480,9 @@ void AUTO_CALIBRATION_Draw(void) {
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 		}
 
-		if (AUTO_CALIBRATION_current_page > 14)
+		if (AUTO_CALIBRATION_current_page > 14) {
 			AUTO_CALIBRATION_current_page = 14;
+		}
 	}
 
 	// Pager
@@ -479,58 +495,71 @@ void AUTO_CALIBRATION_Draw(void) {
 
 // events to the encoder
 void AUTO_CALIBRATION_EncRotate(int8_t direction) {
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 
 	if (AUTO_CALIBRATION_calibration_type == 0) // swr test
 	{
 		if (AUTO_CALIBRATION_current_page == 1) // HF FWD
 		{
 			CALIBRATE.SWR_FWD_Calibration_HF += (float32_t)direction * 0.1f;
-			if (CALIBRATE.SWR_FWD_Calibration_HF < 1.0f)
+			if (CALIBRATE.SWR_FWD_Calibration_HF < 1.0f) {
 				CALIBRATE.SWR_FWD_Calibration_HF = 1.0f;
-			if (CALIBRATE.SWR_FWD_Calibration_HF > 200.0f)
+			}
+			if (CALIBRATE.SWR_FWD_Calibration_HF > 200.0f) {
 				CALIBRATE.SWR_FWD_Calibration_HF = 200.0f;
+			}
 		}
 		if (AUTO_CALIBRATION_current_page == 2) // HF BWD
 		{
 			CALIBRATE.SWR_BWD_Calibration_HF += (float32_t)direction * 0.1f;
-			if (CALIBRATE.SWR_BWD_Calibration_HF < 1.0f)
+			if (CALIBRATE.SWR_BWD_Calibration_HF < 1.0f) {
 				CALIBRATE.SWR_BWD_Calibration_HF = 1.0f;
-			if (CALIBRATE.SWR_BWD_Calibration_HF > 200.0f)
+			}
+			if (CALIBRATE.SWR_BWD_Calibration_HF > 200.0f) {
 				CALIBRATE.SWR_BWD_Calibration_HF = 200.0f;
+			}
 		}
 		if (AUTO_CALIBRATION_current_page == 4) // 6m FWD
 		{
 			CALIBRATE.SWR_FWD_Calibration_6M += (float32_t)direction * 0.1f;
-			if (CALIBRATE.SWR_FWD_Calibration_6M < 1.0f)
+			if (CALIBRATE.SWR_FWD_Calibration_6M < 1.0f) {
 				CALIBRATE.SWR_FWD_Calibration_6M = 1.0f;
-			if (CALIBRATE.SWR_FWD_Calibration_6M > 200.0f)
+			}
+			if (CALIBRATE.SWR_FWD_Calibration_6M > 200.0f) {
 				CALIBRATE.SWR_FWD_Calibration_6M = 200.0f;
+			}
 		}
 		if (AUTO_CALIBRATION_current_page == 5) // 6m BWD
 		{
 			CALIBRATE.SWR_BWD_Calibration_6M += (float32_t)direction * 0.1f;
-			if (CALIBRATE.SWR_BWD_Calibration_6M < 1.0f)
+			if (CALIBRATE.SWR_BWD_Calibration_6M < 1.0f) {
 				CALIBRATE.SWR_BWD_Calibration_6M = 1.0f;
-			if (CALIBRATE.SWR_BWD_Calibration_6M > 200.0f)
+			}
+			if (CALIBRATE.SWR_BWD_Calibration_6M > 200.0f) {
 				CALIBRATE.SWR_BWD_Calibration_6M = 200.0f;
+			}
 		}
 		if (AUTO_CALIBRATION_current_page == 7) // VHF FWD
 		{
 			CALIBRATE.SWR_FWD_Calibration_VHF += (float32_t)direction * 0.1f;
-			if (CALIBRATE.SWR_FWD_Calibration_VHF < 1.0f)
+			if (CALIBRATE.SWR_FWD_Calibration_VHF < 1.0f) {
 				CALIBRATE.SWR_FWD_Calibration_VHF = 1.0f;
-			if (CALIBRATE.SWR_FWD_Calibration_VHF > 200.0f)
+			}
+			if (CALIBRATE.SWR_FWD_Calibration_VHF > 200.0f) {
 				CALIBRATE.SWR_FWD_Calibration_VHF = 200.0f;
+			}
 		}
 		if (AUTO_CALIBRATION_current_page == 8) // VHF BWD
 		{
 			CALIBRATE.SWR_BWD_Calibration_VHF += (float32_t)direction * 0.1f;
-			if (CALIBRATE.SWR_BWD_Calibration_VHF < 1.0f)
+			if (CALIBRATE.SWR_BWD_Calibration_VHF < 1.0f) {
 				CALIBRATE.SWR_BWD_Calibration_VHF = 1.0f;
-			if (CALIBRATE.SWR_BWD_Calibration_VHF > 200.0f)
+			}
+			if (CALIBRATE.SWR_BWD_Calibration_VHF > 200.0f) {
 				CALIBRATE.SWR_BWD_Calibration_VHF = 200.0f;
+			}
 		}
 	}
 
@@ -538,8 +567,9 @@ void AUTO_CALIBRATION_EncRotate(int8_t direction) {
 }
 
 void AUTO_CALIBRATION_Enc2Rotate(int8_t direction) {
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 
 	LCD_busy = true;
 	LCDDriver_Fill(BG_COLOR);
@@ -550,15 +580,17 @@ void AUTO_CALIBRATION_Enc2Rotate(int8_t direction) {
 	AUTO_CALIBRATION_finished = false;
 
 	AUTO_CALIBRATION_current_page += direction;
-	if (AUTO_CALIBRATION_current_page < 0)
+	if (AUTO_CALIBRATION_current_page < 0) {
 		AUTO_CALIBRATION_current_page = 0;
+	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 void AUTO_CALIBRATION_Enc2Click() {
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 
 	LCD_busy = true;
 	LCDDriver_Fill(BG_COLOR);
@@ -626,8 +658,9 @@ static bool AUTO_CALIBRATION_ProcessPowerCalibration(uint8_t *rf_calibration) {
 		AUTO_CALIBRATION_current_power_low_diff++;
 
 		if (AUTO_CALIBRATION_current_power_low_diff > 2) {
-			if (*rf_calibration > 0)
+			if (*rf_calibration > 0) {
 				*rf_calibration = *rf_calibration - 1;
+			}
 			return true;
 		}
 	} else {
@@ -648,8 +681,9 @@ static bool AUTO_CALIBRATION_ProcessPowerCalibration(uint8_t *rf_calibration) {
 	}
 
 	if (TRX_PWR_Forward_SMOOTHED >= CALIBRATE.MAX_RF_POWER_ON_METER) { // target
-		if (*rf_calibration > 0)
+		if (*rf_calibration > 0) {
 			*rf_calibration = *rf_calibration - 1;
+		}
 		return true;
 	}
 

@@ -51,13 +51,15 @@ void FILEMANAGER_Draw(bool redraw) {
 
 		LCDDriver_printText("SD CARD FILE MANAGER", 5, cur_y, COLOR_GREEN, BG_COLOR, font_size);
 		cur_y += margin_bottom;
-		if (strlen(FILEMANAGER_CurrentPath) == 0)
+		if (strlen(FILEMANAGER_CurrentPath) == 0) {
 			LCDDriver_printText("/", 5, cur_y, FG_COLOR, BG_COLOR, font_size);
-		else
+		} else {
 			LCDDriver_printText(FILEMANAGER_CurrentPath, 5, cur_y, FG_COLOR, BG_COLOR, font_size);
+		}
 		cur_y += margin_bottom;
-		if (FILEMANAGER_files_startindex == 0)
+		if (FILEMANAGER_files_startindex == 0) {
 			LCDDriver_printText("..", 5, cur_y, FG_COLOR, BG_COLOR, font_size);
+		}
 		cur_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
 
 		for (uint16_t file_id = 0; file_id < FILEMANAGER_LISTING_ITEMS_ON_PAGE; file_id++) {
@@ -77,8 +79,9 @@ void FILEMANAGER_Draw(bool redraw) {
 
 	LCDDriver_drawFastHLine(0, 5 + margin_bottom + margin_bottom + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, FG_COLOR);
 
-	if (FILEMANAGER_dialog_opened)
+	if (FILEMANAGER_dialog_opened) {
 		FILEMANAGER_OpenDialog();
+	}
 
 	LCD_UpdateQuery.SystemMenu = false;
 }
@@ -121,21 +124,24 @@ void FILEMANAGER_EventRotate(int8_t direction) {
 
 void FILEMANAGER_EventSecondaryRotate(int8_t direction) {
 	if (FILEMANAGER_dialog_opened) {
-		if (FILEMANAGER_dialog_button_index > 0 || direction > 0)
+		if (FILEMANAGER_dialog_button_index > 0 || direction > 0) {
 			FILEMANAGER_dialog_button_index += direction;
+		}
 		FILEMANAGER_OpenDialog();
 		return;
 	}
 
 	LCDDriver_drawFastHLine(0, 5 + margin_bottom + margin_bottom + LAYOUT->SYSMENU_ITEM_HEIGHT + (current_index * LAYOUT->SYSMENU_ITEM_HEIGHT) - 1, LAYOUT->SYSMENU_W, BG_COLOR);
-	if (direction > 0 || current_index > 0)
+	if (direction > 0 || current_index > 0) {
 		current_index += direction;
+	}
 
 	int16_t real_file_index = FILEMANAGER_files_startindex + current_index - 1;
 
 	// limit
-	if (real_file_index >= FILEMANAGER_files_count)
+	if (real_file_index >= FILEMANAGER_files_count) {
 		current_index--;
+	}
 
 	// list down
 	if (current_index > FILEMANAGER_LISTING_ITEMS_ON_PAGE && real_file_index < FILEMANAGER_files_count) {
@@ -157,15 +163,17 @@ void FILEMANAGER_EventSecondaryRotate(int8_t direction) {
 void FILEMANAGER_Closing(void) { first_start = true; }
 
 static void FILEMANAGER_Refresh(void) {
-	if (!SD_doCommand(SDCOMM_LIST_DIRECTORY, false))
+	if (!SD_doCommand(SDCOMM_LIST_DIRECTORY, false)) {
 		SYSMENU_eventCloseSystemMenu();
+	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 void FILEMANAGER_StartRecCQWav(void) {
-	if (!SD_doCommand(SDCOMM_CREATE_CQ_MESSAGE_FILE, false))
+	if (!SD_doCommand(SDCOMM_CREATE_CQ_MESSAGE_FILE, false)) {
 		SYSMENU_eventCloseSystemMenu();
+	}
 
 	start_rec_cqmessage = true;
 	first_start = true;
@@ -204,8 +212,9 @@ static void FILEMANAGER_OpenDialog(void) {
 		allow_flash_jic = true;
 	}
 
-	if (FILEMANAGER_dialog_button_index > max_buttons_index)
+	if (FILEMANAGER_dialog_button_index > max_buttons_index) {
 		FILEMANAGER_dialog_button_index = max_buttons_index;
+	}
 
 #ifdef LCD_SMALL_INTERFACE
 #define margin 10
@@ -237,8 +246,9 @@ static void FILEMANAGER_OpenDialog(void) {
 	                        &FreeSans9pt7b);
 #endif
 	button_y += button_h + margin;
-	if (button_active)
+	if (button_active) {
 		current_dialog_action = FILMAN_ACT_CANCEL;
+	}
 	print_index++;
 	// play wav
 	if (allow_play_wav) {
@@ -266,8 +276,9 @@ static void FILEMANAGER_OpenDialog(void) {
 #endif
 		}
 		button_y += button_h + margin;
-		if (button_active)
+		if (button_active) {
 			current_dialog_action = FILMAN_ACT_PLAY_WAV;
+		}
 		print_index++;
 
 		// Tansmit WAV
@@ -295,8 +306,9 @@ static void FILEMANAGER_OpenDialog(void) {
 #endif
 		}
 		button_y += button_h + margin;
-		if (button_active)
+		if (button_active) {
 			current_dialog_action = FILMAN_ACT_TRANSMIT_WAV;
+		}
 		print_index++;
 	}
 	// rec cq message
@@ -326,8 +338,9 @@ static void FILEMANAGER_OpenDialog(void) {
 #endif
 		}
 		button_y += button_h + margin;
-		if (button_active)
+		if (button_active) {
 			current_dialog_action = FILMAN_ACT_REC_CQ_WAV;
+		}
 		print_index++;
 	}
 	// flash bin
@@ -346,8 +359,9 @@ static void FILEMANAGER_OpenDialog(void) {
 #endif
 
 		button_y += button_h + margin;
-		if (button_active)
+		if (button_active) {
 			current_dialog_action = FILMAN_ACT_FLASHBIN;
+		}
 		print_index++;
 	}
 	// flash jic
@@ -366,8 +380,9 @@ static void FILEMANAGER_OpenDialog(void) {
 #endif
 
 		button_y += button_h + margin;
-		if (button_active)
+		if (button_active) {
 			current_dialog_action = FILMAN_ACT_FLASHJIC;
+		}
 		print_index++;
 	}
 	// delete
@@ -384,14 +399,16 @@ static void FILEMANAGER_OpenDialog(void) {
 #endif
 
 	button_y += button_h + margin;
-	if (button_active)
+	if (button_active) {
 		current_dialog_action = FILMAN_ACT_DELETE;
+	}
 	print_index++;
 }
 
 static void FILEMANAGER_DialogAction(void) {
-	if (SD_PlayInProcess)
+	if (SD_PlayInProcess) {
 		SD_NeedStopPlay = true;
+	}
 
 	if (current_dialog_action == FILMAN_ACT_CANCEL) // back
 	{
@@ -580,10 +597,11 @@ void FILEMANAGER_OTAUpdate_handler(void) {
 		downloaded_fpga_crc = false;
 		downloaded_stm_fw = false;
 		downloaded_stm_crc = false;
-		if (WIFI_NewFW_FPGA)
+		if (WIFI_NewFW_FPGA) {
 			sysmenu_ota_opened_state = 1;
-		else
+		} else {
 			sysmenu_ota_opened_state = 5;
+		}
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
@@ -615,10 +633,11 @@ void FILEMANAGER_OTAUpdate_handler(void) {
 	if (sysmenu_ota_opened_state == 4 && WIFI_downloadFileToSD_compleated) {
 		LCD_showInfo("FPGA CRC downloaded", true);
 		downloaded_fpga_crc = true;
-		if (WIFI_NewFW_STM32)
+		if (WIFI_NewFW_STM32) {
 			sysmenu_ota_opened_state = 5;
-		else
+		} else {
 			sysmenu_ota_opened_state = 9;
+		}
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
@@ -648,10 +667,11 @@ void FILEMANAGER_OTAUpdate_handler(void) {
 	if (sysmenu_ota_opened_state == 8 && WIFI_downloadFileToSD_compleated) {
 		LCD_showInfo("STM32 CRC downloaded", true);
 		downloaded_stm_crc = true;
-		if (WIFI_NewFW_FPGA)
+		if (WIFI_NewFW_FPGA) {
 			sysmenu_ota_opened_state = 9;
-		else
+		} else {
 			sysmenu_ota_opened_state = 10;
+		}
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
@@ -704,10 +724,11 @@ void FILEMANAGER_OTAUpdate_handler(void) {
 			if (strstr((char *)SD_workbuffer_A, tmp) != NULL) {
 				LCD_showInfo("FPGA CRC OK", true);
 
-				if (WIFI_NewFW_STM32)
+				if (WIFI_NewFW_STM32) {
 					sysmenu_ota_opened_state = 10;
-				else
+				} else {
 					sysmenu_ota_opened_state = 15;
+				}
 			} else {
 				LCD_showInfo("FPGA CRC ERROR", true);
 				sysmenu_ota_opened_state = 0;

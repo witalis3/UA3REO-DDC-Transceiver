@@ -18,10 +18,11 @@ void ADPCM_Init(void) {
 void VOCODER_Process(void) {
 	// encode audio
 	uint32_t outbuff_size = 0;
-	if (!SD_workbuffer_current)
+	if (!SD_workbuffer_current) {
 		adpcm_encode_block(ADPCM_cnxt, (uint8_t *)&SD_workbuffer_A[SD_RecordBufferIndex], &outbuff_size, VOCODER_Buffer, SIZE_ADPCM_BLOCK);
-	else
+	} else {
 		adpcm_encode_block(ADPCM_cnxt, (uint8_t *)&SD_workbuffer_B[SD_RecordBufferIndex], &outbuff_size, VOCODER_Buffer, SIZE_ADPCM_BLOCK);
+	}
 	SD_RecordBufferIndex += SIZE_ADPCM_COMPRESSED_BLOCK; // outbuff_size;
 
 	if (SD_RecordBufferIndex == FF_MAX_SS) {
@@ -41,10 +42,11 @@ bool VODECODER_Process(void) {
 			SD_doCommand(SDCOMM_PROCESS_PLAY, false);
 		}
 
-		if (!SD_workbuffer_current)
+		if (!SD_workbuffer_current) {
 			adpcm_decode_block(VOCODER_Buffer, (uint8_t *)&SD_workbuffer_A[VOCODER_PLAYER_SD_BUFFER_INDEX], SIZE_ADPCM_COMPRESSED_BLOCK, 1);
-		else
+		} else {
 			adpcm_decode_block(VOCODER_Buffer, (uint8_t *)&SD_workbuffer_B[VOCODER_PLAYER_SD_BUFFER_INDEX], SIZE_ADPCM_COMPRESSED_BLOCK, 1);
+		}
 
 		VOCODER_PLAYER_SD_BUFFER_INDEX += SIZE_ADPCM_COMPRESSED_BLOCK;
 
@@ -53,8 +55,9 @@ bool VODECODER_Process(void) {
 		}
 		return true;
 	}
-	if (!SD_CommandInProcess)
+	if (!SD_CommandInProcess) {
 		SD_doCommand(SDCOMM_PROCESS_PLAY, false);
+	}
 	return false;
 }
 

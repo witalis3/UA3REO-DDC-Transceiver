@@ -24,12 +24,15 @@ static int32_t pack28(const char *callsign) {
 	int32_t MAX22 = 4194304L;
 
 	// Check for special tokens first
-	if (starts_with(callsign, "DE "))
+	if (starts_with(callsign, "DE ")) {
 		return 0;
-	if (starts_with(callsign, "QRZ "))
+	}
+	if (starts_with(callsign, "QRZ ")) {
 		return 1;
-	if (starts_with(callsign, "CQ "))
+	}
+	if (starts_with(callsign, "CQ ")) {
 		return 2;
+	}
 
 	if (starts_with(callsign, "CQ_")) {
 		int nnum = 0, nlet = 0;
@@ -107,18 +110,24 @@ static int32_t pack28(const char *callsign) {
 // Return base call "bc" and a logical "cok" indicator.
 static bool chkcall(const char *call, char *bc) {
 	int length = strlen(call); // n1=len_trim(w)
-	if (length > 11)
+	if (length > 11) {
 		return false;
-	if (0 != strchr(call, '.'))
+	}
+	if (0 != strchr(call, '.')) {
 		return false;
-	if (0 != strchr(call, '+'))
+	}
+	if (0 != strchr(call, '+')) {
 		return false;
-	if (0 != strchr(call, '-'))
+	}
+	if (0 != strchr(call, '-')) {
 		return false;
-	if (0 != strchr(call, '?'))
+	}
+	if (0 != strchr(call, '?')) {
 		return false;
-	if (length > 6 && 0 != strchr(call, '/'))
+	}
+	if (length > 6 && 0 != strchr(call, '/')) {
 		return false;
+	}
 
 	// TODO: implement suffix parsing (or rework?)
 	// bc=w(1:6)
@@ -141,12 +150,15 @@ static uint16_t packgrid(const char *grid4) {
 	}
 
 	// Take care of special cases
-	if (equals(grid4, "RRR"))
+	if (equals(grid4, "RRR")) {
 		return MAXGRID4 + 2;
-	if (equals(grid4, "RR73"))
+	}
+	if (equals(grid4, "RR73")) {
 		return MAXGRID4 + 3;
-	if (equals(grid4, "73"))
+	}
+	if (equals(grid4, "73")) {
 		return MAXGRID4 + 4;
+	}
 
 	// Check for standard 4 letter grid
 	if (in_range(grid4[0], 'A', 'R') && in_range(grid4[1], 'A', 'R') && is_digit(grid4[2]) && is_digit(grid4[3])) {
@@ -177,8 +189,9 @@ static uint16_t packgrid(const char *grid4) {
 int pack77_1(const char *msg, uint8_t *b77) {
 	// Locate the first delimiter
 	const char *s1 = strchr(msg, ' ');
-	if (s1 == 0)
+	if (s1 == 0) {
 		return -1;
+	}
 
 	const char *call1 = msg;    // 1st call
 	const char *call2 = s1 + 1; // 2nd call
@@ -186,8 +199,9 @@ int pack77_1(const char *msg, uint8_t *b77) {
 	int32_t n28a = pack28(call1);
 	int32_t n28b = pack28(call2);
 
-	if (n28a < 0 || n28b < 0)
+	if (n28a < 0 || n28b < 0) {
 		return -1;
+	}
 
 	uint16_t igrid4;
 
@@ -270,8 +284,9 @@ void packtext77(const char *text, uint8_t *b77) {
 
 		// Now add the number to our long number
 		for (int i = 8; i >= 0; --i) {
-			if (x == 0)
+			if (x == 0) {
 				break;
+			}
 			x += b77[i];
 			b77[i] = (x & 0xFF);
 			x >>= 8;

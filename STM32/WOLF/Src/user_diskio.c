@@ -62,10 +62,11 @@ DSTATUS disk_initialize(BYTE pdrv /* Physical drive nmuber to identify the drive
 ) {
 	/* USER CODE BEGIN INIT */
 
-	if (sd_ini() == 0)
+	if (sd_ini() == 0) {
 		Stat &= ~STA_NOINIT;
-	else
+	} else {
 		Stat |= STA_NOINIT;
+	}
 
 	return Stat;
 	/* USER CODE END INIT */
@@ -79,8 +80,9 @@ DSTATUS disk_initialize(BYTE pdrv /* Physical drive nmuber to identify the drive
 DSTATUS disk_status(BYTE pdrv /* Physical drive number to identify the drive */
 ) {
 	/* USER CODE BEGIN STATUS */
-	if (pdrv)
+	if (pdrv) {
 		return STA_NOINIT;
+	}
 	return Stat;
 	/* USER CODE END STATUS */
 }
@@ -99,12 +101,15 @@ DRESULT disk_read(BYTE pdrv,    /* Physical drive nmuber to identify the drive *
                   UINT count    /* Number of sectors to read */
 ) {
 	/* USER CODE BEGIN READ */
-	if (pdrv || !count)
+	if (pdrv || !count) {
 		return RES_PARERR;
-	if (Stat & STA_NOINIT)
+	}
+	if (Stat & STA_NOINIT) {
 		return RES_NOTRDY;
-	if (!(sdinfo.type & CT_BLOCK)) /* Convert to byte address if needed */
+	}
+	if (!(sdinfo.type & CT_BLOCK)) { /* Convert to byte address if needed */
 		sector *= sdinfo.BLOCK_SIZE;
+	}
 
 	uint8_t try_n = 0;
 	UINT _count = count;
@@ -122,8 +127,9 @@ DRESULT disk_read(BYTE pdrv,    /* Physical drive nmuber to identify the drive *
 		{
 			if (SD_cmd(CMD18, sector) == 0) { /* READ_MULTIPLE_BLOCK */
 				do {
-					if (!SD_Read_Block(_buff, sdinfo.BLOCK_SIZE))
+					if (!SD_Read_Block(_buff, sdinfo.BLOCK_SIZE)) {
 						break;
+					}
 					_buff += sdinfo.BLOCK_SIZE;
 				} while (--_count);
 				SD_cmd(CMD12, 0); /* STOP_TRANSMISSION */
@@ -150,14 +156,18 @@ DRESULT disk_write(BYTE pdrv,        /* Physical drive nmuber to identify the dr
 ) {
 	/* USER CODE BEGIN WRITE */
 	/* USER CODE HERE */
-	if (pdrv || !count)
+	if (pdrv || !count) {
 		return RES_PARERR;
-	if (Stat & STA_NOINIT)
+	}
+	if (Stat & STA_NOINIT) {
 		return RES_NOTRDY;
-	if (Stat & STA_PROTECT)
+	}
+	if (Stat & STA_PROTECT) {
 		return RES_WRPRT;
-	if (!(sdinfo.type & CT_BLOCK))
+	}
+	if (!(sdinfo.type & CT_BLOCK)) {
 		sector *= sdinfo.BLOCK_SIZE; /* Convert to byte address if needed */
+	}
 
 	uint8_t try_n = 0;
 	UINT _count = count;
@@ -168,8 +178,9 @@ DRESULT disk_write(BYTE pdrv,        /* Physical drive nmuber to identify the dr
 
 		if (_count == 1) /* Single block write */
 		{
-			if ((SD_cmd(CMD24, sector) == 0) && SD_Write_Block(_buff, 0xFE, true)) /* WRITE_BLOCK */
+			if ((SD_cmd(CMD24, sector) == 0) && SD_Write_Block(_buff, 0xFE, true)) { /* WRITE_BLOCK */
 				_count = 0;
+			}
 		} else /* Multiple block write */
 		{
 			if (sdinfo.type & CT_SDC) {
@@ -178,8 +189,9 @@ DRESULT disk_write(BYTE pdrv,        /* Physical drive nmuber to identify the dr
 
 			if (SD_cmd(CMD25, sector) == 0) { /* WRITE_MULTIPLE_BLOCK */
 				do {
-					if (!SD_Write_Block(_buff, 0xFC, true))
+					if (!SD_Write_Block(_buff, 0xFC, true)) {
 						break;
+					}
 					_buff += sdinfo.BLOCK_SIZE;
 				} while (--_count);
 				if (!SD_Write_Block(0, 0xFD, true)) /* STOP_TRAN token */
@@ -208,17 +220,20 @@ DRESULT disk_ioctl(BYTE pdrv, /* Physical drive nmuber (0..) */
 ) {
 	/* USER CODE BEGIN IOCTL */
 	DRESULT res;
-	if (pdrv)
+	if (pdrv) {
 		return RES_PARERR;
-	if (Stat & STA_NOINIT)
+	}
+	if (Stat & STA_NOINIT) {
 		return RES_NOTRDY;
+	}
 	res = RES_ERROR;
 
 	switch (cmd) {
 	case CTRL_SYNC: /* Flush dirty buffer if present */
 		HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
-		if (SPI_wait_ready() == 0xFF)
+		if (SPI_wait_ready() == 0xFF) {
 			res = RES_OK;
+		}
 		break;
 	case GET_SECTOR_COUNT:
 		*(DWORD *)buff = sdinfo.SECTOR_COUNT;

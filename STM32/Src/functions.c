@@ -69,8 +69,9 @@ static uint16_t dbg_lcd_y = 0;
 static uint16_t dbg_lcd_x = 0;
 void print_chr_LCDOnly(char chr) {
 	if (LCD_DEBUG_ENABLED) {
-		if (chr == '\r')
+		if (chr == '\r') {
 			return;
+		}
 
 		if (chr == '\n') {
 			dbg_lcd_y += 9;
@@ -90,51 +91,57 @@ void print_chr_LCDOnly(char chr) {
 void print_flush(void) {
 #if HRDW_HAS_USB_DEBUG
 	uint_fast16_t tryes = 0;
-	while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512)
+	while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512) {
 		tryes++;
+	}
 #endif
 }
 
 void print_hex(uint8_t data, bool _inline) {
 	char tmp[50] = ""; //-V808
-	if (_inline)
+	if (_inline) {
 		sprintf(tmp, "%02X", data);
-	else
+	} else {
 		sprintf(tmp, "%02X\n", data);
+	}
 	print(tmp);
 }
 
 void print_bin8(uint8_t data, bool _inline) {
 	char tmp[50] = ""; //-V808
-	if (_inline)
+	if (_inline) {
 		sprintf(tmp, "%c%c%c%c%c%c%c%c", BYTE_TO_BINARY(data));
-	else
+	} else {
 		sprintf(tmp, "%c%c%c%c%c%c%c%c\n", BYTE_TO_BINARY(data));
+	}
 	print(tmp);
 }
 
 void print_bin16(uint16_t data, bool _inline) {
 	char tmp[50] = ""; //-V808
-	if (_inline)
+	if (_inline) {
 		sprintf(tmp, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", BIT16_TO_BINARY(data));
-	else
+	} else {
 		sprintf(tmp, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", BIT16_TO_BINARY(data));
+	}
 	print(tmp);
 }
 
 void print_bin26(uint32_t data, bool _inline) {
 	char tmp[50] = ""; //-V808
-	if (_inline)
+	if (_inline) {
 		sprintf(tmp, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c", BIT26_TO_BINARY(data));
-	else
+	} else {
 		sprintf(tmp, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c\n", BIT26_TO_BINARY(data));
+	}
 	print(tmp);
 }
 
 uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) // calculate the frequency from the phrase for FPGA (RX1 / RX2)
 {
-	if (freq < 0)
+	if (freq < 0) {
 		return 0;
+	}
 	bool inverted = false;
 	int32_t _freq = freq;
 	if (_freq > ADC_CLOCK / 2) // Go Nyquist
@@ -147,18 +154,21 @@ uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) // calculate the
 			_freq = (ADC_CLOCK / 2) - _freq;
 		}
 	}
-	if (rx_num == 1)
+	if (rx_num == 1) {
 		TRX_RX1_IQ_swap = inverted;
-	if (rx_num == 2)
+	}
+	if (rx_num == 2) {
 		TRX_RX2_IQ_swap = inverted;
+	}
 	float64_t res = round(((float64_t)_freq / (float64_t)ADC_CLOCK) * (float64_t)4294967296); // freq in hz/oscil in hz*2^bits (32 now);
 	return (uint32_t)res;
 }
 
 uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency from the phrase for FPGA (TX)
 {
-	if (freq < 0)
+	if (freq < 0) {
 		return 0;
+	}
 	bool inverted = false;
 	int32_t _freq = (int32_t)freq;
 
@@ -169,10 +179,11 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 			TRX_TX_Harmonic_new += 3;
 		}
 	}
-	if (TRX_TX_Harmonic_new == 0)
+	if (TRX_TX_Harmonic_new == 0) {
 		TRX_TX_Harmonic = 1;
-	else
+	} else {
 		TRX_TX_Harmonic = TRX_TX_Harmonic_new;
+	}
 
 	TRX_DAC_X4 = true;
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
@@ -218,9 +229,9 @@ void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool t
 	char res[70] = "";
 	strcpy(res, str);
 	while (strlen(res) < length) {
-		if (toEnd)
+		if (toEnd) {
 			strcat(res, symbol);
-		else {
+		} else {
 			char tmp[50] = "";
 			strcat(tmp, symbol);
 			strcat(tmp, res);
@@ -270,15 +281,18 @@ float32_t rate2dbP(float32_t i) // from times to decibels (for power)
 float32_t volume2rate(float32_t i) // from the position of the volume knob to the gain
 {
 	float32_t mute_zone = 15.0f;
-	if (MAX_VOLUME_VALUE == 100.0f)
+	if (MAX_VOLUME_VALUE == 100.0f) {
 		mute_zone = 1.0f;
+	}
 
-	if (i == 0.0f)
+	if (i == 0.0f) {
 		return 0.0f;
+	}
 
 #if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
-	if (i < (mute_zone / MAX_VOLUME_VALUE)) // mute zone
+	if (i < (mute_zone / MAX_VOLUME_VALUE)) { // mute zone
 		return 0.0f;
+	}
 #endif
 
 	return powf(VOLUME_EPSILON, (1.0f - i));
@@ -305,37 +319,39 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq) {
 
 	uint16_t calibrate_level = 0;
 
-	if (freq < 1.0 * 1000000)
+	if (freq < 1.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_2200m;
-	else if (freq < 2.5 * 1000000)
+	} else if (freq < 2.5 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_160m;
-	else if (freq < 5.3 * 1000000)
+	} else if (freq < 5.3 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_80m;
-	else if (freq < 8.5 * 1000000)
+	} else if (freq < 8.5 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_40m;
-	else if (freq < 12.0 * 1000000)
+	} else if (freq < 12.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_30m;
-	else if (freq < 16.0 * 1000000)
+	} else if (freq < 16.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_20m;
-	else if (freq < 19.5 * 1000000)
+	} else if (freq < 19.5 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_17m;
-	else if (freq < 22.5 * 1000000)
+	} else if (freq < 22.5 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_15m;
-	else if (freq < 26.5 * 1000000)
+	} else if (freq < 26.5 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_12m;
-	else if (freq < 28.0 * 1000000)
+	} else if (freq < 28.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_cb;
-	else if (freq < 40.0 * 1000000)
+	} else if (freq < 40.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_10m;
-	else if (freq < 60.0 * 1000000)
+	} else if (freq < 60.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_6m;
-	else if (freq < 110.0 * 1000000)
+	} else if (freq < 110.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_4m;
-	else
+	} else {
 		calibrate_level = CALIBRATE.rf_out_power_2m;
+	}
 
-	if (calibrate_level > 100)
+	if (calibrate_level > 100) {
 		calibrate_level = 100;
+	}
 
 	if (CALIBRATE.DAC_driver_mode == 2) // dac driver bias
 	{
@@ -361,8 +377,9 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq) {
 float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate, uint32_t freq) {
 	float32_t ret = amplitude * arm_sin_f32(*index * F_2PI);
 	*index += ((float32_t)freq / (float32_t)samplerate);
-	while (*index >= 1.0f)
+	while (*index >= 1.0f) {
 		*index -= 1.0f;
+	}
 	return ret;
 }
 
@@ -387,18 +404,23 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 	HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_RESET);
 	HAL_StatusTypeDef res = 0;
 
-	if (count < 100)
+	if (count < 100) {
 		dma = false;
+	}
 
 #ifdef STM32H743xx
 	// non-DMA section
-	if (dma && out_data == NULL && (uint32_t)in_data < 0x24000000)
+	if (dma && out_data == NULL && (uint32_t)in_data < 0x24000000) {
 		dma = false;
-	if (dma && in_data == NULL && (uint32_t)out_data < 0x24000000)
+	}
+	if (dma && in_data == NULL && (uint32_t)out_data < 0x24000000) {
 		dma = false;
-	if (dma && in_data != NULL && out_data != NULL)
-		if ((uint32_t)out_data < 0x24000000 || (uint32_t)in_data < 0x24000000)
+	}
+	if (dma && in_data != NULL && out_data != NULL) {
+		if ((uint32_t)out_data < 0x24000000 || (uint32_t)in_data < 0x24000000) {
 			dma = false;
+		}
+	}
 #endif
 
 	if (dma) {
@@ -418,8 +440,9 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			}
 			res = HAL_SPI_TransmitReceive_DMA(hspi, out_data, SPI_tmp_buff, count);
 
-			while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_DMA_timeout))
+			while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_DMA_timeout)) {
 				CPULOAD_GoToSleepMode();
+			}
 		} else if (out_data == NULL) {
 			dma_memset(in_data, 0x00, count);
 
@@ -435,8 +458,9 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			}*/
 
 			res = HAL_SPI_Receive_IT(hspi, in_data, count);
-			while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < SPI_timeout)
+			while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < SPI_timeout) {
 				CPULOAD_GoToSleepMode();
+			}
 
 			// res = HAL_SPI_TransmitReceive_DMA(hspi, SPI_tmp_buff, in_data, count);
 			// res = HAL_SPI_Receive_DMA(hspi, in_data, count);
@@ -456,14 +480,16 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			}
 			res = HAL_SPI_TransmitReceive_DMA(hspi, out_data, in_data, count);
 
-			while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_DMA_timeout))
+			while (!SPI_DMA_TXRX_ready_callback && ((HAL_GetTick() - startTime) < SPI_DMA_timeout)) {
 				CPULOAD_GoToSleepMode();
+			}
 		}
 
 		Aligned_CleanInvalidateDCache_by_Addr((uint32_t)in_data, count);
 
-		if ((HAL_GetTick() - startTime) > SPI_DMA_timeout)
+		if ((HAL_GetTick() - startTime) > SPI_DMA_timeout) {
 			res = HAL_TIMEOUT;
+		}
 	} else {
 		__SPI2_CLK_ENABLE();
 		if (in_data == NULL) {
@@ -476,15 +502,18 @@ bool SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *out_data, uint8_t *in_data, 
 			res = HAL_SPI_TransmitReceive_IT(hspi, out_data, in_data, count);
 		}
 		uint32_t startTime = HAL_GetTick();
-		while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < SPI_timeout)
+		while (HAL_SPI_GetState(hspi) != HAL_SPI_STATE_READY && (HAL_GetTick() - startTime) < SPI_timeout) {
 			CPULOAD_GoToSleepMode();
+		}
 	}
 
-	if (HAL_SPI_GetError(hspi) != 0)
+	if (HAL_SPI_GetError(hspi) != 0) {
 		res = HAL_ERROR;
+	}
 
-	if (!hold_cs)
+	if (!hold_cs) {
 		HAL_GPIO_WritePin(CS_PORT, CS_PIN, GPIO_PIN_SET);
+	}
 
 	if (res == HAL_TIMEOUT) {
 		println("[ERR] SPI timeout");
@@ -524,23 +553,28 @@ float32_t quick_median_select(float32_t *arr, int n) {
 	high = n - 1;
 	median = (low + high) / 2;
 	for (;;) {
-		if (high <= low) /* One element only */
+		if (high <= low) { /* One element only */
 			return arr[median];
+		}
 
 		if (high == low + 1) { /* Two elements only */
-			if (arr[low] > arr[high])
+			if (arr[low] > arr[high]) {
 				ELEM_SWAP_F32(arr[low], arr[high]);
+			}
 			return arr[median];
 		}
 
 		/* Find median of low, middle and high items; swap into position low */
 		middle = (low + high) / 2;
-		if (arr[middle] > arr[high])
+		if (arr[middle] > arr[high]) {
 			ELEM_SWAP_F32(arr[middle], arr[high]);
-		if (arr[low] > arr[high])
+		}
+		if (arr[low] > arr[high]) {
 			ELEM_SWAP_F32(arr[low], arr[high]);
-		if (arr[middle] > arr[low])
+		}
+		if (arr[middle] > arr[low]) {
 			ELEM_SWAP_F32(arr[middle], arr[low]);
+		}
 
 		/* Swap low item (now in position middle) into position (low+1) */
 		ELEM_SWAP_F32(arr[middle], arr[low + 1]);
@@ -549,15 +583,16 @@ float32_t quick_median_select(float32_t *arr, int n) {
 		ll = low + 1;
 		hh = high;
 		for (;;) {
-			do
+			do {
 				ll++;
-			while (arr[low] > arr[ll]);
-			do
+			} while (arr[low] > arr[ll]);
+			do {
 				hh--;
-			while (arr[hh] > arr[low]);
+			} while (arr[hh] > arr[low]);
 
-			if (hh < ll)
+			if (hh < ll) {
 				break;
+			}
 
 			ELEM_SWAP_F32(arr[ll], arr[hh]);
 		}
@@ -566,20 +601,24 @@ float32_t quick_median_select(float32_t *arr, int n) {
 		ELEM_SWAP_F32(arr[low], arr[hh]);
 
 		/* Re-set active partition */
-		if (hh <= median)
+		if (hh <= median) {
 			low = ll;
-		if (hh >= median)
+		}
+		if (hh >= median) {
 			high = hh - 1;
+		}
 	}
 }
 
 void memset16(void *dest, uint16_t val, uint32_t size) {
-	if (size == 0)
+	if (size == 0) {
 		return;
+	}
 
 	uint16_t *buf = dest;
-	while (size--)
+	while (size--) {
 		*buf++ = val;
+	}
 
 	/*char *buf = dest;
 	union
@@ -619,8 +658,9 @@ __WEAK void dma_memset(void *dest, uint8_t val, uint32_t size) {
 		// right align
 		if (block8 > 0) {
 			pDst += block32 * 4;
-			while (block8--)
+			while (block8--) {
 				*pDst++ = val;
+			}
 		}
 	}
 }
@@ -657,8 +697,9 @@ __WEAK void dma_memcpy(void *dest, void *src, uint32_t size) {
 		if (block8 > 0) {
 			pDst += block32 * 4;
 			pSrc += block32 * 4;
-			while (block8--)
+			while (block8--) {
 				*pDst++ = *pSrc++;
+			}
 		}
 	}
 }
@@ -668,8 +709,9 @@ void SLEEPING_MDMA_PollForTransfer(MDMA_HandleTypeDef *hmdma) {
 	const uint32_t Timeout = 100;
 	uint32_t tickstart;
 
-	if (HAL_MDMA_STATE_BUSY != hmdma->State)
+	if (HAL_MDMA_STATE_BUSY != hmdma->State) {
 		return;
+	}
 
 	/* Get timeout */
 	tickstart = HAL_GetTick();
@@ -803,8 +845,9 @@ void SLEEPING_DMA_PollForTransfer(DMA_HandleTypeDef *hdma) {
 
 uint8_t getInputType(void) {
 	uint8_t type = TRX.InputType_MAIN;
-	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY || CurrentVFO->Mode == TRX_MODE_IQ)
+	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY || CurrentVFO->Mode == TRX_MODE_IQ) {
 		type = TRX.InputType_DIGI;
+	}
 	return type;
 }
 
@@ -822,8 +865,9 @@ unsigned int sd_crc7_byte(unsigned int crcval, unsigned int byte) { return sd_cr
 
 void sd_crc_generate_table(void) {
 	static bool crc_table_generated = false;
-	if (crc_table_generated)
+	if (crc_table_generated) {
 		return;
+	}
 	int crc = 0;
 	/* Generate CRC16 table */
 	for (uint32_t byt = 0U; byt < 256U; byt++) {
@@ -952,14 +996,16 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 }
 
 char cleanASCIIgarbage(char chr) {
-	if ((chr < ' ') || (chr > 0x7f))
+	if ((chr < ' ') || (chr > 0x7f)) {
 		return 0;
+	}
 	return chr;
 }
 
 bool textStartsWith(const char *a, const char *b) {
-	if (strncmp(a, b, strlen(b)) == 0)
+	if (strncmp(a, b, strlen(b)) == 0) {
 		return 1;
+	}
 	return 0;
 }
 
@@ -998,11 +1044,13 @@ uint8_t getPowerFromALC(float32_t alc) {
 	float32_t volt = alc - 1.0f;            // 0.0-1.0v - ALC disabled
 	float32_t power = volt * 100.0f / 2.3f; // 1.0v - 3.3v - power 0-100%
 
-	if (power < 0)
+	if (power < 0) {
 		return 0;
+	}
 
-	if (power > 100)
+	if (power > 100) {
 		return 100;
+	}
 
 	return power;
 }

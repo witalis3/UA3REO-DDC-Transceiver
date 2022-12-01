@@ -1179,75 +1179,94 @@ void SYSMENU_TRX_RFPOWER_HOTKEY(void) {
 void SYSMENU_TRX_STEP_HOTKEY(void) {
 	SYSMENU_HANDL_TRXMENU(0);
 	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "Freq Step");
-	if (TRX.Fast)
+	if (TRX.Fast) {
 		index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "Freq Step FAST");
+	}
 
 	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.BandMapEnabled = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.BandMapEnabled = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.RF_Gain_For_Each_Band = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.RF_Gain_For_Each_Band = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_RF_Gain_For_Each_Mode(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.RF_Gain_For_Each_Mode = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.RF_Gain_For_Each_Mode = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_ChannelMode(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.ChannelMode = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.ChannelMode = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.AutoGain = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.AutoGain = false;
+	}
 	FPGA_NeedSendParams = true;
 }
 
 static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.RF_Filters = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.RF_Filters = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_TWO_SIGNAL_TUNE(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.TWO_SIGNAL_TUNE = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.TWO_SIGNAL_TUNE = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.FineRITTune = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.FineRITTune = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction) {
-	if (direction > 0 || TRX.RF_Gain > 0)
+	if (direction > 0 || TRX.RF_Gain > 0) {
 		TRX.RF_Gain += direction;
-	if (TRX.RF_Gain > 100)
+	}
+	if (TRX.RF_Gain > 100) {
 		TRX.RF_Gain = 100;
+	}
 
 	int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
 	if (band >= 0) {
@@ -1259,51 +1278,64 @@ static void SYSMENU_HANDL_TRX_RFPower(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_Auto_Input_Switch(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.Auto_Input_Switch = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.Auto_Input_Switch = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_Auto_Snap(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.Auto_Snap = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.Auto_Snap = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_INPUT_TYPE_MAIN(int8_t direction) {
-	if (direction > 0 || TRX.InputType_MAIN > 0)
+	if (direction > 0 || TRX.InputType_MAIN > 0) {
 		TRX.InputType_MAIN += direction;
-	if (TRX.InputType_MAIN > 2)
+	}
+	if (TRX.InputType_MAIN > 2) {
 		TRX.InputType_MAIN = 2;
+	}
 	CODEC_TXRX_mode();
 }
 
 static void SYSMENU_HANDL_TRX_INPUT_TYPE_DIGI(int8_t direction) {
-	if (direction > 0 || TRX.InputType_DIGI > 0)
+	if (direction > 0 || TRX.InputType_DIGI > 0) {
 		TRX.InputType_DIGI += direction;
-	if (TRX.InputType_DIGI > 2)
+	}
+	if (TRX.InputType_DIGI > 2) {
 		TRX.InputType_DIGI = 2;
+	}
 	CODEC_TXRX_mode();
 }
 
 static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction) {
-	if (direction > 0 || TRX.Debug_Type > 0)
+	if (direction > 0 || TRX.Debug_Type > 0) {
 		TRX.Debug_Type += direction;
-	if (TRX.Debug_Type > 5)
+	}
+	if (TRX.Debug_Type > 5) {
 		TRX.Debug_Type = 5;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction) {
-	if (direction > 0 || TRX.SAMPLERATE_MAIN > 0)
+	if (direction > 0 || TRX.SAMPLERATE_MAIN > 0) {
 		TRX.SAMPLERATE_MAIN += direction;
-	if (TRX.SAMPLERATE_MAIN > 3)
+	}
+	if (TRX.SAMPLERATE_MAIN > 3) {
 		TRX.SAMPLERATE_MAIN = 3;
+	}
 
 #ifdef STM32F407xx
-	if (TRX.SAMPLERATE_MAIN > 1)
+	if (TRX.SAMPLERATE_MAIN > 1) {
 		TRX.SAMPLERATE_MAIN = 1;
+	}
 #endif
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
@@ -1314,14 +1346,17 @@ static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_SAMPLERATE_FM(int8_t direction) {
-	if (direction > 0 || TRX.SAMPLERATE_FM > 0)
+	if (direction > 0 || TRX.SAMPLERATE_FM > 0) {
 		TRX.SAMPLERATE_FM += direction;
-	if (TRX.SAMPLERATE_FM > 3)
+	}
+	if (TRX.SAMPLERATE_FM > 3) {
 		TRX.SAMPLERATE_FM = 3;
+	}
 
 #ifdef STM32F407xx
-	if (TRX.SAMPLERATE_FM > 1)
+	if (TRX.SAMPLERATE_FM > 1) {
 		TRX.SAMPLERATE_FM = 1;
+	}
 #endif
 
 	FFT_Init();
@@ -1330,161 +1365,190 @@ static void SYSMENU_HANDL_TRX_SAMPLERATE_FM(int8_t direction) {
 
 static void SYSMENU_HANDL_TRX_RIT_INTERVAL(int8_t direction) {
 	TRX.RIT_INTERVAL += direction * 100;
-	if (TRX.RIT_INTERVAL < 100)
+	if (TRX.RIT_INTERVAL < 100) {
 		TRX.RIT_INTERVAL = 100;
-	if (TRX.RIT_INTERVAL > 10000)
+	}
+	if (TRX.RIT_INTERVAL > 10000) {
 		TRX.RIT_INTERVAL = 10000;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_XIT_INTERVAL(int8_t direction) {
 	TRX.XIT_INTERVAL += direction * 100;
-	if (TRX.XIT_INTERVAL < 100)
+	if (TRX.XIT_INTERVAL < 100) {
 		TRX.XIT_INTERVAL = 100;
-	if (TRX.XIT_INTERVAL > 10000)
+	}
+	if (TRX.XIT_INTERVAL > 10000) {
 		TRX.XIT_INTERVAL = 10000;
+	}
 }
 
 static const uint32_t freq_steps[] = {1, 10, 25, 50, 100, 500, 1000, 2500, 5000, 25000, 50000, 100000, 250000, 500000};
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction) {
-	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++)
+	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++) {
 		if (TRX.FRQ_STEP == freq_steps[i]) {
 			if (direction < 0) {
-				if (i > 0)
+				if (i > 0) {
 					TRX.FRQ_STEP = freq_steps[i - 1];
-				else
+				} else {
 					TRX.FRQ_STEP = freq_steps[0];
+				}
 				return;
 			} else {
-				if (i < (ARRLENTH(freq_steps) - 1))
+				if (i < (ARRLENTH(freq_steps) - 1)) {
 					TRX.FRQ_STEP = freq_steps[i + 1];
-				else
+				} else {
 					TRX.FRQ_STEP = freq_steps[ARRLENTH(freq_steps) - 1];
+				}
 				return;
 			}
 		}
+	}
 	TRX.FRQ_STEP = freq_steps[0];
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction) {
-	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++)
+	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++) {
 		if (TRX.FRQ_FAST_STEP == freq_steps[i]) {
 			if (direction < 0) {
-				if (i > 0)
+				if (i > 0) {
 					TRX.FRQ_FAST_STEP = freq_steps[i - 1];
-				else
+				} else {
 					TRX.FRQ_FAST_STEP = freq_steps[0];
+				}
 				return;
 			} else {
-				if (i < (ARRLENTH(freq_steps) - 1))
+				if (i < (ARRLENTH(freq_steps) - 1)) {
 					TRX.FRQ_FAST_STEP = freq_steps[i + 1];
-				else
+				} else {
 					TRX.FRQ_FAST_STEP = freq_steps[ARRLENTH(freq_steps) - 1];
+				}
 				return;
 			}
 		}
+	}
 	TRX.FRQ_FAST_STEP = freq_steps[0];
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction) {
-	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++)
+	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++) {
 		if (TRX.FRQ_ENC_STEP == freq_steps[i]) {
 			if (direction < 0) {
-				if (i > 0)
+				if (i > 0) {
 					TRX.FRQ_ENC_STEP = freq_steps[i - 1];
-				else
+				} else {
 					TRX.FRQ_ENC_STEP = freq_steps[0];
+				}
 				return;
 			} else {
-				if (i < (ARRLENTH(freq_steps) - 1))
+				if (i < (ARRLENTH(freq_steps) - 1)) {
 					TRX.FRQ_ENC_STEP = freq_steps[i + 1];
-				else
+				} else {
 					TRX.FRQ_ENC_STEP = freq_steps[ARRLENTH(freq_steps) - 1];
+				}
 				return;
 			}
 		}
+	}
 	TRX.FRQ_ENC_STEP = freq_steps[0];
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction) {
-	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++)
+	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++) {
 		if (TRX.FRQ_ENC_FAST_STEP == freq_steps[i]) {
 			if (direction < 0) {
-				if (i > 0)
+				if (i > 0) {
 					TRX.FRQ_ENC_FAST_STEP = freq_steps[i - 1];
-				else
+				} else {
 					TRX.FRQ_ENC_FAST_STEP = freq_steps[0];
+				}
 				return;
 			} else {
-				if (i < (ARRLENTH(freq_steps) - 1))
+				if (i < (ARRLENTH(freq_steps) - 1)) {
 					TRX.FRQ_ENC_FAST_STEP = freq_steps[i + 1];
-				else
+				} else {
 					TRX.FRQ_ENC_FAST_STEP = freq_steps[ARRLENTH(freq_steps) - 1];
+				}
 				return;
 			}
 		}
+	}
 	TRX.FRQ_ENC_FAST_STEP = freq_steps[0];
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ(int8_t direction) {
 	const uint32_t wfm_freq_steps[] = {1, 2, 5, 10, 20, 25, 50, 100, 200, 500, 1000};
 
-	for (uint8_t i = 0; i < ARRLENTH(wfm_freq_steps); i++)
+	for (uint8_t i = 0; i < ARRLENTH(wfm_freq_steps); i++) {
 		if (TRX.FRQ_ENC_WFM_STEP_KHZ == wfm_freq_steps[i]) {
 			if (direction < 0) {
-				if (i > 0)
+				if (i > 0) {
 					TRX.FRQ_ENC_WFM_STEP_KHZ = wfm_freq_steps[i - 1];
-				else
+				} else {
 					TRX.FRQ_ENC_WFM_STEP_KHZ = wfm_freq_steps[0];
+				}
 				return;
 			} else {
-				if (i < (ARRLENTH(wfm_freq_steps) - 1))
+				if (i < (ARRLENTH(wfm_freq_steps) - 1)) {
 					TRX.FRQ_ENC_WFM_STEP_KHZ = wfm_freq_steps[i + 1];
-				else
+				} else {
 					TRX.FRQ_ENC_WFM_STEP_KHZ = wfm_freq_steps[ARRLENTH(wfm_freq_steps) - 1];
+				}
 				return;
 			}
 		}
+	}
 	TRX.FRQ_ENC_WFM_STEP_KHZ = wfm_freq_steps[0];
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER(int8_t direction) {
 	TRX.FRQ_CW_STEP_DIVIDER += direction;
-	if (TRX.FRQ_CW_STEP_DIVIDER < 1)
+	if (TRX.FRQ_CW_STEP_DIVIDER < 1) {
 		TRX.FRQ_CW_STEP_DIVIDER = 1;
-	if (TRX.FRQ_CW_STEP_DIVIDER > 100)
+	}
+	if (TRX.FRQ_CW_STEP_DIVIDER > 100) {
 		TRX.FRQ_CW_STEP_DIVIDER = 100;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.Encoder_Accelerate = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.Encoder_Accelerate = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction) {
 	TRX.ATT_STEP += direction;
-	if (TRX.ATT_STEP < 1)
+	if (TRX.ATT_STEP < 1) {
 		TRX.ATT_STEP = 1;
-	if (TRX.ATT_STEP > 15)
+	}
+	if (TRX.ATT_STEP > 15) {
 		TRX.ATT_STEP = 15;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_ATT_DB(int8_t direction) {
 	TRX.ATT_DB += (float32_t)direction * 0.5f;
-	if (TRX.ATT_DB < 0.5f)
+	if (TRX.ATT_DB < 0.5f) {
 		TRX.ATT_DB = 0.5f;
-	if (TRX.ATT_DB > 31.5f)
+	}
+	if (TRX.ATT_DB > 31.5f) {
 		TRX.ATT_DB = 31.5f;
+	}
 }
 
 #if HRDW_HAS_VGA
 static void SYSMENU_HANDL_TRX_VGA_GAIN(int8_t direction) {
 	TRX.VGA_GAIN += (float32_t)direction * 1.5f;
-	if (TRX.VGA_GAIN < 10.5f)
+	if (TRX.VGA_GAIN < 10.5f) {
 		TRX.VGA_GAIN = 10.5f;
-	if (TRX.VGA_GAIN > 33.0f)
+	}
+	if (TRX.VGA_GAIN > 33.0f) {
 		TRX.VGA_GAIN = 33.0f;
+	}
 }
 #endif
 
@@ -1493,13 +1557,15 @@ static void SYSMENU_TRX_Callsign_keyboardHandler(uint32_t parameter) {
 	{
 		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = 0;
 
-		if (sysmenu_trx_selected_callsign_char_index > 0)
+		if (sysmenu_trx_selected_callsign_char_index > 0) {
 			sysmenu_trx_selected_callsign_char_index--;
+		}
 	} else {
 		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = parameter;
 
-		if (sysmenu_trx_selected_callsign_char_index < (MAX_CALLSIGN_LENGTH - 1))
+		if (sysmenu_trx_selected_callsign_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
 			sysmenu_trx_selected_callsign_char_index++;
+		}
 	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -1524,13 +1590,15 @@ static void SYSMENU_TRX_Locator_keyboardHandler(uint32_t parameter) {
 	{
 		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = 0;
 
-		if (sysmenu_trx_selected_locator_char_index > 0)
+		if (sysmenu_trx_selected_locator_char_index > 0) {
 			sysmenu_trx_selected_locator_char_index--;
+		}
 	} else {
 		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = parameter;
 
-		if (sysmenu_trx_selected_locator_char_index < (MAX_CALLSIGN_LENGTH - 1))
+		if (sysmenu_trx_selected_locator_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
 			sysmenu_trx_selected_locator_char_index++;
+		}
 	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -1555,13 +1623,15 @@ static void SYSMENU_TRX_URSICode_keyboardHandler(uint32_t parameter) {
 	{
 		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = 0;
 
-		if (sysmenu_trx_selected_ursi_code_char_index > 0)
+		if (sysmenu_trx_selected_ursi_code_char_index > 0) {
 			sysmenu_trx_selected_ursi_code_char_index--;
+		}
 	} else {
 		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = parameter;
 
-		if (sysmenu_trx_selected_ursi_code_char_index < (MAX_CALLSIGN_LENGTH - 1))
+		if (sysmenu_trx_selected_ursi_code_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
 			sysmenu_trx_selected_ursi_code_char_index++;
+		}
 	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -1584,68 +1654,86 @@ static void SYSMENU_TRX_DrawURSICodeMenu(bool full_redraw) {
 
 static void SYSMENU_TRX_RotateCallsignChar(int8_t dir) {
 	bool full_redraw = false;
-	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] == 0)
+	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] == 0) {
 		full_redraw = true;
+	}
 	TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] += dir;
 
 	// do not show special characters
-	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] >= 1 && TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] <= 32 && dir > 0)
+	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] >= 1 && TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] <= 32 && dir > 0) {
 		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = 33;
-	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] >= 1 && TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] <= 32 && dir < 0)
+	}
+	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] >= 1 && TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] <= 32 && dir < 0) {
 		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = 0;
-	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] >= 127)
+	}
+	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] >= 127) {
 		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = 0;
-	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] == 0)
+	}
+	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] == 0) {
 		full_redraw = true;
+	}
 
-	if (full_redraw)
+	if (full_redraw) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-	else
+	} else {
 		LCD_UpdateQuery.SystemMenu = true;
+	}
 }
 
 static void SYSMENU_TRX_RotateLocatorChar(int8_t dir) {
 	bool full_redraw = false;
-	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] == 0)
+	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] == 0) {
 		full_redraw = true;
+	}
 	TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] += dir;
 
 	// do not show special characters
-	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] >= 1 && TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] <= 32 && dir > 0)
+	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] >= 1 && TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] <= 32 && dir > 0) {
 		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = 33;
-	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] >= 1 && TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] <= 32 && dir < 0)
+	}
+	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] >= 1 && TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] <= 32 && dir < 0) {
 		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = 0;
-	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] >= 127)
+	}
+	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] >= 127) {
 		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = 0;
-	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] == 0)
+	}
+	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] == 0) {
 		full_redraw = true;
+	}
 
-	if (full_redraw)
+	if (full_redraw) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-	else
+	} else {
 		LCD_UpdateQuery.SystemMenu = true;
+	}
 }
 
 static void SYSMENU_TRX_RotateURSICodeChar(int8_t dir) {
 	bool full_redraw = false;
-	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] == 0)
+	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] == 0) {
 		full_redraw = true;
+	}
 	TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] += dir;
 
 	// do not show special characters
-	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] >= 1 && TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] <= 32 && dir > 0)
+	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] >= 1 && TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] <= 32 && dir > 0) {
 		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = 33;
-	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] >= 1 && TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] <= 32 && dir < 0)
+	}
+	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] >= 1 && TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] <= 32 && dir < 0) {
 		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = 0;
-	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] >= 127)
+	}
+	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] >= 127) {
 		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = 0;
-	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] == 0)
+	}
+	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] == 0) {
 		full_redraw = true;
+	}
 
-	if (full_redraw)
+	if (full_redraw) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-	else
+	} else {
 		LCD_UpdateQuery.SystemMenu = true;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction) {
@@ -1670,60 +1758,74 @@ static void SYSMENU_HANDL_TRX_SetURSICode(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.Custom_Transverter_Enabled = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.Custom_Transverter_Enabled = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_70CM(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.Transverter_70cm = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.Transverter_70cm = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_23CM(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.Transverter_23cm = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.Transverter_23cm = false;
+	}
 
 	BANDS[BANDID_23cm].selectable = TRX.Transverter_23cm;
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_13CM(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.Transverter_13cm = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.Transverter_13cm = false;
+	}
 
 	BANDS[BANDID_13cm].selectable = TRX.Transverter_13cm;
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.Transverter_6cm = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.Transverter_6cm = false;
+	}
 
 	BANDS[BANDID_6cm].selectable = TRX.Transverter_6cm;
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.Transverter_3cm = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.Transverter_3cm = false;
+	}
 
 	BANDS[BANDID_3cm].selectable = TRX.Transverter_3cm;
 }
 
 static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction) {
-	if (TRX.ATU_I > 0 || direction > 0)
+	if (TRX.ATU_I > 0 || direction > 0) {
 		TRX.ATU_I += direction;
-	if (TRX.ATU_I > ATU_MAXPOS)
+	}
+	if (TRX.ATU_I > ATU_MAXPOS) {
 		TRX.ATU_I = ATU_MAXPOS;
+	}
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
@@ -1734,10 +1836,12 @@ static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_ATU_C(int8_t direction) {
-	if (TRX.ATU_C > 0 || direction > 0)
+	if (TRX.ATU_C > 0 || direction > 0) {
 		TRX.ATU_C += direction;
-	if (TRX.ATU_C > ATU_MAXPOS)
+	}
+	if (TRX.ATU_C > ATU_MAXPOS) {
 		TRX.ATU_C = ATU_MAXPOS;
+	}
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
@@ -1748,10 +1852,12 @@ static void SYSMENU_HANDL_TRX_ATU_C(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_ATU_T(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.ATU_T = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.ATU_T = false;
+	}
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
@@ -1762,17 +1868,21 @@ static void SYSMENU_HANDL_TRX_ATU_T(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_ATU_Enabled(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.ATU_Enabled = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.ATU_Enabled = false;
+	}
 }
 
 static void SYSMENU_HANDL_TRX_TUNER_Enabled(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.TUNER_Enabled = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.TUNER_Enabled = false;
+	}
 }
 
 // AUDIO MENU
@@ -1889,87 +1999,108 @@ void SYSMEUN_SD_HOTKEY(void) {
 }
 
 static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction) {
-	if (direction > 0 || TRX.Volume > 0)
+	if (direction > 0 || TRX.Volume > 0) {
 		TRX.Volume += direction;
-	if (TRX.Volume > 100)
+	}
+	if (TRX.Volume > 100) {
 		TRX.Volume = 100;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_Volume_Step(int8_t direction) {
-	if (direction > 0 || TRX.Volume_Step > 1)
+	if (direction > 0 || TRX.Volume_Step > 1) {
 		TRX.Volume_Step += direction;
-	if (TRX.Volume_Step > 25)
+	}
+	if (TRX.Volume_Step > 25) {
 		TRX.Volume_Step = 25;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_DNR(int8_t direction) {
 	TRX_TemporaryMute();
 
-	if (direction > 0 || CurrentVFO->DNR_Type > 0)
+	if (direction > 0 || CurrentVFO->DNR_Type > 0) {
 		CurrentVFO->DNR_Type += direction;
-	if (CurrentVFO->DNR_Type > 2)
+	}
+	if (CurrentVFO->DNR_Type > 2) {
 		CurrentVFO->DNR_Type = 2;
+	}
 
 	TRX.DNR_shadow = CurrentVFO->DNR_Type;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band > 0)
+	if (band > 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].DNR_Type = CurrentVFO->DNR_Type;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_AGC(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CurrentVFO->AGC = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CurrentVFO->AGC = false;
+	}
 
 	TRX.AGC_shadow = CurrentVFO->AGC;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band > 0)
+	if (band > 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].AGC = CurrentVFO->AGC;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.NOISE_BLANKER = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.NOISE_BLANKER = false;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction) {
 	TRX.IF_Gain += direction;
-	if (TRX.IF_Gain < CALIBRATE.IF_GAIN_MIN)
+	if (TRX.IF_Gain < CALIBRATE.IF_GAIN_MIN) {
 		TRX.IF_Gain = CALIBRATE.IF_GAIN_MIN;
-	if (TRX.IF_Gain > CALIBRATE.IF_GAIN_MAX)
+	}
+	if (TRX.IF_Gain > CALIBRATE.IF_GAIN_MAX) {
 		TRX.IF_Gain = CALIBRATE.IF_GAIN_MAX;
+	}
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band > 0)
+	if (band > 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].IF_Gain = TRX.IF_Gain;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET(int8_t direction) {
 	TRX.AGC_GAIN_TARGET += direction;
-	if (TRX.AGC_GAIN_TARGET < -80)
+	if (TRX.AGC_GAIN_TARGET < -80) {
 		TRX.AGC_GAIN_TARGET = -80;
-	if (TRX.AGC_GAIN_TARGET > -10)
+	}
+	if (TRX.AGC_GAIN_TARGET > -10) {
 		TRX.AGC_GAIN_TARGET = -10;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_Gain(int8_t direction) {
 	TRX.MIC_GAIN_DB += direction * 0.1f;
-	if (TRX.MIC_GAIN_DB < 1.0f)
+	if (TRX.MIC_GAIN_DB < 1.0f) {
 		TRX.MIC_GAIN_DB = 1.0f;
-	if (TRX.MIC_GAIN_DB > 20.0f)
+	}
+	if (TRX.MIC_GAIN_DB > 20.0f) {
 		TRX.MIC_GAIN_DB = 20.0f;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_Boost(int8_t direction) {
-	if (direction < 0)
+	if (direction < 0) {
 		TRX.MIC_Boost = false;
-	if (direction > 0)
+	}
+	if (direction > 0) {
 		TRX.MIC_Boost = true;
+	}
 
 	// reinit codec
 	CODEC_TXRX_mode();
@@ -1977,256 +2108,316 @@ static void SYSMENU_HANDL_AUDIO_MIC_Boost(int8_t direction) {
 
 static void SYSMENU_HANDL_AUDIO_DNR1_THRES(int8_t direction) {
 	TRX.DNR1_SNR_THRESHOLD += direction;
-	if (TRX.DNR1_SNR_THRESHOLD < 1)
+	if (TRX.DNR1_SNR_THRESHOLD < 1) {
 		TRX.DNR1_SNR_THRESHOLD = 1;
-	if (TRX.DNR1_SNR_THRESHOLD > 100)
+	}
+	if (TRX.DNR1_SNR_THRESHOLD > 100) {
 		TRX.DNR1_SNR_THRESHOLD = 100;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_DNR2_THRES(int8_t direction) {
 	TRX.DNR2_SNR_THRESHOLD += direction;
-	if (TRX.DNR2_SNR_THRESHOLD < 1)
+	if (TRX.DNR2_SNR_THRESHOLD < 1) {
 		TRX.DNR2_SNR_THRESHOLD = 1;
-	if (TRX.DNR2_SNR_THRESHOLD > 100)
+	}
+	if (TRX.DNR2_SNR_THRESHOLD > 100) {
 		TRX.DNR2_SNR_THRESHOLD = 100;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction) {
 	TRX.DNR_AVERAGE += direction;
-	if (TRX.DNR_AVERAGE < 1)
+	if (TRX.DNR_AVERAGE < 1) {
 		TRX.DNR_AVERAGE = 1;
-	if (TRX.DNR_AVERAGE > 100)
+	}
+	if (TRX.DNR_AVERAGE > 100) {
 		TRX.DNR_AVERAGE = 100;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction) {
 	TRX.DNR_MINIMAL += direction;
-	if (TRX.DNR_MINIMAL < 1)
+	if (TRX.DNR_MINIMAL < 1) {
 		TRX.DNR_MINIMAL = 1;
-	if (TRX.DNR_MINIMAL > 100)
+	}
+	if (TRX.DNR_MINIMAL > 100) {
 		TRX.DNR_MINIMAL = 100;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER_THRESHOLD(int8_t direction) {
 	TRX.NOISE_BLANKER_THRESHOLD += direction;
-	if (TRX.NOISE_BLANKER_THRESHOLD < 1)
+	if (TRX.NOISE_BLANKER_THRESHOLD < 1) {
 		TRX.NOISE_BLANKER_THRESHOLD = 1;
-	if (TRX.NOISE_BLANKER_THRESHOLD > 20)
+	}
+	if (TRX.NOISE_BLANKER_THRESHOLD > 20) {
 		TRX.NOISE_BLANKER_THRESHOLD = 20;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P1_SSB(int8_t direction) {
 	TRX.MIC_EQ_P1_SSB += direction;
-	if (TRX.MIC_EQ_P1_SSB < -50)
+	if (TRX.MIC_EQ_P1_SSB < -50) {
 		TRX.MIC_EQ_P1_SSB = -50;
-	if (TRX.MIC_EQ_P1_SSB > 50)
+	}
+	if (TRX.MIC_EQ_P1_SSB > 50) {
 		TRX.MIC_EQ_P1_SSB = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P1_AMFM(int8_t direction) {
 	TRX.MIC_EQ_P1_AMFM += direction;
-	if (TRX.MIC_EQ_P1_AMFM < -50)
+	if (TRX.MIC_EQ_P1_AMFM < -50) {
 		TRX.MIC_EQ_P1_AMFM = -50;
-	if (TRX.MIC_EQ_P1_AMFM > 50)
+	}
+	if (TRX.MIC_EQ_P1_AMFM > 50) {
 		TRX.MIC_EQ_P1_AMFM = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P2_SSB(int8_t direction) {
 	TRX.MIC_EQ_P2_SSB += direction;
-	if (TRX.MIC_EQ_P2_SSB < -50)
+	if (TRX.MIC_EQ_P2_SSB < -50) {
 		TRX.MIC_EQ_P2_SSB = -50;
-	if (TRX.MIC_EQ_P2_SSB > 50)
+	}
+	if (TRX.MIC_EQ_P2_SSB > 50) {
 		TRX.MIC_EQ_P2_SSB = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P2_AMFM(int8_t direction) {
 	TRX.MIC_EQ_P2_AMFM += direction;
-	if (TRX.MIC_EQ_P2_AMFM < -50)
+	if (TRX.MIC_EQ_P2_AMFM < -50) {
 		TRX.MIC_EQ_P2_AMFM = -50;
-	if (TRX.MIC_EQ_P2_AMFM > 50)
+	}
+	if (TRX.MIC_EQ_P2_AMFM > 50) {
 		TRX.MIC_EQ_P2_AMFM = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P3_SSB(int8_t direction) {
 	TRX.MIC_EQ_P3_SSB += direction;
-	if (TRX.MIC_EQ_P3_SSB < -50)
+	if (TRX.MIC_EQ_P3_SSB < -50) {
 		TRX.MIC_EQ_P3_SSB = -50;
-	if (TRX.MIC_EQ_P3_SSB > 50)
+	}
+	if (TRX.MIC_EQ_P3_SSB > 50) {
 		TRX.MIC_EQ_P3_SSB = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P3_AMFM(int8_t direction) {
 	TRX.MIC_EQ_P3_AMFM += direction;
-	if (TRX.MIC_EQ_P3_AMFM < -50)
+	if (TRX.MIC_EQ_P3_AMFM < -50) {
 		TRX.MIC_EQ_P3_AMFM = -50;
-	if (TRX.MIC_EQ_P3_AMFM > 50)
+	}
+	if (TRX.MIC_EQ_P3_AMFM > 50) {
 		TRX.MIC_EQ_P3_AMFM = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P4_SSB(int8_t direction) {
 	TRX.MIC_EQ_P4_SSB += direction;
-	if (TRX.MIC_EQ_P4_SSB < -50)
+	if (TRX.MIC_EQ_P4_SSB < -50) {
 		TRX.MIC_EQ_P4_SSB = -50;
-	if (TRX.MIC_EQ_P4_SSB > 50)
+	}
+	if (TRX.MIC_EQ_P4_SSB > 50) {
 		TRX.MIC_EQ_P4_SSB = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P4_AMFM(int8_t direction) {
 	TRX.MIC_EQ_P4_AMFM += direction;
-	if (TRX.MIC_EQ_P4_AMFM < -50)
+	if (TRX.MIC_EQ_P4_AMFM < -50) {
 		TRX.MIC_EQ_P4_AMFM = -50;
-	if (TRX.MIC_EQ_P4_AMFM > 50)
+	}
+	if (TRX.MIC_EQ_P4_AMFM > 50) {
 		TRX.MIC_EQ_P4_AMFM = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P5_SSB(int8_t direction) {
 	TRX.MIC_EQ_P5_SSB += direction;
-	if (TRX.MIC_EQ_P5_SSB < -50)
+	if (TRX.MIC_EQ_P5_SSB < -50) {
 		TRX.MIC_EQ_P5_SSB = -50;
-	if (TRX.MIC_EQ_P5_SSB > 50)
+	}
+	if (TRX.MIC_EQ_P5_SSB > 50) {
 		TRX.MIC_EQ_P5_SSB = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_EQ_P5_AMFM(int8_t direction) {
 	TRX.MIC_EQ_P5_AMFM += direction;
-	if (TRX.MIC_EQ_P5_AMFM < -50)
+	if (TRX.MIC_EQ_P5_AMFM < -50) {
 		TRX.MIC_EQ_P5_AMFM = -50;
-	if (TRX.MIC_EQ_P5_AMFM > 50)
+	}
+	if (TRX.MIC_EQ_P5_AMFM > 50) {
 		TRX.MIC_EQ_P5_AMFM = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_REVERBER(int8_t direction) {
-	if (direction > 0 || TRX.MIC_REVERBER > 0)
+	if (direction > 0 || TRX.MIC_REVERBER > 0) {
 		TRX.MIC_REVERBER += direction;
-	if (TRX.MIC_REVERBER > (AUDIO_MAX_REVERBER_TAPS - 1))
+	}
+	if (TRX.MIC_REVERBER > (AUDIO_MAX_REVERBER_TAPS - 1)) {
 		TRX.MIC_REVERBER = (AUDIO_MAX_REVERBER_TAPS - 1);
+	}
 	NeedReinitReverber = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_MIC_NOISE_GATE(int8_t direction) {
 	TRX.MIC_NOISE_GATE += direction;
-	if (TRX.MIC_NOISE_GATE < -120)
+	if (TRX.MIC_NOISE_GATE < -120) {
 		TRX.MIC_NOISE_GATE = -120;
-	if (TRX.MIC_NOISE_GATE > 0)
+	}
+	if (TRX.MIC_NOISE_GATE > 0) {
 		TRX.MIC_NOISE_GATE = 0;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_EQ_P1(int8_t direction) {
 	TRX.RX_EQ_P1 += direction;
-	if (TRX.RX_EQ_P1 < -50)
+	if (TRX.RX_EQ_P1 < -50) {
 		TRX.RX_EQ_P1 = -50;
-	if (TRX.RX_EQ_P1 > 50)
+	}
+	if (TRX.RX_EQ_P1 > 50) {
 		TRX.RX_EQ_P1 = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_EQ_P2(int8_t direction) {
 	TRX.RX_EQ_P2 += direction;
-	if (TRX.RX_EQ_P2 < -50)
+	if (TRX.RX_EQ_P2 < -50) {
 		TRX.RX_EQ_P2 = -50;
-	if (TRX.RX_EQ_P2 > 50)
+	}
+	if (TRX.RX_EQ_P2 > 50) {
 		TRX.RX_EQ_P2 = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_EQ_P3(int8_t direction) {
 	TRX.RX_EQ_P3 += direction;
-	if (TRX.RX_EQ_P3 < -50)
+	if (TRX.RX_EQ_P3 < -50) {
 		TRX.RX_EQ_P3 = -50;
-	if (TRX.RX_EQ_P3 > 50)
+	}
+	if (TRX.RX_EQ_P3 > 50) {
 		TRX.RX_EQ_P3 = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_EQ_P4(int8_t direction) {
 	TRX.RX_EQ_P4 += direction;
-	if (TRX.RX_EQ_P4 < -50)
+	if (TRX.RX_EQ_P4 < -50) {
 		TRX.RX_EQ_P4 = -50;
-	if (TRX.RX_EQ_P4 > 50)
+	}
+	if (TRX.RX_EQ_P4 > 50) {
 		TRX.RX_EQ_P4 = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_EQ_P5(int8_t direction) {
 	TRX.RX_EQ_P5 += direction;
-	if (TRX.RX_EQ_P5 < -50)
+	if (TRX.RX_EQ_P5 < -50) {
 		TRX.RX_EQ_P5 = -50;
-	if (TRX.RX_EQ_P5 > 50)
+	}
+	if (TRX.RX_EQ_P5 > 50) {
 		TRX.RX_EQ_P5 = 50;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed(int8_t direction) {
 	TRX.RX_AGC_SSB_speed += direction;
-	if (TRX.RX_AGC_SSB_speed < 1)
+	if (TRX.RX_AGC_SSB_speed < 1) {
 		TRX.RX_AGC_SSB_speed = 1;
-	if (TRX.RX_AGC_SSB_speed > 20)
+	}
+	if (TRX.RX_AGC_SSB_speed > 20) {
 		TRX.RX_AGC_SSB_speed = 20;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed(int8_t direction) {
 	TRX.RX_AGC_CW_speed += direction;
-	if (TRX.RX_AGC_CW_speed < 1)
+	if (TRX.RX_AGC_CW_speed < 1) {
 		TRX.RX_AGC_CW_speed = 1;
-	if (TRX.RX_AGC_CW_speed > 20)
+	}
+	if (TRX.RX_AGC_CW_speed > 20) {
 		TRX.RX_AGC_CW_speed = 20;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_AGC_Max_gain(int8_t direction) {
 	TRX.RX_AGC_Max_gain += direction;
-	if (TRX.RX_AGC_Max_gain < 1)
+	if (TRX.RX_AGC_Max_gain < 1) {
 		TRX.RX_AGC_Max_gain = 1;
-	if (TRX.RX_AGC_Max_gain > 50)
+	}
+	if (TRX.RX_AGC_Max_gain > 50) {
 		TRX.RX_AGC_Max_gain = 50;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_RX_AGC_Hold(int8_t direction) {
-	if (TRX.RX_AGC_Hold > 0 || direction > 0)
+	if (TRX.RX_AGC_Hold > 0 || direction > 0) {
 		TRX.RX_AGC_Hold += direction * 100;
-	if (TRX.RX_AGC_Hold > 5000)
+	}
+	if (TRX.RX_AGC_Hold > 5000) {
 		TRX.RX_AGC_Hold = 5000;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_SSB(int8_t direction) {
 	TRX.TX_Compressor_speed_SSB += direction;
-	if (TRX.TX_Compressor_speed_SSB < 1)
+	if (TRX.TX_Compressor_speed_SSB < 1) {
 		TRX.TX_Compressor_speed_SSB = 1;
-	if (TRX.TX_Compressor_speed_SSB > 200)
+	}
+	if (TRX.TX_Compressor_speed_SSB > 200) {
 		TRX.TX_Compressor_speed_SSB = 200;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_AMFM(int8_t direction) {
 	TRX.TX_Compressor_speed_AMFM += direction;
-	if (TRX.TX_Compressor_speed_AMFM < 1)
+	if (TRX.TX_Compressor_speed_AMFM < 1) {
 		TRX.TX_Compressor_speed_AMFM = 1;
-	if (TRX.TX_Compressor_speed_AMFM > 200)
+	}
+	if (TRX.TX_Compressor_speed_AMFM > 200) {
 		TRX.TX_Compressor_speed_AMFM = 200;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_SSB(int8_t direction) {
 	TRX.TX_Compressor_maxgain_SSB += direction;
-	if (TRX.TX_Compressor_maxgain_SSB < 1)
+	if (TRX.TX_Compressor_maxgain_SSB < 1) {
 		TRX.TX_Compressor_maxgain_SSB = 1;
-	if (TRX.TX_Compressor_maxgain_SSB > 30)
+	}
+	if (TRX.TX_Compressor_maxgain_SSB > 30) {
 		TRX.TX_Compressor_maxgain_SSB = 30;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_AMFM(int8_t direction) {
 	TRX.TX_Compressor_maxgain_AMFM += direction;
-	if (TRX.TX_Compressor_maxgain_AMFM < 1)
+	if (TRX.TX_Compressor_maxgain_AMFM < 1) {
 		TRX.TX_Compressor_maxgain_AMFM = 1;
-	if (TRX.TX_Compressor_maxgain_AMFM > 30)
+	}
+	if (TRX.TX_Compressor_maxgain_AMFM > 30) {
 		TRX.TX_Compressor_maxgain_AMFM = 30;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction) {
@@ -2234,213 +2425,264 @@ static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction) {
 	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0)
+	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CurrentVFO->SQL = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CurrentVFO->SQL = false;
+	}
 	TRX.SQL_shadow = CurrentVFO->SQL;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0)
+	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].SQL = CurrentVFO->SQL;
+	}
 }
 
 void SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(int8_t direction) {
-	if (TRX.SSB_HPF_RX_Filter > 0 || direction > 0)
+	if (TRX.SSB_HPF_RX_Filter > 0 || direction > 0) {
 		TRX.SSB_HPF_RX_Filter += direction * 50;
-	if (TRX.SSB_HPF_RX_Filter > MAX_HPF_WIDTH)
+	}
+	if (TRX.SSB_HPF_RX_Filter > MAX_HPF_WIDTH) {
 		TRX.SSB_HPF_RX_Filter = MAX_HPF_WIDTH;
+	}
 
-	if (TRX.SSB_HPF_RX_Filter > TRX.SSB_LPF_RX_Filter)
+	if (TRX.SSB_HPF_RX_Filter > TRX.SSB_LPF_RX_Filter) {
 		TRX.SSB_HPF_RX_Filter = TRX.SSB_LPF_RX_Filter;
+	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 void SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(int8_t direction) {
-	if (TRX.SSB_HPF_TX_Filter > 0 || direction > 0)
+	if (TRX.SSB_HPF_TX_Filter > 0 || direction > 0) {
 		TRX.SSB_HPF_TX_Filter += direction * 50;
-	if (TRX.SSB_HPF_TX_Filter > MAX_HPF_WIDTH)
+	}
+	if (TRX.SSB_HPF_TX_Filter > MAX_HPF_WIDTH) {
 		TRX.SSB_HPF_TX_Filter = MAX_HPF_WIDTH;
+	}
 
-	if (TRX.SSB_HPF_TX_Filter > TRX.SSB_LPF_TX_Filter)
+	if (TRX.SSB_HPF_TX_Filter > TRX.SSB_LPF_TX_Filter) {
 		TRX.SSB_HPF_TX_Filter = TRX.SSB_LPF_TX_Filter;
+	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 void SYSMENU_HANDL_AUDIO_CW_LPF_pass(int8_t direction) {
-	if (TRX.CW_LPF_Filter > 50 || direction > 0)
+	if (TRX.CW_LPF_Filter > 50 || direction > 0) {
 		TRX.CW_LPF_Filter += direction * 50;
-	if (TRX.CW_LPF_Filter > MAX_LPF_WIDTH_CW)
+	}
+	if (TRX.CW_LPF_Filter > MAX_LPF_WIDTH_CW) {
 		TRX.CW_LPF_Filter = MAX_LPF_WIDTH_CW;
+	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 void SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(int8_t direction) {
-	if (TRX.DIGI_LPF_Filter > 50 || direction > 0)
+	if (TRX.DIGI_LPF_Filter > 50 || direction > 0) {
 		TRX.DIGI_LPF_Filter += direction * 50;
-	if (TRX.DIGI_LPF_Filter > MAX_LPF_WIDTH_SSB)
+	}
+	if (TRX.DIGI_LPF_Filter > MAX_LPF_WIDTH_SSB) {
 		TRX.DIGI_LPF_Filter = MAX_LPF_WIDTH_SSB;
+	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 void SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(int8_t direction) {
-	if (TRX.SSB_LPF_RX_Filter > 100 || direction > 0)
+	if (TRX.SSB_LPF_RX_Filter > 100 || direction > 0) {
 		TRX.SSB_LPF_RX_Filter += direction * 100;
-	if (TRX.SSB_LPF_RX_Filter > MAX_LPF_WIDTH_SSB)
+	}
+	if (TRX.SSB_LPF_RX_Filter > MAX_LPF_WIDTH_SSB) {
 		TRX.SSB_LPF_RX_Filter = MAX_LPF_WIDTH_SSB;
+	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 void SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(int8_t direction) {
-	if (TRX.SSB_LPF_TX_Filter > 100 || direction > 0)
+	if (TRX.SSB_LPF_TX_Filter > 100 || direction > 0) {
 		TRX.SSB_LPF_TX_Filter += direction * 100;
-	if (TRX.SSB_LPF_TX_Filter > MAX_LPF_WIDTH_SSB)
+	}
+	if (TRX.SSB_LPF_TX_Filter > MAX_LPF_WIDTH_SSB) {
 		TRX.SSB_LPF_TX_Filter = MAX_LPF_WIDTH_SSB;
+	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 void SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(int8_t direction) {
-	if (TRX.AM_LPF_RX_Filter > 100 || direction > 0)
+	if (TRX.AM_LPF_RX_Filter > 100 || direction > 0) {
 		TRX.AM_LPF_RX_Filter += direction * 100;
-	if (TRX.AM_LPF_RX_Filter > MAX_LPF_WIDTH_AM)
+	}
+	if (TRX.AM_LPF_RX_Filter > MAX_LPF_WIDTH_AM) {
 		TRX.AM_LPF_RX_Filter = MAX_LPF_WIDTH_AM;
+	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 void SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(int8_t direction) {
-	if (TRX.AM_LPF_TX_Filter > 100 || direction > 0)
+	if (TRX.AM_LPF_TX_Filter > 100 || direction > 0) {
 		TRX.AM_LPF_TX_Filter += direction * 100;
-	if (TRX.AM_LPF_TX_Filter > MAX_LPF_WIDTH_AM)
+	}
+	if (TRX.AM_LPF_TX_Filter > MAX_LPF_WIDTH_AM) {
 		TRX.AM_LPF_TX_Filter = MAX_LPF_WIDTH_AM;
+	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 void SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(int8_t direction) {
-	if (TRX.FM_LPF_RX_Filter > 1000 || direction > 0)
+	if (TRX.FM_LPF_RX_Filter > 1000 || direction > 0) {
 		TRX.FM_LPF_RX_Filter += direction * 1000;
-	if (TRX.FM_LPF_RX_Filter > MAX_LPF_WIDTH_NFM)
+	}
+	if (TRX.FM_LPF_RX_Filter > MAX_LPF_WIDTH_NFM) {
 		TRX.FM_LPF_RX_Filter = MAX_LPF_WIDTH_NFM;
+	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 void SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(int8_t direction) {
-	if (TRX.FM_LPF_TX_Filter > 1000 || direction > 0)
+	if (TRX.FM_LPF_TX_Filter > 1000 || direction > 0) {
 		TRX.FM_LPF_TX_Filter += direction * 1000;
-	if (TRX.FM_LPF_TX_Filter > MAX_LPF_WIDTH_NFM)
+	}
+	if (TRX.FM_LPF_TX_Filter > MAX_LPF_WIDTH_NFM) {
 		TRX.FM_LPF_TX_Filter = MAX_LPF_WIDTH_NFM;
+	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.Beeper = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.Beeper = false;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_CTCSS_Freq(int8_t direction) {
 	uint16_t current_pos = 0;
-	for (uint16_t i = 0; i < CTCSS_FREQS_COUNT; i++)
-		if (CTCSS_Freqs[i] == TRX.CTCSS_Freq)
+	for (uint16_t i = 0; i < CTCSS_FREQS_COUNT; i++) {
+		if (CTCSS_Freqs[i] == TRX.CTCSS_Freq) {
 			current_pos = i;
-	if (direction > 0)
+		}
+	}
+	if (direction > 0) {
 		current_pos++;
-	if (direction < 0 && current_pos > 0)
+	}
+	if (direction < 0 && current_pos > 0) {
 		current_pos--;
-	if (current_pos >= CTCSS_FREQS_COUNT)
+	}
+	if (current_pos >= CTCSS_FREQS_COUNT) {
 		current_pos = CTCSS_FREQS_COUNT - 1;
+	}
 	TRX.CTCSS_Freq = CTCSS_Freqs[current_pos];
 }
 
 static void SYSMENU_HANDL_AUDIO_SELFHEAR_Volume(int8_t direction) {
 	TRX.SELFHEAR_Volume += direction;
-	if (TRX.SELFHEAR_Volume > 100)
+	if (TRX.SELFHEAR_Volume > 100) {
 		TRX.SELFHEAR_Volume = 100;
-	if (TRX.SELFHEAR_Volume < 1)
+	}
+	if (TRX.SELFHEAR_Volume < 1) {
 		TRX.SELFHEAR_Volume = 1;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_FM_Stereo(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.FM_Stereo = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.FM_Stereo = false;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_AGC_Spectral(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.AGC_Spectral = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.AGC_Spectral = false;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_TX_CESSB(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.TX_CESSB = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.TX_CESSB = false;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_TX_CESSB_COMPRESS_DB(int8_t direction) {
 	TRX.TX_CESSB_COMPRESS_DB += direction * 0.1f;
-	if (TRX.TX_CESSB_COMPRESS_DB < 1.0f)
+	if (TRX.TX_CESSB_COMPRESS_DB < 1.0f) {
 		TRX.TX_CESSB_COMPRESS_DB = 1.0f;
-	if (TRX.TX_CESSB_COMPRESS_DB > 20.0f)
+	}
+	if (TRX.TX_CESSB_COMPRESS_DB > 20.0f) {
 		TRX.TX_CESSB_COMPRESS_DB = 20.0f;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_VAD_THRESHOLD(int8_t direction) {
 	TRX.VAD_THRESHOLD += direction;
-	if (TRX.VAD_THRESHOLD > 200)
+	if (TRX.VAD_THRESHOLD > 200) {
 		TRX.VAD_THRESHOLD = 200;
-	if (TRX.VAD_THRESHOLD < 1)
+	}
+	if (TRX.VAD_THRESHOLD < 1) {
 		TRX.VAD_THRESHOLD = 1;
+	}
 }
 
 static void SYSMENU_HANDL_AUDIO_VOX(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.VOX = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.VOX = false;
+	}
 }
 static void SYSMENU_HANDL_AUDIO_VOX_TIMEOUT(int8_t direction) {
 	TRX.VOX_TIMEOUT += direction * 50;
-	if (TRX.VOX_TIMEOUT > 2000)
+	if (TRX.VOX_TIMEOUT > 2000) {
 		TRX.VOX_TIMEOUT = 2000;
-	if (TRX.VOX_TIMEOUT < 50)
+	}
+	if (TRX.VOX_TIMEOUT < 50) {
 		TRX.VOX_TIMEOUT = 50;
+	}
 }
 static void SYSMENU_HANDL_AUDIO_VOX_THRESHOLD(int8_t direction) {
 	TRX.VOX_THRESHOLD += direction;
-	if (TRX.VOX_THRESHOLD > 0)
+	if (TRX.VOX_THRESHOLD > 0) {
 		TRX.VOX_THRESHOLD = 0;
-	if (TRX.VOX_THRESHOLD < -120)
+	}
+	if (TRX.VOX_THRESHOLD < -120) {
 		TRX.VOX_THRESHOLD = -120;
+	}
 }
 
 // CW MENU
@@ -2469,77 +2711,97 @@ void SYSMENU_CW_KEYER_HOTKEY(void) {
 
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction) {
 	TRX.CW_Pitch += direction * 10;
-	if (TRX.CW_Pitch < 50)
+	if (TRX.CW_Pitch < 50) {
 		TRX.CW_Pitch = 50;
-	if (TRX.CW_Pitch > 10000)
+	}
+	if (TRX.CW_Pitch > 10000) {
 		TRX.CW_Pitch = 10000;
+	}
 }
 
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction) {
 	TRX.CW_Key_timeout += direction * 50;
-	if (TRX.CW_Key_timeout < 50)
+	if (TRX.CW_Key_timeout < 50) {
 		TRX.CW_Key_timeout = 50;
-	if (TRX.CW_Key_timeout > 5000)
+	}
+	if (TRX.CW_Key_timeout > 5000) {
 		TRX.CW_Key_timeout = 5000;
+	}
 }
 
 static void SYSMENU_HANDL_CW_Keyer(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.CW_KEYER = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.CW_KEYER = false;
+	}
 }
 
 static void SYSMENU_HANDL_CW_GaussFilter(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.CW_GaussFilter = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.CW_GaussFilter = false;
+	}
 	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction) {
 	TRX.CW_KEYER_WPM += direction;
-	if (TRX.CW_KEYER_WPM < 1)
+	if (TRX.CW_KEYER_WPM < 1) {
 		TRX.CW_KEYER_WPM = 1;
-	if (TRX.CW_KEYER_WPM > 200)
+	}
+	if (TRX.CW_KEYER_WPM > 200) {
 		TRX.CW_KEYER_WPM = 200;
+	}
 }
 
 static void SYSMENU_HANDL_CW_SelfHear(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.CW_SelfHear = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.CW_SelfHear = false;
+	}
 }
 
 static void SYSMENU_HANDL_CW_DotToDashRate(int8_t direction) {
 	TRX.CW_DotToDashRate += 0.01f * direction;
-	if (TRX.CW_DotToDashRate < 3.0f)
+	if (TRX.CW_DotToDashRate < 3.0f) {
 		TRX.CW_DotToDashRate = 3.0f;
-	if (TRX.CW_DotToDashRate > 5.0f)
+	}
+	if (TRX.CW_DotToDashRate > 5.0f) {
 		TRX.CW_DotToDashRate = 5.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CW_Iambic(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.CW_Iambic = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.CW_Iambic = false;
+	}
 }
 
 static void SYSMENU_HANDL_CW_Invert(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.CW_Invert = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.CW_Invert = false;
+	}
 }
 
 static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction) {
-	if (direction > 0 || TRX.CW_PTT_Type > 0)
+	if (direction > 0 || TRX.CW_PTT_Type > 0) {
 		TRX.CW_PTT_Type += direction;
-	if (TRX.CW_PTT_Type > 2)
+	}
+	if (TRX.CW_PTT_Type > 2) {
 		TRX.CW_PTT_Type = 2;
+	}
 
 	KEYER_symbol_status = 0;
 }
@@ -2555,17 +2817,21 @@ static void SYSMENU_HANDL_LCDMENU(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.FFT_Enabled = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.FFT_Enabled = false;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction) {
-	if (direction > 0 || TRX.ColorThemeId > 0)
+	if (direction > 0 || TRX.ColorThemeId > 0) {
 		TRX.ColorThemeId += direction;
-	if (TRX.ColorThemeId > (COLOR_THEMES_COUNT - 1))
+	}
+	if (TRX.ColorThemeId > (COLOR_THEMES_COUNT - 1)) {
 		TRX.ColorThemeId = (COLOR_THEMES_COUNT - 1);
+	}
 
 	COLOR = &COLOR_THEMES[TRX.ColorThemeId];
 	FFT_Init();
@@ -2573,10 +2839,12 @@ static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_SCREEN_LAYOUT_THEME(int8_t direction) {
-	if (direction > 0 || TRX.LayoutThemeId > 0)
+	if (direction > 0 || TRX.LayoutThemeId > 0) {
 		TRX.LayoutThemeId += direction;
-	if (TRX.LayoutThemeId > (LAYOUT_THEMES_COUNT - 1))
+	}
+	if (TRX.LayoutThemeId > (LAYOUT_THEMES_COUNT - 1)) {
 		TRX.LayoutThemeId = (LAYOUT_THEMES_COUNT - 1);
+	}
 
 	LAYOUT = &LAYOUT_THEMES[TRX.LayoutThemeId];
 	FFT_Init();
@@ -2584,170 +2852,202 @@ static void SYSMENU_HANDL_SCREEN_LAYOUT_THEME(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Compressor(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.FFT_Compressor = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.FFT_Compressor = false;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction) {
 	TRX.FFT_Averaging += direction;
-	if (TRX.FFT_Averaging < 1)
+	if (TRX.FFT_Averaging < 1) {
 		TRX.FFT_Averaging = 1;
-	if (TRX.FFT_Averaging > (FFT_MAX_MEANS + FFT_MAX_AVER))
+	}
+	if (TRX.FFT_Averaging > (FFT_MAX_MEANS + FFT_MAX_AVER)) {
 		TRX.FFT_Averaging = (FFT_MAX_MEANS + FFT_MAX_AVER);
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction) {
 	TRX.FFT_Window += direction;
-	if (TRX.FFT_Window < 1)
+	if (TRX.FFT_Window < 1) {
 		TRX.FFT_Window = 1;
-	if (TRX.FFT_Window > 7)
+	}
+	if (TRX.FFT_Window > 7) {
 		TRX.FFT_Window = 7;
+	}
 	FFT_PreInit();
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction) {
 	if (direction > 0) {
-		if (TRX.FFT_Zoom == 1)
+		if (TRX.FFT_Zoom == 1) {
 			TRX.FFT_Zoom = 2;
-		else if (TRX.FFT_Zoom == 2)
+		} else if (TRX.FFT_Zoom == 2) {
 			TRX.FFT_Zoom = 4;
-		else if (TRX.FFT_Zoom == 4)
+		} else if (TRX.FFT_Zoom == 4) {
 			TRX.FFT_Zoom = 8;
-		else if (TRX.FFT_Zoom == 8)
+		} else if (TRX.FFT_Zoom == 8) {
 			TRX.FFT_Zoom = 16;
+		}
 	} else {
-		if (TRX.FFT_Zoom == 2)
+		if (TRX.FFT_Zoom == 2) {
 			TRX.FFT_Zoom = 1;
-		else if (TRX.FFT_Zoom == 4)
+		} else if (TRX.FFT_Zoom == 4) {
 			TRX.FFT_Zoom = 2;
-		else if (TRX.FFT_Zoom == 8)
+		} else if (TRX.FFT_Zoom == 8) {
 			TRX.FFT_Zoom = 4;
-		else if (TRX.FFT_Zoom == 16)
+		} else if (TRX.FFT_Zoom == 16) {
 			TRX.FFT_Zoom = 8;
+		}
 	}
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_ZoomCW(int8_t direction) {
 	if (direction > 0) {
-		if (TRX.FFT_ZoomCW == 1)
+		if (TRX.FFT_ZoomCW == 1) {
 			TRX.FFT_ZoomCW = 2;
-		else if (TRX.FFT_ZoomCW == 2)
+		} else if (TRX.FFT_ZoomCW == 2) {
 			TRX.FFT_ZoomCW = 4;
-		else if (TRX.FFT_ZoomCW == 4)
+		} else if (TRX.FFT_ZoomCW == 4) {
 			TRX.FFT_ZoomCW = 8;
-		else if (TRX.FFT_ZoomCW == 8)
+		} else if (TRX.FFT_ZoomCW == 8) {
 			TRX.FFT_ZoomCW = 16;
+		}
 	} else {
-		if (TRX.FFT_ZoomCW == 2)
+		if (TRX.FFT_ZoomCW == 2) {
 			TRX.FFT_ZoomCW = 1;
-		else if (TRX.FFT_ZoomCW == 4)
+		} else if (TRX.FFT_ZoomCW == 4) {
 			TRX.FFT_ZoomCW = 2;
-		else if (TRX.FFT_ZoomCW == 8)
+		} else if (TRX.FFT_ZoomCW == 8) {
 			TRX.FFT_ZoomCW = 4;
-		else if (TRX.FFT_ZoomCW == 16)
+		} else if (TRX.FFT_ZoomCW == 16) {
 			TRX.FFT_ZoomCW = 8;
+		}
 	}
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Height(int8_t direction) {
 	TRX.FFT_Height += direction;
-	if (TRX.FFT_Height < 1)
+	if (TRX.FFT_Height < 1) {
 		TRX.FFT_Height = 1;
-	if (TRX.FFT_Height > 5)
+	}
+	if (TRX.FFT_Height > 5) {
 		TRX.FFT_Height = 5;
+	}
 
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction) {
 	TRX.FFT_Style += direction;
-	if (TRX.FFT_Style < 1)
+	if (TRX.FFT_Style < 1) {
 		TRX.FFT_Style = 1;
-	if (TRX.FFT_Style > 4)
+	}
+	if (TRX.FFT_Style > 4) {
 		TRX.FFT_Style = 4;
+	}
 
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_BW_Style(int8_t direction) {
 	TRX.FFT_BW_Style += direction;
-	if (TRX.FFT_BW_Style < 1)
+	if (TRX.FFT_BW_Style < 1) {
 		TRX.FFT_BW_Style = 1;
-	if (TRX.FFT_BW_Style > 3)
+	}
+	if (TRX.FFT_BW_Style > 3) {
 		TRX.FFT_BW_Style = 3;
+	}
 
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction) {
-	if (direction > 0 || TRX.FFT_Color > 0)
+	if (direction > 0 || TRX.FFT_Color > 0) {
 		TRX.FFT_Color += direction;
-	if (TRX.FFT_Color > 10)
+	}
+	if (TRX.FFT_Color > 10) {
 		TRX.FFT_Color = 10;
+	}
 
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_WTF_Color(int8_t direction) {
-	if (direction > 0 || TRX.WTF_Color > 0)
+	if (direction > 0 || TRX.WTF_Color > 0) {
 		TRX.WTF_Color += direction;
-	if (TRX.WTF_Color > 10)
+	}
+	if (TRX.WTF_Color > 10) {
 		TRX.WTF_Color = 10;
+	}
 
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_FreqGrid(int8_t direction) {
 	TRX.FFT_FreqGrid += direction;
-	if (TRX.FFT_FreqGrid < 0)
+	if (TRX.FFT_FreqGrid < 0) {
 		TRX.FFT_FreqGrid = 0;
-	if (TRX.FFT_FreqGrid > 3)
+	}
+	if (TRX.FFT_FreqGrid > 3) {
 		TRX.FFT_FreqGrid = 3;
+	}
 
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_dBmGrid(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.FFT_dBmGrid = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.FFT_dBmGrid = false;
+	}
 
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_WTF_Moving(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.WTF_Moving = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.WTF_Moving = false;
+	}
 }
 
 #if HRDW_HAS_WIFI
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.FFT_DXCluster = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.FFT_DXCluster = false;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.FFT_DXCluster_Azimuth = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.FFT_DXCluster_Azimuth = false;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout(int8_t direction) {
-	if (TRX.FFT_DXCluster_Timeout > 0 || direction > 0)
+	if (TRX.FFT_DXCluster_Timeout > 0 || direction > 0) {
 		TRX.FFT_DXCluster_Timeout += direction;
-	if (TRX.FFT_DXCluster_Timeout > 30)
+	}
+	if (TRX.FFT_DXCluster_Timeout > 30) {
 		TRX.FFT_DXCluster_Timeout = 30;
+	}
 
 	WIFI_DXCLUSTER_list_count = 0;
 	TRX_DXCluster_UpdateTime = 0;
@@ -2755,331 +3055,420 @@ static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout(int8_t direction) {
 #endif
 
 static void SYSMENU_HANDL_SCREEN_FFT_Background(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.FFT_Background = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.FFT_Background = false;
+	}
 
 	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Lens(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.FFT_Lens = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.FFT_Lens = false;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_HoldPeaks(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.FFT_HoldPeaks = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.FFT_HoldPeaks = false;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_LCD_Brightness(int8_t direction) {
 	TRX.LCD_Brightness += direction;
-	if (TRX.LCD_Brightness < 1)
+	if (TRX.LCD_Brightness < 1) {
 		TRX.LCD_Brightness = 1;
-	if (TRX.LCD_Brightness > 100)
+	}
+	if (TRX.LCD_Brightness > 100) {
 		TRX.LCD_Brightness = 100;
+	}
 	LCDDriver_setBrightness(TRX.LCD_Brightness);
 }
 
 static void SYSMENU_HANDL_SCREEN_LCD_SleepTimeout(int8_t direction) {
-	if (TRX.LCD_SleepTimeout > 0 || direction > 0)
+	if (TRX.LCD_SleepTimeout > 0 || direction > 0) {
 		TRX.LCD_SleepTimeout += direction;
-	if (TRX.LCD_SleepTimeout > 1000)
+	}
+	if (TRX.LCD_SleepTimeout > 1000) {
 		TRX.LCD_SleepTimeout = 1000;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction) {
 	TRX.FFT_3D += direction;
-	if (TRX.FFT_3D > 2)
+	if (TRX.FFT_3D > 2) {
 		TRX.FFT_3D = 2;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Automatic(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.FFT_Automatic = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.FFT_Automatic = false;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_ManualBottom(int8_t direction) {
 	TRX.FFT_ManualBottom += direction;
-	if (TRX.FFT_ManualBottom < -150)
+	if (TRX.FFT_ManualBottom < -150) {
 		TRX.FFT_ManualBottom = -150;
-	if (TRX.FFT_ManualBottom > 50)
+	}
+	if (TRX.FFT_ManualBottom > 50) {
 		TRX.FFT_ManualBottom = 50;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_ManualTop(int8_t direction) {
 	TRX.FFT_ManualTop += direction;
-	if (TRX.FFT_ManualTop < -150)
+	if (TRX.FFT_ManualTop < -150) {
 		TRX.FFT_ManualTop = -150;
-	if (TRX.FFT_ManualTop > 50)
+	}
+	if (TRX.FFT_ManualTop > 50) {
 		TRX.FFT_ManualTop = 50;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Speed(int8_t direction) {
 	TRX.FFT_Speed += direction;
-	if (TRX.FFT_Speed < 1)
+	if (TRX.FFT_Speed < 1) {
 		TRX.FFT_Speed = 1;
-	if (TRX.FFT_Speed > 5)
+	}
+	if (TRX.FFT_Speed > 5) {
 		TRX.FFT_Speed = 5;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Sensitivity(int8_t direction) {
 	TRX.FFT_Sensitivity += direction;
-	if (TRX.FFT_Sensitivity < 1)
+	if (TRX.FFT_Sensitivity < 1) {
 		TRX.FFT_Sensitivity = 1;
-	if (TRX.FFT_Sensitivity > FFT_MAX_TOP_SCALE)
+	}
+	if (TRX.FFT_Sensitivity > FFT_MAX_TOP_SCALE) {
 		TRX.FFT_Sensitivity = FFT_MAX_TOP_SCALE;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_Show_Sec_VFO(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.Show_Sec_VFO = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.Show_Sec_VFO = false;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_Scale_Type(int8_t direction) {
-	if (TRX.FFT_Scale_Type > 0 || direction > 0)
+	if (TRX.FFT_Scale_Type > 0 || direction > 0) {
 		TRX.FFT_Scale_Type += direction;
-	if (TRX.FFT_Scale_Type > 2)
+	}
+	if (TRX.FFT_Scale_Type > 2) {
 		TRX.FFT_Scale_Type = 2;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction) {
-	if (TRX.FuncButtons[0] > 0 || direction > 0)
+	if (TRX.FuncButtons[0] > 0 || direction > 0) {
 		TRX.FuncButtons[0] += direction;
-	if (TRX.FuncButtons[0] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[0] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[0] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 #if FUNCBUTTONS_COUNT > 1
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON2(int8_t direction) {
-	if (TRX.FuncButtons[1] > 0 || direction > 0)
+	if (TRX.FuncButtons[1] > 0 || direction > 0) {
 		TRX.FuncButtons[1] += direction;
-	if (TRX.FuncButtons[1] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[1] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[1] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON3(int8_t direction) {
-	if (TRX.FuncButtons[2] > 0 || direction > 0)
+	if (TRX.FuncButtons[2] > 0 || direction > 0) {
 		TRX.FuncButtons[2] += direction;
-	if (TRX.FuncButtons[2] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[2] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[2] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON4(int8_t direction) {
-	if (TRX.FuncButtons[3] > 0 || direction > 0)
+	if (TRX.FuncButtons[3] > 0 || direction > 0) {
 		TRX.FuncButtons[3] += direction;
-	if (TRX.FuncButtons[3] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[3] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[3] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON5(int8_t direction) {
-	if (TRX.FuncButtons[4] > 0 || direction > 0)
+	if (TRX.FuncButtons[4] > 0 || direction > 0) {
 		TRX.FuncButtons[4] += direction;
-	if (TRX.FuncButtons[4] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[4] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[4] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON6(int8_t direction) {
-	if (TRX.FuncButtons[5] > 0 || direction > 0)
+	if (TRX.FuncButtons[5] > 0 || direction > 0) {
 		TRX.FuncButtons[5] += direction;
-	if (TRX.FuncButtons[5] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[5] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[5] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON7(int8_t direction) {
-	if (TRX.FuncButtons[6] > 0 || direction > 0)
+	if (TRX.FuncButtons[6] > 0 || direction > 0) {
 		TRX.FuncButtons[6] += direction;
-	if (TRX.FuncButtons[6] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[6] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[6] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON8(int8_t direction) {
-	if (TRX.FuncButtons[7] > 0 || direction > 0)
+	if (TRX.FuncButtons[7] > 0 || direction > 0) {
 		TRX.FuncButtons[7] += direction;
-	if (TRX.FuncButtons[7] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[7] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[7] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON9(int8_t direction) {
-	if (TRX.FuncButtons[8] > 0 || direction > 0)
+	if (TRX.FuncButtons[8] > 0 || direction > 0) {
 		TRX.FuncButtons[8] += direction;
-	if (TRX.FuncButtons[8] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[8] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[8] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON10(int8_t direction) {
-	if (TRX.FuncButtons[9] > 0 || direction > 0)
+	if (TRX.FuncButtons[9] > 0 || direction > 0) {
 		TRX.FuncButtons[9] += direction;
-	if (TRX.FuncButtons[9] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[9] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[9] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON11(int8_t direction) {
-	if (TRX.FuncButtons[10] > 0 || direction > 0)
+	if (TRX.FuncButtons[10] > 0 || direction > 0) {
 		TRX.FuncButtons[10] += direction;
-	if (TRX.FuncButtons[10] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[10] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[10] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON12(int8_t direction) {
-	if (TRX.FuncButtons[11] > 0 || direction > 0)
+	if (TRX.FuncButtons[11] > 0 || direction > 0) {
 		TRX.FuncButtons[11] += direction;
-	if (TRX.FuncButtons[11] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[11] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[11] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON13(int8_t direction) {
-	if (TRX.FuncButtons[12] > 0 || direction > 0)
+	if (TRX.FuncButtons[12] > 0 || direction > 0) {
 		TRX.FuncButtons[12] += direction;
-	if (TRX.FuncButtons[12] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[12] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[12] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON14(int8_t direction) {
-	if (TRX.FuncButtons[13] > 0 || direction > 0)
+	if (TRX.FuncButtons[13] > 0 || direction > 0) {
 		TRX.FuncButtons[13] += direction;
-	if (TRX.FuncButtons[13] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[13] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[13] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON15(int8_t direction) {
-	if (TRX.FuncButtons[14] > 0 || direction > 0)
+	if (TRX.FuncButtons[14] > 0 || direction > 0) {
 		TRX.FuncButtons[14] += direction;
-	if (TRX.FuncButtons[14] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[14] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[14] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON16(int8_t direction) {
-	if (TRX.FuncButtons[15] > 0 || direction > 0)
+	if (TRX.FuncButtons[15] > 0 || direction > 0) {
 		TRX.FuncButtons[15] += direction;
-	if (TRX.FuncButtons[15] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[15] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[15] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON17(int8_t direction) {
-	if (TRX.FuncButtons[16] > 0 || direction > 0)
+	if (TRX.FuncButtons[16] > 0 || direction > 0) {
 		TRX.FuncButtons[16] += direction;
-	if (TRX.FuncButtons[16] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[16] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[16] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON18(int8_t direction) {
-	if (TRX.FuncButtons[17] > 0 || direction > 0)
+	if (TRX.FuncButtons[17] > 0 || direction > 0) {
 		TRX.FuncButtons[17] += direction;
-	if (TRX.FuncButtons[17] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[17] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[17] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON19(int8_t direction) {
-	if (TRX.FuncButtons[18] > 0 || direction > 0)
+	if (TRX.FuncButtons[18] > 0 || direction > 0) {
 		TRX.FuncButtons[18] += direction;
-	if (TRX.FuncButtons[18] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[18] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[18] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON20(int8_t direction) {
-	if (TRX.FuncButtons[19] > 0 || direction > 0)
+	if (TRX.FuncButtons[19] > 0 || direction > 0) {
 		TRX.FuncButtons[19] += direction;
-	if (TRX.FuncButtons[19] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[19] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[19] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON21(int8_t direction) {
-	if (TRX.FuncButtons[20] > 0 || direction > 0)
+	if (TRX.FuncButtons[20] > 0 || direction > 0) {
 		TRX.FuncButtons[20] += direction;
-	if (TRX.FuncButtons[20] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[20] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[20] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON22(int8_t direction) {
-	if (TRX.FuncButtons[21] > 0 || direction > 0)
+	if (TRX.FuncButtons[21] > 0 || direction > 0) {
 		TRX.FuncButtons[21] += direction;
-	if (TRX.FuncButtons[21] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[21] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[21] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON23(int8_t direction) {
-	if (TRX.FuncButtons[22] > 0 || direction > 0)
+	if (TRX.FuncButtons[22] > 0 || direction > 0) {
 		TRX.FuncButtons[22] += direction;
-	if (TRX.FuncButtons[22] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[22] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[22] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON24(int8_t direction) {
-	if (TRX.FuncButtons[23] > 0 || direction > 0)
+	if (TRX.FuncButtons[23] > 0 || direction > 0) {
 		TRX.FuncButtons[23] += direction;
-	if (TRX.FuncButtons[23] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[23] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[23] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON25(int8_t direction) {
-	if (TRX.FuncButtons[24] > 0 || direction > 0)
+	if (TRX.FuncButtons[24] > 0 || direction > 0) {
 		TRX.FuncButtons[24] += direction;
-	if (TRX.FuncButtons[24] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[24] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[24] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 #if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 25
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON26(int8_t direction) {
-	if (TRX.FuncButtons[25] > 0 || direction > 0)
+	if (TRX.FuncButtons[25] > 0 || direction > 0) {
 		TRX.FuncButtons[25] += direction;
-	if (TRX.FuncButtons[25] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[25] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[25] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON27(int8_t direction) {
-	if (TRX.FuncButtons[26] > 0 || direction > 0)
+	if (TRX.FuncButtons[26] > 0 || direction > 0) {
 		TRX.FuncButtons[26] += direction;
-	if (TRX.FuncButtons[26] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[26] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[26] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 #if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 27
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON28(int8_t direction) {
-	if (TRX.FuncButtons[27] > 0 || direction > 0)
+	if (TRX.FuncButtons[27] > 0 || direction > 0) {
 		TRX.FuncButtons[27] += direction;
-	if (TRX.FuncButtons[27] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[27] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[27] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON29(int8_t direction) {
-	if (TRX.FuncButtons[28] > 0 || direction > 0)
+	if (TRX.FuncButtons[28] > 0 || direction > 0) {
 		TRX.FuncButtons[28] += direction;
-	if (TRX.FuncButtons[28] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[28] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[28] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON30(int8_t direction) {
-	if (TRX.FuncButtons[29] > 0 || direction > 0)
+	if (TRX.FuncButtons[29] > 0 || direction > 0) {
 		TRX.FuncButtons[29] += direction;
-	if (TRX.FuncButtons[29] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[29] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[29] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 #if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 30
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON31(int8_t direction) {
-	if (TRX.FuncButtons[30] > 0 || direction > 0)
+	if (TRX.FuncButtons[30] > 0 || direction > 0) {
 		TRX.FuncButtons[30] += direction;
-	if (TRX.FuncButtons[30] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[30] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[30] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction) {
-	if (TRX.FuncButtons[31] > 0 || direction > 0)
+	if (TRX.FuncButtons[31] > 0 || direction > 0) {
 		TRX.FuncButtons[31] += direction;
-	if (TRX.FuncButtons[31] >= FUNCBUTTONS_COUNT)
+	}
+	if (TRX.FuncButtons[31] >= FUNCBUTTONS_COUNT) {
 		TRX.FuncButtons[31] = FUNCBUTTONS_COUNT - 1;
+	}
 }
 #endif
 #endif
@@ -3097,57 +3486,67 @@ static void SYSMENU_HANDL_DECODERSMENU(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_DECODERS_CW_Decoder(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.CW_Decoder = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.CW_Decoder = false;
+	}
 }
 
 static void SYSMENU_HANDL_DECODERS_CW_Decoder_Threshold(int8_t direction) {
-	if (TRX.CW_Decoder_Threshold > 1 || direction > 0)
+	if (TRX.CW_Decoder_Threshold > 1 || direction > 0) {
 		TRX.CW_Decoder_Threshold += direction;
-	if (TRX.CW_Decoder_Threshold > 50)
+	}
+	if (TRX.CW_Decoder_Threshold > 50) {
 		TRX.CW_Decoder_Threshold = 50;
+	}
 }
 
 static void SYSMENU_HANDL_DECODERS_RDS_Decoder(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.RDS_Decoder = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.RDS_Decoder = false;
+	}
 }
 
 static void SYSMENU_HANDL_DECODERS_RTTY_InvertBits(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.RTTY_InvertBits = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.RTTY_InvertBits = false;
+	}
 }
 
 static void SYSMENU_HANDL_DECODERS_RTTY_Speed(int8_t direction) {
 	if (direction > 0) {
-		if (TRX.RTTY_Speed == 45)
+		if (TRX.RTTY_Speed == 45) {
 			TRX.RTTY_Speed = 50;
-		else if (TRX.RTTY_Speed == 50)
+		} else if (TRX.RTTY_Speed == 50) {
 			TRX.RTTY_Speed = 75;
-		else if (TRX.RTTY_Speed == 75)
+		} else if (TRX.RTTY_Speed == 75) {
 			TRX.RTTY_Speed = 100;
-		else if (TRX.RTTY_Speed == 100)
+		} else if (TRX.RTTY_Speed == 100) {
 			TRX.RTTY_Speed = 150;
-		else if (TRX.RTTY_Speed == 150)
+		} else if (TRX.RTTY_Speed == 150) {
 			TRX.RTTY_Speed = 300;
+		}
 	}
 	if (direction < 0) {
-		if (TRX.RTTY_Speed == 300)
+		if (TRX.RTTY_Speed == 300) {
 			TRX.RTTY_Speed = 150;
-		else if (TRX.RTTY_Speed == 150)
+		} else if (TRX.RTTY_Speed == 150) {
 			TRX.RTTY_Speed = 100;
-		else if (TRX.RTTY_Speed == 100)
+		} else if (TRX.RTTY_Speed == 100) {
 			TRX.RTTY_Speed = 75;
-		else if (TRX.RTTY_Speed == 75)
+		} else if (TRX.RTTY_Speed == 75) {
 			TRX.RTTY_Speed = 50;
-		else if (TRX.RTTY_Speed == 50)
+		} else if (TRX.RTTY_Speed == 50) {
 			TRX.RTTY_Speed = 45;
+		}
 	}
 
 	RTTYDecoder_Init();
@@ -3155,63 +3554,69 @@ static void SYSMENU_HANDL_DECODERS_RTTY_Speed(int8_t direction) {
 
 static void SYSMENU_HANDL_DECODERS_RTTY_Shift(int8_t direction) {
 	if (direction > 0) {
-		if (TRX.RTTY_Shift == 85)
+		if (TRX.RTTY_Shift == 85) {
 			TRX.RTTY_Shift = 170;
-		else if (TRX.RTTY_Shift == 170)
+		} else if (TRX.RTTY_Shift == 170) {
 			TRX.RTTY_Shift = 182;
-		else if (TRX.RTTY_Shift == 182)
+		} else if (TRX.RTTY_Shift == 182) {
 			TRX.RTTY_Shift = 200;
-		else if (TRX.RTTY_Shift == 200)
+		} else if (TRX.RTTY_Shift == 200) {
 			TRX.RTTY_Shift = 220;
-		else if (TRX.RTTY_Shift == 220)
+		} else if (TRX.RTTY_Shift == 220) {
 			TRX.RTTY_Shift = 240;
-		else if (TRX.RTTY_Shift == 240)
+		} else if (TRX.RTTY_Shift == 240) {
 			TRX.RTTY_Shift = 350;
-		else if (TRX.RTTY_Shift == 350)
+		} else if (TRX.RTTY_Shift == 350) {
 			TRX.RTTY_Shift = 425;
-		else if (TRX.RTTY_Shift == 425)
+		} else if (TRX.RTTY_Shift == 425) {
 			TRX.RTTY_Shift = 450;
-		else if (TRX.RTTY_Shift == 450)
+		} else if (TRX.RTTY_Shift == 450) {
 			TRX.RTTY_Shift = 850;
+		}
 	}
 	if (direction < 0) {
-		if (TRX.RTTY_Shift == 850)
+		if (TRX.RTTY_Shift == 850) {
 			TRX.RTTY_Shift = 450;
-		else if (TRX.RTTY_Shift == 450)
+		} else if (TRX.RTTY_Shift == 450) {
 			TRX.RTTY_Shift = 425;
-		else if (TRX.RTTY_Shift == 425)
+		} else if (TRX.RTTY_Shift == 425) {
 			TRX.RTTY_Shift = 350;
-		else if (TRX.RTTY_Shift == 350)
+		} else if (TRX.RTTY_Shift == 350) {
 			TRX.RTTY_Shift = 240;
-		else if (TRX.RTTY_Shift == 240)
+		} else if (TRX.RTTY_Shift == 240) {
 			TRX.RTTY_Shift = 220;
-		else if (TRX.RTTY_Shift == 220)
+		} else if (TRX.RTTY_Shift == 220) {
 			TRX.RTTY_Shift = 200;
-		else if (TRX.RTTY_Shift == 200)
+		} else if (TRX.RTTY_Shift == 200) {
 			TRX.RTTY_Shift = 182;
-		else if (TRX.RTTY_Shift == 182)
+		} else if (TRX.RTTY_Shift == 182) {
 			TRX.RTTY_Shift = 170;
-		else if (TRX.RTTY_Shift == 170)
+		} else if (TRX.RTTY_Shift == 170) {
 			TRX.RTTY_Shift = 85;
+		}
 	}
 
 	RTTYDecoder_Init();
 }
 
 static void SYSMENU_HANDL_DECODERS_RTTY_Freq(int8_t direction) {
-	if (TRX.RTTY_Freq > 50 || direction > 0)
+	if (TRX.RTTY_Freq > 50 || direction > 0) {
 		TRX.RTTY_Freq += direction * 50;
-	if (TRX.RTTY_Freq > 3000)
+	}
+	if (TRX.RTTY_Freq > 3000) {
 		TRX.RTTY_Freq = 3000;
+	}
 
 	RTTYDecoder_Init();
 }
 
 static void SYSMENU_HANDL_DECODERS_RTTY_StopBits(int8_t direction) {
-	if (TRX.RTTY_StopBits > 0 || direction > 0)
+	if (TRX.RTTY_StopBits > 0 || direction > 0) {
 		TRX.RTTY_StopBits += direction;
-	if (TRX.RTTY_StopBits > 2)
+	}
+	if (TRX.RTTY_StopBits > 2) {
 		TRX.RTTY_StopBits = 2;
+	}
 
 	RTTYDecoder_Init();
 }
@@ -3227,48 +3632,60 @@ static void SYSMENU_HANDL_ADCMENU(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_ADC_DRIVER(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.ADC_Driver = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.ADC_Driver = false;
+	}
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0)
+	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
+	}
 	FPGA_NeedSendParams = true;
 }
 
 static void SYSMENU_HANDL_ADC_PGA(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.ADC_PGA = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.ADC_PGA = false;
+	}
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0)
+	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
+	}
 	FPGA_NeedSendParams = true;
 }
 
 static void SYSMENU_HANDL_ADC_RAND(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.ADC_RAND = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.ADC_RAND = false;
+	}
 	FPGA_NeedSendParams = true;
 }
 
 static void SYSMENU_HANDL_ADC_SHDN(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.ADC_SHDN = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.ADC_SHDN = false;
+	}
 	FPGA_NeedSendParams = true;
 }
 
 static void SYSMENU_HANDL_ADC_DITH(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.ADC_DITH = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.ADC_DITH = false;
+	}
 	FPGA_NeedSendParams = true;
 }
 
@@ -3296,15 +3713,17 @@ static void SYSMENU_WIFI_DrawSelectAP1Menu(bool full_redraw) {
 		curr_y += Y_SPAN + 5;
 		LCDDriver_printText(">Refresh", 10, curr_y, COLOR_WHITE, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		curr_y += Y_SPAN;
-		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
+		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++) {
 			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_y + i * Y_SPAN, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		}
 		LCDDriver_drawFastHLine(0, 10 + Y_SPAN * 2 + sysmenu_wifi_selected_ap_index * Y_SPAN, LAYOUT->SYSMENU_W, FG_COLOR);
 	}
 	if (sysmenu_wifi_needupdate_ap) {
-		if (WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu))
+		if (WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu)) {
 			sysmenu_wifi_needupdate_ap = false;
-		else
+		} else {
 			LCD_UpdateQuery.SystemMenu = true;
+		}
 	}
 }
 
@@ -3317,15 +3736,17 @@ static void SYSMENU_WIFI_DrawSelectAP2Menu(bool full_redraw) {
 		curr_y += Y_SPAN + 5;
 		LCDDriver_printText(">Refresh", 10, curr_y, COLOR_WHITE, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		curr_y += Y_SPAN;
-		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
+		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++) {
 			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_y + i * Y_SPAN, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		}
 		LCDDriver_drawFastHLine(0, 10 + Y_SPAN * 2 + sysmenu_wifi_selected_ap_index * Y_SPAN, LAYOUT->SYSMENU_W, FG_COLOR);
 	}
 	if (sysmenu_wifi_needupdate_ap) {
-		if (WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu))
+		if (WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu)) {
 			sysmenu_wifi_needupdate_ap = false;
-		else
+		} else {
 			LCD_UpdateQuery.SystemMenu = true;
+		}
 	}
 }
 
@@ -3338,23 +3759,27 @@ static void SYSMENU_WIFI_DrawSelectAP3Menu(bool full_redraw) {
 		curr_y += Y_SPAN + 5;
 		LCDDriver_printText(">Refresh", 10, curr_y, COLOR_WHITE, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 		curr_y += Y_SPAN;
-		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++)
+		for (uint8_t i = 0; i < WIFI_FOUNDED_AP_MAXCOUNT; i++) {
 			LCDDriver_printText((char *)WIFI_FoundedAP[i], 10, curr_y + i * Y_SPAN, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		}
 		LCDDriver_drawFastHLine(0, 10 + Y_SPAN * 2 + sysmenu_wifi_selected_ap_index * Y_SPAN, LAYOUT->SYSMENU_W, FG_COLOR);
 	}
 	if (sysmenu_wifi_needupdate_ap) {
-		if (WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu))
+		if (WIFI_ListAP(SYSMENU_HANDL_WIFI_RedrawSelectAPMenu)) {
 			sysmenu_wifi_needupdate_ap = false;
-		else
+		} else {
 			LCD_UpdateQuery.SystemMenu = true;
+		}
 	}
 }
 
 static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir) {
-	if (dir < 0 && sysmenu_wifi_selected_ap_index > 0)
+	if (dir < 0 && sysmenu_wifi_selected_ap_index > 0) {
 		sysmenu_wifi_selected_ap_index--;
-	if (dir > 0 && sysmenu_wifi_selected_ap_index < WIFI_FOUNDED_AP_MAXCOUNT)
+	}
+	if (dir > 0 && sysmenu_wifi_selected_ap_index < WIFI_FOUNDED_AP_MAXCOUNT) {
 		sysmenu_wifi_selected_ap_index++;
+	}
 	SYSMENU_WIFI_DrawSelectAP1Menu(true);
 	if (dir == 0) {
 		if (sysmenu_wifi_selected_ap_index == 0) {
@@ -3372,10 +3797,12 @@ static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir) {
 }
 
 static void SYSMENU_WIFI_SelectAP2MenuMove(int8_t dir) {
-	if (dir < 0 && sysmenu_wifi_selected_ap_index > 0)
+	if (dir < 0 && sysmenu_wifi_selected_ap_index > 0) {
 		sysmenu_wifi_selected_ap_index--;
-	if (dir > 0 && sysmenu_wifi_selected_ap_index < WIFI_FOUNDED_AP_MAXCOUNT)
+	}
+	if (dir > 0 && sysmenu_wifi_selected_ap_index < WIFI_FOUNDED_AP_MAXCOUNT) {
 		sysmenu_wifi_selected_ap_index++;
+	}
 	SYSMENU_WIFI_DrawSelectAP2Menu(true);
 	if (dir == 0) {
 		if (sysmenu_wifi_selected_ap_index == 0) {
@@ -3393,10 +3820,12 @@ static void SYSMENU_WIFI_SelectAP2MenuMove(int8_t dir) {
 }
 
 static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir) {
-	if (dir < 0 && sysmenu_wifi_selected_ap_index > 0)
+	if (dir < 0 && sysmenu_wifi_selected_ap_index > 0) {
 		sysmenu_wifi_selected_ap_index--;
-	if (dir > 0 && sysmenu_wifi_selected_ap_index < WIFI_FOUNDED_AP_MAXCOUNT)
+	}
+	if (dir > 0 && sysmenu_wifi_selected_ap_index < WIFI_FOUNDED_AP_MAXCOUNT) {
 		sysmenu_wifi_selected_ap_index++;
+	}
 	SYSMENU_WIFI_DrawSelectAP3Menu(true);
 	if (dir == 0) {
 		if (sysmenu_wifi_selected_ap_index == 0) {
@@ -3418,13 +3847,15 @@ static void SYSMENU_WIFI_AP1_Password_keyboardHandler(uint32_t parameter) {
 	{
 		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
 
-		if (sysmenu_wifi_selected_ap_password_char_index > 0)
+		if (sysmenu_wifi_selected_ap_password_char_index > 0) {
 			sysmenu_wifi_selected_ap_password_char_index--;
+		}
 	} else {
 		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = parameter;
 
-		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1))
+		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1)) {
 			sysmenu_wifi_selected_ap_password_char_index++;
+		}
 	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3450,13 +3881,15 @@ static void SYSMENU_WIFI_AP2_Password_keyboardHandler(uint32_t parameter) {
 	{
 		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
 
-		if (sysmenu_wifi_selected_ap_password_char_index > 0)
+		if (sysmenu_wifi_selected_ap_password_char_index > 0) {
 			sysmenu_wifi_selected_ap_password_char_index--;
+		}
 	} else {
 		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = parameter;
 
-		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1))
+		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1)) {
 			sysmenu_wifi_selected_ap_password_char_index++;
+		}
 	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3482,13 +3915,15 @@ static void SYSMENU_WIFI_AP3_Password_keyboardHandler(uint32_t parameter) {
 	{
 		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
 
-		if (sysmenu_wifi_selected_ap_password_char_index > 0)
+		if (sysmenu_wifi_selected_ap_password_char_index > 0) {
 			sysmenu_wifi_selected_ap_password_char_index--;
+		}
 	} else {
 		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = parameter;
 
-		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1))
+		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1)) {
 			sysmenu_wifi_selected_ap_password_char_index++;
+		}
 	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3511,75 +3946,95 @@ static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw) {
 
 static void SYSMENU_WIFI_RotatePasswordChar1(int8_t dir) {
 	bool full_redraw = false;
-	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] == 0) {
 		full_redraw = true;
+	}
 	WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
 	// do not show special characters
-	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0) {
 		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+	}
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0) {
 		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 127)
+	}
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 127) {
 		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	}
+	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] == 0) {
 		full_redraw = true;
+	}
 
-	if (full_redraw)
+	if (full_redraw) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-	else
+	} else {
 		LCD_UpdateQuery.SystemMenu = true;
+	}
 }
 
 static void SYSMENU_WIFI_RotatePasswordChar2(int8_t dir) {
 	bool full_redraw = false;
-	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] == 0) {
 		full_redraw = true;
+	}
 	WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
 	// do not show special characters
-	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0) {
 		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+	}
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0) {
 		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 127)
+	}
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 127) {
 		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	}
+	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] == 0) {
 		full_redraw = true;
+	}
 
-	if (full_redraw)
+	if (full_redraw) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-	else
+	} else {
 		LCD_UpdateQuery.SystemMenu = true;
+	}
 }
 
 static void SYSMENU_WIFI_RotatePasswordChar3(int8_t dir) {
 	bool full_redraw = false;
-	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] == 0) {
 		full_redraw = true;
+	}
 	WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] += dir;
 
 	// do not show special characters
-	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0)
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0) {
 		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0)
+	}
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0) {
 		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 127)
+	}
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 127) {
 		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] == 0)
+	}
+	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] == 0) {
 		full_redraw = true;
+	}
 
-	if (full_redraw)
+	if (full_redraw) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-	else
+	} else {
 		LCD_UpdateQuery.SystemMenu = true;
+	}
 }
 
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		WIFI.Enabled = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		WIFI.Enabled = false;
+	}
 
 	NeedSaveWiFi = true;
 }
@@ -3631,20 +4086,24 @@ static void SYSMENU_HANDL_WIFI_SetAP3password(int8_t direction) {
 
 static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction) {
 	WIFI.Timezone += direction;
-	if (WIFI.Timezone < -12)
+	if (WIFI.Timezone < -12) {
 		WIFI.Timezone = -12;
-	if (WIFI.Timezone > 12)
+	}
+	if (WIFI.Timezone > 12) {
 		WIFI.Timezone = 12;
+	}
 	WIFI_State = WIFI_INITED;
 
 	NeedSaveWiFi = true;
 }
 
 static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		WIFI.CAT_Server = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		WIFI.CAT_Server = false;
+	}
 
 	NeedSaveWiFi = true;
 }
@@ -3739,8 +4198,9 @@ static void SYSMENU_HANDL_SD_Format(int8_t direction) {
 // SET TIME MENU
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction) {
-	if (!sysmenu_timeMenuOpened)
+	if (!sysmenu_timeMenuOpened) {
 		LCDDriver_Fill(BG_COLOR);
+	}
 	sysmenu_timeMenuOpened = true;
 
 	static uint8_t Hours;
@@ -3768,16 +4228,20 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 			Minutes = (uint8_t)(Minutes + direction);
 		}
 		if (TimeMenuSelection == 2) {
-			if (Seconds == 0 && direction < 0)
+			if (Seconds == 0 && direction < 0) {
 				return;
+			}
 			Seconds = (uint8_t)(Seconds + direction);
 		}
-		if (Hours >= 24)
+		if (Hours >= 24) {
 			Hours = 0;
-		if (Minutes >= 60)
+		}
+		if (Minutes >= 60) {
 			Minutes = 0;
-		if (Seconds >= 60)
+		}
+		if (Seconds >= 60) {
 			Seconds = 0;
+		}
 		RTC_TimeTypeDef sTime;
 		sTime.TimeFormat = RTC_HOURFORMAT12_PM;
 		sTime.SubSeconds = 0;
@@ -3792,8 +4256,9 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	if (direction == 0) {
-		if (LCD_busy)
+		if (LCD_busy) {
 			return;
+		}
 		LCD_busy = true;
 
 		uint16_t font_size = LAYOUT->SYSMENU_FONT_SIZE;
@@ -3846,8 +4311,9 @@ static void SYSMENU_HANDL_OTA_Update(int8_t direction) {
 static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 	sysmenu_infowindow_opened = true;
 	sysmenu_sysinfo_opened = true;
-	if (direction != 0)
+	if (direction != 0) {
 		LCDDriver_Fill(BG_COLOR);
+	}
 #define y_offs (LAYOUT->SYSMENU_FONT_SIZE * RASTR_FONT_H + LAYOUT->SYSMENU_FONT_SIZE * 2)
 	uint16_t y = 10;
 	char out[80];
@@ -3909,61 +4375,77 @@ static void SYSMENU_HANDL_Back(int8_t direction) {
 // CALIBRATION MENU
 
 static void SYSMENU_HANDL_CALIB_ENCODER_INVERT(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.ENCODER_INVERT = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.ENCODER_INVERT = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_ENCODER2_INVERT(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.ENCODER2_INVERT = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.ENCODER2_INVERT = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_ENCODER_DEBOUNCE(int8_t direction) {
-	if (CALIBRATE.ENCODER_DEBOUNCE > 0 || direction > 0)
+	if (CALIBRATE.ENCODER_DEBOUNCE > 0 || direction > 0) {
 		CALIBRATE.ENCODER_DEBOUNCE += direction;
-	if (CALIBRATE.ENCODER_DEBOUNCE > 250)
+	}
+	if (CALIBRATE.ENCODER_DEBOUNCE > 250) {
 		CALIBRATE.ENCODER_DEBOUNCE = 250;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE(int8_t direction) {
-	if (CALIBRATE.ENCODER2_DEBOUNCE > 0 || direction > 0)
+	if (CALIBRATE.ENCODER2_DEBOUNCE > 0 || direction > 0) {
 		CALIBRATE.ENCODER2_DEBOUNCE += direction;
-	if (CALIBRATE.ENCODER2_DEBOUNCE > 250)
+	}
+	if (CALIBRATE.ENCODER2_DEBOUNCE > 250) {
 		CALIBRATE.ENCODER2_DEBOUNCE = 250;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE(int8_t direction) {
 	CALIBRATE.ENCODER_SLOW_RATE += direction;
-	if (CALIBRATE.ENCODER_SLOW_RATE < 1)
+	if (CALIBRATE.ENCODER_SLOW_RATE < 1) {
 		CALIBRATE.ENCODER_SLOW_RATE = 1;
-	if (CALIBRATE.ENCODER_SLOW_RATE > 100)
+	}
+	if (CALIBRATE.ENCODER_SLOW_RATE > 100) {
 		CALIBRATE.ENCODER_SLOW_RATE = 100;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.ENCODER_ON_FALLING = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.ENCODER_ON_FALLING = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction) {
 	CALIBRATE.ENCODER_ACCELERATION += direction;
-	if (CALIBRATE.ENCODER_ACCELERATION < 1)
+	if (CALIBRATE.ENCODER_ACCELERATION < 1) {
 		CALIBRATE.ENCODER_ACCELERATION = 1;
-	if (CALIBRATE.ENCODER_ACCELERATION > 250)
+	}
+	if (CALIBRATE.ENCODER_ACCELERATION > 250) {
 		CALIBRATE.ENCODER_ACCELERATION = 250;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
-	if (CALIBRATE.RF_unit_type > 0 || direction > 0)
+	if (CALIBRATE.RF_unit_type > 0 || direction > 0) {
 		CALIBRATE.RF_unit_type += direction;
-	if (CALIBRATE.RF_unit_type > 3)
+	}
+	if (CALIBRATE.RF_unit_type > 3) {
 		CALIBRATE.RF_unit_type = 3;
+	}
 
 	if (CALIBRATE.RF_unit_type == RF_UNIT_QRP) {
 		CALIBRATE.rf_out_power_2200m = 29;             // 2200m
@@ -4123,16 +4605,19 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_TangentType(int8_t direction) {
-	if (CALIBRATE.TangentType > 0 || direction > 0)
+	if (CALIBRATE.TangentType > 0 || direction > 0) {
 		CALIBRATE.TangentType += direction;
-	if (CALIBRATE.TangentType > 1)
+	}
+	if (CALIBRATE.TangentType > 1) {
 		CALIBRATE.TangentType = 1;
+	}
 }
 
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction) {
 #pragma unused(direction)
-	if (!SYSMENU_hiddenmenu_enabled)
+	if (!SYSMENU_hiddenmenu_enabled) {
 		return;
+	}
 	sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_calibration_handlers[0];
 	sysmenu_item_count = sizeof(sysmenu_calibration_handlers) / sizeof(sysmenu_calibration_handlers[0]);
 	sysmenu_onroot = false;
@@ -4163,54 +4648,69 @@ static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction) // Tisho
 }
 
 static void SYSMENU_HANDL_CALIB_CICCOMP_48K_SHIFT(int8_t direction) {
-	if (CALIBRATE.CICFIR_GAINER_48K_val > 0 || direction > 0)
+	if (CALIBRATE.CICFIR_GAINER_48K_val > 0 || direction > 0) {
 		CALIBRATE.CICFIR_GAINER_48K_val += direction;
-	if (CALIBRATE.CICFIR_GAINER_48K_val > 62)
+	}
+	if (CALIBRATE.CICFIR_GAINER_48K_val > 62) {
 		CALIBRATE.CICFIR_GAINER_48K_val = 62;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_CICCOMP_96K_SHIFT(int8_t direction) {
-	if (CALIBRATE.CICFIR_GAINER_96K_val > 0 || direction > 0)
+	if (CALIBRATE.CICFIR_GAINER_96K_val > 0 || direction > 0) {
 		CALIBRATE.CICFIR_GAINER_96K_val += direction;
-	if (CALIBRATE.CICFIR_GAINER_96K_val > 62)
+	}
+	if (CALIBRATE.CICFIR_GAINER_96K_val > 62) {
 		CALIBRATE.CICFIR_GAINER_96K_val = 62;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_CICCOMP_192K_SHIFT(int8_t direction) {
-	if (CALIBRATE.CICFIR_GAINER_192K_val > 0 || direction > 0)
+	if (CALIBRATE.CICFIR_GAINER_192K_val > 0 || direction > 0) {
 		CALIBRATE.CICFIR_GAINER_192K_val += direction;
-	if (CALIBRATE.CICFIR_GAINER_192K_val > 62)
+	}
+	if (CALIBRATE.CICFIR_GAINER_192K_val > 62) {
 		CALIBRATE.CICFIR_GAINER_192K_val = 62;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_CICCOMP_384K_SHIFT(int8_t direction) {
-	if (CALIBRATE.CICFIR_GAINER_384K_val > 0 || direction > 0)
+	if (CALIBRATE.CICFIR_GAINER_384K_val > 0 || direction > 0) {
 		CALIBRATE.CICFIR_GAINER_384K_val += direction;
-	if (CALIBRATE.CICFIR_GAINER_384K_val > 62)
+	}
+	if (CALIBRATE.CICFIR_GAINER_384K_val > 62) {
 		CALIBRATE.CICFIR_GAINER_384K_val = 62;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT(int8_t direction) {
-	if (CALIBRATE.TXCICFIR_GAINER_val > 0 || direction > 0)
+	if (CALIBRATE.TXCICFIR_GAINER_val > 0 || direction > 0) {
 		CALIBRATE.TXCICFIR_GAINER_val += direction;
-	if (CALIBRATE.TXCICFIR_GAINER_val > 48)
+	}
+	if (CALIBRATE.TXCICFIR_GAINER_val > 48) {
 		CALIBRATE.TXCICFIR_GAINER_val = 48;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction) {
-	if (CALIBRATE.DAC_GAINER_val > 0 || direction > 0)
+	if (CALIBRATE.DAC_GAINER_val > 0 || direction > 0) {
 		CALIBRATE.DAC_GAINER_val += direction;
-	if (CALIBRATE.DAC_GAINER_val > 27)
+	}
+	if (CALIBRATE.DAC_GAINER_val > 27) {
 		CALIBRATE.DAC_GAINER_val = 27;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_DAC_driver_mode(int8_t direction) {
-	if (CALIBRATE.DAC_driver_mode > 0)
+	if (CALIBRATE.DAC_driver_mode > 0) {
 		CALIBRATE.DAC_driver_mode += direction;
-	if (CALIBRATE.DAC_driver_mode == 0 && direction > 0)
+	}
+	if (CALIBRATE.DAC_driver_mode == 0 && direction > 0) {
 		CALIBRATE.DAC_driver_mode += direction;
-	if (CALIBRATE.DAC_driver_mode > 2)
+	}
+	if (CALIBRATE.DAC_driver_mode > 2) {
 		CALIBRATE.DAC_driver_mode = 2;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4218,12 +4718,15 @@ static void SYSMENU_HANDL_CALIB_DAC_driver_mode(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_2200M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_2200m > 0)
+	if (CALIBRATE.rf_out_power_2200m > 0) {
 		CALIBRATE.rf_out_power_2200m += direction;
-	if (CALIBRATE.rf_out_power_2200m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_2200m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_2200m += direction;
-	if (CALIBRATE.rf_out_power_2200m > 100)
+	}
+	if (CALIBRATE.rf_out_power_2200m > 100) {
 		CALIBRATE.rf_out_power_2200m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4231,12 +4734,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_2200M(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_160M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_160m > 0)
+	if (CALIBRATE.rf_out_power_160m > 0) {
 		CALIBRATE.rf_out_power_160m += direction;
-	if (CALIBRATE.rf_out_power_160m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_160m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_160m += direction;
-	if (CALIBRATE.rf_out_power_160m > 100)
+	}
+	if (CALIBRATE.rf_out_power_160m > 100) {
 		CALIBRATE.rf_out_power_160m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4244,12 +4750,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_160M(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_80M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_80m > 0)
+	if (CALIBRATE.rf_out_power_80m > 0) {
 		CALIBRATE.rf_out_power_80m += direction;
-	if (CALIBRATE.rf_out_power_80m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_80m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_80m += direction;
-	if (CALIBRATE.rf_out_power_80m > 100)
+	}
+	if (CALIBRATE.rf_out_power_80m > 100) {
 		CALIBRATE.rf_out_power_80m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4257,12 +4766,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_80M(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_40M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_40m > 0)
+	if (CALIBRATE.rf_out_power_40m > 0) {
 		CALIBRATE.rf_out_power_40m += direction;
-	if (CALIBRATE.rf_out_power_40m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_40m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_40m += direction;
-	if (CALIBRATE.rf_out_power_40m > 100)
+	}
+	if (CALIBRATE.rf_out_power_40m > 100) {
 		CALIBRATE.rf_out_power_40m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4270,12 +4782,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_40M(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_30M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_30m > 0)
+	if (CALIBRATE.rf_out_power_30m > 0) {
 		CALIBRATE.rf_out_power_30m += direction;
-	if (CALIBRATE.rf_out_power_30m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_30m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_30m += direction;
-	if (CALIBRATE.rf_out_power_30m > 100)
+	}
+	if (CALIBRATE.rf_out_power_30m > 100) {
 		CALIBRATE.rf_out_power_30m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4283,12 +4798,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_30M(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_20M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_20m > 0)
+	if (CALIBRATE.rf_out_power_20m > 0) {
 		CALIBRATE.rf_out_power_20m += direction;
-	if (CALIBRATE.rf_out_power_20m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_20m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_20m += direction;
-	if (CALIBRATE.rf_out_power_20m > 100)
+	}
+	if (CALIBRATE.rf_out_power_20m > 100) {
 		CALIBRATE.rf_out_power_20m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4296,12 +4814,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_20M(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_17M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_17m > 0)
+	if (CALIBRATE.rf_out_power_17m > 0) {
 		CALIBRATE.rf_out_power_17m += direction;
-	if (CALIBRATE.rf_out_power_17m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_17m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_17m += direction;
-	if (CALIBRATE.rf_out_power_17m > 100)
+	}
+	if (CALIBRATE.rf_out_power_17m > 100) {
 		CALIBRATE.rf_out_power_17m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4309,12 +4830,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_17M(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_15M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_15m > 0)
+	if (CALIBRATE.rf_out_power_15m > 0) {
 		CALIBRATE.rf_out_power_15m += direction;
-	if (CALIBRATE.rf_out_power_15m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_15m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_15m += direction;
-	if (CALIBRATE.rf_out_power_15m > 100)
+	}
+	if (CALIBRATE.rf_out_power_15m > 100) {
 		CALIBRATE.rf_out_power_15m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4322,12 +4846,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_15M(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_12M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_12m > 0)
+	if (CALIBRATE.rf_out_power_12m > 0) {
 		CALIBRATE.rf_out_power_12m += direction;
-	if (CALIBRATE.rf_out_power_12m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_12m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_12m += direction;
-	if (CALIBRATE.rf_out_power_12m > 100)
+	}
+	if (CALIBRATE.rf_out_power_12m > 100) {
 		CALIBRATE.rf_out_power_12m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4335,12 +4862,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_12M(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_CB(int8_t direction) {
-	if (CALIBRATE.rf_out_power_cb > 0)
+	if (CALIBRATE.rf_out_power_cb > 0) {
 		CALIBRATE.rf_out_power_cb += direction;
-	if (CALIBRATE.rf_out_power_cb == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_cb == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_cb += direction;
-	if (CALIBRATE.rf_out_power_cb > 100)
+	}
+	if (CALIBRATE.rf_out_power_cb > 100) {
 		CALIBRATE.rf_out_power_cb = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4348,12 +4878,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_CB(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_10M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_10m > 0)
+	if (CALIBRATE.rf_out_power_10m > 0) {
 		CALIBRATE.rf_out_power_10m += direction;
-	if (CALIBRATE.rf_out_power_10m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_10m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_10m += direction;
-	if (CALIBRATE.rf_out_power_10m > 100)
+	}
+	if (CALIBRATE.rf_out_power_10m > 100) {
 		CALIBRATE.rf_out_power_10m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4361,12 +4894,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_10M(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_6M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_6m > 0)
+	if (CALIBRATE.rf_out_power_6m > 0) {
 		CALIBRATE.rf_out_power_6m += direction;
-	if (CALIBRATE.rf_out_power_6m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_6m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_6m += direction;
-	if (CALIBRATE.rf_out_power_6m > 100)
+	}
+	if (CALIBRATE.rf_out_power_6m > 100) {
 		CALIBRATE.rf_out_power_6m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4374,12 +4910,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_6M(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_4M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_4m > 0)
+	if (CALIBRATE.rf_out_power_4m > 0) {
 		CALIBRATE.rf_out_power_4m += direction;
-	if (CALIBRATE.rf_out_power_4m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_4m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_4m += direction;
-	if (CALIBRATE.rf_out_power_4m > 100)
+	}
+	if (CALIBRATE.rf_out_power_4m > 100) {
 		CALIBRATE.rf_out_power_4m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4387,12 +4926,15 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_4M(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_RF_GAIN_2M(int8_t direction) {
-	if (CALIBRATE.rf_out_power_2m > 0)
+	if (CALIBRATE.rf_out_power_2m > 0) {
 		CALIBRATE.rf_out_power_2m += direction;
-	if (CALIBRATE.rf_out_power_2m == 0 && direction > 0)
+	}
+	if (CALIBRATE.rf_out_power_2m == 0 && direction > 0) {
 		CALIBRATE.rf_out_power_2m += direction;
-	if (CALIBRATE.rf_out_power_2m > 100)
+	}
+	if (CALIBRATE.rf_out_power_2m > 100) {
 		CALIBRATE.rf_out_power_2m = 100;
+	}
 
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
 	APROC_TX_clip_gain = 1.0f;
@@ -4401,810 +4943,1020 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_2M(int8_t direction) {
 
 static void SYSMENU_HANDL_CALIB_S_METER_HF(int8_t direction) {
 	CALIBRATE.smeter_calibration_hf += direction;
-	if (CALIBRATE.smeter_calibration_hf < -50)
+	if (CALIBRATE.smeter_calibration_hf < -50) {
 		CALIBRATE.smeter_calibration_hf = -50;
-	if (CALIBRATE.smeter_calibration_hf > 50)
+	}
+	if (CALIBRATE.smeter_calibration_hf > 50) {
 		CALIBRATE.smeter_calibration_hf = 50;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_S_METER_VHF(int8_t direction) {
 	CALIBRATE.smeter_calibration_vhf += direction;
-	if (CALIBRATE.smeter_calibration_vhf < -50)
+	if (CALIBRATE.smeter_calibration_vhf < -50) {
 		CALIBRATE.smeter_calibration_vhf = -50;
-	if (CALIBRATE.smeter_calibration_vhf > 50)
+	}
+	if (CALIBRATE.smeter_calibration_vhf > 50) {
 		CALIBRATE.smeter_calibration_vhf = 50;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction) {
 	CALIBRATE.adc_offset += direction;
-	if (CALIBRATE.adc_offset < -500)
+	if (CALIBRATE.adc_offset < -500) {
 		CALIBRATE.adc_offset = -500;
-	if (CALIBRATE.adc_offset > 500)
+	}
+	if (CALIBRATE.adc_offset > 500) {
 		CALIBRATE.adc_offset = 500;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_LPF_END(int8_t direction) {
 	CALIBRATE.RFU_LPF_END += direction * 100000;
-	if (CALIBRATE.RFU_LPF_END < 1)
+	if (CALIBRATE.RFU_LPF_END < 1) {
 		CALIBRATE.RFU_LPF_END = 1;
-	if (CALIBRATE.RFU_LPF_END > 999999999)
+	}
+	if (CALIBRATE.RFU_LPF_END > 999999999) {
 		CALIBRATE.RFU_LPF_END = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_0_START(int8_t direction) {
 	CALIBRATE.RFU_BPF_0_START += direction * 100000;
-	if (CALIBRATE.RFU_BPF_0_START < 1)
+	if (CALIBRATE.RFU_BPF_0_START < 1) {
 		CALIBRATE.RFU_BPF_0_START = 1;
-	if (CALIBRATE.RFU_BPF_0_START > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_0_START > 999999999) {
 		CALIBRATE.RFU_BPF_0_START = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_0_END(int8_t direction) {
 	CALIBRATE.RFU_BPF_0_END += direction * 100000;
-	if (CALIBRATE.RFU_BPF_0_END < 1)
+	if (CALIBRATE.RFU_BPF_0_END < 1) {
 		CALIBRATE.RFU_BPF_0_END = 1;
-	if (CALIBRATE.RFU_BPF_0_END > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_0_END > 999999999) {
 		CALIBRATE.RFU_BPF_0_END = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_1_START(int8_t direction) {
 	CALIBRATE.RFU_BPF_1_START += direction * 100000;
-	if (CALIBRATE.RFU_BPF_1_START < 1)
+	if (CALIBRATE.RFU_BPF_1_START < 1) {
 		CALIBRATE.RFU_BPF_1_START = 1;
-	if (CALIBRATE.RFU_BPF_1_START > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_1_START > 999999999) {
 		CALIBRATE.RFU_BPF_1_START = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_1_END(int8_t direction) {
 	CALIBRATE.RFU_BPF_1_END += direction * 100000;
-	if (CALIBRATE.RFU_BPF_1_END < 1)
+	if (CALIBRATE.RFU_BPF_1_END < 1) {
 		CALIBRATE.RFU_BPF_1_END = 1;
-	if (CALIBRATE.RFU_BPF_1_END > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_1_END > 999999999) {
 		CALIBRATE.RFU_BPF_1_END = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_2_START(int8_t direction) {
 	CALIBRATE.RFU_BPF_2_START += direction * 100000;
-	if (CALIBRATE.RFU_BPF_2_START < 1)
+	if (CALIBRATE.RFU_BPF_2_START < 1) {
 		CALIBRATE.RFU_BPF_2_START = 1;
-	if (CALIBRATE.RFU_BPF_2_START > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_2_START > 999999999) {
 		CALIBRATE.RFU_BPF_2_START = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_2_END(int8_t direction) {
 	CALIBRATE.RFU_BPF_2_END += direction * 100000;
-	if (CALIBRATE.RFU_BPF_2_END < 1)
+	if (CALIBRATE.RFU_BPF_2_END < 1) {
 		CALIBRATE.RFU_BPF_2_END = 1;
-	if (CALIBRATE.RFU_BPF_2_END > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_2_END > 999999999) {
 		CALIBRATE.RFU_BPF_2_END = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_3_START(int8_t direction) {
 	CALIBRATE.RFU_BPF_3_START += direction * 100000;
-	if (CALIBRATE.RFU_BPF_3_START < 1)
+	if (CALIBRATE.RFU_BPF_3_START < 1) {
 		CALIBRATE.RFU_BPF_3_START = 1;
-	if (CALIBRATE.RFU_BPF_3_START > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_3_START > 999999999) {
 		CALIBRATE.RFU_BPF_3_START = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_3_END(int8_t direction) {
 	CALIBRATE.RFU_BPF_3_END += direction * 100000;
-	if (CALIBRATE.RFU_BPF_3_END < 1)
+	if (CALIBRATE.RFU_BPF_3_END < 1) {
 		CALIBRATE.RFU_BPF_3_END = 1;
-	if (CALIBRATE.RFU_BPF_3_END > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_3_END > 999999999) {
 		CALIBRATE.RFU_BPF_3_END = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_4_START(int8_t direction) {
 	CALIBRATE.RFU_BPF_4_START += direction * 100000;
-	if (CALIBRATE.RFU_BPF_4_START < 1)
+	if (CALIBRATE.RFU_BPF_4_START < 1) {
 		CALIBRATE.RFU_BPF_4_START = 1;
-	if (CALIBRATE.RFU_BPF_4_START > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_4_START > 999999999) {
 		CALIBRATE.RFU_BPF_4_START = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_4_END(int8_t direction) {
 	CALIBRATE.RFU_BPF_4_END += direction * 100000;
-	if (CALIBRATE.RFU_BPF_4_END < 1)
+	if (CALIBRATE.RFU_BPF_4_END < 1) {
 		CALIBRATE.RFU_BPF_4_END = 1;
-	if (CALIBRATE.RFU_BPF_4_END > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_4_END > 999999999) {
 		CALIBRATE.RFU_BPF_4_END = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_5_START(int8_t direction) {
 	CALIBRATE.RFU_BPF_5_START += direction * 100000;
-	if (CALIBRATE.RFU_BPF_5_START < 1)
+	if (CALIBRATE.RFU_BPF_5_START < 1) {
 		CALIBRATE.RFU_BPF_5_START = 1;
-	if (CALIBRATE.RFU_BPF_5_START > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_5_START > 999999999) {
 		CALIBRATE.RFU_BPF_5_START = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_5_END(int8_t direction) {
 	CALIBRATE.RFU_BPF_5_END += direction * 100000;
-	if (CALIBRATE.RFU_BPF_5_END < 1)
+	if (CALIBRATE.RFU_BPF_5_END < 1) {
 		CALIBRATE.RFU_BPF_5_END = 1;
-	if (CALIBRATE.RFU_BPF_5_END > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_5_END > 999999999) {
 		CALIBRATE.RFU_BPF_5_END = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_6_START(int8_t direction) {
 	CALIBRATE.RFU_BPF_6_START += direction * 100000;
-	if (CALIBRATE.RFU_BPF_6_START < 1)
+	if (CALIBRATE.RFU_BPF_6_START < 1) {
 		CALIBRATE.RFU_BPF_6_START = 1;
-	if (CALIBRATE.RFU_BPF_6_START > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_6_START > 999999999) {
 		CALIBRATE.RFU_BPF_6_START = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_6_END(int8_t direction) {
 	CALIBRATE.RFU_BPF_6_END += direction * 100000;
-	if (CALIBRATE.RFU_BPF_6_END < 1)
+	if (CALIBRATE.RFU_BPF_6_END < 1) {
 		CALIBRATE.RFU_BPF_6_END = 1;
-	if (CALIBRATE.RFU_BPF_6_END > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_6_END > 999999999) {
 		CALIBRATE.RFU_BPF_6_END = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_7_START(int8_t direction) {
 	CALIBRATE.RFU_BPF_7_START += direction * 100000;
-	if (CALIBRATE.RFU_BPF_7_START < 1)
+	if (CALIBRATE.RFU_BPF_7_START < 1) {
 		CALIBRATE.RFU_BPF_7_START = 1;
-	if (CALIBRATE.RFU_BPF_7_START > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_7_START > 999999999) {
 		CALIBRATE.RFU_BPF_7_START = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_7_END(int8_t direction) {
 	CALIBRATE.RFU_BPF_7_END += direction * 100000;
-	if (CALIBRATE.RFU_BPF_7_END < 1)
+	if (CALIBRATE.RFU_BPF_7_END < 1) {
 		CALIBRATE.RFU_BPF_7_END = 1;
-	if (CALIBRATE.RFU_BPF_7_END > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_7_END > 999999999) {
 		CALIBRATE.RFU_BPF_7_END = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_8_START(int8_t direction) {
 	CALIBRATE.RFU_BPF_8_START += direction * 100000;
-	if (CALIBRATE.RFU_BPF_8_START < 1)
+	if (CALIBRATE.RFU_BPF_8_START < 1) {
 		CALIBRATE.RFU_BPF_8_START = 1;
-	if (CALIBRATE.RFU_BPF_8_START > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_8_START > 999999999) {
 		CALIBRATE.RFU_BPF_8_START = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BPF_8_END(int8_t direction) {
 	CALIBRATE.RFU_BPF_8_END += direction * 100000;
-	if (CALIBRATE.RFU_BPF_8_END < 1)
+	if (CALIBRATE.RFU_BPF_8_END < 1) {
 		CALIBRATE.RFU_BPF_8_END = 1;
-	if (CALIBRATE.RFU_BPF_8_END > 999999999)
+	}
+	if (CALIBRATE.RFU_BPF_8_END > 999999999) {
 		CALIBRATE.RFU_BPF_8_END = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction) {
 	CALIBRATE.RFU_HPF_START += direction * 100000;
-	if (CALIBRATE.RFU_HPF_START < 1)
+	if (CALIBRATE.RFU_HPF_START < 1) {
 		CALIBRATE.RFU_HPF_START = 1;
-	if (CALIBRATE.RFU_HPF_START > 999999999)
+	}
+	if (CALIBRATE.RFU_HPF_START > 999999999) {
 		CALIBRATE.RFU_HPF_START = 999999999;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_HF(int8_t direction) {
 	CALIBRATE.SWR_FWD_Calibration_HF += (float32_t)direction * 0.1f;
-	if (CALIBRATE.SWR_FWD_Calibration_HF < 1.0f)
+	if (CALIBRATE.SWR_FWD_Calibration_HF < 1.0f) {
 		CALIBRATE.SWR_FWD_Calibration_HF = 1.0f;
-	if (CALIBRATE.SWR_FWD_Calibration_HF > 200.0f)
+	}
+	if (CALIBRATE.SWR_FWD_Calibration_HF > 200.0f) {
 		CALIBRATE.SWR_FWD_Calibration_HF = 200.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_HF(int8_t direction) {
 	CALIBRATE.SWR_BWD_Calibration_HF += (float32_t)direction * 0.1f;
-	if (CALIBRATE.SWR_BWD_Calibration_HF < 1.0f)
+	if (CALIBRATE.SWR_BWD_Calibration_HF < 1.0f) {
 		CALIBRATE.SWR_BWD_Calibration_HF = 1.0f;
-	if (CALIBRATE.SWR_BWD_Calibration_HF > 200.0f)
+	}
+	if (CALIBRATE.SWR_BWD_Calibration_HF > 200.0f) {
 		CALIBRATE.SWR_BWD_Calibration_HF = 200.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_6M(int8_t direction) {
 	CALIBRATE.SWR_FWD_Calibration_6M += (float32_t)direction * 0.1f;
-	if (CALIBRATE.SWR_FWD_Calibration_6M < 1.0f)
+	if (CALIBRATE.SWR_FWD_Calibration_6M < 1.0f) {
 		CALIBRATE.SWR_FWD_Calibration_6M = 1.0f;
-	if (CALIBRATE.SWR_FWD_Calibration_6M > 200.0f)
+	}
+	if (CALIBRATE.SWR_FWD_Calibration_6M > 200.0f) {
 		CALIBRATE.SWR_FWD_Calibration_6M = 200.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_6M(int8_t direction) {
 	CALIBRATE.SWR_BWD_Calibration_6M += (float32_t)direction * 0.1f;
-	if (CALIBRATE.SWR_BWD_Calibration_6M < 1.0f)
+	if (CALIBRATE.SWR_BWD_Calibration_6M < 1.0f) {
 		CALIBRATE.SWR_BWD_Calibration_6M = 1.0f;
-	if (CALIBRATE.SWR_BWD_Calibration_6M > 200.0f)
+	}
+	if (CALIBRATE.SWR_BWD_Calibration_6M > 200.0f) {
 		CALIBRATE.SWR_BWD_Calibration_6M = 200.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF(int8_t direction) {
 	CALIBRATE.SWR_FWD_Calibration_VHF += (float32_t)direction * 0.1f;
-	if (CALIBRATE.SWR_FWD_Calibration_VHF < 1.0f)
+	if (CALIBRATE.SWR_FWD_Calibration_VHF < 1.0f) {
 		CALIBRATE.SWR_FWD_Calibration_VHF = 1.0f;
-	if (CALIBRATE.SWR_FWD_Calibration_VHF > 200.0f)
+	}
+	if (CALIBRATE.SWR_FWD_Calibration_VHF > 200.0f) {
 		CALIBRATE.SWR_FWD_Calibration_VHF = 200.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF(int8_t direction) {
 	CALIBRATE.SWR_BWD_Calibration_VHF += (float32_t)direction * 0.1f;
-	if (CALIBRATE.SWR_BWD_Calibration_VHF < 1.0f)
+	if (CALIBRATE.SWR_BWD_Calibration_VHF < 1.0f) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 1.0f;
-	if (CALIBRATE.SWR_BWD_Calibration_VHF > 200.0f)
+	}
+	if (CALIBRATE.SWR_BWD_Calibration_VHF > 200.0f) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 200.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER(int8_t direction) {
 	CALIBRATE.MAX_RF_POWER_ON_METER += direction;
-	if (CALIBRATE.MAX_RF_POWER_ON_METER < 5)
+	if (CALIBRATE.MAX_RF_POWER_ON_METER < 5) {
 		CALIBRATE.MAX_RF_POWER_ON_METER = 5;
-	if (CALIBRATE.MAX_RF_POWER_ON_METER > 200)
+	}
+	if (CALIBRATE.MAX_RF_POWER_ON_METER > 200) {
 		CALIBRATE.MAX_RF_POWER_ON_METER = 200;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction) {
 	CALIBRATE.VCXO_correction += direction;
 
-	if (CALIBRATE.VCXO_correction < -32750)
+	if (CALIBRATE.VCXO_correction < -32750) {
 		CALIBRATE.VCXO_correction = -32750;
-	if (CALIBRATE.VCXO_correction > 32750)
+	}
+	if (CALIBRATE.VCXO_correction > 32750) {
 		CALIBRATE.VCXO_correction = 32750;
+	}
 }
 // Tisho
 static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction) {
 	CALIBRATE.FW_AD8307_SLP += (float32_t)direction * 0.1f;
-	if (CALIBRATE.FW_AD8307_SLP < 20.0f)
+	if (CALIBRATE.FW_AD8307_SLP < 20.0f) {
 		CALIBRATE.FW_AD8307_SLP = 20.0f;
-	if (CALIBRATE.FW_AD8307_SLP > 30.0f)
+	}
+	if (CALIBRATE.FW_AD8307_SLP > 30.0f) {
 		CALIBRATE.FW_AD8307_SLP = 30.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction) {
 	CALIBRATE.FW_AD8307_OFFS += (float32_t)direction;
-	if (CALIBRATE.FW_AD8307_OFFS < 0.1f)
+	if (CALIBRATE.FW_AD8307_OFFS < 0.1f) {
 		CALIBRATE.FW_AD8307_OFFS = 0.1f;
-	if (CALIBRATE.FW_AD8307_OFFS > 4000.0f)
+	}
+	if (CALIBRATE.FW_AD8307_OFFS > 4000.0f) {
 		CALIBRATE.FW_AD8307_OFFS = 4000.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BW_AD8307_SLP(int8_t direction) {
 	CALIBRATE.BW_AD8307_SLP += (float32_t)direction * 0.1f;
-	if (CALIBRATE.BW_AD8307_SLP < 20.0f)
+	if (CALIBRATE.BW_AD8307_SLP < 20.0f) {
 		CALIBRATE.BW_AD8307_SLP = 20.0f;
-	if (CALIBRATE.BW_AD8307_SLP > 30.0f)
+	}
+	if (CALIBRATE.BW_AD8307_SLP > 30.0f) {
 		CALIBRATE.BW_AD8307_SLP = 30.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_BW_AD8307_OFFS(int8_t direction) {
 	CALIBRATE.BW_AD8307_OFFS += (float32_t)direction;
-	if (CALIBRATE.BW_AD8307_OFFS < 0.1f)
+	if (CALIBRATE.BW_AD8307_OFFS < 0.1f) {
 		CALIBRATE.BW_AD8307_OFFS = 0.1f;
-	if (CALIBRATE.BW_AD8307_OFFS > 4000.0f)
+	}
+	if (CALIBRATE.BW_AD8307_OFFS > 4000.0f) {
 		CALIBRATE.BW_AD8307_OFFS = 4000.0f;
+	}
 }
 // end Tisho
 static void SYSMENU_HANDL_CALIB_FAN_MEDIUM_START(int8_t direction) {
 	CALIBRATE.FAN_MEDIUM_START += direction;
-	if (CALIBRATE.FAN_MEDIUM_START < 10)
+	if (CALIBRATE.FAN_MEDIUM_START < 10) {
 		CALIBRATE.FAN_MEDIUM_START = 10;
-	if (CALIBRATE.FAN_MEDIUM_START > 100)
+	}
+	if (CALIBRATE.FAN_MEDIUM_START > 100) {
 		CALIBRATE.FAN_MEDIUM_START = 100;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_FAN_MEDIUM_STOP(int8_t direction) {
 	CALIBRATE.FAN_MEDIUM_STOP += direction;
-	if (CALIBRATE.FAN_MEDIUM_STOP < 10)
+	if (CALIBRATE.FAN_MEDIUM_STOP < 10) {
 		CALIBRATE.FAN_MEDIUM_STOP = 10;
-	if (CALIBRATE.FAN_MEDIUM_STOP > (CALIBRATE.FAN_MEDIUM_START - 1))
+	}
+	if (CALIBRATE.FAN_MEDIUM_STOP > (CALIBRATE.FAN_MEDIUM_START - 1)) {
 		CALIBRATE.FAN_MEDIUM_STOP = CALIBRATE.FAN_MEDIUM_START - 1;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_FAN_FULL_START(int8_t direction) {
 	CALIBRATE.FAN_FULL_START += direction;
-	if (CALIBRATE.FAN_FULL_START < 10)
+	if (CALIBRATE.FAN_FULL_START < 10) {
 		CALIBRATE.FAN_FULL_START = 10;
-	if (CALIBRATE.FAN_FULL_START > 100)
+	}
+	if (CALIBRATE.FAN_FULL_START > 100) {
 		CALIBRATE.FAN_FULL_START = 100;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRX_MAX_RF_TEMP(int8_t direction) {
 	CALIBRATE.TRX_MAX_RF_TEMP += direction;
-	if (CALIBRATE.TRX_MAX_RF_TEMP < 30)
+	if (CALIBRATE.TRX_MAX_RF_TEMP < 30) {
 		CALIBRATE.TRX_MAX_RF_TEMP = 30;
-	if (CALIBRATE.TRX_MAX_RF_TEMP > 120)
+	}
+	if (CALIBRATE.TRX_MAX_RF_TEMP > 120) {
 		CALIBRATE.TRX_MAX_RF_TEMP = 120;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRX_MAX_SWR(int8_t direction) {
 	CALIBRATE.TRX_MAX_SWR += direction;
-	if (CALIBRATE.TRX_MAX_SWR < 2)
+	if (CALIBRATE.TRX_MAX_SWR < 2) {
 		CALIBRATE.TRX_MAX_SWR = 2;
-	if (CALIBRATE.TRX_MAX_SWR > 50)
+	}
+	if (CALIBRATE.TRX_MAX_SWR > 50) {
 		CALIBRATE.TRX_MAX_SWR = 50;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_FM_DEVIATION_SCALE(int8_t direction) {
 	CALIBRATE.FM_DEVIATION_SCALE += direction;
-	if (CALIBRATE.FM_DEVIATION_SCALE < 1)
+	if (CALIBRATE.FM_DEVIATION_SCALE < 1) {
 		CALIBRATE.FM_DEVIATION_SCALE = 1;
-	if (CALIBRATE.FM_DEVIATION_SCALE > 20)
+	}
+	if (CALIBRATE.FM_DEVIATION_SCALE > 20) {
 		CALIBRATE.FM_DEVIATION_SCALE = 20;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_SSB_POWER_ADDITION(int8_t direction) {
-	if (CALIBRATE.SSB_POWER_ADDITION > 0 || direction > 0)
+	if (CALIBRATE.SSB_POWER_ADDITION > 0 || direction > 0) {
 		CALIBRATE.SSB_POWER_ADDITION += direction;
-	if (CALIBRATE.SSB_POWER_ADDITION > 90)
+	}
+	if (CALIBRATE.SSB_POWER_ADDITION > 90) {
 		CALIBRATE.SSB_POWER_ADDITION = 90;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_AM_MODULATION_INDEX(int8_t direction) {
 	CALIBRATE.AM_MODULATION_INDEX += direction;
-	if (CALIBRATE.AM_MODULATION_INDEX < 1)
+	if (CALIBRATE.AM_MODULATION_INDEX < 1) {
 		CALIBRATE.AM_MODULATION_INDEX = 1;
-	if (CALIBRATE.AM_MODULATION_INDEX > 150)
+	}
+	if (CALIBRATE.AM_MODULATION_INDEX > 150) {
 		CALIBRATE.AM_MODULATION_INDEX = 150;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TUNE_MAX_POWER(int8_t direction) {
 	CALIBRATE.TUNE_MAX_POWER += direction;
-	if (CALIBRATE.TUNE_MAX_POWER < 1)
+	if (CALIBRATE.TUNE_MAX_POWER < 1) {
 		CALIBRATE.TUNE_MAX_POWER = 1;
-	if (CALIBRATE.TUNE_MAX_POWER > 120)
+	}
+	if (CALIBRATE.TUNE_MAX_POWER > 120) {
 		CALIBRATE.TUNE_MAX_POWER = 120;
+	}
 	ATU_TunePowerStabilized = false;
 }
 
 static void SYSMENU_HANDL_CALIB_RTC_CALIBRATION(int8_t direction) {
 	CALIBRATE.RTC_Calibration += direction;
-	if (CALIBRATE.RTC_Calibration < -511)
+	if (CALIBRATE.RTC_Calibration < -511) {
 		CALIBRATE.RTC_Calibration = -511;
-	if (CALIBRATE.RTC_Calibration > 511)
+	}
+	if (CALIBRATE.RTC_Calibration > 511) {
 		CALIBRATE.RTC_Calibration = 511;
+	}
 
 	RTC_Calibration();
 }
 
 static void SYSMENU_HANDL_CALIB_RTC_COARSE_CALIBRATION(int8_t direction) {
 	CALIBRATE.RTC_Coarse_Calibration += direction;
-	if (CALIBRATE.RTC_Coarse_Calibration < 1)
+	if (CALIBRATE.RTC_Coarse_Calibration < 1) {
 		CALIBRATE.RTC_Coarse_Calibration = 1;
-	if (CALIBRATE.RTC_Coarse_Calibration > 250)
+	}
+	if (CALIBRATE.RTC_Coarse_Calibration > 250) {
 		CALIBRATE.RTC_Coarse_Calibration = 250;
+	}
 
 	RTC_Calibration();
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_2200m(int8_t direction) {
-	if (CALIBRATE.EXT_2200m > 0 || direction > 0)
+	if (CALIBRATE.EXT_2200m > 0 || direction > 0) {
 		CALIBRATE.EXT_2200m += direction;
-	if (CALIBRATE.EXT_2200m > 15)
+	}
+	if (CALIBRATE.EXT_2200m > 15) {
 		CALIBRATE.EXT_2200m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_160m(int8_t direction) {
-	if (CALIBRATE.EXT_160m > 0 || direction > 0)
+	if (CALIBRATE.EXT_160m > 0 || direction > 0) {
 		CALIBRATE.EXT_160m += direction;
-	if (CALIBRATE.EXT_160m > 15)
+	}
+	if (CALIBRATE.EXT_160m > 15) {
 		CALIBRATE.EXT_160m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_80m(int8_t direction) {
-	if (CALIBRATE.EXT_80m > 0 || direction > 0)
+	if (CALIBRATE.EXT_80m > 0 || direction > 0) {
 		CALIBRATE.EXT_80m += direction;
-	if (CALIBRATE.EXT_80m > 15)
+	}
+	if (CALIBRATE.EXT_80m > 15) {
 		CALIBRATE.EXT_80m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_60m(int8_t direction) {
-	if (CALIBRATE.EXT_60m > 0 || direction > 0)
+	if (CALIBRATE.EXT_60m > 0 || direction > 0) {
 		CALIBRATE.EXT_60m += direction;
-	if (CALIBRATE.EXT_60m > 15)
+	}
+	if (CALIBRATE.EXT_60m > 15) {
 		CALIBRATE.EXT_60m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_40m(int8_t direction) {
-	if (CALIBRATE.EXT_40m > 0 || direction > 0)
+	if (CALIBRATE.EXT_40m > 0 || direction > 0) {
 		CALIBRATE.EXT_40m += direction;
-	if (CALIBRATE.EXT_40m > 15)
+	}
+	if (CALIBRATE.EXT_40m > 15) {
 		CALIBRATE.EXT_40m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_30m(int8_t direction) {
-	if (CALIBRATE.EXT_30m > 0 || direction > 0)
+	if (CALIBRATE.EXT_30m > 0 || direction > 0) {
 		CALIBRATE.EXT_30m += direction;
-	if (CALIBRATE.EXT_30m > 15)
+	}
+	if (CALIBRATE.EXT_30m > 15) {
 		CALIBRATE.EXT_30m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_20m(int8_t direction) {
-	if (CALIBRATE.EXT_20m > 0 || direction > 0)
+	if (CALIBRATE.EXT_20m > 0 || direction > 0) {
 		CALIBRATE.EXT_20m += direction;
-	if (CALIBRATE.EXT_20m > 15)
+	}
+	if (CALIBRATE.EXT_20m > 15) {
 		CALIBRATE.EXT_20m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_17m(int8_t direction) {
-	if (CALIBRATE.EXT_17m > 0 || direction > 0)
+	if (CALIBRATE.EXT_17m > 0 || direction > 0) {
 		CALIBRATE.EXT_17m += direction;
-	if (CALIBRATE.EXT_17m > 15)
+	}
+	if (CALIBRATE.EXT_17m > 15) {
 		CALIBRATE.EXT_17m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_15m(int8_t direction) {
-	if (CALIBRATE.EXT_15m > 0 || direction > 0)
+	if (CALIBRATE.EXT_15m > 0 || direction > 0) {
 		CALIBRATE.EXT_15m += direction;
-	if (CALIBRATE.EXT_15m > 15)
+	}
+	if (CALIBRATE.EXT_15m > 15) {
 		CALIBRATE.EXT_15m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_12m(int8_t direction) {
-	if (CALIBRATE.EXT_12m > 0 || direction > 0)
+	if (CALIBRATE.EXT_12m > 0 || direction > 0) {
 		CALIBRATE.EXT_12m += direction;
-	if (CALIBRATE.EXT_12m > 15)
+	}
+	if (CALIBRATE.EXT_12m > 15) {
 		CALIBRATE.EXT_12m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_CB(int8_t direction) {
-	if (CALIBRATE.EXT_CB > 0 || direction > 0)
+	if (CALIBRATE.EXT_CB > 0 || direction > 0) {
 		CALIBRATE.EXT_CB += direction;
-	if (CALIBRATE.EXT_CB > 15)
+	}
+	if (CALIBRATE.EXT_CB > 15) {
 		CALIBRATE.EXT_CB = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_10m(int8_t direction) {
-	if (CALIBRATE.EXT_10m > 0 || direction > 0)
+	if (CALIBRATE.EXT_10m > 0 || direction > 0) {
 		CALIBRATE.EXT_10m += direction;
-	if (CALIBRATE.EXT_10m > 15)
+	}
+	if (CALIBRATE.EXT_10m > 15) {
 		CALIBRATE.EXT_10m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_6m(int8_t direction) {
-	if (CALIBRATE.EXT_6m > 0 || direction > 0)
+	if (CALIBRATE.EXT_6m > 0 || direction > 0) {
 		CALIBRATE.EXT_6m += direction;
-	if (CALIBRATE.EXT_6m > 15)
+	}
+	if (CALIBRATE.EXT_6m > 15) {
 		CALIBRATE.EXT_6m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_4m(int8_t direction) {
-	if (CALIBRATE.EXT_4m > 0 || direction > 0)
+	if (CALIBRATE.EXT_4m > 0 || direction > 0) {
 		CALIBRATE.EXT_4m += direction;
-	if (CALIBRATE.EXT_4m > 15)
+	}
+	if (CALIBRATE.EXT_4m > 15) {
 		CALIBRATE.EXT_4m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_FM(int8_t direction) {
-	if (CALIBRATE.EXT_FM > 0 || direction > 0)
+	if (CALIBRATE.EXT_FM > 0 || direction > 0) {
 		CALIBRATE.EXT_FM += direction;
-	if (CALIBRATE.EXT_FM > 15)
+	}
+	if (CALIBRATE.EXT_FM > 15) {
 		CALIBRATE.EXT_FM = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_2m(int8_t direction) {
-	if (CALIBRATE.EXT_2m > 0 || direction > 0)
+	if (CALIBRATE.EXT_2m > 0 || direction > 0) {
 		CALIBRATE.EXT_2m += direction;
-	if (CALIBRATE.EXT_2m > 15)
+	}
+	if (CALIBRATE.EXT_2m > 15) {
 		CALIBRATE.EXT_2m = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_70cm(int8_t direction) {
-	if (CALIBRATE.EXT_70cm > 0 || direction > 0)
+	if (CALIBRATE.EXT_70cm > 0 || direction > 0) {
 		CALIBRATE.EXT_70cm += direction;
-	if (CALIBRATE.EXT_70cm > 15)
+	}
+	if (CALIBRATE.EXT_70cm > 15) {
 		CALIBRATE.EXT_70cm = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_TRANSV_70cm(int8_t direction) {
-	if (CALIBRATE.EXT_TRANSV_70cm > 0 || direction > 0)
+	if (CALIBRATE.EXT_TRANSV_70cm > 0 || direction > 0) {
 		CALIBRATE.EXT_TRANSV_70cm += direction;
-	if (CALIBRATE.EXT_TRANSV_70cm > 15)
+	}
+	if (CALIBRATE.EXT_TRANSV_70cm > 15) {
 		CALIBRATE.EXT_TRANSV_70cm = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_TRANSV_23cm(int8_t direction) {
-	if (CALIBRATE.EXT_TRANSV_23cm > 0 || direction > 0)
+	if (CALIBRATE.EXT_TRANSV_23cm > 0 || direction > 0) {
 		CALIBRATE.EXT_TRANSV_23cm += direction;
-	if (CALIBRATE.EXT_TRANSV_23cm > 15)
+	}
+	if (CALIBRATE.EXT_TRANSV_23cm > 15) {
 		CALIBRATE.EXT_TRANSV_23cm = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_TRANSV_13cm(int8_t direction) {
-	if (CALIBRATE.EXT_TRANSV_13cm > 0 || direction > 0)
+	if (CALIBRATE.EXT_TRANSV_13cm > 0 || direction > 0) {
 		CALIBRATE.EXT_TRANSV_13cm += direction;
-	if (CALIBRATE.EXT_TRANSV_13cm > 15)
+	}
+	if (CALIBRATE.EXT_TRANSV_13cm > 15) {
 		CALIBRATE.EXT_TRANSV_13cm = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_TRANSV_6cm(int8_t direction) {
-	if (CALIBRATE.EXT_TRANSV_6cm > 0 || direction > 0)
+	if (CALIBRATE.EXT_TRANSV_6cm > 0 || direction > 0) {
 		CALIBRATE.EXT_TRANSV_6cm += direction;
-	if (CALIBRATE.EXT_TRANSV_6cm > 15)
+	}
+	if (CALIBRATE.EXT_TRANSV_6cm > 15) {
 		CALIBRATE.EXT_TRANSV_6cm = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_EXT_TRANSV_3cm(int8_t direction) {
-	if (CALIBRATE.EXT_TRANSV_3cm > 0 || direction > 0)
+	if (CALIBRATE.EXT_TRANSV_3cm > 0 || direction > 0) {
 		CALIBRATE.EXT_TRANSV_3cm += direction;
-	if (CALIBRATE.EXT_TRANSV_3cm > 15)
+	}
+	if (CALIBRATE.EXT_TRANSV_3cm > 15) {
 		CALIBRATE.EXT_TRANSV_3cm = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_NOTHAM(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_NOTHAM = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_NOTHAM = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_2200m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_2200m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_2200m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_160m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_160m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_160m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_80m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_80m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_80m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_60m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_60m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_60m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_40m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_40m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_40m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_30m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_30m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_30m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_20m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_20m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_20m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_17m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_17m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_17m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_15m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_15m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_15m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_12m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_12m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_12m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_CB(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_CB = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_CB = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_10m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_10m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_10m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_6m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_6m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_6m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_4m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_4m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_4m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_2m(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_2m = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_2m = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_NOTX_70cm(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.NOTX_70cm = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.NOTX_70cm = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_ENABLE_60m_band(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.ENABLE_60m_band = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.ENABLE_60m_band = false;
+	}
 
 	BANDS[BANDID_60m].selectable = CALIBRATE.ENABLE_60m_band;
 }
 
 static void SYSMENU_HANDL_CALIB_ENABLE_4m_band(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.ENABLE_4m_band = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.ENABLE_4m_band = false;
+	}
 
 	BANDS[BANDID_4m].selectable = CALIBRATE.ENABLE_4m_band;
 }
 
 static void SYSMENU_HANDL_CALIB_ENABLE_AIR_band(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.ENABLE_AIR_band = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.ENABLE_AIR_band = false;
+	}
 
 	BANDS[BANDID_AIR].selectable = CALIBRATE.ENABLE_AIR_band;
 }
 
 static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.ENABLE_marine_band = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.ENABLE_marine_band = false;
+	}
 
 	BANDS[BANDID_Marine].selectable = CALIBRATE.ENABLE_marine_band;
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom(int8_t direction) {
 	CALIBRATE.Transverter_Custom_Offset_Mhz += direction;
-	if (CALIBRATE.Transverter_Custom_Offset_Mhz < 1)
+	if (CALIBRATE.Transverter_Custom_Offset_Mhz < 1) {
 		CALIBRATE.Transverter_Custom_Offset_Mhz = 1;
-	if (CALIBRATE.Transverter_Custom_Offset_Mhz > 750)
+	}
+	if (CALIBRATE.Transverter_Custom_Offset_Mhz > 750) {
 		CALIBRATE.Transverter_Custom_Offset_Mhz = 750;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_70cm(int8_t direction) {
 	CALIBRATE.Transverter_70cm_RF_Mhz += direction;
-	if (CALIBRATE.Transverter_70cm_RF_Mhz < 1)
+	if (CALIBRATE.Transverter_70cm_RF_Mhz < 1) {
 		CALIBRATE.Transverter_70cm_RF_Mhz = 1;
-	if (CALIBRATE.Transverter_70cm_RF_Mhz > 15000)
+	}
+	if (CALIBRATE.Transverter_70cm_RF_Mhz > 15000) {
 		CALIBRATE.Transverter_70cm_RF_Mhz = 15000;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_70cm(int8_t direction) {
 	CALIBRATE.Transverter_70cm_IF_Mhz += direction;
-	if (CALIBRATE.Transverter_70cm_IF_Mhz < 1)
+	if (CALIBRATE.Transverter_70cm_IF_Mhz < 1) {
 		CALIBRATE.Transverter_70cm_IF_Mhz = 1;
-	if (CALIBRATE.Transverter_70cm_IF_Mhz > 750)
+	}
+	if (CALIBRATE.Transverter_70cm_IF_Mhz > 750) {
 		CALIBRATE.Transverter_70cm_IF_Mhz = 750;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_23cm(int8_t direction) {
 	CALIBRATE.Transverter_23cm_RF_Mhz += direction;
-	if (CALIBRATE.Transverter_23cm_RF_Mhz < 1)
+	if (CALIBRATE.Transverter_23cm_RF_Mhz < 1) {
 		CALIBRATE.Transverter_23cm_RF_Mhz = 1;
-	if (CALIBRATE.Transverter_23cm_RF_Mhz > 15000)
+	}
+	if (CALIBRATE.Transverter_23cm_RF_Mhz > 15000) {
 		CALIBRATE.Transverter_23cm_RF_Mhz = 15000;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_23cm(int8_t direction) {
 	CALIBRATE.Transverter_23cm_IF_Mhz += direction;
-	if (CALIBRATE.Transverter_23cm_IF_Mhz < 1)
+	if (CALIBRATE.Transverter_23cm_IF_Mhz < 1) {
 		CALIBRATE.Transverter_23cm_IF_Mhz = 1;
-	if (CALIBRATE.Transverter_23cm_IF_Mhz > 750)
+	}
+	if (CALIBRATE.Transverter_23cm_IF_Mhz > 750) {
 		CALIBRATE.Transverter_23cm_IF_Mhz = 750;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_13cm(int8_t direction) {
 	CALIBRATE.Transverter_13cm_RF_Mhz += direction;
-	if (CALIBRATE.Transverter_13cm_RF_Mhz < 1)
+	if (CALIBRATE.Transverter_13cm_RF_Mhz < 1) {
 		CALIBRATE.Transverter_13cm_RF_Mhz = 1;
-	if (CALIBRATE.Transverter_13cm_RF_Mhz > 15000)
+	}
+	if (CALIBRATE.Transverter_13cm_RF_Mhz > 15000) {
 		CALIBRATE.Transverter_13cm_RF_Mhz = 15000;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_13cm(int8_t direction) {
 	CALIBRATE.Transverter_13cm_IF_Mhz += direction;
-	if (CALIBRATE.Transverter_13cm_IF_Mhz < 1)
+	if (CALIBRATE.Transverter_13cm_IF_Mhz < 1) {
 		CALIBRATE.Transverter_13cm_IF_Mhz = 1;
-	if (CALIBRATE.Transverter_13cm_IF_Mhz > 750)
+	}
+	if (CALIBRATE.Transverter_13cm_IF_Mhz > 750) {
 		CALIBRATE.Transverter_13cm_IF_Mhz = 750;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_6cm(int8_t direction) {
 	CALIBRATE.Transverter_6cm_RF_Mhz += direction;
-	if (CALIBRATE.Transverter_6cm_RF_Mhz < 1)
+	if (CALIBRATE.Transverter_6cm_RF_Mhz < 1) {
 		CALIBRATE.Transverter_6cm_RF_Mhz = 1;
-	if (CALIBRATE.Transverter_6cm_RF_Mhz > 15000)
+	}
+	if (CALIBRATE.Transverter_6cm_RF_Mhz > 15000) {
 		CALIBRATE.Transverter_6cm_RF_Mhz = 15000;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_6cm(int8_t direction) {
 	CALIBRATE.Transverter_6cm_IF_Mhz += direction;
-	if (CALIBRATE.Transverter_6cm_IF_Mhz < 1)
+	if (CALIBRATE.Transverter_6cm_IF_Mhz < 1) {
 		CALIBRATE.Transverter_6cm_IF_Mhz = 1;
-	if (CALIBRATE.Transverter_6cm_IF_Mhz > 750)
+	}
+	if (CALIBRATE.Transverter_6cm_IF_Mhz > 750) {
 		CALIBRATE.Transverter_6cm_IF_Mhz = 750;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_3cm(int8_t direction) {
 	CALIBRATE.Transverter_3cm_RF_Mhz += direction;
-	if (CALIBRATE.Transverter_3cm_RF_Mhz < 1)
+	if (CALIBRATE.Transverter_3cm_RF_Mhz < 1) {
 		CALIBRATE.Transverter_3cm_RF_Mhz = 1;
-	if (CALIBRATE.Transverter_3cm_RF_Mhz > 15000)
+	}
+	if (CALIBRATE.Transverter_3cm_RF_Mhz > 15000) {
 		CALIBRATE.Transverter_3cm_RF_Mhz = 15000;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_3cm(int8_t direction) {
 	CALIBRATE.Transverter_3cm_IF_Mhz += direction;
-	if (CALIBRATE.Transverter_3cm_IF_Mhz < 1)
+	if (CALIBRATE.Transverter_3cm_IF_Mhz < 1) {
 		CALIBRATE.Transverter_3cm_IF_Mhz = 1;
-	if (CALIBRATE.Transverter_3cm_IF_Mhz > 750)
+	}
+	if (CALIBRATE.Transverter_3cm_IF_Mhz > 750) {
 		CALIBRATE.Transverter_3cm_IF_Mhz = 750;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.OTA_update = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.OTA_update = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TX_StartDelay(int8_t direction) {
-	if (CALIBRATE.TX_StartDelay > 0 || direction > 0)
+	if (CALIBRATE.TX_StartDelay > 0 || direction > 0) {
 		CALIBRATE.TX_StartDelay += direction;
-	if (CALIBRATE.TX_StartDelay > 2000)
+	}
+	if (CALIBRATE.TX_StartDelay > 2000) {
 		CALIBRATE.TX_StartDelay = 2000;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_LCD_Rotate(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.LCD_Rotate = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.LCD_Rotate = false;
+	}
 
 	LCD_Init();
 	LCD_redraw(false);
 }
 
 static void SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.TOUCHPAD_horizontal_flip = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.TOUCHPAD_horizontal_flip = false;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_LinearPowerControl(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		CALIBRATE.LinearPowerControl = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		CALIBRATE.LinearPowerControl = false;
+	}
 }
 
 static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction) {
@@ -5212,61 +5964,76 @@ static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction) {
 		CALIBRATE.INA226_EN = true;
 		INA226_Init();
 	}
-	if (direction < 0)
+	if (direction < 0) {
 		CALIBRATE.INA226_EN = false;
+	}
 }
 
 static void SYSMENU_HANDL_INA226_CUR_CALL(int8_t direction) {
 	CALIBRATE.INA226_CurCalc += (float32_t)direction * 0.01f;
-	if (CALIBRATE.INA226_CurCalc < 0.01f)
+	if (CALIBRATE.INA226_CurCalc < 0.01f) {
 		CALIBRATE.INA226_CurCalc = 0.01f;
-	if (CALIBRATE.INA226_CurCalc > 10.0f)
+	}
+	if (CALIBRATE.INA226_CurCalc > 10.0f) {
 		CALIBRATE.INA226_CurCalc = 10.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction) {
 	CALIBRATE.PWR_VLT_Calibration += (float32_t)direction * 1.0f;
-	if (CALIBRATE.PWR_VLT_Calibration < 1.0f)
+	if (CALIBRATE.PWR_VLT_Calibration < 1.0f) {
 		CALIBRATE.PWR_VLT_Calibration = 1.0f;
-	if (CALIBRATE.PWR_VLT_Calibration > 1500.0f)
+	}
+	if (CALIBRATE.PWR_VLT_Calibration > 1500.0f) {
 		CALIBRATE.PWR_VLT_Calibration = 1500.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_PWR_CUR_Calibration(int8_t direction) {
 	CALIBRATE.PWR_CUR_Calibration += (float32_t)direction * 0.01f;
-	if (CALIBRATE.PWR_CUR_Calibration < 0.01f)
+	if (CALIBRATE.PWR_CUR_Calibration < 0.01f) {
 		CALIBRATE.PWR_CUR_Calibration = 0.01f;
-	if (CALIBRATE.PWR_CUR_Calibration > 5.0f)
+	}
+	if (CALIBRATE.PWR_CUR_Calibration > 5.0f) {
 		CALIBRATE.PWR_CUR_Calibration = 5.0f;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_ATU_AVERAGING(int8_t direction) {
-	if (CALIBRATE.ATU_AVERAGING > 0 || direction > 0)
+	if (CALIBRATE.ATU_AVERAGING > 0 || direction > 0) {
 		CALIBRATE.ATU_AVERAGING += direction;
-	if (CALIBRATE.ATU_AVERAGING > 15)
+	}
+	if (CALIBRATE.ATU_AVERAGING > 15) {
 		CALIBRATE.ATU_AVERAGING = 15;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_CAT_Type(int8_t direction) {
-	if (CALIBRATE.CAT_Type > 0 || direction > 0)
+	if (CALIBRATE.CAT_Type > 0 || direction > 0) {
 		CALIBRATE.CAT_Type += direction;
-	if (CALIBRATE.CAT_Type > 1)
+	}
+	if (CALIBRATE.CAT_Type > 1) {
 		CALIBRATE.CAT_Type = 1;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_LNA_compensation(int8_t direction) {
 	CALIBRATE.LNA_compensation += direction;
-	if (CALIBRATE.LNA_compensation > 0)
+	if (CALIBRATE.LNA_compensation > 0) {
 		CALIBRATE.LNA_compensation = 0;
-	if (CALIBRATE.LNA_compensation < -50)
+	}
+	if (CALIBRATE.LNA_compensation < -50) {
 		CALIBRATE.LNA_compensation = -50;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_TwoSignalTune_Balance(int8_t direction) {
-	if (CALIBRATE.TwoSignalTune_Balance > 0 || direction > 0)
+	if (CALIBRATE.TwoSignalTune_Balance > 0 || direction > 0) {
 		CALIBRATE.TwoSignalTune_Balance += direction;
-	if (CALIBRATE.TwoSignalTune_Balance > 100)
+	}
+	if (CALIBRATE.TwoSignalTune_Balance > 100) {
 		CALIBRATE.TwoSignalTune_Balance = 100;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_FlashGT911(int8_t direction) {
@@ -5275,25 +6042,30 @@ static void SYSMENU_HANDL_CALIB_FlashGT911(int8_t direction) {
 	LCD_busy = true;
 	bool result = GT911_Flash();
 	LCD_busy = false;
-	if (result)
+	if (result) {
 		LCD_showError("Success!", true);
-	else
+	} else {
 		LCD_showError("Error!", true);
+	}
 #endif
 }
 
 static void SYSMENU_HANDL_CALIB_IF_GAIN_MIN(int8_t direction) {
-	if (CALIBRATE.IF_GAIN_MIN > 0 || direction > 0)
+	if (CALIBRATE.IF_GAIN_MIN > 0 || direction > 0) {
 		CALIBRATE.IF_GAIN_MIN += direction;
-	if (CALIBRATE.IF_GAIN_MIN > 200)
+	}
+	if (CALIBRATE.IF_GAIN_MIN > 200) {
 		CALIBRATE.IF_GAIN_MIN = 200;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_IF_GAIN_MAX(int8_t direction) {
-	if (CALIBRATE.IF_GAIN_MAX > 0 || direction > 0)
+	if (CALIBRATE.IF_GAIN_MAX > 0 || direction > 0) {
 		CALIBRATE.IF_GAIN_MAX += direction;
-	if (CALIBRATE.IF_GAIN_MAX > 200)
+	}
+	if (CALIBRATE.IF_GAIN_MAX > 200) {
 		CALIBRATE.IF_GAIN_MAX = 200;
+	}
 }
 
 static void SYSMENU_HANDL_CALIB_SETTINGS_RESET(int8_t direction) { LoadSettings(true); }
@@ -5344,14 +6116,16 @@ static void SYSMENU_HANDL_SWR_CUSTOM_Start(int8_t direction) {
 
 static void SYSMENU_HANDL_SWR_CUSTOM_Begin(int8_t direction) {
 	TRX.SWR_CUSTOM_Begin += direction * 100;
-	if (TRX.SWR_CUSTOM_Begin < 100)
+	if (TRX.SWR_CUSTOM_Begin < 100) {
 		TRX.SWR_CUSTOM_Begin = 100;
+	}
 }
 
 static void SYSMENU_HANDL_SWR_CUSTOM_End(int8_t direction) {
 	TRX.SWR_CUSTOM_End += direction * 100;
-	if (TRX.SWR_CUSTOM_End < 100)
+	if (TRX.SWR_CUSTOM_End < 100) {
 		TRX.SWR_CUSTOM_End = 100;
+	}
 }
 
 // SWR BAND ANALYZER
@@ -5397,37 +6171,47 @@ static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction) {
-	if (TRX.SPEC_Begin > 0 || direction > 0)
+	if (TRX.SPEC_Begin > 0 || direction > 0) {
 		TRX.SPEC_Begin += direction;
-	if (TRX.SPEC_Begin > MAX_RX_FREQ_HZ)
+	}
+	if (TRX.SPEC_Begin > MAX_RX_FREQ_HZ) {
 		TRX.SPEC_Begin = 1;
+	}
 }
 
 static void SYSMENU_HANDL_SPECTRUM_End(int8_t direction) {
-	if (TRX.SPEC_End > 0 || direction > 0)
+	if (TRX.SPEC_End > 0 || direction > 0) {
 		TRX.SPEC_End += direction;
-	if (TRX.SPEC_End > MAX_RX_FREQ_HZ)
+	}
+	if (TRX.SPEC_End > MAX_RX_FREQ_HZ) {
 		TRX.SPEC_End = 1;
+	}
 }
 
 static void SYSMENU_HANDL_SPECTRUM_TopDBM(int8_t direction) {
 	TRX.SPEC_TopDBM += direction;
-	if (TRX.SPEC_TopDBM < -140)
+	if (TRX.SPEC_TopDBM < -140) {
 		TRX.SPEC_TopDBM = -140;
-	if (TRX.SPEC_TopDBM > 40)
+	}
+	if (TRX.SPEC_TopDBM > 40) {
 		TRX.SPEC_TopDBM = 40;
-	if (TRX.SPEC_TopDBM <= TRX.SPEC_BottomDBM)
+	}
+	if (TRX.SPEC_TopDBM <= TRX.SPEC_BottomDBM) {
 		TRX.SPEC_TopDBM = TRX.SPEC_BottomDBM + 1;
+	}
 }
 
 static void SYSMENU_HANDL_SPECTRUM_BottomDBM(int8_t direction) {
 	TRX.SPEC_BottomDBM += direction;
-	if (TRX.SPEC_BottomDBM < -140)
+	if (TRX.SPEC_BottomDBM < -140) {
 		TRX.SPEC_BottomDBM = -140;
-	if (TRX.SPEC_BottomDBM > 40)
+	}
+	if (TRX.SPEC_BottomDBM > 40) {
 		TRX.SPEC_BottomDBM = 40;
-	if (TRX.SPEC_BottomDBM >= TRX.SPEC_TopDBM)
+	}
+	if (TRX.SPEC_BottomDBM >= TRX.SPEC_TopDBM) {
 		TRX.SPEC_BottomDBM = TRX.SPEC_TopDBM - 1;
+	}
 }
 
 // Auto calibration
@@ -5472,87 +6256,111 @@ static void SYSMENU_HANDL_WSPR_Start(int8_t direction) {
 
 static void SYSMENU_HANDL_WSPR_FREQ_OFFSET(int8_t direction) {
 	TRX.WSPR_FREQ_OFFSET += direction;
-	if (TRX.WSPR_FREQ_OFFSET < -2000)
+	if (TRX.WSPR_FREQ_OFFSET < -2000) {
 		TRX.WSPR_FREQ_OFFSET = -2000;
-	if (TRX.WSPR_FREQ_OFFSET > 2000)
+	}
+	if (TRX.WSPR_FREQ_OFFSET > 2000) {
 		TRX.WSPR_FREQ_OFFSET = 2000;
+	}
 }
 
 static void SYSMENU_HANDL_WSPR_BAND160(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.WSPR_BANDS_160 = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.WSPR_BANDS_160 = false;
+	}
 }
 
 static void SYSMENU_HANDL_WSPR_BAND80(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.WSPR_BANDS_80 = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.WSPR_BANDS_80 = false;
+	}
 }
 
 static void SYSMENU_HANDL_WSPR_BAND40(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.WSPR_BANDS_40 = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.WSPR_BANDS_40 = false;
+	}
 }
 
 static void SYSMENU_HANDL_WSPR_BAND30(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.WSPR_BANDS_30 = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.WSPR_BANDS_30 = false;
+	}
 }
 
 static void SYSMENU_HANDL_WSPR_BAND20(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.WSPR_BANDS_20 = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.WSPR_BANDS_20 = false;
+	}
 }
 
 static void SYSMENU_HANDL_WSPR_BAND17(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.WSPR_BANDS_17 = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.WSPR_BANDS_17 = false;
+	}
 }
 
 static void SYSMENU_HANDL_WSPR_BAND15(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.WSPR_BANDS_15 = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.WSPR_BANDS_15 = false;
+	}
 }
 
 static void SYSMENU_HANDL_WSPR_BAND12(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.WSPR_BANDS_12 = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.WSPR_BANDS_12 = false;
+	}
 }
 
 static void SYSMENU_HANDL_WSPR_BAND10(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.WSPR_BANDS_10 = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.WSPR_BANDS_10 = false;
+	}
 }
 
 static void SYSMENU_HANDL_WSPR_BAND6(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.WSPR_BANDS_6 = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.WSPR_BANDS_6 = false;
+	}
 }
 
 static void SYSMENU_HANDL_WSPR_BAND2(int8_t direction) {
-	if (direction > 0)
+	if (direction > 0) {
 		TRX.WSPR_BANDS_2 = true;
-	if (direction < 0)
+	}
+	if (direction < 0) {
 		TRX.WSPR_BANDS_2 = false;
+	}
 }
 
 #if HRDW_HAS_WIFI
@@ -5622,75 +6430,90 @@ static void SYSMENU_HANDL_SELF_TEST(int8_t direction) {
 // COMMON MENU FUNCTIONS
 void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 	if (LCD_busy) {
-		if (draw_background)
+		if (draw_background) {
 			LCD_UpdateQuery.SystemMenuRedraw = true;
-		else
+		} else {
 			LCD_UpdateQuery.SystemMenu = true;
+		}
 		return;
 	}
 
-	if (!LCD_systemMenuOpened)
+	if (!LCD_systemMenuOpened) {
 		return;
+	}
 
 	if (sysmenu_timeMenuOpened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SYSMENU_HANDL_SETTIME(0);
 		return;
 	} else
 #if HRDW_HAS_WIFI
 	    if (sysmenu_wifi_selectap1_menu_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SYSMENU_WIFI_DrawSelectAP1Menu(draw_background);
 	} else if (sysmenu_wifi_selectap2_menu_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SYSMENU_WIFI_DrawSelectAP2Menu(draw_background);
 	} else if (sysmenu_wifi_selectap3_menu_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SYSMENU_WIFI_DrawSelectAP3Menu(draw_background);
 	} else if (sysmenu_wifi_setAP1password_menu_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SYSMENU_WIFI_DrawAP1passwordMenu(draw_background);
 	} else if (sysmenu_wifi_setAP2password_menu_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SYSMENU_WIFI_DrawAP2passwordMenu(draw_background);
 	} else if (sysmenu_wifi_setAP3password_menu_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SYSMENU_WIFI_DrawAP3passwordMenu(draw_background);
 	} else
 #endif
 	    if (sysmenu_trx_setCallsign_menu_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SYSMENU_TRX_DrawCallsignMenu(draw_background);
 	} else if (sysmenu_trx_setLocator_menu_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SYSMENU_TRX_DrawLocatorMenu(draw_background);
 	} else if (sysmenu_trx_setURSICode_menu_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SYSMENU_TRX_DrawURSICodeMenu(draw_background);
 	} else if (SYSMENU_spectrum_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SPEC_Draw();
 	} else if (SYSMENU_wspr_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		WSPR_DoEvents();
 		return;
 	}
 #if FT8_SUPPORT
 	else if (SYSMENU_FT8_DECODER_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		if (draw_background) {
 			InitFT8_Decoder();
 			LCD_UpdateQuery.SystemMenuRedraw = false;
@@ -5700,46 +6523,55 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 	}
 #endif
 	else if (SYSMENU_TDM_CTRL_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		TDM_Voltages();
 	} else if (SYSMENU_swr_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SWR_Draw();
 	} else if (SYSMENU_locator_info_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		LOCINFO_Draw();
 	} else if (SYSMENU_callsign_info_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		CALLSIGN_INFO_Draw();
 	} else if (SYSMENU_selftest_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SELF_TEST_Draw();
 		return;
 	} else if (SYSMENU_auto_calibration_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		AUTO_CALIBRATION_Draw();
 		return;
 	} else if (sysmenu_sysinfo_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		SYSMENU_HANDL_SYSINFO(0);
 		return;
 	} else if (sysmenu_filemanager_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		FILEMANAGER_Draw(draw_background);
 		return;
 	}
 #if HRDW_HAS_SD
 	else if (sysmenu_ota_opened) {
-		if (only_infolines)
+		if (only_infolines) {
 			return;
+		}
 		FILEMANAGER_OTAUpdate_handler();
 		return;
 	}
@@ -5751,20 +6583,23 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 		sysmenu_i = 0;
 		sysmenu_y = 5;
 
-		if (draw_background)
+		if (draw_background) {
 			LCDDriver_Fill(BG_COLOR);
+		}
 
 		uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(getCurrentMenuIndex());
-		if (current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE > sysmenu_item_count)
+		if (current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE > sysmenu_item_count) {
 			current_selected_page = 0;
+		}
 
 		uint8_t visible = 0;
 		uint8_t current_page = 0;
 		for (uint8_t m = 0; m < sysmenu_item_count; m++) {
 			if (sysmenu_handlers_selected[m].checkVisibleHandler == NULL || sysmenu_handlers_selected[m].checkVisibleHandler()) {
 				if (!only_infolines) {
-					if (current_selected_page == current_page)
+					if (current_selected_page == current_page) {
 						drawSystemMenuElement(&sysmenu_handlers_selected[m], false);
+					}
 				} else {
 					if (current_selected_page == current_page) {
 						if (sysmenu_handlers_selected[m].type == SYSMENU_INFOLINE) {
@@ -5789,15 +6624,18 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 	}
 
 	LCD_UpdateQuery.SystemMenu = false;
-	if (draw_background)
+	if (draw_background) {
 		LCD_UpdateQuery.SystemMenuRedraw = false;
+	}
 }
 
 void SYSMENU_eventRotateSystemMenu(int8_t direction) {
-	if (direction < -1)
+	if (direction < -1) {
 		direction = -1;
-	if (direction > 1)
+	}
+	if (direction > 1) {
 		direction = 1;
+	}
 
 #if HRDW_HAS_WIFI
 	if (sysmenu_wifi_selectap1_menu_opened) {
@@ -5855,10 +6693,12 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction) {
 		return;
 	}
 
-	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type != SYSMENU_INFOLINE)
+	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type != SYSMENU_INFOLINE) {
 		sysmenu_handlers_selected[getCurrentMenuIndex()].menuHandler(direction);
-	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type != SYSMENU_RUN)
+	}
+	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type != SYSMENU_RUN) {
 		LCD_UpdateQuery.SystemMenuCurrent = true;
+	}
 }
 
 void SYSMENU_eventCloseSystemMenu(void) {
@@ -5974,8 +6814,9 @@ void SYSMENU_eventCloseSystemMenu(void) {
 			LCD_UpdateQuery.Background = true;
 			LCD_redraw(false);
 		} else {
-			if (sysmenu_handlers_selected == (const struct sysmenu_item_handler *)&sysmenu_calibration_handlers[0]) // exit from calibration
+			if (sysmenu_handlers_selected == (const struct sysmenu_item_handler *)&sysmenu_calibration_handlers[0]) { // exit from calibration
 				NeedSaveCalibration = true;
+			}
 
 			sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_handlers[0];
 			sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
@@ -6055,24 +6896,27 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 #if HRDW_HAS_WIFI
 	// wifi select AP menu
 	if (sysmenu_wifi_selectap1_menu_opened) {
-		if (direction < 0)
+		if (direction < 0) {
 			SYSMENU_WIFI_SelectAP1MenuMove(-1);
-		else
+		} else {
 			SYSMENU_WIFI_SelectAP1MenuMove(1);
+		}
 		return;
 	}
 	if (sysmenu_wifi_selectap2_menu_opened) {
-		if (direction < 0)
+		if (direction < 0) {
 			SYSMENU_WIFI_SelectAP2MenuMove(-1);
-		else
+		} else {
 			SYSMENU_WIFI_SelectAP2MenuMove(1);
+		}
 		return;
 	}
 	if (sysmenu_wifi_selectap3_menu_opened) {
-		if (direction < 0)
+		if (direction < 0) {
 			SYSMENU_WIFI_SelectAP3MenuMove(-1);
-		else
+		} else {
 			SYSMENU_WIFI_SelectAP3MenuMove(1);
+		}
 		return;
 	}
 
@@ -6154,12 +6998,15 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
-	if (SYSMENU_swr_opened)
+	if (SYSMENU_swr_opened) {
 		return;
-	if (SYSMENU_locator_info_opened)
+	}
+	if (SYSMENU_locator_info_opened) {
 		return;
-	if (SYSMENU_callsign_info_opened)
+	}
+	if (SYSMENU_callsign_info_opened) {
 		return;
+	}
 	if (SYSMENU_selftest_opened) {
 		SELF_TEST_EncRotate(direction);
 		return;
@@ -6175,18 +7022,21 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 		return;
 	}
 #endif
-	if (sysmenu_infowindow_opened)
+	if (sysmenu_infowindow_opened) {
 		return;
+	}
 	// time menu
 	if (sysmenu_timeMenuOpened) {
 		if (direction < 0) {
 			TimeMenuSelection--;
-			if (TimeMenuSelection > 2)
+			if (TimeMenuSelection > 2) {
 				TimeMenuSelection = 2;
+			}
 		} else {
 			TimeMenuSelection++;
-			if (TimeMenuSelection == 3)
+			if (TimeMenuSelection == 3) {
 				TimeMenuSelection = 0;
+			}
 		}
 		LCD_UpdateQuery.SystemMenu = true;
 		return;
@@ -6216,40 +7066,46 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 	uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(getCurrentMenuIndex());
 	// do moving
 	if (direction < 0) {
-		if (getCurrentMenuIndex() > 0)
+		if (getCurrentMenuIndex() > 0) {
 			setCurrentMenuIndex(getCurrentMenuIndex() - 1);
-		else
+		} else {
 			setCurrentMenuIndex(sysmenu_item_count - 1);
+		}
 
 		while (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE ||
 		       (sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler != NULL && !sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler())) {
-			if (getCurrentMenuIndex() == 0)
+			if (getCurrentMenuIndex() == 0) {
 				setCurrentMenuIndex(sysmenu_item_count - 1);
-			else
+			} else {
 				setCurrentMenuIndex(getCurrentMenuIndex() - 1);
+			}
 		}
 	} else {
 		setCurrentMenuIndex(getCurrentMenuIndex() + 1);
-		if (getCurrentMenuIndex() >= sysmenu_item_count)
+		if (getCurrentMenuIndex() >= sysmenu_item_count) {
 			setCurrentMenuIndex(0);
+		}
 
 		while (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE ||
 		       (sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler != NULL && !sysmenu_handlers_selected[getCurrentMenuIndex()].checkVisibleHandler())) {
-			if (getCurrentMenuIndex() >= sysmenu_item_count - 1)
+			if (getCurrentMenuIndex() >= sysmenu_item_count - 1) {
 				setCurrentMenuIndex(0);
-			else
+			} else {
 				setCurrentMenuIndex(getCurrentMenuIndex() + 1);
+			}
 		}
 	}
-	if (getCurrentMenuIndex() >= sysmenu_item_count)
+	if (getCurrentMenuIndex() >= sysmenu_item_count) {
 		setCurrentMenuIndex(0);
+	}
 
 	LCD_UpdateQuery.SystemMenuCurrent = true;
 
 	// pager
 	uint8_t new_page = SYSTMENU_getPageFromRealIndex(getCurrentMenuIndex());
-	if (current_selected_page != new_page)
+	if (current_selected_page != new_page) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
 }
 
 void SYSMENU_redrawCurrentItem(void) {
@@ -6259,8 +7115,9 @@ void SYSMENU_redrawCurrentItem(void) {
 }
 
 static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement, bool onlyVal) {
-	if (menuElement->checkVisibleHandler != NULL && !menuElement->checkVisibleHandler())
+	if (menuElement->checkVisibleHandler != NULL && !menuElement->checkVisibleHandler()) {
 		return;
+	}
 	char ctmp[32] = {0};
 	char enum_value[ENUM_MAX_LENGTH + 1] = {0};
 	float32_t *atu_i = ATU_I_VALS;
@@ -6317,10 +7174,11 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 		break;
 	case SYSMENU_BOOLEAN:
 		sprintf(ctmp, "%d", (int8_t)*menuElement->value);
-		if ((uint8_t)*menuElement->value == 1)
+		if ((uint8_t)*menuElement->value == 1) {
 			sprintf(ctmp, "YES");
-		else
+		} else {
 			sprintf(ctmp, "NO");
+		}
 		break;
 	case SYSMENU_RUN:
 		sprintf(ctmp, "RUN");
@@ -6338,16 +7196,18 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 	case SYSMENU_ATU_I:
 		float_tmp_val = 0;
 		for (uint8_t i = 0; i < ATU_MAXPOS; i++) {
-			if (bitRead((uint8_t)*menuElement->value, i))
+			if (bitRead((uint8_t)*menuElement->value, i)) {
 				float_tmp_val += atu_i[i + 1];
+			}
 		}
 		sprintf(ctmp, "%.2fuH", (double)float_tmp_val);
 		break;
 	case SYSMENU_ATU_C:
 		float_tmp_val = 0;
 		for (uint8_t i = 0; i < ATU_MAXPOS; i++) {
-			if (bitRead((uint8_t)*menuElement->value, i))
+			if (bitRead((uint8_t)*menuElement->value, i)) {
 				float_tmp_val += atu_c[i + 1];
+			}
 		}
 		sprintf(ctmp, "%dpF", (uint32_t)float_tmp_val);
 		break;
@@ -6360,15 +7220,17 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 
 	if (SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) == sysmenu_i) {
 #if defined LAY_320x240
-		if (sysmenu_item_selected_by_enc2)
+		if (sysmenu_item_selected_by_enc2) {
 			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 3, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
-		else
+		} else {
 			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 3, LAYOUT->SYSMENU_W, FG_COLOR);
+		}
 #else
-		if (sysmenu_item_selected_by_enc2)
+		if (sysmenu_item_selected_by_enc2) {
 			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
-		else
+		} else {
 			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, FG_COLOR);
+		}
 #endif
 	}
 	sysmenu_i++;
@@ -6509,23 +7371,29 @@ static bool SYSMENU_HANDL_CHECK_HIDDEN_ENABLED(void) { return SYSMENU_hiddenmenu
 
 static void setCurrentMenuIndex(uint8_t index) {
 	uint8_t count = sizeof(sysmenu_wrappers) / sizeof(sysmenu_wrappers[0]);
-	for (uint8_t i = 0; i < count; i++)
-		if (sysmenu_wrappers[i].menu_handler == sysmenu_handlers_selected)
+	for (uint8_t i = 0; i < count; i++) {
+		if (sysmenu_wrappers[i].menu_handler == sysmenu_handlers_selected) {
 			sysmenu_wrappers[i].currentIndex = index;
+		}
+	}
 }
 
 static uint8_t getCurrentMenuIndex(void) {
 	uint8_t count = sizeof(sysmenu_wrappers) / sizeof(sysmenu_wrappers[0]);
-	for (uint8_t i = 0; i < count; i++)
-		if (sysmenu_wrappers[i].menu_handler == sysmenu_handlers_selected)
+	for (uint8_t i = 0; i < count; i++) {
+		if (sysmenu_wrappers[i].menu_handler == sysmenu_handlers_selected) {
 			return sysmenu_wrappers[i].currentIndex;
+		}
+	}
 
 	return 0;
 }
 
 static uint16_t getIndexByName(const struct sysmenu_item_handler *menu, uint16_t menu_length, char *name) {
-	for (uint16_t i = 0; i < menu_length; i++)
-		if (strcmp(menu[i].title, name) == 0)
+	for (uint16_t i = 0; i < menu_length; i++) {
+		if (strcmp(menu[i].title, name) == 0) {
 			return i;
+		}
+	}
 	return 0;
 }

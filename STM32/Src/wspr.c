@@ -173,14 +173,16 @@ void WSPR_DoEvents(void) {
 	uint8_t Next_Hours = Hours;
 	uint8_t Next_Minutes = Minutes + 1;
 	uint8_t Next_Seconds = 0;
-	if ((Next_Minutes & 0x1) == 1)
+	if ((Next_Minutes & 0x1) == 1) {
 		Next_Minutes++;
+	}
 	if (Next_Minutes >= 60) {
 		Next_Minutes = 0;
 		Next_Hours++;
 	}
-	if (Next_Hours >= 24)
+	if (Next_Hours >= 24) {
 		Next_Hours = 0;
+	}
 	sprintf(tmp_buff, "Next slot: %02d:%02d:%02d", Next_Hours, Next_Minutes, Next_Seconds);
 
 #ifdef LCD_SMALL_INTERFACE
@@ -193,15 +195,19 @@ void WSPR_DoEvents(void) {
 
 // status
 #ifdef LCD_SMALL_INTERFACE
-	if (wspr_status == WSPR_WAIT)
+	if (wspr_status == WSPR_WAIT) {
 		LCDDriver_printText("STATUS: WAIT    ", 5, y, FG_COLOR, BG_COLOR, 1);
-	if (wspr_status == WSPR_TRANSMIT)
+	}
+	if (wspr_status == WSPR_TRANSMIT) {
 		LCDDriver_printText("STATUS: TRANSMIT", 5, y, FG_COLOR, BG_COLOR, 1);
+	}
 #else
-	if (wspr_status == WSPR_WAIT)
+	if (wspr_status == WSPR_WAIT) {
 		LCDDriver_printText("STATUS: WAIT    ", 10, y, FG_COLOR, BG_COLOR, 2);
-	if (wspr_status == WSPR_TRANSMIT)
+	}
+	if (wspr_status == WSPR_TRANSMIT) {
 		LCDDriver_printText("STATUS: TRANSMIT", 10, y, FG_COLOR, BG_COLOR, 2);
+	}
 #endif
 	y += y_step;
 
@@ -285,84 +291,118 @@ static void WSPR_StopTransmit(void) {
 // events to the encoder
 void WSPR_EncRotate(int8_t direction) {
 #pragma unused(direction)
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 	LCD_busy = true;
 
 	LCD_busy = false;
 }
 
 static uint8_t WSPR_GetNextBand(void) {
-	if (wspr_band >= 160 && TRX.WSPR_BANDS_80)
+	if (wspr_band >= 160 && TRX.WSPR_BANDS_80) {
 		return 80;
-	if (wspr_band >= 80 && TRX.WSPR_BANDS_40)
+	}
+	if (wspr_band >= 80 && TRX.WSPR_BANDS_40) {
 		return 40;
-	if (wspr_band >= 40 && TRX.WSPR_BANDS_30)
+	}
+	if (wspr_band >= 40 && TRX.WSPR_BANDS_30) {
 		return 30;
-	if (wspr_band >= 30 && TRX.WSPR_BANDS_20)
+	}
+	if (wspr_band >= 30 && TRX.WSPR_BANDS_20) {
 		return 20;
-	if (wspr_band >= 20 && TRX.WSPR_BANDS_17)
+	}
+	if (wspr_band >= 20 && TRX.WSPR_BANDS_17) {
 		return 17;
-	if (wspr_band >= 17 && TRX.WSPR_BANDS_15)
+	}
+	if (wspr_band >= 17 && TRX.WSPR_BANDS_15) {
 		return 15;
-	if (wspr_band >= 15 && TRX.WSPR_BANDS_12)
+	}
+	if (wspr_band >= 15 && TRX.WSPR_BANDS_12) {
 		return 12;
-	if (wspr_band >= 12 && TRX.WSPR_BANDS_10)
+	}
+	if (wspr_band >= 12 && TRX.WSPR_BANDS_10) {
 		return 10;
-	if (wspr_band >= 10 && TRX.WSPR_BANDS_6)
+	}
+	if (wspr_band >= 10 && TRX.WSPR_BANDS_6) {
 		return 6;
-	if (wspr_band >= 6 && TRX.WSPR_BANDS_2)
+	}
+	if (wspr_band >= 6 && TRX.WSPR_BANDS_2) {
 		return 2;
-	if (wspr_band >= 2 && TRX.WSPR_BANDS_160)
+	}
+	if (wspr_band >= 2 && TRX.WSPR_BANDS_160) {
 		return 160;
-	if (TRX.WSPR_BANDS_160)
+	}
+	if (TRX.WSPR_BANDS_160) {
 		return 160;
-	if (TRX.WSPR_BANDS_80)
+	}
+	if (TRX.WSPR_BANDS_80) {
 		return 80;
-	if (TRX.WSPR_BANDS_40)
+	}
+	if (TRX.WSPR_BANDS_40) {
 		return 40;
-	if (TRX.WSPR_BANDS_30)
+	}
+	if (TRX.WSPR_BANDS_30) {
 		return 30;
-	if (TRX.WSPR_BANDS_20)
+	}
+	if (TRX.WSPR_BANDS_20) {
 		return 20;
-	if (TRX.WSPR_BANDS_17)
+	}
+	if (TRX.WSPR_BANDS_17) {
 		return 17;
-	if (TRX.WSPR_BANDS_15)
+	}
+	if (TRX.WSPR_BANDS_15) {
 		return 15;
-	if (TRX.WSPR_BANDS_12)
+	}
+	if (TRX.WSPR_BANDS_12) {
 		return 12;
-	if (TRX.WSPR_BANDS_10)
+	}
+	if (TRX.WSPR_BANDS_10) {
 		return 10;
-	if (TRX.WSPR_BANDS_6)
+	}
+	if (TRX.WSPR_BANDS_6) {
 		return 6;
-	if (TRX.WSPR_BANDS_2)
+	}
+	if (TRX.WSPR_BANDS_2) {
 		return 2;
+	}
 	return 20;
 }
 
 static float64_t WSPR_GetFreqFromBand(uint8_t band) {
-	if (band == 160)
+	if (band == 160) {
 		return WSPR_bands_freq[0];
-	if (band == 80)
+	}
+	if (band == 80) {
 		return WSPR_bands_freq[1];
-	if (band == 40)
+	}
+	if (band == 40) {
 		return WSPR_bands_freq[2];
-	if (band == 30)
+	}
+	if (band == 30) {
 		return WSPR_bands_freq[3];
-	if (band == 20)
+	}
+	if (band == 20) {
 		return WSPR_bands_freq[4];
-	if (band == 17)
+	}
+	if (band == 17) {
 		return WSPR_bands_freq[5];
-	if (band == 15)
+	}
+	if (band == 15) {
 		return WSPR_bands_freq[6];
-	if (band == 12)
+	}
+	if (band == 12) {
 		return WSPR_bands_freq[7];
-	if (band == 10)
+	}
+	if (band == 10) {
 		return WSPR_bands_freq[8];
-	if (band == 6)
+	}
+	if (band == 6) {
 		return WSPR_bands_freq[9];
-	if (band == 2)
+	}
+	if (band == 2) {
 		return WSPR_bands_freq[10];
+	}
 	return WSPR_bands_freq[4];
 }
 
@@ -377,14 +417,18 @@ static void WSPR_Encode(void) {
 // normalize characters 0..9 A..Z Space in order 0..36
 static char WSPR_chr_normf(char bc) {
 	char cc = 36;
-	if (bc >= '0' && bc <= '9')
+	if (bc >= '0' && bc <= '9') {
 		cc = bc - '0';
-	if (bc >= 'A' && bc <= 'Z')
+	}
+	if (bc >= 'A' && bc <= 'Z') {
 		cc = bc - 'A' + 10;
-	if (bc >= 'a' && bc <= 'z')
+	}
+	if (bc >= 'a' && bc <= 'z') {
 		cc = bc - 'a' + 10;
-	if (bc == ' ')
+	}
+	if (bc == ' ') {
 		cc = 36;
+	}
 
 	return (cc);
 }
@@ -392,8 +436,9 @@ static char WSPR_chr_normf(char bc) {
 static void WSPR_Encode_call(void) {
 	// copy callsign
 	char enc_call[7] = {0};
-	for (int ci = 0; ci < 7; ci++)
+	for (int ci = 0; ci < 7; ci++) {
 		enc_call[ci] = TRX.CALLSIGN[ci];
+	}
 
 	// coding of callsign
 	if (WSPR_chr_normf(enc_call[2]) > 9) {
@@ -424,16 +469,21 @@ static void WSPR_Encode_locator(void) {
 	// Min = 0 dBm, Max = 43 dBm, steps 0,3,7,10,13,17,20,23,27,30,33,37,40,43
 	uint8_t power = 20;
 	// from 7w out max
-	if (TRX.RF_Gain >= 3)
+	if (TRX.RF_Gain >= 3) {
 		power = 23;
-	if (TRX.RF_Gain >= 7)
+	}
+	if (TRX.RF_Gain >= 7) {
 		power = 27;
-	if (TRX.RF_Gain >= 14)
+	}
+	if (TRX.RF_Gain >= 14) {
 		power = 30;
-	if (TRX.RF_Gain >= 28)
+	}
+	if (TRX.RF_Gain >= 28) {
 		power = 33;
-	if (TRX.RF_Gain >= 71)
+	}
+	if (TRX.RF_Gain >= 71) {
 		power = 37;
+	}
 
 	// coding of locator
 	unsigned long m1 = 179 - 10 * (WSPR_chr_normf(TRX.LOCATOR[0]) - 10) - WSPR_chr_normf(TRX.LOCATOR[2]);
@@ -471,8 +521,9 @@ static void WSPR_Encode_conv(void) {
 			cc = WSPR2_encMessage[bc];
 			bc++;
 		}
-		if (cc & 0x80)
+		if (cc & 0x80) {
 			sh1 = sh1 | 1;
+		}
 
 		WSPR2_symTableTemp[cnt++] = WSPR_parity(sh1 & 0xF2D05351);
 		WSPR2_symTableTemp[cnt++] = WSPR_parity(sh1 & 0xE4613C47);
@@ -491,8 +542,9 @@ static void WSPR_Interleave_sync(void) {
 		bis = 1;
 		ij = 0;
 		for (b2 = 0; b2 < 8; b2++) {
-			if (ii & bis)
+			if (ii & bis) {
 				ij = ij | (0x80 >> b2);
+			}
 			bis = bis << 1;
 		}
 		if (ij < 162) {

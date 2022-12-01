@@ -39,8 +39,9 @@ static void __print_func(int count, unsigned short types[], ...) {
 	for (int i = 0; i < count; i++) {
 		char type = types[i] & 0x1F;
 		char size = types[i] >> 5;
-		if (i > 0)
+		if (i > 0) {
 			fprintf(" ");
+		}
 		fprintf("%i[%i]", type, size);
 	}
 	fprintf("\n");

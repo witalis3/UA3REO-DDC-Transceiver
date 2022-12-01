@@ -191,8 +191,9 @@ static bool LCDDriver_waitPoll(uint16_t regname, uint8_t waitflag) {
 	while (t > 0) {
 		t--;
 		uint16_t temp = LCDDriver_readReg(regname);
-		if (!(temp & waitflag))
+		if (!(temp & waitflag)) {
 			return true;
+		}
 		CPULOAD_GoToSleepMode();
 	}
 	return false;
@@ -394,10 +395,11 @@ void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t dy, 
 	LCDDriver_writeReg(LCD_RA8875_BTE_BEHR1, (h >> 8) & 0xFF);
 
 	// 4. Setting BTE operation and ROP function REG[51h] Bit[3:0] = 2h
-	if (fromEnd)
+	if (fromEnd) {
 		LCDDriver_writeReg(LCD_RA8875_BTE_BECR1, LCD_RA8875_BTE_BECR1_MVN | LCD_RA8875_BTE_BECR1_DS);
-	else
+	} else {
 		LCDDriver_writeReg(LCD_RA8875_BTE_BECR1, LCD_RA8875_BTE_BECR1_MVP | LCD_RA8875_BTE_BECR1_DS);
+	}
 
 	// 5. Enable BTE function REG[50h] Bit7 = 1
 	LCDDriver_writeReg(LCD_RA8875_BTE_BECR0, LCDDriver_readReg(LCD_RA8875_BTE_BECR0) | LCD_RA8875_BTE_BECR0_BTEON);
@@ -542,10 +544,11 @@ void LCDDriver_drawRoundedRectWH(uint16_t x0, uint16_t y0, uint16_t w, uint16_t 
 
 	/* Draw! */
 	LCDDriver_SendCommand(LCD_RA8875_ELLCR);
-	if (filled)
+	if (filled) {
 		LCDDriver_SendData(0x80 | 0x40 | 0x20);
-	else
+	} else {
 		LCDDriver_SendData(0x80 | 0x00 | 0x20);
+	}
 
 	/* Wait for the command to finish */
 	LCDDriver_waitPoll(LCD_RA8875_DCR, LCD_RA8875_DCR_LINESQUTRI_STATUS);

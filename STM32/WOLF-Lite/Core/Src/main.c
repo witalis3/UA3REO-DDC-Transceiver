@@ -187,10 +187,11 @@ int main(void) {
 	FRONTPANEL_Init();
 
 	println("[OK] Settings loading");
-	if (PERIPH_FrontPanel_Buttons[12].state) // soft reset (MENU)
+	if (PERIPH_FrontPanel_Buttons[12].state) { // soft reset (MENU)
 		LoadSettings(true);
-	else
+	} else {
 		LoadSettings(false);
+	}
 
 	// DFU bootloader
 	if (TRX.NeedGoToBootloader || PERIPH_FrontPanel_Buttons[5].state) {
@@ -202,10 +203,11 @@ int main(void) {
 	}
 
 	println("[OK] Calibration loading");
-	if (PERIPH_FrontPanel_Buttons[12].state && PERIPH_FrontPanel_Buttons[7].state) // Very hard reset (MENU+F1)
+	if (PERIPH_FrontPanel_Buttons[12].state && PERIPH_FrontPanel_Buttons[7].state) { // Very hard reset (MENU+F1)
 		LoadCalibration(true);
-	else
+	} else {
 		LoadCalibration(false);
+	}
 
 	TRX.Locked = false;
 
@@ -1422,8 +1424,9 @@ int fputc(int ch, FILE *f) {
 #pragma unused(f)
 
 	// SWD
-	if (SWD_DEBUG_ENABLED)
+	if (SWD_DEBUG_ENABLED) {
 		ITM_SendChar((uint32_t)ch);
+	}
 
 // USB
 #if HRDW_HAS_USB_DEBUG

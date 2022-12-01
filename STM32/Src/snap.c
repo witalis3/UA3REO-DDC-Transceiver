@@ -14,8 +14,9 @@ static uint8_t SNAP_buffer_avg_index = 0;
 static void SNAP_Process();
 
 void SNAP_FillBuffer(float32_t *buff) {
-	if (!SNAP_need_buffer)
+	if (!SNAP_need_buffer) {
 		return;
+	}
 
 	if (CurrentVFO->Mode == TRX_MODE_LOOPBACK || CurrentVFO->Mode == TRX_MODE_WFM || CurrentVFO->Mode == TRX_MODE_IQ) {
 		SNAP_buffer_avg_index = 0;
@@ -44,8 +45,9 @@ void SNAP_FillBuffer(float32_t *buff) {
 }
 
 void SNAP_DoSnap(bool do_auto, uint8_t mode) {
-	if (do_auto && TRX_Inactive_Time < SNAP_AUTO_TIMEOUT)
+	if (do_auto && TRX_Inactive_Time < SNAP_AUTO_TIMEOUT) {
 		return;
+	}
 
 	SNAP_process_from_auto = do_auto;
 	SNAP_process_mode = mode;

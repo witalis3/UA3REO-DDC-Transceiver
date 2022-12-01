@@ -38,8 +38,9 @@ void CPULOAD_GoToSleepMode(void) {
 }
 
 void CPULOAD_WakeUp(void) {
-	if (CPULOAD_status)
+	if (CPULOAD_status) {
 		return;
+	}
 	CPULOAD_status = true;
 	// Increase number of sleeping time in CPU cycles
 	CPULOAD_SleepingTime += DWT->CYCCNT - CPULOAD_startSleepTime;
@@ -157,8 +158,9 @@ void dma_memset32(void *dest, uint32_t val, uint32_t size) {
 		memset(dest, val, size * 4);
 	} else {
 		uint32_t *buf = dest;
-		while (size--)
+		while (size--) {
 			*buf++ = val;
+		}
 	}
 }
 

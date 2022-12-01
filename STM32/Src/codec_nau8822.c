@@ -16,8 +16,9 @@ static uint8_t Codec_on_board(uint8_t reg, uint8_t value) {
 		i2c_write_u8(&I2C_CODEC, reg);                     // MSB
 		i2c_write_u8(&I2C_CODEC, value);                   // MSB
 		st = i2c_endTransmission(&I2C_CODEC);
-		if (st != 0)
+		if (st != 0) {
 			repeats++;
+		}
 		HAL_Delay(1);
 	}
 	return st;
@@ -45,8 +46,9 @@ void NAU8822_SendI2CCommand(uint8_t u8addr, uint16_t u16data) {
 		//	i2c_stop(&I2C_WM8731);
 
 		st = i2c_endTransmission(&I2C_CODEC);
-		if (st != 0)
+		if (st != 0) {
 			repeats++;
+		}
 		HAL_Delay(1);
 	}
 }

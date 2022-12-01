@@ -129,8 +129,9 @@ void SPEC_Stop(void) {
 
 // draw the spectrum analyzer
 void SPEC_Draw(void) {
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 
 	// Wait while data is being typed
 	if ((HAL_GetTick() - tick_start_time) < SPEC_StepDelay) {
@@ -138,8 +139,9 @@ void SPEC_Draw(void) {
 		return;
 	}
 
-	if (TRX_RX1_dBm == 0) //-V550
+	if (TRX_RX1_dBm == 0) { //-V550
 		return;
+	}
 
 	tick_start_time = HAL_GetTick();
 	LCD_busy = true;
@@ -149,8 +151,9 @@ void SPEC_Draw(void) {
 		data[graph_sweep_x] = TRX_RX1_dBm;
 		SPEC_DrawGraphCol(graph_sweep_x, true);
 		// draw a marker
-		if (graph_sweep_x == graph_selected_x)
+		if (graph_sweep_x == graph_selected_x) {
 			SPEC_DrawBottomGUI();
+		}
 	}
 
 	// Move on to calculating the next step
@@ -168,31 +171,36 @@ void SPEC_Draw(void) {
 // get height from data id
 static uint16_t SPEC_getYfromX(uint16_t x) {
 	int32_t y = graph_start_y + ((data[x] - TRX.SPEC_TopDBM) * (graph_height) / (TRX.SPEC_BottomDBM - TRX.SPEC_TopDBM));
-	if (y < graph_start_y)
+	if (y < graph_start_y) {
 		y = graph_start_y;
-	if (y > ((graph_start_y + graph_height) - 1))
+	}
+	if (y > ((graph_start_y + graph_height) - 1)) {
 		y = (graph_start_y + graph_height) - 1;
+	}
 	return (uint16_t)y;
 }
 
 // display the data column
 static void SPEC_DrawGraphCol(uint16_t x, bool clear) {
-	if (x >= graph_width)
+	if (x >= graph_width) {
 		return;
+	}
 
 	if (clear) {
 		// clear
 		LCDDriver_drawFastVLine((graph_start_x + x + 1), graph_start_y, graph_height - 1, COLOR_BLACK);
 		// draw stripes behind the chart
 		int16_t vres = (TRX.SPEC_BottomDBM - TRX.SPEC_TopDBM);
-		for (uint8_t n = 0; n < (SPEC_VParts - 1); n++)
+		for (uint8_t n = 0; n < (SPEC_VParts - 1); n++) {
 			LCDDriver_drawPixel((graph_start_x + x + 1), (uint16_t)(graph_start_y + ((vres / (SPEC_VParts - 1)) * n * graph_height / vres)), COLOR_DGRAY);
+		}
 	}
 	// draw the graph
-	if (x > 0)
+	if (x > 0) {
 		LCDDriver_drawLine((graph_start_x + x), SPEC_getYfromX(x - 1), (graph_start_x + x + 1), SPEC_getYfromX(x), COLOR_RED);
-	else
+	} else {
 		LCDDriver_drawPixel((graph_start_x + x + 1), SPEC_getYfromX(x), COLOR_RED);
+	}
 }
 
 // display status at the bottom of the screen
@@ -209,19 +217,23 @@ static void SPEC_DrawBottomGUI(void) {
 
 // analyzer events to the encoder
 void SPEC_EncRotate(int8_t direction) {
-	if (LCD_busy)
+	if (LCD_busy) {
 		return;
+	}
 	LCD_busy = true;
 	// erase the old marker
 	SPEC_DrawGraphCol((uint16_t)graph_selected_x, true);
-	if (direction < 0)
+	if (direction < 0) {
 		SPEC_DrawGraphCol((uint16_t)graph_selected_x + 1, false);
+	}
 	// draw a new one
 	graph_selected_x += direction;
-	if (graph_selected_x < 0)
+	if (graph_selected_x < 0) {
 		graph_selected_x = 0;
-	if (graph_selected_x > (graph_width - 1))
+	}
+	if (graph_selected_x > (graph_width - 1)) {
 		graph_selected_x = graph_width - 1;
+	}
 	SPEC_DrawBottomGUI();
 	LCD_busy = false;
 }

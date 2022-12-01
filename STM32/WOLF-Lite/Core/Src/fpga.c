@@ -188,10 +188,12 @@ static void FPGA_restart_TX(void) // restart FPGA modules
 
 // exchange parameters with FPGA
 void FPGA_fpgadata_stuffclock(void) {
-	if (!FPGA_NeedSendParams && !FPGA_NeedGetParams && !FPGA_NeedRestart_RX && !FPGA_NeedRestart_TX)
+	if (!FPGA_NeedSendParams && !FPGA_NeedGetParams && !FPGA_NeedRestart_RX && !FPGA_NeedRestart_TX) {
 		return;
-	if (FPGA_bus_stop)
+	}
+	if (FPGA_bus_stop) {
 		return;
+	}
 
 	// data exchange
 	if (FPGA_NeedSendParams) {
@@ -209,11 +211,13 @@ void FPGA_fpgadata_stuffclock(void) {
 
 // exchange IQ data with FPGA
 void FPGA_fpgadata_iqclock(void) {
-	if (FPGA_bus_stop)
+	if (FPGA_bus_stop) {
 		return;
+	}
 	VFO *current_vfo = CurrentVFO;
-	if (current_vfo->Mode == TRX_MODE_LOOPBACK)
+	if (current_vfo->Mode == TRX_MODE_LOOPBACK) {
 		return;
+	}
 	// data exchange
 
 	bool need_send_tx_zeroes = TRX_TX_sendZeroes < 100;
@@ -312,14 +316,18 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK));                   // TX
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, att_val_05);                                                             // ATT_05
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_SHDN);
-	if (TRX_on_TX)
+	if (TRX_on_TX) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 4, true); // shutdown ADC on TX
-	if (TRX.ATT)
+	}
+	if (TRX.ATT) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 5, att_val_1); // ATT_1
-	if (TRX.ATT)
+	}
+	if (TRX.ATT) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 6, att_val_2); // ATT_2
-	if (!TRX_on_TX)
+	}
+	if (!TRX_on_TX) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 7, TRX.ADC_Driver);
+	}
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 	FPGA_clockRise();
 	FPGA_clockFall();
@@ -513,15 +521,18 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	// STAGE 17
 	// OUT SETTINGS
 	FPGA_fpgadata_out_tmp8 = 0;
-	if (TRX.ATT)
+	if (TRX.ATT) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 0, att_val_4); // ATT_4
-	if (TRX.ATT)
+	}
+	if (TRX.ATT) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 1, att_val_8); // ATT_8
-	if (TRX.ATT)
+	}
+	if (TRX.ATT) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 2, att_val_16); // ATT_16
-	bitWrite(FPGA_fpgadata_out_tmp8, 3, BPF_A);        // BPF_A
-	bitWrite(FPGA_fpgadata_out_tmp8, 4, BPF_B);        // BPF_B
-	bitWrite(FPGA_fpgadata_out_tmp8, 5, !BPF_OE1);     // BPF_OE1
+	}
+	bitWrite(FPGA_fpgadata_out_tmp8, 3, BPF_A);    // BPF_A
+	bitWrite(FPGA_fpgadata_out_tmp8, 4, BPF_B);    // BPF_B
+	bitWrite(FPGA_fpgadata_out_tmp8, 5, !BPF_OE1); // BPF_OE1
 	// 11 - 48khz 01 - 96khz 10 - 192khz 00 - 384khz IQ speed
 	switch (TRX_GetRXSampleRateENUM) {
 	case TRX_SAMPLERATE_K48:
@@ -601,8 +612,9 @@ static inline void FPGA_fpgadata_getparam(void) {
 	if (ADCDAC_OVR_StatusLatency >= 50) {
 		TRX_ADC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 0);
 		TRX_DAC_OTR = bitRead(FPGA_fpgadata_in_tmp8, 1);
-	} else
+	} else {
 		ADCDAC_OVR_StatusLatency++;
+	}
 	/*bool IQ_overrun = bitRead(FPGA_fpgadata_in_tmp8, 2);
 	if(IQ_overrun)
 	  println("iq overrun");*/
@@ -654,8 +666,9 @@ static inline void FPGA_fpgadata_getparam(void) {
 	FPGA_fpgadata_in_tmp16 |= (FPGA_readPacket);
 	FPGA_clockFall();
 
-	if (bitRead(FPGA_fpgadata_in_tmp16, 11) == 1)
+	if (bitRead(FPGA_fpgadata_in_tmp16, 11) == 1) {
 		FPGA_fpgadata_in_tmp16 |= 0xF000; // int12 to int16 extension
+	}
 
 	ADC_RAW_IN = FPGA_fpgadata_in_tmp16;
 }
@@ -994,8 +1007,9 @@ bool FPGA_is_present(void) // check that the FPGA has firmware
 		LCD_showError("FPGA not found", true);
 		println("[ERR] FPGA not found");
 		return false;
-	} else
+	} else {
 		return true;
+	}
 }
 
 bool FPGA_spi_flash_verify(uint32_t flash_pos, uint8_t *buff, uint32_t size) // check flash memory
@@ -1033,8 +1047,9 @@ bool FPGA_spi_flash_verify(uint32_t flash_pos, uint8_t *buff, uint32_t size) // 
 			println("[FLASH] Verify: ", progress);
 			progress_prev = progress;
 		}
-		if (errors > 10)
+		if (errors > 10) {
 			break;
+		}
 	}
 	FPGA_spi_stop_command();
 	FPGA_spi_start_command(M25P80_DEEP_POWER_DOWN); // Go sleep

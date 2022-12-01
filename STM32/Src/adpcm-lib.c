@@ -69,13 +69,14 @@ void *adpcm_create_context(int num_channels, int lookahead, int noise_shaping, i
 
 	// given the supplied initial deltas, search for and store the closest index
 
-	for (ch = 0; ch < num_channels; ++ch)
+	for (ch = 0; ch < num_channels; ++ch) {
 		for (i = 0; i <= 88; i++) {
 			if (i == 88 || initial_deltas[ch] < ((int32_t)step_table[i] + step_table[i + 1]) / 2) {
 				pcnxt.channels[ch].index = i;
 				break;
 			}
 		}
+	}
 	return &pcnxt;
 }
 
@@ -123,27 +124,33 @@ static double minimum_error(const struct adpcm_channel *pchan, int nch, int32_t 
 		nibble = mag > 7 ? 7 : mag;
 	}
 
-	if (nibble & 1)
+	if (nibble & 1) {
 		trial_delta += (step >> 2);
-	if (nibble & 2)
+	}
+	if (nibble & 2) {
 		trial_delta += (step >> 1);
-	if (nibble & 4)
+	}
+	if (nibble & 4) {
 		trial_delta += step;
-	if (nibble & 8)
+	}
+	if (nibble & 8) {
 		trial_delta = -trial_delta;
+	}
 
 	chan.pcmdata += trial_delta;
 	CLIP(chan.pcmdata, -32768, 32767);
-	if (best_nibble)
+	if (best_nibble) {
 		*best_nibble = nibble;
+	}
 	min_error = (double)(chan.pcmdata - csample) * (chan.pcmdata - csample);
 
 	if (depth) {
 		chan.index += index_table[nibble & 0x07];
 		CLIP(chan.index, 0, 88);
 		min_error += minimum_error(&chan, nch, sample[nch], sample + nch, depth - 1, NULL);
-	} else
+	} else {
 		return min_error;
+	}
 
 	/*for (nibble2 = 0; nibble2 <= 0xF; ++nibble2)
 	{
@@ -199,8 +206,9 @@ static uint8_t encode_sample(struct adpcm_context *pcnxt, int ch, const int16_t 
 		int32_t temp = csample - (((pchan->weight * sam) + 512) >> 10);
 		int32_t shaping_weight;
 
-		if (sam && temp)
+		if (sam && temp) {
 			pchan->weight -= (((sam ^ temp) >> 29) & 4) - 2;
+		}
 		pchan->history[1] = pchan->history[0];
 		pchan->history[0] = csample;
 
@@ -208,37 +216,46 @@ static uint8_t encode_sample(struct adpcm_context *pcnxt, int ch, const int16_t 
 		temp = -((shaping_weight * pchan->error + 512) >> 10);
 
 		if (shaping_weight < 0 && temp) {
-			if (temp == pchan->error)
+			if (temp == pchan->error) {
 				temp = (temp < 0) ? temp + 1 : temp - 1;
+			}
 
 			pchan->error = -csample;
 			csample += temp;
-		} else
+		} else {
 			pchan->error = -(csample += temp);
-	} else if (pcnxt->noise_shaping == NOISE_SHAPING_STATIC)
+		}
+	} else if (pcnxt->noise_shaping == NOISE_SHAPING_STATIC) {
 		pchan->error = -(csample -= pchan->error);
+	}
 
-	if (depth > pcnxt->lookahead)
+	if (depth > pcnxt->lookahead) {
 		depth = pcnxt->lookahead;
+	}
 
 	minimum_error(pchan, pcnxt->num_channels, csample, sample, depth, &nibble);
 
-	if (nibble & 1)
+	if (nibble & 1) {
 		trial_delta += (step >> 2);
-	if (nibble & 2)
+	}
+	if (nibble & 2) {
 		trial_delta += (step >> 1);
-	if (nibble & 4)
+	}
+	if (nibble & 4) {
 		trial_delta += step;
-	if (nibble & 8)
+	}
+	if (nibble & 8) {
 		trial_delta = -trial_delta;
+	}
 
 	pchan->pcmdata += trial_delta;
 	pchan->index += index_table[nibble & 0x07];
 	CLIP(pchan->index, 0, 88);
 	CLIP(pchan->pcmdata, -32768, 32767);
 
-	if (pcnxt->noise_shaping)
+	if (pcnxt->noise_shaping) {
 		pchan->error += pchan->pcmdata;
+	}
 
 	return nibble;
 }
@@ -290,8 +307,9 @@ int adpcm_encode_block(void *p, uint8_t *outbuf, size_t *outbufsize, const int16
 
 	*outbufsize = 0;
 
-	if (!inbufcount)
+	if (!inbufcount) {
 		return 1;
+	}
 
 	get_decode_parameters(pcnxt, init_pcmdata, init_index);
 
@@ -333,15 +351,17 @@ int adpcm_decode_block(int16_t *outbuf, const uint8_t *inbuf, size_t inbufsize, 
 	int32_t pcmdata[2];
 	int8_t index[2];
 
-	if (inbufsize < (uint32_t)channels * 4)
+	if (inbufsize < (uint32_t)channels * 4) {
 		return 0;
+	}
 
 	for (ch = 0; ch < channels; ch++) {
 		*outbuf++ = pcmdata[ch] = (int16_t)(inbuf[0] | (inbuf[1] << 8));
 		index[ch] = inbuf[2];
 
-		if (index[ch] < 0 || index[ch] > 88 || inbuf[3]) // sanitize the input a little...
+		if (index[ch] < 0 || index[ch] > 88 || inbuf[3]) { // sanitize the input a little...
 			return 0;
+		}
 
 		inbufsize -= 4;
 		inbuf += 4;
@@ -358,14 +378,18 @@ int adpcm_decode_block(int16_t *outbuf, const uint8_t *inbuf, size_t inbufsize, 
 			for (i = 0; i < 4; ++i) {
 				int step = step_table[index[ch]], delta = step >> 3;
 
-				if (*inbuf & 1)
+				if (*inbuf & 1) {
 					delta += (step >> 2);
-				if (*inbuf & 2)
+				}
+				if (*inbuf & 2) {
 					delta += (step >> 1);
-				if (*inbuf & 4)
+				}
+				if (*inbuf & 4) {
 					delta += step;
-				if (*inbuf & 8)
+				}
+				if (*inbuf & 8) {
 					delta = -delta;
+				}
 
 				pcmdata[ch] += delta;
 				index[ch] += index_table[*inbuf & 0x7];
@@ -375,14 +399,18 @@ int adpcm_decode_block(int16_t *outbuf, const uint8_t *inbuf, size_t inbufsize, 
 
 				step = step_table[index[ch]], delta = step >> 3;
 
-				if (*inbuf & 0x10)
+				if (*inbuf & 0x10) {
 					delta += (step >> 2);
-				if (*inbuf & 0x20)
+				}
+				if (*inbuf & 0x20) {
 					delta += (step >> 1);
-				if (*inbuf & 0x40)
+				}
+				if (*inbuf & 0x40) {
 					delta += step;
-				if (*inbuf & 0x80)
+				}
+				if (*inbuf & 0x80) {
 					delta = -delta;
+				}
 
 				pcmdata[ch] += delta;
 				index[ch] += index_table[(*inbuf >> 4) & 0x7];

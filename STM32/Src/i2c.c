@@ -166,20 +166,23 @@ bool i2c_beginReceive_u8(I2C_DEVICE *dev, uint8_t slave_address) {
 }
 
 uint8_t i2c_endTransmission(I2C_DEVICE *dev) {
-	if (dev->i2c_tx_buf_overflow)
+	if (dev->i2c_tx_buf_overflow) {
 		return EDATA;
+	}
 	i2c_start(dev);
 
 	// I2C_DELAY;
 	i2c_shift_out(dev, (uint8_t)((dev->i2c_tx_addr << 1) | I2C_WRITE));
-	if (!i2c_get_ack(dev))
+	if (!i2c_get_ack(dev)) {
 		return ENACKADDR;
+	}
 
 	// shift out the address we're transmitting to
 	for (uint8_t i = 0; i < dev->i2c_tx_buf_idx; i++) {
 		uint8_t ret = i2c_writeOneByte(dev, dev->i2c_tx_buf[i]);
-		if (ret)
+		if (ret) {
 			return ret; // SUCCESS is 0
+		}
 	}
 	I2C_DELAY
 	I2C_DELAY
@@ -202,8 +205,9 @@ void i2c_write_u8(I2C_DEVICE *dev, uint8_t value) {
 // private methods
 static uint8_t i2c_writeOneByte(I2C_DEVICE *dev, uint8_t byte) {
 	i2c_shift_out(dev, byte);
-	if (!i2c_get_ack(dev))
+	if (!i2c_get_ack(dev)) {
 		return ENACKTRNS;
+	}
 	return SUCCESS;
 }
 
@@ -221,8 +225,9 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack) {
 		receive <<= 1;
 		//		I2C_DELAY
 		//		I2C_DELAY
-		if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN))
+		if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN)) {
 			receive++;
+		}
 		I2C_DELAY
 		I2C_DELAY
 	}
@@ -278,8 +283,9 @@ uint16_t i2c_Read_Word(I2C_DEVICE *dev) {
 		I2C_DELAY
 		SCK_SET;
 		receive <<= 1;
-		if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN))
+		if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN)) {
 			receive++;
+		}
 		I2C_DELAY
 	}
 	// Ack
@@ -308,8 +314,9 @@ uint16_t i2c_Read_Word(I2C_DEVICE *dev) {
 		I2C_DELAY
 		SCK_SET;
 		receive <<= 1;
-		if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN))
+		if (HAL_GPIO_ReadPin(dev->SDA_PORT, dev->SDA_PIN)) {
 			receive++;
+		}
 		I2C_DELAY
 	}
 	__enable_irq(); // Re-enable all interrupts

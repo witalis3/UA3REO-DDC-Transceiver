@@ -29,8 +29,9 @@ SRAM static NB_Instance NB_RX2 = {
 void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 	NB_Instance *instance = &NB_RX1;
 #if HRDW_HAS_DUAL_RX
-	if (rx_id == AUDIO_RX2)
+	if (rx_id == AUDIO_RX2) {
 		instance = &NB_RX2;
+	}
 #endif
 
 	// bool has_blank = false;
@@ -53,14 +54,17 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 			instance->delbuf_outptr++;
 			instance->last_normal_value = buffer[i];
 
-			if (instance->muting_avg < 1.0f)
+			if (instance->muting_avg < 1.0f) {
 				instance->muting_avg *= 1.1f;
-			if (instance->muting_avg > 1.0f)
+			}
+			if (instance->muting_avg > 1.0f) {
 				instance->muting_avg = 1.0f;
+			}
 		} else // It is within the blanking pulse period
 		{
-			if (instance->muting_avg > 0.0000001f)
+			if (instance->muting_avg > 0.0000001f) {
 				instance->muting_avg *= 0.9f;
+			}
 			// has_blank = true;
 			buffer[i] = instance->last_normal_value * instance->muting_avg; // set the audio buffer to "mute" during the blanking period
 			instance->nb_delay--;                                           // count down the number of samples that we are to blank

@@ -166,8 +166,9 @@ int ft8_decode(void) {
 				//            memcpy(new_decoded[num_decoded].decode_time, rtc_string,8);
 
 				raw_RSL = new_decoded[num_decoded].sync_score;
-				if (raw_RSL > 160)
+				if (raw_RSL > 160) {
 					raw_RSL = 160;
+				}
 				display_RSL = (raw_RSL - 160) / 6;
 				new_decoded[num_decoded].snr = display_RSL;
 
@@ -225,15 +226,17 @@ int CheckRecievedRaportRSL(int index, char CQ_Answer) {
 	strcpy(RapRcv_RSL, new_decoded[index].field3);
 
 	if (CQ_Answer) {
-		if ((RapRcv_RSL[0] == '-') || (RapRcv_RSL[0] == '+'))
+		if ((RapRcv_RSL[0] == '-') || (RapRcv_RSL[0] == '+')) {
 			return 1;
-		else
+		} else {
 			return 0;
+		}
 	} else {
-		if ((RapRcv_RSL[0] == 'R') && ((RapRcv_RSL[1] == '-') || (RapRcv_RSL[1] == '+')))
+		if ((RapRcv_RSL[0] == 'R') && ((RapRcv_RSL[1] == '-') || (RapRcv_RSL[1] == '+'))) {
 			return 1;
-		else
+		} else {
 			return 0;
+		}
 	}
 }
 
@@ -246,15 +249,17 @@ int CheckRecieved73(int index, char CQ_Answer) {
 	strcpy(RapRcv_73, new_decoded[index].field3);
 
 	if (CQ_Answer) {
-		if ((RapRcv_73[0] == 'R') && (RapRcv_73[1] == 'R'))
+		if ((RapRcv_73[0] == 'R') && (RapRcv_73[1] == 'R')) {
 			return 1;
-		else
+		} else {
 			return 0;
+		}
 	} else {
-		if ((RapRcv_73[0] == '7') && (RapRcv_73[1] == '3'))
+		if ((RapRcv_73[0] == '7') && (RapRcv_73[1] == '3')) {
 			return 1;
-		else
+		} else {
 			return 0;
+		}
 	}
 }
 
@@ -273,10 +278,11 @@ int FindPartnerIDX(int num_decoded) {
 		}
 	}
 
-	if (Partner_Idx > 0)        // Match was found
+	if (Partner_Idx > 0) {      // Match was found
 		return Partner_Idx - 100; // return the index of the match
-	else                        // no match was found
+	} else {                    // no match was found
 		return -1;
+	}
 }
 
 void display_details(int decoded_messages) {
@@ -296,10 +302,12 @@ int strindex(char s[], char t[]) {
 	result = -1;
 
 	for (i = 0; s[i] != '\0'; i++) {
-		for (j = i, k = 0; t[k] != '\0' && s[j] == t[k]; j++, k++)
+		for (j = i, k = 0; t[k] != '\0' && s[j] == t[k]; j++, k++) {
 			;
-		if (k > 0 && t[k] == '\0')
+		}
+		if (k > 0 && t[k] == '\0') {
 			result = i;
+		}
 	}
 	return result;
 }
@@ -331,8 +339,9 @@ int Check_Calling_Stations(int num_decoded) {
 		}
 	}
 
-	if (Ans_Mess_IDX >= 100)
+	if (Ans_Mess_IDX >= 100) {
 		return Ans_Mess_IDX - 100;
-	else
+	} else {
 		return -1;
+	}
 }

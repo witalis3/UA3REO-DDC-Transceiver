@@ -1421,19 +1421,21 @@ static uint8_t USBD_AUDIO_DataIn(USBD_HandleTypeDef *pdev) {
 		if (USB_AUDIO_need_rx_buffer == true) {
 			RX_USB_AUDIO_underrun = true;
 		} else {
-			if (USB_AUDIO_current_rx_buffer)
+			if (USB_AUDIO_current_rx_buffer) {
 				hcdc_audio->RxBuffer = (uint8_t *)&USB_AUDIO_rx_buffer_b;
-			else
+			} else {
 				hcdc_audio->RxBuffer = (uint8_t *)&USB_AUDIO_rx_buffer_a;
+			}
 			USB_AUDIO_current_rx_buffer = !USB_AUDIO_current_rx_buffer;
 			USB_AUDIO_need_rx_buffer = true;
 			rx_audio_buffer_head = 0;
 		}
 	}
-	if ((USB_AUDIO_RX_BUFFER_SIZE - rx_audio_buffer_head) >= AUDIO_OUT_PACKET) //-V658
+	if ((USB_AUDIO_RX_BUFFER_SIZE - rx_audio_buffer_head) >= AUDIO_OUT_PACKET) { //-V658
 		rx_audio_buffer_step = AUDIO_OUT_PACKET;
-	else
+	} else {
 		rx_audio_buffer_step = (USB_AUDIO_RX_BUFFER_SIZE - rx_audio_buffer_head);
+	}
 
 	pdev->ep_in[AUDIO_IN_EP & 0xFU].total_length = rx_audio_buffer_step;
 	HAL_PCD_EP_Transmit(pdev->pData, AUDIO_IN_EP, hcdc_audio->RxBuffer + rx_audio_buffer_head, rx_audio_buffer_step);
@@ -1450,19 +1452,21 @@ static uint8_t USBD_IQ_DataIn(USBD_HandleTypeDef *pdev) {
 		if (USB_IQ_need_rx_buffer == true) {
 			RX_USB_AUDIO_underrun = true;
 		} else {
-			if (USB_IQ_current_rx_buffer)
+			if (USB_IQ_current_rx_buffer) {
 				hcdc_audio->RxBuffer = (uint8_t *)&USB_IQ_rx_buffer_b;
-			else
+			} else {
 				hcdc_audio->RxBuffer = (uint8_t *)&USB_IQ_rx_buffer_a;
+			}
 			USB_IQ_current_rx_buffer = !USB_IQ_current_rx_buffer;
 			USB_IQ_need_rx_buffer = true;
 			rx_iq_buffer_head = 0;
 		}
 	}
-	if ((USB_AUDIO_RX_BUFFER_SIZE - rx_iq_buffer_head) >= AUDIO_OUT_PACKET) //-V658
+	if ((USB_AUDIO_RX_BUFFER_SIZE - rx_iq_buffer_head) >= AUDIO_OUT_PACKET) { //-V658
 		rx_iq_buffer_step = AUDIO_OUT_PACKET;
-	else
+	} else {
 		rx_iq_buffer_step = (USB_AUDIO_RX_BUFFER_SIZE - rx_iq_buffer_head);
+	}
 
 	pdev->ep_in[IQ_IN_EP & 0xFU].total_length = rx_iq_buffer_step;
 	HAL_PCD_EP_Transmit(pdev->pData, IQ_IN_EP, hcdc_audio->RxBuffer + rx_iq_buffer_head, rx_iq_buffer_step);
@@ -1482,27 +1486,32 @@ uint8_t USBD_MSC_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum) {
 #endif
 
 static uint8_t USBD_UA3REO_DataIn(USBD_HandleTypeDef *pdev, uint8_t epnum) {
-	if (epnum == AUDIO_EP_IDX)
+	if (epnum == AUDIO_EP_IDX) {
 		return USBD_AUDIO_DataIn(pdev);
+	}
 
 #if HRDW_HAS_USB_IQ
-	if (epnum == IQ_EP_IDX)
+	if (epnum == IQ_EP_IDX) {
 		return USBD_IQ_DataIn(pdev);
+	}
 #endif
 
 #if HRDW_HAS_USB_DEBUG
-	if (epnum == DEBUG_EP_IDX)
+	if (epnum == DEBUG_EP_IDX) {
 		return USBD_DEBUG_DataIn(pdev, epnum);
+	}
 #endif
 
 #if HRDW_HAS_USB_CAT
-	if (epnum == CAT_EP_IDX)
+	if (epnum == CAT_EP_IDX) {
 		return USBD_CAT_DataIn(pdev, epnum);
+	}
 #endif
 
 #if HRDW_HAS_SD
-	if (epnum == STORAGE_EP_IDX)
+	if (epnum == STORAGE_EP_IDX) {
 		return USBD_MSC_DataIn(pdev, epnum);
+	}
 #endif
 
 	return USBD_FAIL;
@@ -1552,8 +1561,9 @@ static uint8_t USBD_AUDIO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum) {
 	USBD_AUDIO_HandleTypeDef *haudio = (USBD_AUDIO_HandleTypeDef *)pdev->pClassDataAUDIO;
 	if (epnum == AUDIO_OUT_EP) {
 		haudio->TxBufferIndex += AUDIO_OUT_PACKET;
-		if (haudio->TxBufferIndex > (USB_AUDIO_TX_BUFFER_SIZE - AUDIO_OUT_PACKET))
+		if (haudio->TxBufferIndex > (USB_AUDIO_TX_BUFFER_SIZE - AUDIO_OUT_PACKET)) {
 			haudio->TxBufferIndex = 0;
+		}
 		USBD_LL_PrepareReceive(pdev, AUDIO_OUT_EP, haudio->TxBuffer + haudio->TxBufferIndex, AUDIO_OUT_PACKET);
 		TX_USB_AUDIO_SAMPLES += AUDIO_OUT_PACKET / (BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2); // 3 byte (24 bit) * 2 channel
 	}
@@ -1570,21 +1580,25 @@ uint8_t USBD_MSC_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum) {
 
 static uint8_t USBD_UA3REO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum) {
 #if HRDW_HAS_USB_DEBUG
-	if (epnum == DEBUG_EP_IDX)
+	if (epnum == DEBUG_EP_IDX) {
 		return USBD_DEBUG_DataOut(pdev, epnum);
+	}
 #endif
 
 #if HRDW_HAS_USB_CAT
-	if (epnum == CAT_EP_IDX)
+	if (epnum == CAT_EP_IDX) {
 		return USBD_CAT_DataOut(pdev, epnum);
+	}
 #endif
 
-	if (epnum == AUDIO_EP_IDX)
+	if (epnum == AUDIO_EP_IDX) {
 		return USBD_AUDIO_DataOut(pdev, epnum);
+	}
 
 #if HRDW_HAS_SD
-	if (epnum == STORAGE_EP_IDX)
+	if (epnum == STORAGE_EP_IDX) {
 		return USBD_MSC_DataOut(pdev, epnum);
+	}
 #endif
 
 	return USBD_FAIL;

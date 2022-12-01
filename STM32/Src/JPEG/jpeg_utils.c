@@ -2380,12 +2380,13 @@ void JPEG_Init_MCU_LUT(void) {
 	for (i = 0; i < 16; i++) {
 		for (j = 0; j < 16; j++) {
 			offset = j + (i * 8);
-			if ((j >= 8) && (i >= 8))
+			if ((j >= 8) && (i >= 8)) {
 				offset += 120;
-			else if ((j >= 8) && (i < 8))
+			} else if ((j >= 8) && (i < 8)) {
 				offset += 56;
-			else if ((j < 8) && (i >= 8))
+			} else if ((j < 8) && (i >= 8)) {
 				offset += 64;
+			}
 
 			JPEG_Y_MCU_LUT[i * 16 + j] = offset;
 		}

@@ -77,8 +77,9 @@ void init_DSP(void) {
 	arm_rfft_init_q15(&fft_inst, FFT_SIZE_FT8, 0, 1);
 	arm_cfft_radix4_init_q15(&aux_inst, FFT_SIZE_FT8, 0, 1);
 
-	for (int i = 0; i < FFT_SIZE_FT8; ++i)
+	for (int i = 0; i < FFT_SIZE_FT8; ++i) {
 		window[i] = ft_blackman_i(i, FFT_SIZE_FT8);
+	}
 	offset_step = (int)ft8_buffer * 4;
 }
 
@@ -102,8 +103,9 @@ static void extract_power(int offset) {
 	// Loop over two possible time offsets (0 and block_size/2)
 	for (int time_sub = 0; time_sub <= input_gulp_size / 2; time_sub += input_gulp_size / 2) {
 
-		for (int i = 0; i < FFT_SIZE_FT8; i++)
+		for (int i = 0; i < FFT_SIZE_FT8; i++) {
 			window_dsp_buffer[i] = (q15_t)((float)dsp_buffer[i + time_sub] * window[i]);
+		}
 
 		arm_rfft_q15(&fft_inst, window_dsp_buffer, dsp_output);
 		arm_shift_q15(&dsp_output[0], 5, &FFT_Scale[0], FFT_SIZE_FT8 * 2);
@@ -145,22 +147,25 @@ void process_FT8_FFT(void) {
 
 void update_offset_waterfall(int offset) {
 
-	for (int j = ft8_min_bin; j < ft8_buffer; j++)
+	for (int j = ft8_min_bin; j < ft8_buffer; j++) {
 		FFT_Buffer[j] = export_fft_power[j + offset];
+	}
 
 	int bar;
 	for (int x = ft8_min_bin; x < ft8_buffer; x++) {
 		bar = FFT_Buffer[x];
-		if (bar > 63)
+		if (bar > 63) {
 			bar = 63;
+		}
 		WF_index[x] = bar;
 	}
 
 	LCDDriver_SetCursorAreaPosition(0, WF_counter, (ft8_buffer - ft8_min_bin), WF_counter);
 	for (int k = ft8_min_bin; k < ft8_buffer; k++) {
 		uint16_t color = WFPalette[WF_index[k]];
-		if ((k - ft8_min_bin == cursor_line - 1) || (k - ft8_min_bin == cursor_line) || (k - ft8_min_bin == cursor_line + 1))
+		if ((k - ft8_min_bin == cursor_line - 1) || (k - ft8_min_bin == cursor_line) || (k - ft8_min_bin == cursor_line + 1)) {
 			color = COLOR_RED;
+		}
 
 		LCDDriver_SendData16(color);
 	}
@@ -169,10 +174,11 @@ void update_offset_waterfall(int offset) {
 }
 
 void Service_FT8(void) {
-	if (CQ_Flag == 1)
+	if (CQ_Flag == 1) {
 		service_CQ();
-	else if (num_decoded_msg > 0)
+	} else if (num_decoded_msg > 0) {
 		Check_Calling_Stations(num_decoded_msg);
+	}
 
 	if (num_decoded_msg > 0) {
 		display_messages(num_decoded_msg);

@@ -131,26 +131,29 @@ void service_CQ(void) {
 	{
 		if (Beacon_State > 1) // if conversation was initiated
 		{
-			if (Beacon_State == 5) // we just started the "CQ Answer" call
-				Attempt_Count = 0;   // set the Attempt_Count (the call is already done once - initialised by pressing the button in "FT8_GUI.c")
+			if (Beacon_State == 5) { // we just started the "CQ Answer" call
+				Attempt_Count = 0;     // set the Attempt_Count (the call is already done once - initialised by pressing the button in "FT8_GUI.c")
+			}
 
 			Attempt_Count++;
 			if (Attempt_Count < MaxAttempt_Tries) {
-				if (Beacon_State == 2)
+				if (Beacon_State == 2) {
 					Beacon_State = 20; // Repeat the "report signal" call
-				else if (Beacon_State == 3)
+				} else if (Beacon_State == 3) {
 					Beacon_State = 30; // Repeat the "73" call
-				else if (Beacon_State == 5)
+				} else if (Beacon_State == 5) {
 					Beacon_State = 50; // Repeat the "CQ Answer" call
-			} else                 // We tried enough without answer => go back to "CQ" call
+				}
+			} else // We tried enough without answer => go back to "CQ" call
 			{
 				FT8_Clear_TargetCall(); // Clear the place on the display for the "TargetCall"
 				Beacon_State = 1;       // Set Call - "CQ"
 				Attempt_Count = 0;
 			}
-		} else              // The conversation was not initiated => then we just call CQ
+		} else {            // The conversation was not initiated => then we just call CQ
 			Beacon_State = 1; // Set Call - "CQ"
-	}                     // if(receive_index == -1) - we didn't recieved mesage calling us
+		}
+	} // if(receive_index == -1) - we didn't recieved mesage calling us
 
 	else if (receive_index >= 0) // we did recieve a message calling us
 	{
@@ -163,11 +166,13 @@ void service_CQ(void) {
 		{
 			receive_index = FindPartnerIDX(num_decoded_msg); // find the index of the station that we were talking till now
 			if (receive_index >= 0) {
-				Attempt_Count = 0;                            // zero the attempt counter
-				if (CheckRecievedRaportRSL(receive_index, 0)) // check if the oposite side answered corespondingly
-					Beacon_State = 3;                           // Set call - "RR73"
-			} else                                          // The answer we got it was not from the station we were talking till now
+				Attempt_Count = 0;                              // zero the attempt counter
+				if (CheckRecievedRaportRSL(receive_index, 0)) { // check if the oposite side answered corespondingly
+					Beacon_State = 3;                             // Set call - "RR73"
+				}
+			} else { // The answer we got it was not from the station we were talking till now
 				Beacon_State = 20;
+			}
 		} else if ((Beacon_State == 3) || (Beacon_State == 30)) // if previous state was call - "RR73"
 		{
 			receive_index = FindPartnerIDX(num_decoded_msg); // find the index of the station that we were talking till now
@@ -179,8 +184,9 @@ void service_CQ(void) {
 					LogQSO();
 					FT8_Clear_TargetCall(); // Clear the place on the display for the "TargetCall"
 				}
-			} else // The answer we got it was not from the station we were talking till now
+			} else { // The answer we got it was not from the station we were talking till now
 				Beacon_State = 30;
+			}
 		}
 		// end the CALL initiated by us
 		//------------------------------------------------------
@@ -195,8 +201,9 @@ void service_CQ(void) {
 					Beacon_State = 6; // Send RSL
 					GetQSOTime(1);    // Record the QSO Start Time
 				}
-			} else                      // The answer we got it was not from the station we were talking till now
-				Beacon_State = 50;        // Try again
+			} else {             // The answer we got it was not from the station we were talking till now
+				Beacon_State = 50; // Try again
+			}
 		} else if (Beacon_State == 6) // if previous state was send RSL
 		{
 			receive_index = FindPartnerIDX(num_decoded_msg); // find the index of the station that we were talking till now
@@ -207,8 +214,9 @@ void service_CQ(void) {
 					Beacon_State = 7; // Set call - "73"
 					LogQSO();
 				}
-			} else              // The answer we got it was not from the station we were talking till now
+			} else {            // The answer we got it was not from the station we were talking till now
 				Beacon_State = 6; // Try again
+			}
 		}
 	}
 
@@ -287,15 +295,18 @@ void GetQSOTime(uint8_t QSO_Start) {
 	uint8_t Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
 	uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
 
-	if (Hours < 0) // due to the time correction
+	if (Hours < 0) { // due to the time correction
 		Hours = 24 + Hours;
-	if (Seconds == 60) // Fix the seconds
+	}
+	if (Seconds == 60) { // Fix the seconds
 		Seconds = 0;
+	}
 
-	if (QSO_Start == 1)
+	if (QSO_Start == 1) {
 		sprintf(QSOOnTime, "%02d%02d%02d", Hours, Minutes, Seconds);
-	else
+	} else {
 		sprintf(QSOOffTime, "%02d%02d%02d", Hours, Minutes, Seconds);
+	}
 
 	/*
 	  RTC_TimeTypeDef sTime = {0};
@@ -359,10 +370,11 @@ void LogQSO(void) {
 		//<qso_date_off:8>20210403 <time_off:6>090821 <band:3>40m <freq:8>7.075500 <station_callsign:5>DB5AT <my_gridsquare:6>JN48ov <eor>
 
 		char RapRcv_RSL_filtered[5] = {0};
-		if (RapRcv_RSL[0] == 'R')
+		if (RapRcv_RSL[0] == 'R') {
 			strcpy(RapRcv_RSL_filtered, RapRcv_RSL + 1);
-		else
+		} else {
 			strcpy(RapRcv_RSL_filtered, RapRcv_RSL);
+		}
 
 		sprintf(StrToLog,
 		        " <call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s "

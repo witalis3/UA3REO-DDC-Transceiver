@@ -68,10 +68,11 @@ static bool SDCOMM_CREATE_RECORD_FILE_main(char *filename, bool audio_rec);
 static bool SDCOMM_CREATE_CQ_MESSAGE_FILE_handler(void);
 
 bool SD_isIdle(void) {
-	if (SD_currentCommand == SDCOMM_IDLE)
+	if (SD_currentCommand == SDCOMM_IDLE) {
 		return true;
-	else
+	} else {
 		return false;
+	}
 }
 
 bool SD_doCommand(SD_COMMAND command, bool force) {
@@ -89,17 +90,19 @@ bool SD_doCommand(SD_COMMAND command, bool force) {
 		TRX_ptt_soft = false;
 		TRX_ptt_change();
 
-		if (LCD_systemMenuOpened)
+		if (LCD_systemMenuOpened) {
 			LCD_showInfo("SD card not found", true);
-		else
+		} else {
 			LCD_showTooltip("SD card not found");
+		}
 		return false;
 	}
 }
 
 void SD_Process(void) {
-	if (SD_BusyByUSB)
+	if (SD_BusyByUSB) {
 		return;
+	}
 
 	// Init card
 	if (!SD_Present && (HAL_GetTick() - SD_Present_tryTime) > SD_CARD_SCAN_INTERVAL) {
@@ -125,8 +128,9 @@ void SD_Process(void) {
 	}
 	// Do actions
 	if (SD_Mounted) {
-		if (SD_currentCommand != SDCOMM_IDLE)
+		if (SD_currentCommand != SDCOMM_IDLE) {
 			SD_Present_tryTime = HAL_GetTick();
+		}
 		switch (SD_currentCommand) {
 		case SDCOMM_IDLE:
 			// check SD card inserted if idle
@@ -355,10 +359,11 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void) {
 	// write to SD
 	uint32_t byteswritten;
 	FRESULT res;
-	if (SD_workbuffer_current)
+	if (SD_workbuffer_current) {
 		res = f_write(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&byteswritten);
-	else
+	} else {
 		res = f_write(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&byteswritten);
+	}
 	if ((byteswritten == 0) || (res != FR_OK)) {
 		SD_Present = false;
 		SD_NeedStopRecord = false;
@@ -573,8 +578,9 @@ void SDCOMM_FLASH_JIC_handler(bool restart) {
 
 		FPGA_bus_stop = true;
 		HAL_Delay(100);
-		if (!FPGA_is_present())
+		if (!FPGA_is_present()) {
 			return;
+		}
 
 		bool verify_error = true;
 		while (verify_error) {
@@ -595,10 +601,12 @@ void SDCOMM_FLASH_JIC_handler(bool restart) {
 				if (bytesreaded > 0) {
 					FPGA_spi_flash_write(fpga_flash_pos, (uint8_t *)SD_workbuffer_A, bytesreaded);
 					fpga_flash_pos += bytesreaded;
-					if (fpga_flash_pos >= FPGA_flash_size)
+					if (fpga_flash_pos >= FPGA_flash_size) {
 						break;
-				} else
+					}
+				} else {
 					read_in_progress = false;
+				}
 			}
 
 			LCD_showInfo("Verify...", false);
@@ -615,20 +623,24 @@ void SDCOMM_FLASH_JIC_handler(bool restart) {
 				if (bytesreaded > 0) {
 					verify_error = !FPGA_spi_flash_verify(fpga_flash_pos, (uint8_t *)SD_workbuffer_A, bytesreaded);
 					fpga_flash_pos += bytesreaded;
-					if (fpga_flash_pos >= FPGA_flash_size)
+					if (fpga_flash_pos >= FPGA_flash_size) {
 						break;
-					if (verify_error)
+					}
+					if (verify_error) {
 						break;
-				} else
+					}
+				} else {
 					read_in_progress = false;
+				}
 			}
 		}
 
 		f_close(&File);
 		LCD_showInfo("Finished...", true);
 		// HAL_NVIC_SystemReset();
-		if (restart)
+		if (restart) {
 			SCB->AIRCR = 0x05FA0004; // software reset
+		}
 	} else {
 		LCD_showInfo("SD error", true);
 		SD_PlayInProcess = false;
@@ -668,10 +680,11 @@ static void SDCOMM_READ_PLAY_FILE_handler(void) {
 	// read from SD
 	uint32_t bytesreaded;
 	FRESULT res;
-	if (SD_workbuffer_current)
+	if (SD_workbuffer_current) {
 		res = f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesreaded);
-	else
+	} else {
 		res = f_read(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&bytesreaded);
+	}
 	if ((bytesreaded == 0) || (res != FR_OK) || SD_NeedStopPlay) {
 		// println(bytesreaded, " ", res, " ", (uint8_t)SD_NeedStopPlay);
 		SD_PlayInProcess = false;
@@ -1224,10 +1237,11 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			}*/
 		}
 
-		if (!res)
+		if (!res) {
 			LCD_showInfo("SD error", true);
-		else
+		} else {
 			LCD_showInfo("Settings export complete", true);
+		}
 	} else {
 		LCD_showInfo("SD error", true);
 		SD_Present = false;
@@ -1259,786 +1273,1143 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	int32_t intval = atol(value);
 	float32_t floatval = atof(value);
 	bool bval = false;
-	if (uintval > 0)
+	if (uintval > 0) {
 		bval = true;
+	}
 
 	// println("IMP: ",name, " = ", value);
 	// print_flush();
 
 	// TRX
-	if (strcmp(name, "TRX.VFO_A.Freq") == 0)
+	if (strcmp(name, "TRX.VFO_A.Freq") == 0) {
 		TRX.VFO_A.Freq = uint64val;
-	if (strcmp(name, "TRX.VFO_A.Mode") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_A.Mode") == 0) {
 		TRX.VFO_A.Mode = uintval;
-	if (strcmp(name, "TRX.VFO_A.LPF_RX_Filter_Width") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_A.LPF_RX_Filter_Width") == 0) {
 		TRX.VFO_A.LPF_RX_Filter_Width = uintval;
-	if (strcmp(name, "TRX.VFO_A.LPF_TX_Filter_Width") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_A.LPF_TX_Filter_Width") == 0) {
 		TRX.VFO_A.LPF_TX_Filter_Width = uintval;
-	if (strcmp(name, "TRX.VFO_A.HPF_RX_Filter_Width") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_A.HPF_RX_Filter_Width") == 0) {
 		TRX.VFO_A.HPF_RX_Filter_Width = uintval;
-	if (strcmp(name, "TRX.VFO_A.HPF_TX_Filter_Width") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_A.HPF_TX_Filter_Width") == 0) {
 		TRX.VFO_A.HPF_TX_Filter_Width = uintval;
-	if (strcmp(name, "TRX.VFO_A.ManualNotchFilter") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_A.ManualNotchFilter") == 0) {
 		TRX.VFO_A.ManualNotchFilter = bval;
-	if (strcmp(name, "TRX.VFO_A.AutoNotchFilter") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_A.AutoNotchFilter") == 0) {
 		TRX.VFO_A.AutoNotchFilter = bval;
-	if (strcmp(name, "TRX.VFO_A.NotchFC") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_A.NotchFC") == 0) {
 		TRX.VFO_A.NotchFC = uintval;
-	if (strcmp(name, "TRX.VFO_A.DNR_Type") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_A.DNR_Type") == 0) {
 		TRX.VFO_A.DNR_Type = (uint8_t)uintval;
-	if (strcmp(name, "TRX.VFO_A.AGC") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_A.AGC") == 0) {
 		TRX.VFO_A.AGC = bval;
-	if (strcmp(name, "TRX.VFO_A.SQL") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_A.SQL") == 0) {
 		TRX.VFO_A.SQL = bval;
-	if (strcmp(name, "TRX.VFO_A.FM_SQL_threshold_dbm") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_A.FM_SQL_threshold_dbm") == 0) {
 		TRX.VFO_A.FM_SQL_threshold_dbm = (int8_t)intval;
-	if (strcmp(name, "TRX.VFO_B.Freq") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.Freq") == 0) {
 		TRX.VFO_B.Freq = uint64val;
-	if (strcmp(name, "TRX.VFO_B.Mode") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.Mode") == 0) {
 		TRX.VFO_B.Mode = uintval;
-	if (strcmp(name, "TRX.VFO_B.LPF_RX_Filter_Width") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.LPF_RX_Filter_Width") == 0) {
 		TRX.VFO_B.LPF_RX_Filter_Width = uintval;
-	if (strcmp(name, "TRX.VFO_B.LPF_TX_Filter_Width") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.LPF_TX_Filter_Width") == 0) {
 		TRX.VFO_B.LPF_TX_Filter_Width = uintval;
-	if (strcmp(name, "TRX.VFO_B.HPF_RX_Filter_Width") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.HPF_RX_Filter_Width") == 0) {
 		TRX.VFO_B.HPF_RX_Filter_Width = uintval;
-	if (strcmp(name, "TRX.VFO_B.HPF_TX_Filter_Width") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.HPF_TX_Filter_Width") == 0) {
 		TRX.VFO_B.HPF_TX_Filter_Width = uintval;
-	if (strcmp(name, "TRX.VFO_B.ManualNotchFilter") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.ManualNotchFilter") == 0) {
 		TRX.VFO_B.ManualNotchFilter = bval;
-	if (strcmp(name, "TRX.VFO_B.AutoNotchFilter") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.AutoNotchFilter") == 0) {
 		TRX.VFO_B.AutoNotchFilter = bval;
-	if (strcmp(name, "TRX.VFO_B.NotchFC") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.NotchFC") == 0) {
 		TRX.VFO_B.NotchFC = uintval;
-	if (strcmp(name, "TRX.VFO_B.DNR_Type") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.DNR_Type") == 0) {
 		TRX.VFO_B.DNR_Type = (uint8_t)uintval;
-	if (strcmp(name, "TRX.VFO_B.AGC") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.AGC") == 0) {
 		TRX.VFO_B.AGC = bval;
-	if (strcmp(name, "TRX.VFO_B.SQL") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.SQL") == 0) {
 		TRX.VFO_B.SQL = bval;
-	if (strcmp(name, "TRX.VFO_B.FM_SQL_threshold_dbm") == 0)
+	}
+	if (strcmp(name, "TRX.VFO_B.FM_SQL_threshold_dbm") == 0) {
 		TRX.VFO_B.FM_SQL_threshold_dbm = (int8_t)intval;
-	if (strcmp(name, "TRX.selected_vfo") == 0)
+	}
+	if (strcmp(name, "TRX.selected_vfo") == 0) {
 		TRX.selected_vfo = bval;
-	if (strcmp(name, "TRX.LNA") == 0)
+	}
+	if (strcmp(name, "TRX.LNA") == 0) {
 		TRX.LNA = bval;
-	if (strcmp(name, "TRX.ATT") == 0)
+	}
+	if (strcmp(name, "TRX.ATT") == 0) {
 		TRX.ATT = bval;
-	if (strcmp(name, "TRX.ATT_DB") == 0)
+	}
+	if (strcmp(name, "TRX.ATT_DB") == 0) {
 		TRX.ATT_DB = floatval;
-	if (strcmp(name, "TRX.ATT_STEP") == 0)
+	}
+	if (strcmp(name, "TRX.ATT_STEP") == 0) {
 		TRX.ATT_STEP = (uint8_t)uintval;
-	if (strcmp(name, "TRX.Fast") == 0)
+	}
+	if (strcmp(name, "TRX.Fast") == 0) {
 		TRX.Fast = bval;
-	if (strcmp(name, "TRX.ANT_selected") == 0)
+	}
+	if (strcmp(name, "TRX.ANT_selected") == 0) {
 		TRX.ANT_selected = bval;
-	if (strcmp(name, "TRX.ANT_mode") == 0)
+	}
+	if (strcmp(name, "TRX.ANT_mode") == 0) {
 		TRX.ANT_mode = bval;
-	if (strcmp(name, "TRX.RF_Filters") == 0)
+	}
+	if (strcmp(name, "TRX.RF_Filters") == 0) {
 		TRX.RF_Filters = bval;
-	if (strcmp(name, "TRX.ChannelMode") == 0)
+	}
+	if (strcmp(name, "TRX.ChannelMode") == 0) {
 		TRX.ChannelMode = bval;
-	if (strcmp(name, "TRX.RF_Gain") == 0)
+	}
+	if (strcmp(name, "TRX.RF_Gain") == 0) {
 		TRX.RF_Gain = (uint8_t)uintval;
-	if (strcmp(name, "TRX.RF_Gain_For_Each_Band") == 0)
+	}
+	if (strcmp(name, "TRX.RF_Gain_For_Each_Band") == 0) {
 		TRX.RF_Gain_For_Each_Band = bval;
-	if (strcmp(name, "TRX.RF_Gain_For_Each_Mode") == 0)
+	}
+	if (strcmp(name, "TRX.RF_Gain_For_Each_Mode") == 0) {
 		TRX.RF_Gain_For_Each_Mode = bval;
-	if (strcmp(name, "TRX.RIT_Enabled") == 0)
+	}
+	if (strcmp(name, "TRX.RIT_Enabled") == 0) {
 		TRX.RIT_Enabled = bval;
-	if (strcmp(name, "TRX.XIT_Enabled") == 0)
+	}
+	if (strcmp(name, "TRX.XIT_Enabled") == 0) {
 		TRX.XIT_Enabled = bval;
-	if (strcmp(name, "TRX.FineRITTune") == 0)
+	}
+	if (strcmp(name, "TRX.FineRITTune") == 0) {
 		TRX.FineRITTune = bval;
-	if (strcmp(name, "TRX.RIT_INTERVAL") == 0)
+	}
+	if (strcmp(name, "TRX.RIT_INTERVAL") == 0) {
 		TRX.RIT_INTERVAL = (uint16_t)uintval;
-	if (strcmp(name, "TRX.XIT_INTERVAL") == 0)
+	}
+	if (strcmp(name, "TRX.XIT_INTERVAL") == 0) {
 		TRX.XIT_INTERVAL = (uint16_t)uintval;
-	if (strcmp(name, "TRX.TWO_SIGNAL_TUNE") == 0)
+	}
+	if (strcmp(name, "TRX.TWO_SIGNAL_TUNE") == 0) {
 		TRX.TWO_SIGNAL_TUNE = bval;
-	if (strcmp(name, "TRX.SAMPLERATE_MAIN") == 0)
+	}
+	if (strcmp(name, "TRX.SAMPLERATE_MAIN") == 0) {
 		TRX.SAMPLERATE_MAIN = (uint8_t)uintval;
-	if (strcmp(name, "TRX.SAMPLERATE_FM") == 0)
+	}
+	if (strcmp(name, "TRX.SAMPLERATE_FM") == 0) {
 		TRX.SAMPLERATE_FM = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FRQ_STEP") == 0)
+	}
+	if (strcmp(name, "TRX.FRQ_STEP") == 0) {
 		TRX.FRQ_STEP = uintval;
-	if (strcmp(name, "TRX.FRQ_FAST_STEP") == 0)
+	}
+	if (strcmp(name, "TRX.FRQ_FAST_STEP") == 0) {
 		TRX.FRQ_FAST_STEP = uintval;
-	if (strcmp(name, "TRX.FRQ_ENC_STEP") == 0)
+	}
+	if (strcmp(name, "TRX.FRQ_ENC_STEP") == 0) {
 		TRX.FRQ_ENC_STEP = uintval;
-	if (strcmp(name, "TRX.FRQ_ENC_FAST_STEP") == 0)
+	}
+	if (strcmp(name, "TRX.FRQ_ENC_FAST_STEP") == 0) {
 		TRX.FRQ_ENC_FAST_STEP = uintval;
-	if (strcmp(name, "TRX.FRQ_ENC_WFM_STEP_KHZ") == 0)
+	}
+	if (strcmp(name, "TRX.FRQ_ENC_WFM_STEP_KHZ") == 0) {
 		TRX.FRQ_ENC_WFM_STEP_KHZ = uintval;
-	if (strcmp(name, "TRX.FRQ_CW_STEP_DIVIDER") == 0)
+	}
+	if (strcmp(name, "TRX.FRQ_CW_STEP_DIVIDER") == 0) {
 		TRX.FRQ_CW_STEP_DIVIDER = (uint8_t)uintval;
-	if (strcmp(name, "TRX.Debug_Type") == 0)
+	}
+	if (strcmp(name, "TRX.Debug_Type") == 0) {
 		TRX.Debug_Type = (uint8_t)uintval;
-	if (strcmp(name, "TRX.BandMapEnabled") == 0)
+	}
+	if (strcmp(name, "TRX.BandMapEnabled") == 0) {
 		TRX.BandMapEnabled = bval;
-	if (strcmp(name, "TRX.InputType_MAIN") == 0)
+	}
+	if (strcmp(name, "TRX.InputType_MAIN") == 0) {
 		TRX.InputType_MAIN = (uint8_t)uintval;
-	if (strcmp(name, "TRX.InputType_DIGI") == 0)
+	}
+	if (strcmp(name, "TRX.InputType_DIGI") == 0) {
 		TRX.InputType_DIGI = (uint8_t)uintval;
-	if (strcmp(name, "TRX.AutoGain") == 0)
+	}
+	if (strcmp(name, "TRX.AutoGain") == 0) {
 		TRX.AutoGain = bval;
-	if (strcmp(name, "TRX.SPLIT_Enabled") == 0)
+	}
+	if (strcmp(name, "TRX.SPLIT_Enabled") == 0) {
 		TRX.SPLIT_Enabled = bval;
+	}
 #if HRDW_HAS_DUAL_RX
-	if (strcmp(name, "TRX.Dual_RX") == 0)
+	if (strcmp(name, "TRX.Dual_RX") == 0) {
 		TRX.Dual_RX = bval;
-	if (strcmp(name, "TRX.Dual_RX_Type") == 0)
+	}
+	if (strcmp(name, "TRX.Dual_RX_Type") == 0) {
 		TRX.Dual_RX_Type = (DUAL_RX_TYPE)uintval;
+	}
 #endif
-	if (strcmp(name, "TRX.Encoder_Accelerate") == 0)
+	if (strcmp(name, "TRX.Encoder_Accelerate") == 0) {
 		TRX.Encoder_Accelerate = bval;
+	}
 	if (strcmp(name, "TRX.CALLSIGN") == 0) {
 		dma_memset(TRX.CALLSIGN, 0x00, sizeof(TRX.CALLSIGN));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.CALLSIGN) - 1)
+		if (lens > sizeof(TRX.CALLSIGN) - 1) {
 			lens = sizeof(TRX.CALLSIGN) - 1;
+		}
 		strncpy(TRX.CALLSIGN, value, lens);
 	}
 	if (strcmp(name, "TRX.LOCATOR") == 0) {
 		dma_memset(TRX.LOCATOR, 0x00, sizeof(TRX.LOCATOR));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.LOCATOR) - 1)
+		if (lens > sizeof(TRX.LOCATOR) - 1) {
 			lens = sizeof(TRX.LOCATOR) - 1;
+		}
 		strncpy(TRX.LOCATOR, value, lens);
 	}
 	if (strcmp(name, "TRX.URSI_CODE") == 0) {
 		dma_memset(TRX.URSI_CODE, 0x00, sizeof(TRX.URSI_CODE));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(TRX.URSI_CODE) - 1)
+		if (lens > sizeof(TRX.URSI_CODE) - 1) {
 			lens = sizeof(TRX.URSI_CODE) - 1;
+		}
 		strncpy(TRX.URSI_CODE, value, lens);
 	}
-	if (strcmp(name, "TRX.Custom_Transverter_Enabled") == 0)
+	if (strcmp(name, "TRX.Custom_Transverter_Enabled") == 0) {
 		TRX.Custom_Transverter_Enabled = bval;
-	if (strcmp(name, "TRX.ATU_Enabled") == 0)
+	}
+	if (strcmp(name, "TRX.ATU_Enabled") == 0) {
 		TRX.ATU_Enabled = bval;
-	if (strcmp(name, "TRX.TUNER_Enabled") == 0)
+	}
+	if (strcmp(name, "TRX.TUNER_Enabled") == 0) {
 		TRX.TUNER_Enabled = bval;
-	if (strcmp(name, "TRX.Transverter_70cm") == 0)
+	}
+	if (strcmp(name, "TRX.Transverter_70cm") == 0) {
 		TRX.Transverter_70cm = bval;
-	if (strcmp(name, "TRX.Transverter_23cm") == 0)
+	}
+	if (strcmp(name, "TRX.Transverter_23cm") == 0) {
 		TRX.Transverter_23cm = bval;
-	if (strcmp(name, "TRX.Transverter_13cm") == 0)
+	}
+	if (strcmp(name, "TRX.Transverter_13cm") == 0) {
 		TRX.Transverter_13cm = bval;
-	if (strcmp(name, "TRX.Transverter_6cm") == 0)
+	}
+	if (strcmp(name, "TRX.Transverter_6cm") == 0) {
 		TRX.Transverter_6cm = bval;
-	if (strcmp(name, "TRX.Transverter_3cm") == 0)
+	}
+	if (strcmp(name, "TRX.Transverter_3cm") == 0) {
 		TRX.Transverter_3cm = bval;
-	if (strcmp(name, "TRX.Auto_Input_Switch") == 0)
+	}
+	if (strcmp(name, "TRX.Auto_Input_Switch") == 0) {
 		TRX.Auto_Input_Switch = bval;
-	if (strcmp(name, "TRX.Auto_Snap") == 0)
+	}
+	if (strcmp(name, "TRX.Auto_Snap") == 0) {
 		TRX.Auto_Snap = bval;
+	}
 	// AUDIO
-	if (strcmp(name, "TRX.Volume") == 0)
+	if (strcmp(name, "TRX.Volume") == 0) {
 		TRX.Volume = (uint16_t)uintval;
-	if (strcmp(name, "TRX.Volume_Step") == 0)
+	}
+	if (strcmp(name, "TRX.Volume_Step") == 0) {
 		TRX.Volume_Step = (uint8_t)uintval;
-	if (strcmp(name, "TRX.IF_Gain") == 0)
+	}
+	if (strcmp(name, "TRX.IF_Gain") == 0) {
 		TRX.IF_Gain = (uint8_t)uintval;
-	if (strcmp(name, "TRX.AGC_GAIN_TARGET2") == 0)
+	}
+	if (strcmp(name, "TRX.AGC_GAIN_TARGET2") == 0) {
 		TRX.AGC_GAIN_TARGET = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_GAIN_DB") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_GAIN_DB") == 0) {
 		TRX.MIC_GAIN_DB = floatval;
-	if (strcmp(name, "TRX.MIC_Boost") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_Boost") == 0) {
 		TRX.MIC_Boost = bval;
-	if (strcmp(name, "TRX.MIC_NOISE_GATE") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_NOISE_GATE") == 0) {
 		TRX.MIC_NOISE_GATE = (int8_t)intval;
-	if (strcmp(name, "TRX.RX_EQ_P1") == 0)
+	}
+	if (strcmp(name, "TRX.RX_EQ_P1") == 0) {
 		TRX.RX_EQ_P1 = (int8_t)intval;
-	if (strcmp(name, "TRX.RX_EQ_P2") == 0)
+	}
+	if (strcmp(name, "TRX.RX_EQ_P2") == 0) {
 		TRX.RX_EQ_P2 = (int8_t)intval;
-	if (strcmp(name, "TRX.RX_EQ_P3") == 0)
+	}
+	if (strcmp(name, "TRX.RX_EQ_P3") == 0) {
 		TRX.RX_EQ_P3 = (int8_t)intval;
-	if (strcmp(name, "TRX.RX_EQ_P4") == 0)
+	}
+	if (strcmp(name, "TRX.RX_EQ_P4") == 0) {
 		TRX.RX_EQ_P4 = (int8_t)intval;
-	if (strcmp(name, "TRX.RX_EQ_P5") == 0)
+	}
+	if (strcmp(name, "TRX.RX_EQ_P5") == 0) {
 		TRX.RX_EQ_P5 = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_P1_SSB") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_EQ_P1_SSB") == 0) {
 		TRX.MIC_EQ_P1_SSB = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_P2_SSB") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_EQ_P2_SSB") == 0) {
 		TRX.MIC_EQ_P2_SSB = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_P3_SSB") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_EQ_P3_SSB") == 0) {
 		TRX.MIC_EQ_P3_SSB = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_P4_SSB") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_EQ_P4_SSB") == 0) {
 		TRX.MIC_EQ_P4_SSB = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_P5_SSB") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_EQ_P5_SSB") == 0) {
 		TRX.MIC_EQ_P5_SSB = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_P1_AMFM") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_EQ_P1_AMFM") == 0) {
 		TRX.MIC_EQ_P1_AMFM = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_P2_AMFM") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_EQ_P2_AMFM") == 0) {
 		TRX.MIC_EQ_P2_AMFM = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_P3_AMFM") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_EQ_P3_AMFM") == 0) {
 		TRX.MIC_EQ_P3_AMFM = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_P4_AMFM") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_EQ_P4_AMFM") == 0) {
 		TRX.MIC_EQ_P4_AMFM = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_EQ_P5_AMFM") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_EQ_P5_AMFM") == 0) {
 		TRX.MIC_EQ_P5_AMFM = (int8_t)intval;
-	if (strcmp(name, "TRX.MIC_REVERBER") == 0)
+	}
+	if (strcmp(name, "TRX.MIC_REVERBER") == 0) {
 		TRX.MIC_REVERBER = (uint8_t)uintval;
-	if (strcmp(name, "TRX.DNR1_SNR_THRESHOLD") == 0)
+	}
+	if (strcmp(name, "TRX.DNR1_SNR_THRESHOLD") == 0) {
 		TRX.DNR1_SNR_THRESHOLD = (uint8_t)uintval;
-	if (strcmp(name, "TRX.DNR2_SNR_THRESHOLD") == 0)
+	}
+	if (strcmp(name, "TRX.DNR2_SNR_THRESHOLD") == 0) {
 		TRX.DNR2_SNR_THRESHOLD = (uint8_t)uintval;
-	if (strcmp(name, "TRX.DNR_AVERAGE") == 0)
+	}
+	if (strcmp(name, "TRX.DNR_AVERAGE") == 0) {
 		TRX.DNR_AVERAGE = (uint8_t)uintval;
-	if (strcmp(name, "TRX.DNR_MINIMAL") == 0)
+	}
+	if (strcmp(name, "TRX.DNR_MINIMAL") == 0) {
 		TRX.DNR_MINIMAL = (uint8_t)uintval;
-	if (strcmp(name, "TRX.NOISE_BLANKER_THRESHOLD") == 0)
+	}
+	if (strcmp(name, "TRX.NOISE_BLANKER_THRESHOLD") == 0) {
 		TRX.NOISE_BLANKER_THRESHOLD = (uint8_t)uintval;
-	if (strcmp(name, "TRX.NOISE_BLANKER") == 0)
+	}
+	if (strcmp(name, "TRX.NOISE_BLANKER") == 0) {
 		TRX.NOISE_BLANKER = uintval;
-	if (strcmp(name, "TRX.RX_AGC_SSB_speed") == 0)
+	}
+	if (strcmp(name, "TRX.RX_AGC_SSB_speed") == 0) {
 		TRX.RX_AGC_SSB_speed = (uint8_t)uintval;
-	if (strcmp(name, "TRX.RX_AGC_CW_speed") == 0)
+	}
+	if (strcmp(name, "TRX.RX_AGC_CW_speed") == 0) {
 		TRX.RX_AGC_CW_speed = (uint8_t)uintval;
-	if (strcmp(name, "TRX.RX_AGC_Max_gain") == 0)
+	}
+	if (strcmp(name, "TRX.RX_AGC_Max_gain") == 0) {
 		TRX.RX_AGC_Max_gain = (uint8_t)uintval;
-	if (strcmp(name, "TRX.RX_AGC_Hold") == 0)
+	}
+	if (strcmp(name, "TRX.RX_AGC_Hold") == 0) {
 		TRX.RX_AGC_Hold = (uint16_t)uintval;
-	if (strcmp(name, "TRX.TX_Compressor_speed_SSB") == 0)
+	}
+	if (strcmp(name, "TRX.TX_Compressor_speed_SSB") == 0) {
 		TRX.TX_Compressor_speed_SSB = (uint8_t)uintval;
-	if (strcmp(name, "TRX.TX_Compressor_maxgain_SSB") == 0)
+	}
+	if (strcmp(name, "TRX.TX_Compressor_maxgain_SSB") == 0) {
 		TRX.TX_Compressor_maxgain_SSB = (uint8_t)uintval;
-	if (strcmp(name, "TRX.TX_Compressor_speed_AMFM") == 0)
+	}
+	if (strcmp(name, "TRX.TX_Compressor_speed_AMFM") == 0) {
 		TRX.TX_Compressor_speed_AMFM = (uint8_t)uintval;
-	if (strcmp(name, "TRX.TX_Compressor_maxgain_AMFM") == 0)
+	}
+	if (strcmp(name, "TRX.TX_Compressor_maxgain_AMFM") == 0) {
 		TRX.TX_Compressor_maxgain_AMFM = (uint8_t)uintval;
-	if (strcmp(name, "TRX.CW_LPF_Filter") == 0)
+	}
+	if (strcmp(name, "TRX.CW_LPF_Filter") == 0) {
 		TRX.CW_LPF_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.DIGI_LPF_Filter") == 0)
+	}
+	if (strcmp(name, "TRX.DIGI_LPF_Filter") == 0) {
 		TRX.DIGI_LPF_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.SSB_LPF_RX_Filter") == 0)
+	}
+	if (strcmp(name, "TRX.SSB_LPF_RX_Filter") == 0) {
 		TRX.SSB_LPF_RX_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.SSB_LPF_TX_Filter") == 0)
+	}
+	if (strcmp(name, "TRX.SSB_LPF_TX_Filter") == 0) {
 		TRX.SSB_LPF_TX_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.SSB_HPF_RX_Filter") == 0)
+	}
+	if (strcmp(name, "TRX.SSB_HPF_RX_Filter") == 0) {
 		TRX.SSB_HPF_RX_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.SSB_HPF_TX_Filter") == 0)
+	}
+	if (strcmp(name, "TRX.SSB_HPF_TX_Filter") == 0) {
 		TRX.SSB_HPF_TX_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.AM_LPF_RX_Filter") == 0)
+	}
+	if (strcmp(name, "TRX.AM_LPF_RX_Filter") == 0) {
 		TRX.AM_LPF_RX_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.AM_LPF_TX_Filter") == 0)
+	}
+	if (strcmp(name, "TRX.AM_LPF_TX_Filter") == 0) {
 		TRX.AM_LPF_TX_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.FM_LPF_RX_Filter") == 0)
+	}
+	if (strcmp(name, "TRX.FM_LPF_RX_Filter") == 0) {
 		TRX.FM_LPF_RX_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.FM_LPF_TX_Filter") == 0)
+	}
+	if (strcmp(name, "TRX.FM_LPF_TX_Filter") == 0) {
 		TRX.FM_LPF_TX_Filter = (uint16_t)uintval;
-	if (strcmp(name, "TRX.Beeper") == 0)
+	}
+	if (strcmp(name, "TRX.Beeper") == 0) {
 		TRX.Beeper = uintval;
-	if (strcmp(name, "TRX.CTCSS_Freq") == 0)
+	}
+	if (strcmp(name, "TRX.CTCSS_Freq") == 0) {
 		TRX.CTCSS_Freq = floatval;
-	if (strcmp(name, "TRX.SELFHEAR_Volume") == 0)
+	}
+	if (strcmp(name, "TRX.SELFHEAR_Volume") == 0) {
 		TRX.SELFHEAR_Volume = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FM_Stereo") == 0)
+	}
+	if (strcmp(name, "TRX.FM_Stereo") == 0) {
 		TRX.FM_Stereo = bval;
-	if (strcmp(name, "TRX.AGC_Spectral") == 0)
+	}
+	if (strcmp(name, "TRX.AGC_Spectral") == 0) {
 		TRX.AGC_Spectral = bval;
-	if (strcmp(name, "TRX.TX_CESSB") == 0)
+	}
+	if (strcmp(name, "TRX.TX_CESSB") == 0) {
 		TRX.TX_CESSB = bval;
-	if (strcmp(name, "TRX.TX_CESSB_COMPRESS_DB") == 0)
+	}
+	if (strcmp(name, "TRX.TX_CESSB_COMPRESS_DB") == 0) {
 		TRX.TX_CESSB_COMPRESS_DB = floatval;
-	if (strcmp(name, "TRX.VAD_THRESHOLD") == 0)
+	}
+	if (strcmp(name, "TRX.VAD_THRESHOLD") == 0) {
 		TRX.VAD_THRESHOLD = (uint8_t)uintval;
-	if (strcmp(name, "TRX.VOX") == 0)
+	}
+	if (strcmp(name, "TRX.VOX") == 0) {
 		TRX.VOX = bval;
-	if (strcmp(name, "TRX.VOX_TIMEOUT") == 0)
+	}
+	if (strcmp(name, "TRX.VOX_TIMEOUT") == 0) {
 		TRX.VOX_TIMEOUT = (uint16_t)uintval;
-	if (strcmp(name, "TRX.VOX_THRESHOLD") == 0)
+	}
+	if (strcmp(name, "TRX.VOX_THRESHOLD") == 0) {
 		TRX.VOX_THRESHOLD = (int8_t)intval;
+	}
 	// CW
-	if (strcmp(name, "TRX.CW_Pitch") == 0)
+	if (strcmp(name, "TRX.CW_Pitch") == 0) {
 		TRX.CW_Pitch = (uint16_t)uintval;
-	if (strcmp(name, "TRX.CW_Key_timeout") == 0)
+	}
+	if (strcmp(name, "TRX.CW_Key_timeout") == 0) {
 		TRX.CW_Key_timeout = (uint16_t)uintval;
-	if (strcmp(name, "TRX.CW_SelfHear") == 0)
+	}
+	if (strcmp(name, "TRX.CW_SelfHear") == 0) {
 		TRX.CW_SelfHear = (uint16_t)uintval;
-	if (strcmp(name, "TRX.CW_KEYER") == 0)
+	}
+	if (strcmp(name, "TRX.CW_KEYER") == 0) {
 		TRX.CW_KEYER = uintval;
-	if (strcmp(name, "TRX.CW_KEYER_WPM") == 0)
+	}
+	if (strcmp(name, "TRX.CW_KEYER_WPM") == 0) {
 		TRX.CW_KEYER_WPM = (uint16_t)uintval;
-	if (strcmp(name, "TRX.CW_GaussFilter") == 0)
+	}
+	if (strcmp(name, "TRX.CW_GaussFilter") == 0) {
 		TRX.CW_GaussFilter = uintval;
-	if (strcmp(name, "TRX.CW_DotToDashRate") == 0)
+	}
+	if (strcmp(name, "TRX.CW_DotToDashRate") == 0) {
 		TRX.CW_DotToDashRate = floatval;
-	if (strcmp(name, "TRX.CW_Iambic") == 0)
+	}
+	if (strcmp(name, "TRX.CW_Iambic") == 0) {
 		TRX.CW_Iambic = bval;
-	if (strcmp(name, "TRX.CW_Invert") == 0)
+	}
+	if (strcmp(name, "TRX.CW_Invert") == 0) {
 		TRX.CW_Invert = bval;
-	if (strcmp(name, "TRX.CW_PTT_Type") == 0)
+	}
+	if (strcmp(name, "TRX.CW_PTT_Type") == 0) {
 		TRX.CW_PTT_Type = (uint8_t)uintval;
+	}
 	// SCREEN
-	if (strcmp(name, "TRX.ColorThemeId") == 0)
+	if (strcmp(name, "TRX.ColorThemeId") == 0) {
 		TRX.ColorThemeId = (uint8_t)uintval;
-	if (strcmp(name, "TRX.LayoutThemeId") == 0)
+	}
+	if (strcmp(name, "TRX.LayoutThemeId") == 0) {
 		TRX.LayoutThemeId = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FFT_Enabled") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Enabled") == 0) {
 		TRX.FFT_Enabled = uintval;
-	if (strcmp(name, "TRX.FFT_Zoom") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Zoom") == 0) {
 		TRX.FFT_Zoom = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FFT_ZoomCW") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_ZoomCW") == 0) {
 		TRX.FFT_ZoomCW = (uint8_t)uintval;
-	if (strcmp(name, "TRX.LCD_Brightness") == 0)
+	}
+	if (strcmp(name, "TRX.LCD_Brightness") == 0) {
 		TRX.LCD_Brightness = (uint8_t)uintval;
-	if (strcmp(name, "TRX.LCD_SleepTimeout") == 0)
+	}
+	if (strcmp(name, "TRX.LCD_SleepTimeout") == 0) {
 		TRX.LCD_SleepTimeout = (uint16_t)uintval;
-	if (strcmp(name, "TRX.FFT_Speed") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Speed") == 0) {
 		TRX.FFT_Speed = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FFT_Sensitivity") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Sensitivity") == 0) {
 		TRX.FFT_Sensitivity = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FFT_Averaging") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Averaging") == 0) {
 		TRX.FFT_Averaging = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FFT_Window") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Window") == 0) {
 		TRX.FFT_Window = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FFT_Height") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Height") == 0) {
 		TRX.FFT_Height = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FFT_Style") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Style") == 0) {
 		TRX.FFT_Style = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FFT_BW_Style") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_BW_Style") == 0) {
 		TRX.FFT_BW_Style = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FFT_Color") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Color") == 0) {
 		TRX.FFT_Color = (uint8_t)uintval;
-	if (strcmp(name, "TRX.WTF_Color") == 0)
+	}
+	if (strcmp(name, "TRX.WTF_Color") == 0) {
 		TRX.WTF_Color = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FFT_Compressor") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Compressor") == 0) {
 		TRX.FFT_Compressor = uintval;
-	if (strcmp(name, "TRX.WTF_Moving") == 0)
+	}
+	if (strcmp(name, "TRX.WTF_Moving") == 0) {
 		TRX.WTF_Moving = uintval;
-	if (strcmp(name, "TRX.FFT_FreqGrid") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_FreqGrid") == 0) {
 		TRX.FFT_FreqGrid = (int8_t)intval;
-	if (strcmp(name, "TRX.FFT_dBmGrid") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_dBmGrid") == 0) {
 		TRX.FFT_dBmGrid = bval;
-	if (strcmp(name, "TRX.FFT_Background") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Background") == 0) {
 		TRX.FFT_Background = uintval;
-	if (strcmp(name, "TRX.FFT_Lens") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Lens") == 0) {
 		TRX.FFT_Lens = uintval;
-	if (strcmp(name, "TRX.FFT_HoldPeaks") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_HoldPeaks") == 0) {
 		TRX.FFT_HoldPeaks = uintval;
-	if (strcmp(name, "TRX.FFT_3D") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_3D") == 0) {
 		TRX.FFT_3D = (uint8_t)uintval;
-	if (strcmp(name, "TRX.FFT_Automatic") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Automatic") == 0) {
 		TRX.FFT_Automatic = uintval;
-	if (strcmp(name, "TRX.FFT_ManualBottom") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_ManualBottom") == 0) {
 		TRX.FFT_ManualBottom = (int16_t)intval;
-	if (strcmp(name, "TRX.FFT_ManualTop") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_ManualTop") == 0) {
 		TRX.FFT_ManualTop = (int16_t)intval;
-	if (strcmp(name, "TRX.FFT_DXCluster") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_DXCluster") == 0) {
 		TRX.FFT_DXCluster = bval;
-	if (strcmp(name, "TRX.FFT_DXCluster_Azimuth") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_DXCluster_Azimuth") == 0) {
 		TRX.FFT_DXCluster_Azimuth = bval;
-	if (strcmp(name, "TRX.FFT_DXCluster_Timeout") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_DXCluster_Timeout") == 0) {
 		TRX.FFT_DXCluster_Timeout = (uint8_t)uintval;
-	if (strcmp(name, "TRX.Show_Sec_VFO") == 0)
+	}
+	if (strcmp(name, "TRX.Show_Sec_VFO") == 0) {
 		TRX.Show_Sec_VFO = bval;
-	if (strcmp(name, "TRX.FFT_Scale_Type") == 0)
+	}
+	if (strcmp(name, "TRX.FFT_Scale_Type") == 0) {
 		TRX.FFT_Scale_Type = (uint8_t)uintval;
+	}
 	// DECODERS
-	if (strcmp(name, "TRX.CW_Decoder") == 0)
+	if (strcmp(name, "TRX.CW_Decoder") == 0) {
 		TRX.CW_Decoder = bval;
-	if (strcmp(name, "TRX.CW_Decoder_Threshold") == 0)
+	}
+	if (strcmp(name, "TRX.CW_Decoder_Threshold") == 0) {
 		TRX.CW_Decoder_Threshold = (uint8_t)uintval;
-	if (strcmp(name, "TRX.RDS_Decoder") == 0)
+	}
+	if (strcmp(name, "TRX.RDS_Decoder") == 0) {
 		TRX.RDS_Decoder = bval;
-	if (strcmp(name, "TRX.RTTY_Speed") == 0)
+	}
+	if (strcmp(name, "TRX.RTTY_Speed") == 0) {
 		TRX.RTTY_Speed = uintval;
-	if (strcmp(name, "TRX.RTTY_Shift") == 0)
+	}
+	if (strcmp(name, "TRX.RTTY_Shift") == 0) {
 		TRX.RTTY_Shift = uintval;
-	if (strcmp(name, "TRX.RTTY_Freq") == 0)
+	}
+	if (strcmp(name, "TRX.RTTY_Freq") == 0) {
 		TRX.RTTY_Freq = uintval;
-	if (strcmp(name, "TRX.RTTY_StopBits") == 0)
+	}
+	if (strcmp(name, "TRX.RTTY_StopBits") == 0) {
 		TRX.RTTY_StopBits = (uint8_t)uintval;
-	if (strcmp(name, "TRX.RTTY_InvertBits") == 0)
+	}
+	if (strcmp(name, "TRX.RTTY_InvertBits") == 0) {
 		TRX.RTTY_InvertBits = bval;
+	}
 	// ADC
-	if (strcmp(name, "TRX.ADC_Driver") == 0)
+	if (strcmp(name, "TRX.ADC_Driver") == 0) {
 		TRX.ADC_Driver = uintval;
-	if (strcmp(name, "TRX.ADC_PGA") == 0)
+	}
+	if (strcmp(name, "TRX.ADC_PGA") == 0) {
 		TRX.ADC_PGA = uintval;
-	if (strcmp(name, "TRX.ADC_RAND") == 0)
+	}
+	if (strcmp(name, "TRX.ADC_RAND") == 0) {
 		TRX.ADC_RAND = uintval;
-	if (strcmp(name, "TRX.ADC_SHDN") == 0)
+	}
+	if (strcmp(name, "TRX.ADC_SHDN") == 0) {
 		TRX.ADC_SHDN = uintval;
-	if (strcmp(name, "TRX.ADC_DITH") == 0)
+	}
+	if (strcmp(name, "TRX.ADC_DITH") == 0) {
 		TRX.ADC_DITH = uintval;
+	}
 	// WIFI
-	if (strcmp(name, "WIFI.Enabled") == 0)
+	if (strcmp(name, "WIFI.Enabled") == 0) {
 		WIFI.Enabled = uintval;
-	if (strcmp(name, "WIFI.Timezone") == 0)
+	}
+	if (strcmp(name, "WIFI.Timezone") == 0) {
 		WIFI.Timezone = (int8_t)intval;
-	if (strcmp(name, "WIFI.CAT_Server") == 0)
+	}
+	if (strcmp(name, "WIFI.CAT_Server") == 0) {
 		WIFI.CAT_Server = uintval;
+	}
 	if (strcmp(name, "WIFI.AP_1") == 0) {
 		dma_memset(WIFI.AP_1, 0x00, sizeof(WIFI.AP_1));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(WIFI.AP_1) - 1)
+		if (lens > sizeof(WIFI.AP_1) - 1) {
 			lens = sizeof(WIFI.AP_1) - 1;
+		}
 		strncpy(WIFI.AP_1, value, lens);
 	}
 	if (strcmp(name, "WIFI.AP_2") == 0) {
 		dma_memset(WIFI.AP_2, 0x00, sizeof(WIFI.AP_2));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(WIFI.AP_2) - 1)
+		if (lens > sizeof(WIFI.AP_2) - 1) {
 			lens = sizeof(WIFI.AP_2) - 1;
+		}
 		strncpy(WIFI.AP_2, value, lens);
 	}
 	if (strcmp(name, "WIFI.AP_3") == 0) {
 		dma_memset(WIFI.AP_3, 0x00, sizeof(WIFI.AP_3));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(WIFI.AP_3) - 1)
+		if (lens > sizeof(WIFI.AP_3) - 1) {
 			lens = sizeof(WIFI.AP_3) - 1;
+		}
 		strncpy(WIFI.AP_3, value, lens);
 	}
 	if (strcmp(name, "WIFI.Password_1") == 0) {
 		dma_memset(WIFI.Password_1, 0x00, sizeof(WIFI.Password_1));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(WIFI.Password_1) - 1)
+		if (lens > sizeof(WIFI.Password_1) - 1) {
 			lens = sizeof(WIFI.Password_1) - 1;
+		}
 		strncpy(WIFI.Password_1, value, lens);
 	}
 	if (strcmp(name, "WIFI.Password_2") == 0) {
 		dma_memset(WIFI.Password_2, 0x00, sizeof(WIFI.Password_2));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(WIFI.Password_2) - 1)
+		if (lens > sizeof(WIFI.Password_2) - 1) {
 			lens = sizeof(WIFI.Password_2) - 1;
+		}
 		strncpy(WIFI.Password_2, value, lens);
 	}
 	if (strcmp(name, "WIFI.Password_3") == 0) {
 		dma_memset(WIFI.Password_3, 0x00, sizeof(WIFI.Password_3));
 		uint32_t lens = strlen(value);
-		if (lens > sizeof(WIFI.Password_3) - 1)
+		if (lens > sizeof(WIFI.Password_3) - 1) {
 			lens = sizeof(WIFI.Password_3) - 1;
+		}
 		strncpy(WIFI.Password_3, value, lens);
 	}
 	// SERVICES
-	if (strcmp(name, "TRX.SWR_CUSTOM_Begin") == 0)
+	if (strcmp(name, "TRX.SWR_CUSTOM_Begin") == 0) {
 		TRX.SWR_CUSTOM_Begin = uintval;
-	if (strcmp(name, "TRX.SWR_CUSTOM_End") == 0)
+	}
+	if (strcmp(name, "TRX.SWR_CUSTOM_End") == 0) {
 		TRX.SWR_CUSTOM_End = uintval;
-	if (strcmp(name, "TRX.SPEC_Begin") == 0)
+	}
+	if (strcmp(name, "TRX.SPEC_Begin") == 0) {
 		TRX.SPEC_Begin = uintval;
-	if (strcmp(name, "TRX.SPEC_End") == 0)
+	}
+	if (strcmp(name, "TRX.SPEC_End") == 0) {
 		TRX.SPEC_End = uintval;
-	if (strcmp(name, "TRX.SPEC_TopDBM") == 0)
+	}
+	if (strcmp(name, "TRX.SPEC_TopDBM") == 0) {
 		TRX.SPEC_TopDBM = (int16_t)intval;
-	if (strcmp(name, "TRX.SPEC_BottomDBM") == 0)
+	}
+	if (strcmp(name, "TRX.SPEC_BottomDBM") == 0) {
 		TRX.SPEC_BottomDBM = (int16_t)intval;
-	if (strcmp(name, "TRX.WSPR_FREQ_OFFSET") == 0)
+	}
+	if (strcmp(name, "TRX.WSPR_FREQ_OFFSET") == 0) {
 		TRX.WSPR_FREQ_OFFSET = (int16_t)intval;
-	if (strcmp(name, "TRX.WSPR_BANDS_160") == 0)
+	}
+	if (strcmp(name, "TRX.WSPR_BANDS_160") == 0) {
 		TRX.WSPR_BANDS_160 = uintval;
-	if (strcmp(name, "TRX.WSPR_BANDS_80") == 0)
+	}
+	if (strcmp(name, "TRX.WSPR_BANDS_80") == 0) {
 		TRX.WSPR_BANDS_80 = uintval;
-	if (strcmp(name, "TRX.WSPR_BANDS_40") == 0)
+	}
+	if (strcmp(name, "TRX.WSPR_BANDS_40") == 0) {
 		TRX.WSPR_BANDS_40 = uintval;
-	if (strcmp(name, "TRX.WSPR_BANDS_30") == 0)
+	}
+	if (strcmp(name, "TRX.WSPR_BANDS_30") == 0) {
 		TRX.WSPR_BANDS_30 = uintval;
-	if (strcmp(name, "TRX.WSPR_BANDS_20") == 0)
+	}
+	if (strcmp(name, "TRX.WSPR_BANDS_20") == 0) {
 		TRX.WSPR_BANDS_20 = uintval;
-	if (strcmp(name, "TRX.WSPR_BANDS_17") == 0)
+	}
+	if (strcmp(name, "TRX.WSPR_BANDS_17") == 0) {
 		TRX.WSPR_BANDS_17 = uintval;
-	if (strcmp(name, "TRX.WSPR_BANDS_15") == 0)
+	}
+	if (strcmp(name, "TRX.WSPR_BANDS_15") == 0) {
 		TRX.WSPR_BANDS_15 = uintval;
-	if (strcmp(name, "TRX.WSPR_BANDS_12") == 0)
+	}
+	if (strcmp(name, "TRX.WSPR_BANDS_12") == 0) {
 		TRX.WSPR_BANDS_12 = uintval;
-	if (strcmp(name, "TRX.WSPR_BANDS_10") == 0)
+	}
+	if (strcmp(name, "TRX.WSPR_BANDS_10") == 0) {
 		TRX.WSPR_BANDS_10 = uintval;
-	if (strcmp(name, "TRX.WSPR_BANDS_6") == 0)
+	}
+	if (strcmp(name, "TRX.WSPR_BANDS_6") == 0) {
 		TRX.WSPR_BANDS_6 = uintval;
-	if (strcmp(name, "TRX.WSPR_BANDS_2") == 0)
+	}
+	if (strcmp(name, "TRX.WSPR_BANDS_2") == 0) {
 		TRX.WSPR_BANDS_2 = uintval;
+	}
 	// CALIBRATION
-	if (strcmp(name, "CALIBRATE.ENCODER_INVERT") == 0)
+	if (strcmp(name, "CALIBRATE.ENCODER_INVERT") == 0) {
 		CALIBRATE.ENCODER_INVERT = bval;
-	if (strcmp(name, "CALIBRATE.ENCODER2_INVERT") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.ENCODER2_INVERT") == 0) {
 		CALIBRATE.ENCODER2_INVERT = bval;
-	if (strcmp(name, "CALIBRATE.ENCODER_DEBOUNCE") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.ENCODER_DEBOUNCE") == 0) {
 		CALIBRATE.ENCODER_DEBOUNCE = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.ENCODER2_DEBOUNCE") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.ENCODER2_DEBOUNCE") == 0) {
 		CALIBRATE.ENCODER2_DEBOUNCE = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.ENCODER_SLOW_RATE") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.ENCODER_SLOW_RATE") == 0) {
 		CALIBRATE.ENCODER_SLOW_RATE = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.ENCODER_ON_FALLING") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.ENCODER_ON_FALLING") == 0) {
 		CALIBRATE.ENCODER_ON_FALLING = bval;
-	if (strcmp(name, "CALIBRATE.ENCODER_ACCELERATION") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.ENCODER_ACCELERATION") == 0) {
 		CALIBRATE.ENCODER_ACCELERATION = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.RF_unit_type") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RF_unit_type") == 0) {
 		CALIBRATE.RF_unit_type = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.TangentType") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.TangentType") == 0) {
 		CALIBRATE.TangentType = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.CICFIR_GAINER_48K_3") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.CICFIR_GAINER_48K_3") == 0) {
 		CALIBRATE.CICFIR_GAINER_48K_val = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.CICFIR_GAINER_96K_3") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.CICFIR_GAINER_96K_3") == 0) {
 		CALIBRATE.CICFIR_GAINER_96K_val = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.CICFIR_GAINER_192K_3") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.CICFIR_GAINER_192K_3") == 0) {
 		CALIBRATE.CICFIR_GAINER_192K_val = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.CICFIR_GAINER_384K_3") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.CICFIR_GAINER_384K_3") == 0) {
 		CALIBRATE.CICFIR_GAINER_384K_val = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.TXCICFIR_GAINER_3") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.TXCICFIR_GAINER_3") == 0) {
 		CALIBRATE.TXCICFIR_GAINER_val = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.DAC_GAINER_3") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.DAC_GAINER_3") == 0) {
 		CALIBRATE.DAC_GAINER_val = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.DAC_driver_mode") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.DAC_driver_mode") == 0) {
 		CALIBRATE.DAC_driver_mode = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_2200m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_2200m") == 0) {
 		CALIBRATE.rf_out_power_2200m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_160m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_160m") == 0) {
 		CALIBRATE.rf_out_power_160m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_80m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_80m") == 0) {
 		CALIBRATE.rf_out_power_80m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_40m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_40m") == 0) {
 		CALIBRATE.rf_out_power_40m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_30m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_30m") == 0) {
 		CALIBRATE.rf_out_power_30m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_20m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_20m") == 0) {
 		CALIBRATE.rf_out_power_20m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_17m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_17m") == 0) {
 		CALIBRATE.rf_out_power_17m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_15m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_15m") == 0) {
 		CALIBRATE.rf_out_power_15m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_12m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_12m") == 0) {
 		CALIBRATE.rf_out_power_12m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_cb") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_cb") == 0) {
 		CALIBRATE.rf_out_power_cb = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_10m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_10m") == 0) {
 		CALIBRATE.rf_out_power_10m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_6m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_6m") == 0) {
 		CALIBRATE.rf_out_power_6m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_4m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_4m") == 0) {
 		CALIBRATE.rf_out_power_4m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.rf_out_power_2m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_2m") == 0) {
 		CALIBRATE.rf_out_power_2m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.smeter_calibration_hf") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.smeter_calibration_hf") == 0) {
 		CALIBRATE.smeter_calibration_hf = (int16_t)intval;
-	if (strcmp(name, "CALIBRATE.smeter_calibration_vhf") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.smeter_calibration_vhf") == 0) {
 		CALIBRATE.smeter_calibration_vhf = (int16_t)intval;
-	if (strcmp(name, "CALIBRATE.adc_offset") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.adc_offset") == 0) {
 		CALIBRATE.adc_offset = (int16_t)intval;
-	if (strcmp(name, "CALIBRATE.RFU_LPF_END") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_LPF_END") == 0) {
 		CALIBRATE.RFU_LPF_END = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_0_START") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_0_START") == 0) {
 		CALIBRATE.RFU_BPF_0_START = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_0_END") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_0_END") == 0) {
 		CALIBRATE.RFU_BPF_0_END = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_1_START") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_1_START") == 0) {
 		CALIBRATE.RFU_BPF_1_START = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_1_END") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_1_END") == 0) {
 		CALIBRATE.RFU_BPF_1_END = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_2_START") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_2_START") == 0) {
 		CALIBRATE.RFU_BPF_2_START = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_2_END") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_2_END") == 0) {
 		CALIBRATE.RFU_BPF_2_END = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_3_START") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_3_START") == 0) {
 		CALIBRATE.RFU_BPF_3_START = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_3_END") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_3_END") == 0) {
 		CALIBRATE.RFU_BPF_3_END = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_4_START") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_4_START") == 0) {
 		CALIBRATE.RFU_BPF_4_START = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_4_END") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_4_END") == 0) {
 		CALIBRATE.RFU_BPF_4_END = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_5_START") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_5_START") == 0) {
 		CALIBRATE.RFU_BPF_5_START = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_5_END") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_5_END") == 0) {
 		CALIBRATE.RFU_BPF_5_END = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_6_START") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_6_START") == 0) {
 		CALIBRATE.RFU_BPF_6_START = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_6_END") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_6_END") == 0) {
 		CALIBRATE.RFU_BPF_6_END = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_7_START") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_7_START") == 0) {
 		CALIBRATE.RFU_BPF_7_START = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_7_END") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_7_END") == 0) {
 		CALIBRATE.RFU_BPF_7_END = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_8_START") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_8_START") == 0) {
 		CALIBRATE.RFU_BPF_8_START = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_BPF_8_END") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_BPF_8_END") == 0) {
 		CALIBRATE.RFU_BPF_8_END = uintval;
-	if (strcmp(name, "CALIBRATE.RFU_HPF_START") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RFU_HPF_START") == 0) {
 		CALIBRATE.RFU_HPF_START = uintval;
-	if (strcmp(name, "CALIBRATE.SWR_FWD_Calibration_HF") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.SWR_FWD_Calibration_HF") == 0) {
 		CALIBRATE.SWR_FWD_Calibration_HF = floatval;
-	if (strcmp(name, "CALIBRATE.SWR_BWD_Calibration_HF") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.SWR_BWD_Calibration_HF") == 0) {
 		CALIBRATE.SWR_BWD_Calibration_HF = floatval;
-	if (strcmp(name, "CALIBRATE.SWR_FWD_Calibration_6M") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.SWR_FWD_Calibration_6M") == 0) {
 		CALIBRATE.SWR_FWD_Calibration_6M = floatval;
-	if (strcmp(name, "CALIBRATE.SWR_BWD_Calibration_6M") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.SWR_BWD_Calibration_6M") == 0) {
 		CALIBRATE.SWR_BWD_Calibration_6M = floatval;
-	if (strcmp(name, "CALIBRATE.SWR_FWD_Calibration_VHF") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.SWR_FWD_Calibration_VHF") == 0) {
 		CALIBRATE.SWR_FWD_Calibration_VHF = floatval;
-	if (strcmp(name, "CALIBRATE.SWR_BWD_Calibration_VHF") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.SWR_BWD_Calibration_VHF") == 0) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = floatval;
-	if (strcmp(name, "CALIBRATE.MAX_RF_POWER_ON_METER") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.MAX_RF_POWER_ON_METER") == 0) {
 		CALIBRATE.MAX_RF_POWER_ON_METER = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.VCXO_correction") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.VCXO_correction") == 0) {
 		CALIBRATE.VCXO_correction = (int16_t)intval;
-	if (strcmp(name, "CALIBRATE.FAN_MEDIUM_START") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.FAN_MEDIUM_START") == 0) {
 		CALIBRATE.FAN_MEDIUM_START = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.FAN_MEDIUM_STOP") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.FAN_MEDIUM_STOP") == 0) {
 		CALIBRATE.FAN_MEDIUM_STOP = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.FAN_FULL_START") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.FAN_FULL_START") == 0) {
 		CALIBRATE.FAN_FULL_START = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.TRX_MAX_RF_TEMP") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.TRX_MAX_RF_TEMP") == 0) {
 		CALIBRATE.TRX_MAX_RF_TEMP = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.TRX_MAX_SWR") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.TRX_MAX_SWR") == 0) {
 		CALIBRATE.TRX_MAX_SWR = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.FM_DEVIATION_SCALE") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.FM_DEVIATION_SCALE") == 0) {
 		CALIBRATE.FM_DEVIATION_SCALE = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.SSB_POWER_ADDITION") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.SSB_POWER_ADDITION") == 0) {
 		CALIBRATE.SSB_POWER_ADDITION = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.AM_MODULATION_INDEX") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.AM_MODULATION_INDEX") == 0) {
 		CALIBRATE.AM_MODULATION_INDEX = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.TUNE_MAX_POWER") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.TUNE_MAX_POWER") == 0) {
 		CALIBRATE.TUNE_MAX_POWER = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.RTC_Coarse_Calibration") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RTC_Coarse_Calibration") == 0) {
 		CALIBRATE.RTC_Coarse_Calibration = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.RTC_Calibration") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.RTC_Calibration") == 0) {
 		CALIBRATE.RTC_Calibration = intval;
+	}
 
-	if (strcmp(name, "CALIBRATE.EXT_2200m") == 0)
+	if (strcmp(name, "CALIBRATE.EXT_2200m") == 0) {
 		CALIBRATE.EXT_2200m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_160m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_160m") == 0) {
 		CALIBRATE.EXT_160m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_80m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_80m") == 0) {
 		CALIBRATE.EXT_80m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_60m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_60m") == 0) {
 		CALIBRATE.EXT_60m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_40m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_40m") == 0) {
 		CALIBRATE.EXT_40m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_30m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_30m") == 0) {
 		CALIBRATE.EXT_30m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_20m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_20m") == 0) {
 		CALIBRATE.EXT_20m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_17m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_17m") == 0) {
 		CALIBRATE.EXT_17m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_15m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_15m") == 0) {
 		CALIBRATE.EXT_15m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_12m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_12m") == 0) {
 		CALIBRATE.EXT_12m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_CB") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_CB") == 0) {
 		CALIBRATE.EXT_CB = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_10m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_10m") == 0) {
 		CALIBRATE.EXT_10m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_6m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_6m") == 0) {
 		CALIBRATE.EXT_6m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_4m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_4m") == 0) {
 		CALIBRATE.EXT_4m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_FM") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_FM") == 0) {
 		CALIBRATE.EXT_FM = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_2m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_2m") == 0) {
 		CALIBRATE.EXT_2m = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_70cm") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_70cm") == 0) {
 		CALIBRATE.EXT_70cm = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_TRANSV_70cm") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_TRANSV_70cm") == 0) {
 		CALIBRATE.EXT_TRANSV_70cm = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_TRANSV_23cm") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_TRANSV_23cm") == 0) {
 		CALIBRATE.EXT_TRANSV_23cm = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_TRANSV_13cm") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_TRANSV_13cm") == 0) {
 		CALIBRATE.EXT_TRANSV_13cm = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_TRANSV_6cm") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_TRANSV_6cm") == 0) {
 		CALIBRATE.EXT_TRANSV_6cm = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.EXT_TRANSV_3cm") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.EXT_TRANSV_3cm") == 0) {
 		CALIBRATE.EXT_TRANSV_3cm = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.NOTX_NOTHAM") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_NOTHAM") == 0) {
 		CALIBRATE.NOTX_NOTHAM = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_2200m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_2200m") == 0) {
 		CALIBRATE.NOTX_2200m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_160m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_160m") == 0) {
 		CALIBRATE.NOTX_160m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_80m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_80m") == 0) {
 		CALIBRATE.NOTX_80m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_60m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_60m") == 0) {
 		CALIBRATE.NOTX_60m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_40m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_40m") == 0) {
 		CALIBRATE.NOTX_40m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_30m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_30m") == 0) {
 		CALIBRATE.NOTX_30m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_20m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_20m") == 0) {
 		CALIBRATE.NOTX_20m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_17m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_17m") == 0) {
 		CALIBRATE.NOTX_17m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_15m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_15m") == 0) {
 		CALIBRATE.NOTX_15m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_12m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_12m") == 0) {
 		CALIBRATE.NOTX_12m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_CB") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_CB") == 0) {
 		CALIBRATE.NOTX_CB = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_10m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_10m") == 0) {
 		CALIBRATE.NOTX_10m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_6m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_6m") == 0) {
 		CALIBRATE.NOTX_6m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_4m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_4m") == 0) {
 		CALIBRATE.NOTX_4m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_2m") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_2m") == 0) {
 		CALIBRATE.NOTX_2m = bval;
-	if (strcmp(name, "CALIBRATE.NOTX_70cm") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.NOTX_70cm") == 0) {
 		CALIBRATE.NOTX_70cm = bval;
-	if (strcmp(name, "CALIBRATE.ENABLE_60m_band") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.ENABLE_60m_band") == 0) {
 		CALIBRATE.ENABLE_60m_band = bval;
-	if (strcmp(name, "CALIBRATE.ENABLE_4m_band") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.ENABLE_4m_band") == 0) {
 		CALIBRATE.ENABLE_4m_band = bval;
-	if (strcmp(name, "CALIBRATE.ENABLE_AIR_band") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.ENABLE_AIR_band") == 0) {
 		CALIBRATE.ENABLE_AIR_band = bval;
-	if (strcmp(name, "CALIBRATE.ENABLE_marine_band") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.ENABLE_marine_band") == 0) {
 		CALIBRATE.ENABLE_marine_band = bval;
-	if (strcmp(name, "CALIBRATE.Transverter_Custom_Offset_Mhz") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_Custom_Offset_Mhz") == 0) {
 		CALIBRATE.Transverter_Custom_Offset_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_70cm_RF_Mhz") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_70cm_RF_Mhz") == 0) {
 		CALIBRATE.Transverter_70cm_RF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_70cm_IF_Mhz") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_70cm_IF_Mhz") == 0) {
 		CALIBRATE.Transverter_70cm_IF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_23cm_RF_Mhz") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_23cm_RF_Mhz") == 0) {
 		CALIBRATE.Transverter_23cm_RF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_23cm_IF_Mhz") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_23cm_IF_Mhz") == 0) {
 		CALIBRATE.Transverter_23cm_IF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_13cm_RF_Mhz") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_13cm_RF_Mhz") == 0) {
 		CALIBRATE.Transverter_13cm_RF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_13cm_IF_Mhz") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_13cm_IF_Mhz") == 0) {
 		CALIBRATE.Transverter_13cm_IF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_6cm_RF_Mhz") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_6cm_RF_Mhz") == 0) {
 		CALIBRATE.Transverter_6cm_RF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_6cm_IF_Mhz") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_6cm_IF_Mhz") == 0) {
 		CALIBRATE.Transverter_6cm_IF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_3cm_RF_Mhz") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_3cm_RF_Mhz") == 0) {
 		CALIBRATE.Transverter_3cm_RF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.Transverter_3cm_IF_Mhz") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_3cm_IF_Mhz") == 0) {
 		CALIBRATE.Transverter_3cm_IF_Mhz = (uint16_t)uintval;
-	if (strcmp(name, "CALIBRATE.OTA_update") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.OTA_update") == 0) {
 		CALIBRATE.OTA_update = bval;
-	if (strcmp(name, "CALIBRATE.TX_StartDelay") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.TX_StartDelay") == 0) {
 		CALIBRATE.TX_StartDelay = uintval;
-	if (strcmp(name, "CALIBRATE.LCD_Rotate") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.LCD_Rotate") == 0) {
 		CALIBRATE.LCD_Rotate = bval;
-	if (strcmp(name, "CALIBRATE.TOUCHPAD_horizontal_flip") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.TOUCHPAD_horizontal_flip") == 0) {
 		CALIBRATE.TOUCHPAD_horizontal_flip = bval;
-	if (strcmp(name, "CALIBRATE.INA226_EN") == 0) // Tisho
+	}
+	if (strcmp(name, "CALIBRATE.INA226_EN") == 0) { // Tisho
 		CALIBRATE.INA226_EN = bval;
-	if (strcmp(name, "CALIBRATE.INA226_CurCalc") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.INA226_CurCalc") == 0) {
 		CALIBRATE.INA226_CurCalc = floatval;
-	if (strcmp(name, "CALIBRATE.PWR_VLT_Calibration") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.PWR_VLT_Calibration") == 0) {
 		CALIBRATE.PWR_VLT_Calibration = floatval;
-	if (strcmp(name, "CALIBRATE.ATU_AVERAGING") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.ATU_AVERAGING") == 0) {
 		CALIBRATE.ATU_AVERAGING = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.LNA_compensation") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.LNA_compensation") == 0) {
 		CALIBRATE.LNA_compensation = (int8_t)intval;
-	if (strcmp(name, "CALIBRATE.CAT_Type") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.CAT_Type") == 0) {
 		CALIBRATE.CAT_Type = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.TwoSignalTune_Balance") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.TwoSignalTune_Balance") == 0) {
 		CALIBRATE.TwoSignalTune_Balance = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.LinearPowerControl") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.LinearPowerControl") == 0) {
 		CALIBRATE.LinearPowerControl = bval;
-	if (strcmp(name, "CALIBRATE.IF_GAIN_MIN") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.IF_GAIN_MIN") == 0) {
 		CALIBRATE.IF_GAIN_MIN = (uint8_t)uintval;
-	if (strcmp(name, "CALIBRATE.IF_GAIN_MAX") == 0)
+	}
+	if (strcmp(name, "CALIBRATE.IF_GAIN_MAX") == 0) {
 		CALIBRATE.IF_GAIN_MAX = (uint8_t)uintval;
+	}
 
 	// Func buttons settings
 	char buff[64] = {0};
 	for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++) {
 		sprintf(buff, "TRX.FuncButtons[%d]", i);
-		if (strcmp(name, buff) == 0)
+		if (strcmp(name, buff) == 0) {
 			TRX.FuncButtons[i] = (uint8_t)uintval;
+		}
 	}
 
 	// Bands settings
@@ -2148,18 +2519,19 @@ static void SDCOMM_IMPORT_SETT_handler(void) {
 			FRESULT res = f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesread);
 			if (res != FR_OK) {
 				f_close(&File);
-				if (res == FR_DISK_ERR)
+				if (res == FR_DISK_ERR) {
 					LCD_showInfo("Disk error", true);
-				else if (res == FR_INT_ERR)
+				} else if (res == FR_INT_ERR) {
 					LCD_showInfo("Int error", true);
-				else if (res == FR_NOT_READY)
+				} else if (res == FR_NOT_READY) {
 					LCD_showInfo("Not Ready error", true);
-				else if (res == FR_INVALID_OBJECT)
+				} else if (res == FR_INVALID_OBJECT) {
 					LCD_showInfo("Invalid Object error", true);
-				else if (res == FR_TIMEOUT)
+				} else if (res == FR_TIMEOUT) {
 					LCD_showInfo("Timeout error", true);
-				else
+				} else {
 					LCD_showInfo("Unknown error", true);
+				}
 				SD_Present = false;
 				return;
 			}
@@ -2239,8 +2611,9 @@ static void SDCOMM_LISTROOT_handler(void) {
 					// sendToDebug_str(fileInfo.fname);
 					// sendToDebug_uint32(strlen((char*)fileInfo.fname),false);
 				}
-			} else
+			} else {
 				break;
+			}
 			println("");
 		}
 		f_closedir(&dir);
@@ -2254,8 +2627,9 @@ static void SDCOMM_LISTROOT_handler(void) {
 static uint8_t SPIx_WriteRead(uint8_t Byte) {
 	uint8_t SPIx_receivedByte = 0;
 
-	if (!HRDW_SD_SPI(&Byte, &SPIx_receivedByte, 1, false))
+	if (!HRDW_SD_SPI(&Byte, &SPIx_receivedByte, 1, false)) {
 		println("SD SPI R Err");
+	}
 
 	return SPIx_receivedByte;
 }
@@ -2274,8 +2648,9 @@ uint8_t SPI_wait_ready(void) {
 		res = SPI_ReceiveByte();
 		cnt++;
 	} while ((res != 0xFF) && (cnt < 0xFFFF));
-	if (cnt >= 0xFFFF)
+	if (cnt >= 0xFFFF) {
 		return 1;
+	}
 	return res;
 }
 
@@ -2285,8 +2660,9 @@ uint8_t SD_cmd(uint8_t cmd, uint32_t arg) {
 	if (cmd & 0x80) {
 		cmd &= 0x7F;
 		res = SD_cmd(CMD55, 0);
-		if (res > 1)
+		if (res > 1) {
 			return res;
+		}
 	}
 	// Select the card
 	// HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
@@ -2322,8 +2698,9 @@ uint8_t SD_cmd(uint8_t cmd, uint32_t arg) {
 	do {
 		res = SPI_ReceiveByte();
 	} while ((res & 0x80) && --n);
-	if (n == 0 && SD_Present)
+	if (n == 0 && SD_Present) {
 		println("SD CMD timeout");
+	}
 	// println("SD CMD ", cmd, " RES ", res);
 	return res;
 }
@@ -2357,8 +2734,9 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr) {
 
 	// CRC check
 	uint32_t crcval = 0x0000U;
-	for (uint16_t i = 0; i < btr; i++)
+	for (uint16_t i = 0; i < btr; i++) {
 		crcval = sd_crc16_byte(crcval, buff[i]);
+	}
 
 	// SPI_Release();
 	// SPI_Release();
@@ -2391,8 +2769,9 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma) {
 
 		// CRC check
 		uint32_t crcval = 0x0000U;
-		for (uint16_t i = 0; i < SD_MAXBLOCK_SIZE; i++)
+		for (uint16_t i = 0; i < SD_MAXBLOCK_SIZE; i++) {
 			crcval = sd_crc16_byte(crcval, buff[i]);
+		}
 		SPI_SendByte((crcval >> 8) & 0xFF);
 		SPI_SendByte((crcval >> 0) & 0xFF);
 		// SPI_Release();
@@ -2429,8 +2808,9 @@ uint8_t sd_ini(void) {
 	// hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128; // 156.25 kbbs (96 kbps)
 	// HAL_SPI_Init(&hspi);
 	//  HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
-	for (i = 0; i < 10; i++)
+	for (i = 0; i < 10; i++) {
 		SPI_Release();
+	}
 	// hspi.Init.BaudRatePrescaler = temp;
 	// HAL_SPI_Init(&hspi);
 	//  HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
@@ -2442,19 +2822,22 @@ uint8_t sd_ini(void) {
 		// OCR
 		if (SD_cmd(CMD8, 0x1AA) == 1) // SDv2
 		{
-			for (i = 0; i < 4; i++)
+			for (i = 0; i < 4; i++) {
 				ocr[i] = SPI_ReceiveByte();
+			}
 			// sendToDebug_strln("SDv2");
 			// sprintf(sd_str_buff,"OCR: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",ocr[0],ocr[1],ocr[2],ocr[3]);
 			// sendToDebug_str(sd_str_buff);
 			//  Get trailing return value of R7 resp
 			if (ocr[2] == 0x01 && ocr[3] == 0xAA) // The card can work at vdd range of 2.7-3.6V
 			{
-				for (tmr = 12000; tmr && SD_cmd(ACMD41, 1UL << 30); tmr--)
-					;                                 // Wait for leaving idle state (ACMD41 with HCS bit)
+				for (tmr = 12000; tmr && SD_cmd(ACMD41, 1UL << 30); tmr--) {
+					; // Wait for leaving idle state (ACMD41 with HCS bit)
+				}
 				if (tmr && SD_cmd(CMD58, 0) == 0) { // Check CCS bit in the OCR
-					for (i = 0; i < 4; i++)
+					for (i = 0; i < 4; i++) {
 						ocr[i] = SPI_ReceiveByte();
+					}
 					// sprintf(sd_str_buff,"OCR: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",ocr[0],ocr[1],ocr[2],ocr[3]);
 					// sendToDebug_str(sd_str_buff);
 					sdinfo.type = (ocr[0] & 0x40) ? CT_SD2 | CT_BLOCK : CT_SD2; // SDv2 (HC or SC)
@@ -2471,11 +2854,13 @@ uint8_t sd_ini(void) {
 				cmd = CMD1; // MMCv3
 				            // sendToDebug_strln("MMCv3");
 			}
-			for (tmr = 25000; tmr && SD_cmd(cmd, 0); tmr--)
+			for (tmr = 25000; tmr && SD_cmd(cmd, 0); tmr--) {
 				; // Wait for leaving idle state
+			}
 			sdinfo.BLOCK_SIZE = 512;
-			if (!tmr || SD_cmd(CMD16, sdinfo.BLOCK_SIZE) != 0) // Set R/W block length to 512
+			if (!tmr || SD_cmd(CMD16, sdinfo.BLOCK_SIZE) != 0) { // Set R/W block length to 512
 				sdinfo.type = 0;
+			}
 		}
 
 		// GET_SECTOR_COUNT // Get drive capacity in unit of sector (DWORD)
@@ -2486,8 +2871,9 @@ uint8_t sd_ini(void) {
 
 			for (i = 0; i < 16; i++) {
 				csd[i] = SPI_ReceiveByte();
-				if (i == 0 && csd[i] >= 0xF0)
+				if (i == 0 && csd[i] >= 0xF0) {
 					csd[i] = SPI_ReceiveByte(); // repeat (clean buff)
+				}
 			}
 
 			/*char sd_str_buff[60]={0};

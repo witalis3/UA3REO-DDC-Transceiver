@@ -32,9 +32,10 @@ static void I2S_DMAError(DMA_HandleTypeDef *hdma);          // DMA I2S error
 // start the I2S bus
 void CODEC_start_i2s_and_dma(void) {
 	CODEC_CleanBuffer();
-	if (HAL_I2S_GetState(&HRDW_AUDIO_CODEC_I2S) == HAL_I2S_STATE_READY)
+	if (HAL_I2S_GetState(&HRDW_AUDIO_CODEC_I2S) == HAL_I2S_STATE_READY) {
 		HAL_I2S_TXRX_DMA(&HRDW_AUDIO_CODEC_I2S, (uint16_t *)&CODEC_Audio_Buffer_RX[0], (uint16_t *)&CODEC_Audio_Buffer_TX[0], CODEC_AUDIO_BUFFER_SIZE * 2,
 		                 CODEC_AUDIO_BUFFER_SIZE); // 32bit rx spi, 16bit tx spi
+	}
 }
 
 // clear the audio codec and USB audio buffer
@@ -56,8 +57,9 @@ void CODEC_Mute(void) {
 
 void CODEC_UnMute(void) {
 	CODEC_Muting = false;
-	if (!TRX_AFAmp_Mute)
+	if (!TRX_AFAmp_Mute) {
 		CODEC_UnMute_AF_AMP();
+	}
 }
 
 void CODEC_Mute_AF_AMP(void) {
@@ -82,12 +84,14 @@ void CODEC_Beep(void) {
 static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma) {
 	CPULOAD_WakeUp();
 	if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3) {
-		if (Processor_NeedRXBuffer) // if the audio codec did not provide data to the buffer, raise the error flag
+		if (Processor_NeedRXBuffer) { // if the audio codec did not provide data to the buffer, raise the error flag
 			CODEC_Buffer_underrun = true;
+		}
 		CODEC_DMA_state = true;
 		Processor_NeedRXBuffer = true;
-		if (CurrentVFO->Mode == TRX_MODE_LOOPBACK)
+		if (CurrentVFO->Mode == TRX_MODE_LOOPBACK) {
 			Processor_NeedTXBuffer = true;
+		}
 		CODEC_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE / 2);
 	}
 }
@@ -96,12 +100,14 @@ static void I2S_DMATxCplt(DMA_HandleTypeDef *hdma) {
 static void I2S_DMATxHalfCplt(DMA_HandleTypeDef *hdma) {
 	CPULOAD_WakeUp();
 	if (((I2S_HandleTypeDef *)((DMA_HandleTypeDef *)hdma)->Parent)->Instance == SPI3) {
-		if (Processor_NeedRXBuffer) // if the audio codec did not provide data to the buffer, raise the error flag
+		if (Processor_NeedRXBuffer) { // if the audio codec did not provide data to the buffer, raise the error flag
 			CODEC_Buffer_underrun = true;
+		}
 		CODEC_DMA_state = false;
 		Processor_NeedRXBuffer = true;
-		if (CurrentVFO->Mode == TRX_MODE_LOOPBACK)
+		if (CurrentVFO->Mode == TRX_MODE_LOOPBACK) {
 			Processor_NeedTXBuffer = true;
+		}
 		CODEC_DMA_samples += (CODEC_AUDIO_BUFFER_SIZE / 2);
 	}
 }
