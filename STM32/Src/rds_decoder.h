@@ -22,7 +22,7 @@
 #define RDS_FREQ (3.0f * SWFM_PILOT_TONE_FREQ) // 57khz
 #define RDS_LOW_FREQ 1187.5f                   // RDS signal baseband breq
 #define RDS_FILTER_WIDTH 2400
-//#define RDS_DECIMATOR 16 // and x8 for filtering
+// #define RDS_DECIMATOR 16 // and x8 for filtering
 #define RDS_STR_MAXLEN 34
 
 // Public variables

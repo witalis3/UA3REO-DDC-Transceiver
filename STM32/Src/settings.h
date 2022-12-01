@@ -45,14 +45,14 @@
 #define TX_LPF_TIMEOUT (180 * 1000)           // TX LPF On Timeout, millisec (3 min)
 #define SWR_PROTECTOR_MAX_POWER 20.0f         // drop down to PWR %, if SWR high
 
-//#define ADC_BITS 16																						// ADC bit depth
-//#define FPGA_BUS_BITS 32																				// bitness of data from FPGA
-//#define CODEC_BITS 32																					// bitness of data in the audio codec
-//#define FPGA_BUS_FULL_SCALE 65536																		// maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
-//#define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE * (float64_t)FPGA_BUS_FULL_SCALE)		// maximum bus signal magnitude //
+// #define ADC_BITS 16																						// ADC bit depth
+// #define FPGA_BUS_BITS 32																				// bitness of data from FPGA
+// #define CODEC_BITS 32																					// bitness of data in the audio codec
+// #define FPGA_BUS_FULL_SCALE 65536																		// maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
+// #define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE * (float64_t)FPGA_BUS_FULL_SCALE)		// maximum bus signal magnitude //
 //(FPGA_BUS_FULL_SCALE * FPGA_BUS_FULL_SCALE)
 #define CODEC_BITS_FULL_SCALE 4294967296 // maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
-//#define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE * (float64_t)CODEC_BITS_FULL_SCALE) // maximum bus signal magnitude //
+// #define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE * (float64_t)CODEC_BITS_FULL_SCALE) // maximum bus signal magnitude //
 //(FPGA_BUS_FULL_SCALE * FPGA_BUS )_FULL_SCALE
 #define USB_DEBUG_ENABLED true  // allow using USB as a console
 #define SWD_DEBUG_ENABLED false // enable SWD as a console

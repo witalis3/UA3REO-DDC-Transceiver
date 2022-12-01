@@ -25,7 +25,7 @@
 #define CWDECODER_FFTSIZE 256                           // FFT size for analysis
 #define CWDECODER_FFT_SAMPLES (DECODER_PACKET_SIZE * 4) // number of samples for analysis
 #define CWDECODER_FFTSIZE_HALF (CWDECODER_FFTSIZE / 2)  // half the size of the FFT
-//#define CWDECODER_MEAN_THRES 10.0f                      // Below this signal strength, we consider that it is noise
+// #define CWDECODER_MEAN_THRES 10.0f                      // Below this signal strength, we consider that it is noise
 #define CWDECODER_MAX_THRES 0.5f  // Below this signal strength, we consider that it is not active
 #define CWDECODER_MAX_SLIDE 0.99f // reduction factor for the maximum FFT threshold
 #define CWDECODER_ZOOMED_SAMPLES (DECODER_PACKET_SIZE / CWDECODER_MAGNIFY)

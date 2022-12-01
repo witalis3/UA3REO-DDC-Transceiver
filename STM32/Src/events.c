@@ -304,7 +304,7 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 		LCD_busy = false;
 	}
 #endif
-	
+
 	static bool needLCDDoEvents = true;
 	if (ms10_30_counter >= 3) // every 30ms
 	{

@@ -127,8 +127,8 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	// gain limitation
 	if (AGC->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain)
 		AGC->need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
-	
-	//overloading inducator
+
+	// overloading inducator
 	if (AGC->need_gain_db < 0)
 		APROC_IFGain_Overflow = true;
 

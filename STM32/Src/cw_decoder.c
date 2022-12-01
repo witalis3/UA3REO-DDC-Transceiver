@@ -106,7 +106,7 @@ void CWDecoder_Process(float32_t *bufferIn) {
 	for (uint16_t i = 0; i < CWDECODER_FFTSIZE; i++)
 		if (isinff(CWDEC_FFTBuffer[i]))
 			return;
-		
+
 	// Debug CWDecoder
 	/*for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE_HALF; i ++)
 	{

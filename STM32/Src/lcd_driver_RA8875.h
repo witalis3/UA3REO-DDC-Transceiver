@@ -8,8 +8,8 @@
 
 #define LCD_WIDTH 800
 #define LCD_HEIGHT 480
-//#define LCD_WIDTH 480
-//#define LCD_HEIGHT 320
+// #define LCD_WIDTH 480
+// #define LCD_HEIGHT 320
 #define LCD_TYPE_FSMC true
 #define HAS_BTE true
 #define HAS_BRIGHTNESS_CONTROL true

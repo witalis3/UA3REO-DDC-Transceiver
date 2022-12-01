@@ -11,21 +11,21 @@
 #include "encode.h"
 #include "ldpc.h"
 #include "unpack.h"
-//#include "button.h"
+// #include "button.h"
 
 #include "Process_DSP.h"
-//#include "display.h"
-//#include "options.h"
-//#include "log_file.h"
+// #include "display.h"
+// #include "options.h"
+// #include "log_file.h"
 #include "decode_ft8.h"
-//#include "locator_ft8.h"
-//#include "traffic_manager.h"
+// #include "locator_ft8.h"
+// #include "traffic_manager.h"
 
 #include "FT8_main.h"
 #include "lcd_driver.h"
 
-//#include "stm32h7xx_hal.h"
-//#include "main.h"
+// #include "stm32h7xx_hal.h"
+// #include "main.h"
 
 // char erase[] = "                   ";
 

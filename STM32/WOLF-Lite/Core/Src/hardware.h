@@ -20,7 +20,7 @@
 #define HRDW_USB_AUDIO_BITS 16
 #define HRDW_AUDIO_CODEC_WM8731 true
 #define HRDW_HAS_VGA false
-//#define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
+// #define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
 
 // settings
 #define ADC_CLOCK 61440000             // ADC generator frequency

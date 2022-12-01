@@ -3795,14 +3795,14 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		if (LCD_busy)
 			return;
 		LCD_busy = true;
-		
+
 		uint16_t font_size = LAYOUT->SYSMENU_FONT_SIZE;
 		if (LCD_WIDTH > 700) {
 			font_size *= 2;
 		}
 		uint16_t x_pos_clk = LCD_WIDTH / 2 - 4 * RASTR_FONT_W * font_size;
 		uint16_t y_pos_clk = LCD_HEIGHT / 2 - RASTR_FONT_H * font_size / 2;
-		
+
 		sprintf(ctmp, "%d", Hours);
 		addSymbols(ctmp, ctmp, 2, "0", false);
 		LCDDriver_printText(ctmp, x_pos_clk, y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 0 ? FG_COLOR : BG_COLOR, font_size);

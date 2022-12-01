@@ -2,7 +2,7 @@
 #include "Process_DSP.h"
 #include "decode_ft8.h"
 #include <stdbool.h>
-//#include "WF_Table.h"
+// #include "WF_Table.h"
 #include "FT8_GUI.h"
 #include "arm_math.h"
 #include "locator_ft8.h"
