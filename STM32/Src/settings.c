@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "6.5.0";
+const char version_string[19] = "6.6.0-dev";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -607,6 +607,29 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;         // Max TRX Power for indication
 #elif defined(FRONTPANEL_LITE)
 		CALIBRATE.smeter_calibration_hf = 15;
+		CALIBRATE.TUNE_MAX_POWER = 5;         // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER_ON_METER = 15; // Max TRX Power for indication
+#elif defined(FRONTPANEL_MINI)
+		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
+		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF
+		CALIBRATE.RFU_BPF_0_START = 135 * 1000 * 1000; // 2m
+		CALIBRATE.RFU_BPF_0_END = 150 * 1000 * 1000;   // 2m
+		CALIBRATE.RFU_BPF_1_START = 1500 * 1000;       // 160m
+		CALIBRATE.RFU_BPF_1_END = 2500 * 1000;         // 160m
+		CALIBRATE.RFU_BPF_2_START = 2500 * 1000;       // 80m
+		CALIBRATE.RFU_BPF_2_END = 4700 * 1000;         // 80m
+		CALIBRATE.RFU_BPF_3_START = 4700 * 1000;       // 40m
+		CALIBRATE.RFU_BPF_3_END = 8000 * 1000;         // 40m
+		CALIBRATE.RFU_BPF_4_START = 8000 * 1000;       // 30m,20m
+		CALIBRATE.RFU_BPF_4_END = 14700 * 1000;        // 30m,20m
+		CALIBRATE.RFU_BPF_5_START = 14700 * 1000;      // 20,17m
+		CALIBRATE.RFU_BPF_5_END = 22100 * 1000;        // 20,17m
+		CALIBRATE.RFU_BPF_6_START = 22100 * 1000;      // 15,12,10,6m
+		CALIBRATE.RFU_BPF_6_END = 60000 * 1000;        // 15,12,10,6m
+		CALIBRATE.RFU_BPF_7_START = 0;                 // disabled
+		CALIBRATE.RFU_BPF_7_END = 0;                   // disabled
+		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled
+		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled
 		CALIBRATE.TUNE_MAX_POWER = 5;         // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 15; // Max TRX Power for indication
 #else

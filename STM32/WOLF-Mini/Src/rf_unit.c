@@ -22,26 +22,27 @@ static uint8_t getBPFByFreq(uint32_t freq) {
 		return 1;
 	}
 	if (freq >= CALIBRATE.RFU_BPF_1_START && freq < CALIBRATE.RFU_BPF_1_END) {
-		return 2;
-	}
-	if (freq >= CALIBRATE.RFU_BPF_2_START && freq < CALIBRATE.RFU_BPF_2_END) {
-		return 3;
-	}
-	if (freq >= CALIBRATE.RFU_BPF_3_START && freq < CALIBRATE.RFU_BPF_3_END) {
-		return 4;
-	}
-	if (freq >= CALIBRATE.RFU_BPF_4_START && freq < CALIBRATE.RFU_BPF_4_END) {
-		return 5;
-	}
-	if (freq >= CALIBRATE.RFU_BPF_5_START && freq < CALIBRATE.RFU_BPF_5_END) {
-		return 6;
-	}
-	if (freq >= CALIBRATE.RFU_BPF_6_START && freq < CALIBRATE.RFU_BPF_6_END) {
-		return 7;
-	}
-	if (freq >= CALIBRATE.RFU_HPF_START) {
 		return 8;
 	}
+	if (freq >= CALIBRATE.RFU_BPF_2_START && freq < CALIBRATE.RFU_BPF_2_END) {
+		return 7;
+	}
+	if (freq >= CALIBRATE.RFU_BPF_3_START && freq < CALIBRATE.RFU_BPF_3_END) {
+		return 5;
+	}
+	if (freq >= CALIBRATE.RFU_BPF_4_START && freq < CALIBRATE.RFU_BPF_4_END) {
+		return 6;
+	}
+	if (freq >= CALIBRATE.RFU_BPF_5_START && freq < CALIBRATE.RFU_BPF_5_END) {
+		return 3;
+	}
+	if (freq >= CALIBRATE.RFU_BPF_6_START && freq < CALIBRATE.RFU_BPF_6_END) {
+		return 4;
+	}
+	if (freq >= CALIBRATE.RFU_HPF_START) {
+		return 2;
+	}
+	
 	return 255;
 }
 
@@ -174,14 +175,22 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			}
 
-			// U17-D7 BPF_B
-			//  if (registerNumber == 8)
-			// U17-D6 BPF_A
-			//  if (registerNumber == 9)
-			// U17-D5 BPF_C
-			//  if (registerNumber == 10)
-			// U17-D4 BPF_D
-			//  if (registerNumber == 11)
+			// U17-D7 BPF_A0
+			if (registerNumber == 8 && (bpf == 1 || bpf == 3 || bpf == 5 || bpf == 7)) {
+				SET_DATA_PIN;
+			}
+			// U17-D6 BPF_A1
+			if (registerNumber == 9 && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6)) {
+				SET_DATA_PIN;
+			}
+			// U17-D5 BPF_EN
+			if (registerNumber == 10 && (bpf == 1 || bpf == 2 || bpf == 3 || bpf == 4)) {
+				SET_DATA_PIN;
+			}
+			// U17-D4 BPF_2_EN
+			if (registerNumber == 11 && (bpf == 5 || bpf == 6 || bpf == 7 || bpf == 8)) {
+				SET_DATA_PIN;
+			}
 			// U17-D3 Net_PGA2
 			if (registerNumber == 12 && !VGA_2) {
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
