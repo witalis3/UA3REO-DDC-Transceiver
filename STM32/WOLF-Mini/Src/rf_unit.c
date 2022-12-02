@@ -76,7 +76,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	}
 
 	uint8_t bpf = getBPFByFreq(CurrentVFO->Freq);
-	uint8_t bpf_second = getBPFByFreq(SecondaryVFO->Freq);
+	//uint8_t bpf_second = getBPFByFreq(SecondaryVFO->Freq);
 
 	uint8_t band_out = 0;
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
@@ -144,11 +144,13 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET); // data
 		MINI_DELAY
 		if (!clean) {
-			// U16-D7 -
-			//  if (registerNumber == 0)
-			// U16-D6 Net_LNA
-			if (registerNumber == 1 && TRX.LNA) {
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			// U16-D7 BPF_2_A0
+			if (registerNumber == 0 && (bpf == 5 || bpf == 7)) {
+				SET_DATA_PIN;
+			}
+			// U16-D6 BPF_2_A1
+			if (registerNumber == 1 && (bpf == 5 || bpf == 6)) {
+				SET_DATA_PIN;
 			}
 			// U16-D5 ATT_ON_4
 			if (registerNumber == 2 && att_val_4) {
@@ -162,25 +164,25 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			if (registerNumber == 4 && att_val_16) {
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			}
-			// U16-D2 ATT_ON_0.5
-			if (registerNumber == 5 && att_val_05) {
+			// U16-D2 ATT_ON_1
+			if (registerNumber == 5 && att_val_1) {
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			}
-			// U16-D1 ATT_ON_1
-			if (registerNumber == 6 && att_val_1) {
+			// U16-D1 ATT_ON_2
+			if (registerNumber == 6 && att_val_2) {
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			}
-			// U16-D0 ATT_ON_2
-			if (registerNumber == 7 && att_val_2) {
+			// U16-D0 Net_LNA
+			if (registerNumber == 7 && TRX.LNA) {
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			}
 
 			// U17-D7 BPF_A0
-			if (registerNumber == 8 && (bpf == 1 || bpf == 3 || bpf == 5 || bpf == 7)) {
+			if (registerNumber == 8 && (bpf == 1 || bpf == 3)) {
 				SET_DATA_PIN;
 			}
 			// U17-D6 BPF_A1
-			if (registerNumber == 9 && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6)) {
+			if (registerNumber == 9 && (bpf == 1 || bpf == 2)) {
 				SET_DATA_PIN;
 			}
 			// U17-D5 BPF_EN
