@@ -1266,6 +1266,10 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			TRX_RX1_dBm_lowrate_time = HAL_GetTick();
 			TRX_RX1_dBm_lowrate = TRX_RX1_dBm_lowrate * 0.5f + TRX_RX1_dBm * 0.5f;
 		}
+		
+		//static float32_t TRX_RX1_dBm_measurement = 0;
+		//TRX_RX1_dBm_measurement = TRX_RX1_dBm_measurement * 0.99f + TRX_RX1_dBm * 0.01f;
+		//println(TRX_RX1_dBm_measurement);
 
 		float32_t s_width = 0.0f;
 		static uint16_t sql_stripe_x_pos_old = 0;
