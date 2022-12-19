@@ -231,11 +231,6 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					instance->last_agc_peak_time = HAL_GetTick();
 				}
 
-				// overloading inducator
-				if (instance->need_gain_db < 0) {
-					APROC_IFGain_Overflow = true;
-				}
-
 				// gain limiter
 				if (instance->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain) {
 					instance->need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
@@ -263,7 +258,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				// println("[SpectraAGC] Min: ", minValue, " AGC_RX_dbFS: ", AGC_RX_dbFS, " Gain: ", instance->need_gain_db);
 
 				// apply AGC
-				for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++) {
+				for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE * 2; idx++) {
 					instance->FFT_Buffer[idx] *= rateV;
 				}
 			}
