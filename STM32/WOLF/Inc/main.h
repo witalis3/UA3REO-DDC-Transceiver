@@ -195,6 +195,7 @@ void Error_Handler(void);
 #define KEY_IN_DOT_Pin GPIO_PIN_1
 #define KEY_IN_DOT_GPIO_Port GPIOE
 #define KEY_IN_DOT_EXTI_IRQn EXTI1_IRQn
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
