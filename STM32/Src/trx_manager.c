@@ -511,6 +511,28 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 			LCD_UpdateQuery.TopButtons = true;
 		}
 	}
+	
+	// Restore band settings
+	if (bandFromFreq >=0 && bandFromOldFreq != bandFromFreq) {
+		TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].IF_Gain;
+		TRX.LNA = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].LNA;
+		TRX.ATT = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT;
+		TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_selected;
+		TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_mode;
+		TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT_DB;
+		TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ADC_Driver;
+		TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ADC_PGA;
+		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].BEST_ATU_I;
+		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].BEST_ATU_C;
+		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].BEST_ATU_T;
+		CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].FM_SQL_threshold_dbm;
+		CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].DNR_Type;
+		CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].AGC;
+		CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].SQL;
+		TRX.FM_SQL_threshold_dbm_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].FM_SQL_threshold_dbm;
+		TRX.SQL_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].SQL;
+		TRX_Temporary_Stop_BandMap = false;
+	}
 
 	// SPLIT freq secondary VFO sync
 	if (TRX.SPLIT_Enabled && vfo == CurrentVFO) {
