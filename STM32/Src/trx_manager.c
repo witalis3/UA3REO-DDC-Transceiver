@@ -1787,7 +1787,7 @@ void BUTTONHANDLER_SCAN(uint32_t parameter) {
 	LCD_UpdateQuery.TopButtons = true;
 }
 
-void BUTTONHANDLER_PLAY(uint32_t parameter) {
+void BUTTONHANDLER_CQ(uint32_t parameter) {
 #if HRDW_HAS_SD
 	if (SD_RecordInProcess) {
 		SD_NeedStopRecord = true;

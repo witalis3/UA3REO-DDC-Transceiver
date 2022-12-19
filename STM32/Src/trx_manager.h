@@ -43,7 +43,7 @@ extern void BUTTONHANDLER_WPM(uint32_t parameter);
 extern void BUTTONHANDLER_KEYER(uint32_t parameter);
 extern void BUTTONHANDLER_SCAN(uint32_t parameter);
 extern void BUTTONHANDLER_REC(uint32_t parameter);
-extern void BUTTONHANDLER_PLAY(uint32_t parameter);
+extern void BUTTONHANDLER_CQ(uint32_t parameter);
 extern void BUTTONHANDLER_RIT(uint32_t parameter);
 extern void BUTTONHANDLER_XIT(uint32_t parameter);
 extern void BUTTONHANDLER_SPLIT(uint32_t parameter);
