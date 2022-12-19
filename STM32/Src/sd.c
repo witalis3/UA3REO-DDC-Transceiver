@@ -1039,6 +1039,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_2200m", (uint32_t *)&CALIBRATE.rf_out_power_2200m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_160m", (uint32_t *)&CALIBRATE.rf_out_power_160m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_80m", (uint32_t *)&CALIBRATE.rf_out_power_80m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_60m", (uint32_t *)&CALIBRATE.rf_out_power_60m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_40m", (uint32_t *)&CALIBRATE.rf_out_power_40m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_30m", (uint32_t *)&CALIBRATE.rf_out_power_30m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_20m", (uint32_t *)&CALIBRATE.rf_out_power_20m, SYSMENU_UINT8);
@@ -1050,6 +1051,11 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_6m", (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_4m", (uint32_t *)&CALIBRATE.rf_out_power_4m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_2m", (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_70cm", (uint32_t *)&CALIBRATE.rf_out_power_70cm, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_23cm", (uint32_t *)&CALIBRATE.rf_out_power_23cm, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_13cm", (uint32_t *)&CALIBRATE.rf_out_power_13cm, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_6cm", (uint32_t *)&CALIBRATE.rf_out_power_6cm, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_3cm", (uint32_t *)&CALIBRATE.rf_out_power_3cm, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.smeter_calibration_hf", (uint32_t *)&CALIBRATE.smeter_calibration_hf, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.smeter_calibration_vhf", (uint32_t *)&CALIBRATE.smeter_calibration_vhf, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.adc_offset", (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_INT16);
@@ -2038,6 +2044,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	if (strcmp(name, "CALIBRATE.rf_out_power_80m") == 0) {
 		CALIBRATE.rf_out_power_80m = (uint8_t)uintval;
 	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_60m") == 0) {
+		CALIBRATE.rf_out_power_60m = (uint8_t)uintval;
+	}
 	if (strcmp(name, "CALIBRATE.rf_out_power_40m") == 0) {
 		CALIBRATE.rf_out_power_40m = (uint8_t)uintval;
 	}
@@ -2070,6 +2079,21 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "CALIBRATE.rf_out_power_2m") == 0) {
 		CALIBRATE.rf_out_power_2m = (uint8_t)uintval;
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_70cm") == 0) {
+		CALIBRATE.rf_out_power_70cm = (uint8_t)uintval;
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_23cm") == 0) {
+		CALIBRATE.rf_out_power_23cm = (uint8_t)uintval;
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_13cm") == 0) {
+		CALIBRATE.rf_out_power_13cm = (uint8_t)uintval;
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_6cm") == 0) {
+		CALIBRATE.rf_out_power_6cm = (uint8_t)uintval;
+	}
+	if (strcmp(name, "CALIBRATE.rf_out_power_3cm") == 0) {
+		CALIBRATE.rf_out_power_3cm = (uint8_t)uintval;
 	}
 	if (strcmp(name, "CALIBRATE.smeter_calibration_hf") == 0) {
 		CALIBRATE.smeter_calibration_hf = (int16_t)intval;

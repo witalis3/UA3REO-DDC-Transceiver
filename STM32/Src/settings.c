@@ -496,6 +496,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_2200m = 29;        // 2200m
 		CALIBRATE.rf_out_power_160m = 29;         // 160m
 		CALIBRATE.rf_out_power_80m = 27;          // 80m
+		CALIBRATE.rf_out_power_60m = 27;          // 60m
 		CALIBRATE.rf_out_power_40m = 26;          // 40m
 		CALIBRATE.rf_out_power_30m = 26;          // 30m
 		CALIBRATE.rf_out_power_20m = 24;          // 20m
@@ -507,6 +508,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6m = 13;           // 6m
 		CALIBRATE.rf_out_power_4m = 13;           // 4m
 		CALIBRATE.rf_out_power_2m = 100;          // 2m
+		CALIBRATE.rf_out_power_70cm = 100;          // 70cm
+		CALIBRATE.rf_out_power_23cm = 100;          // 23cm
+		CALIBRATE.rf_out_power_13cm = 100;          // 13cm
+		CALIBRATE.rf_out_power_6cm = 100;          // 6cm
+		CALIBRATE.rf_out_power_3cm = 100;          // 3cm
 		CALIBRATE.smeter_calibration_hf = 0;      // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 0;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.adc_offset = 0;                 // Calibrate the offset at the ADC input (DC)
@@ -539,6 +545,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_2200m = 20;        // 2200m
 		CALIBRATE.rf_out_power_160m = 41;         // 160m
 		CALIBRATE.rf_out_power_80m = 29;          // 80m
+		CALIBRATE.rf_out_power_60m = 29;          // 60m
 		CALIBRATE.rf_out_power_40m = 26;          // 40m
 		CALIBRATE.rf_out_power_30m = 26;          // 30m
 		CALIBRATE.rf_out_power_20m = 32;          // 20m
@@ -550,6 +557,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6m = 20;           // 6m
 		CALIBRATE.rf_out_power_4m = 13;           // 4m
 		CALIBRATE.rf_out_power_2m = 20;           // 2m
+		CALIBRATE.rf_out_power_70cm = 20;          // 70cm
+		CALIBRATE.rf_out_power_23cm = 20;          // 23cm
+		CALIBRATE.rf_out_power_13cm = 20;          // 13cm
+		CALIBRATE.rf_out_power_6cm = 20;          // 6cm
+		CALIBRATE.rf_out_power_3cm = 20;          // 3cm
 		CALIBRATE.smeter_calibration_hf = 12;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 12;    // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.SWR_FWD_Calibration_HF = 10.0f; // SWR Transormator rate forward
@@ -566,6 +578,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_2200m = 16;             // 2200m
 		CALIBRATE.rf_out_power_160m = 26;              // 160m
 		CALIBRATE.rf_out_power_80m = 27;               // 80m
+		CALIBRATE.rf_out_power_60m = 27;               // 60m
 		CALIBRATE.rf_out_power_40m = 32;               // 40m
 		CALIBRATE.rf_out_power_30m = 31;               // 30m
 		CALIBRATE.rf_out_power_20m = 39;               // 20m
@@ -577,6 +590,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6m = 80;                // 6m
 		CALIBRATE.rf_out_power_4m = 80;                // 4m
 		CALIBRATE.rf_out_power_2m = 57;                // 2m
+		CALIBRATE.rf_out_power_70cm = 57;          // 70cm
+		CALIBRATE.rf_out_power_23cm = 57;          // 23cm
+		CALIBRATE.rf_out_power_13cm = 57;          // 13cm
+		CALIBRATE.rf_out_power_6cm = 57;          // 6cm
+		CALIBRATE.rf_out_power_3cm = 57;          // 3cm
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH

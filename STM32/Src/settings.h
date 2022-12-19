@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 #define SETT_VERSION 74         // Settings config version
-#define CALIB_VERSION 54        // Calibration config version
+#define CALIB_VERSION 55        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
@@ -668,6 +668,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t rf_out_power_2200m;
 	uint8_t rf_out_power_160m;
 	uint8_t rf_out_power_80m;
+	uint8_t rf_out_power_60m;
 	uint8_t rf_out_power_40m;
 	uint8_t rf_out_power_30m;
 	uint8_t rf_out_power_20m;
@@ -679,6 +680,11 @@ extern struct TRX_CALIBRATE {
 	uint8_t rf_out_power_6m;
 	uint8_t rf_out_power_4m;
 	uint8_t rf_out_power_2m;
+	uint8_t rf_out_power_70cm;
+	uint8_t rf_out_power_23cm;
+	uint8_t rf_out_power_13cm;
+	uint8_t rf_out_power_6cm;
+	uint8_t rf_out_power_3cm;
 	uint8_t ENCODER_DEBOUNCE;
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
