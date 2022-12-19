@@ -844,7 +844,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"RF GAIN 2200m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_2200m, SYSMENU_HANDL_CALIB_RF_GAIN_2200M},
     {"RF GAIN 160m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_160m, SYSMENU_HANDL_CALIB_RF_GAIN_160M},
     {"RF GAIN 80m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_80m, SYSMENU_HANDL_CALIB_RF_GAIN_80M},
-		{"RF GAIN 60m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_60m, SYSMENU_HANDL_CALIB_RF_GAIN_60M},
+    {"RF GAIN 60m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_60m, SYSMENU_HANDL_CALIB_RF_GAIN_60M},
     {"RF GAIN 40m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_40m, SYSMENU_HANDL_CALIB_RF_GAIN_40M},
     {"RF GAIN 30m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_30m, SYSMENU_HANDL_CALIB_RF_GAIN_30M},
     {"RF GAIN 20m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_20m, SYSMENU_HANDL_CALIB_RF_GAIN_20M},
@@ -857,11 +857,11 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"RF GAIN 6m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_HANDL_CALIB_RF_GAIN_6M},
     {"RF GAIN 4m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_4m, SYSMENU_HANDL_CALIB_RF_GAIN_4M},
     {"RF GAIN 2m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_HANDL_CALIB_RF_GAIN_2M},
-		{"RF GAIN 70cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_70cm, SYSMENU_HANDL_CALIB_RF_GAIN_70CM},
-		{"RF GAIN 23cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_23cm, SYSMENU_HANDL_CALIB_RF_GAIN_23CM},
-		{"RF GAIN 13cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_13cm, SYSMENU_HANDL_CALIB_RF_GAIN_13CM},
-		{"RF GAIN 6cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_6cm, SYSMENU_HANDL_CALIB_RF_GAIN_6CM},
-		{"RF GAIN 3cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_3cm, SYSMENU_HANDL_CALIB_RF_GAIN_3CM},
+    {"RF GAIN 70cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_70cm, SYSMENU_HANDL_CALIB_RF_GAIN_70CM},
+    {"RF GAIN 23cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_23cm, SYSMENU_HANDL_CALIB_RF_GAIN_23CM},
+    {"RF GAIN 13cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_13cm, SYSMENU_HANDL_CALIB_RF_GAIN_13CM},
+    {"RF GAIN 6cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_6cm, SYSMENU_HANDL_CALIB_RF_GAIN_6CM},
+    {"RF GAIN 3cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_3cm, SYSMENU_HANDL_CALIB_RF_GAIN_3CM},
 #endif
     {"S METER HF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_hf, SYSMENU_HANDL_CALIB_S_METER_HF},
     {"S METER VHF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_vhf, SYSMENU_HANDL_CALIB_S_METER_VHF},
@@ -4475,11 +4475,11 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.rf_out_power_6m = 13;                // 6m
 		CALIBRATE.rf_out_power_4m = 13;                // 4m
 		CALIBRATE.rf_out_power_2m = 100;               // 2m
-		CALIBRATE.rf_out_power_70cm = 100;          // 70cm
-		CALIBRATE.rf_out_power_23cm = 100;          // 23cm
-		CALIBRATE.rf_out_power_13cm = 100;          // 13cm
-		CALIBRATE.rf_out_power_6cm = 100;          // 6cm
-		CALIBRATE.rf_out_power_3cm = 100;          // 3cm
+		CALIBRATE.rf_out_power_70cm = 100;             // 70cm
+		CALIBRATE.rf_out_power_23cm = 100;             // 23cm
+		CALIBRATE.rf_out_power_13cm = 100;             // 13cm
+		CALIBRATE.rf_out_power_6cm = 100;              // 6cm
+		CALIBRATE.rf_out_power_3cm = 100;              // 3cm
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF U14-RF1
 		CALIBRATE.RFU_BPF_0_START = 138 * 1000 * 1000; // 2m U14-RF3
@@ -4528,8 +4528,8 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.rf_out_power_70cm = 50;          // 70cm
 		CALIBRATE.rf_out_power_23cm = 50;          // 23cm
 		CALIBRATE.rf_out_power_13cm = 50;          // 13cm
-		CALIBRATE.rf_out_power_6cm = 50;          // 6cm
-		CALIBRATE.rf_out_power_3cm = 50;          // 3cm
+		CALIBRATE.rf_out_power_6cm = 50;           // 6cm
+		CALIBRATE.rf_out_power_3cm = 50;           // 3cm
 		CALIBRATE.RFU_LPF_END = 0;                 // disabled in BIG version
 		CALIBRATE.RFU_HPF_START = 0;               // disabled in BIG version
 		CALIBRATE.RFU_BPF_0_START = 0 * 1000;      // 2200m
@@ -4597,11 +4597,11 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.rf_out_power_6m = 40;                // 6m
 		CALIBRATE.rf_out_power_4m = 40;                // 4m
 		CALIBRATE.rf_out_power_2m = 70;                // 2m
-		CALIBRATE.rf_out_power_70cm = 70;          // 70cm
-		CALIBRATE.rf_out_power_23cm = 70;          // 23cm
-		CALIBRATE.rf_out_power_13cm = 70;          // 13cm
-		CALIBRATE.rf_out_power_6cm = 70;          // 6cm
-		CALIBRATE.rf_out_power_3cm = 70;          // 3cm
+		CALIBRATE.rf_out_power_70cm = 70;              // 70cm
+		CALIBRATE.rf_out_power_23cm = 70;              // 23cm
+		CALIBRATE.rf_out_power_13cm = 70;              // 13cm
+		CALIBRATE.rf_out_power_6cm = 70;               // 6cm
+		CALIBRATE.rf_out_power_3cm = 70;               // 3cm
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH

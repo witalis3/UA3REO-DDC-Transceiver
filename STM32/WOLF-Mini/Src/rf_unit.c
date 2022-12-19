@@ -42,7 +42,7 @@ static uint8_t getBPFByFreq(uint32_t freq) {
 	if (freq >= CALIBRATE.RFU_HPF_START) {
 		return 2;
 	}
-	
+
 	return 255;
 }
 
@@ -76,7 +76,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	}
 
 	uint8_t bpf = getBPFByFreq(CurrentVFO->Freq);
-	//uint8_t bpf_second = getBPFByFreq(SecondaryVFO->Freq);
+	// uint8_t bpf_second = getBPFByFreq(SecondaryVFO->Freq);
 
 	uint8_t band_out = 0;
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);

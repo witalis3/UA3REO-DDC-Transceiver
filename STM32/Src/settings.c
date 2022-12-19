@@ -508,11 +508,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6m = 13;           // 6m
 		CALIBRATE.rf_out_power_4m = 13;           // 4m
 		CALIBRATE.rf_out_power_2m = 100;          // 2m
-		CALIBRATE.rf_out_power_70cm = 100;          // 70cm
-		CALIBRATE.rf_out_power_23cm = 100;          // 23cm
-		CALIBRATE.rf_out_power_13cm = 100;          // 13cm
-		CALIBRATE.rf_out_power_6cm = 100;          // 6cm
-		CALIBRATE.rf_out_power_3cm = 100;          // 3cm
+		CALIBRATE.rf_out_power_70cm = 100;        // 70cm
+		CALIBRATE.rf_out_power_23cm = 100;        // 23cm
+		CALIBRATE.rf_out_power_13cm = 100;        // 13cm
+		CALIBRATE.rf_out_power_6cm = 100;         // 6cm
+		CALIBRATE.rf_out_power_3cm = 100;         // 3cm
 		CALIBRATE.smeter_calibration_hf = 0;      // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 0;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.adc_offset = 0;                 // Calibrate the offset at the ADC input (DC)
@@ -557,9 +557,9 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6m = 20;           // 6m
 		CALIBRATE.rf_out_power_4m = 13;           // 4m
 		CALIBRATE.rf_out_power_2m = 20;           // 2m
-		CALIBRATE.rf_out_power_70cm = 20;          // 70cm
-		CALIBRATE.rf_out_power_23cm = 20;          // 23cm
-		CALIBRATE.rf_out_power_13cm = 20;          // 13cm
+		CALIBRATE.rf_out_power_70cm = 20;         // 70cm
+		CALIBRATE.rf_out_power_23cm = 20;         // 23cm
+		CALIBRATE.rf_out_power_13cm = 20;         // 13cm
 		CALIBRATE.rf_out_power_6cm = 20;          // 6cm
 		CALIBRATE.rf_out_power_3cm = 20;          // 3cm
 		CALIBRATE.smeter_calibration_hf = 12;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
@@ -590,11 +590,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6m = 80;                // 6m
 		CALIBRATE.rf_out_power_4m = 80;                // 4m
 		CALIBRATE.rf_out_power_2m = 57;                // 2m
-		CALIBRATE.rf_out_power_70cm = 57;          // 70cm
-		CALIBRATE.rf_out_power_23cm = 57;          // 23cm
-		CALIBRATE.rf_out_power_13cm = 57;          // 13cm
-		CALIBRATE.rf_out_power_6cm = 57;          // 6cm
-		CALIBRATE.rf_out_power_3cm = 57;          // 3cm
+		CALIBRATE.rf_out_power_70cm = 57;              // 70cm
+		CALIBRATE.rf_out_power_23cm = 57;              // 23cm
+		CALIBRATE.rf_out_power_13cm = 57;              // 13cm
+		CALIBRATE.rf_out_power_6cm = 57;               // 6cm
+		CALIBRATE.rf_out_power_3cm = 57;               // 3cm
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
@@ -648,8 +648,8 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_7_END = 0;                   // disabled
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled
-		CALIBRATE.TUNE_MAX_POWER = 5;         // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER_ON_METER = 15; // Max TRX Power for indication
+		CALIBRATE.TUNE_MAX_POWER = 5;                  // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER_ON_METER = 15;          // Max TRX Power for indication
 #else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF U14-RF1
