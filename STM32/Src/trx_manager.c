@@ -9,6 +9,7 @@
 #include "fpga.h"
 #include "front_unit.h"
 #include "functions.h"
+#include "filemanager.h"
 #include "hardware.h"
 #include "lcd.h"
 #include "main.h"
@@ -2418,4 +2419,10 @@ void BUTTONHANDLER_CESSB(uint32_t parameter) {
 
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
+}
+
+void BUTTONHANDLER_SCREENSHOT(uint32_t parameter) {
+	#if HRDW_HAS_SD
+	FILEMANAGER_SCREENSHOT_handler();
+	#endif
 }

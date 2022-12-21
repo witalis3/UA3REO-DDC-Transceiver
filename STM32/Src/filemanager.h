@@ -9,6 +9,10 @@
 #define FILEMANAGER_LISTING_MAX_FILELEN 40
 #define FILEMANAGER_LISTING_ITEMS_ON_PAGE (LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE - 4)
 
+#define FILEMANAGER_BYTES_PER_PIXEL 2
+#define FILEMANAGER_FILE_HEADER_SIZE 14
+#define FILEMANAGER_INFO_HEADER_SIZE 40
+
 typedef enum {
 	FILMAN_ACT_CANCEL,
 	FILMAN_ACT_DELETE,
@@ -31,5 +35,6 @@ extern void FILEMANAGER_EventSecondaryRotate(int8_t direction);
 extern void FILEMANAGER_OTAUpdate_handler(void);
 extern void FILEMANAGER_OTAUpdate_reset(void);
 extern void FILEMANAGER_StartRecCQWav(void);
+extern void FILEMANAGER_SCREENSHOT_handler(void);
 
 #endif
