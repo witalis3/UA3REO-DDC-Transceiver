@@ -377,8 +377,8 @@ void LoadSettings(bool clear) {
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 
 		// Default Bands settings
-		for (uint8_t i = 0; i < BANDS_COUNT; i++) {
-			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; // saved frequencies by bands
+		for (uint8_t i = 0; i < BANDS_COUNT; i++) { // saved frequencies by bands
+			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].defaultFreq;
 			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
 			TRX.BANDS_SAVED_SETTINGS[i].IF_Gain = TRX.IF_Gain;
 			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain = TRX.RF_Gain;
@@ -436,10 +436,10 @@ void LoadSettings(bool clear) {
 		SecondaryVFO = &TRX.VFO_A;
 	}
 
-	BANDS[BANDID_23cm].selectable = TRX.Transverter_23cm;
-	BANDS[BANDID_13cm].selectable = TRX.Transverter_13cm;
-	BANDS[BANDID_6cm].selectable = TRX.Transverter_6cm;
-	BANDS[BANDID_3cm].selectable = TRX.Transverter_3cm;
+	BAND_SELECTABLE[BANDID_23cm] = TRX.Transverter_23cm;
+	BAND_SELECTABLE[BANDID_13cm] = TRX.Transverter_13cm;
+	BAND_SELECTABLE[BANDID_6cm] = TRX.Transverter_6cm;
+	BAND_SELECTABLE[BANDID_3cm] = TRX.Transverter_3cm;
 }
 
 static void LoadSettingsFromEEPROM(void) {
@@ -807,10 +807,10 @@ void LoadCalibration(bool clear) {
 	}
 	EEPROM_PowerDown();
 	// enable bands
-	BANDS[BANDID_60m].selectable = CALIBRATE.ENABLE_60m_band;
-	BANDS[BANDID_4m].selectable = CALIBRATE.ENABLE_4m_band;
-	BANDS[BANDID_AIR].selectable = CALIBRATE.ENABLE_AIR_band;
-	BANDS[BANDID_Marine].selectable = CALIBRATE.ENABLE_marine_band;
+	BAND_SELECTABLE[BANDID_60m] = CALIBRATE.ENABLE_60m_band;
+	BAND_SELECTABLE[BANDID_4m] = CALIBRATE.ENABLE_4m_band;
+	BAND_SELECTABLE[BANDID_AIR] = CALIBRATE.ENABLE_AIR_band;
+	BAND_SELECTABLE[BANDID_Marine] = CALIBRATE.ENABLE_marine_band;
 
 	// load WiFi settings after calibrations
 	LoadWiFiSettings(false);

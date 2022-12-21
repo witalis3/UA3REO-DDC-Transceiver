@@ -1795,7 +1795,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_23CM(int8_t direction) {
 		TRX.Transverter_23cm = false;
 	}
 
-	BANDS[BANDID_23cm].selectable = TRX.Transverter_23cm;
+	BAND_SELECTABLE[BANDID_23cm] = TRX.Transverter_23cm;
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_13CM(int8_t direction) {
@@ -1806,7 +1806,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_13CM(int8_t direction) {
 		TRX.Transverter_13cm = false;
 	}
 
-	BANDS[BANDID_13cm].selectable = TRX.Transverter_13cm;
+	BAND_SELECTABLE[BANDID_13cm] = TRX.Transverter_13cm;
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction) {
@@ -1817,7 +1817,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction) {
 		TRX.Transverter_6cm = false;
 	}
 
-	BANDS[BANDID_6cm].selectable = TRX.Transverter_6cm;
+	BAND_SELECTABLE[BANDID_6cm] = TRX.Transverter_6cm;
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction) {
@@ -1828,7 +1828,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction) {
 		TRX.Transverter_3cm = false;
 	}
 
-	BANDS[BANDID_3cm].selectable = TRX.Transverter_3cm;
+	BAND_SELECTABLE[BANDID_3cm] = TRX.Transverter_3cm;
 }
 
 static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction) {
@@ -5891,7 +5891,7 @@ static void SYSMENU_HANDL_CALIB_ENABLE_60m_band(int8_t direction) {
 		CALIBRATE.ENABLE_60m_band = false;
 	}
 
-	BANDS[BANDID_60m].selectable = CALIBRATE.ENABLE_60m_band;
+	BAND_SELECTABLE[BANDID_60m] = CALIBRATE.ENABLE_60m_band;
 }
 
 static void SYSMENU_HANDL_CALIB_ENABLE_4m_band(int8_t direction) {
@@ -5902,7 +5902,7 @@ static void SYSMENU_HANDL_CALIB_ENABLE_4m_band(int8_t direction) {
 		CALIBRATE.ENABLE_4m_band = false;
 	}
 
-	BANDS[BANDID_4m].selectable = CALIBRATE.ENABLE_4m_band;
+	BAND_SELECTABLE[BANDID_4m] = CALIBRATE.ENABLE_4m_band;
 }
 
 static void SYSMENU_HANDL_CALIB_ENABLE_AIR_band(int8_t direction) {
@@ -5913,7 +5913,7 @@ static void SYSMENU_HANDL_CALIB_ENABLE_AIR_band(int8_t direction) {
 		CALIBRATE.ENABLE_AIR_band = false;
 	}
 
-	BANDS[BANDID_AIR].selectable = CALIBRATE.ENABLE_AIR_band;
+	BAND_SELECTABLE[BANDID_AIR] = CALIBRATE.ENABLE_AIR_band;
 }
 
 static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction) {
@@ -5924,7 +5924,7 @@ static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction) {
 		CALIBRATE.ENABLE_marine_band = false;
 	}
 
-	BANDS[BANDID_Marine].selectable = CALIBRATE.ENABLE_marine_band;
+	BAND_SELECTABLE[BANDID_Marine] = CALIBRATE.ENABLE_marine_band;
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom(int8_t direction) {

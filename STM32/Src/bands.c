@@ -3,18 +3,77 @@
 #include "settings.h"
 #include <stdlib.h>
 
-SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
+SRAM4 bool BAND_SELECTABLE[BANDS_COUNT] = {
+#ifndef FRONTPANEL_LITE
+    true, // 2200METERS
+#else
+    false,
+#endif
+    false, // LWBR
+    false, // MWBR
+    true,  // 160m
+    false, // BR 2.4
+    false, // BR 3.3
+    true,  // 80m
+    false, // BR 4.0
+    false, // BR 4.8
+    false, // BR 5.0
+    false, // 60m
+    false, // BR 6.0
+    true,  // 40m
+    false, // BR 7.3
+    false, // BR 9.6
+    true,  // 30m
+    false, // BR 11.9
+    false, // BR 13.7
+    true,  // 20m
+    false, // BR 15.5
+    false, // BR 17.7
+    true,  // 17m
+    false, // BR 19.0
+    true,  // 15m
+    false, // BR 21.6
+    true,  // 12m
+    false, // BR 25.8
+    true,  // CB
+    true,  // 10m
+#ifndef FRONTPANEL_LITE
+    true, // 6m
+#else
+    false,
+#endif
+    false, // 4m
+#ifndef FRONTPANEL_LITE
+    true, // FM
+#else
+    false,
+#endif
+    false, // AIR
+#ifndef FRONTPANEL_LITE
+    true, // 2m
+#else
+    false,
+#endif
+    false, // Marine
+#ifndef FRONTPANEL_LITE
+    true, // 70cm
+#else
+    false,
+#endif
+    false, // 23cm
+    false, // 13cm
+    false, // 6cm
+    false, // 3cm
+};
+
+const BAND_MAP BANDS[BANDS_COUNT] = {
     // 2200METERS
     {
         .name = "2200m",
-#ifndef FRONTPANEL_LITE
-        .selectable = true,
-#else
-        .selectable = false,
-#endif
         .broadcast = false,
         .startFreq = 135700,
         .endFreq = 137800,
+        .defaultFreq = 135750,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 135700, .endFreq = 137800, .mode = TRX_MODE_CW},
@@ -26,10 +85,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Long Wave Broadcast
     {
         .name = "LWBR",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 148500,
         .endFreq = 283500,
+        .defaultFreq = 200000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 148500, .endFreq = 283500, .mode = TRX_MODE_SAM},
@@ -41,10 +100,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Medium Wave Broadcast
     {
         .name = "MWBR",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 526500,
         .endFreq = 1606500,
+        .defaultFreq = 1500000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 526500, .endFreq = 1606500, .mode = TRX_MODE_SAM},
@@ -56,10 +115,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 160METERS
     {
         .name = "160m",
-        .selectable = true,
         .broadcast = false,
         .startFreq = 1810000,
         .endFreq = 2000000,
+        .defaultFreq = 1900000,
         .regions =
             (const REGION_MAP[3]){
                 {.startFreq = 1810000, .endFreq = 1838000, .mode = TRX_MODE_CW},
@@ -73,10 +132,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 2.4",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 2300000,
         .endFreq = 2468000,
+        .defaultFreq = 2400000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 2300000, .endFreq = 2468000, .mode = TRX_MODE_SAM},
@@ -88,10 +147,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 3.3",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 3200000,
         .endFreq = 3400000,
+        .defaultFreq = 3300000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 3200000, .endFreq = 3400000, .mode = TRX_MODE_SAM},
@@ -103,10 +162,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 80METERS
     {
         .name = "80m",
-        .selectable = true,
         .broadcast = false,
         .startFreq = 3500000,
         .endFreq = 3800000,
+        .defaultFreq = 3650000,
         .regions =
             (const REGION_MAP[3]){
                 {.startFreq = 3500000, .endFreq = 3570000, .mode = TRX_MODE_CW},
@@ -120,10 +179,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 4.0",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 3950000,
         .endFreq = 4000000,
+        .defaultFreq = 3980000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 3950000, .endFreq = 4000000, .mode = TRX_MODE_SAM},
@@ -135,10 +194,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 4.8",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 4750000,
         .endFreq = 4995000,
+        .defaultFreq = 4800000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 4750000, .endFreq = 4995000, .mode = TRX_MODE_SAM},
@@ -150,10 +209,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 5.0",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 5005000,
         .endFreq = 5060000,
+        .defaultFreq = 5020000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 5005000, .endFreq = 5060000, .mode = TRX_MODE_SAM},
@@ -165,10 +224,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 60METERS
     {
         .name = "60m",
-        .selectable = false,
         .broadcast = false,
         .startFreq = 5330500,
         .endFreq = 5403500,
+        .defaultFreq = 5350000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 5330500, .endFreq = 5403500, .mode = TRX_MODE_USB},
@@ -180,10 +239,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 6.0",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 5900000,
         .endFreq = 6200000,
+        .defaultFreq = 6000000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 5900000, .endFreq = 6200000, .mode = TRX_MODE_SAM},
@@ -195,10 +254,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 40METERS
     {
         .name = "40m",
-        .selectable = true,
         .broadcast = false,
         .startFreq = 7000000,
         .endFreq = 7200000,
+        .defaultFreq = 7100000,
         .regions =
             (const REGION_MAP[5]){
                 {.startFreq = 7000000, .endFreq = 7040000, .mode = TRX_MODE_CW},
@@ -214,10 +273,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 7.3",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 7200000,
         .endFreq = 7450000,
+        .defaultFreq = 7300000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 7200000, .endFreq = 7450000, .mode = TRX_MODE_SAM},
@@ -229,10 +288,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 9.6",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 9400000,
         .endFreq = 9900000,
+        .defaultFreq = 9600000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 9400000, .endFreq = 9900000, .mode = TRX_MODE_SAM},
@@ -244,10 +303,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 30METERS
     {
         .name = "30m",
-        .selectable = true,
         .broadcast = false,
         .startFreq = 10100000,
         .endFreq = 10150000,
+        .defaultFreq = 10140000,
         .regions =
             (const REGION_MAP[2]){
                 {.startFreq = 10100000, .endFreq = 10130000, .mode = TRX_MODE_CW},
@@ -260,10 +319,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 11.9",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 11600000,
         .endFreq = 12100000,
+        .defaultFreq = 11900000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 11600000, .endFreq = 12100000, .mode = TRX_MODE_SAM},
@@ -275,10 +334,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 13.7",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 13570000,
         .endFreq = 13870000,
+        .defaultFreq = 13700000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 13570000, .endFreq = 13870000, .mode = TRX_MODE_SAM},
@@ -290,10 +349,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 20METERS
     {
         .name = "20m",
-        .selectable = true,
         .broadcast = false,
         .startFreq = 14000000,
         .endFreq = 14350000,
+        .defaultFreq = 14150000,
         .regions =
             (const REGION_MAP[3]){
                 {.startFreq = 14000000, .endFreq = 14070000, .mode = TRX_MODE_CW},
@@ -307,10 +366,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 15.5",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 15100000,
         .endFreq = 15800000,
+        .defaultFreq = 15500000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 15100000, .endFreq = 15800000, .mode = TRX_MODE_SAM},
@@ -322,10 +381,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 17.7",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 17480000,
         .endFreq = 17900000,
+        .defaultFreq = 17700000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 17480000, .endFreq = 17900000, .mode = TRX_MODE_SAM},
@@ -337,10 +396,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 17METERS
     {
         .name = "17m",
-        .selectable = true,
         .broadcast = false,
         .startFreq = 18068000,
         .endFreq = 18168000,
+        .defaultFreq = 18120000,
         .regions =
             (const REGION_MAP[3]){
                 {.startFreq = 18068000, .endFreq = 18095000, .mode = TRX_MODE_CW},
@@ -354,10 +413,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 19.0",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 18900000,
         .endFreq = 19020000,
+        .defaultFreq = 19000000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 18900000, .endFreq = 19020000, .mode = TRX_MODE_SAM},
@@ -369,10 +428,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 15METERS
     {
         .name = "15m",
-        .selectable = true,
         .broadcast = false,
         .startFreq = 21000000,
         .endFreq = 21450000,
+        .defaultFreq = 21200000,
         .regions =
             (const REGION_MAP[4]){
                 {.startFreq = 21000000, .endFreq = 21070000, .mode = TRX_MODE_CW},
@@ -386,10 +445,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 21.6",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 21450000,
         .endFreq = 21850000,
+        .defaultFreq = 21600000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 21450000, .endFreq = 21850000, .mode = TRX_MODE_SAM},
@@ -401,10 +460,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 12METERS
     {
         .name = "12m",
-        .selectable = true,
         .broadcast = false,
         .startFreq = 24890000,
         .endFreq = 24990000,
+        .defaultFreq = 24940000,
         .regions =
             (const REGION_MAP[4]){
                 {.startFreq = 24890000, .endFreq = 24915000, .mode = TRX_MODE_CW},
@@ -418,10 +477,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // Shortwave Wave Broadcast
     {
         .name = "BR 25.8",
-        .selectable = false,
         .broadcast = true,
         .startFreq = 25670000,
         .endFreq = 26060000,
+        .defaultFreq = 25800000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 25670000, .endFreq = 26060000, .mode = TRX_MODE_SAM},
@@ -433,10 +492,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // CB
     {
         .name = "CB",
-        .selectable = true,
         .broadcast = false,
         .startFreq = 26065000,
         .endFreq = 27995000,
+        .defaultFreq = 27135000,
         .regions =
             (const REGION_MAP[3]){
                 {.startFreq = 26065000, .endFreq = 27130000, .mode = TRX_MODE_NFM},
@@ -555,10 +614,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 10METERS
     {
         .name = "10m",
-        .selectable = true,
         .broadcast = false,
         .startFreq = 28000000,
         .endFreq = 29700000,
+        .defaultFreq = 28350000,
         .regions =
             (const REGION_MAP[9]){
                 {.startFreq = 28000000, .endFreq = 28070000, .mode = TRX_MODE_CW},
@@ -578,14 +637,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 6 METERS
     {
         .name = "6m",
-#ifndef FRONTPANEL_LITE
-        .selectable = true,
-#else
-        .selectable = false,
-#endif
         .broadcast = false,
         .startFreq = 50000000,
         .endFreq = 54000000,
+        .defaultFreq = 51000000,
         .regions =
             (const REGION_MAP[7]){
                 {.startFreq = 50000000, .endFreq = 50100000, .mode = TRX_MODE_CW},
@@ -603,10 +658,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 4 METERS
     {
         .name = "4m",
-        .selectable = false,
         .broadcast = false,
         .startFreq = 70000000,
         .endFreq = 70500000,
+        .defaultFreq = 70200000,
         .regions =
             (const REGION_MAP[7]){
                 {.startFreq = 70000000, .endFreq = 70500000, .mode = TRX_MODE_USB},
@@ -618,14 +673,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // FM RADIO
     {
         .name = "FM",
-#ifndef FRONTPANEL_LITE
-        .selectable = true,
-#else
-        .selectable = false,
-#endif
         .broadcast = true,
         .startFreq = 70500000,
         .endFreq = 108000000,
+        .defaultFreq = 100000000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 70500000, .endFreq = 108000000, .mode = TRX_MODE_WFM},
@@ -637,10 +688,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // AIR BAND
     {
         .name = "AIR",
-        .selectable = false,
         .broadcast = false,
         .startFreq = 108000000,
         .endFreq = 137000000,
+        .defaultFreq = 135000000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 108000000, .endFreq = 137000000, .mode = TRX_MODE_AM},
@@ -652,14 +703,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 2 meter
     {
         .name = "2m",
-#ifndef FRONTPANEL_LITE
-        .selectable = true,
-#else
-        .selectable = false,
-#endif
         .broadcast = false,
         .startFreq = 144000000,
         .endFreq = 146000000,
+        .defaultFreq = 145000000,
         .regions =
             (const REGION_MAP[3]){
                 {.startFreq = 144000000, .endFreq = 144110000, .mode = TRX_MODE_CW},
@@ -699,10 +746,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // VHF Marine band
     {
         .name = "Marine",
-        .selectable = false,
         .broadcast = false,
         .startFreq = 156000000,
         .endFreq = 174000000,
+        .defaultFreq = 170000000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 156000000, .endFreq = 174000000, .mode = TRX_MODE_NFM},
@@ -760,14 +807,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 70cm
     {
         .name = "70cm",
-#ifndef FRONTPANEL_LITE
-        .selectable = true,
-#else
-        .selectable = false,
-#endif
         .broadcast = false,
         .startFreq = 430000000,
         .endFreq = 446200000,
+        .defaultFreq = 432200000,
         .regions =
             (const REGION_MAP[7]){
                 {.startFreq = 430000000, .endFreq = 432000000, .mode = TRX_MODE_NFM},
@@ -830,10 +873,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 23cm
     {
         .name = "23cm",
-        .selectable = false,
         .broadcast = false,
         .startFreq = 1260000000,
         .endFreq = 1300000000,
+        .defaultFreq = 1296000000,
         .regions =
             (const REGION_MAP[10]){
                 {.startFreq = 1260000000, .endFreq = 1270000000, .mode = TRX_MODE_NFM},
@@ -854,10 +897,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 13cm
     {
         .name = "13cm",
-        .selectable = false,
         .broadcast = false,
         .startFreq = 2320000000,
         .endFreq = 2450000000,
+        .defaultFreq = 2320100000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 2320000000, .endFreq = 2450000000, .mode = TRX_MODE_USB},
@@ -869,10 +912,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 6cm
     {
         .name = "6cm",
-        .selectable = false,
         .broadcast = false,
         .startFreq = 5650000000,
         .endFreq = 5850000000,
+        .defaultFreq = 5760000000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 5650000000, .endFreq = 5850000000, .mode = TRX_MODE_CW},
@@ -884,10 +927,10 @@ SRAM4 BAND_MAP BANDS[BANDS_COUNT] = {
     // 3cm
     {
         .name = "3cm",
-        .selectable = false,
         .broadcast = false,
         .startFreq = 10000000000,
         .endFreq = 10500000000,
+        .defaultFreq = 10368000000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 10000000000, .endFreq = 10500000000, .mode = TRX_MODE_CW},

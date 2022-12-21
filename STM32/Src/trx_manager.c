@@ -511,9 +511,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 			LCD_UpdateQuery.TopButtons = true;
 		}
 	}
-	
+
 	// Restore band settings
-	if (bandFromFreq >=0 && bandFromOldFreq != bandFromFreq) {
+	if (bandFromFreq >= 0 && bandFromOldFreq != bandFromFreq) {
 		TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].IF_Gain;
 		TRX.LNA = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].LNA;
 		TRX.ATT = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT;
@@ -1345,7 +1345,7 @@ void BUTTONHANDLER_BAND_P(uint32_t parameter) {
 	if (band >= BANDS_COUNT) {
 		band = 0;
 	}
-	while (!BANDS[band].selectable) {
+	while (!BAND_SELECTABLE[band]) {
 		band++;
 		if (band >= BANDS_COUNT) {
 			band = 0;
@@ -1398,7 +1398,7 @@ void BUTTONHANDLER_BAND_N(uint32_t parameter) {
 	if (band < 0) {
 		band = BANDS_COUNT - 1;
 	}
-	while (!BANDS[band].selectable) {
+	while (!BAND_SELECTABLE[band]) {
 		band--;
 		if (band < 0) {
 			band = BANDS_COUNT - 1;
