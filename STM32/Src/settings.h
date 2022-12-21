@@ -392,6 +392,12 @@ typedef struct {
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
 } BAND_SAVED_SETTINGS_TYPE;
 
+// Save memory channels
+typedef struct {
+	uint64_t Freq;
+	uint8_t Mode;
+} CHANNEL_SAVED_SETTINGS_TYPE;
+
 extern struct TRX_SETTINGS {
 	uint8_t flash_id; // version check
 	bool NeedGoToBootloader;
@@ -770,7 +776,7 @@ extern struct TRX_CALIBRATE {
 	bool TOUCHPAD_horizontal_flip;
 	bool INA226_EN; // Tisho
 	bool LinearPowerControl;
-	BAND_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
+	CHANNEL_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 	uint32_t BAND_MEMORIES[BANDS_COUNT][BANDS_MEMORIES_COUNT];
 
 	uint8_t csum;   // check sum
