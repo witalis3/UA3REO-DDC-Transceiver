@@ -28,8 +28,8 @@ static bool start_rec_cqmessage = false;
 static void FILEMANAGER_Refresh(void);
 static void FILEMANAGER_OpenDialog(void);
 static void FILEMANAGER_DialogAction(void);
-static unsigned char* FILEMANAGER_createBitmapFileHeader (int height, int stride);
-static unsigned char* FILEMANAGER_createBitmapInfoHeader (int height, int width);
+static unsigned char *FILEMANAGER_createBitmapFileHeader(int height, int stride);
+static unsigned char *FILEMANAGER_createBitmapInfoHeader(int height, int width);
 
 #ifdef LCD_SMALL_INTERFACE
 #define margin_bottom 10
@@ -853,10 +853,10 @@ void FILEMANAGER_SCREENSHOT_handler(void) {
 		LCD_showTooltip("SD not ready");
 		return;
 	}
-	
+
 	uint32_t start_time = HAL_GetTick();
 	while (LCD_busy) {
-		if((HAL_GetTick() - start_time) < 1000) {
+		if ((HAL_GetTick() - start_time) < 1000) {
 			CPULOAD_GoToSleepMode();
 		} else {
 			LCD_showTooltip("LCD busy");
@@ -864,7 +864,7 @@ void FILEMANAGER_SCREENSHOT_handler(void) {
 		}
 	}
 	LCD_busy = true;
-	
+
 	char filename[64] = {0};
 	RTC_TimeTypeDef sTime = {0};
 	RTC_DateTypeDef sDate = {0};
@@ -872,34 +872,34 @@ void FILEMANAGER_SCREENSHOT_handler(void) {
 	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 	sprintf(filename, "screenshot-%02d.%02d.%02d-%02d.%02d.%02d.bmp", sDate.Date, sDate.Month, sDate.Year, sTime.Hours, sTime.Minutes, sTime.Seconds);
 	println(filename);
-	
+
 	if (f_open(&File, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK) {
 		uint32_t byteswritten;
-		
-		//write BMP header
+
+		// write BMP header
 		int widthInBytes = LCD_WIDTH * FILEMANAGER_BYTES_PER_PIXEL;
 
-    unsigned char padding[3] = {0, 0, 0};
-    int paddingSize = (4 - (widthInBytes) % 4) % 4;
-    int stride = (widthInBytes) + paddingSize;
-		
-    unsigned char* fileHeader = FILEMANAGER_createBitmapFileHeader(LCD_HEIGHT, stride);
+		unsigned char padding[3] = {0, 0, 0};
+		int paddingSize = (4 - (widthInBytes) % 4) % 4;
+		int stride = (widthInBytes) + paddingSize;
+
+		unsigned char *fileHeader = FILEMANAGER_createBitmapFileHeader(LCD_HEIGHT, stride);
 		f_write(&File, fileHeader, FILEMANAGER_FILE_HEADER_SIZE, (void *)&byteswritten);
 
-    unsigned char* infoHeader = FILEMANAGER_createBitmapInfoHeader(LCD_HEIGHT, LCD_WIDTH);
+		unsigned char *infoHeader = FILEMANAGER_createBitmapInfoHeader(LCD_HEIGHT, LCD_WIDTH);
 		f_write(&File, infoHeader, FILEMANAGER_INFO_HEADER_SIZE, (void *)&byteswritten);
 
-		//write BMP data
+		// write BMP data
 		uint32_t current_index = 0;
 		uint32_t readed = 0;
-		
+
 		do {
 			readed = LCDDriver_readScreenPixelsToBMP(SD_workbuffer_A, &current_index, sizeof(SD_workbuffer_A) - 16, paddingSize);
 			f_write(&File, SD_workbuffer_A, readed, (void *)&byteswritten);
-		} while(readed > 0);
-		
+		} while (readed > 0);
+
 		f_close(&File);
-		
+
 		LCD_busy = false;
 		LCD_showTooltip("Screenshot saved");
 	} else {
@@ -911,57 +911,54 @@ void FILEMANAGER_SCREENSHOT_handler(void) {
 	}
 }
 
-static unsigned char* FILEMANAGER_createBitmapFileHeader (int height, int stride)
-{
-    int fileSize = FILEMANAGER_FILE_HEADER_SIZE + FILEMANAGER_INFO_HEADER_SIZE + (stride * height);
+static unsigned char *FILEMANAGER_createBitmapFileHeader(int height, int stride) {
+	int fileSize = FILEMANAGER_FILE_HEADER_SIZE + FILEMANAGER_INFO_HEADER_SIZE + (stride * height);
 
-    static unsigned char fileHeader[] = {
-        0,0,     /// signature
-        0,0,0,0, /// image file size in bytes
-        0,0,0,0, /// reserved
-        0,0,0,0, /// start of pixel array
-    };
+	static unsigned char fileHeader[] = {
+	    0, 0,       /// signature
+	    0, 0, 0, 0, /// image file size in bytes
+	    0, 0, 0, 0, /// reserved
+	    0, 0, 0, 0, /// start of pixel array
+	};
 
-    fileHeader[ 0] = (unsigned char)('B');
-    fileHeader[ 1] = (unsigned char)('M');
-    fileHeader[ 2] = (unsigned char)(fileSize      );
-    fileHeader[ 3] = (unsigned char)(fileSize >>  8);
-    fileHeader[ 4] = (unsigned char)(fileSize >> 16);
-    fileHeader[ 5] = (unsigned char)(fileSize >> 24);
-    fileHeader[10] = (unsigned char)(FILEMANAGER_FILE_HEADER_SIZE + FILEMANAGER_INFO_HEADER_SIZE);
+	fileHeader[0] = (unsigned char)('B');
+	fileHeader[1] = (unsigned char)('M');
+	fileHeader[2] = (unsigned char)(fileSize);
+	fileHeader[3] = (unsigned char)(fileSize >> 8);
+	fileHeader[4] = (unsigned char)(fileSize >> 16);
+	fileHeader[5] = (unsigned char)(fileSize >> 24);
+	fileHeader[10] = (unsigned char)(FILEMANAGER_FILE_HEADER_SIZE + FILEMANAGER_INFO_HEADER_SIZE);
 
-    return fileHeader;
+	return fileHeader;
 }
 
-static unsigned char* FILEMANAGER_createBitmapInfoHeader (int height, int width)
-{
-    static unsigned char infoHeader[] = {
-        0,0,0,0, /// header size
-        0,0,0,0, /// image width
-        0,0,0,0, /// image height
-        1,0,     /// number of color planes
-        0,0,     /// bits per pixel
-        0,0,0,0, /// compression
-        0,0,0,0, /// image size
-        0,0,0,0, /// horizontal resolution
-        0,0,0,0, /// vertical resolution
-        0,0,0,0, /// colors in color table
-        0,0,0,0, /// important color count
-    };
+static unsigned char *FILEMANAGER_createBitmapInfoHeader(int height, int width) {
+	static unsigned char infoHeader[] = {
+	    0, 0, 0, 0, /// header size
+	    0, 0, 0, 0, /// image width
+	    0, 0, 0, 0, /// image height
+	    1, 0,       /// number of color planes
+	    0, 0,       /// bits per pixel
+	    0, 0, 0, 0, /// compression
+	    0, 0, 0, 0, /// image size
+	    0, 0, 0, 0, /// horizontal resolution
+	    0, 0, 0, 0, /// vertical resolution
+	    0, 0, 0, 0, /// colors in color table
+	    0, 0, 0, 0, /// important color count
+	};
 
-    infoHeader[ 0] = (unsigned char)(FILEMANAGER_INFO_HEADER_SIZE);
-    infoHeader[ 4] = (unsigned char)(width      );
-    infoHeader[ 5] = (unsigned char)(width >>  8);
-    infoHeader[ 6] = (unsigned char)(width >> 16);
-    infoHeader[ 7] = (unsigned char)(width >> 24);
-    infoHeader[ 8] = (unsigned char)(-height      );
-    infoHeader[ 9] = (unsigned char)(-height >>  8);
-    infoHeader[10] = (unsigned char)(-height >> 16);
-    infoHeader[11] = (unsigned char)(-height >> 24);
-    infoHeader[14] = (unsigned char)(FILEMANAGER_BYTES_PER_PIXEL * 8);
+	infoHeader[0] = (unsigned char)(FILEMANAGER_INFO_HEADER_SIZE);
+	infoHeader[4] = (unsigned char)(width);
+	infoHeader[5] = (unsigned char)(width >> 8);
+	infoHeader[6] = (unsigned char)(width >> 16);
+	infoHeader[7] = (unsigned char)(width >> 24);
+	infoHeader[8] = (unsigned char)(-height);
+	infoHeader[9] = (unsigned char)(-height >> 8);
+	infoHeader[10] = (unsigned char)(-height >> 16);
+	infoHeader[11] = (unsigned char)(-height >> 24);
+	infoHeader[14] = (unsigned char)(FILEMANAGER_BYTES_PER_PIXEL * 8);
 
-    return infoHeader;
+	return infoHeader;
 }
-
 
 #endif

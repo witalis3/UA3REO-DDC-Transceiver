@@ -6,10 +6,10 @@
 #include "codec.h"
 #include "cw.h"
 #include "cw_decoder.h"
+#include "filemanager.h"
 #include "fpga.h"
 #include "front_unit.h"
 #include "functions.h"
-#include "filemanager.h"
 #include "hardware.h"
 #include "lcd.h"
 #include "main.h"
@@ -2257,7 +2257,7 @@ void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter) {
 
 	TRX.SQL_shadow = CurrentVFO->SQL;
 	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
-	
+
 	TRX_Temporary_Stop_BandMap = false;
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
@@ -2276,17 +2276,17 @@ void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
 
 	LCD_closeWindow();
 
-	if(CALIBRATE.MEMORY_CHANNELS[channel].Freq == CurrentVFO->Freq) {
+	if (CALIBRATE.MEMORY_CHANNELS[channel].Freq == CurrentVFO->Freq) {
 		CALIBRATE.MEMORY_CHANNELS[channel].Freq = 0;
-		
+
 		LCD_showTooltip("Channel removed");
 	} else {
 		CALIBRATE.MEMORY_CHANNELS[channel].Freq = CurrentVFO->Freq;
 		CALIBRATE.MEMORY_CHANNELS[channel].Mode = CurrentVFO->Mode;
-		
+
 		LCD_showTooltip("Channel saved");
 	}
-	
+
 	NeedSaveCalibration = true;
 }
 
@@ -2422,7 +2422,7 @@ void BUTTONHANDLER_CESSB(uint32_t parameter) {
 }
 
 void BUTTONHANDLER_SCREENSHOT(uint32_t parameter) {
-	#if HRDW_HAS_SD
+#if HRDW_HAS_SD
 	FILEMANAGER_SCREENSHOT_handler();
-	#endif
+#endif
 }
