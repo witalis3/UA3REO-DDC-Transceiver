@@ -94,7 +94,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **PRE [clamp]** - Turn on the driver and / or amplifier ADC
 * **ATT** - Turn on the attenuator
 * **REC** - Save audio to SD card
-* **PLAY** - Play recorded CQ-message from SD card
+* **CQ** - Play recorded CQ-message from SD card
 * **MUTE** - Mute the sound
 * **MUTE [clamp]** - Scanner mode
 * **AGC** - Turn on AGC (automatic gain control)

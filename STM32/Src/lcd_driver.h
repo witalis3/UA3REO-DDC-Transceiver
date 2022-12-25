@@ -140,7 +140,8 @@ extern void LCDDriver_printImage_RLECompressed_StartStream(uint16_t x, uint16_t 
 extern void LCDDriver_printImage_RLECompressed_ContinueStream(int16_t *data, uint16_t len);
 extern void LCDDriver_drawRoundedRectWH(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t color, uint16_t radius, bool filled);
 extern void LCDDriver_fadeScreen(float32_t brightness);
-void LCDDriver_printImage_JPEGCompressed(uint16_t x, uint16_t y, const uint8_t *image);
+extern uint32_t LCDDriver_readScreenPixelsToBMP(uint8_t *buffer, uint32_t *current_index, uint32_t max_count, uint32_t paddingSize);
+void LCDDriver_printImage_JPEGCompressed(uint16_t x, uint16_t y, const uint8_t *image, uint32_t size);
 
 // BTE functions
 void LCDDriver_BTE_copyArea(uint16_t sx, uint16_t sy, uint16_t dx, uint16_t dy, uint16_t w, uint16_t h, bool fromEnd);

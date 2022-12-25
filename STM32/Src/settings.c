@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "6.5.0";
+const char version_string[19] = "6.6.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -377,8 +377,8 @@ void LoadSettings(bool clear) {
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 
 		// Default Bands settings
-		for (uint8_t i = 0; i < BANDS_COUNT; i++) {
-			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].startFreq + (BANDS[i].endFreq - BANDS[i].startFreq) / 2; // saved frequencies by bands
+		for (uint8_t i = 0; i < BANDS_COUNT; i++) { // saved frequencies by bands
+			TRX.BANDS_SAVED_SETTINGS[i].Freq = BANDS[i].defaultFreq;
 			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)getModeFromFreq(TRX.BANDS_SAVED_SETTINGS[i].Freq);
 			TRX.BANDS_SAVED_SETTINGS[i].IF_Gain = TRX.IF_Gain;
 			TRX.BANDS_SAVED_SETTINGS[i].RF_Gain = TRX.RF_Gain;
@@ -436,10 +436,10 @@ void LoadSettings(bool clear) {
 		SecondaryVFO = &TRX.VFO_A;
 	}
 
-	BANDS[BANDID_23cm].selectable = TRX.Transverter_23cm;
-	BANDS[BANDID_13cm].selectable = TRX.Transverter_13cm;
-	BANDS[BANDID_6cm].selectable = TRX.Transverter_6cm;
-	BANDS[BANDID_3cm].selectable = TRX.Transverter_3cm;
+	BAND_SELECTABLE[BANDID_23cm] = TRX.Transverter_23cm;
+	BAND_SELECTABLE[BANDID_13cm] = TRX.Transverter_13cm;
+	BAND_SELECTABLE[BANDID_6cm] = TRX.Transverter_6cm;
+	BAND_SELECTABLE[BANDID_3cm] = TRX.Transverter_3cm;
 }
 
 static void LoadSettingsFromEEPROM(void) {
@@ -496,6 +496,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_2200m = 29;        // 2200m
 		CALIBRATE.rf_out_power_160m = 29;         // 160m
 		CALIBRATE.rf_out_power_80m = 27;          // 80m
+		CALIBRATE.rf_out_power_60m = 27;          // 60m
 		CALIBRATE.rf_out_power_40m = 26;          // 40m
 		CALIBRATE.rf_out_power_30m = 26;          // 30m
 		CALIBRATE.rf_out_power_20m = 24;          // 20m
@@ -507,6 +508,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6m = 13;           // 6m
 		CALIBRATE.rf_out_power_4m = 13;           // 4m
 		CALIBRATE.rf_out_power_2m = 100;          // 2m
+		CALIBRATE.rf_out_power_70cm = 100;        // 70cm
+		CALIBRATE.rf_out_power_23cm = 100;        // 23cm
+		CALIBRATE.rf_out_power_13cm = 100;        // 13cm
+		CALIBRATE.rf_out_power_6cm = 100;         // 6cm
+		CALIBRATE.rf_out_power_3cm = 100;         // 3cm
 		CALIBRATE.smeter_calibration_hf = 0;      // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 0;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.adc_offset = 0;                 // Calibrate the offset at the ADC input (DC)
@@ -534,11 +540,12 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_4_END = 22100 * 1000;
 		CALIBRATE.RFU_BPF_5_START = 22100 * 1000;
 		CALIBRATE.RFU_BPF_5_END = 32000 * 1000;
-		CALIBRATE.RFU_BPF_6_START = 135000 * 1000;
+		CALIBRATE.RFU_BPF_6_START = 138000 * 1000;
 		CALIBRATE.RFU_BPF_6_END = 150000 * 1000;
 		CALIBRATE.rf_out_power_2200m = 20;        // 2200m
 		CALIBRATE.rf_out_power_160m = 41;         // 160m
 		CALIBRATE.rf_out_power_80m = 29;          // 80m
+		CALIBRATE.rf_out_power_60m = 29;          // 60m
 		CALIBRATE.rf_out_power_40m = 26;          // 40m
 		CALIBRATE.rf_out_power_30m = 26;          // 30m
 		CALIBRATE.rf_out_power_20m = 32;          // 20m
@@ -550,6 +557,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6m = 20;           // 6m
 		CALIBRATE.rf_out_power_4m = 13;           // 4m
 		CALIBRATE.rf_out_power_2m = 20;           // 2m
+		CALIBRATE.rf_out_power_70cm = 20;         // 70cm
+		CALIBRATE.rf_out_power_23cm = 20;         // 23cm
+		CALIBRATE.rf_out_power_13cm = 20;         // 13cm
+		CALIBRATE.rf_out_power_6cm = 20;          // 6cm
+		CALIBRATE.rf_out_power_3cm = 20;          // 3cm
 		CALIBRATE.smeter_calibration_hf = 12;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 12;    // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.SWR_FWD_Calibration_HF = 10.0f; // SWR Transormator rate forward
@@ -566,6 +578,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_2200m = 16;             // 2200m
 		CALIBRATE.rf_out_power_160m = 26;              // 160m
 		CALIBRATE.rf_out_power_80m = 27;               // 80m
+		CALIBRATE.rf_out_power_60m = 27;               // 60m
 		CALIBRATE.rf_out_power_40m = 32;               // 40m
 		CALIBRATE.rf_out_power_30m = 31;               // 30m
 		CALIBRATE.rf_out_power_20m = 39;               // 20m
@@ -577,6 +590,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6m = 80;                // 6m
 		CALIBRATE.rf_out_power_4m = 80;                // 4m
 		CALIBRATE.rf_out_power_2m = 57;                // 2m
+		CALIBRATE.rf_out_power_70cm = 57;              // 70cm
+		CALIBRATE.rf_out_power_23cm = 57;              // 23cm
+		CALIBRATE.rf_out_power_13cm = 57;              // 13cm
+		CALIBRATE.rf_out_power_6cm = 57;               // 6cm
+		CALIBRATE.rf_out_power_3cm = 57;               // 3cm
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
@@ -593,7 +611,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_5_END = 21500 * 1000;        //
 		CALIBRATE.RFU_BPF_6_START = 21500 * 1000;      // 21.5-30 mHz
 		CALIBRATE.RFU_BPF_6_END = 30000 * 1000;        //
-		CALIBRATE.RFU_BPF_7_START = 135 * 1000 * 1000; // 135-150mHz
+		CALIBRATE.RFU_BPF_7_START = 138 * 1000 * 1000; // 138-150mHz
 		CALIBRATE.RFU_BPF_7_END = 150 * 1000 * 1000;   //
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled
@@ -609,10 +627,33 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.smeter_calibration_hf = 15;
 		CALIBRATE.TUNE_MAX_POWER = 5;         // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 15; // Max TRX Power for indication
+#elif defined(FRONTPANEL_MINI)
+		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
+		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF
+		CALIBRATE.RFU_BPF_0_START = 138 * 1000 * 1000; // 2m
+		CALIBRATE.RFU_BPF_0_END = 150 * 1000 * 1000;   // 2m
+		CALIBRATE.RFU_BPF_1_START = 1500 * 1000;       // 160m
+		CALIBRATE.RFU_BPF_1_END = 2500 * 1000;         // 160m
+		CALIBRATE.RFU_BPF_2_START = 2500 * 1000;       // 80m
+		CALIBRATE.RFU_BPF_2_END = 4700 * 1000;         // 80m
+		CALIBRATE.RFU_BPF_3_START = 4700 * 1000;       // 40m
+		CALIBRATE.RFU_BPF_3_END = 8000 * 1000;         // 40m
+		CALIBRATE.RFU_BPF_4_START = 8000 * 1000;       // 30m,20m
+		CALIBRATE.RFU_BPF_4_END = 14700 * 1000;        // 30m,20m
+		CALIBRATE.RFU_BPF_5_START = 14700 * 1000;      // 20,17m
+		CALIBRATE.RFU_BPF_5_END = 22100 * 1000;        // 20,17m
+		CALIBRATE.RFU_BPF_6_START = 22100 * 1000;      // 15,12,10,6m
+		CALIBRATE.RFU_BPF_6_END = 60000 * 1000;        // 15,12,10,6m
+		CALIBRATE.RFU_BPF_7_START = 0;                 // disabled
+		CALIBRATE.RFU_BPF_7_END = 0;                   // disabled
+		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled
+		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled
+		CALIBRATE.TUNE_MAX_POWER = 5;                  // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER_ON_METER = 15;          // Max TRX Power for indication
 #else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF U14-RF1
-		CALIBRATE.RFU_BPF_0_START = 135 * 1000 * 1000; // 2m U14-RF3
+		CALIBRATE.RFU_BPF_0_START = 138 * 1000 * 1000; // 2m U14-RF3
 		CALIBRATE.RFU_BPF_0_END = 150 * 1000 * 1000;   // 2m
 		CALIBRATE.RFU_BPF_1_START = 1500 * 1000;       // 160m U16-RF2
 		CALIBRATE.RFU_BPF_1_END = 2400 * 1000;         // 160m
@@ -726,26 +767,7 @@ void LoadCalibration(bool clear) {
 		// Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
 			CALIBRATE.MEMORY_CHANNELS[i].Freq = 0;
-			CALIBRATE.MEMORY_CHANNELS[i].Mode = (uint8_t)getModeFromFreq(CALIBRATE.MEMORY_CHANNELS[i].Freq);
-			CALIBRATE.MEMORY_CHANNELS[i].IF_Gain = TRX.IF_Gain;
-			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain = TRX.RF_Gain;
-			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_CW = TRX.RF_Gain;
-			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_SSB = TRX.RF_Gain;
-			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_FM = TRX.RF_Gain;
-			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_AM = TRX.RF_Gain;
-			CALIBRATE.MEMORY_CHANNELS[i].RF_Gain_By_Mode_DIGI = TRX.RF_Gain;
-			CALIBRATE.MEMORY_CHANNELS[i].LNA = TRX.LNA;
-			CALIBRATE.MEMORY_CHANNELS[i].ATT = TRX.ATT;
-			CALIBRATE.MEMORY_CHANNELS[i].ATT_DB = TRX.ATT_DB;
-			CALIBRATE.MEMORY_CHANNELS[i].ANT_selected = TRX.ANT_selected;
-			CALIBRATE.MEMORY_CHANNELS[i].ANT_mode = TRX.ANT_mode;
-			CALIBRATE.MEMORY_CHANNELS[i].ADC_Driver = TRX.ADC_Driver;
-			CALIBRATE.MEMORY_CHANNELS[i].SQL = false;
-			CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold_dbm = TRX.VFO_A.FM_SQL_threshold_dbm;
-			CALIBRATE.MEMORY_CHANNELS[i].ADC_PGA = TRX.ADC_PGA;
-			CALIBRATE.MEMORY_CHANNELS[i].DNR_Type = 0;
-			CALIBRATE.MEMORY_CHANNELS[i].AGC = true;
-			CALIBRATE.MEMORY_CHANNELS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
+			CALIBRATE.MEMORY_CHANNELS[i].Mode = 0;
 		}
 		for (uint8_t i = 0; i < BANDS_COUNT; i++) {
 			CALIBRATE.BAND_MEMORIES[i][0] = TRX.BANDS_SAVED_SETTINGS[i].Freq;
@@ -766,10 +788,10 @@ void LoadCalibration(bool clear) {
 	}
 	EEPROM_PowerDown();
 	// enable bands
-	BANDS[BANDID_60m].selectable = CALIBRATE.ENABLE_60m_band;
-	BANDS[BANDID_4m].selectable = CALIBRATE.ENABLE_4m_band;
-	BANDS[BANDID_AIR].selectable = CALIBRATE.ENABLE_AIR_band;
-	BANDS[BANDID_Marine].selectable = CALIBRATE.ENABLE_marine_band;
+	BAND_SELECTABLE[BANDID_60m] = CALIBRATE.ENABLE_60m_band;
+	BAND_SELECTABLE[BANDID_4m] = CALIBRATE.ENABLE_4m_band;
+	BAND_SELECTABLE[BANDID_AIR] = CALIBRATE.ENABLE_AIR_band;
+	BAND_SELECTABLE[BANDID_Marine] = CALIBRATE.ENABLE_marine_band;
 
 	// load WiFi settings after calibrations
 	LoadWiFiSettings(false);

@@ -159,7 +159,7 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 			// selectable bands first
 			uint8_t xi = 0;
 			for (uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++) {
-				if (!BANDS[bindx].selectable || BANDS[bindx].broadcast || BANDS[bindx].name == (char *)BANDS[0].name || BANDS[bindx].name == (char *)BANDS[27].name ||
+				if (!BAND_SELECTABLE[bindx] || BANDS[bindx].broadcast || BANDS[bindx].name == (char *)BANDS[0].name || BANDS[bindx].name == (char *)BANDS[27].name ||
 				    BANDS[bindx].name == (char *)BANDS[30].name || BANDS[bindx].name == (char *)BANDS[31].name || BANDS[bindx].name == (char *)BANDS[32].name ||
 				    BANDS[bindx].name == (char *)BANDS[33].name || BANDS[bindx].name == (char *)BANDS[34].name || BANDS[bindx].name == (char *)BANDS[35].name ||
 				    BANDS[bindx].name == (char *)BANDS[36].name || BANDS[bindx].name == (char *)BANDS[37].name || BANDS[bindx].name == (char *)BANDS[38].name ||
@@ -1266,6 +1266,10 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			TRX_RX1_dBm_lowrate_time = HAL_GetTick();
 			TRX_RX1_dBm_lowrate = TRX_RX1_dBm_lowrate * 0.5f + TRX_RX1_dBm * 0.5f;
 		}
+
+		// static float32_t TRX_RX1_dBm_measurement = 0;
+		// TRX_RX1_dBm_measurement = TRX_RX1_dBm_measurement * 0.99f + TRX_RX1_dBm * 0.01f;
+		// println(TRX_RX1_dBm_measurement);
 
 		float32_t s_width = 0.0f;
 		static uint16_t sql_stripe_x_pos_old = 0;
@@ -2606,15 +2610,15 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 	}
 
 	uint8_t buttons_in_line = 6;
-	if (TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm || BANDS[BANDID_60m].selectable || BANDS[BANDID_4m].selectable ||
-	    BANDS[BANDID_AIR].selectable || BANDS[BANDID_Marine].selectable) {
+	if (TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm || BAND_SELECTABLE[BANDID_60m] || BAND_SELECTABLE[BANDID_4m] ||
+	    BAND_SELECTABLE[BANDID_AIR] || BAND_SELECTABLE[BANDID_Marine]) {
 		buttons_in_line = 7;
 	}
 
 	uint8_t selectable_bands_count = 0;
 	uint8_t bradcast_bands_count = 0;
 	for (uint8_t i = 0; i < BANDS_COUNT; i++) {
-		if (BANDS[i].selectable) {
+		if (BAND_SELECTABLE[i]) {
 			selectable_bands_count++;
 		}
 		if (BANDS[i].broadcast) {
@@ -2640,7 +2644,7 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 	uint8_t yi = 0;
 	uint8_t xi = 0;
 	for (uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++) {
-		if (!BANDS[bindx].selectable || BANDS[bindx].broadcast) {
+		if (!BAND_SELECTABLE[bindx] || BANDS[bindx].broadcast) {
 			continue;
 		}
 

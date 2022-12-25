@@ -328,7 +328,7 @@ int main(void) {
 
 #if (defined(LAY_800x480))
 		LCDDriver_Fill(rgb888torgb565(255, 255, 255));
-		LCDDriver_printImage_JPEGCompressed(0, 0, IMAGES_logo800_jpeg);
+		LCDDriver_printImage_JPEGCompressed(0, 0, IMAGES_logo800_NY_jpeg, sizeof(IMAGES_logo800_NY_jpeg));
 		LCDDriver_printTextFont(greetings_buff, 30, (LCD_HEIGHT - 30), COLOR_BLACK, rgb888torgb565(243, 243, 243), &FreeSans12pt7b);
 #else
 		LCDDriver_Fill(rgb888torgb565(243, 243, 243));
@@ -342,7 +342,11 @@ int main(void) {
 		strcat(greetings_buff, TRX.CALLSIGN);
 		strcat(greetings_buff, " !");
 		LCDDriver_getTextBoundsFont(greetings_buff, LAYOUT->GREETINGS_X, LAYOUT->GREETINGS_Y, &x1, &y1, &w, &h, &FreeSans9pt7b);
+#if (defined(LAY_800x480))
+		LCDDriver_printTextFont(greetings_buff, LAYOUT->GREETINGS_X - (w / 2), LAYOUT->GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(255, 255, 255), &FreeSans9pt7b);
+#else
 		LCDDriver_printTextFont(greetings_buff, LAYOUT->GREETINGS_X - (w / 2), LAYOUT->GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(243, 243, 243), &FreeSans9pt7b);
+#endif
 	}
 	println("[OK] Profiler init");
 	InitProfiler();
@@ -447,6 +451,8 @@ void SystemClock_Config(void) {
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_LSE;
 	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
 	RCC_OscInitStruct.LSEState = RCC_LSE_ON;
+	RCC_OscInitStruct.HSIState = RCC_HSI_DIV1;
+	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
 	RCC_OscInitStruct.LSIState = RCC_LSI_ON;
 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
@@ -534,6 +540,7 @@ static void MX_ADC1_Init(void) {
 	sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
 	sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
 	sConfigInjected.InjectedOffset = 0;
+	sConfigInjected.InjectedOffsetSignedSaturation = DISABLE;
 	sConfigInjected.InjectedNbrOfConversion = 4;
 	sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
 	sConfigInjected.AutoInjectedConv = DISABLE;
@@ -622,6 +629,7 @@ static void MX_ADC3_Init(void) {
 	sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
 	sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
 	sConfigInjected.InjectedOffset = 0;
+	sConfigInjected.InjectedOffsetSignedSaturation = DISABLE;
 	sConfigInjected.InjectedNbrOfConversion = 3;
 	sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
 	sConfigInjected.AutoInjectedConv = DISABLE;

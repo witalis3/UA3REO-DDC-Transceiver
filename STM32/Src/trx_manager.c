@@ -6,6 +6,7 @@
 #include "codec.h"
 #include "cw.h"
 #include "cw_decoder.h"
+#include "filemanager.h"
 #include "fpga.h"
 #include "front_unit.h"
 #include "functions.h"
@@ -510,6 +511,28 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 			TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Mode = mode_from_bandmap;
 			LCD_UpdateQuery.TopButtons = true;
 		}
+	}
+
+	// Restore band settings
+	if (bandFromFreq >= 0 && bandFromOldFreq != bandFromFreq) {
+		TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].IF_Gain;
+		TRX.LNA = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].LNA;
+		TRX.ATT = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT;
+		TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_selected;
+		TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_mode;
+		TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT_DB;
+		TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ADC_Driver;
+		TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ADC_PGA;
+		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].BEST_ATU_I;
+		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].BEST_ATU_C;
+		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].BEST_ATU_T;
+		CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].FM_SQL_threshold_dbm;
+		CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].DNR_Type;
+		CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].AGC;
+		CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].SQL;
+		TRX.FM_SQL_threshold_dbm_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].FM_SQL_threshold_dbm;
+		TRX.SQL_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].SQL;
+		TRX_Temporary_Stop_BandMap = false;
 	}
 
 	// SPLIT freq secondary VFO sync
@@ -1323,7 +1346,7 @@ void BUTTONHANDLER_BAND_P(uint32_t parameter) {
 	if (band >= BANDS_COUNT) {
 		band = 0;
 	}
-	while (!BANDS[band].selectable) {
+	while (!BAND_SELECTABLE[band]) {
 		band++;
 		if (band >= BANDS_COUNT) {
 			band = 0;
@@ -1376,7 +1399,7 @@ void BUTTONHANDLER_BAND_N(uint32_t parameter) {
 	if (band < 0) {
 		band = BANDS_COUNT - 1;
 	}
-	while (!BANDS[band].selectable) {
+	while (!BAND_SELECTABLE[band]) {
 		band--;
 		if (band < 0) {
 			band = BANDS_COUNT - 1;
@@ -1787,7 +1810,7 @@ void BUTTONHANDLER_SCAN(uint32_t parameter) {
 	LCD_UpdateQuery.TopButtons = true;
 }
 
-void BUTTONHANDLER_PLAY(uint32_t parameter) {
+void BUTTONHANDLER_CQ(uint32_t parameter) {
 #if HRDW_HAS_SD
 	if (SD_RecordInProcess) {
 		SD_NeedStopRecord = true;
@@ -2231,27 +2254,11 @@ void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter) {
 
 	TRX_setFrequency(CALIBRATE.MEMORY_CHANNELS[channel].Freq, CurrentVFO);
 	TRX_setMode(CALIBRATE.MEMORY_CHANNELS[channel].Mode, CurrentVFO);
-	if (TRX.SAMPLERATE_MAIN != CALIBRATE.MEMORY_CHANNELS[channel].SAMPLERATE) {
-		TRX.SAMPLERATE_MAIN = CALIBRATE.MEMORY_CHANNELS[channel].SAMPLERATE;
-		FFT_Init();
-		NeedReinitAudioFilters = true;
-	}
-	TRX.IF_Gain = CALIBRATE.MEMORY_CHANNELS[channel].IF_Gain;
-	TRX.LNA = CALIBRATE.MEMORY_CHANNELS[channel].LNA;
-	TRX.ATT = CALIBRATE.MEMORY_CHANNELS[channel].ATT;
-	TRX.ATT_DB = CALIBRATE.MEMORY_CHANNELS[channel].ATT_DB;
-	TRX.ANT_selected = CALIBRATE.MEMORY_CHANNELS[channel].ANT_selected;
-	TRX.ANT_mode = CALIBRATE.MEMORY_CHANNELS[channel].ANT_mode;
-	TRX.ADC_Driver = CALIBRATE.MEMORY_CHANNELS[channel].ADC_Driver;
-	CurrentVFO->SQL = CALIBRATE.MEMORY_CHANNELS[channel].SQL;
-	CurrentVFO->FM_SQL_threshold_dbm = CALIBRATE.MEMORY_CHANNELS[channel].FM_SQL_threshold_dbm;
+
 	TRX.SQL_shadow = CurrentVFO->SQL;
 	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
-	TRX.ADC_PGA = CALIBRATE.MEMORY_CHANNELS[channel].ADC_PGA;
-	CurrentVFO->DNR_Type = CALIBRATE.MEMORY_CHANNELS[channel].DNR_Type;
-	CurrentVFO->AGC = CALIBRATE.MEMORY_CHANNELS[channel].AGC;
-	TRX_Temporary_Stop_BandMap = false;
 
+	TRX_Temporary_Stop_BandMap = false;
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
 
@@ -2267,26 +2274,20 @@ void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
 		channel = 0;
 	}
 
-	CALIBRATE.MEMORY_CHANNELS[channel].Freq = CurrentVFO->Freq;
-	CALIBRATE.MEMORY_CHANNELS[channel].Mode = CurrentVFO->Mode;
-	CALIBRATE.MEMORY_CHANNELS[channel].SAMPLERATE = TRX.SAMPLERATE_MAIN;
-	CALIBRATE.MEMORY_CHANNELS[channel].IF_Gain = TRX.IF_Gain;
-	CALIBRATE.MEMORY_CHANNELS[channel].LNA = TRX.LNA;
-	CALIBRATE.MEMORY_CHANNELS[channel].ATT = TRX.ATT;
-	CALIBRATE.MEMORY_CHANNELS[channel].ATT_DB = TRX.ATT_DB;
-	CALIBRATE.MEMORY_CHANNELS[channel].ANT_selected = TRX.ANT_selected;
-	CALIBRATE.MEMORY_CHANNELS[channel].ANT_mode = TRX.ANT_mode;
-	CALIBRATE.MEMORY_CHANNELS[channel].ADC_Driver = TRX.ADC_Driver;
-	CALIBRATE.MEMORY_CHANNELS[channel].SQL = CurrentVFO->SQL;
-	CALIBRATE.MEMORY_CHANNELS[channel].FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
-	CALIBRATE.MEMORY_CHANNELS[channel].ADC_PGA = TRX.ADC_PGA;
-	CALIBRATE.MEMORY_CHANNELS[channel].DNR_Type = CurrentVFO->DNR_Type;
-	CALIBRATE.MEMORY_CHANNELS[channel].AGC = CurrentVFO->AGC;
-
 	LCD_closeWindow();
 
+	if (CALIBRATE.MEMORY_CHANNELS[channel].Freq == CurrentVFO->Freq) {
+		CALIBRATE.MEMORY_CHANNELS[channel].Freq = 0;
+
+		LCD_showTooltip("Channel removed");
+	} else {
+		CALIBRATE.MEMORY_CHANNELS[channel].Freq = CurrentVFO->Freq;
+		CALIBRATE.MEMORY_CHANNELS[channel].Mode = CurrentVFO->Mode;
+
+		LCD_showTooltip("Channel saved");
+	}
+
 	NeedSaveCalibration = true;
-	LCD_showTooltip("Channel saved");
 }
 
 void BUTTONHANDLER_SET_BAND_MEMORY(uint32_t parameter) {
@@ -2418,4 +2419,10 @@ void BUTTONHANDLER_CESSB(uint32_t parameter) {
 
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
+}
+
+void BUTTONHANDLER_SCREENSHOT(uint32_t parameter) {
+#if HRDW_HAS_SD
+	FILEMANAGER_SCREENSHOT_handler();
+#endif
 }

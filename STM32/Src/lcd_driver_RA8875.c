@@ -491,6 +491,50 @@ void LCDDriver_fadeScreen(float32_t brightness) {
 	}
 }
 
+uint32_t LCDDriver_readScreenPixelsToBMP(uint8_t *buffer, uint32_t *current_index, uint32_t max_count, uint32_t paddingSize) {
+	if (*current_index >= LCD_HEIGHT * LCD_WIDTH) {
+		return 0;
+	}
+
+	uint32_t start_x = *current_index % LCD_WIDTH;
+	uint32_t start_y = *current_index / LCD_WIDTH;
+
+	uint32_t writed = 0;
+
+	for (uint16_t y = start_y; y < LCD_HEIGHT; y++) {
+		for (uint16_t x = start_x; x < LCD_WIDTH; x++) {
+			start_x = 0;
+			// get current pixel
+			LCDDriver_SetCursorPosition(x, y);
+			uint16_t color = LCDDriver_ReadData();
+			*current_index = *current_index + 1;
+
+			uint16_t color15bit = 0;
+			color15bit |= ((color >> 0) & 0x1F) << 0;
+			color15bit |= ((color >> 6) & 0x1F) << 5;
+			color15bit |= ((color >> 11) & 0x1F) << 10;
+
+			buffer[writed++] = color15bit >> 0;
+			buffer[writed++] = color15bit >> 8;
+
+			/*if(x >= LCD_WIDTH - 1) {
+			  for(uint32_t padding = 0; padding < paddingSize; padding++) {
+			    buffer[writed++] = 0;
+			  }
+			}*/
+
+			if (writed >= max_count) {
+				break;
+			}
+		}
+		if (writed >= max_count) {
+			break;
+		}
+	}
+
+	return writed;
+}
+
 void LCDDriver_drawRoundedRectWH(uint16_t x0, uint16_t y0, uint16_t w, uint16_t h, uint16_t color, uint16_t radius, bool filled) {
 	LCDDriver_waitBusy();
 	if (!activeWindowIsFullscreen) {

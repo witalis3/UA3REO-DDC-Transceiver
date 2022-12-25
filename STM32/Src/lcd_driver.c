@@ -500,9 +500,9 @@ IRAM2 uint8_t JPEG_out_buffer[JPEG_chunk_size_out];
 uint32_t JPEG_blockIndex = 0;
 JPEG_YCbCrToRGB_Convert_Function JPEG_ConvertFunction = NULL;
 
-void LCDDriver_printImage_JPEGCompressed(uint16_t x, uint16_t y, const uint8_t *image) {
+void LCDDriver_printImage_JPEGCompressed(uint16_t x, uint16_t y, const uint8_t *image, uint32_t size) {
 	JPEG_blockIndex = 0;
-	uint8_t res = HAL_JPEG_Decode(&HRDW_JPEG_HANDLE, (uint8_t *)image, sizeof(IMAGES_logo800_jpeg), JPEG_out_buffer, JPEG_chunk_size_out, HAL_MAX_DELAY);
+	uint8_t res = HAL_JPEG_Decode(&HRDW_JPEG_HANDLE, (uint8_t *)image, size, JPEG_out_buffer, JPEG_chunk_size_out, HAL_MAX_DELAY);
 }
 
 void HAL_JPEG_InfoReadyCallback(JPEG_HandleTypeDef *hjpeg, JPEG_ConfTypeDef *pInfo) {

@@ -229,6 +229,8 @@ int main(void) {
 		strcat(greetings_buff, " !");
 		LCDDriver_getTextBoundsFont(greetings_buff, LAYOUT->GREETINGS_X, LAYOUT->GREETINGS_Y, &x1, &y1, &w, &h, &FreeSans9pt7b);
 		LCDDriver_printTextFont(greetings_buff, LAYOUT->GREETINGS_X - (w / 2), LAYOUT->GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(243, 243, 243), &FreeSans9pt7b);
+		
+		HAL_Delay(2000);
 	}
 	println("[OK] Profiler init");
 	InitProfiler();

@@ -310,21 +310,17 @@ void shiftTextLeft(char *string, uint_fast16_t shiftLength) {
 	}
 }
 
-float32_t getMaxTXAmplitudeOnFreq(uint32_t freq) {
-	if (freq > MAX_TX_FREQ_HZ) { // harmonics mode
-		while (freq > MAX_TX_FREQ_HZ) {
-			freq /= 3.0f; // third-harmonics
-		}
-	}
-
+float32_t getMaxTXAmplitudeOnFreq(uint64_t freq) {
 	uint16_t calibrate_level = 0;
 
 	if (freq < 1.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_2200m;
 	} else if (freq < 2.5 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_160m;
-	} else if (freq < 5.3 * 1000000) {
+	} else if (freq < 4.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_80m;
+	} else if (freq < 6.0 * 1000000) {
+		calibrate_level = CALIBRATE.rf_out_power_60m;
 	} else if (freq < 8.5 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_40m;
 	} else if (freq < 12.0 * 1000000) {
@@ -345,8 +341,18 @@ float32_t getMaxTXAmplitudeOnFreq(uint32_t freq) {
 		calibrate_level = CALIBRATE.rf_out_power_6m;
 	} else if (freq < 110.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_4m;
-	} else {
+	} else if (freq < 300.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_2m;
+	} else if (freq < 1000.0 * 1000000) {
+		calibrate_level = CALIBRATE.rf_out_power_70cm;
+	} else if (freq < 2000.0 * 1000000) {
+		calibrate_level = CALIBRATE.rf_out_power_23cm;
+	} else if (freq < 4000.0 * 1000000) {
+		calibrate_level = CALIBRATE.rf_out_power_13cm;
+	} else if (freq < 8000.0 * 1000000) {
+		calibrate_level = CALIBRATE.rf_out_power_6cm;
+	} else {
+		calibrate_level = CALIBRATE.rf_out_power_3cm;
 	}
 
 	if (calibrate_level > 100) {

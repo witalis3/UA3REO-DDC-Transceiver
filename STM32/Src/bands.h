@@ -49,9 +49,9 @@ typedef struct // description of the region in the band
 typedef struct // description of the band
 {
 	const char *name;
-	bool selectable;
-	bool broadcast;
+	const bool broadcast;
 	const uint64_t startFreq;
+	const uint64_t defaultFreq;
 	const uint64_t endFreq;
 	const REGION_MAP *regions;
 	const uint_fast8_t regionsCount;
@@ -60,7 +60,8 @@ typedef struct // description of the band
 } BAND_MAP;
 
 // Public variables
-extern BAND_MAP BANDS[BANDS_COUNT];
+extern const BAND_MAP BANDS[BANDS_COUNT];
+extern bool BAND_SELECTABLE[BANDS_COUNT];
 
 // Public methods
 extern uint_fast8_t getModeFromFreq(uint64_t freq);          // mod from frequency

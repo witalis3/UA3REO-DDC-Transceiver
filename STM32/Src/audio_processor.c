@@ -1887,25 +1887,6 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 			data_i[i] = (data_i[i] + stereo_sample); // Mono (L+R) + Stereo (L-R) = 2L
 		}
 	}
-
-	// fm de emphasis
-	if (!DFM->squelched) {
-#define deemp_alpha 0.75f
-
-		for (uint_fast16_t i = 0; i < size; i++) {
-			float32_t deemp_i = data_i[i] * (1.0f - deemp_alpha) + DFM->deemph_i_prev * deemp_alpha;
-			data_i[i] = deemp_i;
-			DFM->deemph_i_prev = deemp_i;
-		}
-
-		if (TRX.FM_Stereo && wfm) {
-			for (uint_fast16_t i = 0; i < size; i++) {
-				float32_t deemp_q = data_q[i] * (1.0f - deemp_alpha) + DFM->deemph_q_prev * deemp_alpha;
-				data_q[i] = deemp_q;
-				DFM->deemph_q_prev = deemp_q;
-			}
-		}
-	}
 }
 
 // FM modulator

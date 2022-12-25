@@ -352,8 +352,40 @@ static float32_t getFFTAmplFromDB(float32_t ampl);
 // FFT initialization
 void FFT_PreInit(void) {
 	// Windowing
-	// Dolph–Chebyshev
+
+	// Optimizaed GAP (Generalized adaptive polynomial) Nuttall
 	if (TRX.FFT_Window == 1) {
+		float32_t a0 = 1.0f;
+		float32_t a2 = -1.9501232504232442f;
+		float32_t a4 = 1.7516390954528638f;
+		float32_t a6 = -0.9651321809782892f;
+		float32_t a8 = 0.3629219021312954f;
+		float32_t a10 = -0.0943163918335154f;
+		float32_t a12 = 0.0140434805881681f;
+		float32_t a14 = 0.0006383045745587f;
+		float32_t a16 = -0.0009075461792061f;
+		float32_t a18 = 0.0002000671118688f;
+		float32_t a20 = -0.0000161042445001f;
+
+		float32_t step = 1.0f / (float32_t)(FFT_SIZE - 1);
+		float32_t std_sum = 0;
+		for (float32_t N = 0; N <= 1.0f; N += step) {
+			std_sum += (N - 0.5f) * (N - 0.5f);
+		}
+		float32_t std = sqrt(std_sum / (FFT_SIZE - 1));
+		uint32_t index = 0;
+		for (float32_t N = 0; N <= 1.0f; N += step) {
+			float32_t x = (N - 0.5f) / std;
+			float32_t w = a0 + a2 * powf(x, 2) + a4 * powf(x, 4) + a6 * powf(x, 6) + a8 * powf(x, 8) + a10 * powf(x, 10) + a12 * powf(x, 12) + a14 * powf(x, 14) + a16 * powf(x, 16) +
+			              a18 * powf(x, 18) + a20 * powf(x, 20);
+
+			window_multipliers[index] = w;
+			index++;
+		}
+	}
+
+	// Dolph–Chebyshev
+	if (TRX.FFT_Window == 2) {
 		const float64_t atten = 100.0;
 		float64_t max = 0.0;
 		float64_t tg = pow(10.0, atten / 20.0);
@@ -385,35 +417,36 @@ void FFT_PreInit(void) {
 			window_multipliers[nn] /= max; /* normalise everything */
 		}
 	}
+
 	for (uint_fast16_t i = 0; i < FFT_SIZE; i++) {
 		// Blackman-Harris
-		if (TRX.FFT_Window == 2) {
+		if (TRX.FFT_Window == 3) {
 			window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
 			                        0.14128f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) -
 			                        0.01168f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
 		}
-		// Nutall
-		else if (TRX.FFT_Window == 3) {
+		// Nuttall
+		else if (TRX.FFT_Window == 4) {
 			window_multipliers[i] = 0.355768f - 0.487396f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
 			                        0.144232f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) -
 			                        0.012604 * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
 		}
 		// Blackman-Nutall
-		else if (TRX.FFT_Window == 4) {
+		else if (TRX.FFT_Window == 5) {
 			window_multipliers[i] = 0.3635819f - 0.4891775f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
 			                        0.1365995f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) -
 			                        0.0106411f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
 		}
 		// Hann
-		else if (TRX.FFT_Window == 5) {
+		else if (TRX.FFT_Window == 6) {
 			window_multipliers[i] = 0.5f * (1.0f - arm_cos_f32(2.0f * F_PI * (float32_t)i / (float32_t)FFT_SIZE));
 		}
 		// Hamming
-		else if (TRX.FFT_Window == 6) {
+		else if (TRX.FFT_Window == 7) {
 			window_multipliers[i] = 0.54f - 0.46f * arm_cos_f32((2.0f * F_PI * (float32_t)i) / ((float32_t)FFT_SIZE - 1.0f));
 		}
 		// No window
-		else if (TRX.FFT_Window == 7) {
+		else if (TRX.FFT_Window == 8) {
 			window_multipliers[i] = 1.0f;
 		}
 	}
@@ -1080,9 +1113,11 @@ bool FFT_printFFT(void) {
 #endif
 
 	// calculate bw bar size
-	uint16_t curwidth = CurrentVFO->LPF_RX_Filter_Width;
+	uint16_t cur_lpf_width = CurrentVFO->LPF_RX_Filter_Width;
+	uint16_t cur_hpf_width = CurrentVFO->HPF_RX_Filter_Width;
 	if (TRX_on_TX) {
-		curwidth = CurrentVFO->LPF_TX_Filter_Width;
+		cur_lpf_width = CurrentVFO->LPF_TX_Filter_Width;
+		cur_hpf_width = CurrentVFO->HPF_TX_Filter_Width;
 	}
 	int32_t bw_rx1_line_width = 0;
 	int32_t bw_rx2_line_width = 0;
@@ -1092,32 +1127,35 @@ bool FFT_printFFT(void) {
 	switch (CurrentVFO->Mode) {
 	case TRX_MODE_LSB:
 	case TRX_MODE_DIGI_L:
-		bw_rx1_line_width = (int32_t)(curwidth / hz_in_pixel * fft_zoom);
+		bw_rx1_line_width = (int32_t)(cur_lpf_width / hz_in_pixel * fft_zoom);
 		if (bw_rx1_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
 			bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
 		bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - bw_rx1_line_width;
+		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width - (cur_hpf_width / hz_in_pixel * fft_zoom);
 		rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_USB:
 	case TRX_MODE_RTTY:
 	case TRX_MODE_DIGI_U:
-		bw_rx1_line_width = (int32_t)(curwidth / hz_in_pixel * fft_zoom);
+		bw_rx1_line_width = (int32_t)(cur_lpf_width / hz_in_pixel * fft_zoom);
 		if (bw_rx1_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
 			bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
-		bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2;
+		bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2 + cur_hpf_width / hz_in_pixel * fft_zoom;
+		bw_rx1_line_end = LAYOUT->FFT_PRINT_SIZE / 2 + bw_rx1_line_width;
 		rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
 	case TRX_MODE_SAM:
 	case TRX_MODE_CW:
-		bw_rx1_line_width = (int32_t)(curwidth / hz_in_pixel * fft_zoom);
+		bw_rx1_line_width = (int32_t)(cur_lpf_width / hz_in_pixel * fft_zoom);
 		if (bw_rx1_line_width > LAYOUT->FFT_PRINT_SIZE) {
 			bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE;
 		}
 		bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - (bw_rx1_line_width / 2);
+		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
 			rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
 		} else {
@@ -1127,6 +1165,7 @@ bool FFT_printFFT(void) {
 	case TRX_MODE_WFM:
 		bw_rx1_line_width = 0;
 		bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - (bw_rx1_line_width / 2);
+		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
 		rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
 		break;
 	default:
@@ -1140,6 +1179,7 @@ bool FFT_printFFT(void) {
 			bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
 		bw_rx2_line_start = rx2_line_pos - bw_rx2_line_width;
+		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
 		rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_USB:
@@ -1150,6 +1190,7 @@ bool FFT_printFFT(void) {
 			bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
 		bw_rx2_line_start = rx2_line_pos;
+		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
 		rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_NFM:
@@ -1161,6 +1202,7 @@ bool FFT_printFFT(void) {
 			bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE;
 		}
 		bw_rx2_line_start = rx2_line_pos - (bw_rx2_line_width / 2);
+		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
 		if (SecondaryVFO->Mode == TRX_MODE_CW) {
 			rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
 		} else {
@@ -1170,15 +1212,15 @@ bool FFT_printFFT(void) {
 	case TRX_MODE_WFM:
 		bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE;
 		bw_rx2_line_start = rx2_line_pos - (bw_rx2_line_width / 2);
+		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
 		rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
 		break;
 	default:
 		break;
 	}
-	bw_rx1_line_center = bw_rx1_line_start + bw_rx1_line_width / 2;
-	bw_rx2_line_center = bw_rx2_line_start + bw_rx2_line_width / 2;
-	bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
-	bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
+	bw_rx1_line_center = (bw_rx1_line_start + bw_rx1_line_end) / 2;
+	bw_rx2_line_center = (bw_rx2_line_start + bw_rx2_line_end) / 2;
+
 	if (TRX.FFT_Lens) // lens correction
 	{
 		bw_rx1_line_start = FFT_getLensCorrection(bw_rx1_line_start);
