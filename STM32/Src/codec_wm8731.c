@@ -30,13 +30,8 @@ void CODEC_TXRX_mode(void) // loopback
 {
 	WM8731_SendI2CCommand(B8(00000100), B8(01111110)); // R2 Left Headphone Out
 	WM8731_SendI2CCommand(B8(00000110), B8(01111110)); // R3 Right Headphone Out
-	
-	if (CurrentVFO->Mode == TRX_MODE_WFM) {
-		WM8731_SendI2CCommand(B8(00001010), B8(00010000)); // R5 Digital Audio Path Control
-	} else {
-		WM8731_SendI2CCommand(B8(00001010), B8(00010110)); // R5 Digital Audio Path Control De-emphasis
-	}
-	
+	WM8731_SendI2CCommand(B8(00001010), B8(00010110)); // R5 Digital Audio Path Control De-emphasis
+
 	if (getInputType() == TRX_INPUT_LINE)              // line
 	{
 		WM8731_SendI2CCommand(B8(00000000), B8(00010111)); // R0 Left Line In

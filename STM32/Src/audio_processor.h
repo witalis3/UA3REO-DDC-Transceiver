@@ -64,8 +64,6 @@ typedef struct {
 	float32_t stereo_fm_audio_out[FPGA_RX_IQ_BUFFER_HALF_SIZE];
 	float32_t i_prev;
 	float32_t q_prev;
-	float32_t deemph_i_prev;
-	float32_t deemph_q_prev;
 
 	float32_t squelchRate;
 	uint32_t squelchSuggested_starttime;
