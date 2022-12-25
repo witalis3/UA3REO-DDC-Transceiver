@@ -700,7 +700,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"WTF Moving", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WTF_Moving, SYSMENU_HANDL_SCREEN_WTF_Moving},
     {"FFT Compressor", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Compressor, SYSMENU_HANDL_SCREEN_FFT_Compressor},
     {"FFT Averaging", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
-    {"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "Dolph", "Blckman", "Nutall", "BlNutll", "Hann", "Hamming", "No"}},
+    {"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "GNuttal", "Dolph", "Blckman", "Nuttall", "BlNuttl", "Hann", "Hamming", "No"}},
 #if HRDW_HAS_WIFI
     {"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
     {"FFT DXCluster Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
@@ -2887,8 +2887,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Window(int8_t direction) {
 	if (TRX.FFT_Window < 1) {
 		TRX.FFT_Window = 1;
 	}
-	if (TRX.FFT_Window > 7) {
-		TRX.FFT_Window = 7;
+	if (TRX.FFT_Window > 8) {
+		TRX.FFT_Window = 8;
 	}
 	FFT_PreInit();
 	FFT_Init();
