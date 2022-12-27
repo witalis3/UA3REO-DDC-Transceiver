@@ -124,6 +124,7 @@ volatile extern bool TRX_Tune;
 volatile extern bool TRX_Inited;
 volatile extern float32_t TRX_RX1_dBm;
 volatile extern float32_t TRX_RX2_dBm;
+volatile extern float32_t TRX_RX1_dBm_measurement;
 volatile extern bool TRX_ADC_OTR;
 volatile extern bool TRX_DAC_OTR;
 volatile extern bool TRX_MIC_BELOW_NOISEGATE;

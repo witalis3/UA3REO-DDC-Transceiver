@@ -497,6 +497,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		println("STM32 Voltage: ", TRX_STM32_VREF);
 		print_flush();
 		println("TIM6 delay: ", dbg_tim6_delay);
+		println("RX1 dBm: ", TRX_RX1_dBm_measurement);
 		println("FFT FPS: ", FFT_FPS);
 		print_flush();
 		println("First byte of RX-FPGA I/Q: ", dbg_FPGA_Audio_Buffer_I_tmp, " / ", dbg_FPGA_Audio_Buffer_Q_tmp); // first byte of IQ
