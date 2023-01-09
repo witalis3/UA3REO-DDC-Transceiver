@@ -2341,6 +2341,7 @@ void LCD_processTouch(uint16_t x, uint16_t y) {
 
 void LCD_processHoldTouch(uint16_t x, uint16_t y) {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	TRX_Inactive_Time = 0;
 	if (TRX.Locked) {
 		return;
 	}
@@ -2447,6 +2448,7 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y) {
 
 bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 #if (defined(HAS_TOUCHPAD))
+	TRX_Inactive_Time = 0;
 	if (TRX.Locked) {
 		return false;
 	}
@@ -2508,6 +2510,7 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 
 bool LCD_processSwipeTwoFingersTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 #if (defined(HAS_TOUCHPAD))
+	TRX_Inactive_Time = 0;
 	if (TRX.Locked) {
 		return false;
 	}
