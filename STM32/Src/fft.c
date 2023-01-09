@@ -1042,9 +1042,9 @@ bool FFT_printFFT(void) {
 	}
 
 	// limits
-	if (maxValueFFT < 0.0000001f && TRX.FFT_Scale_Type < 2) {
-		maxValueFFT = 0.0000001f;
-	}
+	// if (maxValueFFT < 0.0000001f && TRX.FFT_Scale_Type < 2) {
+	//	maxValueFFT = 0.0000001f;
+	// }
 
 	// tx noise scale limit
 	if (TRX_on_TX && maxValueFFT < FFT_TX_MIN_LEVEL) {
