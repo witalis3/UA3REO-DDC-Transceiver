@@ -198,6 +198,10 @@ void RF_UNIT_ProcessSensors(void) {
 	// TRX_ALC_IN = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_2) * TRX_STM32_VREF / B12_RANGE;
 	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / B12_RANGE;
 	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B12_RANGE;
+	
+	if (forward > 3.2f || backward > 3.2f) {
+		TRX_PWR_ALC_SWR_OVERFLOW = true;
+	}
 
 	// forward = forward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
 	if (forward < 0.05f) // do not measure less than 100mV
@@ -208,8 +212,6 @@ void RF_UNIT_ProcessSensors(void) {
 		TRX_PWR_Backward = 0.0f;
 		TRX_SWR = 1.0f;
 	} else {
-		forward += 0.21f; // drop on diode
-
 		// Transformation ratio of the SWR meter
 		if (CurrentVFO->Freq >= 80000000) {
 			forward = forward * CALIBRATE.SWR_FWD_Calibration_VHF;
@@ -218,12 +220,12 @@ void RF_UNIT_ProcessSensors(void) {
 		} else {
 			forward = forward * CALIBRATE.SWR_FWD_Calibration_HF;
 		}
+		
+		forward += 0.21f; // drop on diode
 
 		// backward = backward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
 		if (backward >= 0.05f) // do not measure less than 100mV
 		{
-			backward += 0.21f; // drop on diode
-
 			// Transformation ratio of the SWR meter
 			if (CurrentVFO->Freq >= 80000000) {
 				backward = backward * CALIBRATE.SWR_BWD_Calibration_VHF;
@@ -232,6 +234,8 @@ void RF_UNIT_ProcessSensors(void) {
 			} else {
 				backward = backward * CALIBRATE.SWR_BWD_Calibration_HF;
 			}
+			
+			backward += 0.21f; // drop on diode
 		} else {
 			backward = 0.001f;
 		}

@@ -393,6 +393,7 @@ void EVENTS_do_EVERY_100ms(void) // 10 hz
 	FPGA_Buffer_underrun = false;
 	RX_USB_AUDIO_underrun = false;
 	APROC_IFGain_Overflow = false;
+	TRX_PWR_ALC_SWR_OVERFLOW = false;
 	TRX_MIC_BELOW_NOISEGATE = false;
 #if HRDW_HAS_SD
 	SD_underrun = false;

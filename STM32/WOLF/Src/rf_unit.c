@@ -1534,9 +1534,11 @@ void RF_UNIT_ProcessSensors(void) {
 	// SWR
 	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B16_RANGE;
 	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / B16_RANGE;
-	// println("FWD: ", forward, " BKW: ", backward);
-	// static float32_t TRX_VLT_forward = 0.0f;		//Tisho
-	// static float32_t TRX_VLT_backward = 0.0f;		//Tisho
+	
+	// println("ALC: ", TRX_ALC_IN, "FWD: ", forward, " BKW: ", backward);
+	if (ALC_IN > 3.2f || forward > 3.2f || backward > 3.2f) {
+		TRX_PWR_ALC_SWR_OVERFLOW = true;
+	}
 
 #if (defined(SWR_AD8307_LOG)) // If it is used the Log amp. AD8307
 	float32_t P_FW_dBm, P_BW_dBm;
@@ -1569,7 +1571,7 @@ void RF_UNIT_ProcessSensors(void) {
 
 #else // if it is used the standard measure (diode rectifier)
 	// forward = forward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
-	if (forward < 0.05f) // do not measure less than 100mV
+	if (forward < 0.05f) // do not measure less than 50mV
 	{
 		TRX_VLT_forward = 0.0f;
 		TRX_VLT_backward = 0.0f;
@@ -1577,7 +1579,6 @@ void RF_UNIT_ProcessSensors(void) {
 		TRX_PWR_Backward = 0.0f;
 		TRX_SWR = 1.0f;
 	} else {
-		forward += 0.21f; // drop on diode
 
 		// Transformation ratio of the SWR meter
 		if (CurrentVFO->RealRXFreq >= 80000000) {
@@ -1587,12 +1588,12 @@ void RF_UNIT_ProcessSensors(void) {
 		} else {
 			forward = forward * CALIBRATE.SWR_FWD_Calibration_HF;
 		}
+		
+		forward += 0.21f; // drop on diode
 
 		// backward = backward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
-		if (backward >= 0.05f) // do not measure less than 100mV
+		if (backward >= 0.05f) // do not measure less than 50mV
 		{
-			backward += 0.21f; // drop on diode
-
 			// Transformation ratio of the SWR meter
 			if (CurrentVFO->RealRXFreq >= 80000000) {
 				backward = backward * CALIBRATE.SWR_BWD_Calibration_VHF;
@@ -1601,6 +1602,8 @@ void RF_UNIT_ProcessSensors(void) {
 			} else {
 				backward = backward * CALIBRATE.SWR_BWD_Calibration_HF;
 			}
+			
+			backward += 0.21f; // drop on diode
 		} else {
 			backward = 0.001f;
 		}
