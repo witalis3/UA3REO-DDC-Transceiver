@@ -609,7 +609,7 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF) { // disabled
 			TRX.ENC2_func_mode++;
 		}
-		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && !CurrentVFO->SQL) { // nothing to SQL tune
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && ((CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM) || !CurrentVFO->SQL)) { // nothing to SQL tune
 			TRX.ENC2_func_mode++;
 		}
 
