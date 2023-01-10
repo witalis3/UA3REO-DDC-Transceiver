@@ -25,6 +25,9 @@
 #if (defined(LCD_NONE))
 #include "lcd_driver_NONE.h"
 #endif
+#if (defined(LCD_ST7789))
+#include "lcd_driver_ST7789.h"
+#endif
 
 #if (LCD_WIDTH == 1 && LCD_HEIGHT == 1)
 #define LAY_1x1
