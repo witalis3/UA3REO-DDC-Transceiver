@@ -13,7 +13,7 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] = {
         .TOPBUTTONS_Y1 = 1,
         .TOPBUTTONS_Y2 = 56,
         .TOPBUTTONS_WIDTH = 62,
-        .TOPBUTTONS_HEIGHT = 18,
+        .TOPBUTTONS_HEIGHT = 15,
         .TOPBUTTONS_TB_MARGIN = 2,
         .TOPBUTTONS_LR_MARGIN = 2,
         .TOPBUTTONS_PRE_X = (float32_t)(LAYOUT_THEMES[0].TOPBUTTONS_X1 + LAYOUT_THEMES[0].TOPBUTTONS_LR_MARGIN),
@@ -78,7 +78,7 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] = {
         .FREQ_DELIMITER_X2_OFFSET = 190,
         // Display statuses under frequency
         .STATUS_Y_OFFSET = (uint16_t)(LAYOUT_THEMES[0].FREQ_Y_TOP + LAYOUT_THEMES[0].FREQ_BLOCK_HEIGHT + 1),
-        .STATUS_HEIGHT = 44,
+        .STATUS_HEIGHT = 30,
         .STATUS_BAR_X_OFFSET = 60,
         .STATUS_BAR_Y_OFFSET = 16,
         .STATUS_BAR_HEIGHT = 10,
@@ -153,7 +153,7 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] = {
         .STATUS_ERR_HEIGHT = 8,
         .TEXTBAR_FONT = 2,
         // bottom buttons
-        .BOTTOM_BUTTONS_BLOCK_HEIGHT = 22,
+        .BOTTOM_BUTTONS_BLOCK_HEIGHT = 18,
         .BOTTOM_BUTTONS_BLOCK_TOP = (uint16_t)(LCD_HEIGHT - LAYOUT_THEMES[0].BOTTOM_BUTTONS_BLOCK_HEIGHT),
         .BOTTOM_BUTTONS_COUNT = FUNCBUTTONS_ON_PAGE,
         .BOTTOM_BUTTONS_ONE_WIDTH = (uint16_t)(LCD_WIDTH / LAYOUT_THEMES[0].BOTTOM_BUTTONS_COUNT),
@@ -184,11 +184,11 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] = {
         .GREETINGS_X = (LCD_WIDTH / 2 - 5),
         .GREETINGS_Y = 25,
         // Tooltip
-        .TOOLTIP_FONT = (const GFXfont *)&FreeSans12pt7b,
+        .TOOLTIP_FONT = (const GFXfont *)&FreeSans9pt7b,
         .TOOLTIP_TIMEOUT = 1000,
         .TOOLTIP_MARGIN = 5,
         .TOOLTIP_POS_X = (LCD_WIDTH / 2),
-        .TOOLTIP_POS_Y = 46,
+        .TOOLTIP_POS_Y = 50,
         // BW Trapezoid
         .BW_TRAPEZ_POS_X = 0,
         .BW_TRAPEZ_POS_Y = 0,
