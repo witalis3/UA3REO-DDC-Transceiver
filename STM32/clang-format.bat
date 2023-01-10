@@ -5,5 +5,6 @@ c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i Src/J
 c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i Src/USBDevice/*
 c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i WOLF/Inc/* WOLF/Src/*
 c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i WOLF-Lite/Core/Inc/* WOLF-Lite/Core/Src/*
+c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i WOLF-Lite_V2-Mini/Core/Inc/* WOLF-Lite_V2-Mini/Core/Src/*
 c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i WOLF-Mini/Inc/* WOLF-Mini/Src/*
 c:\Keil_v5\ARM\ARMCLANG\bin\clang-format.exe --style=file:.clang-format -i WOLF-X1/Inc/* WOLF-X1/Src/*
