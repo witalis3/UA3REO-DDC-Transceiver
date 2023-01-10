@@ -237,9 +237,9 @@ static char ota_config_lcd[] = "ILI9341";
 #endif
 #if defined(LCD_ST7789)
 static char ota_config_lcd[] = "LCD_ST7789";
-	#ifdef STM32H743xx 
-	#define FT8_SUPPORT true 
-	#endif
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
+#endif
 #endif
 #if defined(LCD_ST7735S)
 static char ota_config_lcd[] = "ST7735S";
