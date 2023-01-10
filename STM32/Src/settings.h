@@ -177,6 +177,15 @@ static char ota_config_frontpanel[] = "X1";
 static char ota_config_frontpanel[] = "Mini";
 #endif
 
+#ifdef FRONTPANEL_LITE_V2_MINI
+#define HRDW_HAS_FUNCBUTTONS true
+#define MAX_VOLUME_VALUE 100.0f
+#define FUNCBUTTONS_COUNT 28
+#define FUNCBUTTONS_ON_PAGE 4
+#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
+static char ota_config_frontpanel[] = "LiteV2-Mini";
+#endif
+
 // LCDs
 #if defined(LCD_ILI9481)
 static char ota_config_lcd[] = "ILI9481";
@@ -225,6 +234,12 @@ static char ota_config_lcd[] = "ILI9341";
 #ifdef STM32H743xx
 #define FT8_SUPPORT false
 #endif
+#endif
+#if defined(LCD_ST7789)
+static char ota_config_lcd[] = "LCD_ST7789";
+	#ifdef STM32H743xx 
+	#define FT8_SUPPORT true 
+	#endif
 #endif
 #if defined(LCD_ST7735S)
 static char ota_config_lcd[] = "ST7735S";
