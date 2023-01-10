@@ -297,7 +297,7 @@ void RF_UNIT_ProcessSensors(void) {
 	// SWR
 	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / B16_RANGE;
 	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B16_RANGE;
-	
+
 	// println("-", VBAT_Voltage, " ", forward, " ", backward);
 	if (forward > 3.2f || backward > 3.2f) {
 		TRX_PWR_ALC_SWR_OVERFLOW = true;
@@ -320,7 +320,7 @@ void RF_UNIT_ProcessSensors(void) {
 		} else {
 			forward = forward * CALIBRATE.SWR_FWD_Calibration_HF;
 		}
-		
+
 		forward += 0.21f; // drop on diode
 
 		// backward = backward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
@@ -334,7 +334,7 @@ void RF_UNIT_ProcessSensors(void) {
 			} else {
 				backward = backward * CALIBRATE.SWR_BWD_Calibration_HF;
 			}
-			
+
 			backward += 0.21f; // drop on diode
 		} else {
 			backward = 0.001f;
