@@ -940,16 +940,10 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef *hpcd) {
 
 		__HAL_RCC_GPIOA_CLK_ENABLE();
 		/**USB_OTG_FS GPIO Configuration
-		PA9     ------> USB_OTG_FS_VBUS
 		PA10     ------> USB_OTG_FS_ID
 		PA11     ------> USB_OTG_FS_DM
 		PA12     ------> USB_OTG_FS_DP
 		*/
-		GPIO_InitStruct.Pin = GPIO_PIN_9;
-		GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-		GPIO_InitStruct.Pull = GPIO_NOPULL;
-		HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
 		GPIO_InitStruct.Pin = GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12;
 		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 		GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -1001,12 +995,11 @@ void HAL_PCD_MspDeInit(PCD_HandleTypeDef *hpcd) {
 		__HAL_RCC_USB_OTG_FS_CLK_DISABLE();
 
 		/**USB_OTG_FS GPIO Configuration
-		PA9     ------> USB_OTG_FS_VBUS
 		PA10     ------> USB_OTG_FS_ID
 		PA11     ------> USB_OTG_FS_DM
 		PA12     ------> USB_OTG_FS_DP
 		*/
-		HAL_GPIO_DeInit(GPIOA, GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12);
+		HAL_GPIO_DeInit(GPIOA, GPIO_PIN_10 | GPIO_PIN_11 | GPIO_PIN_12);
 
 		/* USB_OTG_FS interrupt DeInit */
 		HAL_NVIC_DisableIRQ(OTG_FS_IRQn);

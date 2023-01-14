@@ -910,7 +910,7 @@ void FRONTPANEL_check_ENC2SW(bool state) {
 		return;
 	}
 
-	bool ENC2SW_AND_TOUCH_Now = HAL_GPIO_ReadPin(ENC2SW_AND_TOUCHPAD_GPIO_Port, ENC2SW_AND_TOUCHPAD_Pin);
+	bool ENC2SW_AND_TOUCH_Now = HAL_GPIO_ReadPin(T_INT_GPIO_Port, T_INT_Pin);
 	// check hold and click
 	if (ENC2SW_Last != ENC2SW_AND_TOUCH_Now) {
 		ENC2SW_Last = ENC2SW_AND_TOUCH_Now;

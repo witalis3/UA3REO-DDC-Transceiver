@@ -197,7 +197,12 @@ void Error_Handler(void);
 #define KEY_IN_DOT_EXTI_IRQn EXTI1_IRQn
 
 /* USER CODE BEGIN Private defines */
-
+#define T_INT_Pin ENC2SW_AND_TOUCHPAD_Pin
+#define T_INT_GPIO_Port ENC2SW_AND_TOUCHPAD_GPIO_Port
+#define T_I2C_SDA_Pin AD2_CS_Pin
+#define T_I2C_SDA_GPIO_Port AD2_CS_GPIO_Port
+#define T_I2C_SCL_Pin AD3_CS_Pin
+#define T_I2C_SCL_GPIO_Port AD3_CS_GPIO_Port
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

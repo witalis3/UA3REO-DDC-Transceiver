@@ -238,7 +238,7 @@ int main(void) {
 	/* USER CODE BEGIN 2 */
 #ifdef HAS_TOUCHPAD
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
-	GPIO_InitStruct.Pin = ENC2SW_AND_TOUCHPAD_Pin;
+	GPIO_InitStruct.Pin = T_INT_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
 	HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
@@ -1274,8 +1274,8 @@ static void MX_USB_OTG_FS_PCD_Init(void) {
 	hpcd_USB_OTG_FS.Init.Sof_enable = ENABLE;
 	hpcd_USB_OTG_FS.Init.low_power_enable = DISABLE;
 	hpcd_USB_OTG_FS.Init.lpm_enable = DISABLE;
-	hpcd_USB_OTG_FS.Init.battery_charging_enable = ENABLE;
-	hpcd_USB_OTG_FS.Init.vbus_sensing_enable = ENABLE;
+	hpcd_USB_OTG_FS.Init.battery_charging_enable = DISABLE;
+	hpcd_USB_OTG_FS.Init.vbus_sensing_enable = DISABLE;
 	hpcd_USB_OTG_FS.Init.use_dedicated_ep1 = DISABLE;
 	if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK) {
 		Error_Handler();
@@ -1588,7 +1588,7 @@ static void MX_GPIO_Init(void) {
 	HAL_GPIO_WritePin(GPIOA, FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin, GPIO_PIN_RESET);
 
 	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOB, W25Q16_CS_Pin | SD_CS_Pin | AD3_CS_Pin | RFUNIT_OE_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, W25Q16_CS_Pin | SD_CS_Pin | T_I2C_SDA_Pin | RFUNIT_OE_Pin, GPIO_PIN_SET);
 
 	/*Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET);
@@ -1597,7 +1597,7 @@ static void MX_GPIO_Init(void) {
 	HAL_GPIO_WritePin(AD1_CS_GPIO_Port, AD1_CS_Pin, GPIO_PIN_SET);
 
 	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(AD2_CS_GPIO_Port, AD2_CS_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(T_I2C_SCL_GPIO_Port, T_I2C_SCL_Pin, GPIO_PIN_SET);
 
 	/*Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin(GPIOD, WM8731_SCK_Pin | WM8731_SDA_Pin, GPIO_PIN_RESET);
@@ -1611,29 +1611,23 @@ static void MX_GPIO_Init(void) {
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-	/*Configure GPIO pin : PE3 */
-	GPIO_InitStruct.Pin = GPIO_PIN_3;
-	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-	/*Configure GPIO pins : ENC2SW_AND_TOUCHPAD_Pin ENC_DT_Pin ENC2_DT_Pin */
-	GPIO_InitStruct.Pin = ENC2SW_AND_TOUCHPAD_Pin | ENC_DT_Pin | ENC2_DT_Pin;
+	/*Configure GPIO pins : ENC_DT_Pin ENC3_DT_Pin ENC2_CLK_Pin ENC2_DT_Pin */
+	GPIO_InitStruct.Pin = ENC_DT_Pin | ENC3_DT_Pin | ENC2_CLK_Pin | ENC2_DT_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-	/*Configure GPIO pin : ENC2_CLK_Pin */
-	GPIO_InitStruct.Pin = ENC2_CLK_Pin;
+	/*Configure GPIO pin : ENC3_CLK_Pin */
+	GPIO_InitStruct.Pin = ENC3_CLK_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
-	HAL_GPIO_Init(ENC2_CLK_GPIO_Port, &GPIO_InitStruct);
+	HAL_GPIO_Init(ENC3_CLK_GPIO_Port, &GPIO_InitStruct);
 
-	/*Configure GPIO pins : SWR_BACKW_Pin PC9 */
-	GPIO_InitStruct.Pin = SWR_BACKW_Pin | GPIO_PIN_9;
+	/*Configure GPIO pin : SWR_BACKW_Pin */
+	GPIO_InitStruct.Pin = SWR_BACKW_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+	HAL_GPIO_Init(SWR_BACKW_GPIO_Port, &GPIO_InitStruct);
 
 	/*Configure GPIO pins : FPGA_CLK_Pin FPGA_SYNC_Pin AD1_CS_Pin */
 	GPIO_InitStruct.Pin = FPGA_CLK_Pin | FPGA_SYNC_Pin | AD1_CS_Pin;
@@ -1644,8 +1638,8 @@ static void MX_GPIO_Init(void) {
 
 	/*Configure GPIO pins : FPGA_BUS_D0_Pin FPGA_BUS_D1_Pin FPGA_BUS_D2_Pin FPGA_BUS_D3_Pin
 	                         FPGA_BUS_D4_Pin FPGA_BUS_D5_Pin FPGA_BUS_D6_Pin FPGA_BUS_D7_Pin
-	                         AD2_CS_Pin */
-	GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin | AD2_CS_Pin;
+	                         T_I2C_SCL_Pin */
+	GPIO_InitStruct.Pin = FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin | T_I2C_SCL_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -1657,16 +1651,16 @@ static void MX_GPIO_Init(void) {
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	HAL_GPIO_Init(PTT_IN_GPIO_Port, &GPIO_InitStruct);
 
-	/*Configure GPIO pins : W25Q16_CS_Pin SD_CS_Pin AD3_CS_Pin RFUNIT_RCLK_Pin
+	/*Configure GPIO pins : W25Q16_CS_Pin SD_CS_Pin T_I2C_SDA_Pin RFUNIT_RCLK_Pin
 	                         RFUNIT_CLK_Pin RFUNIT_DATA_Pin RFUNIT_OE_Pin */
-	GPIO_InitStruct.Pin = W25Q16_CS_Pin | SD_CS_Pin | AD3_CS_Pin | RFUNIT_RCLK_Pin | RFUNIT_CLK_Pin | RFUNIT_DATA_Pin | RFUNIT_OE_Pin;
+	GPIO_InitStruct.Pin = W25Q16_CS_Pin | SD_CS_Pin | T_I2C_SDA_Pin | RFUNIT_RCLK_Pin | RFUNIT_CLK_Pin | RFUNIT_DATA_Pin | RFUNIT_OE_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-	/*Configure GPIO pins : PB2 PB4 */
-	GPIO_InitStruct.Pin = GPIO_PIN_2 | GPIO_PIN_4;
+	/*Configure GPIO pin : PB2 */
+	GPIO_InitStruct.Pin = GPIO_PIN_2;
 	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
@@ -1690,11 +1684,31 @@ static void MX_GPIO_Init(void) {
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
-	/*Configure GPIO pin : PD2 */
-	GPIO_InitStruct.Pin = GPIO_PIN_2;
-	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+	/*Configure GPIO pin : PC9 */
+	GPIO_InitStruct.Pin = GPIO_PIN_9;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Alternate = GPIO_AF5_SPI1;
+	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : T_INT_Pin */
+	GPIO_InitStruct.Pin = T_INT_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	HAL_GPIO_Init(T_INT_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : ENC4_CLK_Pin */
+	GPIO_InitStruct.Pin = ENC4_CLK_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	HAL_GPIO_Init(ENC4_CLK_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : ENC4_DT_Pin */
+	GPIO_InitStruct.Pin = ENC4_DT_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	HAL_GPIO_Init(ENC4_DT_GPIO_Port, &GPIO_InitStruct);
 
 	/*Configure GPIO pin : AF_AMP_MUTE_Pin */
 	GPIO_InitStruct.Pin = AF_AMP_MUTE_Pin;
