@@ -55,9 +55,9 @@
 #define HRDW_AUDIO_COPY2_MDMA hmdma_mdma_channel42_sw_0
 
 // SPI Speed
-#define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_4
-#define SPI_SD_PRESCALER SPI_BAUDRATEPRESCALER_2
-#define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_4
+#define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_32
+#define SPI_SD_PRESCALER SPI_BAUDRATEPRESCALER_16
+#define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_32
 
 // buffers
 #define CODEC_AUDIO_BUFFER_SIZE (AUDIO_BUFFER_SIZE * 2)          // the size of the circular buffer is 2 times larger than the FPGA buffer, we work in the first half, then on the other
