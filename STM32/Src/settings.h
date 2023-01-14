@@ -158,6 +158,16 @@ static char ota_config_frontpanel[] = "BIG";
 static char ota_config_frontpanel[] = "WF_100D";
 #endif
 
+#ifdef FRONTPANEL_WOLF_2
+#define HRDW_MCP3008_1 true
+#define HRDW_HAS_FUNCBUTTONS true
+#define MAX_VOLUME_VALUE 1024.0f
+#define FUNCBUTTONS_COUNT (27 + 7)
+#define FUNCBUTTONS_ON_PAGE 9
+#define FUNCBUTTONS_PAGES 3
+static char ota_config_frontpanel[] = "WOLF-2";
+#endif
+
 #ifdef FRONTPANEL_X1
 #define HRDW_MCP3008_1 true
 #define HRDW_HAS_FUNCBUTTONS true

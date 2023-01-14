@@ -244,7 +244,7 @@ int main(void) {
 	__HAL_RCC_BKPRAM_CLK_ENABLE();
 	HAL_EnableCompensationCell();
 	println("\r\n----------------------------------");
-	println("Wolf Transceiver Initialization...");
+	println("WOLF-2 Transceiver Initialization...");
 	println("[OK] USB init");
 	USBD_Restart();
 	println("[OK] FIFO timer TIM7 init");
@@ -261,23 +261,6 @@ int main(void) {
 	bool reset_calibrations = false;
 	bool go_dfu = false;
 
-#ifdef FRONTPANEL_SMALL_V1
-	if (PERIPH_FrontPanel_Buttons[15].state) { // soft reset (MENU)
-		reset_settings = true;
-	}
-	if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[0].state) { // Very hard reset (MENU+PRE)
-		reset_calibrations = true;
-	}
-#endif
-#ifdef FRONTPANEL_BIG_V1
-	if (PERIPH_FrontPanel_Buttons[15].state) { // soft reset (F1)
-		reset_settings = true;
-	}
-	if (PERIPH_FrontPanel_Buttons[15].state && PERIPH_FrontPanel_Buttons[5].state) { // Very hard reset (F1+F8)
-		reset_calibrations = true;
-	}
-#endif
-#ifdef FRONTPANEL_WF_100D
 	if (PERIPH_FrontPanel_Buttons[10].state) { // go DFU (MENU)
 		go_dfu = true;
 	}
@@ -287,7 +270,6 @@ int main(void) {
 	if (PERIPH_FrontPanel_Buttons[13].state && PERIPH_FrontPanel_Buttons[3].state) { // Very hard reset (F1+F8)
 		reset_calibrations = true;
 	}
-#endif
 
 	if (reset_settings) {
 		LoadSettings(true);
@@ -311,11 +293,9 @@ int main(void) {
 		LoadCalibration(false);
 	}
 
-#ifdef FRONTPANEL_WF_100D
 	if (CALIBRATE.RF_unit_type != RF_UNIT_WF_100D) {
 		LoadCalibration(true);
 	}
-#endif
 
 	TRX.Locked = false;
 	println("[OK] LCD init");
@@ -326,15 +306,9 @@ int main(void) {
 		strcpy(greetings_buff, "ver. ");
 		strcat(greetings_buff, version_string);
 
-#if (defined(LAY_800x480))
 		LCDDriver_Fill(rgb888torgb565(255, 255, 255));
-		LCDDriver_printImage_JPEGCompressed(0, 0, IMAGES_logo800_NY_jpeg, sizeof(IMAGES_logo800_NY_jpeg));
+		LCDDriver_printImage_JPEGCompressed(0, 0, IMAGES_logo800_jpeg, sizeof(IMAGES_logo800_jpeg));
 		LCDDriver_printTextFont(greetings_buff, 30, (LCD_HEIGHT - 30), COLOR_BLACK, rgb888torgb565(255, 255, 255), &FreeSans12pt7b);
-#else
-		LCDDriver_Fill(rgb888torgb565(243, 243, 243));
-		LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo480.width) / 2), ((LCD_HEIGHT - IMAGES_logo480.height) / 2), &IMAGES_logo480, BG_COLOR, BG_COLOR);
-		LCDDriver_printText(greetings_buff, 10, (LCD_HEIGHT - 10 - 8), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
-#endif
 
 		// show callsign greetings
 		uint16_t x1, y1, w, h;
@@ -342,11 +316,7 @@ int main(void) {
 		strcat(greetings_buff, TRX.CALLSIGN);
 		strcat(greetings_buff, " !");
 		LCDDriver_getTextBoundsFont(greetings_buff, LAYOUT->GREETINGS_X, LAYOUT->GREETINGS_Y, &x1, &y1, &w, &h, &FreeSans9pt7b);
-#if (defined(LAY_800x480))
 		LCDDriver_printTextFont(greetings_buff, LAYOUT->GREETINGS_X - (w / 2), LAYOUT->GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(255, 255, 255), &FreeSans9pt7b);
-#else
-		LCDDriver_printTextFont(greetings_buff, LAYOUT->GREETINGS_X - (w / 2), LAYOUT->GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(243, 243, 243), &FreeSans9pt7b);
-#endif
 	}
 	println("[OK] Profiler init");
 	InitProfiler();
@@ -382,26 +352,15 @@ int main(void) {
 	println("[OK] Digital decoder timer TIM17 init");
 	HAL_TIM_Base_Start_IT(&htim17);
 	println("[OK] FPGA init");
-#ifdef FRONTPANEL_SMALL_V1
-	if (PERIPH_FrontPanel_Buttons[19].state) { // fpga bus test (MODE+)
-		FPGA_Init(true, false);
-	}
-	if (PERIPH_FrontPanel_Buttons[20].state) { // fpga firmware test (MODE-)
-		FPGA_Init(false, true);
-	} else
-#endif
-		FPGA_Init(false, false);
+	FPGA_Init(false, false);
 	println("[OK] WIFI timer TIM3 init");
 	HAL_TIM_Base_Start_IT(&htim3);
 	println("UA3REO Transceiver started!\r\n");
 	TRX_Inited = true;
 
-// Tisho
-#if defined(FRONTPANEL_BIG_V1)
 	if (CALIBRATE.INA226_EN) { //	if INA226 is activated then initialise
 		INA226_Init();
 	}
-#endif // Tisho end of change
 
 	// while(true){HAL_Delay(3000); SCB->AIRCR = 0x05FA0004; } //debug restart
 	/* USER CODE END 2 */

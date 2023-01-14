@@ -338,7 +338,7 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>-Wno-sign-conversion -Wno-implicit-int-conversion -Wno-float-equal -Wno-sign-compare -Wno-gnu-flexible-array-initializer -pipe  -Wno-unused-value</MiscControls>
-              <Define>FRONTPANEL_WF_100D,LCD_RA8875,TOUCHPAD_GT911,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
+              <Define>FRONTPANEL_WOLF_2,LCD_RA8875,TOUCHPAD_GT911,USE_HAL_DRIVER,STM32H743xx,ARM_MATH_MATRIX_CHECK,ARM_MATH_ROUNDING,ARM_MATH_LOOPUNROLL</Define>
               <Undefine></Undefine>
               <IncludePath>..\Inc;..\Drivers\STM32H7xx_HAL_Driver\Inc;..\Middlewares\Third_Party\FatFs\src;..\..\Src;..\..\Src\USBDevice;..\..\Src\JPEG;..\Drivers\CMSIS\Device\ST\STM32H7xx\Include;..\Src</IncludePath>
             </VariousControls>
@@ -825,11 +825,6 @@
               <FilePath>..\..\Src\codec.h</FilePath>
             </File>
             <File>
-              <FileName>codec_nau8822.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\codec_nau8822.c</FilePath>
-            </File>
-            <File>
               <FileName>codec_wm8731.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\codec_wm8731.c</FilePath>
@@ -970,26 +965,6 @@
               <FilePath>..\..\Src\lcd_driver.h</FilePath>
             </File>
             <File>
-              <FileName>lcd_driver_ILI9481.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\lcd_driver_ILI9481.c</FilePath>
-            </File>
-            <File>
-              <FileName>lcd_driver_ILI9481.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\lcd_driver_ILI9481.h</FilePath>
-            </File>
-            <File>
-              <FileName>lcd_driver_NONE.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\lcd_driver_NONE.c</FilePath>
-            </File>
-            <File>
-              <FileName>lcd_driver_NONE.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\lcd_driver_NONE.h</FilePath>
-            </File>
-            <File>
               <FileName>lcd_driver_RA8875.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\lcd_driver_RA8875.c</FilePath>
@@ -1073,21 +1048,6 @@
               <FileName>screen_layout.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\screen_layout.h</FilePath>
-            </File>
-            <File>
-              <FileName>screen_layout_160x128.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\Src\screen_layout_160x128.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>screen_layout_320x240.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\Src\screen_layout_320x240.cpp</FilePath>
-            </File>
-            <File>
-              <FileName>screen_layout_480x320.cpp</FileName>
-              <FileType>8</FileType>
-              <FilePath>..\..\Src\screen_layout_480x320.cpp</FilePath>
             </File>
             <File>
               <FileName>screen_layout_800x480.cpp</FileName>
