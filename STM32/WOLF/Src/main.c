@@ -237,7 +237,7 @@ int main(void) {
 	GPIO_InitStruct.Pin = ENC2SW_AND_TOUCHPAD_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-	HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+	HAL_GPIO_Init(T_INT_GPIO_Port, &GPIO_InitStruct);
 #endif
 	__HAL_RCC_CSI_ENABLE();
 	__HAL_RCC_SYSCFG_CLK_ENABLE();
