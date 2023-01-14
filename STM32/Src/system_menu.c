@@ -740,11 +740,13 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"Func button 27", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[26], SYSMENU_HANDL_SCREEN_FUNC_BUTTON27},
 #if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 27
     {"Func button 28", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[27], SYSMENU_HANDL_SCREEN_FUNC_BUTTON28},
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 28
     {"Func button 29", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[28], SYSMENU_HANDL_SCREEN_FUNC_BUTTON29},
     {"Func button 30", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[29], SYSMENU_HANDL_SCREEN_FUNC_BUTTON30},
 #if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 30
     {"Func button 31", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[30], SYSMENU_HANDL_SCREEN_FUNC_BUTTON31},
     {"Func button 32", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[31], SYSMENU_HANDL_SCREEN_FUNC_BUTTON32},
+#endif
 #endif
 #endif
 #endif
@@ -3446,6 +3448,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON28(int8_t direction) {
 	}
 }
 
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 28
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON29(int8_t direction) {
 	if (TRX.FuncButtons[28] > 0 || direction > 0) {
 		TRX.FuncButtons[28] += direction;
@@ -3482,6 +3485,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction) {
 		TRX.FuncButtons[31] = FUNCBUTTONS_COUNT - 1;
 	}
 }
+#endif
 #endif
 #endif
 #endif

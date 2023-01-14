@@ -252,7 +252,7 @@ void RF_UNIT_ProcessSensors(void) {
 	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B16_RANGE;
 
 	// println("-", VBAT_Voltage, " ", forward, " ", backward);
-	if (= forward > 3.2f || backward > 3.2f) {
+	if (forward > 3.2f || backward > 3.2f) {
 		TRX_PWR_ALC_SWR_OVERFLOW = true;
 	}
 

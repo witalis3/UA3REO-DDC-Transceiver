@@ -741,62 +741,6 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 		}
 	}
 
-	// RIT / XIT or IF Gain
-	if (button->type == FUNIT_CTRL_RIT_XIT) {
-		static float32_t IF_GAIN_mcp3008_averaged = 0.0f;
-		IF_GAIN_mcp3008_averaged = IF_GAIN_mcp3008_averaged * 0.6f + mcp3008_value * 0.4f;
-
-		if (TRX.RIT_Enabled) {
-			static int_fast16_t TRX_RIT_old = 0;
-			if (!TRX.FineRITTune) {
-				TRX_RIT = (int_fast16_t)(((1023.0f - IF_GAIN_mcp3008_averaged) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
-			}
-
-			if (TRX_RIT_old != TRX_RIT) {
-				TRX_RIT_old = TRX_RIT;
-				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
-				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
-				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_RIT / (float32_t)TRX.RIT_INTERVAL));
-				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 0) {
-					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
-					LCD_UpdateQuery.StatusInfoGUI = true;
-				}
-			}
-			TRX_XIT = 0;
-		}
-
-		if (TRX.XIT_Enabled) {
-			static int_fast16_t TRX_XIT_old = 0;
-			if (!TRX.FineRITTune) {
-				TRX_XIT = (int_fast16_t)(((1023.0f - IF_GAIN_mcp3008_averaged) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
-			}
-
-			if (TRX_XIT_old != TRX_XIT) {
-				TRX_XIT_old = TRX_XIT;
-				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
-				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
-				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_XIT / (float32_t)TRX.XIT_INTERVAL));
-				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 0) {
-					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
-					LCD_UpdateQuery.StatusInfoGUI = true;
-				}
-			}
-			TRX_RIT = 0;
-		}
-
-		if (!TRX.RIT_Enabled && TRX.XIT_Enabled && !TRX.FineRITTune) // Disable RIT/XIT + IF
-		{
-			TRX_RIT = 0;
-			TRX_XIT = 0;
-			TRX.IF_Gain = (uint8_t)(CALIBRATE.IF_GAIN_MIN + ((1023.0f - IF_GAIN_mcp3008_averaged) * (float32_t)(CALIBRATE.IF_GAIN_MAX - CALIBRATE.IF_GAIN_MIN) / 1023.0f));
-		}
-
-		if (TRX.FineRITTune) // IF only
-		{
-			TRX.IF_Gain = (uint8_t)(CALIBRATE.IF_GAIN_MIN + ((1023.0f - IF_GAIN_mcp3008_averaged) * (float32_t)(CALIBRATE.IF_GAIN_MAX - CALIBRATE.IF_GAIN_MIN) / 1023.0f));
-		}
-	}
-
 	// PTT
 	if (button->type == FUNIT_CTRL_PTT) {
 		static bool frontunit_ptt_state_prev = false;

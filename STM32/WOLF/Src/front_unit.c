@@ -129,8 +129,8 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .clickHandler = BUTTONHANDLER_BW,
      .holdHandler = BUTTONHANDLER_HPF}, // BW-HPF
 
-    {.port = 2, .channel = 7, .type = FUNIT_CTRL_RIT_XIT}, // RIT/XIT
-    {.port = 2, .channel = 6, .type = FUNIT_CTRL_AF_GAIN}, // AF GAIN
+    {.port = 2, .channel = 7, .type = FUNIT_CTRL_IF_RIT_XIT}, // RIT/XIT
+    {.port = 2, .channel = 6, .type = FUNIT_CTRL_AF_GAIN},    // AF GAIN
     {.port = 2,
      .channel = 5,
      .type = FUNIT_CTRL_BUTTON,
@@ -294,8 +294,8 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 #ifdef FRONTPANEL_BIG_V1
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     // buttons
-    {.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN}, // AF GAIN
-    {.port = 1, .channel = 1, .type = FUNIT_CTRL_RIT_XIT}, // RIT/XIT
+    {.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN},    // AF GAIN
+    {.port = 1, .channel = 1, .type = FUNIT_CTRL_IF_RIT_XIT}, // RIT/XIT
 
     {.port = 1, .channel = 2, .type = FUNIT_CTRL_TANGENT}, // TANGENT_SW1
     {.port = 1, .channel = 3, .type = FUNIT_CTRL_TANGENT}, // TANGENT_SW2
@@ -483,8 +483,8 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 #ifdef FRONTPANEL_WF_100D
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     // buttons
-    {.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN}, // AF GAIN
-    {.port = 1, .channel = 1, .type = FUNIT_CTRL_RIT_XIT}, // RIT/XIT
+    {.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN},    // AF GAIN
+    {.port = 1, .channel = 1, .type = FUNIT_CTRL_IF_RIT_XIT}, // RIT/XIT
 
     {.port = 1,
      .channel = 2,
@@ -1526,7 +1526,7 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	}
 
 	// RIT / XIT or IF Gain
-	if (button->type == FUNIT_CTRL_RIT_XIT) {
+	if (button->type == FUNIT_CTRL_IF_RIT_XIT) {
 		static float32_t IF_GAIN_mcp3008_averaged = 0.0f;
 		IF_GAIN_mcp3008_averaged = IF_GAIN_mcp3008_averaged * 0.6f + mcp3008_value * 0.4f;
 
