@@ -422,7 +422,7 @@
             <File>
               <FileName>hardware.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\..\WOLF\Src\hardware.c</FilePath>
+              <FilePath>..\Src\hardware.c</FilePath>
             </File>
             <File>
               <FileName>hardware.h</FileName>
@@ -470,6 +470,11 @@
               <FilePath>..\Inc\stm32h7xx_it.h</FilePath>
             </File>
             <File>
+              <FileName>system_stm32h7xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\WOLF\Src\system_stm32h7xx.c</FilePath>
+            </File>
+            <File>
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\main.c</FilePath>
@@ -483,11 +488,6 @@
               <FileName>stm32h7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
-            </File>
-            <File>
-              <FileName>system_stm32h7xx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\WOLF\Src\system_stm32h7xx.c</FilePath>
             </File>
           </Files>
         </Group>
