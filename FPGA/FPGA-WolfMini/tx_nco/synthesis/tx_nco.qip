@@ -2,7 +2,7 @@ set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_TOOL_NAME "Qsy
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_TOOL_VERSION "18.1"
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_TOOL_ENV "Qsys"
 set_global_assignment -library "tx_nco" -name SOPCINFO_FILE [file join $::quartus(qip_path) "../../tx_nco.sopcinfo"]
-set_global_assignment -entity "tx_nco" -library "tx_nco" -name SLD_INFO "QSYS_NAME tx_nco HAS_SOPCINFO 1 GENERATION_ID 1650289535"
+set_global_assignment -entity "tx_nco" -library "tx_nco" -name SLD_INFO "QSYS_NAME tx_nco HAS_SOPCINFO 1 GENERATION_ID 1673704567"
 set_global_assignment -library "tx_nco" -name MISC_FILE [file join $::quartus(qip_path) "../tx_nco.cmp"]
 set_global_assignment -library "tx_nco" -name SLD_FILE [file join $::quartus(qip_path) "tx_nco.debuginfo"]
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_TARGETED_DEVICE_FAMILY "Cyclone IV E"
@@ -15,9 +15,9 @@ set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_DISP
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_REPORT_HIERARCHY "On"
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_INTERNAL "Off"
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_VERSION "MS4w"
-set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTY1MDI4OTUzNQ==::QXV0byBHRU5FUkFUSU9OX0lE"
+set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19HRU5FUkFUSU9OX0lE::MTY3MzcwNDU2Nw==::QXV0byBHRU5FUkFUSU9OX0lE"
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfRkFNSUxZ::Q3ljbG9uZSBJViBF::QXV0byBERVZJQ0VfRkFNSUxZ"
-set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0U=::RVA0Q0UyMkUyMkM4::QXV0byBERVZJQ0U="
+set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0U=::RVA0Q0UxMEUyMkM4::QXV0byBERVZJQ0U="
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19ERVZJQ0VfU1BFRURHUkFERQ==::OA==::QXV0byBERVZJQ0VfU1BFRURHUkFERQ=="
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19DTEtfQ0xPQ0tfUkFURQ==::LTE=::QXV0byBDTE9DS19SQVRF"
 set_global_assignment -entity "tx_nco" -library "tx_nco" -name IP_COMPONENT_PARAMETER "QVVUT19DTEtfQ0xPQ0tfRE9NQUlO::LTE=::QXV0byBDTE9DS19ET01BSU4="
@@ -43,9 +43,9 @@ set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPO
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "dHJpZ19jeWNsZXNfcGVyX291dHB1dA==::MQ==::Q2xvY2sgY3ljbGVzIHBlciBvdXRwdXQ="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "Y3ljbGVzX3Blcl9vdXRwdXQ=::MQ==::Q2xvY2sgY3ljbGVzIHBlciBvdXRwdXQ="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "d2FudF9kaXRoZXI=::ZmFsc2U=::SW1wbGVtZW50IFBoYXNlIERpdGhlcmluZw=="
-set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "ZnNhbXA=::MTg4LjE2::Q2xvY2sgUmF0ZQ=="
+set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "ZnNhbXA=::MTEwLjQ=::Q2xvY2sgUmF0ZQ=="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "ZnJlcV9vdXQ=::Ny4x::RGVzaXJlZCBPdXRwdXQgRnJlcXVlbmN5"
-set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "cGhpX2luYw==::MTYyMDY1NjI0::UGhhc2UgSW5jcmVtZW50IFZhbHVl"
+set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "cGhpX2luYw==::Mjc2MjE2MTk0::UGhhc2UgSW5jcmVtZW50IFZhbHVl"
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "cmVhbF9mcmVxX291dA==::Ny4x::UmVhbCBPdXRwdXQgRnJlcXVlbmN5"
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "d2FudF9mcmVxX21vZA==::ZmFsc2U=::RnJlcXVlbmN5IE1vZHVsYXRpb24gSW5wdXQ="
 set_global_assignment -entity "tx_nco_nco_ii_0" -library "tx_nco" -name IP_COMPONENT_PARAMETER "d2FudF9waGFzZV9tb2Q=::ZmFsc2U=::UGhhc2UgTW9kdWxhdGlvbiBJbnB1dA=="
