@@ -2538,11 +2538,11 @@ static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center) {
 static float32_t getDBFromFFTAmpl(float32_t ampl) {
 	float32_t db = 0.0f;
 
-	if (TRX.FFT_Scale_Type == 0 || TRX.FFT_Scale_Type == 2 || TRX_on_TX) {                                     // ampl / dbm scale
+	if (TRX.FFT_Scale_Type == 0 || TRX.FFT_Scale_Type == 2 || TRX_on_TX) {                        // ampl / dbm scale
 		db = rate2dbP(powf(ampl / (float32_t)FFT_SIZE, 2) / 50.0f / 0.001f) + FFT_DBM_COMPENSATION; // roughly... because window and other...
 	}
 
-	if (TRX.FFT_Scale_Type == 1 && !TRX_on_TX) {                                              // squared scale
+	if (TRX.FFT_Scale_Type == 1 && !TRX_on_TX) {                                // squared scale
 		db = rate2dbP(ampl / (float32_t)FFT_SIZE / 50.0f) + FFT_DBM_COMPENSATION; // roughly... because window and other...
 	}
 

@@ -910,7 +910,7 @@ void FRONTPANEL_Process(void) {
 		if (HRDW_SPI_Locked) {
 			continue;
 		}
-		
+
 		PERIPH_FrontPanel_Button *button = &PERIPH_FrontPanel_Buttons[b];
 // check disabled ports
 #ifdef HRDW_MCP3008_1
@@ -1081,7 +1081,7 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, u
 	mcp3008_value /= count;
 
 	HRDW_SPI_Locked = false;
-	
+
 	return mcp3008_value;
 }
 
