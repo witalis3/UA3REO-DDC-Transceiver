@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 75         // Settings config version
+#define SETT_VERSION 76         // Settings config version
 #define CALIB_VERSION 55        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
@@ -63,6 +63,7 @@
 
 #define MAX_WIFIPASS_LENGTH 32
 #define MAX_CALLSIGN_LENGTH 16
+#define MAX_CW_MACROS_LENGTH 48
 
 #define W25Q16_COMMAND_Write_Disable 0x04
 #define W25Q16_COMMAND_Write_Enable 0x06
@@ -562,6 +563,11 @@ extern struct TRX_SETTINGS {
 	bool CW_GaussFilter;
 	bool CW_Iambic;
 	bool CW_Invert;
+	char CW_Macros_1[MAX_CW_MACROS_LENGTH];
+	char CW_Macros_2[MAX_CW_MACROS_LENGTH];
+	char CW_Macros_3[MAX_CW_MACROS_LENGTH];
+	char CW_Macros_4[MAX_CW_MACROS_LENGTH];
+	char CW_Macros_5[MAX_CW_MACROS_LENGTH];
 	// SCREEN
 	int16_t FFT_ManualBottom;
 	int16_t FFT_ManualTop;

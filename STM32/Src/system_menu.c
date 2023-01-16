@@ -134,6 +134,11 @@ static void SYSMENU_HANDL_CW_DotToDashRate(int8_t direction);
 static void SYSMENU_HANDL_CW_Iambic(int8_t direction);
 static void SYSMENU_HANDL_CW_Invert(int8_t direction);
 static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction);
+static void SYSMENU_HANDL_TRX_SetCWMacros1(int8_t direction);
+static void SYSMENU_HANDL_TRX_SetCWMacros2(int8_t direction);
+static void SYSMENU_HANDL_TRX_SetCWMacros3(int8_t direction);
+static void SYSMENU_HANDL_TRX_SetCWMacros4(int8_t direction);
+static void SYSMENU_HANDL_TRX_SetCWMacros5(int8_t direction);
 
 static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction);
@@ -643,6 +648,11 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
     {"CW Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
     {"CW Key Invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Invert, SYSMENU_HANDL_CW_Invert},
     {"CW PTT Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_PTT_Type, SYSMENU_HANDL_CW_PTT_Type, {"Key", "PTT", "KEY+PTT"}},
+		{"CW Macros 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros1},
+		{"CW Macros 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros2},
+		{"CW Macros 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros3},
+		{"CW Macros 4", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros4},
+		{"CW Macros 5", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros5},
 };
 
 const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
@@ -1131,6 +1141,16 @@ static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw);
 static void SYSMENU_TRX_RotateLocatorChar(int8_t dir);
 static void SYSMENU_TRX_DrawURSICodeMenu(bool full_redraw);
 static void SYSMENU_TRX_RotateURSICodeChar(int8_t dir);
+static void SYSMENU_TRX_DrawCWMacros1Menu(bool full_redraw);
+static void SYSMENU_TRX_RotateCWMacros1Char(int8_t dir);
+static void SYSMENU_TRX_DrawCWMacros2Menu(bool full_redraw);
+static void SYSMENU_TRX_RotateCWMacros2Char(int8_t dir);
+static void SYSMENU_TRX_DrawCWMacros3Menu(bool full_redraw);
+static void SYSMENU_TRX_RotateCWMacros3Char(int8_t dir);
+static void SYSMENU_TRX_DrawCWMacros4Menu(bool full_redraw);
+static void SYSMENU_TRX_RotateCWMacros4Char(int8_t dir);
+static void SYSMENU_TRX_DrawCWMacros5Menu(bool full_redraw);
+static void SYSMENU_TRX_RotateCWMacros5Char(int8_t dir);
 static uint8_t SYSTMENU_getVisibleIdFromReal(uint8_t realIndex);
 static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex);
 static void setCurrentMenuIndex(uint8_t index);
@@ -1163,11 +1183,21 @@ static bool sysmenu_wifi_setAP3password_menu_opened = false;
 static bool sysmenu_trx_setCallsign_menu_opened = false;
 static bool sysmenu_trx_setLocator_menu_opened = false;
 static bool sysmenu_trx_setURSICode_menu_opened = false;
+static bool sysmenu_trx_setCWMacros1_menu_opened = false;
+static bool sysmenu_trx_setCWMacros2_menu_opened = false;
+static bool sysmenu_trx_setCWMacros3_menu_opened = false;
+static bool sysmenu_trx_setCWMacros4_menu_opened = false;
+static bool sysmenu_trx_setCWMacros5_menu_opened = false;
 static uint8_t sysmenu_wifi_selected_ap_index = 0;
 static uint8_t sysmenu_wifi_selected_ap_password_char_index = 0;
 static uint8_t sysmenu_trx_selected_callsign_char_index = 0;
 static uint8_t sysmenu_trx_selected_locator_char_index = 0;
 static uint8_t sysmenu_trx_selected_ursi_code_char_index = 0;
+static uint8_t sysmenu_trx_selected_CWMacros1_char_index = 0;
+static uint8_t sysmenu_trx_selected_CWMacros2_char_index = 0;
+static uint8_t sysmenu_trx_selected_CWMacros3_char_index = 0;
+static uint8_t sysmenu_trx_selected_CWMacros4_char_index = 0;
+static uint8_t sysmenu_trx_selected_CWMacros5_char_index = 0;
 
 // Time menu
 static bool sysmenu_timeMenuOpened = false;
@@ -2818,6 +2848,351 @@ static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction) {
 	}
 
 	KEYER_symbol_status = 0;
+}
+
+static void SYSMENU_HANDL_TRX_SetCWMacros1(int8_t direction) {
+	sysmenu_trx_setCWMacros1_menu_opened = true;
+	SYSMENU_TRX_DrawCWMacros1Menu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_TRX_SetCWMacros2(int8_t direction) {
+	sysmenu_trx_setCWMacros2_menu_opened = true;
+	SYSMENU_TRX_DrawCWMacros2Menu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_TRX_SetCWMacros3(int8_t direction) {
+	sysmenu_trx_setCWMacros3_menu_opened = true;
+	SYSMENU_TRX_DrawCWMacros3Menu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_TRX_SetCWMacros4(int8_t direction) {
+	sysmenu_trx_setCWMacros4_menu_opened = true;
+	SYSMENU_TRX_DrawCWMacros4Menu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_TRX_SetCWMacros5(int8_t direction) {
+	sysmenu_trx_setCWMacros5_menu_opened = true;
+	SYSMENU_TRX_DrawCWMacros5Menu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_TRX_RotateCWMacros1Char(int8_t dir) {
+	uint16_t index = sysmenu_trx_selected_CWMacros1_char_index;
+	
+	bool full_redraw = false;
+	if (TRX.CW_Macros_1[index] == 0) {
+		full_redraw = true;
+	}
+	TRX.CW_Macros_1[index] += dir;
+
+	// do not show special characters
+	if (TRX.CW_Macros_1[index] >= 1 && TRX.CW_Macros_1[index] <= 32 && dir > 0) {
+		TRX.CW_Macros_1[index] = 33;
+	}
+	if (TRX.CW_Macros_1[index] >= 1 && TRX.CW_Macros_1[index] <= 32 && dir < 0) {
+		TRX.CW_Macros_1[index] = 0;
+	}
+	if (TRX.CW_Macros_1[index] >= 127) {
+		TRX.CW_Macros_1[index] = 0;
+	}
+	if (TRX.CW_Macros_1[index] == 0) {
+		full_redraw = true;
+	}
+
+	if (full_redraw) {
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else {
+		LCD_UpdateQuery.SystemMenu = true;
+	}
+}
+
+static void SYSMENU_TRX_RotateCWMacros2Char(int8_t dir) {
+	uint16_t index = sysmenu_trx_selected_CWMacros2_char_index;
+	
+	bool full_redraw = false;
+	if (TRX.CW_Macros_2[index] == 0) {
+		full_redraw = true;
+	}
+	TRX.CW_Macros_2[index] += dir;
+
+	// do not show special characters
+	if (TRX.CW_Macros_2[index] >= 1 && TRX.CW_Macros_2[index] <= 32 && dir > 0) {
+		TRX.CW_Macros_2[index] = 33;
+	}
+	if (TRX.CW_Macros_2[index] >= 1 && TRX.CW_Macros_2[index] <= 32 && dir < 0) {
+		TRX.CW_Macros_2[index] = 0;
+	}
+	if (TRX.CW_Macros_2[index] >= 127) {
+		TRX.CW_Macros_2[index] = 0;
+	}
+	if (TRX.CW_Macros_2[index] == 0) {
+		full_redraw = true;
+	}
+
+	if (full_redraw) {
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else {
+		LCD_UpdateQuery.SystemMenu = true;
+	}
+}
+
+static void SYSMENU_TRX_RotateCWMacros3Char(int8_t dir) {
+	uint16_t index = sysmenu_trx_selected_CWMacros3_char_index;
+	
+	bool full_redraw = false;
+	if (TRX.CW_Macros_3[index] == 0) {
+		full_redraw = true;
+	}
+	TRX.CW_Macros_3[index] += dir;
+
+	// do not show special characters
+	if (TRX.CW_Macros_3[index] >= 1 && TRX.CW_Macros_3[index] <= 32 && dir > 0) {
+		TRX.CW_Macros_3[index] = 33;
+	}
+	if (TRX.CW_Macros_3[index] >= 1 && TRX.CW_Macros_3[index] <= 32 && dir < 0) {
+		TRX.CW_Macros_3[index] = 0;
+	}
+	if (TRX.CW_Macros_3[index] >= 127) {
+		TRX.CW_Macros_3[index] = 0;
+	}
+	if (TRX.CW_Macros_3[index] == 0) {
+		full_redraw = true;
+	}
+
+	if (full_redraw) {
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else {
+		LCD_UpdateQuery.SystemMenu = true;
+	}
+}
+
+static void SYSMENU_TRX_RotateCWMacros4Char(int8_t dir) {
+	uint16_t index = sysmenu_trx_selected_CWMacros4_char_index;
+	
+	bool full_redraw = false;
+	if (TRX.CW_Macros_4[index] == 0) {
+		full_redraw = true;
+	}
+	TRX.CW_Macros_4[index] += dir;
+
+	// do not show special characters
+	if (TRX.CW_Macros_4[index] >= 1 && TRX.CW_Macros_4[index] <= 32 && dir > 0) {
+		TRX.CW_Macros_4[index] = 33;
+	}
+	if (TRX.CW_Macros_4[index] >= 1 && TRX.CW_Macros_4[index] <= 32 && dir < 0) {
+		TRX.CW_Macros_4[index] = 0;
+	}
+	if (TRX.CW_Macros_4[index] >= 127) {
+		TRX.CW_Macros_4[index] = 0;
+	}
+	if (TRX.CW_Macros_4[index] == 0) {
+		full_redraw = true;
+	}
+
+	if (full_redraw) {
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else {
+		LCD_UpdateQuery.SystemMenu = true;
+	}
+}
+
+static void SYSMENU_TRX_RotateCWMacros5Char(int8_t dir) {
+	uint16_t index = sysmenu_trx_selected_CWMacros4_char_index;
+	
+	bool full_redraw = false;
+	if (TRX.CW_Macros_5[index] == 0) {
+		full_redraw = true;
+	}
+	TRX.CW_Macros_5[index] += dir;
+
+	// do not show special characters
+	if (TRX.CW_Macros_5[index] >= 1 && TRX.CW_Macros_5[index] <= 32 && dir > 0) {
+		TRX.CW_Macros_5[index] = 33;
+	}
+	if (TRX.CW_Macros_5[index] >= 1 && TRX.CW_Macros_5[index] <= 32 && dir < 0) {
+		TRX.CW_Macros_5[index] = 0;
+	}
+	if (TRX.CW_Macros_5[index] >= 127) {
+		TRX.CW_Macros_5[index] = 0;
+	}
+	if (TRX.CW_Macros_5[index] == 0) {
+		full_redraw = true;
+	}
+
+	if (full_redraw) {
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else {
+		LCD_UpdateQuery.SystemMenu = true;
+	}
+}
+
+static void SYSMENU_TRX_CWMacros1_keyboardHandler(uint32_t parameter) {
+	if (parameter == '<') // backspace
+	{
+		TRX.CW_Macros_1[sysmenu_trx_selected_CWMacros1_char_index] = 0;
+
+		if (sysmenu_trx_selected_CWMacros1_char_index > 0) {
+			sysmenu_trx_selected_CWMacros1_char_index--;
+		}
+	} else {
+		TRX.CW_Macros_1[sysmenu_trx_selected_CWMacros1_char_index] = parameter;
+
+		if (sysmenu_trx_selected_CWMacros1_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_trx_selected_CWMacros1_char_index++;
+		}
+	}
+
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_TRX_CWMacros2_keyboardHandler(uint32_t parameter) {
+	if (parameter == '<') // backspace
+	{
+		TRX.CW_Macros_2[sysmenu_trx_selected_CWMacros2_char_index] = 0;
+
+		if (sysmenu_trx_selected_CWMacros2_char_index > 0) {
+			sysmenu_trx_selected_CWMacros2_char_index--;
+		}
+	} else {
+		TRX.CW_Macros_2[sysmenu_trx_selected_CWMacros2_char_index] = parameter;
+
+		if (sysmenu_trx_selected_CWMacros2_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_trx_selected_CWMacros2_char_index++;
+		}
+	}
+
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_TRX_CWMacros3_keyboardHandler(uint32_t parameter) {
+	if (parameter == '<') // backspace
+	{
+		TRX.CW_Macros_3[sysmenu_trx_selected_CWMacros3_char_index] = 0;
+
+		if (sysmenu_trx_selected_CWMacros3_char_index > 0) {
+			sysmenu_trx_selected_CWMacros3_char_index--;
+		}
+	} else {
+		TRX.CW_Macros_3[sysmenu_trx_selected_CWMacros3_char_index] = parameter;
+
+		if (sysmenu_trx_selected_CWMacros3_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_trx_selected_CWMacros3_char_index++;
+		}
+	}
+
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_TRX_CWMacros4_keyboardHandler(uint32_t parameter) {
+	if (parameter == '<') // backspace
+	{
+		TRX.CW_Macros_4[sysmenu_trx_selected_CWMacros4_char_index] = 0;
+
+		if (sysmenu_trx_selected_CWMacros4_char_index > 0) {
+			sysmenu_trx_selected_CWMacros4_char_index--;
+		}
+	} else {
+		TRX.CW_Macros_4[sysmenu_trx_selected_CWMacros4_char_index] = parameter;
+
+		if (sysmenu_trx_selected_CWMacros4_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_trx_selected_CWMacros4_char_index++;
+		}
+	}
+
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_TRX_CWMacros5_keyboardHandler(uint32_t parameter) {
+	if (parameter == '<') // backspace
+	{
+		TRX.CW_Macros_5[sysmenu_trx_selected_CWMacros5_char_index] = 0;
+
+		if (sysmenu_trx_selected_CWMacros5_char_index > 0) {
+			sysmenu_trx_selected_CWMacros5_char_index--;
+		}
+	} else {
+		TRX.CW_Macros_5[sysmenu_trx_selected_CWMacros5_char_index] = parameter;
+
+		if (sysmenu_trx_selected_CWMacros5_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_trx_selected_CWMacros5_char_index++;
+		}
+	}
+
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_TRX_DrawCWMacros1Menu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("MACROS 1:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.CW_Macros_1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros1_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_TRX_CWMacros1_keyboardHandler, false);
+#endif
+}
+
+static void SYSMENU_TRX_DrawCWMacros2Menu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("MACROS 2:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.CW_Macros_2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros2_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_TRX_CWMacros2_keyboardHandler, false);
+#endif
+}
+
+static void SYSMENU_TRX_DrawCWMacros3Menu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("MACROS 3:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.CW_Macros_3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros3_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_TRX_CWMacros3_keyboardHandler, false);
+#endif
+}
+
+static void SYSMENU_TRX_DrawCWMacros4Menu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("MACROS 4:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.CW_Macros_4, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros4_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_TRX_CWMacros4_keyboardHandler, false);
+#endif
+}
+
+static void SYSMENU_TRX_DrawCWMacros5Menu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("MACROS 5:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.CW_Macros_5, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros5_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_TRX_CWMacros5_keyboardHandler, false);
+#endif
 }
 
 // SCREEN MENU
@@ -6627,6 +7002,31 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 			return;
 		}
 		SYSMENU_TRX_DrawURSICodeMenu(draw_background);
+	} else if (sysmenu_trx_setCWMacros1_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_TRX_DrawCWMacros1Menu(draw_background);
+	} else if (sysmenu_trx_setCWMacros2_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_TRX_DrawCWMacros2Menu(draw_background);
+	} else if (sysmenu_trx_setCWMacros3_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_TRX_DrawCWMacros3Menu(draw_background);
+	} else if (sysmenu_trx_setCWMacros4_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_TRX_DrawCWMacros4Menu(draw_background);
+	} else if (sysmenu_trx_setCWMacros5_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_TRX_DrawCWMacros5Menu(draw_background);
 	} else if (SYSMENU_spectrum_opened) {
 		if (only_infolines) {
 			return;
@@ -6806,6 +7206,26 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction) {
 		SYSMENU_TRX_RotateURSICodeChar(direction);
 		return;
 	}
+	if (sysmenu_trx_setCWMacros1_menu_opened) {
+		SYSMENU_TRX_RotateCWMacros1Char(direction);
+		return;
+	}
+	if (sysmenu_trx_setCWMacros2_menu_opened) {
+		SYSMENU_TRX_RotateCWMacros2Char(direction);
+		return;
+	}
+	if (sysmenu_trx_setCWMacros3_menu_opened) {
+		SYSMENU_TRX_RotateCWMacros3Char(direction);
+		return;
+	}
+	if (sysmenu_trx_setCWMacros4_menu_opened) {
+		SYSMENU_TRX_RotateCWMacros4Char(direction);
+		return;
+	}
+	if (sysmenu_trx_setCWMacros5_menu_opened) {
+		SYSMENU_TRX_RotateCWMacros5Char(direction);
+		return;
+	}
 	if (sysmenu_timeMenuOpened) {
 		SYSMENU_HANDL_SETTIME(direction);
 		LCD_UpdateQuery.SystemMenu = true;
@@ -6875,6 +7295,21 @@ void SYSMENU_eventCloseSystemMenu(void) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	} else if (sysmenu_trx_setURSICode_menu_opened) {
 		sysmenu_trx_setURSICode_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setCWMacros1_menu_opened) {
+		sysmenu_trx_setCWMacros1_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setCWMacros2_menu_opened) {
+		sysmenu_trx_setCWMacros2_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setCWMacros3_menu_opened) {
+		sysmenu_trx_setCWMacros3_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setCWMacros4_menu_opened) {
+		sysmenu_trx_setCWMacros4_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setCWMacros5_menu_opened) {
+		sysmenu_trx_setCWMacros5_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	} else if (SYSMENU_spectrum_opened) {
 		SYSMENU_spectrum_opened = false;
@@ -7113,6 +7548,61 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 		} else if (sysmenu_trx_selected_ursi_code_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
 			sysmenu_trx_selected_ursi_code_char_index++;
 			SYSMENU_TRX_DrawURSICodeMenu(true);
+		}
+		return;
+	}
+	// CW Macros 1 menu
+	if (sysmenu_trx_setCWMacros1_menu_opened) {
+		if (direction < 0 && sysmenu_trx_selected_CWMacros1_char_index > 0) {
+			sysmenu_trx_selected_CWMacros1_char_index--;
+			SYSMENU_TRX_DrawCWMacros1Menu(true);
+		} else if (sysmenu_trx_selected_CWMacros1_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_trx_selected_CWMacros1_char_index++;
+			SYSMENU_TRX_DrawCWMacros1Menu(true);
+		}
+		return;
+	}
+	// CW Macros 2 menu
+	if (sysmenu_trx_setCWMacros2_menu_opened) {
+		if (direction < 0 && sysmenu_trx_selected_CWMacros2_char_index > 0) {
+			sysmenu_trx_selected_CWMacros2_char_index--;
+			SYSMENU_TRX_DrawCWMacros2Menu(true);
+		} else if (sysmenu_trx_selected_CWMacros2_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_trx_selected_CWMacros2_char_index++;
+			SYSMENU_TRX_DrawCWMacros2Menu(true);
+		}
+		return;
+	}
+	// CW Macros 3 menu
+	if (sysmenu_trx_setCWMacros3_menu_opened) {
+		if (direction < 0 && sysmenu_trx_selected_CWMacros3_char_index > 0) {
+			sysmenu_trx_selected_CWMacros3_char_index--;
+			SYSMENU_TRX_DrawCWMacros3Menu(true);
+		} else if (sysmenu_trx_selected_CWMacros3_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_trx_selected_CWMacros3_char_index++;
+			SYSMENU_TRX_DrawCWMacros3Menu(true);
+		}
+		return;
+	}
+	// CW Macros 4 menu
+	if (sysmenu_trx_setCWMacros4_menu_opened) {
+		if (direction < 0 && sysmenu_trx_selected_CWMacros4_char_index > 0) {
+			sysmenu_trx_selected_CWMacros4_char_index--;
+			SYSMENU_TRX_DrawCWMacros4Menu(true);
+		} else if (sysmenu_trx_selected_CWMacros4_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_trx_selected_CWMacros4_char_index++;
+			SYSMENU_TRX_DrawCWMacros4Menu(true);
+		}
+		return;
+	}
+	// CW Macros 5 menu
+	if (sysmenu_trx_setCWMacros5_menu_opened) {
+		if (direction < 0 && sysmenu_trx_selected_CWMacros5_char_index > 0) {
+			sysmenu_trx_selected_CWMacros5_char_index--;
+			SYSMENU_TRX_DrawCWMacros5Menu(true);
+		} else if (sysmenu_trx_selected_CWMacros5_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_trx_selected_CWMacros5_char_index++;
+			SYSMENU_TRX_DrawCWMacros5Menu(true);
 		}
 		return;
 	}

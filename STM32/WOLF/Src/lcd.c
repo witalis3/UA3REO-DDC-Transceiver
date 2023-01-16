@@ -3146,9 +3146,9 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase
 	//
 	y++;
 	//
-	char line4[] = "^ZXCVBNM,./";
+	char line4[] = "^ZXCVBNM,./ ";
 	if (lowcase) {
-		strcpy(line4, "^zxcvbnm,./");
+		strcpy(line4, "^zxcvbnm,./ ");
 	}
 	for (uint8_t i = 0; i < strlen(line4); i++) {
 		char text[2] = {0};
