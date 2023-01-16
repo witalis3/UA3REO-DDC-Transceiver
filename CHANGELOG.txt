@@ -5,6 +5,7 @@
 +STM32: 7Inch: Доработка процесса пробуждения LCD от сна по тачу на экран, Tnx DL1EGQ
 +STM32: Исправление ошибок переключения режимов ENC2, Tnx DL1EGQ
 +STM32: Добавлены прототипы прошивок для Wolf-2, Wolf-Lite-2, Wolf-Mini, Tnx RU4PN, DJ0AK, R7KBI
++STM32: При переключении на WFM не сбрасывается настройка Zoom, Tnx R7KBI
 
 ----Version 6.6.0----
 +STM32: Добавлена калибровка RF Gain для 60м и СВЧ бендов, Tnx EA7HOG

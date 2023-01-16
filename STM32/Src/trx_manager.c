@@ -610,12 +610,6 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo) {
 	// get new mode data
 	TRX_LoadRFGain_Data(_mode, bandFromFreq);
 
-	// reset zoom on WFM
-	if (vfo->Mode != old_mode && vfo->Mode == TRX_MODE_WFM && TRX.FFT_Zoom != 1) {
-		TRX.FFT_Zoom = 1;
-		FFT_Init();
-	}
-
 	// FFT Zoom change
 	if (TRX.FFT_Zoom != TRX.FFT_ZoomCW) {
 		if (old_mode == TRX_MODE_CW && _mode != TRX_MODE_CW) {
