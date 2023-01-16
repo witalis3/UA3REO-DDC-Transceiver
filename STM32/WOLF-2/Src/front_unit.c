@@ -1078,10 +1078,6 @@ void FRONTPANEL_Process(void) {
 	if (SD_USBCardReader) {
 		return;
 	}
-	if (HRDW_SPI_Locked) {
-		return;
-	}
-	HRDW_SPI_Locked = true;
 
 	static uint32_t fu_debug_lasttime = 0;
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
@@ -1089,6 +1085,10 @@ void FRONTPANEL_Process(void) {
 
 	// process buttons
 	for (uint16_t b = 0; b < buttons_count; b++) {
+		if (HRDW_SPI_Locked) {
+			continue;
+		}
+		
 		PERIPH_FrontPanel_Button *button = &PERIPH_FrontPanel_Buttons[b];
 // check disabled ports
 #ifdef HRDW_MCP3008_1
@@ -1163,8 +1163,6 @@ void FRONTPANEL_Process(void) {
 			fu_debug_lasttime = HAL_GetTick();
 		}
 	}
-
-	HRDW_SPI_Locked = false;
 }
 
 void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value) {
@@ -1311,6 +1309,8 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 }
 
 static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count) {
+	HRDW_SPI_Locked = true;
+
 	uint8_t outData[3] = {0};
 	uint8_t inData[3] = {0};
 	uint32_t mcp3008_value = 0;
@@ -1328,11 +1328,14 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, u
 			res = HRDW_FrontUnit3_SPI(outData, inData, 3, false);
 		}
 		if (res == false) {
+			HRDW_SPI_Locked = false;
 			return 65535;
 		}
 		mcp3008_value += (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
 	}
 	mcp3008_value /= count;
 
+	HRDW_SPI_Locked = false;
+	
 	return mcp3008_value;
 }
