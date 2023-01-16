@@ -1554,10 +1554,10 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		} else // analog meter version
 		{
 			// SWR
-			sprintf(ctmp, "%.1f ", (double)TRX_SWR_SMOOTHED);
+			sprintf(ctmp, "%.2f ", (double)TRX_SWR_SMOOTHED);
 			/**********************************************/
 			if (CN_Theme) {
-				LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET + 10, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET + 3, COLOR->STATUS_LABEL_DBM, BG_COLOR,
+				LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET + 5, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET + 3, COLOR->STATUS_LABEL_DBM, BG_COLOR,
 				                    LAYOUT->STATUS_LABELS_FONT_SIZE);
 			} else {
 				LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET - 5, COLOR->STATUS_LABEL_DBM, BG_COLOR,
