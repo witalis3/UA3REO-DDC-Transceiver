@@ -36,8 +36,8 @@ static uint32_t CW_current_message_index = 0;
 static uint32_t CW_current_symbol_index = 0;
 static uint64_t CW_wait_until = 0;
 static uint8_t CW_EncodeStatus = 0; // 0 - wait symbol, 1 - transmit symbol, 2 - wait after char, 3 - wait after word
-	
-static char* CW_CharToDots(char chr);
+
+static char *CW_CharToDots(char chr);
 static void CW_do_Process_Macros(void);
 
 void CW_key_change(void) {
@@ -142,7 +142,7 @@ float32_t CW_GenerateSignal(float32_t power) {
 		}
 		return CW_generateRiseSignal(power);
 	}
-	
+
 	// CW Macros
 	if (CW_Process_Macros) {
 		CW_do_Process_Macros();
@@ -245,7 +245,7 @@ float32_t CW_GenerateSignal(float32_t power) {
 
 void CW_InitMacros(char *new_message) {
 	CW_Macros_Message = new_message;
-		
+
 	CW_current_message_index = 0;
 	CW_current_symbol_index = 0;
 	CW_wait_until = 0;
@@ -257,28 +257,28 @@ void CW_do_Process_Macros(void) {
 		CW_key_serial = false;
 		CW_Process_Macros = false;
 	}
-	
+
 	uint64_t current_time = HAL_GetTick();
 	if (current_time < CW_wait_until) {
 		return;
 	}
-	
+
 	char *chr = CW_CharToDots(*(CW_Macros_Message + CW_current_message_index));
 	char symbol = chr[CW_current_symbol_index];
-	
+
 	if (CW_EncodeStatus == 1) {
 		CW_current_symbol_index++;
-		
+
 		if (chr[CW_current_symbol_index] == 0) { // end of word
 			CW_current_symbol_index = 0;
 			CW_current_message_index++;
-			
+
 			CW_wait_until = current_time + CW_CHAR_SPACE_LENGTH_MS;
-			
-			if(CW_Macros_Message[CW_current_message_index] == 0) { // end of message
+
+			if (CW_Macros_Message[CW_current_message_index] == 0) { // end of message
 				CW_wait_until = current_time + CW_WORD_SPACE_LENGTH_MS;
 				CW_current_message_index = 0;
-				
+
 				CW_Process_Macros = false;
 				CW_key_serial = false;
 				TRX_ptt_soft = false;
@@ -286,88 +286,192 @@ void CW_do_Process_Macros(void) {
 		} else {
 			CW_wait_until = current_time + CW_SYMBOL_SPACE_LENGTH_MS;
 		}
-		
+
 		CW_EncodeStatus = 0;
 		CW_key_serial = false;
-		
+
 		return;
 	}
-	
+
 	if (symbol == '.') {
 		CW_wait_until = current_time + CW_DOT_LENGTH_MS;
 		CW_key_serial = true;
 	}
-	
+
 	if (symbol == '-') {
 		CW_wait_until = current_time + CW_DASH_LENGTH_MS;
 		CW_key_serial = true;
 	}
-	
+
 	if (symbol == ' ') {
 		CW_wait_until = current_time + CW_WORD_SPACE_LENGTH_MS;
 		CW_key_serial = false;
 	}
-	
+
 	if (symbol == 0) {
 		CW_key_serial = false;
 	}
-	
+
 	CW_EncodeStatus = 1;
 }
 
-static char* CW_CharToDots(char chr) {
-	if (chr == ' ') return " ";
-	if (chr == '_') return " ";
-	if (chr == 'A') return ".-";
-	if (chr == 'B') return "-...";
-	if (chr == 'C') return "-.-.";
-	if (chr == 'D') return "-..";
-	if (chr == 'E') return ".";
-	if (chr == 'F') return "..-.";
-	if (chr == 'G') return "--.";
-	if (chr == 'H') return "....";
-	if (chr == 'I') return "..";
-	if (chr == 'J') return ".---";
-	if (chr == 'K') return "-.-";
-	if (chr == 'L') return ".-..";
-	if (chr == 'M') return "--";
-	if (chr == 'N') return "-.";
-	if (chr == 'O') return "---";
-	if (chr == 'P') return ".--.";
-	if (chr == 'Q') return "--.-";
-	if (chr == 'R') return ".-.";
-	if (chr == 'S') return "...";
-	if (chr == 'T') return "-";
-	if (chr == 'U') return "..-";
-	if (chr == 'V') return "...-";
-	if (chr == 'W') return ".--";
-	if (chr == 'X') return "-..-";
-	if (chr == 'Y') return "-.--";
-	if (chr == 'Z') return "--..";
-	if (chr == '1') return ".----";
-	if (chr == '2') return "..---";
-	if (chr == '3') return "...--";
-	if (chr == '4') return "....-";
-	if (chr == '5') return ".....";
-	if (chr == '6') return "-....";
-	if (chr == '7') return "--...";
-	if (chr == '8') return "---..";
-	if (chr == '9') return "----.";
-	if (chr == '0') return "-----";
-	if (chr == '?') return "..--..";
-	if (chr == '.') return ".-.-.-";
-	if (chr == ',') return "--..--";
-	if (chr == '!') return "-.-.--";
-	if (chr == '@') return ".--.-.";
-	if (chr == ':') return "---...";
-	if (chr == '-') return "-....-";
-	if (chr == '/') return "-..-.";
-	if (chr == '(') return "-.--.";
-	if (chr == ')') return "-.--.-";
-	if (chr == '$') return "...-..-";
-	if (chr == '>') return "...-.-";
-	if (chr == '<') return ".-.-.";
-	if (chr == '~') return "...-.";
-	
+static char *CW_CharToDots(char chr) {
+	if (chr == ' ') {
+		return " ";
+	}
+	if (chr == '_') {
+		return " ";
+	}
+	if (chr == 'A') {
+		return ".-";
+	}
+	if (chr == 'B') {
+		return "-...";
+	}
+	if (chr == 'C') {
+		return "-.-.";
+	}
+	if (chr == 'D') {
+		return "-..";
+	}
+	if (chr == 'E') {
+		return ".";
+	}
+	if (chr == 'F') {
+		return "..-.";
+	}
+	if (chr == 'G') {
+		return "--.";
+	}
+	if (chr == 'H') {
+		return "....";
+	}
+	if (chr == 'I') {
+		return "..";
+	}
+	if (chr == 'J') {
+		return ".---";
+	}
+	if (chr == 'K') {
+		return "-.-";
+	}
+	if (chr == 'L') {
+		return ".-..";
+	}
+	if (chr == 'M') {
+		return "--";
+	}
+	if (chr == 'N') {
+		return "-.";
+	}
+	if (chr == 'O') {
+		return "---";
+	}
+	if (chr == 'P') {
+		return ".--.";
+	}
+	if (chr == 'Q') {
+		return "--.-";
+	}
+	if (chr == 'R') {
+		return ".-.";
+	}
+	if (chr == 'S') {
+		return "...";
+	}
+	if (chr == 'T') {
+		return "-";
+	}
+	if (chr == 'U') {
+		return "..-";
+	}
+	if (chr == 'V') {
+		return "...-";
+	}
+	if (chr == 'W') {
+		return ".--";
+	}
+	if (chr == 'X') {
+		return "-..-";
+	}
+	if (chr == 'Y') {
+		return "-.--";
+	}
+	if (chr == 'Z') {
+		return "--..";
+	}
+	if (chr == '1') {
+		return ".----";
+	}
+	if (chr == '2') {
+		return "..---";
+	}
+	if (chr == '3') {
+		return "...--";
+	}
+	if (chr == '4') {
+		return "....-";
+	}
+	if (chr == '5') {
+		return ".....";
+	}
+	if (chr == '6') {
+		return "-....";
+	}
+	if (chr == '7') {
+		return "--...";
+	}
+	if (chr == '8') {
+		return "---..";
+	}
+	if (chr == '9') {
+		return "----.";
+	}
+	if (chr == '0') {
+		return "-----";
+	}
+	if (chr == '?') {
+		return "..--..";
+	}
+	if (chr == '.') {
+		return ".-.-.-";
+	}
+	if (chr == ',') {
+		return "--..--";
+	}
+	if (chr == '!') {
+		return "-.-.--";
+	}
+	if (chr == '@') {
+		return ".--.-.";
+	}
+	if (chr == ':') {
+		return "---...";
+	}
+	if (chr == '-') {
+		return "-....-";
+	}
+	if (chr == '/') {
+		return "-..-.";
+	}
+	if (chr == '(') {
+		return "-.--.";
+	}
+	if (chr == ')') {
+		return "-.--.-";
+	}
+	if (chr == '$') {
+		return "...-..-";
+	}
+	if (chr == '>') {
+		return "...-.-";
+	}
+	if (chr == '<') {
+		return ".-.-.";
+	}
+	if (chr == '~') {
+		return "...-.";
+	}
+
 	return " ";
 }

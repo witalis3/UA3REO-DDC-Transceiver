@@ -2421,37 +2421,37 @@ void BUTTONHANDLER_SCREENSHOT(uint32_t parameter) {
 #endif
 }
 
-void BUTTONHANDLER_CW_MACROS(uint32_t parameter) { 
+void BUTTONHANDLER_CW_MACROS(uint32_t parameter) {
 	if (CurrentVFO->Mode != TRX_MODE_CW) {
 		LCD_showTooltip("CW Macro");
 		return;
 	}
-	
+
 	if (CW_Process_Macros) {
 		CW_Process_Macros = false;
 		TRX_ptt_soft = false;
 		CW_key_serial = false;
 		return;
 	}
-	
-	switch(parameter) {
-		case 1:
-			CW_InitMacros(TRX.CW_Macros_1);
-			break;
-		case 2:
-			CW_InitMacros(TRX.CW_Macros_2);
-			break;
-		case 3:
-			CW_InitMacros(TRX.CW_Macros_3);
-			break;
-		case 4:
-			CW_InitMacros(TRX.CW_Macros_4);
-			break;
-		case 5:
-		default:
-			CW_InitMacros(TRX.CW_Macros_5);
+
+	switch (parameter) {
+	case 1:
+		CW_InitMacros(TRX.CW_Macros_1);
+		break;
+	case 2:
+		CW_InitMacros(TRX.CW_Macros_2);
+		break;
+	case 3:
+		CW_InitMacros(TRX.CW_Macros_3);
+		break;
+	case 4:
+		CW_InitMacros(TRX.CW_Macros_4);
+		break;
+	case 5:
+	default:
+		CW_InitMacros(TRX.CW_Macros_5);
 	}
-	
+
 	TRX_TX_StartTime = HAL_GetTick();
 	CW_Process_Macros = true;
 	TRX_ptt_soft = true;
