@@ -1302,7 +1302,7 @@ bool WIFI_getDXCluster_background(void) {
 	if (!WIFI_connected || WIFI_State != WIFI_READY) {
 		return false;
 	}
-	char url[64] = "/trx_services/cluster.php?background&band=";
+	char url[64] = "/trx_services/cluster2.php?background&band=";
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
 		strcat(url, BANDS[band].name);
@@ -1329,7 +1329,7 @@ void WIFI_getDXCluster(void) {
 
 		return;
 	}
-	char url[64] = "/trx_services/cluster.php?band=";
+	char url[64] = "/trx_services/cluster2.php?band=";
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
 		strcat(url, BANDS[band].name);
