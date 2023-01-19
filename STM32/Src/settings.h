@@ -133,9 +133,9 @@ static char ota_config_frontpanel[] = "SMALL";
 #define HRDW_MCP3008_1 true
 #define HRDW_HAS_FUNCBUTTONS true
 #define MAX_VOLUME_VALUE 100.0f
-#define FUNCBUTTONS_COUNT 30
 #define FUNCBUTTONS_ON_PAGE 5
-#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
+#define FUNCBUTTONS_PAGES 7
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 0)
 static char ota_config_frontpanel[] = "LITE";
 #endif
 
@@ -143,9 +143,9 @@ static char ota_config_frontpanel[] = "LITE";
 #define HRDW_MCP3008_1 true
 #define HRDW_HAS_FUNCBUTTONS true
 #define MAX_VOLUME_VALUE 1024.0f
-#define FUNCBUTTONS_COUNT (32 + 5)
 #define FUNCBUTTONS_ON_PAGE 8
-#define FUNCBUTTONS_PAGES 4
+#define FUNCBUTTONS_PAGES 5
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 2)
 static char ota_config_frontpanel[] = "BIG";
 #endif
 
@@ -153,9 +153,9 @@ static char ota_config_frontpanel[] = "BIG";
 #define HRDW_MCP3008_1 true
 #define HRDW_HAS_FUNCBUTTONS true
 #define MAX_VOLUME_VALUE 1024.0f
-#define FUNCBUTTONS_COUNT (27 + 7)
 #define FUNCBUTTONS_ON_PAGE 9
-#define FUNCBUTTONS_PAGES 3
+#define FUNCBUTTONS_PAGES 4
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 3)
 static char ota_config_frontpanel[] = "WF_100D";
 #endif
 
@@ -163,9 +163,9 @@ static char ota_config_frontpanel[] = "WF_100D";
 #define HRDW_MCP3008_1 true
 #define HRDW_HAS_FUNCBUTTONS true
 #define MAX_VOLUME_VALUE 1024.0f
-#define FUNCBUTTONS_COUNT (27 + 7)
 #define FUNCBUTTONS_ON_PAGE 9
-#define FUNCBUTTONS_PAGES 3
+#define FUNCBUTTONS_PAGES 4
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 3)
 static char ota_config_frontpanel[] = "WOLF-2";
 #endif
 
@@ -173,27 +173,27 @@ static char ota_config_frontpanel[] = "WOLF-2";
 #define HRDW_MCP3008_1 true
 #define HRDW_HAS_FUNCBUTTONS true
 #define MAX_VOLUME_VALUE 100.0f
-#define FUNCBUTTONS_COUNT 32
 #define FUNCBUTTONS_ON_PAGE 4
-#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
+#define FUNCBUTTONS_PAGES 9
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 0)
 static char ota_config_frontpanel[] = "X1";
 #endif
 
 #ifdef FRONTPANEL_MINI
 #define HRDW_HAS_FUNCBUTTONS true
 #define MAX_VOLUME_VALUE 100.0f
-#define FUNCBUTTONS_COUNT 32
 #define FUNCBUTTONS_ON_PAGE 4
-#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
+#define FUNCBUTTONS_PAGES 9
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 0)
 static char ota_config_frontpanel[] = "Mini";
 #endif
 
 #ifdef FRONTPANEL_LITE_V2_MINI
 #define HRDW_HAS_FUNCBUTTONS true
 #define MAX_VOLUME_VALUE 100.0f
-#define FUNCBUTTONS_COUNT 28
 #define FUNCBUTTONS_ON_PAGE 4
-#define FUNCBUTTONS_PAGES (FUNCBUTTONS_COUNT / FUNCBUTTONS_ON_PAGE)
+#define FUNCBUTTONS_PAGES 9
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 0)
 static char ota_config_frontpanel[] = "LiteV2-Mini";
 #endif
 

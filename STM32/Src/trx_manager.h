@@ -113,6 +113,7 @@ extern void BUTTONHANDLER_SNAP_RIGHT(uint32_t parameter);
 extern void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter);
 extern void BUTTONHANDLER_CESSB(uint32_t parameter);
 extern void BUTTONHANDLER_SCREENSHOT(uint32_t parameter);
+extern void BUTTONHANDLER_CW_MACROS(uint32_t parameter);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_soft;

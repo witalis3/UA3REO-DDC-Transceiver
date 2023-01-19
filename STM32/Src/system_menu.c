@@ -202,14 +202,14 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON25(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON26(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON27(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON28(int8_t direction);
-#if FUNCBUTTONS_COUNT > 28
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON29(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON30(int8_t direction);
-#if FUNCBUTTONS_COUNT > 30
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON31(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction);
-#endif
-#endif
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON33(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON34(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON35(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON36(int8_t direction);
 
 static void SYSMENU_HANDL_DECODERS_CW_Decoder(int8_t direction);
 static void SYSMENU_HANDL_DECODERS_CW_Decoder_Threshold(int8_t direction);
@@ -648,11 +648,13 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
     {"CW Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
     {"CW Key Invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Invert, SYSMENU_HANDL_CW_Invert},
     {"CW PTT Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_PTT_Type, SYSMENU_HANDL_CW_PTT_Type, {"Key", "PTT", "KEY+PTT"}},
+#if !defined(FRONTPANEL_SMALL_V1)
     {"CW Macros 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros1},
     {"CW Macros 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros2},
     {"CW Macros 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros3},
     {"CW Macros 4", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros4},
     {"CW Macros 5", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros5},
+#endif
 };
 
 const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
@@ -756,6 +758,12 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
 #if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 30
     {"Func button 31", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[30], SYSMENU_HANDL_SCREEN_FUNC_BUTTON31},
     {"Func button 32", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[31], SYSMENU_HANDL_SCREEN_FUNC_BUTTON32},
+    {"Func button 33", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[32], SYSMENU_HANDL_SCREEN_FUNC_BUTTON33},
+    {"Func button 34", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[33], SYSMENU_HANDL_SCREEN_FUNC_BUTTON34},
+    {"Func button 35", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[34], SYSMENU_HANDL_SCREEN_FUNC_BUTTON35},
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 35
+    {"Func button 36", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[35], SYSMENU_HANDL_SCREEN_FUNC_BUTTON36},
+#endif
 #endif
 #endif
 #endif
@@ -3865,6 +3873,44 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction) {
 		TRX.FuncButtons[31] = FUNCBUTTONS_COUNT - 1;
 	}
 }
+
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON33(int8_t direction) {
+	if (TRX.FuncButtons[32] > 0 || direction > 0) {
+		TRX.FuncButtons[32] += direction;
+	}
+	if (TRX.FuncButtons[32] >= FUNCBUTTONS_COUNT) {
+		TRX.FuncButtons[32] = FUNCBUTTONS_COUNT - 1;
+	}
+}
+
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON34(int8_t direction) {
+	if (TRX.FuncButtons[33] > 0 || direction > 0) {
+		TRX.FuncButtons[33] += direction;
+	}
+	if (TRX.FuncButtons[33] >= FUNCBUTTONS_COUNT) {
+		TRX.FuncButtons[33] = FUNCBUTTONS_COUNT - 1;
+	}
+}
+
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON35(int8_t direction) {
+	if (TRX.FuncButtons[34] > 0 || direction > 0) {
+		TRX.FuncButtons[34] += direction;
+	}
+	if (TRX.FuncButtons[34] >= FUNCBUTTONS_COUNT) {
+		TRX.FuncButtons[34] = FUNCBUTTONS_COUNT - 1;
+	}
+}
+
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 35
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON36(int8_t direction) {
+	if (TRX.FuncButtons[35] > 0 || direction > 0) {
+		TRX.FuncButtons[35] += direction;
+	}
+	if (TRX.FuncButtons[35] >= FUNCBUTTONS_COUNT) {
+		TRX.FuncButtons[35] = FUNCBUTTONS_COUNT - 1;
+	}
+}
+#endif
 #endif
 #endif
 #endif
