@@ -1132,7 +1132,6 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				TRX_RIT = -TRX.RIT_INTERVAL;
 			}
 
-			TRX_XIT = 0;
 			TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		}
 
@@ -1145,7 +1144,6 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				TRX_XIT = -TRX.XIT_INTERVAL;
 			}
 
-			TRX_RIT = 0;
 			TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		}
 	}
@@ -1556,7 +1554,6 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 					LCD_UpdateQuery.StatusInfoGUI = true;
 				}
 			}
-			TRX_XIT = 0;
 		}
 
 		if (TRX.XIT_Enabled) {
@@ -1575,13 +1572,10 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 					LCD_UpdateQuery.StatusInfoGUI = true;
 				}
 			}
-			TRX_RIT = 0;
 		}
 
 		if (!TRX.RIT_Enabled && TRX.XIT_Enabled && !TRX.FineRITTune) // Disable RIT/XIT + IF
 		{
-			TRX_RIT = 0;
-			TRX_XIT = 0;
 			TRX.IF_Gain = (uint8_t)(CALIBRATE.IF_GAIN_MIN + ((1023.0f - IF_GAIN_mcp3008_averaged) * (float32_t)(CALIBRATE.IF_GAIN_MAX - CALIBRATE.IF_GAIN_MIN) / 1023.0f));
 		}
 

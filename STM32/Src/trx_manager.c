@@ -411,7 +411,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	vfo->Freq = _freq;
 
 	// get settings and fpga freq phrase
-	int64_t vfoa_freq = CurrentVFO->Freq + TRX_RIT;
+	int64_t vfoa_freq = CurrentVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
 	if (TRX.Transverter_70cm && getBandFromFreq(vfoa_freq, true) == BANDID_70cm) {
 		vfoa_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_Mhz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_Mhz * 1000000);
 	}
@@ -431,7 +431,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	CurrentVFO->RealRXFreq = vfoa_freq;
 	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
 
-	int64_t vfob_freq = SecondaryVFO->Freq + TRX_RIT;
+	int64_t vfob_freq = SecondaryVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
 	if (TRX.Transverter_70cm && getBandFromFreq(vfob_freq, true) == BANDID_70cm) {
 		vfob_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_Mhz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_Mhz * 1000000);
 	}
@@ -451,7 +451,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	SecondaryVFO->RealRXFreq = vfob_freq;
 	TRX_freq_phrase2 = getRXPhraseFromFrequency(vfob_freq, 2);
 
-	int64_t vfo_tx_freq = CurrentVFO->Freq + TRX_XIT;
+	int64_t vfo_tx_freq = CurrentVFO->Freq + (TRX.XIT_Enabled ? TRX_XIT : 0);
 	if (TRX.Transverter_70cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_70cm) {
 		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_Mhz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_Mhz * 1000000);
 	}
@@ -1648,7 +1648,6 @@ void BUTTONHANDLER_RIT(uint32_t parameter) {
 	}
 	TRX.XIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
-	TRX_RIT = 0;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
 	LCD_UpdateQuery.TopButtons = true;
@@ -1666,7 +1665,6 @@ void BUTTONHANDLER_XIT(uint32_t parameter) {
 	}
 	TRX.RIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
-	TRX_XIT = 0;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
 	LCD_UpdateQuery.TopButtons = true;
@@ -1678,8 +1676,6 @@ void BUTTONHANDLER_SPLIT(uint32_t parameter) {
 	TRX.SPLIT_Enabled = !TRX.SPLIT_Enabled;
 	TRX.XIT_Enabled = false;
 	TRX.RIT_Enabled = false;
-	TRX_XIT = 0;
-	TRX_RIT = 0;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
 	LCD_UpdateQuery.TopButtons = true;
