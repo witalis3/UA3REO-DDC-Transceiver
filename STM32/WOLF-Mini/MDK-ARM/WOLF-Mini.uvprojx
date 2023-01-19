@@ -430,14 +430,14 @@
               <FilePath>..\Src\lcd.c</FilePath>
             </File>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\main.c</FilePath>
-            </File>
-            <File>
               <FileName>main.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\main.h</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\main.c</FilePath>
             </File>
             <File>
               <FileName>user_diskio.c</FileName>
@@ -1335,26 +1335,6 @@
           <GroupName>Drivers/STM32H7xx_HAL_Driver</GroupName>
           <Files>
             <File>
-              <FileName>stm32h7xx_hal_dma2d.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma2d.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32h7xx_hal_jpeg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_jpeg.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32h7xx_hal_sram.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_sram.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32h7xx_ll_fmc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_fmc.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32h7xx_hal_adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_adc.c</FilePath>
@@ -1535,11 +1515,6 @@
               <FilePath>..\Middlewares\Third_Party\FatFs\src\diskio.h</FilePath>
             </File>
             <File>
-              <FileName>ff.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.c</FilePath>
-            </File>
-            <File>
               <FileName>ff.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.h</FilePath>
@@ -1553,6 +1528,11 @@
               <FileName>ffunicode.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\Third_Party\FatFs\src\ffunicode.c</FilePath>
+            </File>
+            <File>
+              <FileName>ff.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\Third_Party\FatFs\src\ff.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -254,21 +254,21 @@ void LoadSettings(bool clear) {
 		TRX.VOX_TIMEOUT = 300;               // VOX timeout in ms
 		TRX.VOX_THRESHOLD = -27;             // VOX threshold in dbFS
 		// CW
-		TRX.CW_Pitch = 600;                // LO offset in CW mode
-		TRX.CW_Key_timeout = 200;          // time of releasing transmission after the last character on the key
-		TRX.CW_SelfHear = true;            // self-control CW
-		TRX.CW_KEYER = true;               // Automatic key
-		TRX.CW_KEYER_WPM = 30;             // Automatic key speed
-		TRX.CW_GaussFilter = false;        // Gauss responce LPF filter
-		TRX.CW_DotToDashRate = 3.0f;       // Dot To Dash length rate
-		TRX.CW_Iambic = false;             // CW Iambic Keyer
-		TRX.CW_Invert = false;             // CW dash/dot inversion
-		TRX.CW_PTT_Type = KEY_AND_EXT_PTT; // CW PTT type (Key / External tangent ptt)
-		strcpy(TRX.CW_Macros_1, "CQ CQ CQ");         // CW Macros 1
-		strcpy(TRX.CW_Macros_2, "CQ TEST");         // CW Macros 2
-		strcpy(TRX.CW_Macros_3, "TNX RST 599 599 NAME QTH К");         // CW Macros 3
-		strcpy(TRX.CW_Macros_4, "73 73 SK K");         // CW Macros 4
-		strcpy(TRX.CW_Macros_5, "TNX FOR NICE QSO DR OM CU AGN GL 73");         // CW Macros 5
+		TRX.CW_Pitch = 600;                                             // LO offset in CW mode
+		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key
+		TRX.CW_SelfHear = true;                                         // self-control CW
+		TRX.CW_KEYER = true;                                            // Automatic key
+		TRX.CW_KEYER_WPM = 30;                                          // Automatic key speed
+		TRX.CW_GaussFilter = false;                                     // Gauss responce LPF filter
+		TRX.CW_DotToDashRate = 3.0f;                                    // Dot To Dash length rate
+		TRX.CW_Iambic = false;                                          // CW Iambic Keyer
+		TRX.CW_Invert = false;                                          // CW dash/dot inversion
+		TRX.CW_PTT_Type = KEY_AND_EXT_PTT;                              // CW PTT type (Key / External tangent ptt)
+		strcpy(TRX.CW_Macros_1, "CQ CQ CQ");                            // CW Macros 1
+		strcpy(TRX.CW_Macros_2, "CQ TEST");                             // CW Macros 2
+		strcpy(TRX.CW_Macros_3, "TNX RST 599 599 NAME QTH К");          // CW Macros 3
+		strcpy(TRX.CW_Macros_4, "73 73 SK K");                          // CW Macros 4
+		strcpy(TRX.CW_Macros_5, "TNX FOR NICE QSO DR OM CU AGN GL 73"); // CW Macros 5
 		// SCREEN
 		TRX.ColorThemeId = 0;  // Selected Color theme
 		TRX.LayoutThemeId = 0; // Selected Layout theme

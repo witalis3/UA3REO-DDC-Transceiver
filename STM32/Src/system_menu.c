@@ -648,11 +648,11 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
     {"CW Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
     {"CW Key Invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Invert, SYSMENU_HANDL_CW_Invert},
     {"CW PTT Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_PTT_Type, SYSMENU_HANDL_CW_PTT_Type, {"Key", "PTT", "KEY+PTT"}},
-		{"CW Macros 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros1},
-		{"CW Macros 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros2},
-		{"CW Macros 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros3},
-		{"CW Macros 4", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros4},
-		{"CW Macros 5", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros5},
+    {"CW Macros 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros1},
+    {"CW Macros 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros2},
+    {"CW Macros 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros3},
+    {"CW Macros 4", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros4},
+    {"CW Macros 5", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros5},
 };
 
 const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
@@ -2882,7 +2882,7 @@ static void SYSMENU_HANDL_TRX_SetCWMacros5(int8_t direction) {
 
 static void SYSMENU_TRX_RotateCWMacros1Char(int8_t dir) {
 	uint16_t index = sysmenu_trx_selected_CWMacros1_char_index;
-	
+
 	bool full_redraw = false;
 	if (TRX.CW_Macros_1[index] == 0) {
 		full_redraw = true;
@@ -2912,7 +2912,7 @@ static void SYSMENU_TRX_RotateCWMacros1Char(int8_t dir) {
 
 static void SYSMENU_TRX_RotateCWMacros2Char(int8_t dir) {
 	uint16_t index = sysmenu_trx_selected_CWMacros2_char_index;
-	
+
 	bool full_redraw = false;
 	if (TRX.CW_Macros_2[index] == 0) {
 		full_redraw = true;
@@ -2942,7 +2942,7 @@ static void SYSMENU_TRX_RotateCWMacros2Char(int8_t dir) {
 
 static void SYSMENU_TRX_RotateCWMacros3Char(int8_t dir) {
 	uint16_t index = sysmenu_trx_selected_CWMacros3_char_index;
-	
+
 	bool full_redraw = false;
 	if (TRX.CW_Macros_3[index] == 0) {
 		full_redraw = true;
@@ -2972,7 +2972,7 @@ static void SYSMENU_TRX_RotateCWMacros3Char(int8_t dir) {
 
 static void SYSMENU_TRX_RotateCWMacros4Char(int8_t dir) {
 	uint16_t index = sysmenu_trx_selected_CWMacros4_char_index;
-	
+
 	bool full_redraw = false;
 	if (TRX.CW_Macros_4[index] == 0) {
 		full_redraw = true;
@@ -3002,7 +3002,7 @@ static void SYSMENU_TRX_RotateCWMacros4Char(int8_t dir) {
 
 static void SYSMENU_TRX_RotateCWMacros5Char(int8_t dir) {
 	uint16_t index = sysmenu_trx_selected_CWMacros4_char_index;
-	
+
 	bool full_redraw = false;
 	if (TRX.CW_Macros_5[index] == 0) {
 		full_redraw = true;
@@ -3132,7 +3132,8 @@ static void SYSMENU_TRX_DrawCWMacros1Menu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.CW_Macros_1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros1_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros1_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
+	                        COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	LCD_printKeyboard(SYSMENU_TRX_CWMacros1_keyboardHandler, false);
@@ -3146,7 +3147,8 @@ static void SYSMENU_TRX_DrawCWMacros2Menu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.CW_Macros_2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros2_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros2_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
+	                        COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	LCD_printKeyboard(SYSMENU_TRX_CWMacros2_keyboardHandler, false);
@@ -3160,7 +3162,8 @@ static void SYSMENU_TRX_DrawCWMacros3Menu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.CW_Macros_3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros3_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros3_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
+	                        COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	LCD_printKeyboard(SYSMENU_TRX_CWMacros3_keyboardHandler, false);
@@ -3174,7 +3177,8 @@ static void SYSMENU_TRX_DrawCWMacros4Menu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.CW_Macros_4, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros4_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros4_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
+	                        COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	LCD_printKeyboard(SYSMENU_TRX_CWMacros4_keyboardHandler, false);
@@ -3188,7 +3192,8 @@ static void SYSMENU_TRX_DrawCWMacros5Menu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.CW_Macros_5, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros5_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros5_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
+	                        COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	LCD_printKeyboard(SYSMENU_TRX_CWMacros5_keyboardHandler, false);
