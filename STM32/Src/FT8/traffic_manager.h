@@ -3,7 +3,8 @@
 
 #include <stdint.h>
 
-#define FT8_Freq_80M 3573 // in kHz
+#define FT8_Freq_160M 1840 // in kHz
+#define FT8_Freq_80M 3573
 #define FT8_Freq_40M 7074
 #define FT8_Freq_30M 10136
 #define FT8_Freq_20M 14074

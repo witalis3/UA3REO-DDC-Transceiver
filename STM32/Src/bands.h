@@ -10,26 +10,26 @@
 #define BANDID_2200m 0
 #define BANDID_160m 3
 #define BANDID_80m 6
-#define BANDID_60m 10
-#define BANDID_40m 12
-#define BANDID_30m 15
-#define BANDID_20m 18
-#define BANDID_17m 21
-#define BANDID_15m 23
-#define BANDID_12m 25
-#define BANDID_CB 27
-#define BANDID_10m 28
-#define BANDID_6m 29
-#define BANDID_4m 30
-#define BANDID_FM 31
-#define BANDID_AIR 32
-#define BANDID_2m 33
-#define BANDID_Marine 34
-#define BANDID_70cm 35
-#define BANDID_23cm 36
-#define BANDID_13cm 37
-#define BANDID_6cm 38
-#define BANDID_3cm 39
+#define BANDID_60m 9
+#define BANDID_40m 11
+#define BANDID_30m 14
+#define BANDID_20m 17
+#define BANDID_17m 20
+#define BANDID_15m 22
+#define BANDID_12m 24
+#define BANDID_CB 26
+#define BANDID_10m 27
+#define BANDID_6m 28
+#define BANDID_4m 29
+#define BANDID_FM 30
+#define BANDID_AIR 31
+#define BANDID_2m 32
+#define BANDID_Marine 33
+#define BANDID_70cm 34
+#define BANDID_23cm 35
+#define BANDID_13cm 36
+#define BANDID_6cm 37
+#define BANDID_3cm 38
 
 typedef struct // description of the region in the band
 {

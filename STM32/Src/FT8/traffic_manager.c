@@ -328,10 +328,13 @@ void LogQSO(void) {
 	uint8_t Len;  //=strlen(ctmp);
 	int CR = 0xD; // CR -  ascii code
 	              // ctmp[Len+3] = 0;
-	char cBND[4]; // for the strng containing the current band
+	char cBND[5]; // for the strng containing the current band
 
 	if (SD_Present) {
 		switch (FT8_BND_Freq) {
+		case FT8_Freq_160M:
+			strcpy(cBND, "160m");
+			break;
 		case FT8_Freq_80M:
 			strcpy(cBND, "80m");
 			break;

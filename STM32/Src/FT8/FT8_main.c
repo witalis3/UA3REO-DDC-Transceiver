@@ -62,25 +62,28 @@ void InitFT8_Decoder(void) {
 	Update_FT8_Menu_Cursor(); // show the menu cursor
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band == BANDID_80m || band == 5 || band == 7 || band == 8) { // 80m
+	if (band == BANDID_160m) { // 160m
+		FT8_BND_Freq = FT8_Freq_160M;
+	}
+	if (band == BANDID_80m) { // 80m
 		FT8_BND_Freq = FT8_Freq_80M;
 	}
-	if (band == BANDID_40m || band == 13) { // 40m
+	if (band == BANDID_40m) { // 40m
 		FT8_BND_Freq = FT8_Freq_40M;
 	}
-	if (band == BANDID_30m || band == 14 || band == 16) { // 30m
+	if (band == BANDID_30m) { // 30m
 		FT8_BND_Freq = FT8_Freq_30M;
 	}
-	if (band == BANDID_20m || band == 17 || band == 19) { // 20m
+	if (band == BANDID_20m) { // 20m
 		FT8_BND_Freq = FT8_Freq_20M;
 	}
-	if (band == BANDID_17m || band == 20 || band == 22) { // 17m
+	if (band == BANDID_17m) { // 17m
 		FT8_BND_Freq = FT8_Freq_17M;
 	}
-	if (band == BANDID_15m || band == 24) { // 15m
+	if (band == BANDID_15m) { // 15m
 		FT8_BND_Freq = FT8_Freq_15M;
 	}
-	if (band == BANDID_12m || band == 26) { // 12m
+	if (band == BANDID_12m) { // 12m
 		FT8_BND_Freq = FT8_Freq_12M;
 	}
 	if (band == BANDID_10m) { // 10m
@@ -89,7 +92,7 @@ void InitFT8_Decoder(void) {
 	if (band == BANDID_6m) { // 6m
 		FT8_BND_Freq = FT8_Freq_6M;
 	}
-	if (band == BANDID_2m || band == BANDID_Marine) { // 2m
+	if (band == BANDID_2m) { // 2m
 		FT8_BND_Freq = FT8_Freq_2M;
 	}
 

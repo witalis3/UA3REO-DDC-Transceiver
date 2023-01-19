@@ -159,11 +159,8 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 			// selectable bands first
 			uint8_t xi = 0;
 			for (uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++) {
-				if (!BAND_SELECTABLE[bindx] || BANDS[bindx].broadcast || BANDS[bindx].name == (char *)BANDS[0].name || BANDS[bindx].name == (char *)BANDS[27].name ||
-				    BANDS[bindx].name == (char *)BANDS[30].name || BANDS[bindx].name == (char *)BANDS[31].name || BANDS[bindx].name == (char *)BANDS[32].name ||
-				    BANDS[bindx].name == (char *)BANDS[33].name || BANDS[bindx].name == (char *)BANDS[34].name || BANDS[bindx].name == (char *)BANDS[35].name ||
-				    BANDS[bindx].name == (char *)BANDS[36].name || BANDS[bindx].name == (char *)BANDS[37].name || BANDS[bindx].name == (char *)BANDS[38].name ||
-				    BANDS[bindx].name == (char *)BANDS[39].name) {
+				if (!BAND_SELECTABLE[bindx] || BANDS[bindx].broadcast || BANDS[bindx].name == (char *)BANDS[BANDID_2200m].name || BANDS[bindx].name == (char *)BANDS[BANDID_CB].name ||
+				    BANDS[bindx].name == (char *)BANDS[BANDID_4m].name || BANDS[bindx].name == (char *)BANDS[BANDID_FM].name || BANDS[bindx].name == (char *)BANDS[BANDID_AIR].name) {
 					continue;
 				}
 
