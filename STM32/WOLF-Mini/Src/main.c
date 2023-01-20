@@ -379,6 +379,12 @@ void SystemClock_Config(void) {
 
 	/** Configure the main internal regulator output voltage
 	 */
+	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+	while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {
+	}
+
+	__HAL_RCC_SYSCFG_CLK_ENABLE();
 	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
 	while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {
@@ -399,9 +405,9 @@ void SystemClock_Config(void) {
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_HSE | RCC_OSCILLATORTYPE_LSE;
 	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
 	RCC_OscInitStruct.LSEState = RCC_LSE_ON;
-	RCC_OscInitStruct.LSIState = RCC_LSI_ON;
 	RCC_OscInitStruct.HSIState = RCC_HSI_DIV1;
-	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+	RCC_OscInitStruct.HSICalibrationValue = 32;
+	RCC_OscInitStruct.LSIState = RCC_LSI_ON;
 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
 	RCC_OscInitStruct.PLL.PLLM = 2;
@@ -504,6 +510,7 @@ static void MX_ADC1_Init(void) {
 	sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
 	sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
 	sConfigInjected.InjectedOffset = 0;
+	sConfigInjected.InjectedOffsetSignedSaturation = DISABLE;
 	sConfigInjected.InjectedNbrOfConversion = 2;
 	sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
 	sConfigInjected.AutoInjectedConv = DISABLE;
@@ -575,7 +582,8 @@ static void MX_ADC2_Init(void) {
 	sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
 	sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
 	sConfigInjected.InjectedOffset = 0;
-	sConfigInjected.InjectedNbrOfConversion = 4;
+	sConfigInjected.InjectedOffsetSignedSaturation = DISABLE;
+	sConfigInjected.InjectedNbrOfConversion = 3;
 	sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
 	sConfigInjected.AutoInjectedConv = DISABLE;
 	sConfigInjected.QueueInjectedContext = DISABLE;
@@ -598,15 +606,6 @@ static void MX_ADC2_Init(void) {
 	 */
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_8;
 	sConfigInjected.InjectedRank = ADC_INJECTED_RANK_3;
-	if (HAL_ADCEx_InjectedConfigChannel(&hadc2, &sConfigInjected) != HAL_OK) {
-		Error_Handler();
-	}
-
-	/** Configure Injected Channel
-	 */
-	sConfigInjected.InjectedChannel = ADC_CHANNEL_5;
-	sConfigInjected.InjectedRank = ADC_INJECTED_RANK_4;
-	sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_1CYCLE_5;
 	if (HAL_ADCEx_InjectedConfigChannel(&hadc2, &sConfigInjected) != HAL_OK) {
 		Error_Handler();
 	}
@@ -663,6 +662,7 @@ static void MX_ADC3_Init(void) {
 	sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
 	sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
 	sConfigInjected.InjectedOffset = 0;
+	sConfigInjected.InjectedOffsetSignedSaturation = DISABLE;
 	sConfigInjected.InjectedNbrOfConversion = 3;
 	sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
 	sConfigInjected.AutoInjectedConv = DISABLE;
@@ -885,7 +885,7 @@ static void MX_SPI4_Init(void) {
 	hspi4.Init.CLKPolarity = SPI_POLARITY_LOW;
 	hspi4.Init.CLKPhase = SPI_PHASE_1EDGE;
 	hspi4.Init.NSS = SPI_NSS_HARD_OUTPUT;
-	hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+	hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
 	hspi4.Init.FirstBit = SPI_FIRSTBIT_MSB;
 	hspi4.Init.TIMode = SPI_TIMODE_DISABLE;
 	hspi4.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -1487,7 +1487,7 @@ static void MX_GPIO_Init(void) {
 	HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET);
 
 	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOD, ATT_ON_16_Pin | ATT_ON_0_5_Pin | ATT_ON_1_Pin | WM8731_SCK_Pin | WM8731_SDA_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOD, WM8731_SCK_Pin | WM8731_SDA_Pin, GPIO_PIN_RESET);
 
 	/*Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin(GPIOB, RFUNIT_RCLK_Pin | RFUNIT_CLK_Pin | RFUNIT_DATA_Pin, GPIO_PIN_RESET);
@@ -1548,7 +1548,7 @@ static void MX_GPIO_Init(void) {
 	/*Configure GPIO pins : LCD_RST_Pin LCD_DC_Pin */
 	GPIO_InitStruct.Pin = LCD_RST_Pin | LCD_DC_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
@@ -1565,8 +1565,8 @@ static void MX_GPIO_Init(void) {
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 	/*Configure GPIO pins : PD8 PD13 PD14 PD15
-	                         PD5 */
-	GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15 | GPIO_PIN_5;
+	                         PD0 PD1 PD2 PD5 */
+	GPIO_InitStruct.Pin = GPIO_PIN_8 | GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15 | GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_5;
 	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
@@ -1609,13 +1609,6 @@ static void MX_GPIO_Init(void) {
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-	/*Configure GPIO pins : ATT_ON_16_Pin ATT_ON_0_5_Pin ATT_ON_1_Pin */
-	GPIO_InitStruct.Pin = ATT_ON_16_Pin | ATT_ON_0_5_Pin | ATT_ON_1_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
 	/*Configure GPIO pin : KEY_7_Pin */
 	GPIO_InitStruct.Pin = KEY_7_Pin;

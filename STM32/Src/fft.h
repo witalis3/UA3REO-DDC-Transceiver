@@ -43,7 +43,7 @@
 #define FFT_3D_X_OFFSET 5
 #define FFT_MAX_AVER 30            // store old fft data for averaging
 #define FFT_MAX_TOP_SCALE 30       // maximum scale parameter
-#define FFT_TX_MIN_LEVEL 30.0f     // fft tx minimum scale level
+#define FFT_TX_MIN_LEVEL 20.0f     // fft tx minimum scale level
 #define FFT_DBM_GRID_TOP_MARGIN 12 // dbm grid top margin
 #define FFT_DBM_GRID_INTERVAL 24   // interval between dbm grids
 #define FFT_DBM_COMPENSATION 6.0f  // for amplitude conversion

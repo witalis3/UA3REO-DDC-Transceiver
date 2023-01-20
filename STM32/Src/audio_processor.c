@@ -1727,7 +1727,10 @@ static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, float32_t *buff, uint16_t size,
 			if (TRX_RX1_dBm < -150.0f) {
 				TRX_RX1_dBm = -150.0f;
 			}
+
 			Processor_RX1_Power_value = 0;
+
+			TRX_RX1_dBm_measurement = TRX_RX1_dBm_measurement * 0.99f + TRX_RX1_dBm * 0.01f;
 		}
 	}
 

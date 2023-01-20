@@ -1254,7 +1254,7 @@ static void WIFI_getDXCluster_background_callback(void) {
 				// println("F", freq);
 
 				istr_l = istr_r + 1;
-				istr_r = strchr(istr_l, '\n');
+				istr_r = strchr(istr_l, '\t');
 				if (istr_r != NULL) {
 					*istr_r = 0;
 					// println("C", istr_l);
@@ -1273,7 +1273,6 @@ static void WIFI_getDXCluster_background_callback(void) {
 						}
 
 						WIFI_DXCLUSTER_list_count++;
-						// println("COUNT ", WIFI_DXCLUSTER_list_count);
 
 						istr_l = istr_r + 1;
 
@@ -1294,7 +1293,7 @@ static void WIFI_getDXCluster_background_callback(void) {
 		// for(uint16_t i = 0; i < WIFI_DXCLUSTER_list_count ; i ++)
 		// println(WIFI_DXCLUSTER_list[i].Freq, "|", WIFI_DXCLUSTER_list[i].Callsign);
 
-		println("DXCluster updated");
+		println("DXCluster updated, count: ", WIFI_DXCLUSTER_list_count);
 	}
 }
 
@@ -1302,7 +1301,7 @@ bool WIFI_getDXCluster_background(void) {
 	if (!WIFI_connected || WIFI_State != WIFI_READY) {
 		return false;
 	}
-	char url[64] = "/trx_services/cluster.php?background&band=";
+	char url[64] = "/trx_services/cluster2.php?background&band=";
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
 		strcat(url, BANDS[band].name);
@@ -1329,7 +1328,7 @@ void WIFI_getDXCluster(void) {
 
 		return;
 	}
-	char url[64] = "/trx_services/cluster.php?band=";
+	char url[64] = "/trx_services/cluster2.php?band=";
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
 		strcat(url, BANDS[band].name);

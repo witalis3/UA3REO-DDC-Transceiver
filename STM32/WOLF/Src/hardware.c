@@ -69,7 +69,7 @@ void CPULOAD_Calc(void) {
 
 void HRDW_Init(void) {
 	HAL_ADCEx_InjectedStart(&hadc1); // ADC RF-UNIT'а
-#ifdef FRONTPANEL_X1
+#if defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
 	HAL_ADCEx_InjectedStart(&hadc2); // ADC Tangent (some versions)
 #endif
 	HAL_ADCEx_InjectedStart(&hadc3); // ADC CPU temperature

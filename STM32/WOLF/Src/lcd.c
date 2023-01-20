@@ -159,11 +159,8 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 			// selectable bands first
 			uint8_t xi = 0;
 			for (uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++) {
-				if (!BAND_SELECTABLE[bindx] || BANDS[bindx].broadcast || BANDS[bindx].name == (char *)BANDS[0].name || BANDS[bindx].name == (char *)BANDS[27].name ||
-				    BANDS[bindx].name == (char *)BANDS[30].name || BANDS[bindx].name == (char *)BANDS[31].name || BANDS[bindx].name == (char *)BANDS[32].name ||
-				    BANDS[bindx].name == (char *)BANDS[33].name || BANDS[bindx].name == (char *)BANDS[34].name || BANDS[bindx].name == (char *)BANDS[35].name ||
-				    BANDS[bindx].name == (char *)BANDS[36].name || BANDS[bindx].name == (char *)BANDS[37].name || BANDS[bindx].name == (char *)BANDS[38].name ||
-				    BANDS[bindx].name == (char *)BANDS[39].name) {
+				if (!BAND_SELECTABLE[bindx] || BANDS[bindx].broadcast || BANDS[bindx].name == (char *)BANDS[BANDID_2200m].name || BANDS[bindx].name == (char *)BANDS[BANDID_CB].name ||
+				    BANDS[bindx].name == (char *)BANDS[BANDID_4m].name || BANDS[bindx].name == (char *)BANDS[BANDID_FM].name || BANDS[bindx].name == (char *)BANDS[BANDID_AIR].name) {
 					continue;
 				}
 
@@ -308,7 +305,8 @@ static void LCD_displayBottomButtons(bool redraw) {
 		}
 
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, width, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT,
-		            (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name, enabled, false, false, 0,
+		            (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name, enabled, false, false,
+		            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].parameter,
 		            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].clickHandler,
 		            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].holdHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 		curr_x += width;
@@ -1267,10 +1265,6 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			TRX_RX1_dBm_lowrate = TRX_RX1_dBm_lowrate * 0.5f + TRX_RX1_dBm * 0.5f;
 		}
 
-		// static float32_t TRX_RX1_dBm_measurement = 0;
-		// TRX_RX1_dBm_measurement = TRX_RX1_dBm_measurement * 0.99f + TRX_RX1_dBm * 0.01f;
-		// println(TRX_RX1_dBm_measurement);
-
 		float32_t s_width = 0.0f;
 		static uint16_t sql_stripe_x_pos_old = 0;
 
@@ -1558,10 +1552,10 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		} else // analog meter version
 		{
 			// SWR
-			sprintf(ctmp, "%.1f ", (double)TRX_SWR_SMOOTHED);
+			sprintf(ctmp, "%.2f ", (double)TRX_SWR_SMOOTHED);
 			/**********************************************/
 			if (CN_Theme) {
-				LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET + 10, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET + 3, COLOR->STATUS_LABEL_DBM, BG_COLOR,
+				LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET + 5, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET + 3, COLOR->STATUS_LABEL_DBM, BG_COLOR,
 				                    LAYOUT->STATUS_LABELS_FONT_SIZE);
 			} else {
 				LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET - 5, COLOR->STATUS_LABEL_DBM, BG_COLOR,
@@ -1793,6 +1787,9 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	// LAYOUT->STATUS_LABELS_FONT_SIZE);
 	if (APROC_IFGain_Overflow) {
 		LCDDriver_printText("IFO", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+	}
+	if (TRX_PWR_ALC_SWR_OVERFLOW) {
+		LCDDriver_printText("OVS", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	}
 	if (TRX_DAC_OTR) {
 		LCDDriver_printText("OVR", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
@@ -2342,6 +2339,7 @@ void LCD_processTouch(uint16_t x, uint16_t y) {
 
 void LCD_processHoldTouch(uint16_t x, uint16_t y) {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	TRX_Inactive_Time = 0;
 	if (TRX.Locked) {
 		return;
 	}
@@ -2448,6 +2446,7 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y) {
 
 bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 #if (defined(HAS_TOUCHPAD))
+	TRX_Inactive_Time = 0;
 	if (TRX.Locked) {
 		return false;
 	}
@@ -2509,6 +2508,7 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 
 bool LCD_processSwipeTwoFingersTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 #if (defined(HAS_TOUCHPAD))
+	TRX_Inactive_Time = 0;
 	if (TRX.Locked) {
 		return false;
 	}
@@ -3144,9 +3144,9 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase
 	//
 	y++;
 	//
-	char line4[] = "^ZXCVBNM,./";
+	char line4[] = "^ZXCVBNM,./ ";
 	if (lowcase) {
-		strcpy(line4, "^zxcvbnm,./");
+		strcpy(line4, "^zxcvbnm,./ ");
 	}
 	for (uint8_t i = 0; i < strlen(line4); i++) {
 		char text[2] = {0};

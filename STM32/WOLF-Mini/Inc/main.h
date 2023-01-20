@@ -192,12 +192,6 @@ void Error_Handler(void);
 #define WM8731_ADC_SD_GPIO_Port GPIOC
 #define WM8731_DAC_SD_Pin GPIO_PIN_12
 #define WM8731_DAC_SD_GPIO_Port GPIOC
-#define ATT_ON_16_Pin GPIO_PIN_0
-#define ATT_ON_16_GPIO_Port GPIOD
-#define ATT_ON_0_5_Pin GPIO_PIN_1
-#define ATT_ON_0_5_GPIO_Port GPIOD
-#define ATT_ON_1_Pin GPIO_PIN_2
-#define ATT_ON_1_GPIO_Port GPIOD
 #define WM8731_SCK_Pin GPIO_PIN_3
 #define WM8731_SCK_GPIO_Port GPIOD
 #define KEY_5_Pin GPIO_PIN_4
@@ -222,6 +216,7 @@ void Error_Handler(void);
 #define KEY_IN_DOT_Pin GPIO_PIN_1
 #define KEY_IN_DOT_GPIO_Port GPIOE
 #define KEY_IN_DOT_EXTI_IRQn EXTI1_IRQn
+
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

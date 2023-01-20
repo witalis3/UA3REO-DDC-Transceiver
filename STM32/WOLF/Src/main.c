@@ -237,7 +237,7 @@ int main(void) {
 	GPIO_InitStruct.Pin = ENC2SW_AND_TOUCHPAD_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-	HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+	HAL_GPIO_Init(T_INT_GPIO_Port, &GPIO_InitStruct);
 #endif
 	__HAL_RCC_CSI_ENABLE();
 	__HAL_RCC_SYSCFG_CLK_ENABLE();
@@ -328,8 +328,8 @@ int main(void) {
 
 #if (defined(LAY_800x480))
 		LCDDriver_Fill(rgb888torgb565(255, 255, 255));
-		LCDDriver_printImage_JPEGCompressed(0, 0, IMAGES_logo800_NY_jpeg, sizeof(IMAGES_logo800_NY_jpeg));
-		LCDDriver_printTextFont(greetings_buff, 30, (LCD_HEIGHT - 30), COLOR_BLACK, rgb888torgb565(243, 243, 243), &FreeSans12pt7b);
+		LCDDriver_printImage_JPEGCompressed(0, 0, IMAGES_logo800_jpeg, sizeof(IMAGES_logo800_jpeg));
+		LCDDriver_printTextFont(greetings_buff, 30, (LCD_HEIGHT - 30), COLOR_BLACK, rgb888torgb565(255, 255, 255), &FreeSans12pt7b);
 #else
 		LCDDriver_Fill(rgb888torgb565(243, 243, 243));
 		LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo480.width) / 2), ((LCD_HEIGHT - IMAGES_logo480.height) / 2), &IMAGES_logo480, BG_COLOR, BG_COLOR);

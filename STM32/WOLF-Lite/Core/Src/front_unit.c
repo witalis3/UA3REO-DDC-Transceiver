@@ -32,7 +32,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter);
 static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter);
-static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num);
+static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count);
 
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
@@ -132,46 +132,8 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .prev_state = false,
      .work_in_menu = true,
      .parameter = 0,
-     .clickHandler = BUTTONHANDLER_MENU,
-     .holdHandler = BUTTONHANDLER_LOCK}, // SB9
-};
-
-const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {
-    {.name = "DRV", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DRV_ONLY, .holdHandler = BUTTONHANDLER_DRV_ONLY, .checkBool = (uint32_t *)&TRX.LNA},
-    {.name = "ATT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ATT, .holdHandler = BUTTONHANDLER_ATTHOLD, .checkBool = (uint32_t *)&TRX.ATT},
-    {.name = "BW", .work_in_menu = true, .clickHandler = BUTTONHANDLER_BW, .holdHandler = BUTTONHANDLER_BW, .checkBool = NULL},
-    {.name = "A/B", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AsB, .holdHandler = BUTTONHANDLER_AsB, .checkBool = NULL},
-    {.name = "B=A", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ArB, .holdHandler = BUTTONHANDLER_ArB, .checkBool = NULL},
-    //
-    {.name = "POWER", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER, .checkBool = NULL},
-    {.name = "AGC", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AGC, .holdHandler = BUTTONHANDLER_AGC, .checkBool = (uint32_t *)&TRX.AGC_shadow},
-    {.name = "ZOOM-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_N, .holdHandler = BUTTONHANDLER_ZOOM_N, .checkBool = NULL},
-    {.name = "ZOOM+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_P, .holdHandler = BUTTONHANDLER_ZOOM_P, .checkBool = NULL},
-    {.name = "FAST", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FAST, .holdHandler = BUTTONHANDLER_STEP, .checkBool = (uint32_t *)&TRX.Fast},
-    //
-    {.name = "IF", .work_in_menu = true, .clickHandler = BUTTONHANDLER_IF, .holdHandler = BUTTONHANDLER_IF, .checkBool = NULL},
-    {.name = "NOTCH", .work_in_menu = false, .clickHandler = BUTTONHANDLER_NOTCH, .holdHandler = BUTTONHANDLER_NOTCH_MANUAL, .checkBool = (uint32_t *)&TRX.Notch_on_shadow},
-    {.name = "DNR", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DNR, .holdHandler = BUTTONHANDLER_DNR, .checkBool = NULL},
-    {.name = "SQL", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SQL, .holdHandler = BUTTONHANDLER_SQUELCH, .checkBool = (uint32_t *)&TRX.SQL_shadow},
-    {.name = "RIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_RIT, .holdHandler = BUTTONHANDLER_XIT, .checkBool = (uint32_t *)&TRX.RIT_Enabled},
-    //
-    {.name = "BAND-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
-    {.name = "BAND+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
-    {.name = "MODE-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
-    {.name = "MODE+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
-    {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNE, .checkBool = (uint32_t *)&TRX_Tune},
-    //
-    {.name = "SCAN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SCAN, .holdHandler = BUTTONHANDLER_SCAN, .checkBool = (uint32_t *)&TRX_ScanMode},
-    {.name = "SERV", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SERVICES, .holdHandler = BUTTONHANDLER_SERVICES, .checkBool = NULL},
-    {.name = "WPM", .work_in_menu = true, .clickHandler = BUTTONHANDLER_WPM, .holdHandler = BUTTONHANDLER_WPM, .checkBool = NULL},
-    {.name = "MUTE", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MUTE, .holdHandler = BUTTONHANDLER_MUTE_AFAMP, .checkBool = (uint32_t *)&TRX.AutoGain},
-    {.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
-    //
-    {.name = "A/B", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AsB, .holdHandler = BUTTONHANDLER_AsB, .checkBool = NULL},
-    {.name = "RIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_RIT, .holdHandler = BUTTONHANDLER_XIT, .checkBool = (uint32_t *)&TRX.RIT_Enabled},
-    {.name = "SPLIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SPLIT, .holdHandler = BUTTONHANDLER_SPLIT, .checkBool = (uint32_t *)&TRX.SPLIT_Enabled},
-    {.name = "SNAP<", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SNAP_LEFT, .holdHandler = BUTTONHANDLER_AUTO_SNAP, .checkBool = (uint32_t *)&TRX.Auto_Snap},
-    {.name = "SNAP>", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SNAP_RIGHT, .holdHandler = BUTTONHANDLER_AUTO_SNAP, .checkBool = (uint32_t *)&TRX.Auto_Snap},
+     .clickHandler = BUTTONHANDLER_RIGHT_ARR,
+     .holdHandler = BUTTONHANDLER_MENU}, // SB9
 };
 #endif
 
@@ -223,8 +185,8 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .prev_state = false,
      .work_in_menu = true,
      .parameter = 0,
-     .clickHandler = BUTTONHANDLER_MENU,
-     .holdHandler = BUTTONHANDLER_LOCK}, // SB6
+     .clickHandler = BUTTONHANDLER_RIGHT_ARR,
+     .holdHandler = BUTTONHANDLER_MENU}, // SB6
     {.port = 1,
      .channel = 6,
      .type = FUNIT_CTRL_BUTTON,
@@ -292,6 +254,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .clickHandler = BUTTONHANDLER_BW,
      .holdHandler = BUTTONHANDLER_BW}, // SB9
 };
+#endif
 
 const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {
     {.name = "DRV", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DRV_ONLY, .holdHandler = BUTTONHANDLER_DRV_ONLY, .checkBool = (uint32_t *)&TRX.LNA},
@@ -299,32 +262,43 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "BW", .work_in_menu = true, .clickHandler = BUTTONHANDLER_BW, .holdHandler = BUTTONHANDLER_BW, .checkBool = NULL},
     {.name = "A/B", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AsB, .holdHandler = BUTTONHANDLER_AsB, .checkBool = NULL},
     {.name = "B=A", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ArB, .holdHandler = BUTTONHANDLER_ArB, .checkBool = NULL},
-
+    //
     {.name = "POWER", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER, .checkBool = NULL},
     {.name = "AGC", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AGC, .holdHandler = BUTTONHANDLER_AGC, .checkBool = (uint32_t *)&TRX.AGC_shadow},
     {.name = "ZOOM-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_N, .holdHandler = BUTTONHANDLER_ZOOM_N, .checkBool = NULL},
     {.name = "ZOOM+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_P, .holdHandler = BUTTONHANDLER_ZOOM_P, .checkBool = NULL},
     {.name = "FAST", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FAST, .holdHandler = BUTTONHANDLER_STEP, .checkBool = (uint32_t *)&TRX.Fast},
-
+    //
     {.name = "IF", .work_in_menu = true, .clickHandler = BUTTONHANDLER_IF, .holdHandler = BUTTONHANDLER_IF, .checkBool = NULL},
     {.name = "NOTCH", .work_in_menu = false, .clickHandler = BUTTONHANDLER_NOTCH, .holdHandler = BUTTONHANDLER_NOTCH_MANUAL, .checkBool = (uint32_t *)&TRX.Notch_on_shadow},
     {.name = "DNR", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DNR, .holdHandler = BUTTONHANDLER_DNR, .checkBool = NULL},
     {.name = "SQL", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SQL, .holdHandler = BUTTONHANDLER_SQUELCH, .checkBool = (uint32_t *)&TRX.SQL_shadow},
     {.name = "RIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_RIT, .holdHandler = BUTTONHANDLER_XIT, .checkBool = (uint32_t *)&TRX.RIT_Enabled},
-
+    //
     {.name = "BAND-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
     {.name = "BAND+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
     {.name = "MODE-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
     {.name = "MODE+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
     {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNE, .checkBool = (uint32_t *)&TRX_Tune},
-
+    //
     {.name = "SCAN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SCAN, .holdHandler = BUTTONHANDLER_SCAN, .checkBool = (uint32_t *)&TRX_ScanMode},
     {.name = "SERV", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SERVICES, .holdHandler = BUTTONHANDLER_SERVICES, .checkBool = NULL},
     {.name = "WPM", .work_in_menu = true, .clickHandler = BUTTONHANDLER_WPM, .holdHandler = BUTTONHANDLER_WPM, .checkBool = NULL},
     {.name = "MUTE", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MUTE, .holdHandler = BUTTONHANDLER_MUTE_AFAMP, .checkBool = (uint32_t *)&TRX.AutoGain},
     {.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
+    //
+    {.name = "A/B", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AsB, .holdHandler = BUTTONHANDLER_AsB, .checkBool = NULL},
+    {.name = "RIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_RIT, .holdHandler = BUTTONHANDLER_XIT, .checkBool = (uint32_t *)&TRX.RIT_Enabled},
+    {.name = "SPLIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SPLIT, .holdHandler = BUTTONHANDLER_SPLIT, .checkBool = (uint32_t *)&TRX.SPLIT_Enabled},
+    {.name = "SNAP<", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SNAP_LEFT, .holdHandler = BUTTONHANDLER_AUTO_SNAP, .checkBool = (uint32_t *)&TRX.Auto_Snap},
+    {.name = "SNAP>", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SNAP_RIGHT, .holdHandler = BUTTONHANDLER_AUTO_SNAP, .checkBool = (uint32_t *)&TRX.Auto_Snap},
+    //
+    {.name = "MACRO1", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 1},
+    {.name = "MACRO2", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 2},
+    {.name = "MACRO3", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 3},
+    {.name = "MACRO4", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 4},
+    {.name = "MACRO5", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 5},
 };
-#endif
 
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_TANGENT_MH48[6] = {
     {.port = 1,
@@ -572,7 +546,6 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				TRX_RIT = -TRX.RIT_INTERVAL;
 			}
 
-			TRX_XIT = 0;
 			TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		}
 
@@ -585,7 +558,6 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				TRX_XIT = -TRX.XIT_INTERVAL;
 			}
 
-			TRX_RIT = 0;
 			TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		}
 	}
@@ -739,10 +711,6 @@ void FRONTPANEL_check_ENC2SW(bool state) {
 	ENC2SW_clicked = false;
 	ENC2SW_holded = false;
 
-	if (TRX.Locked) {
-		return;
-	}
-
 	bool ENC2SW_AND_TOUCH_Now = HAL_GPIO_ReadPin(ENC2_SW_GPIO_Port, ENC2_SW_Pin);
 	// check hold and click
 	if (ENC2SW_Last != ENC2SW_AND_TOUCH_Now) {
@@ -772,6 +740,10 @@ void FRONTPANEL_check_ENC2SW(bool state) {
 
 	// ENC2 Button click
 	if (ENC2SW_clicked) {
+		if (TRX.Locked) {
+			return;
+		}
+
 		menu_enc2_click_starttime = HAL_GetTick();
 		FRONTPANEL_ENC2SW_click_handler(0);
 	}
@@ -783,6 +755,9 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 	if (!LCD_systemMenuOpened && !LCD_window.opened) {
 		TRX.ENC2_func_mode++; // enc2 rotary mode
 
+		if (TRX.ENC2_func_mode == ENC_FUNC_PAGER) { // disabled
+			TRX.ENC2_func_mode++;
+		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM && CurrentVFO->Mode != TRX_MODE_CW) { // no WPM if not CW
 			TRX.ENC2_func_mode++;
 		}
@@ -798,12 +773,11 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF) { // disabled
 			TRX.ENC2_func_mode++;
 		}
-		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && !CurrentVFO->SQL) { // nothing to SQL tune
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && ((CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM) || !CurrentVFO->SQL)) { // nothing to SQL tune
 			TRX.ENC2_func_mode++;
 		}
-
 		if (TRX.ENC2_func_mode > ENC_FUNC_SET_IF) {
-			TRX.ENC2_func_mode = ENC_FUNC_PAGER;
+			TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 		}
 
 		LCD_UpdateQuery.StatusInfoGUI = true;
@@ -848,13 +822,13 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 
 static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter) {
 	TRX_Inactive_Time = 0;
-	BUTTONHANDLER_MENU(0);
+	BUTTONHANDLER_LOCK(0);
 }
 
 void FRONTPANEL_Init(void) {
 	uint16_t test_value = 0;
 #ifdef HRDW_MCP3008_1
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 1);
+	test_value = FRONTPANEL_ReadMCP3008_Value(0, 1, 1);
 	if (test_value == 65535) {
 		FRONTPanel_MCP3008_1_Enabled = false;
 		println("[ERR] Frontpanel MCP3008 - 1 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
@@ -862,7 +836,7 @@ void FRONTPANEL_Init(void) {
 	}
 #endif
 #ifdef HRDW_MCP3008_2
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 2);
+	test_value = FRONTPANEL_ReadMCP3008_Value(0, 2, 1);
 	if (test_value == 65535) {
 		FRONTPanel_MCP3008_2_Enabled = false;
 		println("[ERR] Frontpanel MCP3008 - 2 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
@@ -870,7 +844,7 @@ void FRONTPANEL_Init(void) {
 	}
 #endif
 #ifdef HRDW_MCP3008_3
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 3);
+	test_value = FRONTPANEL_ReadMCP3008_Value(0, 3, 1);
 	if (test_value == 65535) {
 		FRONTPanel_MCP3008_3_Enabled = false;
 		println("[ERR] Frontpanel MCP3008 - 3 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
@@ -901,17 +875,16 @@ void FRONTPANEL_Process(void) {
 	}
 #endif
 
-	if (HRDW_SPI_Locked) {
-		return;
-	}
-	HRDW_SPI_Locked = true;
-
 	static uint32_t fu_debug_lasttime = 0;
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
 	uint32_t mcp3008_value = 0;
 
 	// process buttons
 	for (uint16_t b = 0; b < buttons_count; b++) {
+		if (HRDW_SPI_Locked) {
+			continue;
+		}
+
 		PERIPH_FrontPanel_Button *button = &PERIPH_FrontPanel_Buttons[b];
 // check disabled ports
 #ifdef HRDW_MCP3008_1
@@ -933,29 +906,17 @@ void FRONTPANEL_Process(void) {
 // get state from ADC MCP3008 (10bit - 1024values)
 #ifdef HRDW_MCP3008_1
 		if (button->port == 1) {
-			mcp3008_value = 0;
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
-			mcp3008_value /= 3;
+			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 1, 5);
 		} else
 #endif
 #ifdef HRDW_MCP3008_2
 		    if (button->port == 2) {
-			mcp3008_value = 0;
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
-			mcp3008_value /= 3;
+			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 2, 5);
 		} else
 #endif
 #ifdef HRDW_MCP3008_3
 		    if (button->port == 3) {
-			mcp3008_value = 0;
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
-			mcp3008_value /= 3;
+			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 3, 5);
 		} else
 #endif
 			continue;
@@ -989,8 +950,6 @@ void FRONTPANEL_Process(void) {
 			fu_debug_lasttime = HAL_GetTick();
 		}
 	}
-
-	HRDW_SPI_Locked = false;
 }
 
 void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value) {
@@ -1068,26 +1027,34 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	}
 }
 
-static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num) {
+static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count) {
+	HRDW_SPI_Locked = true;
+
 	uint8_t outData[3] = {0};
 	uint8_t inData[3] = {0};
-	uint16_t mcp3008_value = 0;
+	uint32_t mcp3008_value = 0;
 
-	outData[0] = 0x18 | channel;
-	bool res = false;
-	if (adc_num == 1) {
-		res = HRDW_FrontUnit_SPI(outData, inData, 3, false);
+	for (uint8_t i = 0; i < count; i++) {
+		outData[0] = 0x18 | channel;
+		bool res = false;
+		if (adc_num == 1) {
+			res = HRDW_FrontUnit_SPI(outData, inData, 3, false);
+		}
+		if (adc_num == 2) {
+			res = HRDW_FrontUnit2_SPI(outData, inData, 3, false);
+		}
+		if (adc_num == 3) {
+			res = HRDW_FrontUnit3_SPI(outData, inData, 3, false);
+		}
+		if (res == false) {
+			HRDW_SPI_Locked = false;
+			return 65535;
+		}
+		mcp3008_value += (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
 	}
-	if (adc_num == 2) {
-		res = HRDW_FrontUnit2_SPI(outData, inData, 3, false);
-	}
-	if (adc_num == 3) {
-		res = HRDW_FrontUnit3_SPI(outData, inData, 3, false);
-	}
-	if (res == false) {
-		return 65535;
-	}
-	mcp3008_value = (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
+	mcp3008_value /= count;
+
+	HRDW_SPI_Locked = false;
 
 	return mcp3008_value;
 }

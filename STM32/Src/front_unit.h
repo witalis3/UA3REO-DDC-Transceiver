@@ -10,7 +10,9 @@
 typedef enum {
 	FUNIT_CTRL_BUTTON,
 	FUNIT_CTRL_AF_GAIN,
-	FUNIT_CTRL_RIT_XIT,
+	FUNIT_CTRL_IF_RIT_XIT,
+	FUNIT_CTRL_IF_GAIN,
+	FUNIT_CTRL_RIT,
 	FUNIT_CTRL_PTT,
 	FUNIT_CTRL_TANGENT,
 	FUNIT_CTRL_BUTTON_DEBUG,
@@ -20,6 +22,7 @@ typedef enum {
 typedef struct {
 	bool work_in_menu;
 	char name[16];
+	uint32_t parameter;
 	void (*clickHandler)(uint32_t parameter);
 	void (*holdHandler)(uint32_t parameter);
 	uint32_t *checkBool;

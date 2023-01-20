@@ -17,7 +17,6 @@ SRAM4 bool BAND_SELECTABLE[BANDS_COUNT] = {
     true,  // 80m
     false, // BR 4.0
     false, // BR 4.8
-    false, // BR 5.0
     false, // 60m
     false, // BR 6.0
     true,  // 40m
@@ -84,7 +83,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Long Wave Broadcast
     {
-        .name = "LWBR",
+        .name = "LW",
         .broadcast = true,
         .startFreq = 148500,
         .endFreq = 283500,
@@ -99,7 +98,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Medium Wave Broadcast
     {
-        .name = "MWBR",
+        .name = "MW",
         .broadcast = true,
         .startFreq = 526500,
         .endFreq = 1606500,
@@ -131,14 +130,14 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 2.4",
+        .name = "120m",
         .broadcast = true,
         .startFreq = 2300000,
-        .endFreq = 2468000,
+        .endFreq = 2495000,
         .defaultFreq = 2400000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 2300000, .endFreq = 2468000, .mode = TRX_MODE_SAM},
+                {.startFreq = 2300000, .endFreq = 2495000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -146,7 +145,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 3.3",
+        .name = "90m",
         .broadcast = true,
         .startFreq = 3200000,
         .endFreq = 3400000,
@@ -178,11 +177,11 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 4.0",
+        .name = "75m",
         .broadcast = true,
-        .startFreq = 3950000,
+        .startFreq = 3900000,
         .endFreq = 4000000,
-        .defaultFreq = 3980000,
+        .defaultFreq = 3950000,
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 3950000, .endFreq = 4000000, .mode = TRX_MODE_SAM},
@@ -193,7 +192,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 4.8",
+        .name = "62m",
         .broadcast = true,
         .startFreq = 4750000,
         .endFreq = 4995000,
@@ -201,21 +200,6 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 4750000, .endFreq = 4995000, .mode = TRX_MODE_SAM},
-            },
-        .regionsCount = 1,
-        .channels = NULL,
-        .channelsCount = 0,
-    },
-    // Shortwave Wave Broadcast
-    {
-        .name = "BR 5.0",
-        .broadcast = true,
-        .startFreq = 5005000,
-        .endFreq = 5060000,
-        .defaultFreq = 5020000,
-        .regions =
-            (const REGION_MAP[1]){
-                {.startFreq = 5005000, .endFreq = 5060000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -238,7 +222,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 6.0",
+        .name = "49m",
         .broadcast = true,
         .startFreq = 5900000,
         .endFreq = 6200000,
@@ -272,14 +256,14 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 7.3",
+        .name = "41m",
         .broadcast = true,
         .startFreq = 7200000,
-        .endFreq = 7450000,
+        .endFreq = 7600000,
         .defaultFreq = 7300000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 7200000, .endFreq = 7450000, .mode = TRX_MODE_SAM},
+                {.startFreq = 7200000, .endFreq = 7600000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -287,7 +271,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 9.6",
+        .name = "31m",
         .broadcast = true,
         .startFreq = 9400000,
         .endFreq = 9900000,
@@ -318,7 +302,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 11.9",
+        .name = "25m",
         .broadcast = true,
         .startFreq = 11600000,
         .endFreq = 12100000,
@@ -333,7 +317,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 13.7",
+        .name = "22m",
         .broadcast = true,
         .startFreq = 13570000,
         .endFreq = 13870000,
@@ -365,7 +349,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 15.5",
+        .name = "19m",
         .broadcast = true,
         .startFreq = 15100000,
         .endFreq = 15800000,
@@ -380,7 +364,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 17.7",
+        .name = "18m",
         .broadcast = true,
         .startFreq = 17480000,
         .endFreq = 17900000,
@@ -412,7 +396,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 19.0",
+        .name = "16m",
         .broadcast = true,
         .startFreq = 18900000,
         .endFreq = 19020000,
@@ -444,7 +428,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 21.6",
+        .name = "13m",
         .broadcast = true,
         .startFreq = 21450000,
         .endFreq = 21850000,
@@ -476,14 +460,14 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "BR 25.8",
+        .name = "11m",
         .broadcast = true,
         .startFreq = 25670000,
-        .endFreq = 26060000,
+        .endFreq = 26065000,
         .defaultFreq = 25800000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 25670000, .endFreq = 26060000, .mode = TRX_MODE_SAM},
+                {.startFreq = 25670000, .endFreq = 26065000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,

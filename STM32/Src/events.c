@@ -159,7 +159,7 @@ void EVENTS_do_ENC(void) // 20 0000 hz
 
 #ifdef HAS_TOUCHPAD
 	static bool TOUCH_Int_Last = true;
-	bool TOUCH_Int_Now = HAL_GPIO_ReadPin(ENC2SW_AND_TOUCHPAD_GPIO_Port, ENC2SW_AND_TOUCHPAD_Pin);
+	bool TOUCH_Int_Now = HAL_GPIO_ReadPin(T_INT_GPIO_Port, T_INT_Pin);
 	if (TOUCH_Int_Last != TOUCH_Int_Now) {
 		TOUCH_Int_Last = TOUCH_Int_Now;
 		if (TOUCH_Int_Now) {
@@ -393,6 +393,7 @@ void EVENTS_do_EVERY_100ms(void) // 10 hz
 	FPGA_Buffer_underrun = false;
 	RX_USB_AUDIO_underrun = false;
 	APROC_IFGain_Overflow = false;
+	TRX_PWR_ALC_SWR_OVERFLOW = false;
 	TRX_MIC_BELOW_NOISEGATE = false;
 #if HRDW_HAS_SD
 	SD_underrun = false;
@@ -497,6 +498,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		println("STM32 Voltage: ", TRX_STM32_VREF);
 		print_flush();
 		println("TIM6 delay: ", dbg_tim6_delay);
+		println("RX1 dBm: ", TRX_RX1_dBm_measurement);
 		println("FFT FPS: ", FFT_FPS);
 		print_flush();
 		println("First byte of RX-FPGA I/Q: ", dbg_FPGA_Audio_Buffer_I_tmp, " / ", dbg_FPGA_Audio_Buffer_Q_tmp); // first byte of IQ

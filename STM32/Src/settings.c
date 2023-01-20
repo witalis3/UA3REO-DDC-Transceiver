@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "6.6.0";
+const char version_string[19] = "6.7.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -254,16 +254,21 @@ void LoadSettings(bool clear) {
 		TRX.VOX_TIMEOUT = 300;               // VOX timeout in ms
 		TRX.VOX_THRESHOLD = -27;             // VOX threshold in dbFS
 		// CW
-		TRX.CW_Pitch = 600;                // LO offset in CW mode
-		TRX.CW_Key_timeout = 200;          // time of releasing transmission after the last character on the key
-		TRX.CW_SelfHear = true;            // self-control CW
-		TRX.CW_KEYER = true;               // Automatic key
-		TRX.CW_KEYER_WPM = 30;             // Automatic key speed
-		TRX.CW_GaussFilter = false;        // Gauss responce LPF filter
-		TRX.CW_DotToDashRate = 3.0f;       // Dot To Dash length rate
-		TRX.CW_Iambic = false;             // CW Iambic Keyer
-		TRX.CW_Invert = false;             // CW dash/dot inversion
-		TRX.CW_PTT_Type = KEY_AND_EXT_PTT; // CW PTT type (Key / External tangent ptt)
+		TRX.CW_Pitch = 600;                                             // LO offset in CW mode
+		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key
+		TRX.CW_SelfHear = true;                                         // self-control CW
+		TRX.CW_KEYER = true;                                            // Automatic key
+		TRX.CW_KEYER_WPM = 30;                                          // Automatic key speed
+		TRX.CW_GaussFilter = false;                                     // Gauss responce LPF filter
+		TRX.CW_DotToDashRate = 3.0f;                                    // Dot To Dash length rate
+		TRX.CW_Iambic = false;                                          // CW Iambic Keyer
+		TRX.CW_Invert = false;                                          // CW dash/dot inversion
+		TRX.CW_PTT_Type = KEY_AND_EXT_PTT;                              // CW PTT type (Key / External tangent ptt)
+		strcpy(TRX.CW_Macros_1, "CQ CQ CQ");                            // CW Macros 1
+		strcpy(TRX.CW_Macros_2, "CQ TEST");                             // CW Macros 2
+		strcpy(TRX.CW_Macros_3, "TNX RST 599 599 NAME QTH K");          // CW Macros 3
+		strcpy(TRX.CW_Macros_4, "73 73 SK K");                          // CW Macros 4
+		strcpy(TRX.CW_Macros_5, "TNX FOR NICE QSO DR OM CU AGN GL 73"); // CW Macros 5
 		// SCREEN
 		TRX.ColorThemeId = 0;  // Selected Color theme
 		TRX.LayoutThemeId = 0; // Selected Layout theme
@@ -317,8 +322,8 @@ void LoadSettings(bool clear) {
 		TRX.FFT_FreqGrid = 0;             // FFT freq grid style
 		TRX.FFT_Height = 3;               // FFT display height
 #else
-		TRX.FFT_FreqGrid = 1; // FFT freq grid style
-		TRX.FFT_Height = 2;   // FFT display height
+		TRX.FFT_FreqGrid = 1;             // FFT freq grid style
+		TRX.FFT_Height = 2;               // FFT display height
 #endif
 		TRX.FFT_dBmGrid = false;           // FFT power grid
 		TRX.FFT_Lens = false;              // FFT lens effect
@@ -326,7 +331,7 @@ void LoadSettings(bool clear) {
 		TRX.FFT_3D = 0;                    // FFT 3D mode
 		TRX.FFT_ManualBottom = -130;       // Minimal threshold for manual FFT scale
 		TRX.FFT_ManualTop = -90;           // Maximum threshold for manual FFT scale
-		TRX.FFT_DXCluster = false;         // Show DX cluster over FFT
+		TRX.FFT_DXCluster = true;          // Show DX cluster over FFT
 		TRX.FFT_DXCluster_Azimuth = false; // Add azimut to callsign
 		TRX.FFT_DXCluster_Timeout = 5;     // DXCluser timeout in minutes
 		TRX.Show_Sec_VFO = false;          // Show secondary VFO on FFT
@@ -575,26 +580,26 @@ void LoadCalibration(bool clear) {
 #elif defined(FRONTPANEL_WF_100D)
 		CALIBRATE.ENCODER2_INVERT = true; // invert left-right rotation of the optional encoder
 		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;
-		CALIBRATE.rf_out_power_2200m = 16;             // 2200m
-		CALIBRATE.rf_out_power_160m = 26;              // 160m
-		CALIBRATE.rf_out_power_80m = 27;               // 80m
-		CALIBRATE.rf_out_power_60m = 27;               // 60m
-		CALIBRATE.rf_out_power_40m = 32;               // 40m
-		CALIBRATE.rf_out_power_30m = 31;               // 30m
-		CALIBRATE.rf_out_power_20m = 39;               // 20m
-		CALIBRATE.rf_out_power_17m = 43;               // 17m
-		CALIBRATE.rf_out_power_15m = 49;               // 15m
-		CALIBRATE.rf_out_power_12m = 43;               // 12m
-		CALIBRATE.rf_out_power_cb = 61;                // 27mhz
-		CALIBRATE.rf_out_power_10m = 67;               // 10m
-		CALIBRATE.rf_out_power_6m = 80;                // 6m
-		CALIBRATE.rf_out_power_4m = 80;                // 4m
-		CALIBRATE.rf_out_power_2m = 57;                // 2m
-		CALIBRATE.rf_out_power_70cm = 57;              // 70cm
-		CALIBRATE.rf_out_power_23cm = 57;              // 23cm
-		CALIBRATE.rf_out_power_13cm = 57;              // 13cm
-		CALIBRATE.rf_out_power_6cm = 57;               // 6cm
-		CALIBRATE.rf_out_power_3cm = 57;               // 3cm
+		CALIBRATE.rf_out_power_2200m = 20;             // 2200m
+		CALIBRATE.rf_out_power_160m = 27;              // 160m
+		CALIBRATE.rf_out_power_80m = 28;               // 80m
+		CALIBRATE.rf_out_power_60m = 29;               // 60m
+		CALIBRATE.rf_out_power_40m = 30;               // 40m
+		CALIBRATE.rf_out_power_30m = 34;               // 30m
+		CALIBRATE.rf_out_power_20m = 35;               // 20m
+		CALIBRATE.rf_out_power_17m = 44;               // 17m
+		CALIBRATE.rf_out_power_15m = 54;               // 15m
+		CALIBRATE.rf_out_power_12m = 49;               // 12m
+		CALIBRATE.rf_out_power_cb = 50;                // 27mhz
+		CALIBRATE.rf_out_power_10m = 90;               // 10m
+		CALIBRATE.rf_out_power_6m = 90;                // 6m
+		CALIBRATE.rf_out_power_4m = 90;                // 4m
+		CALIBRATE.rf_out_power_2m = 80;                // 2m
+		CALIBRATE.rf_out_power_70cm = 50;              // 70cm
+		CALIBRATE.rf_out_power_23cm = 50;              // 23cm
+		CALIBRATE.rf_out_power_13cm = 50;              // 13cm
+		CALIBRATE.rf_out_power_6cm = 50;               // 6cm
+		CALIBRATE.rf_out_power_3cm = 50;               // 3cm
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
@@ -615,10 +620,61 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_7_END = 150 * 1000 * 1000;   //
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled
-		CALIBRATE.SWR_FWD_Calibration_HF = 19.5f;      // SWR Transormator rate forward
-		CALIBRATE.SWR_BWD_Calibration_HF = 19.5f;      // SWR Transormator rate return
-		CALIBRATE.SWR_FWD_Calibration_6M = 19.0f;      // SWR Transormator rate forward
-		CALIBRATE.SWR_BWD_Calibration_6M = 19.0f;      // SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_HF = 23.5f;      // SWR Transormator rate forward
+		CALIBRATE.SWR_BWD_Calibration_HF = 23.5f;      // SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_6M = 23.0f;      // SWR Transormator rate forward
+		CALIBRATE.SWR_BWD_Calibration_6M = 23.0f;      // SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_VHF = 16.6f;     // SWR Transormator rate forward
+		CALIBRATE.SWR_BWD_Calibration_VHF = 9.5f;      // SWR Transormator rate return
+		CALIBRATE.TUNE_MAX_POWER = 15;                 // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER_ON_METER = 100;         // Max TRX Power for indication
+#elif defined(FRONTPANEL_WOLF_2)
+		CALIBRATE.ENCODER2_INVERT = true; // invert left-right rotation of the optional encoder
+		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;
+		CALIBRATE.rf_out_power_2200m = 20;             // 2200m
+		CALIBRATE.rf_out_power_160m = 27;              // 160m
+		CALIBRATE.rf_out_power_80m = 28;               // 80m
+		CALIBRATE.rf_out_power_60m = 29;               // 60m
+		CALIBRATE.rf_out_power_40m = 30;               // 40m
+		CALIBRATE.rf_out_power_30m = 34;               // 30m
+		CALIBRATE.rf_out_power_20m = 35;               // 20m
+		CALIBRATE.rf_out_power_17m = 44;               // 17m
+		CALIBRATE.rf_out_power_15m = 54;               // 15m
+		CALIBRATE.rf_out_power_12m = 49;               // 12m
+		CALIBRATE.rf_out_power_cb = 50;                // 27mhz
+		CALIBRATE.rf_out_power_10m = 90;               // 10m
+		CALIBRATE.rf_out_power_6m = 90;                // 6m
+		CALIBRATE.rf_out_power_4m = 90;                // 4m
+		CALIBRATE.rf_out_power_2m = 80;                // 2m
+		CALIBRATE.rf_out_power_70cm = 50;              // 70cm
+		CALIBRATE.rf_out_power_23cm = 50;              // 23cm
+		CALIBRATE.rf_out_power_13cm = 50;              // 13cm
+		CALIBRATE.rf_out_power_6cm = 50;               // 6cm
+		CALIBRATE.rf_out_power_3cm = 50;               // 3cm
+		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
+		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
+		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
+		CALIBRATE.RFU_BPF_0_END = 2500 * 1000;         //
+		CALIBRATE.RFU_BPF_1_START = 2500 * 1000;       // 2.5-4mHz
+		CALIBRATE.RFU_BPF_1_END = 4000 * 1000;         //
+		CALIBRATE.RFU_BPF_2_START = 6000 * 1000;       // 6-7.3mHz
+		CALIBRATE.RFU_BPF_2_END = 7300 * 1000;         //
+		CALIBRATE.RFU_BPF_3_START = 7300 * 1000;       // 7-12mHz
+		CALIBRATE.RFU_BPF_3_END = 12000 * 1000;        //
+		CALIBRATE.RFU_BPF_4_START = 12000 * 1000;      // 12-14.5mHz
+		CALIBRATE.RFU_BPF_4_END = 14500 * 1000;        //
+		CALIBRATE.RFU_BPF_5_START = 14500 * 1000;      // 14.5-21.5mHz
+		CALIBRATE.RFU_BPF_5_END = 21500 * 1000;        //
+		CALIBRATE.RFU_BPF_6_START = 21500 * 1000;      // 21.5-30 mHz
+		CALIBRATE.RFU_BPF_6_END = 30000 * 1000;        //
+		CALIBRATE.RFU_BPF_7_START = 138 * 1000 * 1000; // 138-150mHz
+		CALIBRATE.RFU_BPF_7_END = 150 * 1000 * 1000;   //
+		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled
+		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled
+		CALIBRATE.SWR_FWD_Calibration_HF = 23.5f;      // SWR Transormator rate forward
+		CALIBRATE.SWR_BWD_Calibration_HF = 23.5f;      // SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_6M = 23.0f;      // SWR Transormator rate forward
+		CALIBRATE.SWR_BWD_Calibration_6M = 23.0f;      // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 16.6f;     // SWR Transormator rate forward
 		CALIBRATE.SWR_BWD_Calibration_VHF = 9.5f;      // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;                 // Maximum RF power in Tune mode

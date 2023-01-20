@@ -31,7 +31,7 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter);
 static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter);
-static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num);
+static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t coun);
 
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
@@ -140,6 +140,11 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "SNAP<", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SNAP_LEFT, .holdHandler = BUTTONHANDLER_AUTO_SNAP, .checkBool = (uint32_t *)&TRX.Auto_Snap},
     {.name = "SNAP>", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SNAP_RIGHT, .holdHandler = BUTTONHANDLER_AUTO_SNAP, .checkBool = (uint32_t *)&TRX.Auto_Snap},
     {.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
+    //
+    {.name = "MACRO1", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 1},
+    {.name = "MACRO2", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 2},
+    {.name = "MACRO3", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 3},
+    {.name = "MACRO4", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 4},
 };
 #endif
 
@@ -330,7 +335,6 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 			TRX_RIT = TRX.RIT_INTERVAL;
 		}
 		LCD_UpdateQuery.StatusInfoGUI = true;
-		TRX_XIT = 0;
 		TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		return;
 	}
@@ -346,7 +350,6 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 			TRX_XIT = TRX.XIT_INTERVAL;
 		}
 		LCD_UpdateQuery.StatusInfoGUI = true;
-		TRX_RIT = 0;
 		TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		return;
 	}
@@ -416,7 +419,6 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				TRX_RIT = -TRX.RIT_INTERVAL;
 			}
 
-			TRX_XIT = 0;
 			TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		}
 
@@ -429,7 +431,6 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				TRX_XIT = -TRX.XIT_INTERVAL;
 			}
 
-			TRX_RIT = 0;
 			TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		}
 	}
@@ -624,7 +625,7 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF) { // disabled
 			TRX.ENC2_func_mode++;
 		}
-		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && !CurrentVFO->SQL) { // nothing to SQL tune
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && ((CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM) || !CurrentVFO->SQL)) { // nothing to SQL tune
 			TRX.ENC2_func_mode++;
 		}
 
@@ -685,7 +686,7 @@ static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter) {
 void FRONTPANEL_Init(void) {
 	uint16_t test_value = 0;
 #ifdef HRDW_MCP3008_1
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 1);
+	test_value = FRONTPANEL_ReadMCP3008_Value(0, 1, 1);
 	if (test_value == 65535) {
 		FRONTPanel_MCP3008_1_Enabled = false;
 		println("[ERR] Frontpanel MCP3008 - 1 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
@@ -693,7 +694,7 @@ void FRONTPANEL_Init(void) {
 	}
 #endif
 #ifdef HRDW_MCP3008_2
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 2);
+	test_value = FRONTPANEL_ReadMCP3008_Value(0, 2, 1);
 	if (test_value == 65535) {
 		FRONTPanel_MCP3008_2_Enabled = false;
 		println("[ERR] Frontpanel MCP3008 - 2 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
@@ -701,7 +702,7 @@ void FRONTPANEL_Init(void) {
 	}
 #endif
 #ifdef HRDW_MCP3008_3
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 3);
+	test_value = FRONTPANEL_ReadMCP3008_Value(0, 3, 1);
 	if (test_value == 65535) {
 		FRONTPanel_MCP3008_3_Enabled = false;
 		println("[ERR] Frontpanel MCP3008 - 3 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
@@ -725,10 +726,6 @@ void FRONTPANEL_Process(void) {
 	if (SD_USBCardReader) {
 		return;
 	}
-	if (HRDW_SPI_Locked) {
-		return;
-	}
-	HRDW_SPI_Locked = true;
 
 	static uint32_t fu_debug_lasttime = 0;
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
@@ -736,6 +733,10 @@ void FRONTPANEL_Process(void) {
 
 	// process buttons
 	for (uint16_t b = 0; b < buttons_count; b++) {
+		if (HRDW_SPI_Locked) {
+			continue;
+		}
+
 		PERIPH_FrontPanel_Button *button = &PERIPH_FrontPanel_Buttons[b];
 // check disabled ports
 #ifdef HRDW_MCP3008_1
@@ -757,29 +758,17 @@ void FRONTPANEL_Process(void) {
 // get state from ADC MCP3008 (10bit - 1024values)
 #ifdef HRDW_MCP3008_1
 		if (button->port == 1) {
-			mcp3008_value = 0;
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 1);
-			mcp3008_value /= 3;
+			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 1, 5);
 		} else
 #endif
 #ifdef HRDW_MCP3008_2
 		    if (button->port == 2) {
-			mcp3008_value = 0;
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 2);
-			mcp3008_value /= 3;
+			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 2, 5);
 		} else
 #endif
 #ifdef HRDW_MCP3008_3
 		    if (button->port == 3) {
-			mcp3008_value = 0;
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
-			mcp3008_value += FRONTPANEL_ReadMCP3008_Value(button->channel, 3);
-			mcp3008_value /= 3;
+			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 3, 5);
 		} else
 #endif
 			continue;
@@ -813,8 +802,6 @@ void FRONTPANEL_Process(void) {
 			fu_debug_lasttime = HAL_GetTick();
 		}
 	}
-
-	HRDW_SPI_Locked = false;
 }
 
 void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value) {
@@ -823,41 +810,6 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 		TRX.Volume = (uint16_t)(MAX_VOLUME_VALUE - mcp3008_value);
 		if (TRX.Volume < 50) {
 			TRX.Volume = 0;
-		}
-	}
-
-	// RIT / XIT or IF Gain
-	if (button->type == FUNIT_CTRL_RIT_XIT) {
-		if (TRX.RIT_Enabled) {
-			int_fast16_t TRX_RIT_old = TRX_RIT;
-			TRX_RIT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
-			if (TRX_RIT_old != TRX_RIT) {
-				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
-				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
-				LCD_bw_trapez_stripe_pos_new = LCD_bw_trapez_stripe_pos_new + (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_RIT / (float32_t)TRX.RIT_INTERVAL));
-				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 0) {
-					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
-					LCD_UpdateQuery.StatusInfoGUI = true;
-				}
-			}
-			TRX_XIT = 0;
-		} else if (TRX.XIT_Enabled) {
-			int_fast16_t TRX_XIT_old = TRX_XIT;
-			TRX_XIT = (int_fast16_t)(((1023.0f - mcp3008_value) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
-			if (TRX_XIT_old != TRX_XIT && !TRX_on_TX) {
-				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
-				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
-				LCD_bw_trapez_stripe_pos_new = LCD_bw_trapez_stripe_pos_new + (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_XIT / (float32_t)TRX.XIT_INTERVAL));
-				if (abs(LCD_bw_trapez_stripe_pos_new - LCD_bw_trapez_stripe_pos) > 0) {
-					LCD_bw_trapez_stripe_pos = LCD_bw_trapez_stripe_pos_new;
-					LCD_UpdateQuery.StatusInfoGUI = true;
-				}
-			}
-			TRX_RIT = 0;
-		} else {
-			TRX_RIT = 0;
-			TRX_XIT = 0;
-			TRX.IF_Gain = (uint8_t)(CALIBRATE.IF_GAIN_MIN + ((1023.0f - mcp3008_value) * (float32_t)(CALIBRATE.IF_GAIN_MAX - CALIBRATE.IF_GAIN_MIN) / 1023.0f));
 		}
 	}
 
@@ -946,32 +898,34 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	}
 }
 
-static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num) {
+static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count) {
+	HRDW_SPI_Locked = true;
+
 	uint8_t outData[3] = {0};
 	uint8_t inData[3] = {0};
-	uint16_t mcp3008_value = 0;
+	uint32_t mcp3008_value = 0;
 
-	outData[0] = 0x18 | channel;
-	bool res = false;
-#ifdef HRDW_MCP3008_1
-	if (adc_num == 1) {
-		res = HRDW_FrontUnit_SPI(outData, inData, 3, false);
+	for (uint8_t i = 0; i < count; i++) {
+		outData[0] = 0x18 | channel;
+		bool res = false;
+		if (adc_num == 1) {
+			res = HRDW_FrontUnit_SPI(outData, inData, 3, false);
+		}
+		if (adc_num == 2) {
+			res = HRDW_FrontUnit2_SPI(outData, inData, 3, false);
+		}
+		if (adc_num == 3) {
+			res = HRDW_FrontUnit3_SPI(outData, inData, 3, false);
+		}
+		if (res == false) {
+			HRDW_SPI_Locked = false;
+			return 65535;
+		}
+		mcp3008_value += (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
 	}
-#endif
-#ifdef HRDW_MCP3008_2
-	if (adc_num == 2) {
-		res = HRDW_FrontUnit2_SPI(outData, inData, 3, false);
-	}
-#endif
-#ifdef HRDW_MCP3008_3
-	if (adc_num == 3) {
-		res = HRDW_FrontUnit3_SPI(outData, inData, 3, false);
-	}
-#endif
-	if (res == false) {
-		return 65535;
-	}
-	mcp3008_value = (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
+	mcp3008_value /= count;
+
+	HRDW_SPI_Locked = false;
 
 	return mcp3008_value;
 }

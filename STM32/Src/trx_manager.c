@@ -33,8 +33,10 @@ volatile bool TRX_Tune = false;
 volatile bool TRX_Inited = false;
 volatile float32_t TRX_RX1_dBm = -100.0f;
 volatile float32_t TRX_RX2_dBm = -100.0f;
+volatile float32_t TRX_RX1_dBm_measurement = -100.0f;
 volatile bool TRX_ADC_OTR = false;
 volatile bool TRX_DAC_OTR = false;
+volatile bool TRX_PWR_ALC_SWR_OVERFLOW = false;
 volatile bool TRX_MIC_BELOW_NOISEGATE = false;
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
@@ -409,7 +411,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	vfo->Freq = _freq;
 
 	// get settings and fpga freq phrase
-	int64_t vfoa_freq = CurrentVFO->Freq + TRX_RIT;
+	int64_t vfoa_freq = CurrentVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
 	if (TRX.Transverter_70cm && getBandFromFreq(vfoa_freq, true) == BANDID_70cm) {
 		vfoa_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_Mhz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_Mhz * 1000000);
 	}
@@ -429,7 +431,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	CurrentVFO->RealRXFreq = vfoa_freq;
 	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
 
-	int64_t vfob_freq = SecondaryVFO->Freq + TRX_RIT;
+	int64_t vfob_freq = SecondaryVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
 	if (TRX.Transverter_70cm && getBandFromFreq(vfob_freq, true) == BANDID_70cm) {
 		vfob_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_Mhz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_Mhz * 1000000);
 	}
@@ -449,7 +451,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	SecondaryVFO->RealRXFreq = vfob_freq;
 	TRX_freq_phrase2 = getRXPhraseFromFrequency(vfob_freq, 2);
 
-	int64_t vfo_tx_freq = CurrentVFO->Freq + TRX_XIT;
+	int64_t vfo_tx_freq = CurrentVFO->Freq + (TRX.XIT_Enabled ? TRX_XIT : 0);
 	if (TRX.Transverter_70cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_70cm) {
 		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_Mhz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_Mhz * 1000000);
 	}
@@ -533,6 +535,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		TRX.FM_SQL_threshold_dbm_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].FM_SQL_threshold_dbm;
 		TRX.SQL_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].SQL;
 		TRX_Temporary_Stop_BandMap = false;
+		TRX_DXCluster_UpdateTime = 0;
 	}
 
 	// SPLIT freq secondary VFO sync
@@ -607,12 +610,6 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo) {
 
 	// get new mode data
 	TRX_LoadRFGain_Data(_mode, bandFromFreq);
-
-	// reset zoom on WFM
-	if (vfo->Mode != old_mode && vfo->Mode == TRX_MODE_WFM && TRX.FFT_Zoom != 1) {
-		TRX.FFT_Zoom = 1;
-		FFT_Init();
-	}
 
 	// FFT Zoom change
 	if (TRX.FFT_Zoom != TRX.FFT_ZoomCW) {
@@ -1652,7 +1649,6 @@ void BUTTONHANDLER_RIT(uint32_t parameter) {
 	}
 	TRX.XIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
-	TRX_RIT = 0;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
 	LCD_UpdateQuery.TopButtons = true;
@@ -1670,7 +1666,6 @@ void BUTTONHANDLER_XIT(uint32_t parameter) {
 	}
 	TRX.RIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
-	TRX_XIT = 0;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
 	LCD_UpdateQuery.TopButtons = true;
@@ -1682,8 +1677,6 @@ void BUTTONHANDLER_SPLIT(uint32_t parameter) {
 	TRX.SPLIT_Enabled = !TRX.SPLIT_Enabled;
 	TRX.XIT_Enabled = false;
 	TRX.RIT_Enabled = false;
-	TRX_XIT = 0;
-	TRX_RIT = 0;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
 	LCD_UpdateQuery.TopButtons = true;
@@ -1845,7 +1838,8 @@ void BUTTONHANDLER_REC(uint32_t parameter) {
 void BUTTONHANDLER_FUNC(uint32_t parameter) {
 	if (!TRX.Locked) { // LOCK BUTTON
 		if (!LCD_systemMenuOpened || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu) {
-			PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].clickHandler(0);
+			PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].clickHandler(
+			    PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].parameter);
 		}
 	}
 }
@@ -1857,7 +1851,8 @@ void BUTTONHANDLER_FUNCH(uint32_t parameter) {
 	} else if (!TRX.Locked ||
 	           PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler == BUTTONHANDLER_LOCK) { // LOCK BUTTON
 		if (!LCD_systemMenuOpened || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu) {
-			PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler(0);
+			PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler(
+			    PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].parameter);
 		}
 	}
 }
@@ -2425,4 +2420,41 @@ void BUTTONHANDLER_SCREENSHOT(uint32_t parameter) {
 #if HRDW_HAS_SD
 	FILEMANAGER_SCREENSHOT_handler();
 #endif
+}
+
+void BUTTONHANDLER_CW_MACROS(uint32_t parameter) {
+	if (CurrentVFO->Mode != TRX_MODE_CW) {
+		LCD_showTooltip("CW Macro");
+		return;
+	}
+
+	if (CW_Process_Macros) {
+		CW_Process_Macros = false;
+		TRX_ptt_soft = false;
+		CW_key_serial = false;
+		return;
+	}
+
+	switch (parameter) {
+	case 1:
+		CW_InitMacros(TRX.CW_Macros_1);
+		break;
+	case 2:
+		CW_InitMacros(TRX.CW_Macros_2);
+		break;
+	case 3:
+		CW_InitMacros(TRX.CW_Macros_3);
+		break;
+	case 4:
+		CW_InitMacros(TRX.CW_Macros_4);
+		break;
+	case 5:
+	default:
+		CW_InitMacros(TRX.CW_Macros_5);
+	}
+
+	TRX_TX_StartTime = HAL_GetTick();
+	CW_Process_Macros = true;
+	TRX_ptt_soft = true;
+	CW_key_serial = true;
 }

@@ -129,8 +129,8 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .clickHandler = BUTTONHANDLER_BW,
      .holdHandler = BUTTONHANDLER_HPF}, // BW-HPF
 
-    {.port = 2, .channel = 7, .type = FUNIT_CTRL_RIT_XIT}, // RIT/XIT
-    {.port = 2, .channel = 6, .type = FUNIT_CTRL_AF_GAIN}, // AF GAIN
+    {.port = 2, .channel = 7, .type = FUNIT_CTRL_IF_RIT_XIT}, // RIT/XIT
+    {.port = 2, .channel = 6, .type = FUNIT_CTRL_AF_GAIN},    // AF GAIN
     {.port = 2,
      .channel = 5,
      .type = FUNIT_CTRL_BUTTON,
@@ -294,8 +294,8 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 #ifdef FRONTPANEL_BIG_V1
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     // buttons
-    {.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN}, // AF GAIN
-    {.port = 1, .channel = 1, .type = FUNIT_CTRL_RIT_XIT}, // RIT/XIT
+    {.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN},    // AF GAIN
+    {.port = 1, .channel = 1, .type = FUNIT_CTRL_IF_RIT_XIT}, // RIT/XIT
 
     {.port = 1, .channel = 2, .type = FUNIT_CTRL_TANGENT}, // TANGENT_SW1
     {.port = 1, .channel = 3, .type = FUNIT_CTRL_TANGENT}, // TANGENT_SW2
@@ -471,20 +471,26 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
     {.name = "MENU", .work_in_menu = true, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_MENU, .checkBool = NULL},
 
-    // hidden entry for menu editor
-    {.name = "FT8", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FT8, .holdHandler = BUTTONHANDLER_FT8, .checkBool = NULL},
+    {.name = "MACRO1", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 1},
+    {.name = "MACRO2", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 2},
+    {.name = "MACRO3", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 3},
+    {.name = "MACRO4", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 4},
+    {.name = "MACRO5", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 5},
+    {.name = "CESSB", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CESSB, .holdHandler = BUTTONHANDLER_CESSB, .checkBool = (uint32_t *)&TRX.TX_CESSB},
     {.name = "VOX", .work_in_menu = true, .clickHandler = BUTTONHANDLER_VOX, .holdHandler = BUTTONHANDLER_VOX, .checkBool = (uint32_t *)&TRX.VOX},
     {.name = "FILES", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FILEMANAGER, .holdHandler = BUTTONHANDLER_FILEMANAGER, .checkBool = NULL},
+
+    // hidden entry for menu editor
+    {.name = "FT8", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FT8, .holdHandler = BUTTONHANDLER_FT8, .checkBool = NULL},
     {.name = "ANT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ANT, .holdHandler = BUTTONHANDLER_ANT, .checkBool = NULL},
-    {.name = "CESSB", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CESSB, .holdHandler = BUTTONHANDLER_CESSB, .checkBool = (uint32_t *)&TRX.TX_CESSB},
 };
 #endif
 
 #ifdef FRONTPANEL_WF_100D
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     // buttons
-    {.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN}, // AF GAIN
-    {.port = 1, .channel = 1, .type = FUNIT_CTRL_RIT_XIT}, // RIT/XIT
+    {.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN},    // AF GAIN
+    {.port = 1, .channel = 1, .type = FUNIT_CTRL_IF_RIT_XIT}, // RIT/XIT
 
     {.port = 1,
      .channel = 2,
@@ -799,14 +805,20 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "AUTOGN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AUTOGAINER, .holdHandler = BUTTONHANDLER_AUTOGAINER, .checkBool = (uint32_t *)&TRX.AutoGain},
     {.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
 
-    // hidden entry for menu editor
-    {.name = "MENU", .work_in_menu = true, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_MENU, .checkBool = NULL},
+    {.name = "MACRO1", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 1},
+    {.name = "MACRO2", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 2},
+    {.name = "MACRO3", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 3},
+    {.name = "MACRO4", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 4},
+    {.name = "MACRO5", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 5},
+    {.name = "CESSB", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CESSB, .holdHandler = BUTTONHANDLER_CESSB, .checkBool = (uint32_t *)&TRX.TX_CESSB},
     {.name = "FT8", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FT8, .holdHandler = BUTTONHANDLER_FT8, .checkBool = NULL},
-    {.name = "SQL", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SQUELCH, .holdHandler = BUTTONHANDLER_SQUELCH, .checkBool = (uint32_t *)&TRX.SQL_shadow},
     {.name = "VOX", .work_in_menu = true, .clickHandler = BUTTONHANDLER_VOX, .holdHandler = BUTTONHANDLER_VOX, .checkBool = (uint32_t *)&TRX.VOX},
     {.name = "FILES", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FILEMANAGER, .holdHandler = BUTTONHANDLER_FILEMANAGER, .checkBool = NULL},
+
+    // hidden entry for menu editor
+    {.name = "MENU", .work_in_menu = true, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_MENU, .checkBool = NULL},
+    {.name = "SQL", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SQUELCH, .holdHandler = BUTTONHANDLER_SQUELCH, .checkBool = (uint32_t *)&TRX.SQL_shadow},
     {.name = "ANT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ANT, .holdHandler = BUTTONHANDLER_ANT, .checkBool = NULL},
-    {.name = "CESSB", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CESSB, .holdHandler = BUTTONHANDLER_CESSB, .checkBool = (uint32_t *)&TRX.TX_CESSB},
 };
 #endif
 
@@ -1120,7 +1132,6 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				TRX_RIT = -TRX.RIT_INTERVAL;
 			}
 
-			TRX_XIT = 0;
 			TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		}
 
@@ -1133,7 +1144,6 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				TRX_XIT = -TRX.XIT_INTERVAL;
 			}
 
-			TRX_RIT = 0;
 			TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		}
 	}
@@ -1314,7 +1324,7 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF && CurrentVFO->Mode != TRX_MODE_LSB && CurrentVFO->Mode != TRX_MODE_USB) { // fast tune HPF in SSB only
 			TRX.ENC2_func_mode++;
 		}
-		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && !CurrentVFO->SQL) { // nothing to SQL tune
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && ((CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM) || !CurrentVFO->SQL)) { // nothing to SQL tune
 			TRX.ENC2_func_mode++;
 		}
 
@@ -1424,10 +1434,6 @@ void FRONTPANEL_Process(void) {
 	if (SD_USBCardReader) {
 		return;
 	}
-	if (HRDW_SPI_Locked) {
-		return;
-	}
-	HRDW_SPI_Locked = true;
 
 	static uint32_t fu_debug_lasttime = 0;
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
@@ -1435,6 +1441,10 @@ void FRONTPANEL_Process(void) {
 
 	// process buttons
 	for (uint16_t b = 0; b < buttons_count; b++) {
+		if (HRDW_SPI_Locked) {
+			continue;
+		}
+
 		PERIPH_FrontPanel_Button *button = &PERIPH_FrontPanel_Buttons[b];
 // check disabled ports
 #ifdef HRDW_MCP3008_1
@@ -1509,8 +1519,6 @@ void FRONTPANEL_Process(void) {
 			fu_debug_lasttime = HAL_GetTick();
 		}
 	}
-
-	HRDW_SPI_Locked = false;
 }
 
 void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value) {
@@ -1526,7 +1534,7 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	}
 
 	// RIT / XIT or IF Gain
-	if (button->type == FUNIT_CTRL_RIT_XIT) {
+	if (button->type == FUNIT_CTRL_IF_RIT_XIT) {
 		static float32_t IF_GAIN_mcp3008_averaged = 0.0f;
 		IF_GAIN_mcp3008_averaged = IF_GAIN_mcp3008_averaged * 0.6f + mcp3008_value * 0.4f;
 
@@ -1546,7 +1554,6 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 					LCD_UpdateQuery.StatusInfoGUI = true;
 				}
 			}
-			TRX_XIT = 0;
 		}
 
 		if (TRX.XIT_Enabled) {
@@ -1565,13 +1572,10 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 					LCD_UpdateQuery.StatusInfoGUI = true;
 				}
 			}
-			TRX_RIT = 0;
 		}
 
 		if (!TRX.RIT_Enabled && TRX.XIT_Enabled && !TRX.FineRITTune) // Disable RIT/XIT + IF
 		{
-			TRX_RIT = 0;
-			TRX_XIT = 0;
 			TRX.IF_Gain = (uint8_t)(CALIBRATE.IF_GAIN_MIN + ((1023.0f - IF_GAIN_mcp3008_averaged) * (float32_t)(CALIBRATE.IF_GAIN_MAX - CALIBRATE.IF_GAIN_MIN) / 1023.0f));
 		}
 
@@ -1656,6 +1660,8 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 }
 
 static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count) {
+	HRDW_SPI_Locked = true;
+
 	uint8_t outData[3] = {0};
 	uint8_t inData[3] = {0};
 	uint32_t mcp3008_value = 0;
@@ -1673,11 +1679,14 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, u
 			res = HRDW_FrontUnit3_SPI(outData, inData, 3, false);
 		}
 		if (res == false) {
+			HRDW_SPI_Locked = false;
 			return 65535;
 		}
 		mcp3008_value += (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
 	}
 	mcp3008_value /= count;
+
+	HRDW_SPI_Locked = false;
 
 	return mcp3008_value;
 }

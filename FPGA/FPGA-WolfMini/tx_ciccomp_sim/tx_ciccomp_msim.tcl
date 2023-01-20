@@ -1,5 +1,5 @@
 ## ================================================================================
-## Legal Notice: Copyright (C) 1991-2022 Altera Corporation. All rights reserved.
+## Legal Notice: Copyright (C) 1991-2023 Altera Corporation. All rights reserved.
 ## Any megafunction design, and related net list (encrypted or decrypted),
 ## support information, device programming or simulation file, and any other
 ## associated documentation or information provided by Altera or a partner

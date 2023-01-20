@@ -43,6 +43,7 @@ void transmit_sequence(void) {
 
 	set_Xmit_Freq(FT8_BND_Freq, cursor_freq); // Set band frequency and the frequency in the FT8 (cursor freq.)
 	TRX_Tune = true;
+	TRX_Restart_Mode();
 
 	//      si5351.set_freq(F_Long, SI5351_CLK0);
 	//      si4735.setVolume(35);
@@ -58,6 +59,7 @@ void receive_sequence(void) {
 
 	set_Xmit_Freq(FT8_BND_Freq, 0); // Set band frequency and the frequency in the FT8 (cursor freq.)
 	TRX_Tune = false;
+	TRX_Restart_Mode();
 
 	//       si5351.output_enable(SI5351_CLK0, 0);
 	//       pinMode(PTT_Pin, OUTPUT);
@@ -70,6 +72,7 @@ void tune_On_sequence(void) {
 	Set_Data_Colection(0);                    // Disable the data colection
 	set_Xmit_Freq(FT8_BND_Freq, cursor_freq); // Set band frequency and the frequency in the FT8 (cursor freq.)
 	TRX_Tune = true;
+	TRX_Restart_Mode();
 
 	//      si5351.set_freq(F_Long, SI5351_CLK0);
 	//      si4735.setVolume(35);
@@ -82,6 +85,7 @@ void tune_Off_sequence(void) {
 	Set_Data_Colection(0);          // Disable the data colection (it will be enabled by next 15s marker)
 	set_Xmit_Freq(FT8_BND_Freq, 0); // Set band frequency and the frequency in the FT8 (cursor freq.)
 	TRX_Tune = false;
+	TRX_Restart_Mode();
 
 	//       si5351.output_enable(SI5351_CLK0, 0);
 	//       pinMode(PTT_Pin, OUTPUT);
@@ -324,10 +328,13 @@ void LogQSO(void) {
 	uint8_t Len;  //=strlen(ctmp);
 	int CR = 0xD; // CR -  ascii code
 	              // ctmp[Len+3] = 0;
-	char cBND[4]; // for the strng containing the current band
+	char cBND[5]; // for the strng containing the current band
 
 	if (SD_Present) {
 		switch (FT8_BND_Freq) {
+		case FT8_Freq_160M:
+			strcpy(cBND, "160m");
+			break;
 		case FT8_Freq_80M:
 			strcpy(cBND, "80m");
 			break;

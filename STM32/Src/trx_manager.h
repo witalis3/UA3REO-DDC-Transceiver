@@ -113,6 +113,7 @@ extern void BUTTONHANDLER_SNAP_RIGHT(uint32_t parameter);
 extern void BUTTONHANDLER_AUTO_SNAP(uint32_t parameter);
 extern void BUTTONHANDLER_CESSB(uint32_t parameter);
 extern void BUTTONHANDLER_SCREENSHOT(uint32_t parameter);
+extern void BUTTONHANDLER_CW_MACROS(uint32_t parameter);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_soft;
@@ -124,8 +125,10 @@ volatile extern bool TRX_Tune;
 volatile extern bool TRX_Inited;
 volatile extern float32_t TRX_RX1_dBm;
 volatile extern float32_t TRX_RX2_dBm;
+volatile extern float32_t TRX_RX1_dBm_measurement;
 volatile extern bool TRX_ADC_OTR;
 volatile extern bool TRX_DAC_OTR;
+volatile extern bool TRX_PWR_ALC_SWR_OVERFLOW;
 volatile extern bool TRX_MIC_BELOW_NOISEGATE;
 volatile extern int16_t TRX_ADC_MINAMPLITUDE;
 volatile extern int16_t TRX_ADC_MAXAMPLITUDE;
