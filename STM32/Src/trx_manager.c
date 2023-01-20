@@ -535,6 +535,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		TRX.FM_SQL_threshold_dbm_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].FM_SQL_threshold_dbm;
 		TRX.SQL_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].SQL;
 		TRX_Temporary_Stop_BandMap = false;
+		TRX_DXCluster_UpdateTime = 0;
 	}
 
 	// SPLIT freq secondary VFO sync

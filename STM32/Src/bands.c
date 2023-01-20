@@ -137,7 +137,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 2400000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 2300000, .endFreq = 2468000, .mode = TRX_MODE_SAM},
+                {.startFreq = 2300000, .endFreq = 2495000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -259,11 +259,11 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .name = "41m",
         .broadcast = true,
         .startFreq = 7200000,
-        .endFreq = 7450000,
+        .endFreq = 7600000,
         .defaultFreq = 7300000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 7200000, .endFreq = 7450000, .mode = TRX_MODE_SAM},
+                {.startFreq = 7200000, .endFreq = 7600000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -467,7 +467,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 25800000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 25670000, .endFreq = 26060000, .mode = TRX_MODE_SAM},
+                {.startFreq = 25670000, .endFreq = 26065000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,

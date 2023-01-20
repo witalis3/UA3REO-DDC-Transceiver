@@ -1254,7 +1254,7 @@ static void WIFI_getDXCluster_background_callback(void) {
 				// println("F", freq);
 
 				istr_l = istr_r + 1;
-				istr_r = strchr(istr_l, '\n');
+				istr_r = strchr(istr_l, '\t');
 				if (istr_r != NULL) {
 					*istr_r = 0;
 					// println("C", istr_l);
@@ -1273,7 +1273,6 @@ static void WIFI_getDXCluster_background_callback(void) {
 						}
 
 						WIFI_DXCLUSTER_list_count++;
-						// println("COUNT ", WIFI_DXCLUSTER_list_count);
 
 						istr_l = istr_r + 1;
 
@@ -1294,7 +1293,7 @@ static void WIFI_getDXCluster_background_callback(void) {
 		// for(uint16_t i = 0; i < WIFI_DXCLUSTER_list_count ; i ++)
 		// println(WIFI_DXCLUSTER_list[i].Freq, "|", WIFI_DXCLUSTER_list[i].Callsign);
 
-		println("DXCluster updated");
+		println("DXCluster updated, count: ", WIFI_DXCLUSTER_list_count);
 	}
 }
 
