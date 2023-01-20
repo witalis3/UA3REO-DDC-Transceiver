@@ -132,8 +132,8 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .prev_state = false,
      .work_in_menu = true,
      .parameter = 0,
-     .clickHandler = BUTTONHANDLER_MENU,
-     .holdHandler = BUTTONHANDLER_LOCK}, // SB9
+     .clickHandler = BUTTONHANDLER_RIGHT_ARR,
+     .holdHandler = BUTTONHANDLER_MENU}, // SB9
 };
 #endif
 
@@ -185,8 +185,8 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .prev_state = false,
      .work_in_menu = true,
      .parameter = 0,
-     .clickHandler = BUTTONHANDLER_MENU,
-     .holdHandler = BUTTONHANDLER_LOCK}, // SB6
+     .clickHandler = BUTTONHANDLER_RIGHT_ARR,
+     .holdHandler = BUTTONHANDLER_MENU}, // SB6
     {.port = 1,
      .channel = 6,
      .type = FUNIT_CTRL_BUTTON,
@@ -711,10 +711,6 @@ void FRONTPANEL_check_ENC2SW(bool state) {
 	ENC2SW_clicked = false;
 	ENC2SW_holded = false;
 
-	if (TRX.Locked) {
-		return;
-	}
-
 	bool ENC2SW_AND_TOUCH_Now = HAL_GPIO_ReadPin(ENC2_SW_GPIO_Port, ENC2_SW_Pin);
 	// check hold and click
 	if (ENC2SW_Last != ENC2SW_AND_TOUCH_Now) {
@@ -744,6 +740,10 @@ void FRONTPANEL_check_ENC2SW(bool state) {
 
 	// ENC2 Button click
 	if (ENC2SW_clicked) {
+		if (TRX.Locked) {
+			return;
+		}
+
 		menu_enc2_click_starttime = HAL_GetTick();
 		FRONTPANEL_ENC2SW_click_handler(0);
 	}
@@ -755,6 +755,9 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 	if (!LCD_systemMenuOpened && !LCD_window.opened) {
 		TRX.ENC2_func_mode++; // enc2 rotary mode
 
+		if (TRX.ENC2_func_mode == ENC_FUNC_PAGER) { // disabled
+			TRX.ENC2_func_mode++;
+		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM && CurrentVFO->Mode != TRX_MODE_CW) { // no WPM if not CW
 			TRX.ENC2_func_mode++;
 		}
@@ -773,9 +776,8 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && ((CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM) || !CurrentVFO->SQL)) { // nothing to SQL tune
 			TRX.ENC2_func_mode++;
 		}
-
 		if (TRX.ENC2_func_mode > ENC_FUNC_SET_IF) {
-			TRX.ENC2_func_mode = ENC_FUNC_PAGER;
+			TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 		}
 
 		LCD_UpdateQuery.StatusInfoGUI = true;
@@ -820,7 +822,7 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 
 static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter) {
 	TRX_Inactive_Time = 0;
-	BUTTONHANDLER_MENU(0);
+	BUTTONHANDLER_LOCK(0);
 }
 
 void FRONTPANEL_Init(void) {
