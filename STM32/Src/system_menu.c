@@ -6643,7 +6643,7 @@ void SYSMENU_HANDL_SERVICESMENU(int8_t direction) {
 
 void SYSMENU_SERVICE_FT8_HOTKEY(void) {
 	SYSMENU_HANDL_SERVICESMENU(0);
-	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "FT-8 Decoder");
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "FT-8");
 	setCurrentMenuIndex(index);
 #if FT8_SUPPORT
 	SYSMENU_HANDL_FT8_Decoder(1);
