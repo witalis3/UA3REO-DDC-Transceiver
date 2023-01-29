@@ -155,6 +155,8 @@ void LoadSettings(bool clear) {
 		TRX.FRQ_ENC_STEP = 25000;           // frequency tuning step by main add. encoder
 		TRX.FRQ_ENC_FAST_STEP = 50000;      // frequency tuning step by main add. encoder in FAST mode
 		TRX.FRQ_ENC_WFM_STEP_KHZ = 20;      // frequency WFM tuning step by the main encoder
+		TRX.FRQ_ENC_FM_STEP_KHZ = 2.5;      // frequency FM tuning step by the main encoder
+		TRX.FRQ_ENC_AM_STEP_KHZ = 10;       // frequency AM tuning step by the main encoder
 		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
 		TRX.Debug_Type = TRX_DEBUG_OFF;     // Debug output to DEBUG / UART port
 		TRX.BandMapEnabled = true;          // automatic change of mode according to the range map
@@ -162,6 +164,8 @@ void LoadSettings(bool clear) {
 		TRX.InputType_DIGI = TRX_INPUT_USB; // type of input to transfer (DIGI)
 #ifdef FRONTPANEL_X1
 		TRX.AutoGain = true; // auto-control preamp and attenuator
+#elif defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
+		TRX.AutoGain = false;             // auto-control preamp and attenuator
 #else
 		TRX.AutoGain = true;              // auto-control preamp and attenuator
 #endif
@@ -728,6 +732,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled on qrp version
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled on qrp version
 #endif
+		CALIBRATE.TCXO_frequency = 10000;       // TCXO Frequency x1000
 		CALIBRATE.VCXO_correction = 0;          // VCXO Frequency offset
 		CALIBRATE.FW_AD8307_SLP = 25.5f;        // Slope for the log amp used to mreasure the FW power (mV/dB)
 		CALIBRATE.FW_AD8307_OFFS = 1150.0f;     // Offset to back calculate the output voltage to dBm (mV)

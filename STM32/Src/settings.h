@@ -192,7 +192,7 @@ static char ota_config_frontpanel[] = "Mini";
 #define HRDW_HAS_FUNCBUTTONS true
 #define MAX_VOLUME_VALUE 100.0f
 #define FUNCBUTTONS_ON_PAGE 4
-#define FUNCBUTTONS_PAGES 9
+#define FUNCBUTTONS_PAGES 8
 #define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 0)
 static char ota_config_frontpanel[] = "LiteV2-Mini";
 #endif
@@ -437,6 +437,8 @@ extern struct TRX_SETTINGS {
 	uint32_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
 	uint32_t FRQ_ENC_WFM_STEP_KHZ;
+	float32_t FRQ_ENC_FM_STEP_KHZ;
+	uint32_t FRQ_ENC_AM_STEP_KHZ;
 	VFO VFO_A;
 	VFO VFO_B;
 	uint16_t RIT_INTERVAL;
@@ -690,6 +692,7 @@ extern struct TRX_CALIBRATE {
 	uint32_t RFU_BPF_8_END;
 	int16_t RTC_Calibration;
 	int16_t VCXO_correction;
+	uint16_t TCXO_frequency;
 	uint16_t TX_StartDelay;
 	int16_t smeter_calibration_hf;
 	int16_t smeter_calibration_vhf;
