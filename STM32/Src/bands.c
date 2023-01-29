@@ -481,12 +481,13 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .endFreq = 27995000,
         .defaultFreq = 27135000,
         .regions =
-            (const REGION_MAP[3]){
+            (const REGION_MAP[4]){
                 {.startFreq = 26065000, .endFreq = 27130000, .mode = TRX_MODE_NFM},
                 {.startFreq = 27130000, .endFreq = 27140000, .mode = TRX_MODE_AM},
-                {.startFreq = 27140000, .endFreq = 27995000, .mode = TRX_MODE_NFM},
+                {.startFreq = 27140000, .endFreq = 27415000, .mode = TRX_MODE_NFM},
+                {.startFreq = 27420000, .endFreq = 27995000, .mode = TRX_MODE_USB},
             },
-        .regionsCount = 3,
+        .regionsCount = 4,
         .channels =
             (const CHANNEL_MAP[45 * 4 + 14]){
                 {.subname = "A ", .number = 1, .rxFreq = 26065000, .txFreq = 26065000},  {.subname = "A ", .number = 2, .rxFreq = 26075000, .txFreq = 26075000},

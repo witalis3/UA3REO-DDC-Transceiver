@@ -156,7 +156,7 @@ void LoadSettings(bool clear) {
 		TRX.FRQ_ENC_FAST_STEP = 50000;      // frequency tuning step by main add. encoder in FAST mode
 		TRX.FRQ_ENC_WFM_STEP_KHZ = 20;      // frequency WFM tuning step by the main encoder
 		TRX.FRQ_ENC_FM_STEP_KHZ = 2.5;      // frequency FM tuning step by the main encoder
-		TRX.FRQ_ENC_AM_STEP_KHZ = 10;       // frequency AM tuning step by the main encoder
+		TRX.FRQ_ENC_AM_STEP_KHZ = 5;        // frequency AM tuning step by the main encoder
 		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
 		TRX.Debug_Type = TRX_DEBUG_OFF;     // Debug output to DEBUG / UART port
 		TRX.BandMapEnabled = true;          // automatic change of mode according to the range map

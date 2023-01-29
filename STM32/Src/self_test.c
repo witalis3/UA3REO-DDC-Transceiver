@@ -185,9 +185,10 @@ void SELF_TEST_Draw(void) {
 #if !defined(FRONTPANEL_LITE)
 		LCDDriver_printText("13 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[12]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("14 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[13]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
-#elif !defined(FRONTPANEL_LITE_V2_MINI) || !defined(FRONTPANEL_LITE_V2_BIG) || !defined(FRONTPANEL_LITE_V2_MICRO)
+#if !defined(FRONTPANEL_LITE_V2_MINI) || !defined(FRONTPANEL_LITE_V2_BIG) || !defined(FRONTPANEL_LITE_V2_MICRO)
 		LCDDriver_printText("15 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[14]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("16 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[15]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+#endif
 #endif
 		pos_y += margin_bottom;
 
@@ -560,57 +561,62 @@ void SELF_TEST_Draw(void) {
 			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -33.0f && ATT_db < -16.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
+
+			current_test = 0;
+		} else {
+			pos_y += margin_bottom;
+		}
 #else
 			current_test = 0;
 		} else {
 			pos_y += margin_bottom;
 		}
 #endif
-			// redraw loop
-			LCD_UpdateQuery.SystemMenuRedraw = true;
-		}
+		// redraw loop
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
 #if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
-		// Pager
-		pos_y += margin_bottom;
-		LCDDriver_printText("Rotate ENC2", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-		pos_y += margin_bottom;
+	// Pager
+	pos_y += margin_bottom;
+	LCDDriver_printText("Rotate ENC2", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+	pos_y += margin_bottom;
 #else
 	pos_y += margin_bottom;
 	LCDDriver_printText("Rotate ENC2 to print next page", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 	pos_y += margin_bottom;
 #endif
-		LCD_busy = false;
+	LCD_busy = false;
+}
+
+static void SELF_TEST_printResult(bool result, uint16_t pos_y) {
+	char pass[] = " OK     ";
+	char error[] = " ERROR";
+
+	if (result) {
+		LCDDriver_printText(pass, LCDDriver_GetCurrentXOffset(), pos_y, COLOR_GREEN, BG_COLOR, font_size);
+	} else {
+		LCDDriver_printText(error, LCDDriver_GetCurrentXOffset(), pos_y, COLOR_RED, BG_COLOR, font_size);
+	}
+}
+
+// events to the encoder
+void SELF_TEST_EncRotate(int8_t direction) {
+	if (LCD_busy) {
+		return;
 	}
 
-	static void SELF_TEST_printResult(bool result, uint16_t pos_y) {
-		char pass[] = " OK     ";
-		char error[] = " ERROR";
+	LCD_busy = true;
+	LCDDriver_Fill(BG_COLOR);
+	LCD_busy = false;
 
-		if (result) {
-			LCDDriver_printText(pass, LCDDriver_GetCurrentXOffset(), pos_y, COLOR_GREEN, BG_COLOR, font_size);
-		} else {
-			LCDDriver_printText(error, LCDDriver_GetCurrentXOffset(), pos_y, COLOR_RED, BG_COLOR, font_size);
-		}
+	SELF_TEST_current_page += direction;
+	if (SELF_TEST_current_page < 0) {
+		SELF_TEST_current_page = 0;
+	}
+	if (SELF_TEST_current_page >= SELF_TEST_pages) {
+		SELF_TEST_current_page = SELF_TEST_pages - 1;
+		BUTTONHANDLER_SERVICES(0);
 	}
 
-	// events to the encoder
-	void SELF_TEST_EncRotate(int8_t direction) {
-		if (LCD_busy) {
-			return;
-		}
-
-		LCD_busy = true;
-		LCDDriver_Fill(BG_COLOR);
-		LCD_busy = false;
-
-		SELF_TEST_current_page += direction;
-		if (SELF_TEST_current_page < 0) {
-			SELF_TEST_current_page = 0;
-		}
-		if (SELF_TEST_current_page >= SELF_TEST_pages) {
-			SELF_TEST_current_page = SELF_TEST_pages - 1;
-			BUTTONHANDLER_SERVICES(0);
-		}
-
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	}
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
