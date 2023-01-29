@@ -597,6 +597,9 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 	if (!LCD_systemMenuOpened && !LCD_window.opened) {
 		TRX.ENC2_func_mode++; // enc2 rotary mode
 
+		if (TRX.ENC2_func_mode == ENC_FUNC_PAGER) { // disabled
+			TRX.ENC2_func_mode++;
+		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_WPM && CurrentVFO->Mode != TRX_MODE_CW) { // no WPM if not CW
 			TRX.ENC2_func_mode++;
 		}
@@ -617,7 +620,7 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		}
 
 		if (TRX.ENC2_func_mode > ENC_FUNC_SET_VOLUME) {
-			TRX.ENC2_func_mode = ENC_FUNC_PAGER;
+			TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 		}
 
 		LCD_UpdateQuery.StatusInfoGUI = true;
