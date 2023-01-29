@@ -1,0 +1,75 @@
+/*
+WARNING: Do NOT edit the input and output ports in this file in a text
+editor if you plan to continue editing the block that represents it in
+the Block Editor! File corruption is VERY likely to occur.
+*/
+/*
+Copyright (C) 2018  Intel Corporation. All rights reserved.
+Your use of Intel Corporation's design tools, logic functions 
+and other software and tools, and its AMPP partner logic 
+functions, and any output files from any of the foregoing 
+(including device programming or simulation files), and any 
+associated documentation or information are expressly subject 
+to the terms and conditions of the Intel Program License 
+Subscription Agreement, the Intel Quartus Prime License Agreement,
+the Intel FPGA IP License Agreement, or other applicable license
+agreement, including, without limitation, that your use is for
+the sole purpose of programming logic devices manufactured by
+Intel and sold by Intel or its authorized distributors.  Please
+refer to the applicable agreement for further details.
+*/
+(header "symbol" (version "1.2"))
+(symbol
+	(rect 64 64 336 208)
+	(text "vcxo_controller" (rect 5 0 80 12)(font "Arial" ))
+	(text "inst" (rect 8 128 25 140)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "vcxo_clk_in" (rect 0 0 59 12)(font "Arial" ))
+		(text "vcxo_clk_in" (rect 21 27 80 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "tcxo_clk_in" (rect 0 0 55 12)(font "Arial" ))
+		(text "tcxo_clk_in" (rect 21 43 76 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48))
+	)
+	(port
+		(pt 272 96)
+		(input)
+		(text "VCXO_correction[15..0]" (rect 221 88 359 107)(font "Intel Clear" (font_size 8)))
+		(text "VCXO_correction[15..0]" (rect 168 88 258 101)(font "Arial Narrow" ))
+		(line (pt 272 96)(pt 256 96)(color 0 128 255)(line_width 3))
+	)
+	(port
+		(pt 272 32)
+		(output)
+		(text "freq_error[31..0]" (rect 0 0 80 12)(font "Arial" ))
+		(text "freq_error[31..0]" (rect 184 27 264 39)(font "Arial" ))
+		(line (pt 272 32)(pt 256 32)(line_width 3))
+	)
+	(port
+		(pt 272 48)
+		(output)
+		(text "pump" (rect 0 0 27 12)(font "Arial" ))
+		(text "pump" (rect 229 43 256 55)(font "Arial" ))
+		(line (pt 272 48)(pt 256 48))
+	)
+	(parameter
+		"VCXO_freq"
+		"12288000"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(parameter
+		"TCXO_freq"
+		"1228800"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(drawing
+		(rectangle (rect 16 16 256 128))
+	)
+	(annotation_block (parameter)(rect 336 0 536 64))
+)
