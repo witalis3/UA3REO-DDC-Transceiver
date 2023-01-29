@@ -814,12 +814,12 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.PWR_CUR_Calibration = 2.5f;       // CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;                // Tuner averaging stages
 		CALIBRATE.CAT_Type = CAT_TS2000;
-		CALIBRATE.LNA_compensation = 0;       // Compensation for LNA, db
-		CALIBRATE.TwoSignalTune_Balance = 50; // balance of signals on twosignal-tune
-		CALIBRATE.LinearPowerControl = false; // linear or logrithmic power control
-		CALIBRATE.IF_GAIN_MIN = 0;            // min limit for if gain regulator
-		CALIBRATE.IF_GAIN_MAX = 40;           // max limit for if gain regulator
-		CALIBRATE.VCXO_AutoCorrection_on_TX = false;	// enable correct while TX
+		CALIBRATE.LNA_compensation = 0;              // Compensation for LNA, db
+		CALIBRATE.TwoSignalTune_Balance = 50;        // balance of signals on twosignal-tune
+		CALIBRATE.LinearPowerControl = false;        // linear or logrithmic power control
+		CALIBRATE.IF_GAIN_MIN = 0;                   // min limit for if gain regulator
+		CALIBRATE.IF_GAIN_MAX = 40;                  // max limit for if gain regulator
+		CALIBRATE.VCXO_AutoCorrection_on_TX = false; // enable correct while TX
 
 		// Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {

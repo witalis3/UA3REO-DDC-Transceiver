@@ -922,7 +922,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
     {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 #if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_MINI)
-		{"VCXO TX AutoCorrection", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.VCXO_AutoCorrection_on_TX, SYSMENU_HANDL_CALIB_VCXO_AutoCorrection_on_TX},
+    {"VCXO TX AutoCorrection", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.VCXO_AutoCorrection_on_TX, SYSMENU_HANDL_CALIB_VCXO_AutoCorrection_on_TX},
 #endif
 #ifdef SWR_AD8307_LOG
     {"FW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_SLP, SYSMENU_HANDL_CALIB_FW_AD8307_SLP},
