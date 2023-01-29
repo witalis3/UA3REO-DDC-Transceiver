@@ -1172,6 +1172,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.LinearPowerControl", (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.IF_GAIN_MIN", (uint32_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.IF_GAIN_MAX", (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.VCXO_AutoCorrection_on_TX", (uint32_t *)&CALIBRATE.VCXO_AutoCorrection_on_TX, SYSMENU_BOOLEAN);
 
 			// Func buttons settings
 			char buff[64] = {0};
@@ -2464,6 +2465,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "CALIBRATE.LinearPowerControl") == 0) {
 		CALIBRATE.LinearPowerControl = bval;
+	}
+	if (strcmp(name, "CALIBRATE.VCXO_AutoCorrection_on_TX") == 0) {
+		CALIBRATE.VCXO_AutoCorrection_on_TX = bval;
 	}
 	if (strcmp(name, "CALIBRATE.IF_GAIN_MIN") == 0) {
 		CALIBRATE.IF_GAIN_MIN = (uint8_t)uintval;

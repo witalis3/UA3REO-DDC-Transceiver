@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 #define SETT_VERSION 77         // Settings config version
-#define CALIB_VERSION 56        // Calibration config version
+#define CALIB_VERSION 57        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
@@ -40,7 +40,7 @@
 #define NORMAL_SWR_SAVED 1.5f                 // ATU SWR target for saved settings
 #define NORMAL_SWR_TUNE 1.2f                  // ATU SWR target for new tune
 #define IDLE_LCD_BRIGHTNESS 5                 // Low brightness for IDLE mode (dimmer)
-#define CW_ADD_GAIN_IF 30.0f                  // additional IF gain in CW
+#define CW_ADD_GAIN_IF 20.0f                  // additional IF gain in CW
 #define CW_ADD_GAIN_AF 10.0f                  // additional AF gain in CW
 #define TX_LPF_TIMEOUT (180 * 1000)           // TX LPF On Timeout, millisec (3 min)
 #define SWR_PROTECTOR_MAX_POWER 20.0f         // drop down to PWR %, if SWR high
@@ -807,6 +807,7 @@ extern struct TRX_CALIBRATE {
 	bool TOUCHPAD_horizontal_flip;
 	bool INA226_EN; // Tisho
 	bool LinearPowerControl;
+	bool VCXO_AutoCorrection_on_TX;
 	CHANNEL_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 	uint32_t BAND_MEMORIES[BANDS_COUNT][BANDS_MEMORIES_COUNT];
 

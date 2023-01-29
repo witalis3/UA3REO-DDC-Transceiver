@@ -819,6 +819,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.LinearPowerControl = false; // linear or logrithmic power control
 		CALIBRATE.IF_GAIN_MIN = 0;            // min limit for if gain regulator
 		CALIBRATE.IF_GAIN_MAX = 40;           // max limit for if gain regulator
+		CALIBRATE.VCXO_AutoCorrection_on_TX = false;	// enable correct while TX
 
 		// Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {

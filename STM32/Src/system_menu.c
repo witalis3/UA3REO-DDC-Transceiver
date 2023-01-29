@@ -417,6 +417,7 @@ static void SYSMENU_HANDL_CALIB_IF_GAIN_MAX(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SETTINGS_RESET(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CALIBRATION_RESET(int8_t direction);
 static void SYSMENU_HANDL_CALIB_WIFI_RESET(int8_t direction);
+static void SYSMENU_HANDL_CALIB_VCXO_AutoCorrection_on_TX(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -920,6 +921,9 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"SWR BWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_BWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF},
 #endif
     {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
+#if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_MINI)
+		{"VCXO TX AutoCorrection", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.VCXO_AutoCorrection_on_TX, SYSMENU_HANDL_CALIB_VCXO_AutoCorrection_on_TX},
+#endif
 #ifdef SWR_AD8307_LOG
     {"FW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_SLP, SYSMENU_HANDL_CALIB_FW_AD8307_SLP},
     {"FW_AD8307_Offset (mV)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_OFFS, SYSMENU_HANDL_CALIB_FW_AD8307_OFFS},
@@ -6629,6 +6633,15 @@ static void SYSMENU_HANDL_CALIB_SETTINGS_RESET(int8_t direction) { LoadSettings(
 static void SYSMENU_HANDL_CALIB_CALIBRATION_RESET(int8_t direction) { LoadCalibration(true); }
 
 static void SYSMENU_HANDL_CALIB_WIFI_RESET(int8_t direction) { LoadWiFiSettings(true); }
+
+static void SYSMENU_HANDL_CALIB_VCXO_AutoCorrection_on_TX(int8_t direction) {
+	if (direction > 0) {
+		CALIBRATE.VCXO_AutoCorrection_on_TX = true;
+	}
+	if (direction < 0) {
+		CALIBRATE.VCXO_AutoCorrection_on_TX = false;
+	}
+}
 
 // SERVICES
 void SYSMENU_HANDL_SERVICESMENU(int8_t direction) {

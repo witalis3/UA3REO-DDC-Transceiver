@@ -476,6 +476,8 @@ static inline void FPGA_fpgadata_sendparam(void) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 0, 1); // DAC driver shutdown
 		bitWrite(FPGA_fpgadata_out_tmp8, 1, 1); // DAC driver shutdown
 	}
+	bool disableVCXOCorrection = !CALIBRATE.VCXO_AutoCorrection_on_TX && (TRX_on_TX || (HAL_GetTick() - TRX_TX_EndTime) < 2000); // Disable VCXO correction while TX
+	bitWrite(FPGA_fpgadata_out_tmp8, 2, disableVCXOCorrection);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8 & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
