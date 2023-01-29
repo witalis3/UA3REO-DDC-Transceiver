@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2022.04.14.21:00:06"
- outputDirectory="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/">
+ date="2023.01.29.14:09:49"
+ outputDirectory="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/">
  <perimeter>
   <parameter
      name="AUTO_GENERATION_ID"
@@ -78,13 +78,13 @@
  </perimeter>
  <entity
    path=""
-   parameterizationKey="nco:1.0:AUTO_CLK_CLOCK_DOMAIN=-1,AUTO_CLK_CLOCK_RATE=-1,AUTO_CLK_RESET_DOMAIN=-1,AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1649955604,AUTO_UNIQUE_ID=(altera_nco_ii:18.1:apr=32,aprf=32,apri=22,aprp=16,arch=trig,cordic_arch=parallel,cycles_per_output=1,design_env=NATIVE,dpri=6,fmod_pipe=1,freq_out=7.1,fsamp=122.88,hyper_opt=false,hyper_opt_select=false,mpr=16,numba=1,numch=1,phi_inc=248162987,pmod_pipe=1,real_freq_out=7.1,selected_device_family=Cyclone IV E,trig_cycles_per_output=1,use_dedicated_multipliers=true,want_dither=true,want_freq_mod=false,want_phase_mod=false,want_sin_and_cos=dual_output)"
+   parameterizationKey="nco:1.0:AUTO_CLK_CLOCK_DOMAIN=-1,AUTO_CLK_CLOCK_RATE=-1,AUTO_CLK_RESET_DOMAIN=-1,AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1674990587,AUTO_UNIQUE_ID=(altera_nco_ii:22.1:apr=32,aprf=32,apri=22,aprp=16,arch=trig,cordic_arch=parallel,cycles_per_output=1,design_env=NATIVE,dpri=6,fmod_pipe=1,freq_out=7.1,fsamp=122.88,hyper_opt=false,hyper_opt_select=false,mpr=16,numba=1,numch=1,phi_inc=248162987,pmod_pipe=1,real_freq_out=7.1,selected_device_family=Cyclone IV E,trig_cycles_per_output=1,use_dedicated_multipliers=true,want_dither=true,want_freq_mod=false,want_phase_mod=false,want_sin_and_cos=dual_output)"
    instancePathKey="nco"
    kind="nco"
    version="1.0"
    name="nco">
   <parameter name="AUTO_CLK_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_GENERATION_ID" value="1649955604" />
+  <parameter name="AUTO_GENERATION_ID" value="1674990587" />
   <parameter name="AUTO_DEVICE" value="EP4CE22E22C8" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone IV E" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="-1" />
@@ -93,100 +93,99 @@
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="8" />
   <generatedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/nco.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/nco.v"
        type="VERILOG" />
   </generatedFiles>
   <childGeneratedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_madx_cen.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_madx_cen.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_mady_cen.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_mady_cen.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_isdr.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_isdr.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_apr_dxx.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_apr_dxx.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_mob_w.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_mob_w.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_dxx_g.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_dxx_g.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_dxx.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_dxx.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_as_m_dp_cen.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_as_m_dp_cen.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_as_m_cen.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_as_m_cen.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_altqmcpipe.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_altqmcpipe.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_gam_dp.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_gam_dp.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_derot.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_derot.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/nco_nco_ii_0_sin_c.hex"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/nco_nco_ii_0_sin_c.hex"
        type="HEX"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/nco_nco_ii_0_cos_c.hex"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/nco_nco_ii_0_cos_c.hex"
        type="HEX"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/nco_nco_ii_0_sin_f.hex"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/nco_nco_ii_0_sin_f.hex"
        type="HEX"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/nco_nco_ii_0_cos_f.hex"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/nco_nco_ii_0_cos_f.hex"
        type="HEX"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/nco_nco_ii_0.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/nco_nco_ii_0.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_altq.ocp"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_altq.ocp"
        type="OTHER"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_altqmcash.ocp"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_altqmcash.ocp"
        type="OTHER"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_altqmcpipe.ocp"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_altqmcpipe.ocp"
        type="OTHER"
        attributes="" />
   </childGeneratedFiles>
   <sourceFiles>
-   <file path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco.qsys" />
+   <file path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco.qsys" />
   </sourceFiles>
   <childSourceFiles>
    <file
-       path="C:/intelfpga/18.1/ip/altera/dsp/altera_nco_ii/altera_nco_ii_hw.tcl" />
-   <file path="C:/intelFPGA/18.1/ip/altera/dsp/altera_nco_ii/nco_helper.jar" />
+       path="C:/intelfpga/22.1std/ip/altera/dsp/altera_nco_ii/altera_nco_ii_hw.tcl" />
    <file
-       path="C:/intelFPGA/18.1/quartus/sopc_builder/model/lib/com.altera.entityinterfaces.jar" />
+       path="C:/intelFPGA/22.1std/ip/altera/dsp/altera_nco_ii/nco_helper.jar" />
   </childSourceFiles>
   <messages>
    <message level="Debug" culprit="nco">queue size: 0 starting:nco "nco"</message>
@@ -209,10 +208,10 @@
  </entity>
  <entity
    path="submodules/"
-   parameterizationKey="altera_nco_ii:18.1:apr=32,aprf=32,apri=22,aprp=16,arch=trig,cordic_arch=parallel,cycles_per_output=1,design_env=NATIVE,dpri=6,fmod_pipe=1,freq_out=7.1,fsamp=122.88,hyper_opt=false,hyper_opt_select=false,mpr=16,numba=1,numch=1,phi_inc=248162987,pmod_pipe=1,real_freq_out=7.1,selected_device_family=Cyclone IV E,trig_cycles_per_output=1,use_dedicated_multipliers=true,want_dither=true,want_freq_mod=false,want_phase_mod=false,want_sin_and_cos=dual_output"
+   parameterizationKey="altera_nco_ii:22.1:apr=32,aprf=32,apri=22,aprp=16,arch=trig,cordic_arch=parallel,cycles_per_output=1,design_env=NATIVE,dpri=6,fmod_pipe=1,freq_out=7.1,fsamp=122.88,hyper_opt=false,hyper_opt_select=false,mpr=16,numba=1,numch=1,phi_inc=248162987,pmod_pipe=1,real_freq_out=7.1,selected_device_family=Cyclone IV E,trig_cycles_per_output=1,use_dedicated_multipliers=true,want_dither=true,want_freq_mod=false,want_phase_mod=false,want_sin_and_cos=dual_output"
    instancePathKey="nco:.:nco_ii_0"
    kind="altera_nco_ii"
-   version="18.1"
+   version="22.1"
    name="nco_nco_ii_0">
   <parameter name="aprp" value="16" />
   <parameter name="numba" value="1" />
@@ -243,93 +242,92 @@
   <parameter name="real_freq_out" value="7.1" />
   <generatedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_madx_cen.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_madx_cen.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_mady_cen.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_mady_cen.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_isdr.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_isdr.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_apr_dxx.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_apr_dxx.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_mob_w.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_mob_w.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_dxx_g.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_dxx_g.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_dxx.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_dxx.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_as_m_dp_cen.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_as_m_dp_cen.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_as_m_cen.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_as_m_cen.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_altqmcpipe.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_altqmcpipe.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_gam_dp.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_gam_dp.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_nco_derot.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_nco_derot.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/nco_nco_ii_0_sin_c.hex"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/nco_nco_ii_0_sin_c.hex"
        type="HEX"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/nco_nco_ii_0_cos_c.hex"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/nco_nco_ii_0_cos_c.hex"
        type="HEX"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/nco_nco_ii_0_sin_f.hex"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/nco_nco_ii_0_sin_f.hex"
        type="HEX"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/nco_nco_ii_0_cos_f.hex"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/nco_nco_ii_0_cos_f.hex"
        type="HEX"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/nco_nco_ii_0.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/nco_nco_ii_0.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_altq.ocp"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_altq.ocp"
        type="OTHER"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_altqmcash.ocp"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_altqmcash.ocp"
        type="OTHER"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/nco/synthesis/submodules/asj_altqmcpipe.ocp"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/nco/synthesis/submodules/asj_altqmcpipe.ocp"
        type="OTHER"
        attributes="" />
   </generatedFiles>
   <childGeneratedFiles/>
   <sourceFiles>
    <file
-       path="C:/intelfpga/18.1/ip/altera/dsp/altera_nco_ii/altera_nco_ii_hw.tcl" />
-   <file path="C:/intelFPGA/18.1/ip/altera/dsp/altera_nco_ii/nco_helper.jar" />
+       path="C:/intelfpga/22.1std/ip/altera/dsp/altera_nco_ii/altera_nco_ii_hw.tcl" />
    <file
-       path="C:/intelFPGA/18.1/quartus/sopc_builder/model/lib/com.altera.entityinterfaces.jar" />
+       path="C:/intelFPGA/22.1std/ip/altera/dsp/altera_nco_ii/nco_helper.jar" />
   </sourceFiles>
   <childSourceFiles/>
   <instantiator instantiator="nco" as="nco_ii_0" />

@@ -1,8 +1,8 @@
 -- ------------------------------------------------------------------------- 
--- High Level Design Compiler for Intel(R) FPGAs Version 18.1 (Release Build #625)
+-- High Level Design Compiler for Intel(R) FPGAs Version 22.1std (Release Build #915)
 -- Quartus Prime development tool and MATLAB/Simulink Interface
 -- 
--- Legal Notice: Copyright 2018 Intel Corporation.  All rights reserved.
+-- Legal Notice: Copyright 2022 Intel Corporation.  All rights reserved.
 -- Your use of  Intel Corporation's design tools,  logic functions and other
 -- software and  tools, and its AMPP partner logic functions, and any output
 -- files any  of the foregoing (including  device programming  or simulation
@@ -16,7 +16,7 @@
 -- ---------------------------------------------------------------------------
 
 -- VHDL created from rx_ciccomp_0002_rtl_core
--- VHDL created on Thu Apr 14 19:54:51 2022
+-- VHDL created on Sun Jan 29 14:11:29 2023
 
 
 library IEEE;
@@ -176,12 +176,10 @@ architecture normal of rx_ciccomp_0002_rtl_core is
     signal u0_m0_wo0_sym_add0_b : STD_LOGIC_VECTOR (32 downto 0);
     signal u0_m0_wo0_sym_add0_o : STD_LOGIC_VECTOR (32 downto 0);
     signal u0_m0_wo0_sym_add0_q : STD_LOGIC_VECTOR (32 downto 0);
-    signal d_u0_m0_wo0_sym_add0_q_16_q : STD_LOGIC_VECTOR (32 downto 0);
     signal u0_m0_wo0_sym_add1_a : STD_LOGIC_VECTOR (32 downto 0);
     signal u0_m0_wo0_sym_add1_b : STD_LOGIC_VECTOR (32 downto 0);
     signal u0_m0_wo0_sym_add1_o : STD_LOGIC_VECTOR (32 downto 0);
     signal u0_m0_wo0_sym_add1_q : STD_LOGIC_VECTOR (32 downto 0);
-    signal d_u0_m0_wo0_sym_add1_q_16_q : STD_LOGIC_VECTOR (32 downto 0);
     signal u0_m0_wo0_aseq_q : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_aseq_eq : std_logic;
     signal d_u0_m0_wo0_aseq_q_21_q : STD_LOGIC_VECTOR (0 downto 0);
@@ -192,11 +190,11 @@ architecture normal of rx_ciccomp_0002_rtl_core is
     signal outchan_q : STD_LOGIC_VECTOR (2 downto 0);
     signal outchan_i : UNSIGNED (1 downto 0);
     attribute preserve of outchan_i : signal is true;
-    signal u0_m0_wo0_mtree_mult1_1_im0_a0 : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_im0_b0 : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_im0_s1 : STD_LOGIC_VECTOR (33 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_im0_a0 : STD_LOGIC_VECTOR (15 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_im0_b0 : STD_LOGIC_VECTOR (4 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_im0_s1 : STD_LOGIC_VECTOR (20 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_im0_reset : std_logic;
-    signal u0_m0_wo0_mtree_mult1_1_im0_q : STD_LOGIC_VECTOR (33 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_im0_q : STD_LOGIC_VECTOR (20 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_im3_a0 : STD_LOGIC_VECTOR (17 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_im3_b0 : STD_LOGIC_VECTOR (15 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_im3_s1 : STD_LOGIC_VECTOR (33 downto 0);
@@ -207,17 +205,16 @@ architecture normal of rx_ciccomp_0002_rtl_core is
     signal u0_m0_wo0_mtree_mult1_1_im7_s1 : STD_LOGIC_VECTOR (22 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_im7_reset : std_logic;
     signal u0_m0_wo0_mtree_mult1_1_im7_q : STD_LOGIC_VECTOR (22 downto 0);
-    signal d_u0_m0_wo0_mtree_mult1_1_bs8_b_16_q : STD_LOGIC_VECTOR (4 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_im11_a0 : STD_LOGIC_VECTOR (15 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_im11_b0 : STD_LOGIC_VECTOR (4 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_im11_s1 : STD_LOGIC_VECTOR (20 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_im11_a0 : STD_LOGIC_VECTOR (17 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_im11_b0 : STD_LOGIC_VECTOR (17 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_im11_s1 : STD_LOGIC_VECTOR (35 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_im11_reset : std_logic;
-    signal u0_m0_wo0_mtree_mult1_1_im11_q : STD_LOGIC_VECTOR (20 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im0_a0 : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im0_b0 : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im0_s1 : STD_LOGIC_VECTOR (33 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_im11_q : STD_LOGIC_VECTOR (35 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im0_a0 : STD_LOGIC_VECTOR (15 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im0_b0 : STD_LOGIC_VECTOR (4 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im0_s1 : STD_LOGIC_VECTOR (20 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_im0_reset : std_logic;
-    signal u0_m0_wo0_mtree_mult1_0_im0_q : STD_LOGIC_VECTOR (33 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im0_q : STD_LOGIC_VECTOR (20 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_im3_a0 : STD_LOGIC_VECTOR (17 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_im3_b0 : STD_LOGIC_VECTOR (15 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_im3_s1 : STD_LOGIC_VECTOR (33 downto 0);
@@ -228,12 +225,11 @@ architecture normal of rx_ciccomp_0002_rtl_core is
     signal u0_m0_wo0_mtree_mult1_0_im7_s1 : STD_LOGIC_VECTOR (22 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_im7_reset : std_logic;
     signal u0_m0_wo0_mtree_mult1_0_im7_q : STD_LOGIC_VECTOR (22 downto 0);
-    signal d_u0_m0_wo0_mtree_mult1_0_bs8_b_16_q : STD_LOGIC_VECTOR (4 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im11_a0 : STD_LOGIC_VECTOR (15 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im11_b0 : STD_LOGIC_VECTOR (4 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im11_s1 : STD_LOGIC_VECTOR (20 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im11_a0 : STD_LOGIC_VECTOR (17 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im11_b0 : STD_LOGIC_VECTOR (17 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im11_s1 : STD_LOGIC_VECTOR (35 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_im11_reset : std_logic;
-    signal u0_m0_wo0_mtree_mult1_0_im11_q : STD_LOGIC_VECTOR (20 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im11_q : STD_LOGIC_VECTOR (35 downto 0);
     signal u0_m0_wo0_mtree_add0_0_p1_of_2_a : STD_LOGIC_VECTOR (49 downto 0);
     signal u0_m0_wo0_mtree_add0_0_p1_of_2_b : STD_LOGIC_VECTOR (49 downto 0);
     signal u0_m0_wo0_mtree_add0_0_p1_of_2_o : STD_LOGIC_VECTOR (49 downto 0);
@@ -257,19 +253,30 @@ architecture normal of rx_ciccomp_0002_rtl_core is
     signal u0_m0_wo0_accum_p2_of_2_o : STD_LOGIC_VECTOR (14 downto 0);
     signal u0_m0_wo0_accum_p2_of_2_cin : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_accum_p2_of_2_q : STD_LOGIC_VECTOR (12 downto 0);
-    signal d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c_18_q : STD_LOGIC_VECTOR (6 downto 0);
-    signal d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c_18_q : STD_LOGIC_VECTOR (6 downto 0);
+    signal d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c_18_q : STD_LOGIC_VECTOR (2 downto 0);
+    signal d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c_18_q : STD_LOGIC_VECTOR (2 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_a : STD_LOGIC_VECTOR (49 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_b : STD_LOGIC_VECTOR (49 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_o : STD_LOGIC_VECTOR (49 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_c : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_q : STD_LOGIC_VECTOR (48 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_a : STD_LOGIC_VECTOR (8 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_b : STD_LOGIC_VECTOR (8 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_o : STD_LOGIC_VECTOR (8 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_a : STD_LOGIC_VECTOR (4 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_b : STD_LOGIC_VECTOR (4 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_o : STD_LOGIC_VECTOR (4 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_cin : STD_LOGIC_VECTOR (0 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_q : STD_LOGIC_VECTOR (6 downto 0);
-    signal d_u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_c_19_q : STD_LOGIC_VECTOR (7 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_q : STD_LOGIC_VECTOR (2 downto 0);
+    signal d_u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a_c_18_q : STD_LOGIC_VECTOR (6 downto 0);
+    signal d_u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b_c_18_q : STD_LOGIC_VECTOR (6 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_a : STD_LOGIC_VECTOR (49 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_b : STD_LOGIC_VECTOR (49 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_o : STD_LOGIC_VECTOR (49 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_c : STD_LOGIC_VECTOR (0 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_q : STD_LOGIC_VECTOR (48 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_a : STD_LOGIC_VECTOR (8 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_b : STD_LOGIC_VECTOR (8 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_o : STD_LOGIC_VECTOR (8 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_cin : STD_LOGIC_VECTOR (0 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_q : STD_LOGIC_VECTOR (6 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_a : STD_LOGIC_VECTOR (49 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_b : STD_LOGIC_VECTOR (49 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_o : STD_LOGIC_VECTOR (49 downto 0);
@@ -280,19 +287,30 @@ architecture normal of rx_ciccomp_0002_rtl_core is
     signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_o : STD_LOGIC_VECTOR (9 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_cin : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_q : STD_LOGIC_VECTOR (7 downto 0);
-    signal d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c_18_q : STD_LOGIC_VECTOR (6 downto 0);
-    signal d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c_18_q : STD_LOGIC_VECTOR (6 downto 0);
+    signal d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c_18_q : STD_LOGIC_VECTOR (2 downto 0);
+    signal d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c_18_q : STD_LOGIC_VECTOR (2 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_a : STD_LOGIC_VECTOR (49 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_b : STD_LOGIC_VECTOR (49 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_o : STD_LOGIC_VECTOR (49 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_c : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_q : STD_LOGIC_VECTOR (48 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_a : STD_LOGIC_VECTOR (8 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_b : STD_LOGIC_VECTOR (8 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_o : STD_LOGIC_VECTOR (8 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_a : STD_LOGIC_VECTOR (4 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_b : STD_LOGIC_VECTOR (4 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_o : STD_LOGIC_VECTOR (4 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_cin : STD_LOGIC_VECTOR (0 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_q : STD_LOGIC_VECTOR (6 downto 0);
-    signal d_u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_c_19_q : STD_LOGIC_VECTOR (7 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_q : STD_LOGIC_VECTOR (2 downto 0);
+    signal d_u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a_c_18_q : STD_LOGIC_VECTOR (6 downto 0);
+    signal d_u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b_c_18_q : STD_LOGIC_VECTOR (6 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_a : STD_LOGIC_VECTOR (49 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_b : STD_LOGIC_VECTOR (49 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_o : STD_LOGIC_VECTOR (49 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_c : STD_LOGIC_VECTOR (0 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_q : STD_LOGIC_VECTOR (48 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_a : STD_LOGIC_VECTOR (8 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_b : STD_LOGIC_VECTOR (8 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_o : STD_LOGIC_VECTOR (8 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_cin : STD_LOGIC_VECTOR (0 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_q : STD_LOGIC_VECTOR (6 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_a : STD_LOGIC_VECTOR (49 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_b : STD_LOGIC_VECTOR (49 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_o : STD_LOGIC_VECTOR (49 downto 0);
@@ -336,45 +354,41 @@ architecture normal of rx_ciccomp_0002_rtl_core is
     signal u0_m0_wo0_wi0_r0_ra2_resize_b : STD_LOGIC_VECTOR (9 downto 0);
     signal u0_m0_wo0_wi0_r0_ra3_resize_in : STD_LOGIC_VECTOR (8 downto 0);
     signal u0_m0_wo0_wi0_r0_ra3_resize_b : STD_LOGIC_VECTOR (8 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_bs1_in : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_bs1_b : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_bs4_in : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_bs4_b : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_bs8_b : STD_LOGIC_VECTOR (4 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs1_in : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs1_b : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs4_in : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs4_b : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs8_b : STD_LOGIC_VECTOR (4 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_bs2_in : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_bs2_b : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_bs6_b : STD_LOGIC_VECTOR (15 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_bs9_in : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_bs9_b : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs2_in : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs2_b : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs6_b : STD_LOGIC_VECTOR (15 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs9_in : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs9_b : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_join_14_q : STD_LOGIC_VECTOR (54 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_align_15_q : STD_LOGIC_VECTOR (50 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_align_15_qint : STD_LOGIC_VECTOR (50 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_align_17_q : STD_LOGIC_VECTOR (39 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_align_17_qint : STD_LOGIC_VECTOR (39 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_join_14_q : STD_LOGIC_VECTOR (54 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_align_15_q : STD_LOGIC_VECTOR (50 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_align_15_qint : STD_LOGIC_VECTOR (50 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_align_17_q : STD_LOGIC_VECTOR (39 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_align_17_qint : STD_LOGIC_VECTOR (39 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_bs1_merged_bit_select_b : STD_LOGIC_VECTOR (4 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_bs1_merged_bit_select_c : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs1_merged_bit_select_b : STD_LOGIC_VECTOR (4 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs1_merged_bit_select_c : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_bs2_merged_bit_select_b : STD_LOGIC_VECTOR (15 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_bs2_merged_bit_select_c : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b : STD_LOGIC_VECTOR (15 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_c : STD_LOGIC_VECTOR (16 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_align_21_q : STD_LOGIC_VECTOR (54 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_align_21_qint : STD_LOGIC_VECTOR (54 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_align_17_q : STD_LOGIC_VECTOR (50 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_align_17_qint : STD_LOGIC_VECTOR (50 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_align_19_q : STD_LOGIC_VECTOR (39 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_align_19_qint : STD_LOGIC_VECTOR (39 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b : STD_LOGIC_VECTOR (0 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_align_21_q : STD_LOGIC_VECTOR (54 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_align_21_qint : STD_LOGIC_VECTOR (54 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_align_17_q : STD_LOGIC_VECTOR (50 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_align_17_qint : STD_LOGIC_VECTOR (50 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_align_19_q : STD_LOGIC_VECTOR (39 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_align_19_qint : STD_LOGIC_VECTOR (39 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_accum_BitSelect_for_a_tessel1_1_b : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_accum_BitSelect_for_a_BitJoin_for_c_q : STD_LOGIC_VECTOR (12 downto 0);
     signal u0_m0_wo0_accum_BitJoin_for_q_q : STD_LOGIC_VECTOR (61 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_tessel1_1_b : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_BitJoin_for_c_q : STD_LOGIC_VECTOR (7 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_tessel1_1_b : STD_LOGIC_VECTOR (0 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_BitJoin_for_c_q : STD_LOGIC_VECTOR (7 downto 0);
     signal u0_m0_wo0_mtree_add0_0_BitSelect_for_b_tessel1_0_b : STD_LOGIC_VECTOR (5 downto 0);
     signal u0_m0_wo0_mtree_add0_0_BitSelect_for_b_tessel1_1_b : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_tessel1_1_b : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_BitJoin_for_c_q : STD_LOGIC_VECTOR (7 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_tessel1_1_b : STD_LOGIC_VECTOR (0 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_BitJoin_for_c_q : STD_LOGIC_VECTOR (7 downto 0);
     signal u0_m0_wo0_mtree_add0_0_BitSelect_for_a_tessel1_0_b : STD_LOGIC_VECTOR (5 downto 0);
     signal u0_m0_wo0_mtree_add0_0_BitSelect_for_a_tessel1_1_b : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_join_q : STD_LOGIC_VECTOR (9 downto 0);
@@ -384,36 +398,42 @@ architecture normal of rx_ciccomp_0002_rtl_core is
     signal u0_m0_wo0_mtree_mult1_0_bjA5_q : STD_LOGIC_VECTOR (17 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_bjB10_q : STD_LOGIC_VECTOR (17 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_bjB10_q : STD_LOGIC_VECTOR (17 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b : STD_LOGIC_VECTOR (0 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_a_q : STD_LOGIC_VECTOR (55 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_b_b : STD_LOGIC_VECTOR (0 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitExpansion_for_b_q : STD_LOGIC_VECTOR (55 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_b_b : STD_LOGIC_VECTOR (0 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b : STD_LOGIC_VECTOR (0 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b : STD_LOGIC_VECTOR (0 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_a_q : STD_LOGIC_VECTOR (55 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_b_q : STD_LOGIC_VECTOR (51 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b : STD_LOGIC_VECTOR (0 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_UpperBits_for_a_q : STD_LOGIC_VECTOR (15 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_b_b : STD_LOGIC_VECTOR (0 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitExpansion_for_b_q : STD_LOGIC_VECTOR (55 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_b_b : STD_LOGIC_VECTOR (0 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b : STD_LOGIC_VECTOR (0 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_b_q : STD_LOGIC_VECTOR (51 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b : STD_LOGIC_VECTOR (0 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_UpperBits_for_a_q : STD_LOGIC_VECTOR (15 downto 0);
     signal u0_m0_wo0_mtree_add0_0_BitSelect_for_b_BitJoin_for_c_q : STD_LOGIC_VECTOR (6 downto 0);
     signal u0_m0_wo0_mtree_add0_0_BitSelect_for_a_BitJoin_for_c_q : STD_LOGIC_VECTOR (6 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_b : STD_LOGIC_VECTOR (48 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c : STD_LOGIC_VECTOR (6 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_UpperBits_for_b_q : STD_LOGIC_VECTOR (4 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_UpperBits_for_b_q : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_b : STD_LOGIC_VECTOR (48 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c : STD_LOGIC_VECTOR (6 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_UpperBits_for_b_q : STD_LOGIC_VECTOR (4 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_UpperBits_for_b_q : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_b_q : STD_LOGIC_VECTOR (55 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitExpansion_for_b_q : STD_LOGIC_VECTOR (56 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_b_q : STD_LOGIC_VECTOR (55 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitExpansion_for_b_q : STD_LOGIC_VECTOR (56 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b_b : STD_LOGIC_VECTOR (48 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b_c : STD_LOGIC_VECTOR (6 downto 0);
     signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_b : STD_LOGIC_VECTOR (48 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c : STD_LOGIC_VECTOR (6 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_b : STD_LOGIC_VECTOR (48 downto 0);
-    signal u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_c : STD_LOGIC_VECTOR (7 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c : STD_LOGIC_VECTOR (2 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_UpperBits_for_a_q : STD_LOGIC_VECTOR (15 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_a_q : STD_LOGIC_VECTOR (51 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b_b : STD_LOGIC_VECTOR (48 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b_c : STD_LOGIC_VECTOR (6 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_b : STD_LOGIC_VECTOR (48 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c : STD_LOGIC_VECTOR (6 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_b : STD_LOGIC_VECTOR (48 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_c : STD_LOGIC_VECTOR (7 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c : STD_LOGIC_VECTOR (2 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_UpperBits_for_a_q : STD_LOGIC_VECTOR (15 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_a_q : STD_LOGIC_VECTOR (51 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitExpansion_for_a_q : STD_LOGIC_VECTOR (55 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_b : STD_LOGIC_VECTOR (48 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c : STD_LOGIC_VECTOR (2 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitExpansion_for_a_q : STD_LOGIC_VECTOR (55 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_b : STD_LOGIC_VECTOR (48 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c : STD_LOGIC_VECTOR (2 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a_b : STD_LOGIC_VECTOR (48 downto 0);
+    signal u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a_c : STD_LOGIC_VECTOR (6 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a_b : STD_LOGIC_VECTOR (48 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a_c : STD_LOGIC_VECTOR (6 downto 0);
 
 begin
 
@@ -427,7 +447,7 @@ begin
     -- input_valid(LOGICAL,3)@10
     input_valid_q <= xIn_v and enable_i;
 
-    -- d_in0_m0_wi0_wo0_assign_id1_q_11(DELAY,290)@10 + 1
+    -- d_in0_m0_wi0_wo0_assign_id1_q_11(DELAY,344)@10 + 1
     d_in0_m0_wi0_wo0_assign_id1_q_11 : dspba_delay
     GENERIC MAP ( width => 1, depth => 1, reset_kind => "ASYNC" )
     PORT MAP ( xin => input_valid_q, xout => d_in0_m0_wi0_wo0_assign_id1_q_11_q, clk => clk, aclr => areset );
@@ -509,12 +529,12 @@ begin
     GENERIC MAP ( width => 1, depth => 2, reset_kind => "ASYNC" )
     PORT MAP ( xin => u0_m0_wo0_memread_q, xout => u0_m0_wo0_compute_q, clk => clk, aclr => areset );
 
-    -- d_u0_m0_wo0_compute_q_14(DELAY,294)@13 + 1
+    -- d_u0_m0_wo0_compute_q_14(DELAY,348)@13 + 1
     d_u0_m0_wo0_compute_q_14 : dspba_delay
     GENERIC MAP ( width => 1, depth => 1, reset_kind => "ASYNC" )
     PORT MAP ( xin => u0_m0_wo0_compute_q, xout => d_u0_m0_wo0_compute_q_14_q, clk => clk, aclr => areset );
 
-    -- d_u0_m0_wo0_compute_q_19(DELAY,295)@14 + 5
+    -- d_u0_m0_wo0_compute_q_19(DELAY,349)@14 + 5
     d_u0_m0_wo0_compute_q_19 : dspba_delay
     GENERIC MAP ( width => 1, depth => 5, reset_kind => "ASYNC" )
     PORT MAP ( xin => d_u0_m0_wo0_compute_q_14_q, xout => d_u0_m0_wo0_compute_q_19_q, clk => clk, aclr => areset );
@@ -544,26 +564,23 @@ begin
         END IF;
     END PROCESS;
 
-    -- d_u0_m0_wo0_compute_q_20(DELAY,296)@19 + 1
+    -- d_u0_m0_wo0_compute_q_20(DELAY,350)@19 + 1
     d_u0_m0_wo0_compute_q_20 : dspba_delay
     GENERIC MAP ( width => 1, depth => 1, reset_kind => "ASYNC" )
     PORT MAP ( xin => d_u0_m0_wo0_compute_q_19_q, xout => d_u0_m0_wo0_compute_q_20_q, clk => clk, aclr => areset );
 
-    -- d_u0_m0_wo0_memread_q_20(DELAY,292)@13 + 7
+    -- d_u0_m0_wo0_memread_q_20(DELAY,346)@13 + 7
     d_u0_m0_wo0_memread_q_20 : dspba_delay
     GENERIC MAP ( width => 1, depth => 7, reset_kind => "ASYNC" )
     PORT MAP ( xin => u0_m0_wo0_memread_q, xout => d_u0_m0_wo0_memread_q_20_q, clk => clk, aclr => areset );
 
-    -- u0_m0_wo0_adelay_p0(DELAY,237)@20
+    -- u0_m0_wo0_adelay_p0(DELAY,269)@20
     u0_m0_wo0_adelay_p0 : dspba_delay
     GENERIC MAP ( width => 49, depth => 3, reset_kind => "NONE" )
     PORT MAP ( xin => u0_m0_wo0_accum_p1_of_2_q, xout => u0_m0_wo0_adelay_p0_q, ena => d_u0_m0_wo0_compute_q_20_q(0), clk => clk, aclr => areset );
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b(BITSELECT,207)@18
-    u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_align_17_q(39 downto 39));
-
-    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_UpperBits_for_b(BITJOIN,208)@18
-    u0_m0_wo0_mtree_mult1_1_result_add_1_0_UpperBits_for_b_q <= u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_SignBit_for_b_b;
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_b(BITSELECT,217)@17
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_align_21_q(54 downto 54));
 
     -- u0_m0_wo0_ca1_inner(COUNTER,86)@14
     -- low=-1, high=2, step=-1, init=2
@@ -677,13 +694,9 @@ begin
         END IF;
     END PROCESS;
 
-    -- u0_m0_wo0_mtree_mult1_1_bs8(BITSELECT,123)@15
-    u0_m0_wo0_mtree_mult1_1_bs8_b <= STD_LOGIC_VECTOR(u0_m0_wo0_cm0_q(21 downto 17));
-
-    -- d_u0_m0_wo0_mtree_mult1_1_bs8_b_16(DELAY,302)@15 + 1
-    d_u0_m0_wo0_mtree_mult1_1_bs8_b_16 : dspba_delay
-    GENERIC MAP ( width => 5, depth => 1, reset_kind => "ASYNC" )
-    PORT MAP ( xin => u0_m0_wo0_mtree_mult1_1_bs8_b, xout => d_u0_m0_wo0_mtree_mult1_1_bs8_b_16_q, clk => clk, aclr => areset );
+    -- u0_m0_wo0_mtree_mult1_1_bs1_merged_bit_select(BITSELECT,338)@15
+    u0_m0_wo0_mtree_mult1_1_bs1_merged_bit_select_b <= STD_LOGIC_VECTOR(u0_m0_wo0_cm0_q(21 downto 17));
+    u0_m0_wo0_mtree_mult1_1_bs1_merged_bit_select_c <= STD_LOGIC_VECTOR(u0_m0_wo0_cm0_q(16 downto 0));
 
     -- u0_m0_wo0_wi0_r0_ra1_count2_inner(COUNTER,38)@13
     -- low=-1, high=2, step=-1, init=1
@@ -842,7 +855,7 @@ begin
     END PROCESS;
     u0_m0_wo0_wi0_r0_ra1_count0_q <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR(RESIZE(u0_m0_wo0_wi0_r0_ra1_count0_i, 10)));
 
-    -- u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_BitSelect_for_a(BITSELECT,160)@13
+    -- u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_BitSelect_for_a(BITSELECT,170)@13
     u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_BitSelect_for_a_in <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((10 downto 10 => u0_m0_wo0_wi0_r0_ra1_count0_q(9)) & u0_m0_wo0_wi0_r0_ra1_count0_q));
     u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_BitSelect_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_BitSelect_for_a_in(8 downto 3));
 
@@ -860,11 +873,11 @@ begin
     END PROCESS;
     u0_m0_wo0_wi0_r0_ra0_count1_q <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR(RESIZE(u0_m0_wo0_wi0_r0_ra0_count1_i, 3)));
 
-    -- u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_BitSelect_for_b(BITSELECT,161)@13
+    -- u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_BitSelect_for_b(BITSELECT,171)@13
     u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_BitSelect_for_b_in <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((10 downto 3 => u0_m0_wo0_wi0_r0_ra0_count1_q(2)) & u0_m0_wo0_wi0_r0_ra0_count1_q));
     u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_BitSelect_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_BitSelect_for_b_in(1 downto 0));
 
-    -- u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_join(BITJOIN,162)@13
+    -- u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_join(BITJOIN,172)@13
     u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_join_q <= GND_q & GND_q & u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_BitSelect_for_a_b & GND_q & u0_m0_wo0_wi0_r0_ra1_add_0_0_replace_or_BitSelect_for_b_b;
 
     -- u0_m0_wo0_wi0_r0_ra3_add_1_0(ADD,66)@13 + 1
@@ -985,15 +998,15 @@ begin
     END PROCESS;
     u0_m0_wo0_wi0_r0_ra2_count0_q <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR(RESIZE(u0_m0_wo0_wi0_r0_ra2_count0_i, 11)));
 
-    -- u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_BitSelect_for_a(BITSELECT,163)@13
+    -- u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_BitSelect_for_a(BITSELECT,173)@13
     u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_BitSelect_for_a_in <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((11 downto 11 => u0_m0_wo0_wi0_r0_ra2_count0_q(10)) & u0_m0_wo0_wi0_r0_ra2_count0_q));
     u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_BitSelect_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_BitSelect_for_a_in(9 downto 3));
 
-    -- u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_BitSelect_for_b(BITSELECT,164)@13
+    -- u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_BitSelect_for_b(BITSELECT,174)@13
     u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_BitSelect_for_b_in <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((11 downto 3 => u0_m0_wo0_wi0_r0_ra0_count1_q(2)) & u0_m0_wo0_wi0_r0_ra0_count1_q));
     u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_BitSelect_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_BitSelect_for_b_in(1 downto 0));
 
-    -- u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_join(BITJOIN,165)@13
+    -- u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_join(BITJOIN,175)@13
     u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_join_q <= GND_q & GND_q & u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_BitSelect_for_a_b & GND_q & u0_m0_wo0_wi0_r0_ra2_add_0_0_replace_or_BitSelect_for_b_b;
 
     -- u0_m0_wo0_wi0_r0_ra2_add_1_0(ADD,54)@13 + 1
@@ -1460,15 +1473,15 @@ begin
     END PROCESS;
     u0_m0_wo0_wi0_r0_ra0_count0_q <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR(RESIZE(u0_m0_wo0_wi0_r0_ra0_count0_i, 9)));
 
-    -- u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_a(BITSELECT,157)@13
+    -- u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_a(BITSELECT,167)@13
     u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_a_in <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((9 downto 9 => u0_m0_wo0_wi0_r0_ra0_count0_q(8)) & u0_m0_wo0_wi0_r0_ra0_count0_q));
     u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_a_in(7 downto 3));
 
-    -- u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_b(BITSELECT,158)@13
+    -- u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_b(BITSELECT,168)@13
     u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_b_in <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((9 downto 3 => u0_m0_wo0_wi0_r0_ra0_count1_q(2)) & u0_m0_wo0_wi0_r0_ra0_count1_q));
     u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_b_in(1 downto 0));
 
-    -- u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_join(BITJOIN,159)@13
+    -- u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_join(BITJOIN,169)@13
     u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_join_q <= GND_q & GND_q & u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_a_b & GND_q & u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_b_b;
 
     -- u0_m0_wo0_wi0_r0_ra0_add_1_0(ADD,30)@13 + 1
@@ -1488,12 +1501,12 @@ begin
     u0_m0_wo0_wi0_r0_ra0_resize_in <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_ra0_add_1_0_q(7 downto 0));
     u0_m0_wo0_wi0_r0_ra0_resize_b <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_ra0_resize_in(7 downto 0));
 
-    -- d_xIn_0_14(DELAY,288)@10 + 4
+    -- d_xIn_0_14(DELAY,342)@10 + 4
     d_xIn_0_14 : dspba_delay
     GENERIC MAP ( width => 32, depth => 4, reset_kind => "ASYNC" )
     PORT MAP ( xin => xIn_0, xout => d_xIn_0_14_q, clk => clk, aclr => areset );
 
-    -- d_in0_m0_wi0_wo0_assign_id1_q_14(DELAY,291)@11 + 3
+    -- d_in0_m0_wi0_wo0_assign_id1_q_14(DELAY,345)@11 + 3
     d_in0_m0_wi0_wo0_assign_id1_q_14 : dspba_delay
     GENERIC MAP ( width => 1, depth => 3, reset_kind => "ASYNC" )
     PORT MAP ( xin => d_in0_m0_wi0_wo0_assign_id1_q_11_q, xout => d_in0_m0_wi0_wo0_assign_id1_q_14_q, clk => clk, aclr => areset );
@@ -1567,21 +1580,58 @@ begin
     END PROCESS;
     u0_m0_wo0_sym_add0_q <= u0_m0_wo0_sym_add0_o(32 downto 0);
 
-    -- d_u0_m0_wo0_sym_add0_q_16(DELAY,298)@15 + 1
-    d_u0_m0_wo0_sym_add0_q_16 : dspba_delay
-    GENERIC MAP ( width => 33, depth => 1, reset_kind => "ASYNC" )
-    PORT MAP ( xin => u0_m0_wo0_sym_add0_q, xout => d_u0_m0_wo0_sym_add0_q_16_q, clk => clk, aclr => areset );
+    -- u0_m0_wo0_mtree_mult1_1_bs2_merged_bit_select(BITSELECT,340)@15
+    u0_m0_wo0_mtree_mult1_1_bs2_merged_bit_select_b <= STD_LOGIC_VECTOR(u0_m0_wo0_sym_add0_q(32 downto 17));
+    u0_m0_wo0_mtree_mult1_1_bs2_merged_bit_select_c <= STD_LOGIC_VECTOR(u0_m0_wo0_sym_add0_q(16 downto 0));
 
-    -- u0_m0_wo0_mtree_mult1_1_bs9(BITSELECT,124)@16
-    u0_m0_wo0_mtree_mult1_1_bs9_in <= STD_LOGIC_VECTOR(d_u0_m0_wo0_sym_add0_q_16_q(16 downto 0));
-    u0_m0_wo0_mtree_mult1_1_bs9_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bs9_in(16 downto 0));
+    -- u0_m0_wo0_mtree_mult1_1_im0(MULT,115)@15 + 2
+    u0_m0_wo0_mtree_mult1_1_im0_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bs2_merged_bit_select_b);
+    u0_m0_wo0_mtree_mult1_1_im0_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bs1_merged_bit_select_b);
+    u0_m0_wo0_mtree_mult1_1_im0_reset <= areset;
+    u0_m0_wo0_mtree_mult1_1_im0_component : lpm_mult
+    GENERIC MAP (
+        lpm_widtha => 16,
+        lpm_widthb => 5,
+        lpm_widthp => 21,
+        lpm_widths => 1,
+        lpm_type => "LPM_MULT",
+        lpm_representation => "SIGNED",
+        lpm_hint => "DEDICATED_MULTIPLIER_CIRCUITRY=YES, MAXIMIZE_SPEED=5",
+        lpm_pipeline => 2
+    )
+    PORT MAP (
+        dataa => u0_m0_wo0_mtree_mult1_1_im0_a0,
+        datab => u0_m0_wo0_mtree_mult1_1_im0_b0,
+        clken => VCC_q(0),
+        aclr => u0_m0_wo0_mtree_mult1_1_im0_reset,
+        clock => clk,
+        result => u0_m0_wo0_mtree_mult1_1_im0_s1
+    );
+    u0_m0_wo0_mtree_mult1_1_im0_q <= u0_m0_wo0_mtree_mult1_1_im0_s1;
 
-    -- u0_m0_wo0_mtree_mult1_1_bjB10(BITJOIN,125)@16
-    u0_m0_wo0_mtree_mult1_1_bjB10_q <= GND_q & u0_m0_wo0_mtree_mult1_1_bs9_b;
+    -- u0_m0_wo0_mtree_mult1_1_align_21(BITSHIFT,136)@17
+    u0_m0_wo0_mtree_mult1_1_align_21_qint <= u0_m0_wo0_mtree_mult1_1_im0_q & "0000000000000000000000000000000000";
+    u0_m0_wo0_mtree_mult1_1_align_21_q <= u0_m0_wo0_mtree_mult1_1_align_21_qint(54 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_1_im7(MULT,122)@16 + 2
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitExpansion_for_b(BITJOIN,216)@17
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitExpansion_for_b_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_align_21_q;
+
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b(BITSELECT,220)@17
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitExpansion_for_b_q(48 downto 0));
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitExpansion_for_b_q(55 downto 49));
+
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a(BITSELECT,214)@17
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_align_19_q(39 downto 39));
+
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_1_UpperBits_for_a(BITJOIN,215)@17
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_UpperBits_for_a_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_SignBit_for_a_b;
+
+    -- u0_m0_wo0_mtree_mult1_1_bjB10(BITJOIN,125)@15
+    u0_m0_wo0_mtree_mult1_1_bjB10_q <= GND_q & u0_m0_wo0_mtree_mult1_1_bs2_merged_bit_select_c;
+
+    -- u0_m0_wo0_mtree_mult1_1_im7(MULT,122)@15 + 2
     u0_m0_wo0_mtree_mult1_1_im7_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bjB10_q);
-    u0_m0_wo0_mtree_mult1_1_im7_b0 <= STD_LOGIC_VECTOR(d_u0_m0_wo0_mtree_mult1_1_bs8_b_16_q);
+    u0_m0_wo0_mtree_mult1_1_im7_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bs1_merged_bit_select_b);
     u0_m0_wo0_mtree_mult1_1_im7_reset <= areset;
     u0_m0_wo0_mtree_mult1_1_im7_component : lpm_mult
     GENERIC MAP (
@@ -1604,36 +1654,40 @@ begin
     );
     u0_m0_wo0_mtree_mult1_1_im7_q <= u0_m0_wo0_mtree_mult1_1_im7_s1;
 
-    -- u0_m0_wo0_mtree_mult1_1_align_17(BITSHIFT,132)@18
-    u0_m0_wo0_mtree_mult1_1_align_17_qint <= u0_m0_wo0_mtree_mult1_1_im7_q & "00000000000000000";
-    u0_m0_wo0_mtree_mult1_1_align_17_q <= u0_m0_wo0_mtree_mult1_1_align_17_qint(39 downto 0);
+    -- u0_m0_wo0_mtree_mult1_1_align_19(BITSHIFT,134)@17
+    u0_m0_wo0_mtree_mult1_1_align_19_qint <= u0_m0_wo0_mtree_mult1_1_im7_q & "00000000000000000";
+    u0_m0_wo0_mtree_mult1_1_align_19_q <= u0_m0_wo0_mtree_mult1_1_align_19_qint(39 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitExpansion_for_b(BITJOIN,206)@18
-    u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitExpansion_for_b_q <= u0_m0_wo0_mtree_mult1_1_result_add_1_0_UpperBits_for_b_q & u0_m0_wo0_mtree_mult1_1_align_17_q;
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitExpansion_for_a(BITJOIN,213)@17
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitExpansion_for_a_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_1_UpperBits_for_a_q & u0_m0_wo0_mtree_mult1_1_align_19_q;
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b(BITSELECT,210)@18
-    u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitExpansion_for_b_q(48 downto 0));
-    u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitExpansion_for_b_q(56 downto 49));
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a(BITSELECT,219)@17
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitExpansion_for_a_q(48 downto 0));
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitExpansion_for_a_q(55 downto 49));
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_b(BITSELECT,196)@17
-    u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_align_15_q(50 downto 50));
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2(ADD,221)@17 + 1
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_a <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a_b);
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_b <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b_b);
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_clkproc: PROCESS (clk, areset)
+    BEGIN
+        IF (areset = '1') THEN
+            u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_o <= (others => '0');
+        ELSIF (clk'EVENT AND clk = '1') THEN
+            u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_o <= STD_LOGIC_VECTOR(UNSIGNED(u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_a) + UNSIGNED(u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_b));
+        END IF;
+    END PROCESS;
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_c(0) <= u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_o(49);
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_o(48 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_UpperBits_for_b(BITJOIN,197)@17
-    u0_m0_wo0_mtree_mult1_1_result_add_0_0_UpperBits_for_b_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_b_b;
-
-    -- u0_m0_wo0_mtree_mult1_1_bs6(BITSELECT,121)@15
-    u0_m0_wo0_mtree_mult1_1_bs6_b <= STD_LOGIC_VECTOR(u0_m0_wo0_sym_add0_q(32 downto 17));
-
-    -- u0_m0_wo0_mtree_mult1_1_bs4(BITSELECT,119)@15
-    u0_m0_wo0_mtree_mult1_1_bs4_in <= STD_LOGIC_VECTOR(u0_m0_wo0_cm0_q(16 downto 0));
-    u0_m0_wo0_mtree_mult1_1_bs4_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bs4_in(16 downto 0));
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_b(BITSELECT,206)@17
+    u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_align_17_q(50 downto 50));
 
     -- u0_m0_wo0_mtree_mult1_1_bjA5(BITJOIN,120)@15
-    u0_m0_wo0_mtree_mult1_1_bjA5_q <= GND_q & u0_m0_wo0_mtree_mult1_1_bs4_b;
+    u0_m0_wo0_mtree_mult1_1_bjA5_q <= GND_q & u0_m0_wo0_mtree_mult1_1_bs1_merged_bit_select_c;
 
     -- u0_m0_wo0_mtree_mult1_1_im3(MULT,118)@15 + 2
     u0_m0_wo0_mtree_mult1_1_im3_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bjA5_q);
-    u0_m0_wo0_mtree_mult1_1_im3_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bs6_b);
+    u0_m0_wo0_mtree_mult1_1_im3_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bs2_merged_bit_select_b);
     u0_m0_wo0_mtree_mult1_1_im3_reset <= areset;
     u0_m0_wo0_mtree_mult1_1_im3_component : lpm_mult
     GENERIC MAP (
@@ -1656,29 +1710,32 @@ begin
     );
     u0_m0_wo0_mtree_mult1_1_im3_q <= u0_m0_wo0_mtree_mult1_1_im3_s1;
 
-    -- u0_m0_wo0_mtree_mult1_1_align_15(BITSHIFT,130)@17
-    u0_m0_wo0_mtree_mult1_1_align_15_qint <= u0_m0_wo0_mtree_mult1_1_im3_q & "00000000000000000";
-    u0_m0_wo0_mtree_mult1_1_align_15_q <= u0_m0_wo0_mtree_mult1_1_align_15_qint(50 downto 0);
+    -- u0_m0_wo0_mtree_mult1_1_align_17(BITSHIFT,132)@17
+    u0_m0_wo0_mtree_mult1_1_align_17_qint <= u0_m0_wo0_mtree_mult1_1_im3_q & "00000000000000000";
+    u0_m0_wo0_mtree_mult1_1_align_17_q <= u0_m0_wo0_mtree_mult1_1_align_17_qint(50 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_b(BITJOIN,195)@17
-    u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_b_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_0_UpperBits_for_b_q & u0_m0_wo0_mtree_mult1_1_align_15_q;
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_b(BITJOIN,205)@17
+    u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_b_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_1_align_17_q;
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b(BITSELECT,199)@17
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b(BITSELECT,209)@17
     u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_b_q(48 downto 0));
-    u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_b_q(55 downto 49));
+    u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_b_q(51 downto 49));
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a(BITSELECT,193)@17
-    u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_join_14_q(54 downto 54));
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a(BITSELECT,203)@17
+    u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_im11_q(35 downto 35));
+
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_UpperBits_for_a(BITJOIN,204)@17
+    u0_m0_wo0_mtree_mult1_1_result_add_0_0_UpperBits_for_a_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b;
 
     -- u0_m0_wo0_mtree_mult1_1_im11(MULT,126)@15 + 2
-    u0_m0_wo0_mtree_mult1_1_im11_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bs6_b);
-    u0_m0_wo0_mtree_mult1_1_im11_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bs8_b);
+    u0_m0_wo0_mtree_mult1_1_im11_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bjA5_q);
+    u0_m0_wo0_mtree_mult1_1_im11_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_bjB10_q);
     u0_m0_wo0_mtree_mult1_1_im11_reset <= areset;
     u0_m0_wo0_mtree_mult1_1_im11_component : lpm_mult
     GENERIC MAP (
-        lpm_widtha => 16,
-        lpm_widthb => 5,
-        lpm_widthp => 21,
+        lpm_widtha => 18,
+        lpm_widthb => 18,
+        lpm_widthp => 36,
         lpm_widths => 1,
         lpm_type => "LPM_MULT",
         lpm_representation => "SIGNED",
@@ -1695,50 +1752,14 @@ begin
     );
     u0_m0_wo0_mtree_mult1_1_im11_q <= u0_m0_wo0_mtree_mult1_1_im11_s1;
 
-    -- u0_m0_wo0_mtree_mult1_1_bs2(BITSELECT,117)@15
-    u0_m0_wo0_mtree_mult1_1_bs2_in <= u0_m0_wo0_sym_add0_q(16 downto 0);
-    u0_m0_wo0_mtree_mult1_1_bs2_b <= u0_m0_wo0_mtree_mult1_1_bs2_in(16 downto 0);
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_a(BITJOIN,202)@17
+    u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_a_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_0_UpperBits_for_a_q & u0_m0_wo0_mtree_mult1_1_im11_q;
 
-    -- u0_m0_wo0_mtree_mult1_1_bs1(BITSELECT,116)@15
-    u0_m0_wo0_mtree_mult1_1_bs1_in <= u0_m0_wo0_cm0_q(16 downto 0);
-    u0_m0_wo0_mtree_mult1_1_bs1_b <= u0_m0_wo0_mtree_mult1_1_bs1_in(16 downto 0);
-
-    -- u0_m0_wo0_mtree_mult1_1_im0(MULT,115)@15 + 2
-    u0_m0_wo0_mtree_mult1_1_im0_a0 <= u0_m0_wo0_mtree_mult1_1_bs1_b;
-    u0_m0_wo0_mtree_mult1_1_im0_b0 <= u0_m0_wo0_mtree_mult1_1_bs2_b;
-    u0_m0_wo0_mtree_mult1_1_im0_reset <= areset;
-    u0_m0_wo0_mtree_mult1_1_im0_component : lpm_mult
-    GENERIC MAP (
-        lpm_widtha => 17,
-        lpm_widthb => 17,
-        lpm_widthp => 34,
-        lpm_widths => 1,
-        lpm_type => "LPM_MULT",
-        lpm_representation => "UNSIGNED",
-        lpm_hint => "DEDICATED_MULTIPLIER_CIRCUITRY=YES, MAXIMIZE_SPEED=5",
-        lpm_pipeline => 2
-    )
-    PORT MAP (
-        dataa => u0_m0_wo0_mtree_mult1_1_im0_a0,
-        datab => u0_m0_wo0_mtree_mult1_1_im0_b0,
-        clken => VCC_q(0),
-        aclr => u0_m0_wo0_mtree_mult1_1_im0_reset,
-        clock => clk,
-        result => u0_m0_wo0_mtree_mult1_1_im0_s1
-    );
-    u0_m0_wo0_mtree_mult1_1_im0_q <= u0_m0_wo0_mtree_mult1_1_im0_s1;
-
-    -- u0_m0_wo0_mtree_mult1_1_join_14(BITJOIN,129)@17
-    u0_m0_wo0_mtree_mult1_1_join_14_q <= u0_m0_wo0_mtree_mult1_1_im11_q & u0_m0_wo0_mtree_mult1_1_im0_q;
-
-    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_a(BITJOIN,192)@17
-    u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_a_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_1_join_14_q;
-
-    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a(BITSELECT,198)@17
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a(BITSELECT,208)@17
     u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_a_q(48 downto 0));
-    u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_a_q(55 downto 49));
+    u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitExpansion_for_a_q(51 downto 49));
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2(ADD,200)@17 + 1
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2(ADD,210)@17 + 1
     u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_a <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_b);
     u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_b <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_b);
     u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_clkproc: PROCESS (clk, areset)
@@ -1752,9 +1773,9 @@ begin
     u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_c(0) <= u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_o(49);
     u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_o(48 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2(ADD,211)@18 + 1
+    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2(ADD,232)@18 + 1
     u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_a <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_q);
-    u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_b <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_b);
+    u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_b <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_q);
     u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_clkproc: PROCESS (clk, areset)
     BEGIN
         IF (areset = '1') THEN
@@ -1766,11 +1787,8 @@ begin
     u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_c(0) <= u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_o(49);
     u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_q <= u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_o(48 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b(BITSELECT,229)@18
-    u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_align_17_q(39 downto 39));
-
-    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_UpperBits_for_b(BITJOIN,230)@18
-    u0_m0_wo0_mtree_mult1_0_result_add_1_0_UpperBits_for_b_q <= u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_SignBit_for_b_b;
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_b(BITSELECT,250)@17
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_align_21_q(54 downto 54));
 
     -- u0_m0_wo0_cm1(LOOKUP,93)@14 + 1
     u0_m0_wo0_cm1_clkproc: PROCESS (clk, areset)
@@ -1849,13 +1867,9 @@ begin
         END IF;
     END PROCESS;
 
-    -- u0_m0_wo0_mtree_mult1_0_bs8(BITSELECT,144)@15
-    u0_m0_wo0_mtree_mult1_0_bs8_b <= STD_LOGIC_VECTOR(u0_m0_wo0_cm1_q(21 downto 17));
-
-    -- d_u0_m0_wo0_mtree_mult1_0_bs8_b_16(DELAY,303)@15 + 1
-    d_u0_m0_wo0_mtree_mult1_0_bs8_b_16 : dspba_delay
-    GENERIC MAP ( width => 5, depth => 1, reset_kind => "ASYNC" )
-    PORT MAP ( xin => u0_m0_wo0_mtree_mult1_0_bs8_b, xout => d_u0_m0_wo0_mtree_mult1_0_bs8_b_16_q, clk => clk, aclr => areset );
+    -- u0_m0_wo0_mtree_mult1_0_bs1_merged_bit_select(BITSELECT,339)@15
+    u0_m0_wo0_mtree_mult1_0_bs1_merged_bit_select_b <= STD_LOGIC_VECTOR(u0_m0_wo0_cm1_q(21 downto 17));
+    u0_m0_wo0_mtree_mult1_0_bs1_merged_bit_select_c <= STD_LOGIC_VECTOR(u0_m0_wo0_cm1_q(16 downto 0));
 
     -- u0_m0_wo0_sym_add1(ADD,95)@14 + 1
     u0_m0_wo0_sym_add1_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((32 downto 32 => u0_m0_wo0_wi0_r0_memr1_q(31)) & u0_m0_wo0_wi0_r0_memr1_q));
@@ -1870,21 +1884,58 @@ begin
     END PROCESS;
     u0_m0_wo0_sym_add1_q <= u0_m0_wo0_sym_add1_o(32 downto 0);
 
-    -- d_u0_m0_wo0_sym_add1_q_16(DELAY,299)@15 + 1
-    d_u0_m0_wo0_sym_add1_q_16 : dspba_delay
-    GENERIC MAP ( width => 33, depth => 1, reset_kind => "ASYNC" )
-    PORT MAP ( xin => u0_m0_wo0_sym_add1_q, xout => d_u0_m0_wo0_sym_add1_q_16_q, clk => clk, aclr => areset );
+    -- u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select(BITSELECT,341)@15
+    u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b <= STD_LOGIC_VECTOR(u0_m0_wo0_sym_add1_q(32 downto 17));
+    u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_c <= STD_LOGIC_VECTOR(u0_m0_wo0_sym_add1_q(16 downto 0));
 
-    -- u0_m0_wo0_mtree_mult1_0_bs9(BITSELECT,145)@16
-    u0_m0_wo0_mtree_mult1_0_bs9_in <= STD_LOGIC_VECTOR(d_u0_m0_wo0_sym_add1_q_16_q(16 downto 0));
-    u0_m0_wo0_mtree_mult1_0_bs9_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs9_in(16 downto 0));
+    -- u0_m0_wo0_mtree_mult1_0_im0(MULT,141)@15 + 2
+    u0_m0_wo0_mtree_mult1_0_im0_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b);
+    u0_m0_wo0_mtree_mult1_0_im0_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs1_merged_bit_select_b);
+    u0_m0_wo0_mtree_mult1_0_im0_reset <= areset;
+    u0_m0_wo0_mtree_mult1_0_im0_component : lpm_mult
+    GENERIC MAP (
+        lpm_widtha => 16,
+        lpm_widthb => 5,
+        lpm_widthp => 21,
+        lpm_widths => 1,
+        lpm_type => "LPM_MULT",
+        lpm_representation => "SIGNED",
+        lpm_hint => "DEDICATED_MULTIPLIER_CIRCUITRY=YES, MAXIMIZE_SPEED=5",
+        lpm_pipeline => 2
+    )
+    PORT MAP (
+        dataa => u0_m0_wo0_mtree_mult1_0_im0_a0,
+        datab => u0_m0_wo0_mtree_mult1_0_im0_b0,
+        clken => VCC_q(0),
+        aclr => u0_m0_wo0_mtree_mult1_0_im0_reset,
+        clock => clk,
+        result => u0_m0_wo0_mtree_mult1_0_im0_s1
+    );
+    u0_m0_wo0_mtree_mult1_0_im0_q <= u0_m0_wo0_mtree_mult1_0_im0_s1;
 
-    -- u0_m0_wo0_mtree_mult1_0_bjB10(BITJOIN,146)@16
-    u0_m0_wo0_mtree_mult1_0_bjB10_q <= GND_q & u0_m0_wo0_mtree_mult1_0_bs9_b;
+    -- u0_m0_wo0_mtree_mult1_0_align_21(BITSHIFT,162)@17
+    u0_m0_wo0_mtree_mult1_0_align_21_qint <= u0_m0_wo0_mtree_mult1_0_im0_q & "0000000000000000000000000000000000";
+    u0_m0_wo0_mtree_mult1_0_align_21_q <= u0_m0_wo0_mtree_mult1_0_align_21_qint(54 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_0_im7(MULT,143)@16 + 2
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitExpansion_for_b(BITJOIN,249)@17
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitExpansion_for_b_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_align_21_q;
+
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b(BITSELECT,253)@17
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitExpansion_for_b_q(48 downto 0));
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitExpansion_for_b_q(55 downto 49));
+
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a(BITSELECT,247)@17
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_align_19_q(39 downto 39));
+
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_1_UpperBits_for_a(BITJOIN,248)@17
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_UpperBits_for_a_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_SignBit_for_a_b;
+
+    -- u0_m0_wo0_mtree_mult1_0_bjB10(BITJOIN,151)@15
+    u0_m0_wo0_mtree_mult1_0_bjB10_q <= GND_q & u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_c;
+
+    -- u0_m0_wo0_mtree_mult1_0_im7(MULT,148)@15 + 2
     u0_m0_wo0_mtree_mult1_0_im7_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bjB10_q);
-    u0_m0_wo0_mtree_mult1_0_im7_b0 <= STD_LOGIC_VECTOR(d_u0_m0_wo0_mtree_mult1_0_bs8_b_16_q);
+    u0_m0_wo0_mtree_mult1_0_im7_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs1_merged_bit_select_b);
     u0_m0_wo0_mtree_mult1_0_im7_reset <= areset;
     u0_m0_wo0_mtree_mult1_0_im7_component : lpm_mult
     GENERIC MAP (
@@ -1907,36 +1958,40 @@ begin
     );
     u0_m0_wo0_mtree_mult1_0_im7_q <= u0_m0_wo0_mtree_mult1_0_im7_s1;
 
-    -- u0_m0_wo0_mtree_mult1_0_align_17(BITSHIFT,153)@18
-    u0_m0_wo0_mtree_mult1_0_align_17_qint <= u0_m0_wo0_mtree_mult1_0_im7_q & "00000000000000000";
-    u0_m0_wo0_mtree_mult1_0_align_17_q <= u0_m0_wo0_mtree_mult1_0_align_17_qint(39 downto 0);
+    -- u0_m0_wo0_mtree_mult1_0_align_19(BITSHIFT,160)@17
+    u0_m0_wo0_mtree_mult1_0_align_19_qint <= u0_m0_wo0_mtree_mult1_0_im7_q & "00000000000000000";
+    u0_m0_wo0_mtree_mult1_0_align_19_q <= u0_m0_wo0_mtree_mult1_0_align_19_qint(39 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitExpansion_for_b(BITJOIN,228)@18
-    u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitExpansion_for_b_q <= u0_m0_wo0_mtree_mult1_0_result_add_1_0_UpperBits_for_b_q & u0_m0_wo0_mtree_mult1_0_align_17_q;
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitExpansion_for_a(BITJOIN,246)@17
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitExpansion_for_a_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_1_UpperBits_for_a_q & u0_m0_wo0_mtree_mult1_0_align_19_q;
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b(BITSELECT,232)@18
-    u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitExpansion_for_b_q(48 downto 0));
-    u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitExpansion_for_b_q(56 downto 49));
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a(BITSELECT,252)@17
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitExpansion_for_a_q(48 downto 0));
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitExpansion_for_a_q(55 downto 49));
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_b(BITSELECT,218)@17
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_align_15_q(50 downto 50));
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2(ADD,254)@17 + 1
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_a <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a_b);
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_b <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b_b);
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_clkproc: PROCESS (clk, areset)
+    BEGIN
+        IF (areset = '1') THEN
+            u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_o <= (others => '0');
+        ELSIF (clk'EVENT AND clk = '1') THEN
+            u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_o <= STD_LOGIC_VECTOR(UNSIGNED(u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_a) + UNSIGNED(u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_b));
+        END IF;
+    END PROCESS;
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_c(0) <= u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_o(49);
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_o(48 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_UpperBits_for_b(BITJOIN,219)@17
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_UpperBits_for_b_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_b_b;
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_b(BITSELECT,239)@17
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_align_17_q(50 downto 50));
 
-    -- u0_m0_wo0_mtree_mult1_0_bs6(BITSELECT,142)@15
-    u0_m0_wo0_mtree_mult1_0_bs6_b <= STD_LOGIC_VECTOR(u0_m0_wo0_sym_add1_q(32 downto 17));
+    -- u0_m0_wo0_mtree_mult1_0_bjA5(BITJOIN,146)@15
+    u0_m0_wo0_mtree_mult1_0_bjA5_q <= GND_q & u0_m0_wo0_mtree_mult1_0_bs1_merged_bit_select_c;
 
-    -- u0_m0_wo0_mtree_mult1_0_bs4(BITSELECT,140)@15
-    u0_m0_wo0_mtree_mult1_0_bs4_in <= STD_LOGIC_VECTOR(u0_m0_wo0_cm1_q(16 downto 0));
-    u0_m0_wo0_mtree_mult1_0_bs4_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs4_in(16 downto 0));
-
-    -- u0_m0_wo0_mtree_mult1_0_bjA5(BITJOIN,141)@15
-    u0_m0_wo0_mtree_mult1_0_bjA5_q <= GND_q & u0_m0_wo0_mtree_mult1_0_bs4_b;
-
-    -- u0_m0_wo0_mtree_mult1_0_im3(MULT,139)@15 + 2
+    -- u0_m0_wo0_mtree_mult1_0_im3(MULT,144)@15 + 2
     u0_m0_wo0_mtree_mult1_0_im3_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bjA5_q);
-    u0_m0_wo0_mtree_mult1_0_im3_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs6_b);
+    u0_m0_wo0_mtree_mult1_0_im3_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b);
     u0_m0_wo0_mtree_mult1_0_im3_reset <= areset;
     u0_m0_wo0_mtree_mult1_0_im3_component : lpm_mult
     GENERIC MAP (
@@ -1959,29 +2014,32 @@ begin
     );
     u0_m0_wo0_mtree_mult1_0_im3_q <= u0_m0_wo0_mtree_mult1_0_im3_s1;
 
-    -- u0_m0_wo0_mtree_mult1_0_align_15(BITSHIFT,151)@17
-    u0_m0_wo0_mtree_mult1_0_align_15_qint <= u0_m0_wo0_mtree_mult1_0_im3_q & "00000000000000000";
-    u0_m0_wo0_mtree_mult1_0_align_15_q <= u0_m0_wo0_mtree_mult1_0_align_15_qint(50 downto 0);
+    -- u0_m0_wo0_mtree_mult1_0_align_17(BITSHIFT,158)@17
+    u0_m0_wo0_mtree_mult1_0_align_17_qint <= u0_m0_wo0_mtree_mult1_0_im3_q & "00000000000000000";
+    u0_m0_wo0_mtree_mult1_0_align_17_q <= u0_m0_wo0_mtree_mult1_0_align_17_qint(50 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_b(BITJOIN,217)@17
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_b_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_UpperBits_for_b_q & u0_m0_wo0_mtree_mult1_0_align_15_q;
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_b(BITJOIN,238)@17
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_b_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_b_b & u0_m0_wo0_mtree_mult1_0_align_17_q;
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b(BITSELECT,221)@17
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b(BITSELECT,242)@17
     u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_b_q(48 downto 0));
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_b_q(55 downto 49));
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_b_q(51 downto 49));
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a(BITSELECT,215)@17
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_join_14_q(54 downto 54));
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a(BITSELECT,236)@17
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_im11_q(35 downto 35));
 
-    -- u0_m0_wo0_mtree_mult1_0_im11(MULT,147)@15 + 2
-    u0_m0_wo0_mtree_mult1_0_im11_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs6_b);
-    u0_m0_wo0_mtree_mult1_0_im11_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs8_b);
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_UpperBits_for_a(BITJOIN,237)@17
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_UpperBits_for_a_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b;
+
+    -- u0_m0_wo0_mtree_mult1_0_im11(MULT,152)@15 + 2
+    u0_m0_wo0_mtree_mult1_0_im11_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bjA5_q);
+    u0_m0_wo0_mtree_mult1_0_im11_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bjB10_q);
     u0_m0_wo0_mtree_mult1_0_im11_reset <= areset;
     u0_m0_wo0_mtree_mult1_0_im11_component : lpm_mult
     GENERIC MAP (
-        lpm_widtha => 16,
-        lpm_widthb => 5,
-        lpm_widthp => 21,
+        lpm_widtha => 18,
+        lpm_widthb => 18,
+        lpm_widthp => 36,
         lpm_widths => 1,
         lpm_type => "LPM_MULT",
         lpm_representation => "SIGNED",
@@ -1998,50 +2056,14 @@ begin
     );
     u0_m0_wo0_mtree_mult1_0_im11_q <= u0_m0_wo0_mtree_mult1_0_im11_s1;
 
-    -- u0_m0_wo0_mtree_mult1_0_bs2(BITSELECT,138)@15
-    u0_m0_wo0_mtree_mult1_0_bs2_in <= u0_m0_wo0_sym_add1_q(16 downto 0);
-    u0_m0_wo0_mtree_mult1_0_bs2_b <= u0_m0_wo0_mtree_mult1_0_bs2_in(16 downto 0);
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_a(BITJOIN,235)@17
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_a_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_UpperBits_for_a_q & u0_m0_wo0_mtree_mult1_0_im11_q;
 
-    -- u0_m0_wo0_mtree_mult1_0_bs1(BITSELECT,137)@15
-    u0_m0_wo0_mtree_mult1_0_bs1_in <= u0_m0_wo0_cm1_q(16 downto 0);
-    u0_m0_wo0_mtree_mult1_0_bs1_b <= u0_m0_wo0_mtree_mult1_0_bs1_in(16 downto 0);
-
-    -- u0_m0_wo0_mtree_mult1_0_im0(MULT,136)@15 + 2
-    u0_m0_wo0_mtree_mult1_0_im0_a0 <= u0_m0_wo0_mtree_mult1_0_bs1_b;
-    u0_m0_wo0_mtree_mult1_0_im0_b0 <= u0_m0_wo0_mtree_mult1_0_bs2_b;
-    u0_m0_wo0_mtree_mult1_0_im0_reset <= areset;
-    u0_m0_wo0_mtree_mult1_0_im0_component : lpm_mult
-    GENERIC MAP (
-        lpm_widtha => 17,
-        lpm_widthb => 17,
-        lpm_widthp => 34,
-        lpm_widths => 1,
-        lpm_type => "LPM_MULT",
-        lpm_representation => "UNSIGNED",
-        lpm_hint => "DEDICATED_MULTIPLIER_CIRCUITRY=YES, MAXIMIZE_SPEED=5",
-        lpm_pipeline => 2
-    )
-    PORT MAP (
-        dataa => u0_m0_wo0_mtree_mult1_0_im0_a0,
-        datab => u0_m0_wo0_mtree_mult1_0_im0_b0,
-        clken => VCC_q(0),
-        aclr => u0_m0_wo0_mtree_mult1_0_im0_reset,
-        clock => clk,
-        result => u0_m0_wo0_mtree_mult1_0_im0_s1
-    );
-    u0_m0_wo0_mtree_mult1_0_im0_q <= u0_m0_wo0_mtree_mult1_0_im0_s1;
-
-    -- u0_m0_wo0_mtree_mult1_0_join_14(BITJOIN,150)@17
-    u0_m0_wo0_mtree_mult1_0_join_14_q <= u0_m0_wo0_mtree_mult1_0_im11_q & u0_m0_wo0_mtree_mult1_0_im0_q;
-
-    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_a(BITJOIN,214)@17
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_a_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_SignBit_for_a_b & u0_m0_wo0_mtree_mult1_0_join_14_q;
-
-    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a(BITSELECT,220)@17
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a(BITSELECT,241)@17
     u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_a_q(48 downto 0));
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_a_q(55 downto 49));
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitExpansion_for_a_q(51 downto 49));
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2(ADD,222)@17 + 1
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2(ADD,243)@17 + 1
     u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_a <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_b);
     u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_b <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_b);
     u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_clkproc: PROCESS (clk, areset)
@@ -2055,9 +2077,9 @@ begin
     u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_c(0) <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_o(49);
     u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_o(48 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2(ADD,233)@18 + 1
+    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2(ADD,265)@18 + 1
     u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_a <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_q);
-    u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_b <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_b);
+    u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_b <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_q);
     u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_clkproc: PROCESS (clk, areset)
     BEGIN
         IF (areset = '1') THEN
@@ -2069,7 +2091,7 @@ begin
     u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_c(0) <= u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_o(49);
     u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_q <= u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_o(48 downto 0);
 
-    -- u0_m0_wo0_mtree_add0_0_p1_of_2(ADD,177)@19 + 1
+    -- u0_m0_wo0_mtree_add0_0_p1_of_2(ADD,187)@19 + 1
     u0_m0_wo0_mtree_add0_0_p1_of_2_a <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_q);
     u0_m0_wo0_mtree_add0_0_p1_of_2_b <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_q);
     u0_m0_wo0_mtree_add0_0_p1_of_2_clkproc: PROCESS (clk, areset)
@@ -2083,7 +2105,7 @@ begin
     u0_m0_wo0_mtree_add0_0_p1_of_2_c(0) <= u0_m0_wo0_mtree_add0_0_p1_of_2_o(49);
     u0_m0_wo0_mtree_add0_0_p1_of_2_q <= u0_m0_wo0_mtree_add0_0_p1_of_2_o(48 downto 0);
 
-    -- u0_m0_wo0_accum_p1_of_2(ADD,189)@20 + 1
+    -- u0_m0_wo0_accum_p1_of_2(ADD,199)@20 + 1
     u0_m0_wo0_accum_p1_of_2_a <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_mtree_add0_0_p1_of_2_q);
     u0_m0_wo0_accum_p1_of_2_b <= STD_LOGIC_VECTOR("0" & u0_m0_wo0_adelay_p0_q);
     u0_m0_wo0_accum_p1_of_2_i <= u0_m0_wo0_accum_p1_of_2_a;
@@ -2104,51 +2126,76 @@ begin
     u0_m0_wo0_accum_p1_of_2_c(0) <= u0_m0_wo0_accum_p1_of_2_o(49);
     u0_m0_wo0_accum_p1_of_2_q <= u0_m0_wo0_accum_p1_of_2_o(48 downto 0);
 
-    -- d_u0_m0_wo0_aseq_q_21(DELAY,300)@20 + 1
+    -- d_u0_m0_wo0_aseq_q_21(DELAY,352)@20 + 1
     d_u0_m0_wo0_aseq_q_21 : dspba_delay
     GENERIC MAP ( width => 1, depth => 1, reset_kind => "ASYNC" )
     PORT MAP ( xin => u0_m0_wo0_aseq_q, xout => d_u0_m0_wo0_aseq_q_21_q, clk => clk, aclr => areset );
 
-    -- d_u0_m0_wo0_compute_q_21(DELAY,297)@20 + 1
+    -- d_u0_m0_wo0_compute_q_21(DELAY,351)@20 + 1
     d_u0_m0_wo0_compute_q_21 : dspba_delay
     GENERIC MAP ( width => 1, depth => 1, reset_kind => "ASYNC" )
     PORT MAP ( xin => d_u0_m0_wo0_compute_q_20_q, xout => d_u0_m0_wo0_compute_q_21_q, clk => clk, aclr => areset );
 
-    -- d_u0_m0_wo0_memread_q_21(DELAY,293)@20 + 1
+    -- d_u0_m0_wo0_memread_q_21(DELAY,347)@20 + 1
     d_u0_m0_wo0_memread_q_21 : dspba_delay
     GENERIC MAP ( width => 1, depth => 1, reset_kind => "ASYNC" )
     PORT MAP ( xin => d_u0_m0_wo0_memread_q_20_q, xout => d_u0_m0_wo0_memread_q_21_q, clk => clk, aclr => areset );
 
-    -- u0_m0_wo0_adelay_p1(DELAY,238)@21
+    -- u0_m0_wo0_adelay_p1(DELAY,270)@21
     u0_m0_wo0_adelay_p1 : dspba_delay
     GENERIC MAP ( width => 13, depth => 3, reset_kind => "NONE" )
     PORT MAP ( xin => u0_m0_wo0_accum_p2_of_2_q, xout => u0_m0_wo0_adelay_p1_q, ena => d_u0_m0_wo0_compute_q_21_q(0), clk => clk, aclr => areset );
 
-    -- u0_m0_wo0_accum_BitSelect_for_a_tessel1_1(BITSELECT,253)@21
+    -- u0_m0_wo0_accum_BitSelect_for_a_tessel1_1(BITSELECT,285)@21
     u0_m0_wo0_accum_BitSelect_for_a_tessel1_1_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_add0_0_p2_of_2_q(6 downto 6));
 
-    -- d_u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_c_19(DELAY,307)@18 + 1
-    d_u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_c_19 : dspba_delay
-    GENERIC MAP ( width => 8, depth => 1, reset_kind => "ASYNC" )
-    PORT MAP ( xin => u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_c, xout => d_u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_c_19_q, clk => clk, aclr => areset );
+    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_tessel1_1(BITSELECT,318)@19
+    u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_tessel1_1_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_q(6 downto 6));
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_tessel1_1(BITSELECT,277)@19
-    u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_tessel1_1_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_q(6 downto 6));
-
-    -- d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c_18(DELAY,306)@17 + 1
-    d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c_18 : dspba_delay
+    -- d_u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b_c_18(DELAY,358)@17 + 1
+    d_u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b_c_18 : dspba_delay
     GENERIC MAP ( width => 7, depth => 1, reset_kind => "ASYNC" )
+    PORT MAP ( xin => u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b_c, xout => d_u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b_c_18_q, clk => clk, aclr => areset );
+
+    -- d_u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a_c_18(DELAY,357)@17 + 1
+    d_u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a_c_18 : dspba_delay
+    GENERIC MAP ( width => 7, depth => 1, reset_kind => "ASYNC" )
+    PORT MAP ( xin => u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a_c, xout => d_u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a_c_18_q, clk => clk, aclr => areset );
+
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2(ADD,222)@18 + 1
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_cin <= u0_m0_wo0_mtree_mult1_1_result_add_0_1_p1_of_2_c;
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((7 downto 7 => d_u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a_c_18_q(6)) & d_u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_a_c_18_q) & '1');
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((7 downto 7 => d_u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b_c_18_q(6)) & d_u0_m0_wo0_mtree_mult1_1_result_add_0_1_BitSelect_for_b_c_18_q) & u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_cin(0));
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_clkproc: PROCESS (clk, areset)
+    BEGIN
+        IF (areset = '1') THEN
+            u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_o <= (others => '0');
+        ELSIF (clk'EVENT AND clk = '1') THEN
+            u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_o <= STD_LOGIC_VECTOR(SIGNED(u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_a) + SIGNED(u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_b));
+        END IF;
+    END PROCESS;
+    u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_o(7 downto 1);
+
+    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_BitJoin_for_c(BITJOIN,319)@19
+    u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_BitJoin_for_c_q <= u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_tessel1_1_b & u0_m0_wo0_mtree_mult1_1_result_add_0_1_p2_of_2_q;
+
+    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_tessel1_1(BITSELECT,309)@19
+    u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_tessel1_1_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_q(2 downto 2));
+
+    -- d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c_18(DELAY,356)@17 + 1
+    d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c_18 : dspba_delay
+    GENERIC MAP ( width => 3, depth => 1, reset_kind => "ASYNC" )
     PORT MAP ( xin => u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c, xout => d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c_18_q, clk => clk, aclr => areset );
 
-    -- d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c_18(DELAY,305)@17 + 1
+    -- d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c_18(DELAY,355)@17 + 1
     d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c_18 : dspba_delay
-    GENERIC MAP ( width => 7, depth => 1, reset_kind => "ASYNC" )
+    GENERIC MAP ( width => 3, depth => 1, reset_kind => "ASYNC" )
     PORT MAP ( xin => u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c, xout => d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c_18_q, clk => clk, aclr => areset );
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2(ADD,201)@18 + 1
+    -- u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2(ADD,211)@18 + 1
     u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_cin <= u0_m0_wo0_mtree_mult1_1_result_add_0_0_p1_of_2_c;
-    u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((7 downto 7 => d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c_18_q(6)) & d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c_18_q) & '1');
-    u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((7 downto 7 => d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c_18_q(6)) & d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c_18_q) & u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_cin(0));
+    u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((3 downto 3 => d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c_18_q(2)) & d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_a_c_18_q) & '1');
+    u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((3 downto 3 => d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c_18_q(2)) & d_u0_m0_wo0_mtree_mult1_1_result_add_0_0_BitSelect_for_b_c_18_q) & u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_cin(0));
     u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_clkproc: PROCESS (clk, areset)
     BEGIN
         IF (areset = '1') THEN
@@ -2157,15 +2204,15 @@ begin
             u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_o <= STD_LOGIC_VECTOR(SIGNED(u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_a) + SIGNED(u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_b));
         END IF;
     END PROCESS;
-    u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_o(7 downto 1);
+    u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_q <= u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_o(3 downto 1);
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_BitJoin_for_c(BITJOIN,278)@19
-    u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_BitJoin_for_c_q <= u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_q;
+    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_BitJoin_for_c(BITJOIN,314)@19
+    u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_BitJoin_for_c_q <= u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_mult1_1_result_add_0_0_p2_of_2_q;
 
-    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2(ADD,212)@19 + 1
+    -- u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2(ADD,233)@19 + 1
     u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_cin <= u0_m0_wo0_mtree_mult1_1_result_add_1_0_p1_of_2_c;
     u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((8 downto 8 => u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_BitJoin_for_c_q(7)) & u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_a_BitJoin_for_c_q) & '1');
-    u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((8 downto 8 => d_u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_c_19_q(7)) & d_u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_c_19_q) & u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_cin(0));
+    u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((8 downto 8 => u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_BitJoin_for_c_q(7)) & u0_m0_wo0_mtree_mult1_1_result_add_1_0_BitSelect_for_b_BitJoin_for_c_q) & u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_cin(0));
     u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_clkproc: PROCESS (clk, areset)
     BEGIN
         IF (areset = '1') THEN
@@ -2176,37 +2223,62 @@ begin
     END PROCESS;
     u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_q <= u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_o(8 downto 1);
 
-    -- u0_m0_wo0_mtree_add0_0_BitSelect_for_b_tessel1_1(BITSELECT,248)@20
+    -- u0_m0_wo0_mtree_add0_0_BitSelect_for_b_tessel1_1(BITSELECT,280)@20
     u0_m0_wo0_mtree_add0_0_BitSelect_for_b_tessel1_1_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_q(5 downto 5));
 
-    -- u0_m0_wo0_mtree_add0_0_BitSelect_for_b_tessel1_0(BITSELECT,247)@20
+    -- u0_m0_wo0_mtree_add0_0_BitSelect_for_b_tessel1_0(BITSELECT,279)@20
     u0_m0_wo0_mtree_add0_0_BitSelect_for_b_tessel1_0_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_1_result_add_1_0_p2_of_2_q(5 downto 0));
 
-    -- u0_m0_wo0_mtree_add0_0_BitSelect_for_b_BitJoin_for_c(BITJOIN,249)@20
+    -- u0_m0_wo0_mtree_add0_0_BitSelect_for_b_BitJoin_for_c(BITJOIN,281)@20
     u0_m0_wo0_mtree_add0_0_BitSelect_for_b_BitJoin_for_c_q <= u0_m0_wo0_mtree_add0_0_BitSelect_for_b_tessel1_1_b & u0_m0_wo0_mtree_add0_0_BitSelect_for_b_tessel1_0_b;
 
-    -- d_u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_c_19(DELAY,310)@18 + 1
-    d_u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_c_19 : dspba_delay
-    GENERIC MAP ( width => 8, depth => 1, reset_kind => "ASYNC" )
-    PORT MAP ( xin => u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_c, xout => d_u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_c_19_q, clk => clk, aclr => areset );
+    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_tessel1_1(BITSELECT,332)@19
+    u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_tessel1_1_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_q(6 downto 6));
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_tessel1_1(BITSELECT,282)@19
-    u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_tessel1_1_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_q(6 downto 6));
-
-    -- d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c_18(DELAY,309)@17 + 1
-    d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c_18 : dspba_delay
+    -- d_u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b_c_18(DELAY,362)@17 + 1
+    d_u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b_c_18 : dspba_delay
     GENERIC MAP ( width => 7, depth => 1, reset_kind => "ASYNC" )
+    PORT MAP ( xin => u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b_c, xout => d_u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b_c_18_q, clk => clk, aclr => areset );
+
+    -- d_u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a_c_18(DELAY,361)@17 + 1
+    d_u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a_c_18 : dspba_delay
+    GENERIC MAP ( width => 7, depth => 1, reset_kind => "ASYNC" )
+    PORT MAP ( xin => u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a_c, xout => d_u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a_c_18_q, clk => clk, aclr => areset );
+
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2(ADD,255)@18 + 1
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_cin <= u0_m0_wo0_mtree_mult1_0_result_add_0_1_p1_of_2_c;
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((7 downto 7 => d_u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a_c_18_q(6)) & d_u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_a_c_18_q) & '1');
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((7 downto 7 => d_u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b_c_18_q(6)) & d_u0_m0_wo0_mtree_mult1_0_result_add_0_1_BitSelect_for_b_c_18_q) & u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_cin(0));
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_clkproc: PROCESS (clk, areset)
+    BEGIN
+        IF (areset = '1') THEN
+            u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_o <= (others => '0');
+        ELSIF (clk'EVENT AND clk = '1') THEN
+            u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_o <= STD_LOGIC_VECTOR(SIGNED(u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_a) + SIGNED(u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_b));
+        END IF;
+    END PROCESS;
+    u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_o(7 downto 1);
+
+    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_BitJoin_for_c(BITJOIN,333)@19
+    u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_BitJoin_for_c_q <= u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_tessel1_1_b & u0_m0_wo0_mtree_mult1_0_result_add_0_1_p2_of_2_q;
+
+    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_tessel1_1(BITSELECT,323)@19
+    u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_tessel1_1_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_q(2 downto 2));
+
+    -- d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c_18(DELAY,360)@17 + 1
+    d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c_18 : dspba_delay
+    GENERIC MAP ( width => 3, depth => 1, reset_kind => "ASYNC" )
     PORT MAP ( xin => u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c, xout => d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c_18_q, clk => clk, aclr => areset );
 
-    -- d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c_18(DELAY,308)@17 + 1
+    -- d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c_18(DELAY,359)@17 + 1
     d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c_18 : dspba_delay
-    GENERIC MAP ( width => 7, depth => 1, reset_kind => "ASYNC" )
+    GENERIC MAP ( width => 3, depth => 1, reset_kind => "ASYNC" )
     PORT MAP ( xin => u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c, xout => d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c_18_q, clk => clk, aclr => areset );
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2(ADD,223)@18 + 1
+    -- u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2(ADD,244)@18 + 1
     u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_cin <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_p1_of_2_c;
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((7 downto 7 => d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c_18_q(6)) & d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c_18_q) & '1');
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((7 downto 7 => d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c_18_q(6)) & d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c_18_q) & u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_cin(0));
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((3 downto 3 => d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c_18_q(2)) & d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_a_c_18_q) & '1');
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((3 downto 3 => d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c_18_q(2)) & d_u0_m0_wo0_mtree_mult1_0_result_add_0_0_BitSelect_for_b_c_18_q) & u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_cin(0));
     u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_clkproc: PROCESS (clk, areset)
     BEGIN
         IF (areset = '1') THEN
@@ -2215,15 +2287,15 @@ begin
             u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_o <= STD_LOGIC_VECTOR(SIGNED(u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_a) + SIGNED(u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_b));
         END IF;
     END PROCESS;
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_o(7 downto 1);
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_q <= u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_o(3 downto 1);
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_BitJoin_for_c(BITJOIN,283)@19
-    u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_BitJoin_for_c_q <= u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_q;
+    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_BitJoin_for_c(BITJOIN,328)@19
+    u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_BitJoin_for_c_q <= u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_mult1_0_result_add_0_0_p2_of_2_q;
 
-    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2(ADD,234)@19 + 1
+    -- u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2(ADD,266)@19 + 1
     u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2_cin <= u0_m0_wo0_mtree_mult1_0_result_add_1_0_p1_of_2_c;
     u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((8 downto 8 => u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_BitJoin_for_c_q(7)) & u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_a_BitJoin_for_c_q) & '1');
-    u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((8 downto 8 => d_u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_c_19_q(7)) & d_u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_c_19_q) & u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2_cin(0));
+    u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((8 downto 8 => u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_BitJoin_for_c_q(7)) & u0_m0_wo0_mtree_mult1_0_result_add_1_0_BitSelect_for_b_BitJoin_for_c_q) & u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2_cin(0));
     u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2_clkproc: PROCESS (clk, areset)
     BEGIN
         IF (areset = '1') THEN
@@ -2234,16 +2306,16 @@ begin
     END PROCESS;
     u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2_q <= u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2_o(8 downto 1);
 
-    -- u0_m0_wo0_mtree_add0_0_BitSelect_for_a_tessel1_1(BITSELECT,243)@20
+    -- u0_m0_wo0_mtree_add0_0_BitSelect_for_a_tessel1_1(BITSELECT,275)@20
     u0_m0_wo0_mtree_add0_0_BitSelect_for_a_tessel1_1_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2_q(5 downto 5));
 
-    -- u0_m0_wo0_mtree_add0_0_BitSelect_for_a_tessel1_0(BITSELECT,242)@20
+    -- u0_m0_wo0_mtree_add0_0_BitSelect_for_a_tessel1_0(BITSELECT,274)@20
     u0_m0_wo0_mtree_add0_0_BitSelect_for_a_tessel1_0_b <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_result_add_1_0_p2_of_2_q(5 downto 0));
 
-    -- u0_m0_wo0_mtree_add0_0_BitSelect_for_a_BitJoin_for_c(BITJOIN,244)@20
+    -- u0_m0_wo0_mtree_add0_0_BitSelect_for_a_BitJoin_for_c(BITJOIN,276)@20
     u0_m0_wo0_mtree_add0_0_BitSelect_for_a_BitJoin_for_c_q <= u0_m0_wo0_mtree_add0_0_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_add0_0_BitSelect_for_a_tessel1_0_b;
 
-    -- u0_m0_wo0_mtree_add0_0_p2_of_2(ADD,178)@20 + 1
+    -- u0_m0_wo0_mtree_add0_0_p2_of_2(ADD,188)@20 + 1
     u0_m0_wo0_mtree_add0_0_p2_of_2_cin <= u0_m0_wo0_mtree_add0_0_p1_of_2_c;
     u0_m0_wo0_mtree_add0_0_p2_of_2_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((7 downto 7 => u0_m0_wo0_mtree_add0_0_BitSelect_for_a_BitJoin_for_c_q(6)) & u0_m0_wo0_mtree_add0_0_BitSelect_for_a_BitJoin_for_c_q) & '1');
     u0_m0_wo0_mtree_add0_0_p2_of_2_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((7 downto 7 => u0_m0_wo0_mtree_add0_0_BitSelect_for_b_BitJoin_for_c_q(6)) & u0_m0_wo0_mtree_add0_0_BitSelect_for_b_BitJoin_for_c_q) & u0_m0_wo0_mtree_add0_0_p2_of_2_cin(0));
@@ -2257,10 +2329,10 @@ begin
     END PROCESS;
     u0_m0_wo0_mtree_add0_0_p2_of_2_q <= u0_m0_wo0_mtree_add0_0_p2_of_2_o(7 downto 1);
 
-    -- u0_m0_wo0_accum_BitSelect_for_a_BitJoin_for_c(BITJOIN,259)@21
+    -- u0_m0_wo0_accum_BitSelect_for_a_BitJoin_for_c(BITJOIN,291)@21
     u0_m0_wo0_accum_BitSelect_for_a_BitJoin_for_c_q <= u0_m0_wo0_accum_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_accum_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_accum_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_accum_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_accum_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_accum_BitSelect_for_a_tessel1_1_b & u0_m0_wo0_mtree_add0_0_p2_of_2_q;
 
-    -- u0_m0_wo0_accum_p2_of_2(ADD,190)@21 + 1
+    -- u0_m0_wo0_accum_p2_of_2(ADD,200)@21 + 1
     u0_m0_wo0_accum_p2_of_2_cin <= u0_m0_wo0_accum_p1_of_2_c;
     u0_m0_wo0_accum_p2_of_2_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((13 downto 13 => u0_m0_wo0_accum_BitSelect_for_a_BitJoin_for_c_q(12)) & u0_m0_wo0_accum_BitSelect_for_a_BitJoin_for_c_q) & '1');
     u0_m0_wo0_accum_p2_of_2_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((13 downto 13 => u0_m0_wo0_adelay_p1_q(12)) & u0_m0_wo0_adelay_p1_q) & u0_m0_wo0_accum_p2_of_2_cin(0));
@@ -2281,12 +2353,12 @@ begin
     END PROCESS;
     u0_m0_wo0_accum_p2_of_2_q <= u0_m0_wo0_accum_p2_of_2_o(13 downto 1);
 
-    -- d_u0_m0_wo0_accum_p1_of_2_q_22(DELAY,304)@21 + 1
+    -- d_u0_m0_wo0_accum_p1_of_2_q_22(DELAY,354)@21 + 1
     d_u0_m0_wo0_accum_p1_of_2_q_22 : dspba_delay
     GENERIC MAP ( width => 49, depth => 1, reset_kind => "ASYNC" )
     PORT MAP ( xin => u0_m0_wo0_accum_p1_of_2_q, xout => d_u0_m0_wo0_accum_p1_of_2_q_22_q, clk => clk, aclr => areset );
 
-    -- u0_m0_wo0_accum_BitJoin_for_q(BITJOIN,191)@22
+    -- u0_m0_wo0_accum_BitJoin_for_q(BITJOIN,201)@22
     u0_m0_wo0_accum_BitJoin_for_q_q <= u0_m0_wo0_accum_p2_of_2_q & d_u0_m0_wo0_accum_p1_of_2_q_22_q;
 
     -- u0_m0_wo0_oseq(SEQUENCE,102)@19 + 1
@@ -2341,7 +2413,7 @@ begin
     END PROCESS;
     outchan_q <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR(RESIZE(outchan_i, 3)));
 
-    -- d_out0_m0_wo0_assign_id3_q_22(DELAY,301)@21 + 1
+    -- d_out0_m0_wo0_assign_id3_q_22(DELAY,353)@21 + 1
     d_out0_m0_wo0_assign_id3_q_22 : dspba_delay
     GENERIC MAP ( width => 1, depth => 1, reset_kind => "ASYNC" )
     PORT MAP ( xin => u0_m0_wo0_oseq_gated_reg_q, xout => d_out0_m0_wo0_assign_id3_q_22_q, clk => clk, aclr => areset );

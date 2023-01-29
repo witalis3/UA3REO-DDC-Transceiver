@@ -1,5 +1,5 @@
 ## ================================================================================
-## Legal Notice: Copyright (C) 1991-2022 Altera Corporation. All rights reserved.
+## Legal Notice: Copyright (C) 1991-2023 Altera Corporation. All rights reserved.
 ## Any megafunction design, and related net list (encrypted or decrypted),
 ## support information, device programming or simulation file, and any other
 ## associated documentation or information provided by Altera or a partner
@@ -27,9 +27,9 @@ write transcript rx_ciccomp_transcript
 # START MEGAWIZARD INSERT VARIABLES
 set top_entity rx_ciccomp
 set timing_resolution "1ps"
-set core_version 18.1
+set core_version 22.1
 set device_family "Cyclone IV E"
-set quartus_rootdir C:/intelfpga/18.1/quartus/
+set quartus_rootdir C:/intelfpga/22.1std/quartus/
 # Change to "gate_level" for gate-level sim
 set sim_type "rtl"
 # END MEGAWIZARD INSERT VARIABLES

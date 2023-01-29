@@ -2,7 +2,7 @@ set_time_format -unit ns -decimal_places 3
 
 create_clock -name "clock_crystal" -period 122.880MHz [get_ports {clk_sys_lvpecl_p}]
 create_clock -name "clock_adc" -period 122.880MHz [get_ports {ADC_CLK}]
-create_clock -name "clock_tcxo" -period 12.288MHz [get_ports {TCXO_CLK_IN}]
+create_clock -name "clock_tcxo" -period 20MHz [get_ports {TCXO_CLK_IN}]
 create_clock -name "clock_stm32" -period 50MHz [get_ports {STM32_CLK}]
 create_clock -name "RX_IQ_ST_CLK" -period 0.384MHz {stm32_interface:STM32_INTERFACE|IQ_RX_READ_CLK}
 create_clock -name "TX_IQ_ST_CLK" -period 0.048MHz {stm32_interface:STM32_INTERFACE|tx_iq_valid} 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2022.09.27.23:57:30"
+ date="2023.01.29.14:17:09"
  outputDirectory="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/tx_cic/">
  <perimeter>
   <parameter
@@ -103,7 +103,7 @@
  </perimeter>
  <entity
    path=""
-   parameterizationKey="tx_cic:1.0:AUTO_CLOCK_CLOCK_DOMAIN=-1,AUTO_CLOCK_CLOCK_RATE=-1,AUTO_CLOCK_RESET_DOMAIN=-1,AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1664308648,AUTO_UNIQUE_ID=(altera_cic_ii:18.1:CH_PER_INT=2,CLK_EN_PORT=true,C_STAGE_0_WIDTH=50,C_STAGE_10_WIDTH=50,C_STAGE_11_WIDTH=50,C_STAGE_1_WIDTH=50,C_STAGE_2_WIDTH=50,C_STAGE_3_WIDTH=50,C_STAGE_4_WIDTH=50,C_STAGE_5_WIDTH=50,C_STAGE_6_WIDTH=50,C_STAGE_7_WIDTH=50,C_STAGE_8_WIDTH=50,C_STAGE_9_WIDTH=50,DIF_MEM=auto,DIF_USE_MEM=false,D_DELAY=1,FILTER_TYPE=interpolator,INTERFACES=1,INT_MEM=auto,INT_USE_MEM=false,IN_WIDTH=16,I_STAGE_0_WIDTH=50,I_STAGE_10_WIDTH=50,I_STAGE_11_WIDTH=50,I_STAGE_1_WIDTH=50,I_STAGE_2_WIDTH=50,I_STAGE_3_WIDTH=50,I_STAGE_4_WIDTH=50,I_STAGE_5_WIDTH=50,I_STAGE_6_WIDTH=50,I_STAGE_7_WIDTH=50,I_STAGE_8_WIDTH=50,I_STAGE_9_WIDTH=50,MAX_C_STAGE_WIDTH=50,MAX_I_STAGE_WIDTH=50,OUT_WIDTH=14,PIPELINING=0,RCF_FIX=2300,RCF_LB=8,RCF_MAX=2300,RCF_MIN=2300,RCF_UB=21,REQ_DIF_MEM=logic_element,REQ_INT_MEM=logic_element,REQ_OUT_WIDTH=14,REQ_PIPELINE=0,ROUND_TYPE=CONV_ROUND,STAGES=4,VRC_EN=0,design_env=NATIVE,hyper_opt=0,hyper_opt_select=0,selected_device_family=Cyclone IV E)"
+   parameterizationKey="tx_cic:1.0:AUTO_CLOCK_CLOCK_DOMAIN=-1,AUTO_CLOCK_CLOCK_RATE=-1,AUTO_CLOCK_RESET_DOMAIN=-1,AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1674991026,AUTO_UNIQUE_ID=(altera_cic_ii:22.1:CH_PER_INT=2,CLK_EN_PORT=true,C_STAGE_0_WIDTH=50,C_STAGE_10_WIDTH=50,C_STAGE_11_WIDTH=50,C_STAGE_1_WIDTH=50,C_STAGE_2_WIDTH=50,C_STAGE_3_WIDTH=50,C_STAGE_4_WIDTH=50,C_STAGE_5_WIDTH=50,C_STAGE_6_WIDTH=50,C_STAGE_7_WIDTH=50,C_STAGE_8_WIDTH=50,C_STAGE_9_WIDTH=50,DIF_MEM=auto,DIF_USE_MEM=false,D_DELAY=1,FILTER_TYPE=interpolator,INTERFACES=1,INT_MEM=auto,INT_USE_MEM=false,IN_WIDTH=16,I_STAGE_0_WIDTH=50,I_STAGE_10_WIDTH=50,I_STAGE_11_WIDTH=50,I_STAGE_1_WIDTH=50,I_STAGE_2_WIDTH=50,I_STAGE_3_WIDTH=50,I_STAGE_4_WIDTH=50,I_STAGE_5_WIDTH=50,I_STAGE_6_WIDTH=50,I_STAGE_7_WIDTH=50,I_STAGE_8_WIDTH=50,I_STAGE_9_WIDTH=50,MAX_C_STAGE_WIDTH=50,MAX_I_STAGE_WIDTH=50,OUT_WIDTH=14,PIPELINING=0,RCF_FIX=2300,RCF_LB=8,RCF_MAX=2300,RCF_MIN=2300,RCF_UB=21,REQ_DIF_MEM=logic_element,REQ_INT_MEM=logic_element,REQ_OUT_WIDTH=14,REQ_PIPELINE=0,ROUND_TYPE=CONV_ROUND,STAGES=4,VRC_EN=0,design_env=NATIVE,hyper_opt=0,hyper_opt_select=0,selected_device_family=Cyclone IV E)"
    instancePathKey="tx_cic"
    kind="tx_cic"
    version="1.0"
@@ -111,7 +111,7 @@
   <parameter name="AUTO_CLOCK_CLOCK_RATE" value="-1" />
   <parameter name="AUTO_CLOCK_CLOCK_DOMAIN" value="-1" />
   <parameter name="AUTO_CLOCK_RESET_DOMAIN" value="-1" />
-  <parameter name="AUTO_GENERATION_ID" value="1664308648" />
+  <parameter name="AUTO_GENERATION_ID" value="1674991026" />
   <parameter name="AUTO_DEVICE" value="EP4CE22E22C8" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone IV E" />
   <parameter name="AUTO_UNIQUE_ID" value="" />
@@ -244,8 +244,9 @@
   </sourceFiles>
   <childSourceFiles>
    <file
-       path="C:/intelfpga/18.1/ip/altera/dsp/altera_cic_ii/altera_cic_ii_hw.tcl" />
-   <file path="C:/intelFPGA/18.1/ip/altera/dsp/altera_cic_ii/cic_helper.jar" />
+       path="C:/intelfpga/22.1std/ip/altera/dsp/altera_cic_ii/altera_cic_ii_hw.tcl" />
+   <file
+       path="C:/intelFPGA/22.1std/ip/altera/dsp/altera_cic_ii/cic_helper.jar" />
   </childSourceFiles>
   <messages>
    <message level="Debug" culprit="tx_cic">queue size: 0 starting:tx_cic "tx_cic"</message>
@@ -268,10 +269,10 @@
  </entity>
  <entity
    path="submodules/"
-   parameterizationKey="altera_cic_ii:18.1:CH_PER_INT=2,CLK_EN_PORT=true,C_STAGE_0_WIDTH=50,C_STAGE_10_WIDTH=50,C_STAGE_11_WIDTH=50,C_STAGE_1_WIDTH=50,C_STAGE_2_WIDTH=50,C_STAGE_3_WIDTH=50,C_STAGE_4_WIDTH=50,C_STAGE_5_WIDTH=50,C_STAGE_6_WIDTH=50,C_STAGE_7_WIDTH=50,C_STAGE_8_WIDTH=50,C_STAGE_9_WIDTH=50,DIF_MEM=auto,DIF_USE_MEM=false,D_DELAY=1,FILTER_TYPE=interpolator,INTERFACES=1,INT_MEM=auto,INT_USE_MEM=false,IN_WIDTH=16,I_STAGE_0_WIDTH=50,I_STAGE_10_WIDTH=50,I_STAGE_11_WIDTH=50,I_STAGE_1_WIDTH=50,I_STAGE_2_WIDTH=50,I_STAGE_3_WIDTH=50,I_STAGE_4_WIDTH=50,I_STAGE_5_WIDTH=50,I_STAGE_6_WIDTH=50,I_STAGE_7_WIDTH=50,I_STAGE_8_WIDTH=50,I_STAGE_9_WIDTH=50,MAX_C_STAGE_WIDTH=50,MAX_I_STAGE_WIDTH=50,OUT_WIDTH=14,PIPELINING=0,RCF_FIX=2300,RCF_LB=8,RCF_MAX=2300,RCF_MIN=2300,RCF_UB=21,REQ_DIF_MEM=logic_element,REQ_INT_MEM=logic_element,REQ_OUT_WIDTH=14,REQ_PIPELINE=0,ROUND_TYPE=CONV_ROUND,STAGES=4,VRC_EN=0,design_env=NATIVE,hyper_opt=0,hyper_opt_select=0,selected_device_family=Cyclone IV E"
+   parameterizationKey="altera_cic_ii:22.1:CH_PER_INT=2,CLK_EN_PORT=true,C_STAGE_0_WIDTH=50,C_STAGE_10_WIDTH=50,C_STAGE_11_WIDTH=50,C_STAGE_1_WIDTH=50,C_STAGE_2_WIDTH=50,C_STAGE_3_WIDTH=50,C_STAGE_4_WIDTH=50,C_STAGE_5_WIDTH=50,C_STAGE_6_WIDTH=50,C_STAGE_7_WIDTH=50,C_STAGE_8_WIDTH=50,C_STAGE_9_WIDTH=50,DIF_MEM=auto,DIF_USE_MEM=false,D_DELAY=1,FILTER_TYPE=interpolator,INTERFACES=1,INT_MEM=auto,INT_USE_MEM=false,IN_WIDTH=16,I_STAGE_0_WIDTH=50,I_STAGE_10_WIDTH=50,I_STAGE_11_WIDTH=50,I_STAGE_1_WIDTH=50,I_STAGE_2_WIDTH=50,I_STAGE_3_WIDTH=50,I_STAGE_4_WIDTH=50,I_STAGE_5_WIDTH=50,I_STAGE_6_WIDTH=50,I_STAGE_7_WIDTH=50,I_STAGE_8_WIDTH=50,I_STAGE_9_WIDTH=50,MAX_C_STAGE_WIDTH=50,MAX_I_STAGE_WIDTH=50,OUT_WIDTH=14,PIPELINING=0,RCF_FIX=2300,RCF_LB=8,RCF_MAX=2300,RCF_MIN=2300,RCF_UB=21,REQ_DIF_MEM=logic_element,REQ_INT_MEM=logic_element,REQ_OUT_WIDTH=14,REQ_PIPELINE=0,ROUND_TYPE=CONV_ROUND,STAGES=4,VRC_EN=0,design_env=NATIVE,hyper_opt=0,hyper_opt_select=0,selected_device_family=Cyclone IV E"
    instancePathKey="tx_cic:.:cic_ii_0"
    kind="altera_cic_ii"
-   version="18.1"
+   version="22.1"
    name="tx_cic_cic_ii_0">
   <parameter name="VRC_EN" value="0" />
   <parameter name="D_DELAY" value="1" />
@@ -448,8 +449,9 @@
   <childGeneratedFiles/>
   <sourceFiles>
    <file
-       path="C:/intelfpga/18.1/ip/altera/dsp/altera_cic_ii/altera_cic_ii_hw.tcl" />
-   <file path="C:/intelFPGA/18.1/ip/altera/dsp/altera_cic_ii/cic_helper.jar" />
+       path="C:/intelfpga/22.1std/ip/altera/dsp/altera_cic_ii/altera_cic_ii_hw.tcl" />
+   <file
+       path="C:/intelFPGA/22.1std/ip/altera/dsp/altera_cic_ii/cic_helper.jar" />
   </sourceFiles>
   <childSourceFiles/>
   <instantiator instantiator="tx_cic" as="cic_ii_0" />

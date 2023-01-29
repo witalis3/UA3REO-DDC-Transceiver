@@ -388,6 +388,13 @@ refer to the applicable agreement for further details.
 		(line (pt 288 608)(pt 272 608)(line_width 1))
 	)
 	(port
+		(pt 288 624)
+		(output)
+		(text "VCXO_corr_disable" (rect 0 0 82 12)(font "Arial" ))
+		(text "VCXO_corr_disable" (rect 185 619 267 631)(font "Arial" ))
+		(line (pt 288 624)(pt 272 624)(line_width 1))
+	)
+	(port
 		(pt 288 32)
 		(bidir)
 		(text "DATA_BUS[7..0]" (rect 0 0 74 12)(font "Arial" ))

@@ -71,7 +71,7 @@
  <module
    name="cic_ii_0"
    kind="altera_cic_ii"
-   version="18.1"
+   version="22.1"
    enabled="1"
    autoexport="1">
   <parameter name="CH_PER_INT" value="2" />

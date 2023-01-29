@@ -3,7 +3,7 @@ vcxo_clk_in,
 tcxo_clk_in,
 pwm_clk_in,
 VCXO_correction,
-tx,
+disabled,
 
 freq_error,
 pump,
@@ -18,7 +18,7 @@ input vcxo_clk_in;
 input tcxo_clk_in;
 input pwm_clk_in;
 input signed [15:0] VCXO_correction;
-input tx;
+input disabled;
 
 output reg signed [31:0] freq_error = 0;
 output reg pump = 0;
@@ -192,7 +192,11 @@ begin
 		begin	
 			//tune COARSE
 			
-			if ($signed(freq_error_now) < 10 || $signed(freq_error_now) > 10)
+			if (disabled)
+			begin
+			// do not correct
+			end
+			else if ($signed(freq_error_now) < 10 || $signed(freq_error_now) > 10)
 				PWM_new <= $signed(PWM) - $signed(freq_error_now);
 			else if ($signed(freq_error_now) < 0)
 				PWM_new <= $signed(PWM) + 1;
@@ -213,7 +217,11 @@ begin
 		begin	
 			//tune FINE
 			
-			if ($signed(freq_error_now) < 0)
+			if (disabled)
+			begin
+			// do not correct
+			end
+			else if ($signed(freq_error_now) < 0)
 				PWM_new <= $signed(PWM) + 1;
 			else if ($signed(freq_error_now) > 0)
 				PWM_new <= $signed(PWM) - 1;

@@ -4,9 +4,9 @@ editor if you plan to continue editing the block that represents it in
 the Block Editor! File corruption is VERY likely to occur.
 */
 /*
-Copyright (C) 2018  Intel Corporation. All rights reserved.
+Copyright (C) 2022  Intel Corporation. All rights reserved.
 Your use of Intel Corporation's design tools, logic functions 
-and other software and tools, and its AMPP partner logic 
+and other software and tools, and any partner logic 
 functions, and any output files from any of the foregoing 
 (including device programming or simulation files), and any 
 associated documentation or information are expressly subject 
@@ -16,7 +16,8 @@ the Intel FPGA IP License Agreement, or other applicable license
 agreement, including, without limitation, that your use is for
 the sole purpose of programming logic devices manufactured by
 Intel and sold by Intel or its authorized distributors.  Please
-refer to the applicable agreement for further details.
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
 */
 (header "symbol" (version "1.2"))
 (symbol
@@ -38,14 +39,14 @@ refer to the applicable agreement for further details.
 	)
 	(drawing
 		(text "Cyclone IV E" (rect 164 136 383 283)(font "Arial" ))
-		(text "inclk0 frequency: 12.288 MHz" (rect 50 59 223 129)(font "Arial" ))
+		(text "inclk0 frequency: 20.000 MHz" (rect 50 59 223 129)(font "Arial" ))
 		(text "Operation Mode: Normal" (rect 50 72 199 155)(font "Arial" ))
 		(text "Clk " (rect 51 93 116 197)(font "Arial" ))
 		(text "Ratio" (rect 72 93 164 197)(font "Arial" ))
 		(text "Ph (dg)" (rect 98 93 225 197)(font "Arial" ))
 		(text "DC (%)" (rect 132 93 294 197)(font "Arial" ))
 		(text "c0" (rect 54 107 116 225)(font "Arial" ))
-		(text "15/1" (rect 74 107 163 225)(font "Arial" ))
+		(text "9/1" (rect 77 107 164 225)(font "Arial" ))
 		(text "0.00" (rect 104 107 224 225)(font "Arial" ))
 		(text "50.00" (rect 136 107 293 225)(font "Arial" ))
 		(line (pt 0 0)(pt 241 0))

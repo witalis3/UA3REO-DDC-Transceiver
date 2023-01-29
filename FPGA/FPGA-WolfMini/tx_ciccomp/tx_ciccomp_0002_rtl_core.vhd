@@ -1,8 +1,8 @@
 -- ------------------------------------------------------------------------- 
--- High Level Design Compiler for Intel(R) FPGAs Version 18.1 (Release Build #625)
+-- High Level Design Compiler for Intel(R) FPGAs Version 22.1std (Release Build #915)
 -- Quartus Prime development tool and MATLAB/Simulink Interface
 -- 
--- Legal Notice: Copyright 2018 Intel Corporation.  All rights reserved.
+-- Legal Notice: Copyright 2022 Intel Corporation.  All rights reserved.
 -- Your use of  Intel Corporation's design tools,  logic functions and other
 -- software and  tools, and its AMPP partner logic functions, and any output
 -- files any  of the foregoing (including  device programming  or simulation
@@ -16,7 +16,7 @@
 -- ---------------------------------------------------------------------------
 
 -- VHDL created from tx_ciccomp_0002_rtl_core
--- VHDL created on Sat Jan 14 16:56:40 2023
+-- VHDL created on Sun Jan 29 14:41:19 2023
 
 
 library IEEE;
@@ -130,16 +130,16 @@ architecture normal of tx_ciccomp_0002_rtl_core is
     signal u0_m0_wo0_cm0_lutmem_ab : STD_LOGIC_VECTOR (7 downto 0);
     signal u0_m0_wo0_cm0_lutmem_ir : STD_LOGIC_VECTOR (15 downto 0);
     signal u0_m0_wo0_cm0_lutmem_r : STD_LOGIC_VECTOR (15 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im0_a0 : STD_LOGIC_VECTOR (17 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im0_b0 : STD_LOGIC_VECTOR (15 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im0_s1 : STD_LOGIC_VECTOR (33 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im0_a0 : STD_LOGIC_VECTOR (15 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im0_b0 : STD_LOGIC_VECTOR (6 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im0_s1 : STD_LOGIC_VECTOR (22 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_im0_reset : std_logic;
-    signal u0_m0_wo0_mtree_mult1_0_im0_q : STD_LOGIC_VECTOR (33 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im4_a0 : STD_LOGIC_VECTOR (15 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im4_b0 : STD_LOGIC_VECTOR (6 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im4_s1 : STD_LOGIC_VECTOR (22 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_im4_reset : std_logic;
-    signal u0_m0_wo0_mtree_mult1_0_im4_q : STD_LOGIC_VECTOR (22 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im0_q : STD_LOGIC_VECTOR (22 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im3_a0 : STD_LOGIC_VECTOR (17 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im3_b0 : STD_LOGIC_VECTOR (15 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im3_s1 : STD_LOGIC_VECTOR (33 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_im3_reset : std_logic;
+    signal u0_m0_wo0_mtree_mult1_0_im3_q : STD_LOGIC_VECTOR (33 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_a : STD_LOGIC_VECTOR (40 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_b : STD_LOGIC_VECTOR (40 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_result_add_0_0_o : STD_LOGIC_VECTOR (40 downto 0);
@@ -156,12 +156,12 @@ architecture normal of tx_ciccomp_0002_rtl_core is
     signal u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_BitSelect_for_b_b : STD_LOGIC_VECTOR (0 downto 0);
     signal u0_m0_wo0_wi0_r0_ra0_resize_in : STD_LOGIC_VECTOR (8 downto 0);
     signal u0_m0_wo0_wi0_r0_ra0_resize_b : STD_LOGIC_VECTOR (8 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b : STD_LOGIC_VECTOR (16 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_c : STD_LOGIC_VECTOR (6 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b : STD_LOGIC_VECTOR (6 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_c : STD_LOGIC_VECTOR (16 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_align_8_q : STD_LOGIC_VECTOR (39 downto 0);
     signal u0_m0_wo0_mtree_mult1_0_align_8_qint : STD_LOGIC_VECTOR (39 downto 0);
     signal u0_m0_wo0_wi0_r0_ra0_add_0_0_replace_or_join_q : STD_LOGIC_VECTOR (10 downto 0);
-    signal u0_m0_wo0_mtree_mult1_0_bjB3_q : STD_LOGIC_VECTOR (17 downto 0);
+    signal u0_m0_wo0_mtree_mult1_0_bjB6_q : STD_LOGIC_VECTOR (17 downto 0);
 
 begin
 
@@ -497,8 +497,8 @@ begin
     u0_m0_wo0_wi0_r0_memr0_q <= u0_m0_wo0_wi0_r0_memr0_iq(23 downto 0);
 
     -- u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select(BITSELECT,70)@15
-    u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_memr0_q(16 downto 0));
-    u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_c <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_memr0_q(23 downto 17));
+    u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_memr0_q(23 downto 17));
+    u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_c <= STD_LOGIC_VECTOR(u0_m0_wo0_wi0_r0_memr0_q(16 downto 0));
 
     -- u0_m0_wo0_ca0_inner(COUNTER,34)@13
     -- low=-1, high=0, step=1, init=0
@@ -570,47 +570,15 @@ begin
     );
     u0_m0_wo0_cm0_lutmem_r <= u0_m0_wo0_cm0_lutmem_ir(15 downto 0);
 
-    -- u0_m0_wo0_mtree_mult1_0_im4(MULT,60)@15 + 2
-    u0_m0_wo0_mtree_mult1_0_im4_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_cm0_lutmem_r);
-    u0_m0_wo0_mtree_mult1_0_im4_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_c);
-    u0_m0_wo0_mtree_mult1_0_im4_reset <= areset;
-    u0_m0_wo0_mtree_mult1_0_im4_component : lpm_mult
+    -- u0_m0_wo0_mtree_mult1_0_im0(MULT,56)@15 + 2
+    u0_m0_wo0_mtree_mult1_0_im0_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_cm0_lutmem_r);
+    u0_m0_wo0_mtree_mult1_0_im0_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b);
+    u0_m0_wo0_mtree_mult1_0_im0_reset <= areset;
+    u0_m0_wo0_mtree_mult1_0_im0_component : lpm_mult
     GENERIC MAP (
         lpm_widtha => 16,
         lpm_widthb => 7,
         lpm_widthp => 23,
-        lpm_widths => 1,
-        lpm_type => "LPM_MULT",
-        lpm_representation => "SIGNED",
-        lpm_hint => "DEDICATED_MULTIPLIER_CIRCUITRY=YES, MAXIMIZE_SPEED=5",
-        lpm_pipeline => 2
-    )
-    PORT MAP (
-        dataa => u0_m0_wo0_mtree_mult1_0_im4_a0,
-        datab => u0_m0_wo0_mtree_mult1_0_im4_b0,
-        clken => VCC_q(0),
-        aclr => u0_m0_wo0_mtree_mult1_0_im4_reset,
-        clock => clk,
-        result => u0_m0_wo0_mtree_mult1_0_im4_s1
-    );
-    u0_m0_wo0_mtree_mult1_0_im4_q <= u0_m0_wo0_mtree_mult1_0_im4_s1;
-
-    -- u0_m0_wo0_mtree_mult1_0_align_8(BITSHIFT,64)@17
-    u0_m0_wo0_mtree_mult1_0_align_8_qint <= u0_m0_wo0_mtree_mult1_0_im4_q & "00000000000000000";
-    u0_m0_wo0_mtree_mult1_0_align_8_q <= u0_m0_wo0_mtree_mult1_0_align_8_qint(39 downto 0);
-
-    -- u0_m0_wo0_mtree_mult1_0_bjB3(BITJOIN,59)@15
-    u0_m0_wo0_mtree_mult1_0_bjB3_q <= GND_q & u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_b;
-
-    -- u0_m0_wo0_mtree_mult1_0_im0(MULT,56)@15 + 2
-    u0_m0_wo0_mtree_mult1_0_im0_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bjB3_q);
-    u0_m0_wo0_mtree_mult1_0_im0_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_cm0_lutmem_r);
-    u0_m0_wo0_mtree_mult1_0_im0_reset <= areset;
-    u0_m0_wo0_mtree_mult1_0_im0_component : lpm_mult
-    GENERIC MAP (
-        lpm_widtha => 18,
-        lpm_widthb => 16,
-        lpm_widthp => 34,
         lpm_widths => 1,
         lpm_type => "LPM_MULT",
         lpm_representation => "SIGNED",
@@ -627,8 +595,40 @@ begin
     );
     u0_m0_wo0_mtree_mult1_0_im0_q <= u0_m0_wo0_mtree_mult1_0_im0_s1;
 
+    -- u0_m0_wo0_mtree_mult1_0_align_8(BITSHIFT,64)@17
+    u0_m0_wo0_mtree_mult1_0_align_8_qint <= u0_m0_wo0_mtree_mult1_0_im0_q & "00000000000000000";
+    u0_m0_wo0_mtree_mult1_0_align_8_q <= u0_m0_wo0_mtree_mult1_0_align_8_qint(39 downto 0);
+
+    -- u0_m0_wo0_mtree_mult1_0_bjB6(BITJOIN,62)@15
+    u0_m0_wo0_mtree_mult1_0_bjB6_q <= GND_q & u0_m0_wo0_mtree_mult1_0_bs2_merged_bit_select_c;
+
+    -- u0_m0_wo0_mtree_mult1_0_im3(MULT,59)@15 + 2
+    u0_m0_wo0_mtree_mult1_0_im3_a0 <= STD_LOGIC_VECTOR(u0_m0_wo0_mtree_mult1_0_bjB6_q);
+    u0_m0_wo0_mtree_mult1_0_im3_b0 <= STD_LOGIC_VECTOR(u0_m0_wo0_cm0_lutmem_r);
+    u0_m0_wo0_mtree_mult1_0_im3_reset <= areset;
+    u0_m0_wo0_mtree_mult1_0_im3_component : lpm_mult
+    GENERIC MAP (
+        lpm_widtha => 18,
+        lpm_widthb => 16,
+        lpm_widthp => 34,
+        lpm_widths => 1,
+        lpm_type => "LPM_MULT",
+        lpm_representation => "SIGNED",
+        lpm_hint => "DEDICATED_MULTIPLIER_CIRCUITRY=YES, MAXIMIZE_SPEED=5",
+        lpm_pipeline => 2
+    )
+    PORT MAP (
+        dataa => u0_m0_wo0_mtree_mult1_0_im3_a0,
+        datab => u0_m0_wo0_mtree_mult1_0_im3_b0,
+        clken => VCC_q(0),
+        aclr => u0_m0_wo0_mtree_mult1_0_im3_reset,
+        clock => clk,
+        result => u0_m0_wo0_mtree_mult1_0_im3_s1
+    );
+    u0_m0_wo0_mtree_mult1_0_im3_q <= u0_m0_wo0_mtree_mult1_0_im3_s1;
+
     -- u0_m0_wo0_mtree_mult1_0_result_add_0_0(ADD,66)@17 + 1
-    u0_m0_wo0_mtree_mult1_0_result_add_0_0_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((40 downto 34 => u0_m0_wo0_mtree_mult1_0_im0_q(33)) & u0_m0_wo0_mtree_mult1_0_im0_q));
+    u0_m0_wo0_mtree_mult1_0_result_add_0_0_a <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((40 downto 34 => u0_m0_wo0_mtree_mult1_0_im3_q(33)) & u0_m0_wo0_mtree_mult1_0_im3_q));
     u0_m0_wo0_mtree_mult1_0_result_add_0_0_b <= STD_LOGIC_VECTOR(STD_LOGIC_VECTOR((40 downto 40 => u0_m0_wo0_mtree_mult1_0_align_8_q(39)) & u0_m0_wo0_mtree_mult1_0_align_8_q));
     u0_m0_wo0_mtree_mult1_0_result_add_0_0_clkproc: PROCESS (clk, areset)
     BEGIN

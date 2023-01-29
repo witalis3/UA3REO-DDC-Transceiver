@@ -1,5 +1,5 @@
 set_global_assignment -entity "rx_ciccomp" -library "lib_rx_ciccomp" -name IP_TOOL_NAME "altera_fir_compiler_ii"
-set_global_assignment -entity "rx_ciccomp" -library "lib_rx_ciccomp" -name IP_TOOL_VERSION "18.1"
+set_global_assignment -entity "rx_ciccomp" -library "lib_rx_ciccomp" -name IP_TOOL_VERSION "22.1"
 set_global_assignment -entity "rx_ciccomp" -library "lib_rx_ciccomp" -name IP_TOOL_ENV "mwpim"
 set_global_assignment -library "lib_rx_ciccomp" -name SPD_FILE [file join $::quartus(sip_path) "rx_ciccomp.spd"]
 
