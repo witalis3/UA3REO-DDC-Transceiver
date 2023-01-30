@@ -127,13 +127,6 @@ void SELF_TEST_Draw(void) {
 		SELF_TEST_printResult(CODEC_test_result, pos_y);
 		pos_y += margin_bottom;
 
-#if !defined(FRONTPANEL_LITE)
-		// TCXO test
-		LCDDriver_printText("TCXO", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-		SELF_TEST_printResult(abs(TRX_VCXO_ERROR) < 10, pos_y);
-		pos_y += margin_bottom;
-#endif
-
 		// Samplerate test
 		LCDDriver_printText("FPGA Clocks", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		SELF_TEST_printResult(abs((int32_t)TRX_GetRXSampleRate - (int32_t)dbg_FPGA_samples) < (TRX_GetRXSampleRate * 0.05f), pos_y); // 5%

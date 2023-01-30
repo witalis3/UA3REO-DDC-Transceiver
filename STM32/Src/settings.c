@@ -734,8 +734,10 @@ void LoadCalibration(bool clear) {
 #endif
 #if defined(FRONTPANEL_MINI)
 		CALIBRATE.TCXO_frequency = 20000;       // TCXO Frequency x1000
-#else
+#elif defined(FRONTPANEL_LITE_V2_MINI)
 		CALIBRATE.TCXO_frequency = 10000;       // TCXO Frequency x1000
+#else
+		CALIBRATE.TCXO_frequency = 12288;       // TCXO Frequency x1000
 #endif
 		CALIBRATE.VCXO_correction = 0;          // VCXO Frequency offset
 		CALIBRATE.FW_AD8307_SLP = 25.5f;        // Slope for the log amp used to mreasure the FW power (mV/dB)
@@ -828,7 +830,6 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.LinearPowerControl = false;        // linear or logrithmic power control
 		CALIBRATE.IF_GAIN_MIN = 0;                   // min limit for if gain regulator
 		CALIBRATE.IF_GAIN_MAX = 40;                  // max limit for if gain regulator
-		CALIBRATE.VCXO_AutoCorrection_on_TX = false; // enable correct while TX
 
 		// Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {

@@ -420,7 +420,6 @@ static void SYSMENU_HANDL_CALIB_IF_GAIN_MAX(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SETTINGS_RESET(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CALIBRATION_RESET(int8_t direction);
 static void SYSMENU_HANDL_CALIB_WIFI_RESET(int8_t direction);
-static void SYSMENU_HANDL_CALIB_VCXO_AutoCorrection_on_TX(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_AUDIOMENU(int8_t direction);
@@ -1011,13 +1010,10 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"SWR FWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF},
     {"SWR BWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_BWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF},
 #endif
-#if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO) || defined(FRONTPANEL_MINI)
-    {"TCXO Frequency", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
+#if !defined(FRONTPANEL_LITE)
+    {"TCXO Frequency, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
 #else
     {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
-#if !defined(FRONTPANEL_LITE)
-    {"VCXO TX AutoCorrection", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.VCXO_AutoCorrection_on_TX, SYSMENU_HANDL_CALIB_VCXO_AutoCorrection_on_TX},
-#endif
 #endif
 #ifdef SWR_AD8307_LOG
     {"FW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_SLP, SYSMENU_HANDL_CALIB_FW_AD8307_SLP},
@@ -4958,9 +4954,6 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 	sprintf(out, "ADC MIN/MAX: %d/%d     ", TRX_ADC_MINAMPLITUDE, TRX_ADC_MAXAMPLITUDE);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
-	sprintf(out, "VCXO ERROR: %d     ", TRX_VCXO_ERROR);
-	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	y += y_offs;
 	sprintf(out, "VBAT VOLT: %.2f     ", TRX_VBAT_Voltage);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
@@ -5973,14 +5966,30 @@ static void SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER(int8_t direction) {
 	}
 }
 static void SYSMENU_HANDL_CALIB_TCXO(int8_t direction) {
-	CALIBRATE.TCXO_frequency += direction;
+	const uint16_t tcxo_freq_steps[] = {5120, 8000, 9600, 10000, 12000, 12288, 13000, 14000, 14400, 
+		15000, 16000, 16800, 19200, 19440, 19680, 20000, 20480, 24000, 25000, 26000, 27000, 28000, 30000, 32000, 38400, 40000, 50000};
 
-	if (CALIBRATE.TCXO_frequency == 0) {
-		CALIBRATE.TCXO_frequency = 0;
+	for (uint8_t i = 0; i < ARRLENTH(tcxo_freq_steps); i++) {
+		if (CALIBRATE.TCXO_frequency == tcxo_freq_steps[i]) {
+			if (direction < 0) {
+				if (i > 0) {
+					CALIBRATE.TCXO_frequency = tcxo_freq_steps[i - 1];
+				} else {
+					CALIBRATE.TCXO_frequency = tcxo_freq_steps[0];
+				}
+				return;
+			} else {
+				if (i < (ARRLENTH(tcxo_freq_steps) - 1)) {
+					CALIBRATE.TCXO_frequency = tcxo_freq_steps[i + 1];
+				} else {
+					CALIBRATE.TCXO_frequency = tcxo_freq_steps[ARRLENTH(tcxo_freq_steps) - 1];
+				}
+				return;
+			}
+		}
 	}
-	if (CALIBRATE.TCXO_frequency > 32750) {
-		CALIBRATE.TCXO_frequency = 32750;
-	}
+	
+	CALIBRATE.TCXO_frequency = tcxo_freq_steps[0];
 }
 
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction) {
@@ -6815,15 +6824,6 @@ static void SYSMENU_HANDL_CALIB_SETTINGS_RESET(int8_t direction) { LoadSettings(
 static void SYSMENU_HANDL_CALIB_CALIBRATION_RESET(int8_t direction) { LoadCalibration(true); }
 
 static void SYSMENU_HANDL_CALIB_WIFI_RESET(int8_t direction) { LoadWiFiSettings(true); }
-
-static void SYSMENU_HANDL_CALIB_VCXO_AutoCorrection_on_TX(int8_t direction) {
-	if (direction > 0) {
-		CALIBRATE.VCXO_AutoCorrection_on_TX = true;
-	}
-	if (direction < 0) {
-		CALIBRATE.VCXO_AutoCorrection_on_TX = false;
-	}
-}
 
 // SERVICES
 void SYSMENU_HANDL_SERVICESMENU(int8_t direction) {

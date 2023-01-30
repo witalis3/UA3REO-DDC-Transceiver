@@ -401,14 +401,63 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	FPGA_clockRise();
 	FPGA_clockFall();
 
+	// Calculate dividers for VCXO corrector
+	static uint16_t TCXO_frequency_calculated = 0;
+	static uint16_t TCXO_Divider = 2;
+	static uint16_t VCXO_Divider = 2;
+	if (CALIBRATE.TCXO_frequency != TCXO_frequency_calculated) {
+		TCXO_frequency_calculated = CALIBRATE.TCXO_frequency;
+		const uint32_t VCXO_Freq_Khz = ADC_CLOCK / 1000;
+		
+		for (uint16_t divider = 2; divider < 4096; divider++) {
+			uint16_t mod_tcxo = CALIBRATE.TCXO_frequency % divider;
+			if (mod_tcxo > 0) {
+				continue;
+			}
+			
+			uint16_t TCXO_PWM_Frequency = CALIBRATE.TCXO_frequency / divider;
+			if (TCXO_PWM_Frequency > 1000) { // pwm freq limit
+				continue;
+			}
+			
+			uint16_t mod_vcxo = VCXO_Freq_Khz % TCXO_PWM_Frequency;
+			if (mod_vcxo > 0) {
+				continue;
+			}
+			
+			TCXO_Divider = divider - 1;
+			VCXO_Divider = VCXO_Freq_Khz / TCXO_PWM_Frequency - 1;
+			println("Dividers calculated - TCXO: ", TCXO_Divider + 1, " VCXO: ", VCXO_Divider + 1, " PWM, khz: ", TCXO_PWM_Frequency);
+			break;
+		}
+	}
+
 	// STAGE 16
-	// OUT VCXO OFFSET
-	FPGA_writePacket(CALIBRATE.VCXO_correction & 0XFFU);
+	// OUT TCXO Divider
+	FPGA_writePacket(((TCXO_Divider & (0XFFU << 8)) >> 8));
+	FPGA_clockRise();
+	FPGA_clockFall();
+	
+	// STAGE 17
+	// OUT TCXO Divider
+	FPGA_writePacket(TCXO_Divider & 0XFFU);
+	FPGA_clockRise();
+	FPGA_clockFall();
+	
+	// STAGE 16
+	// OUT VCXO Divider
+	FPGA_writePacket(((VCXO_Divider & (0XFFU << 8)) >> 8));
+	FPGA_clockRise();
+	FPGA_clockFall();
+	
+	// STAGE 17
+	// OUT TCXO Divider
+	FPGA_writePacket(VCXO_Divider & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 17
-	// OUT DAC/DCDC SETTINGS
+	// STAGE 18
+	// OUT DAC/DCDC/SAMPLERATE SETTINGS
 	FPGA_fpgadata_out_tmp8 = 0;
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, TRX_DAC_DIV0);
 	bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX_DAC_DIV1);
@@ -441,31 +490,31 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 18
+	// STAGE 19
 	// out TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFFU << 24)) >> 24));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 19
+	// STAGE 20
 	// out TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFFU << 16)) >> 16));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 20
+	// STAGE 21
 	// OUT TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFFU << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 21
+	// STAGE 22
 	// OUT TX-FREQ
 	FPGA_writePacket(TRX_freq_phrase_tx & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 22
+	// STAGE 23
 	// OUT PARAMS
 	FPGA_fpgadata_out_tmp8 = 0;
 	if (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK) // TX
@@ -476,15 +525,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 0, 1); // DAC driver shutdown
 		bitWrite(FPGA_fpgadata_out_tmp8, 1, 1); // DAC driver shutdown
 	}
-	bool disableVCXOCorrection = !CALIBRATE.VCXO_AutoCorrection_on_TX && (TRX_on_TX || (HAL_GetTick() - TRX_TX_EndTime) < 2000); // Disable VCXO correction while TX
-	bitWrite(FPGA_fpgadata_out_tmp8, 2, disableVCXOCorrection);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8 & 0XFFU);
-	FPGA_clockRise();
-	FPGA_clockFall();
-
-	// STAGE 23
-	// OUT VCXO OFFSET 2
-	FPGA_writePacket(((CALIBRATE.VCXO_correction & (0XFFU << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 }
@@ -532,30 +573,12 @@ static inline void FPGA_fpgadata_getparam(void) {
 	TRX_ADC_MAXAMPLITUDE = (int16_t)(((FPGA_fpgadata_in_tmp8 << 8) & 0xFF00) | FPGA_readPacket);
 	FPGA_clockFall();
 
-	// STAGE 7 - TCXO ERROR
-	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 = (FPGA_readPacket << 24);
-	FPGA_clockFall();
-	// STAGE 8
-	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 16);
-	FPGA_clockFall();
-	// STAGE 9
-	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
-	FPGA_clockFall();
-	// STAGE 10
-	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
-	TRX_VCXO_ERROR = FPGA_fpgadata_in_tmp32;
-	FPGA_clockFall();
-
-	// STAGE 11 - ADC RAW DATA
+	// STAGE 7 - ADC RAW DATA
 	FPGA_fpgadata_in_tmp32 = 0;
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
 	FPGA_clockFall();
-	// STAGE 12
+	// STAGE 8
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
 	FPGA_clockFall();

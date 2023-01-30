@@ -21,42 +21,45 @@ https://fpgasoftware.intel.com/eula.
 */
 (header "symbol" (version "1.1"))
 (symbol
-	(rect 16 16 304 96)
-	(text "data_shifter_single" (rect 5 0 79 12)(font "Arial" ))
-	(text "inst" (rect 8 64 20 76)(font "Arial" ))
+	(rect 16 16 224 128)
+	(text "vcxo_controller_phase" (rect 5 0 95 12)(font "Arial" ))
+	(text "inst" (rect 8 96 20 108)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
-		(text "data_in[(in_width-1)..0]" (rect 0 0 87 12)(font "Arial" ))
-		(text "data_in[(in_width-1)..0]" (rect 21 27 108 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32)(line_width 3))
+		(text "vcxo_clk_in" (rect 0 0 48 12)(font "Arial" ))
+		(text "vcxo_clk_in" (rect 21 27 69 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32)(line_width 1))
 	)
 	(port
 		(pt 0 48)
 		(input)
-		(text "distance[7..0]" (rect 0 0 51 12)(font "Arial" ))
-		(text "distance[7..0]" (rect 21 43 72 55)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48)(line_width 3))
+		(text "tcxo_clk_in" (rect 0 0 44 12)(font "Arial" ))
+		(text "tcxo_clk_in" (rect 21 43 65 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48)(line_width 1))
 	)
 	(port
-		(pt 288 32)
+		(pt 0 64)
+		(input)
+		(text "TCXO_divider[15..0]" (rect 0 0 81 12)(font "Arial" ))
+		(text "TCXO_divider[15..0]" (rect 21 59 102 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64)(line_width 3))
+	)
+	(port
+		(pt 0 80)
+		(input)
+		(text "VCXO_divider[15..0]" (rect 0 0 83 12)(font "Arial" ))
+		(text "VCXO_divider[15..0]" (rect 21 75 104 87)(font "Arial" ))
+		(line (pt 0 80)(pt 16 80)(line_width 3))
+	)
+	(port
+		(pt 208 32)
 		(output)
-		(text "data_out[(out_width-1)..0]" (rect 0 0 99 12)(font "Arial" ))
-		(text "data_out[(out_width-1)..0]" (rect 168 27 267 39)(font "Arial" ))
-		(line (pt 288 32)(pt 272 32)(line_width 3))
+		(text "pump" (rect 0 0 22 12)(font "Arial" ))
+		(text "pump" (rect 165 27 187 39)(font "Arial" ))
+		(line (pt 208 32)(pt 192 32)(line_width 1))
 	)
-	(parameter
-		"in_width"
-		"88"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(parameter
-		"out_width"
-		"32"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
 	(drawing
-		(rectangle (rect 16 16 272 64)(line_width 1))
+		(rectangle (rect 16 16 192 96)(line_width 1))
 	)
-	(annotation_block (parameter)(rect 304 -64 404 16))
 )

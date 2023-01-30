@@ -40,7 +40,6 @@ volatile bool TRX_PWR_ALC_SWR_OVERFLOW = false;
 volatile bool TRX_MIC_BELOW_NOISEGATE = false;
 volatile int16_t TRX_ADC_MINAMPLITUDE = 0;
 volatile int16_t TRX_ADC_MAXAMPLITUDE = 0;
-volatile int32_t TRX_VCXO_ERROR = 0;
 volatile uint32_t TRX_SNTP_Synced = 0; // time of the last time synchronization
 volatile int_fast16_t TRX_RIT = 0;
 volatile int_fast16_t TRX_XIT = 0;
