@@ -12,7 +12,6 @@ ADC_RAW,
 adcclk_in,
 FLASH_data_in,
 FLASH_busy,
-VCXO_error,
 in_empty,
 dacclk_in,
 DATA_BUS,
@@ -39,7 +38,8 @@ ADC_OFFSET,
 NCO2_freq,
 rx2,
 tx_iq_valid,
-VCXO_correction,
+TCXO_divider,
+VCXO_divider,
 BPF_A,
 BPF_B,
 BPF_OE1,
@@ -67,7 +67,6 @@ input signed [13:0] ADC_RAW;
 input adcclk_in;
 input unsigned [7:0] FLASH_data_in;
 input FLASH_busy;
-input signed [31:0] VCXO_error;
 input in_empty;
 input dacclk_in;
 
@@ -86,7 +85,6 @@ output reg unsigned [7:0] FLASH_data_out = 0;
 output reg FLASH_enable = 0;
 output reg FLASH_continue_read = 0;
 output reg LPF_1 = 0;
-//output reg ADC_PGA = 0;
 output reg ADC_RAND = 0;
 output reg ADC_SHDN = 1;
 output reg ADC_DITH = 0;
@@ -98,20 +96,14 @@ output reg unsigned [7:0] TX_CICFIR_GAIN = 32;
 output reg unsigned [7:0] DAC_GAIN = 0;
 output reg signed [15:0] ADC_OFFSET = 'd0;
 output reg tx_iq_valid = 0;
-output reg signed [15:0] VCXO_correction = 'd0;
-//output reg DAC_div0 = 0;
-//output reg DAC_div1 = 0;
-//output reg DAC_hp1 = 0;
-//output reg DAC_hp2 = 0;
-//output reg DAC_x4 = 0;
+output reg [15:0] TCXO_divider = 'd0;
+output reg [15:0] VCXO_divider = 'd0;
 output reg BPF_A = 0;
 output reg BPF_B = 0;
 output reg BPF_OE1 = 0;
 output reg BPF_OE2 = 0;
 output reg ATT = 0;
 output reg DCDC_freq = 0;
-//output reg DAC_DRV_A0 = 1;
-//output reg DAC_DRV_A1 = 1;
 output reg LPF_2 = 0;
 output reg LPF_3 = 0;
 output reg unsigned [9:0] RX_CIC_RATE = 'd640;
@@ -290,15 +282,25 @@ begin
 	end
 	else if (k == 114)
 	begin
-		VCXO_correction[15:8] = DATA_BUS[7:0];
+		TCXO_divider[15:8] = DATA_BUS[7:0];
 		k = 115;
 	end
 	else if (k == 115)
 	begin
-		VCXO_correction[7:0] = DATA_BUS[7:0];
+		TCXO_divider[7:0] = DATA_BUS[7:0];
 		k = 116;
 	end
 	else if (k == 116)
+	begin
+		VCXO_divider[15:8] = DATA_BUS[7:0];
+		k = 117;
+	end
+	else if (k == 117)
+	begin
+		VCXO_divider[7:0] = DATA_BUS[7:0];
+		k = 118;
+	end
+	else if (k == 118)
 	begin
 		BPF_A = DATA_BUS[0:0];
 		BPF_B = DATA_BUS[1:1];
@@ -316,32 +318,30 @@ begin
 		else if(DATA_BUS[7:6] =='d3)
 			RX_CIC_RATE = 'd640;
 		
-		k = 117;
-	end
-	else if (k == 117)
-	begin
-		TX_NCO_freq[31:24] = DATA_BUS[7:0];
-		k = 118;
-	end
-	else if (k == 118)
-	begin
-		TX_NCO_freq[23:16] = DATA_BUS[7:0];
 		k = 119;
 	end
 	else if (k == 119)
 	begin
-		TX_NCO_freq[15:8] = DATA_BUS[7:0];
+		TX_NCO_freq[31:24] = DATA_BUS[7:0];
 		k = 120;
 	end
 	else if (k == 120)
 	begin
-		TX_NCO_freq[7:0] = DATA_BUS[7:0];
+		TX_NCO_freq[23:16] = DATA_BUS[7:0];
 		k = 121;
 	end
 	else if (k == 121)
 	begin
-//		DAC_DRV_A0 = DATA_BUS[0:0];
-//		DAC_DRV_A1 = DATA_BUS[1:1];
+		TX_NCO_freq[15:8] = DATA_BUS[7:0];
+		k = 122;
+	end
+	else if (k == 122)
+	begin
+		TX_NCO_freq[7:0] = DATA_BUS[7:0];
+		k = 123;
+	end
+	else if (k == 123)
+	begin
 		LPF_1 = DATA_BUS[0:0];
 		LPF_2 = DATA_BUS[1:1];
 		LPF_3 = DATA_BUS[2:2];
@@ -351,7 +351,6 @@ begin
 	begin
 		DATA_BUS_OUT[0:0] = ADC_OTR;
 		DATA_BUS_OUT[1:1] = DAC_OTR;
-		//DATA_BUS_OUT[2:2] = iq_overrun;
 		k = 201;
 	end
 	else if (k == 201)
@@ -378,30 +377,10 @@ begin
 	end
 	else if (k == 205)
 	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[31:24];
+		DATA_BUS_OUT[7:0] = ADC_RAW[13:8];
 		k = 206;
 	end
 	else if (k == 206)
-	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[23:16];
-		k = 207;
-	end
-	else if (k == 207)
-	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[15:8];
-		k = 208;
-	end
-	else if (k == 208)
-	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[7:0];
-		k = 209;
-	end
-	else if (k == 209)
-	begin
-		DATA_BUS_OUT[7:0] = ADC_RAW[13:8];
-		k = 210;
-	end
-	else if (k == 210)
 	begin
 		DATA_BUS_OUT[7:0] = ADC_RAW[7:0];
 		k = 999;

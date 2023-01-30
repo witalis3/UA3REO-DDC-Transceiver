@@ -5966,8 +5966,8 @@ static void SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER(int8_t direction) {
 	}
 }
 static void SYSMENU_HANDL_CALIB_TCXO(int8_t direction) {
-	const uint16_t tcxo_freq_steps[] = {5120, 8000, 9600, 10000, 12000, 12288, 13000, 14000, 14400, 
-		15000, 16000, 16800, 19200, 19440, 19680, 20000, 20480, 24000, 25000, 26000, 27000, 28000, 30000, 32000, 38400, 40000, 50000};
+	const uint16_t tcxo_freq_steps[] = {5120,  8000,  9600,  10000, 12000, 12288, 13000, 14000, 14400, 15000, 16000, 16800, 19200, 19440,
+	                                    19680, 20000, 20480, 24000, 25000, 26000, 27000, 28000, 30000, 32000, 38400, 40000, 50000};
 
 	for (uint8_t i = 0; i < ARRLENTH(tcxo_freq_steps); i++) {
 		if (CALIBRATE.TCXO_frequency == tcxo_freq_steps[i]) {
@@ -5988,7 +5988,7 @@ static void SYSMENU_HANDL_CALIB_TCXO(int8_t direction) {
 			}
 		}
 	}
-	
+
 	CALIBRATE.TCXO_frequency = tcxo_freq_steps[0];
 }
 

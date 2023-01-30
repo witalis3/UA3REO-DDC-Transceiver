@@ -733,11 +733,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled on qrp version
 #endif
 #if defined(FRONTPANEL_MINI)
-		CALIBRATE.TCXO_frequency = 20000;       // TCXO Frequency x1000
+		CALIBRATE.TCXO_frequency = 20000; // TCXO Frequency x1000
 #elif defined(FRONTPANEL_LITE_V2_MINI)
-		CALIBRATE.TCXO_frequency = 10000;       // TCXO Frequency x1000
+		CALIBRATE.TCXO_frequency = 10000;              // TCXO Frequency x1000
 #else
-		CALIBRATE.TCXO_frequency = 12288;       // TCXO Frequency x1000
+		CALIBRATE.TCXO_frequency = 12288;              // TCXO Frequency x1000
 #endif
 		CALIBRATE.VCXO_correction = 0;          // VCXO Frequency offset
 		CALIBRATE.FW_AD8307_SLP = 25.5f;        // Slope for the log amp used to mreasure the FW power (mV/dB)
@@ -825,11 +825,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.PWR_CUR_Calibration = 2.5f;       // CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;                // Tuner averaging stages
 		CALIBRATE.CAT_Type = CAT_TS2000;
-		CALIBRATE.LNA_compensation = 0;              // Compensation for LNA, db
-		CALIBRATE.TwoSignalTune_Balance = 50;        // balance of signals on twosignal-tune
-		CALIBRATE.LinearPowerControl = false;        // linear or logrithmic power control
-		CALIBRATE.IF_GAIN_MIN = 0;                   // min limit for if gain regulator
-		CALIBRATE.IF_GAIN_MAX = 40;                  // max limit for if gain regulator
+		CALIBRATE.LNA_compensation = 0;       // Compensation for LNA, db
+		CALIBRATE.TwoSignalTune_Balance = 50; // balance of signals on twosignal-tune
+		CALIBRATE.LinearPowerControl = false; // linear or logrithmic power control
+		CALIBRATE.IF_GAIN_MIN = 0;            // min limit for if gain regulator
+		CALIBRATE.IF_GAIN_MAX = 40;           // max limit for if gain regulator
 
 		// Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {

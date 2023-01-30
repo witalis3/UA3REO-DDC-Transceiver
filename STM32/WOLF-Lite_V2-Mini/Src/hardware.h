@@ -18,16 +18,16 @@
 #define HRDW_HAS_DUAL_RX false
 #define HRDW_HAS_FULL_FFT_BUFFER true
 #define HRDW_USB_AUDIO_BITS 24
-//#define HRDW_HAS_VGA true
+// #define HRDW_HAS_VGA true
 #define HRDW_AUDIO_CODEC_WM8731 true
 // #define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
 
 // settings
-#define ADC_CLOCK 61440000					  // ADC generator frequency
-#define DAC_CLOCK 163200000					  // DAC generator frequency
+#define ADC_CLOCK 61440000       // ADC generator frequency
+#define DAC_CLOCK 163200000      // DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000 // Maximum receive frequency (from the ADC datasheet)
 #define MAX_TX_FREQ_HZ DAC_CLOCK // Maximum transmission frequency
-#define ADC_FULL_SCALE 16384 //65536     // maximum signal amplitude in the ADC // powf (2, ADC_BITS)
+#define ADC_FULL_SCALE 16384     // 65536     // maximum signal amplitude in the ADC // powf (2, ADC_BITS)
 #define FLOAT_FULL_SCALE_POW 4
 #define DCDC_FREQ_0 960000
 #define DCDC_FREQ_1 1200000

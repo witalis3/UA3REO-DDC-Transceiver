@@ -316,7 +316,7 @@ set_global_assignment -name VERILOG_FILE spi_interface.v
 set_global_assignment -name VERILOG_FILE stm32_interface.v
 set_global_assignment -name VERILOG_FILE data_shifter.v
 set_global_assignment -name VERILOG_FILE data_shifter_single.v
-set_global_assignment -name VERILOG_FILE vcxo_controller.v -hdl_version Verilog_2001
+set_global_assignment -name VERILOG_FILE vcxo_controller_phase.v
 set_global_assignment -name SOURCE_FILE Debug_Probes.spf
 set_global_assignment -name QIP_FILE mixer.qip
 set_global_assignment -name SDC_FILE SDC.sdc

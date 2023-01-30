@@ -4,9 +4,9 @@ editor if you plan to continue editing the block that represents it in
 the Block Editor! File corruption is VERY likely to occur.
 */
 /*
-Copyright (C) 2018  Intel Corporation. All rights reserved.
+Copyright (C) 2022  Intel Corporation. All rights reserved.
 Your use of Intel Corporation's design tools, logic functions 
-and other software and tools, and its AMPP partner logic 
+and other software and tools, and any partner logic 
 functions, and any output files from any of the foregoing 
 (including device programming or simulation files), and any 
 associated documentation or information are expressly subject 
@@ -16,7 +16,8 @@ the Intel FPGA IP License Agreement, or other applicable license
 agreement, including, without limitation, that your use is for
 the sole purpose of programming logic devices manufactured by
 Intel and sold by Intel or its authorized distributors.  Please
-refer to the applicable agreement for further details.
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
 */
 (header "symbol" (version "1.1"))
 (symbol
@@ -117,23 +118,16 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 0 240)
 		(input)
-		(text "VCXO_error[31..0]" (rect 0 0 77 12)(font "Arial" ))
-		(text "VCXO_error[31..0]" (rect 21 235 98 247)(font "Arial" ))
-		(line (pt 0 240)(pt 16 240)(line_width 3))
+		(text "in_empty" (rect 0 0 37 12)(font "Arial" ))
+		(text "in_empty" (rect 21 235 58 247)(font "Arial" ))
+		(line (pt 0 240)(pt 16 240)(line_width 1))
 	)
 	(port
 		(pt 0 256)
 		(input)
-		(text "in_empty" (rect 0 0 37 12)(font "Arial" ))
-		(text "in_empty" (rect 21 251 58 263)(font "Arial" ))
-		(line (pt 0 256)(pt 16 256)(line_width 1))
-	)
-	(port
-		(pt 0 272)
-		(input)
 		(text "dacclk_in" (rect 0 0 36 12)(font "Arial" ))
-		(text "dacclk_in" (rect 21 267 57 279)(font "Arial" ))
-		(line (pt 0 272)(pt 16 272)(line_width 1))
+		(text "dacclk_in" (rect 21 251 57 263)(font "Arial" ))
+		(line (pt 0 256)(pt 16 256)(line_width 1))
 	)
 	(port
 		(pt 288 48)

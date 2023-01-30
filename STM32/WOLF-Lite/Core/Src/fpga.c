@@ -638,30 +638,12 @@ static inline void FPGA_fpgadata_getparam(void) {
 	TRX_ADC_MAXAMPLITUDE = (int16_t)(((FPGA_fpgadata_in_tmp8 << 8) & 0xFF00) | FPGA_readPacket);
 	FPGA_clockFall();
 
-	// STAGE 7 - TCXO ERROR
-	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 = (FPGA_readPacket << 24);
-	FPGA_clockFall();
-	// STAGE 8
-	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 16);
-	FPGA_clockFall();
-	// STAGE 9
-	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
-	FPGA_clockFall();
-	// STAGE 10
-	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
-	TRX_VCXO_ERROR = 0; // no tcxo
-	FPGA_clockFall();
-
-	// STAGE 11 - ADC RAW DATA
+	// STAGE 7 - ADC RAW DATA
 	FPGA_fpgadata_in_tmp16 = 0;
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp16 |= ((FPGA_readPacket & 0x0F) << 8);
 	FPGA_clockFall();
-	// STAGE 12
+	// STAGE 8
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp16 |= (FPGA_readPacket);
 	FPGA_clockFall();

@@ -281,13 +281,13 @@ int main(void) {
 		strcpy(greetings_buff, "ver. ");
 		strcat(greetings_buff, version_string);
 		LCDDriver_printText(greetings_buff, 4, (LCD_HEIGHT - 10), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
-//		// show callsign greetings
-//		uint16_t x1, y1, w, h;
-//		strcpy(greetings_buff, "Hello, ");
-//		strcat(greetings_buff, TRX.CALLSIGN);
-//		strcat(greetings_buff, " !");
-//		LCDDriver_getTextBounds(greetings_buff, LAYOUT->GREETINGS_X, LAYOUT->GREETINGS_Y, &x1, &y1, &w, &h, 1);
-//		LCDDriver_printText(greetings_buff, LAYOUT->GREETINGS_X - (w / 2), LAYOUT->GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(243, 243, 243), 1);
+		//		// show callsign greetings
+		//		uint16_t x1, y1, w, h;
+		//		strcpy(greetings_buff, "Hello, ");
+		//		strcat(greetings_buff, TRX.CALLSIGN);
+		//		strcat(greetings_buff, " !");
+		//		LCDDriver_getTextBounds(greetings_buff, LAYOUT->GREETINGS_X, LAYOUT->GREETINGS_Y, &x1, &y1, &w, &h, 1);
+		//		LCDDriver_printText(greetings_buff, LAYOUT->GREETINGS_X - (w / 2), LAYOUT->GREETINGS_Y, COLOR->GREETINGS, rgb888torgb565(243, 243, 243), 1);
 	}
 	println("[OK] Profiler init");
 	InitProfiler();
@@ -1536,7 +1536,7 @@ static void MX_GPIO_Init(void) {
 	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-	
+
 	/*Configure GPIO pins : AF_AMP_MUTE_Pin */
 	GPIO_InitStruct.Pin = AF_AMP_MUTE_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
