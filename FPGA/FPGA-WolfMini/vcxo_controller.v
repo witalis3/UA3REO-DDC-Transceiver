@@ -1,32 +1,44 @@
 module vcxo_controller(
-pwm_clk_in,
+vcxo_clk_in,
+tcxo_clk_in,
+freq_error,
 VCXO_correction,
-
 pump
 );
 
-input pwm_clk_in;
-input unsigned [15:0] VCXO_correction;
+input vcxo_clk_in;
+input tcxo_clk_in;
+output pump;
+output reg signed [31:0] freq_error = 0;
+input signed [15:0] VCXO_correction;
+wire ref_80khz;
+wire osc_80khz;
+reg out10 = 0;
+reg [10:0] count10 = 0;
+always @ (posedge tcxo_clk_in)
+    begin
+        if (count10 == $signed(VCXO_correction))
+             begin
+                 count10 <= 0;
+                 out10 <= !out10;
+             end
+         else count10 <= count10 + 1'b1;
+    end
+assign ref_80khz = out10;
+reg out122 = 0;
+reg [10:0] count122 = 0;
+always @ (posedge vcxo_clk_in)
+    begin
+        if (count122 == 11'd1535)   // для опорника 61,44 подставить 11'd767, для 96 Мгц - 11'd1199, для 122,88 - 11'd1535
+             begin
+                 count122 <= 0;
+                 out122 <= !out122;
+             end
+         else count122 <= count122 + 1'b1;
+    end
+assign osc_80khz = out122;
 
-output reg pump = 0;
-
-reg unsigned [15:0] PWM_counter_MAX = 65500;
-reg unsigned [15:0] PWM_counter = 0;
-
-always @ (posedge pwm_clk_in)
-begin
-	//count PWM
-	if(PWM_counter > PWM_counter_MAX)
-		PWM_counter = 0;
-	else
-		PWM_counter = PWM_counter + 1;
-	
-	//do PWM
-	if(PWM_counter <= VCXO_correction)
-		pump = 1;
-	else
-		pump = 0;
-end
-
+//Apply to EXOR phase detector
+assign pump = ref_80khz ^ osc_80khz;
 
 endmodule

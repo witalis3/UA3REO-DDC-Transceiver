@@ -4,9 +4,9 @@ editor if you plan to continue editing the block that represents it in
 the Block Editor! File corruption is VERY likely to occur.
 */
 /*
-Copyright (C) 2018  Intel Corporation. All rights reserved.
+Copyright (C) 2022  Intel Corporation. All rights reserved.
 Your use of Intel Corporation's design tools, logic functions 
-and other software and tools, and its AMPP partner logic 
+and other software and tools, and any partner logic 
 functions, and any output files from any of the foregoing 
 (including device programming or simulation files), and any 
 associated documentation or information are expressly subject 
@@ -16,7 +16,8 @@ the Intel FPGA IP License Agreement, or other applicable license
 agreement, including, without limitation, that your use is for
 the sole purpose of programming logic devices manufactured by
 Intel and sold by Intel or its authorized distributors.  Please
-refer to the applicable agreement for further details.
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
 */
 (header "graphic" (version "1.4"))
 (pin
@@ -154,6 +155,23 @@ refer to the applicable agreement for further details.
 	)
 	(text "GND" (rect 136 7 157 17)(font "Arial" (font_size 6)))
 	(annotation_block (location)(rect 2248 712 2304 736))
+)
+(pin
+	(input)
+	(rect 2184 928 2360 944)
+	(text "INPUT" (rect 133 0 161 10)(font "Arial" (font_size 6)))
+	(text "TCXO_CLK_IN" (rect 5 0 78 12)(font "Arial" ))
+	(pt 176 8)
+	(drawing
+		(line (pt 92 12)(pt 117 12))
+		(line (pt 92 4)(pt 117 4))
+		(line (pt 121 8)(pt 176 8))
+		(line (pt 92 12)(pt 92 4))
+		(line (pt 117 4)(pt 121 8))
+		(line (pt 117 12)(pt 121 8))
+	)
+	(text "VCC" (rect 136 7 156 17)(font "Arial" (font_size 6)))
+	(annotation_block (location)(rect 2120 944 2184 968))
 )
 (pin
 	(output)
@@ -480,7 +498,7 @@ refer to the applicable agreement for further details.
 )
 (pin
 	(output)
-	(rect 2632 912 2808 928)
+	(rect 2744 928 2920 944)
 	(text "OUTPUT" (rect 1 0 39 10)(font "Arial" (font_size 6)))
 	(text "VCXO_CHARGE_PUMP" (rect 90 0 209 12)(font "Arial" ))
 	(pt 0 8)
@@ -493,7 +511,7 @@ refer to the applicable agreement for further details.
 		(line (pt 82 8)(pt 78 12))
 		(line (pt 78 12)(pt 82 8))
 	)
-	(annotation_block (location)(rect 2808 928 2872 952))
+	(annotation_block (location)(rect 2920 944 2984 968))
 )
 (pin
 	(output)
@@ -3574,46 +3592,6 @@ refer to the applicable agreement for further details.
 	(annotation_block (parameter)(rect 1968 -224 2137 -186))
 )
 (symbol
-	(rect 2384 888 2608 968)
-	(text "vcxo_controller" (rect 5 0 80 12)(font "Arial" ))
-	(text "VCXO_CONTROLLER" (rect 8 64 117 76)(font "Arial" ))
-	(port
-		(pt 0 32)
-		(input)
-		(text "pwm_clk_in" (rect 0 0 56 12)(font "Arial" ))
-		(text "pwm_clk_in" (rect 21 27 77 39)(font "Arial" ))
-		(line (pt 0 32)(pt 16 32))
-	)
-	(port
-		(pt 0 48)
-		(input)
-		(text "VCXO_correction[15..0]" (rect 0 0 115 12)(font "Arial" ))
-		(text "VCXO_correction[15..0]" (rect 21 43 136 55)(font "Arial" ))
-		(line (pt 0 48)(pt 16 48)(line_width 3))
-	)
-	(port
-		(pt 224 32)
-		(output)
-		(text "pump" (rect 0 0 27 12)(font "Arial" ))
-		(text "pump" (rect 181 27 208 39)(font "Arial" ))
-		(line (pt 224 32)(pt 208 32))
-	)
-	(parameter
-		"VCXO_freq"
-		"12288000"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(parameter
-		"TCXO_freq"
-		"1228800"
-		""
-		(type "PARAMETER_SIGNED_DEC")	)
-	(drawing
-		(rectangle (rect 16 16 208 64))
-	)
-	(annotation_block (parameter)(rect 2408 816 2424 832))
-)
-(symbol
 	(rect 3088 144 3376 800)
 	(text "stm32_interface" (rect 5 0 85 12)(font "Arial" ))
 	(text "STM32_INTERFACE" (rect 8 640 109 652)(font "Arial" ))
@@ -4123,42 +4101,42 @@ refer to the applicable agreement for further details.
 		(pt 448 72)
 		(output)
 		(text "ast_source_data[47..0]" (rect 0 0 132 14)(font "Arial" (font_size 8)))
-		(text "ast_source_data[47..0]" (rect 332 61 443 75)(font "Arial" (font_size 8)))
+		(text "ast_source_data[47..0]" (rect 332 61 464 75)(font "Arial" (font_size 8)))
 		(line (pt 448 72)(pt 288 72)(line_width 3))
 	)
 	(port
 		(pt 448 88)
 		(output)
 		(text "ast_source_valid" (rect 0 0 97 14)(font "Arial" (font_size 8)))
-		(text "ast_source_valid" (rect 361 77 443 91)(font "Arial" (font_size 8)))
+		(text "ast_source_valid" (rect 361 77 458 91)(font "Arial" (font_size 8)))
 		(line (pt 448 88)(pt 288 88))
 	)
 	(port
 		(pt 448 104)
 		(output)
 		(text "ast_source_error[1..0]" (rect 0 0 128 14)(font "Arial" (font_size 8)))
-		(text "ast_source_error[1..0]" (rect 337 93 445 107)(font "Arial" (font_size 8)))
+		(text "ast_source_error[1..0]" (rect 337 93 465 107)(font "Arial" (font_size 8)))
 		(line (pt 448 104)(pt 288 104)(line_width 3))
 	)
 	(port
 		(pt 448 136)
 		(output)
 		(text "ast_source_sop" (rect 0 0 93 14)(font "Arial" (font_size 8)))
-		(text "ast_source_sop" (rect 365 125 443 139)(font "Arial" (font_size 8)))
+		(text "ast_source_sop" (rect 365 125 458 139)(font "Arial" (font_size 8)))
 		(line (pt 448 136)(pt 288 136))
 	)
 	(port
 		(pt 448 152)
 		(output)
 		(text "ast_source_eop" (rect 0 0 93 14)(font "Arial" (font_size 8)))
-		(text "ast_source_eop" (rect 365 141 443 155)(font "Arial" (font_size 8)))
+		(text "ast_source_eop" (rect 365 141 458 155)(font "Arial" (font_size 8)))
 		(line (pt 448 152)(pt 288 152))
 	)
 	(port
 		(pt 448 168)
 		(output)
 		(text "ast_source_channel" (rect 0 0 116 14)(font "Arial" (font_size 8)))
-		(text "ast_source_channel" (rect 345 157 443 171)(font "Arial" (font_size 8)))
+		(text "ast_source_channel" (rect 345 157 461 171)(font "Arial" (font_size 8)))
 		(line (pt 448 168)(pt 288 168))
 	)
 	(drawing
@@ -4199,6 +4177,60 @@ refer to the applicable agreement for further details.
 		(line (pt 0 264)(pt 448 264))
 		(line (pt 0 0)(pt 0 264))
 	)
+)
+(symbol
+	(rect 2384 888 2648 1000)
+	(text "vcxo_controller" (rect 5 0 80 12)(font "Arial" ))
+	(text "VCXO_CONTROLLER" (rect 8 96 117 108)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "vcxo_clk_in" (rect 0 0 59 12)(font "Arial" ))
+		(text "vcxo_clk_in" (rect 21 27 80 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "tcxo_clk_in" (rect 0 0 55 12)(font "Arial" ))
+		(text "tcxo_clk_in" (rect 21 43 76 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48))
+	)
+	(port
+		(pt 0 64)
+		(input)
+		(text "VCXO_correction[15..0]" (rect 0 0 115 12)(font "Arial" ))
+		(text "VCXO_correction[15..0]" (rect 21 59 136 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64)(line_width 3))
+	)
+	(port
+		(pt 264 32)
+		(output)
+		(text "freq_error[31..0]" (rect 0 0 80 12)(font "Arial" ))
+		(text "freq_error[31..0]" (rect 176 27 256 39)(font "Arial" ))
+		(line (pt 264 32)(pt 248 32)(line_width 3))
+	)
+	(port
+		(pt 264 48)
+		(output)
+		(text "pump" (rect 0 0 27 12)(font "Arial" ))
+		(text "pump" (rect 221 43 248 55)(font "Arial" ))
+		(line (pt 264 48)(pt 248 48))
+	)
+	(parameter
+		"VCXO_freq"
+		"12288000"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(parameter
+		"TCXO_freq"
+		"1228800"
+		""
+		(type "PARAMETER_SIGNED_DEC")	)
+	(drawing
+		(rectangle (rect 16 16 248 96))
+	)
+	(annotation_block (parameter)(rect 2408 816 2424 832))
 )
 (connector
 	(pt 528 32)
@@ -6551,16 +6583,6 @@ refer to the applicable agreement for further details.
 	(pt 3704 808)
 )
 (connector
-	(pt 2632 920)
-	(pt 2608 920)
-)
-(connector
-	(text "VCXO_correction[15..0]" (rect 2170 928 2280 945)(font "Intel Clear" ))
-	(pt 2264 936)
-	(pt 2384 936)
-	(bus)
-)
-(connector
 	(text "VCXO_correction[15..0]" (rect 3578 552 3688 569)(font "Intel Clear" ))
 	(pt 3568 560)
 	(pt 3376 560)
@@ -6599,6 +6621,32 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 3048 872)
 	(pt 3048 1000)
+)
+(connector
+	(text "VCXO_correction[15..0]" (rect 2170 944 2280 961)(font "Intel Clear" ))
+	(pt 2384 952)
+	(pt 2264 952)
+	(bus)
+)
+(connector
+	(text "VCXO_error[31..0]" (rect 2946 368 3033 385)(font "Intel Clear" ))
+	(pt 3088 384)
+	(pt 2936 384)
+	(bus)
+)
+(connector
+	(text "VCXO_error[31..0]" (rect 2778 904 2865 921)(font "Intel Clear" ))
+	(pt 2648 920)
+	(pt 2768 920)
+	(bus)
+)
+(connector
+	(pt 2360 936)
+	(pt 2384 936)
+)
+(connector
+	(pt 2648 936)
+	(pt 2744 936)
 )
 (junction (pt 440 32))
 (junction (pt 440 448))

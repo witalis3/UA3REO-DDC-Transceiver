@@ -1011,11 +1011,11 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"SWR FWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF},
     {"SWR BWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_BWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF},
 #endif
-#if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
+#if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO) || defined(FRONTPANEL_MINI)
     {"TCXO Frequency", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
 #else
     {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
-#if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_MINI)
+#if !defined(FRONTPANEL_LITE)
     {"VCXO TX AutoCorrection", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.VCXO_AutoCorrection_on_TX, SYSMENU_HANDL_CALIB_VCXO_AutoCorrection_on_TX},
 #endif
 #endif

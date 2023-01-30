@@ -732,7 +732,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled on qrp version
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled on qrp version
 #endif
+#if defined(FRONTPANEL_MINI)
+		CALIBRATE.TCXO_frequency = 20000;       // TCXO Frequency x1000
+#else
 		CALIBRATE.TCXO_frequency = 10000;       // TCXO Frequency x1000
+#endif
 		CALIBRATE.VCXO_correction = 0;          // VCXO Frequency offset
 		CALIBRATE.FW_AD8307_SLP = 25.5f;        // Slope for the log amp used to mreasure the FW power (mV/dB)
 		CALIBRATE.FW_AD8307_OFFS = 1150.0f;     // Offset to back calculate the output voltage to dBm (mV)
