@@ -451,6 +451,12 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	FPGA_clockFall();
 
 	// STAGE 19
+	// OUT TCXO Divider
+	FPGA_writePacket(VCXO_Divider & 0XFFU);
+	FPGA_clockRise();
+	FPGA_clockFall();
+
+	// STAGE 20
 	// OUT DAC/DCDC SETTINGS
 	FPGA_fpgadata_out_tmp8 = 0;
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, TRX_DAC_DIV0);
@@ -484,31 +490,31 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 20
+	// STAGE 21
 	// out TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFFU << 24)) >> 24));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 21
+	// STAGE 22
 	// out TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFFU << 16)) >> 16));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 22
+	// STAGE 23
 	// OUT TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFFU << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 23
+	// STAGE 24
 	// OUT TX-FREQ
 	FPGA_writePacket(TRX_freq_phrase_tx & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 24
+	// STAGE 25
 	// OUT PARAMS
 	FPGA_fpgadata_out_tmp8 = 0;
 	if (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK) // TX
