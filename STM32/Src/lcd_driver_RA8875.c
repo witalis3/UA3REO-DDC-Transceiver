@@ -108,12 +108,11 @@ void LCDDriver_Init(void) {
 
 	FMC_NORSRAM_TimingTypeDef Timing = {0};
 	Timing.AddressSetupTime = 5;
-	Timing.AddressHoldTime = 5;
-	Timing.BusTurnAroundDuration = 1;
-
 	Timing.DataSetupTime = 5;
-	Timing.CLKDivision = 16;
-	Timing.DataLatency = 17;
+	Timing.AddressHoldTime = 1;
+	Timing.BusTurnAroundDuration = 1;
+	Timing.CLKDivision = 1;
+	Timing.DataLatency = 1;
 	Timing.AccessMode = FMC_ACCESS_MODE_A;
 	HAL_SRAM_Init(&HRDW_FSMC_LCD, &Timing, NULL);
 	HAL_SetFMCMemorySwappingConfig(FMC_SWAPBMAP_SDRAM_SRAM);
@@ -121,7 +120,7 @@ void LCDDriver_Init(void) {
 
 // Set diplay brightness
 void LCDDriver_setBrightness(uint8_t percent) {
-	LCDDriver_writeReg(LCD_RA8875_P1CR, LCD_RA8875_P1CR_ENABLE | (LCD_RA8875_PWM_CLK_DIV1024 & 0xF));
+	LCDDriver_writeReg(LCD_RA8875_P1CR, LCD_RA8875_P1CR_ENABLE | (LCD_RA8875_PWM_CLK_DIV128 & 0xF));
 	LCDDriver_writeReg(LCD_RA8875_P1DCR, (uint16_t)(255.0f * ((100.f - (float32_t)percent) / 100.f)));
 }
 
