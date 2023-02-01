@@ -35,7 +35,7 @@ static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter);
 static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count);
 static void BUTTONHANDLER_W_LITE_MENU(uint32_t parameter);
 static void BUTTONHANDLER_W_LITE_MENU_HOLD(uint32_t parameter);
-	
+
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
 static uint32_t ENCODER2_AValDeb = 0;

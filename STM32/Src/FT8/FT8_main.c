@@ -229,7 +229,6 @@ void update_synchronization(void) {
 	uint32_t Time = RTC->TR;
 	static uint8_t Seconds_Old;
 
-	// int8_t Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f) - TRX.WIFI_TIMEZONE;			//corect the time to be in UTC
 	uint8_t Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
 	uint8_t Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
 	uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
