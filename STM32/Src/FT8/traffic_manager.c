@@ -174,6 +174,12 @@ void service_CQ(void) {
 				if (CheckRecievedRaportRSL(receive_index, 0)) { // check if the oposite side answered corespondingly
 					Beacon_State = 3;                             // Set call - "RR73"
 				}
+				if (CheckRecieved73(receive_index, 1)) // if RR73 after raport
+				{
+					Beacon_State = 7; // Set call - "73"
+					LogQSO();
+					FT8_Clear_TargetCall(); // Clear the place on the display for the "TargetCall"
+				}
 			} else { // The answer we got it was not from the station we were talking till now
 				Beacon_State = 20;
 			}
