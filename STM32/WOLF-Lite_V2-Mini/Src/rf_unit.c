@@ -42,18 +42,18 @@ static uint8_t getBPFByFreq(uint32_t freq) {
 	if (freq >= CALIBRATE.RFU_HPF_START) {
 		return 2;
 	}
-	
+
 	return 255;
 }
 
 void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 {
 	uint8_t bpf = getBPFByFreq(CurrentVFO->Freq);
-	//uint8_t bpf_second = getBPFByFreq(SecondaryVFO->Freq);
+	// uint8_t bpf_second = getBPFByFreq(SecondaryVFO->Freq);
 
 	uint8_t band_out = 0;
 	int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
-	
+
 	// Transverters
 	if (TRX.Transverter_3cm && band == BANDID_3cm) { // 3cm
 		band_out = CALIBRATE.EXT_TRANSV_3cm;
@@ -70,7 +70,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	if (TRX.Transverter_70cm && band == BANDID_70cm) { // 70cm
 		band_out = CALIBRATE.EXT_TRANSV_70cm;
 	}
-	
+
 	if (!TRX.Transverter_70cm && band == BANDID_70cm) { // 70cm
 		band_out = CALIBRATE.EXT_70cm;
 	}
@@ -133,37 +133,37 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		MINI_DELAY
 		if (!clean) {
 			// U10-D7 xxx
-//			if (registerNumber == 0 && (bpf == 5 || bpf == 7)) {
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET);
-//			}
-//			// U10-D6 xxx
-//			if (registerNumber == 1 && (bpf == 5 || bpf == 6)) {
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET);
-//			}
-//			// U10-D5 xxx
-//			if (registerNumber == 2 && att_val_4) {
-				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET);
-//			}
+			//			if (registerNumber == 0 && (bpf == 5 || bpf == 7)) {
+			HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET);
+			//			}
+			//			// U10-D6 xxx
+			//			if (registerNumber == 1 && (bpf == 5 || bpf == 6)) {
+			HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET);
+			//			}
+			//			// U10-D5 xxx
+			//			if (registerNumber == 2 && att_val_4) {
+			HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET);
+			//			}
 			// U10-D4 TX_OUT
 			if (registerNumber == 3 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK) {
-					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-				}
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			}
 			// U10-D3 BAND-A
 			if (registerNumber == 4 && bitRead(band_out, 0)) {
-					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-				}
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			}
 			// U10-D2 BAND-B
 			if (registerNumber == 5 && bitRead(band_out, 1)) {
-					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-				}
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			}
 			// U10-D1 BAND-C
 			if (registerNumber == 6 && bitRead(band_out, 2)) {
-					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-				}
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			}
 			// U10-D0 BAND-D
 			if (registerNumber == 7 && bitRead(band_out, 3)) {
-					HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
-				}
+				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
+			}
 		}
 		MINI_DELAY
 		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_SET);
@@ -189,16 +189,16 @@ void RF_UNIT_ProcessSensors(void) {
 		TRX_PWR_Voltage = PWR_Voltage;
 	}
 
-//	float32_t PWR_Current_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3) * TRX_STM32_VREF / B16_RANGE;
-//	float32_t PWR_Current = (PWR_Current_Voltage - CALIBRATE.PWR_CUR_Calibration) / 0.100f; // 0.066 - ACS712-30, 0.100 - ACS712-20
-//	if (fabsf(PWR_Current - TRX_PWR_Current) > 0.1f) {
-//		TRX_PWR_Current = TRX_PWR_Current * 0.95f + PWR_Current * 0.05f;
-//	}
-//	if (fabsf(PWR_Current - TRX_PWR_Current) > 1.0f) {
-//		TRX_PWR_Current = PWR_Current;
-//	}
+	//	float32_t PWR_Current_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3) * TRX_STM32_VREF / B16_RANGE;
+	//	float32_t PWR_Current = (PWR_Current_Voltage - CALIBRATE.PWR_CUR_Calibration) / 0.100f; // 0.066 - ACS712-30, 0.100 - ACS712-20
+	//	if (fabsf(PWR_Current - TRX_PWR_Current) > 0.1f) {
+	//		TRX_PWR_Current = TRX_PWR_Current * 0.95f + PWR_Current * 0.05f;
+	//	}
+	//	if (fabsf(PWR_Current - TRX_PWR_Current) > 1.0f) {
+	//		TRX_PWR_Current = PWR_Current;
+	//	}
 
-//	 println(TRX_PWR_Voltage, " ", PWR_Voltage, " ", TRX_PWR_Current, " ", TRX_STM32_VREF);
+	//	 println(TRX_PWR_Voltage, " ", PWR_Voltage, " ", TRX_PWR_Current, " ", TRX_STM32_VREF);
 
 	TRX_VBAT_Voltage = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc3, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B14_RANGE; // why 14bit?
 

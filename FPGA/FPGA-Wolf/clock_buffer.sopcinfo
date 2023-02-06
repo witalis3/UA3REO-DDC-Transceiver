@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="clock_buffer" kind="clock_buffer" version="1.0" fabric="QSYS">
- <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2022.12.02.01:24:08 -->
+ <!-- Format version 22.1 915 (Future versions may contain additional information.) -->
+ <!-- 2023.01.30.20:14:20 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1669929848</value>
+  <value>1675098860</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -68,7 +68,7 @@
  <module
    name="altclkctrl_0"
    kind="altclkctrl"
-   version="18.1"
+   version="22.1"
    path="altclkctrl_0">
   <!-- Describes a single module. Module parameters are
 the requested settings for a module instance. -->
@@ -137,7 +137,7 @@ the requested settings for a module instance. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <interface name="altclkctrl_input" kind="conduit_end" version="18.1">
+  <interface name="altclkctrl_input" kind="conduit_end" version="22.1">
    <!-- The connection points exposed by a module instance for the
 particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
@@ -192,7 +192,7 @@ parameters are a RESULT of the module parameters. -->
     <role>ena</role>
    </port>
   </interface>
-  <interface name="altclkctrl_output" kind="conduit_end" version="18.1">
+  <interface name="altclkctrl_output" kind="conduit_end" version="22.1">
    <!-- The connection points exposed by a module instance for the
 particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
@@ -248,7 +248,7 @@ parameters are a RESULT of the module parameters. -->
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IModule</subtype>
   <displayName>ALTCLKCTRL Intel FPGA IP</displayName>
-  <version>18.1</version>
+  <version>22.1</version>
  </plugin>
  <plugin>
   <instanceCount>2</instanceCount>
@@ -256,8 +256,8 @@ parameters are a RESULT of the module parameters. -->
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
   <displayName>Conduit</displayName>
-  <version>18.1</version>
+  <version>22.1</version>
  </plugin>
- <reportVersion>18.1 625</reportVersion>
+ <reportVersion>22.1 915</reportVersion>
  <uniqueIdentifier></uniqueIdentifier>
 </EnsembleReport>

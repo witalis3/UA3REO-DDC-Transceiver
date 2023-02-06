@@ -42,12 +42,12 @@ set_global_assignment -name DEVICE EP4CE22E22C8
 set_global_assignment -name TOP_LEVEL_ENTITY WOLF
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 17.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "17:58:56  MARCH 31, 2018"
-set_global_assignment -name LAST_QUARTUS_VERSION "18.1.0 Standard Edition"
+set_global_assignment -name LAST_QUARTUS_VERSION "22.1std.0 Standard Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
-set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "NO HEAT SINK WITH STILL AIR"
+set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "15 MM HEAT SINK WITH STILL AIR"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name NUM_PARALLEL_PROCESSORS 8
 
@@ -313,8 +313,7 @@ set_global_assignment -name VERILOG_FILE spi_interface.v
 set_global_assignment -name VERILOG_FILE stm32_interface.v
 set_global_assignment -name VERILOG_FILE data_shifter.v
 set_global_assignment -name VERILOG_FILE data_shifter_single.v
-set_global_assignment -name VERILOG_FILE vcxo_controller.v -hdl_version Verilog_2001
-set_global_assignment -name VERILOG_FILE vcxo_regulator.v
+set_global_assignment -name VERILOG_FILE vcxo_controller_phase.v
 set_global_assignment -name SOURCE_FILE Debug_Probes.spf
 set_global_assignment -name QIP_FILE mixer.qip
 set_global_assignment -name SDC_FILE SDC.sdc
@@ -340,6 +339,5 @@ set_global_assignment -name SIP_FILE tx_ciccomp.sip
 set_global_assignment -name QIP_FILE diffclock_buff.qip
 set_global_assignment -name QIP_FILE tx_pll.qip
 set_global_assignment -name QIP_FILE fifo.qip
-set_global_assignment -name QIP_FILE VCXO_PLL.qip
 set_global_assignment -name QIP_FILE adc_fifo.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

@@ -895,8 +895,16 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			}
 
 			// bar
-			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, (uint16_t)s_width,
-			                      LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER);
+			const float32_t s9_position = LAYOUT->STATUS_SMETER_WIDTH / 15.0f * 9.0f;
+			if (s_width <= s9_position) {
+				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, (uint16_t)s_width,
+				                      LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER);
+			} else {
+				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, (uint16_t)s9_position,
+				                      LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER);
+				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + s9_position, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2,
+				                      (uint16_t)(s_width - s9_position), LAYOUT->STATUS_BAR_HEIGHT - 3, rgb888torgb565(196, 69, 69));
+			}
 
 			// peak
 			static uint32_t smeter_peak_settime = 0;

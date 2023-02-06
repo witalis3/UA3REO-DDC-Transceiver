@@ -288,39 +288,38 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	// STAGE 2
 	// out PTT+PREAMP
 	bool LPF_1, LPF_2, LPF_3;
-		if (CurrentVFO->Freq >= 1500000 && CurrentVFO->Freq <= 2400000) // 160m
+	if (CurrentVFO->Freq >= 1500000 && CurrentVFO->Freq <= 2400000) // 160m
 	{
-		LPF_1 = true;                                                       // LPF1
+		LPF_1 = true;                                                        // LPF1
 		LPF_2 = false;                                                       // LPF2
 		LPF_3 = false;                                                       // LPF3
 	} else if (CurrentVFO->Freq >= 2400000 && CurrentVFO->Freq <= 4500000) // 80m
 	{
-		LPF_1 = false;                                                        // LPF1
-		LPF_2 = true;                                                       // LPF2
+		LPF_1 = false;                                                       // LPF1
+		LPF_2 = true;                                                        // LPF2
 		LPF_3 = false;                                                       // LPF3
 	} else if (CurrentVFO->Freq >= 4500000 && CurrentVFO->Freq <= 7500000) // 40m
 	{
-		LPF_1 = true;                                                        // LPF1
+		LPF_1 = true;                                                         // LPF1
 		LPF_2 = true;                                                         // LPF2
 		LPF_3 = false;                                                        // LPF3
 	} else if (CurrentVFO->Freq >= 7500000 && CurrentVFO->Freq <= 14800000) // 30m,20m
 	{
-		LPF_1 = false;                          // LPF1
-		LPF_2 = false;                          // LPF2
-		LPF_3 = true;                         // LPF3
+		LPF_1 = false;                                                         // LPF1
+		LPF_2 = false;                                                         // LPF2
+		LPF_3 = true;                                                          // LPF3
 	} else if (CurrentVFO->Freq >= 14800000 && CurrentVFO->Freq <= 30000000) // 17,15m,12,10
 	{
-		LPF_1 = true; // LPF1
-		LPF_2 = false; // LPF2
-		LPF_3 = true;  // LPF3
-	}
-	else if (CurrentVFO->Freq >= 30000000) // 6m
+		LPF_1 = true;                          // LPF1
+		LPF_2 = false;                         // LPF2
+		LPF_3 = true;                          // LPF3
+	} else if (CurrentVFO->Freq >= 30000000) // 6m
 	{
 		LPF_1 = false; // LPF1
 		LPF_2 = false; // LPF2
-		LPF_3 = false;  // LPF3
+		LPF_3 = false; // LPF3
 	}
-	
+
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // RX1
 #if HRDW_HAS_DUAL_RX
 	bitWrite(FPGA_fpgadata_out_tmp8, 1, (!TRX.ADC_SHDN && TRX.Dual_RX && !TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // RX2
@@ -334,7 +333,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 4, true); // shutdown ADC on TX
 	}
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX.ADC_RAND);
-//	bitWrite(FPGA_fpgadata_out_tmp8, 6, TRX.ADC_PGA);
+	//	bitWrite(FPGA_fpgadata_out_tmp8, 6, TRX.ADC_PGA);
 	bitWrite(FPGA_fpgadata_out_tmp8, 6, 0);
 	if (!TRX_on_TX) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 7, TRX.ADC_Driver);
@@ -436,91 +435,121 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 16
-	uint16_t VCXO_PWM = 32750 + CALIBRATE.VCXO_correction;
-	// OUT VCXO OFFSET
-	FPGA_writePacket((VCXO_PWM & (0XFFU << 8)) >> 8);
-	FPGA_clockRise();
-	FPGA_clockFall();
+	// Calculate dividers for VCXO corrector
+	static uint16_t TCXO_frequency_calculated = 0;
+	static uint16_t TCXO_Divider = 2;
+	static uint16_t VCXO_Divider = 2;
+	if (CALIBRATE.TCXO_frequency != TCXO_frequency_calculated) {
+		TCXO_frequency_calculated = CALIBRATE.TCXO_frequency;
+		const uint32_t VCXO_Freq_Khz = ADC_CLOCK / 1000;
+
+		for (uint16_t divider = 2; divider < 4096; divider++) {
+			uint16_t mod_tcxo = CALIBRATE.TCXO_frequency % divider;
+			if (mod_tcxo > 0) {
+				continue;
+			}
+
+			uint16_t TCXO_PWM_Frequency = CALIBRATE.TCXO_frequency / divider;
+			if (TCXO_PWM_Frequency > 1000) { // pwm freq limit
+				continue;
+			}
+
+			uint16_t mod_vcxo = VCXO_Freq_Khz % TCXO_PWM_Frequency;
+			if (mod_vcxo > 0) {
+				continue;
+			}
+
+			TCXO_Divider = divider - 1;
+			VCXO_Divider = VCXO_Freq_Khz / TCXO_PWM_Frequency - 1;
+			println("Dividers calculated - TCXO: ", TCXO_Divider + 1, " VCXO: ", VCXO_Divider + 1, " PWM, khz: ", TCXO_PWM_Frequency);
+			break;
+		}
+	}
 
 	// STAGE 16
-	// OUT VCXO PWM
-	FPGA_writePacket(VCXO_PWM & 0XFFU);
+	// OUT TCXO Divider
+	FPGA_writePacket(((TCXO_Divider & (0XFFU << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	// STAGE 17
+	// OUT TCXO Divider
+	FPGA_writePacket(TCXO_Divider & 0XFFU);
+	FPGA_clockRise();
+	FPGA_clockFall();
+
+	// STAGE 18
+	// OUT VCXO Divider
+	FPGA_writePacket(((VCXO_Divider & (0XFFU << 8)) >> 8));
+	FPGA_clockRise();
+	FPGA_clockFall();
+
+	// STAGE 19
+	// OUT TCXO Divider
+	FPGA_writePacket(VCXO_Divider & 0XFFU);
+	FPGA_clockRise();
+	FPGA_clockFall();
+
+	// STAGE 20
 	// OUT DAC/DCDC SETTINGS
 	FPGA_fpgadata_out_tmp8 = 0;
-		//LPF/BPF
-	bool BPF_A, BPF_B, BPF_OE1, BPF_OE2; //BPF_A = S0, BPF_B = S1, BPF_OE1 = FST_N, BPF_OE2 = FST_V
-	if(CurrentVFO->Freq >= 1500000 && CurrentVFO->Freq <= 2400000) //160m
+	// LPF/BPF
+	bool BPF_A, BPF_B, BPF_OE1, BPF_OE2;                            // BPF_A = S0, BPF_B = S1, BPF_OE1 = FST_N, BPF_OE2 = FST_V
+	if (CurrentVFO->Freq >= 1500000 && CurrentVFO->Freq <= 2400000) // 160m
 	{
-		BPF_A = false; //BPF_A
-		BPF_B = false; //BPF_B
-		BPF_OE1 = true; //BPF_OE1
-		BPF_OE2 = false; //BPF_OE2
-	}
-	else if(CurrentVFO->Freq >= 2400000 && CurrentVFO->Freq <= 4500000) //80m
+		BPF_A = false;                                                       // BPF_A
+		BPF_B = false;                                                       // BPF_B
+		BPF_OE1 = true;                                                      // BPF_OE1
+		BPF_OE2 = false;                                                     // BPF_OE2
+	} else if (CurrentVFO->Freq >= 2400000 && CurrentVFO->Freq <= 4500000) // 80m
 	{
-		BPF_A = true; //BPF_A
-		BPF_B = false; //BPF_B
-		BPF_OE1 = true; //BPF_OE1
-		BPF_OE2 = false; //BPF_OE2
-	}
-	else if(CurrentVFO->Freq >= 4500000 && CurrentVFO->Freq <= 7500000) //40m
+		BPF_A = true;                                                        // BPF_A
+		BPF_B = false;                                                       // BPF_B
+		BPF_OE1 = true;                                                      // BPF_OE1
+		BPF_OE2 = false;                                                     // BPF_OE2
+	} else if (CurrentVFO->Freq >= 4500000 && CurrentVFO->Freq <= 7500000) // 40m
 	{
-		BPF_A = false; //BPF_A
-		BPF_B = true; //BPF_B
-		BPF_OE1 = true; //BPF_OE1
-		BPF_OE2 = false; //BPF_OE2
-	}
-	else if(CurrentVFO->Freq >= 7500000 && CurrentVFO->Freq <= 14800000) //30m, 20m
+		BPF_A = false;                                                        // BPF_A
+		BPF_B = true;                                                         // BPF_B
+		BPF_OE1 = true;                                                       // BPF_OE1
+		BPF_OE2 = false;                                                      // BPF_OE2
+	} else if (CurrentVFO->Freq >= 7500000 && CurrentVFO->Freq <= 14800000) // 30m, 20m
 	{
-		BPF_A = true; //BPF_A
-		BPF_B = true; //BPF_B
-		BPF_OE1 = true; //BPF_OE1
-		BPF_OE2 = false; //BPF_OE2
-	}
-	else if(CurrentVFO->Freq >= 14800000 && CurrentVFO->Freq <= 22000000) //17,15m
+		BPF_A = true;                                                          // BPF_A
+		BPF_B = true;                                                          // BPF_B
+		BPF_OE1 = true;                                                        // BPF_OE1
+		BPF_OE2 = false;                                                       // BPF_OE2
+	} else if (CurrentVFO->Freq >= 14800000 && CurrentVFO->Freq <= 22000000) // 17,15m
 	{
-		BPF_A = false; //BPF_A
-		BPF_B = false; //BPF_B
-		BPF_OE1 = false; //BPF_OE1
-		BPF_OE2 = true; //BPF_OE2
-	}
-	else if(CurrentVFO->Freq >= 22000000 && CurrentVFO->Freq <= 32000000) //12,10m
+		BPF_A = false;                                                         // BPF_A
+		BPF_B = false;                                                         // BPF_B
+		BPF_OE1 = false;                                                       // BPF_OE1
+		BPF_OE2 = true;                                                        // BPF_OE2
+	} else if (CurrentVFO->Freq >= 22000000 && CurrentVFO->Freq <= 32000000) // 12,10m
 	{
-		BPF_A = true; //BPF_A
-		BPF_B = false; //BPF_B
-		BPF_OE1 = false; //BPF_OE1
-		BPF_OE2 = true; //BPF_OE2
+		BPF_A = true;    // BPF_A
+		BPF_B = false;   // BPF_B
+		BPF_OE1 = false; // BPF_OE1
+		BPF_OE2 = true;  // BPF_OE2
 
-	}
-	else if(CurrentVFO->Freq >= 32000000 && CurrentVFO->Freq <= 60000000) //6m
+	} else if (CurrentVFO->Freq >= 32000000 && CurrentVFO->Freq <= 60000000) // 6m
 	{
-		BPF_A = false; //BPF_A
-		BPF_B = true; //BPF_B
-		BPF_OE1 = false; //BPF_OE1
-		BPF_OE2 = true; //BPF_OE2
-	}
-	else // >60mhz
+		BPF_A = false;   // BPF_A
+		BPF_B = true;    // BPF_B
+		BPF_OE1 = false; // BPF_OE1
+		BPF_OE2 = true;  // BPF_OE2
+	} else             // >60mhz
 	{
-		BPF_A = true; //BPF_A
-		BPF_B = true; //BPF_B
-		BPF_OE1 = false; //BPF_OE1
-		BPF_OE2 = true; //BPF_OE2
+		BPF_A = true;    // BPF_A
+		BPF_B = true;    // BPF_B
+		BPF_OE1 = false; // BPF_OE1
+		BPF_OE2 = true;  // BPF_OE2
 	}
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, BPF_A);
 	bitWrite(FPGA_fpgadata_out_tmp8, 1, BPF_B);
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, BPF_OE1);
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, BPF_OE2);
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ATT);
-//	bitWrite(FPGA_fpgadata_out_tmp8, 0, TRX_DAC_DIV0);
-//	bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX_DAC_DIV1);
-//	bitWrite(FPGA_fpgadata_out_tmp8, 2, TRX_DAC_HP1);
-//	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX_DAC_HP2);
-//	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX_DAC_X4);
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX_DCDC_Freq);
 	// 11 - 48khz 01 - 96khz 10 - 192khz 00 - 384khz IQ speed
 	switch (TRX_GetRXSampleRateENUM) {
@@ -547,44 +576,36 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 18
+	// STAGE 21
 	// out TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFFU << 24)) >> 24));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 19
+	// STAGE 22
 	// out TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFFU << 16)) >> 16));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 20
+	// STAGE 23
 	// OUT TX-FREQ
 	FPGA_writePacket(((TRX_freq_phrase_tx & (0XFFU << 8)) >> 8));
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 21
+	// STAGE 24
 	// OUT TX-FREQ
 	FPGA_writePacket(TRX_freq_phrase_tx & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
-	// STAGE 22
+	// STAGE 25
 	// OUT PARAMS
 	FPGA_fpgadata_out_tmp8 = 0;
-		bitWrite(FPGA_fpgadata_out_tmp8, 0, LPF_1);
-		bitWrite(FPGA_fpgadata_out_tmp8, 1, LPF_2);
-		bitWrite(FPGA_fpgadata_out_tmp8, 2, LPF_3);
-//	if (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK) // TX
-//	{
-//		bitWrite(FPGA_fpgadata_out_tmp8, 0, TRX_DAC_DRV_A0);
-//		bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX_DAC_DRV_A1);
-//	} else {
-//		bitWrite(FPGA_fpgadata_out_tmp8, 0, 1); // DAC driver shutdown
-//		bitWrite(FPGA_fpgadata_out_tmp8, 1, 1); // DAC driver shutdown
-//	}
+	bitWrite(FPGA_fpgadata_out_tmp8, 0, LPF_1);
+	bitWrite(FPGA_fpgadata_out_tmp8, 1, LPF_2);
+	bitWrite(FPGA_fpgadata_out_tmp8, 2, LPF_3);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8 & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
@@ -634,49 +655,20 @@ static inline void FPGA_fpgadata_getparam(void) {
 	TRX_ADC_MAXAMPLITUDE = (int16_t)(((FPGA_fpgadata_in_tmp8 << 8) & 0xFF00) | FPGA_readPacket);
 	FPGA_clockFall();
 
-	// STAGE 7 - TCXO ERROR
-	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 = (FPGA_readPacket << 24);
-	FPGA_clockFall();
-	// STAGE 8
-	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 16);
-	FPGA_clockFall();
-	// STAGE 9
-	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket << 8);
-	FPGA_clockFall();
-	// STAGE 10
-	FPGA_clockRise();
-	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
-	TRX_VCXO_ERROR = FPGA_fpgadata_in_tmp32;
-	FPGA_clockFall();
-
-//	// STAGE 11 - ADC RAW DATA
-//	FPGA_fpgadata_in_tmp32 = 0;
-//	FPGA_clockRise();
-//	FPGA_fpgadata_in_tmp32 |= ((FPGA_readPacket & 0x3F) << 8);
-//	FPGA_clockFall();
-//	// STAGE 12
-//	FPGA_clockRise();
-//	FPGA_fpgadata_in_tmp32 |= (FPGA_readPacket);
-//	FPGA_clockFall();
-//	ADC_RAW_IN = (int16_t)(FPGA_fpgadata_in_tmp32 & 0x3FFF); //(FPGA_fpgadata_in_tmp32 & 0xFFFF);
-
-
-// STAGE 11 - ADC RAW DATA
+	// STAGE 7 - ADC RAW DATA
 	FPGA_fpgadata_in_tmp16 = 0;
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp16 |= ((FPGA_readPacket & 0x3F) << 8);
 	FPGA_clockFall();
-	// STAGE 12
+	// STAGE 8
 	FPGA_clockRise();
 	FPGA_fpgadata_in_tmp16 |= (FPGA_readPacket);
 	FPGA_clockFall();
-	
-	if (bitRead(FPGA_fpgadata_in_tmp16, 13) == 1)
+
+	if (bitRead(FPGA_fpgadata_in_tmp16, 13) == 1) {
 		FPGA_fpgadata_in_tmp16 |= 0xc000; // int12 to int16 extension
-	
+	}
+
 	ADC_RAW_IN = FPGA_fpgadata_in_tmp16;
 }
 

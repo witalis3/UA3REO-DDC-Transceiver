@@ -33,6 +33,8 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
 static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter);
 static void FRONTPANEL_ENC2SW_hold_handler(uint32_t parameter);
 static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count);
+static void BUTTONHANDLER_W_LITE_MENU(uint32_t parameter);
+static void BUTTONHANDLER_W_LITE_MENU_HOLD(uint32_t parameter);
 
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
@@ -132,8 +134,8 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .prev_state = false,
      .work_in_menu = true,
      .parameter = 0,
-     .clickHandler = BUTTONHANDLER_RIGHT_ARR,
-     .holdHandler = BUTTONHANDLER_MENU}, // SB9
+     .clickHandler = BUTTONHANDLER_W_LITE_MENU,
+     .holdHandler = BUTTONHANDLER_W_LITE_MENU_HOLD}, // SB9
 };
 #endif
 
@@ -185,8 +187,8 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .prev_state = false,
      .work_in_menu = true,
      .parameter = 0,
-     .clickHandler = BUTTONHANDLER_RIGHT_ARR,
-     .holdHandler = BUTTONHANDLER_MENU}, // SB6
+     .clickHandler = BUTTONHANDLER_W_LITE_MENU,
+     .holdHandler = BUTTONHANDLER_W_LITE_MENU_HOLD}, // SB6
     {.port = 1,
      .channel = 6,
      .type = FUNIT_CTRL_BUTTON,
@@ -1077,5 +1079,21 @@ void FRONTPANEL_ENC2SW_validate() {
 	}
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && ((CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM) || !CurrentVFO->SQL)) { // nothing to SQL tune
 		TRX.ENC2_func_mode = ENC_FUNC_PAGER;
+	}
+}
+
+static void BUTTONHANDLER_W_LITE_MENU(uint32_t parameter) {
+	if (LCD_systemMenuOpened) {
+		BUTTONHANDLER_MENU(parameter);
+	} else {
+		BUTTONHANDLER_RIGHT_ARR(parameter);
+	}
+}
+
+static void BUTTONHANDLER_W_LITE_MENU_HOLD(uint32_t parameter) {
+	if (LCD_systemMenuOpened) {
+		BUTTONHANDLER_LOCK(parameter);
+	} else {
+		BUTTONHANDLER_MENU(parameter);
 	}
 }

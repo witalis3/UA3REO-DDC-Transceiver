@@ -12,7 +12,6 @@ ADC_RAW,
 adcclk_in,
 FLASH_data_in,
 FLASH_busy,
-VCXO_error,
 in_empty,
 dacclk_in,
 
@@ -40,7 +39,8 @@ ADC_OFFSET,
 NCO2_freq,
 rx2,
 tx_iq_valid,
-VCXO_correction,
+TCXO_divider,
+VCXO_divider,
 DAC_div0,
 DAC_div1,
 DAC_hp1,
@@ -68,7 +68,6 @@ input signed [15:0] ADC_RAW;
 input adcclk_in;
 input unsigned [7:0] FLASH_data_in;
 input FLASH_busy;
-input signed [31:0] VCXO_error;
 input in_empty;
 input dacclk_in;
 
@@ -98,7 +97,8 @@ output reg unsigned [7:0] TX_CICFIR_GAIN = 32;
 output reg unsigned [7:0] DAC_GAIN = 0;
 output reg signed [15:0] ADC_OFFSET = 'd0;
 output reg tx_iq_valid = 0;
-output reg signed [15:0] VCXO_correction = 'd0;
+output reg [15:0] TCXO_divider = 'd0;
+output reg [15:0] VCXO_divider = 'd0;
 output reg DAC_div0 = 0;
 output reg DAC_div1 = 0;
 output reg DAC_hp1 = 0;
@@ -193,6 +193,7 @@ begin
 			k = 999;
 		end
 	end
+	
 	else if (k == 100) //GET PARAMS
 	begin
 		rx1 = DATA_BUS[0:0];
@@ -280,15 +281,25 @@ begin
 	end
 	else if (k == 114)
 	begin
-		VCXO_correction[15:8] = DATA_BUS[7:0];
+		TCXO_divider[15:8] = DATA_BUS[7:0];
 		k = 115;
 	end
 	else if (k == 115)
 	begin
-		VCXO_correction[7:0] = DATA_BUS[7:0];
+		TCXO_divider[7:0] = DATA_BUS[7:0];
 		k = 116;
 	end
 	else if (k == 116)
+	begin
+		VCXO_divider[15:8] = DATA_BUS[7:0];
+		k = 117;
+	end
+	else if (k == 117)
+	begin
+		VCXO_divider[7:0] = DATA_BUS[7:0];
+		k = 118;
+	end
+	else if (k == 118)
 	begin
 		DAC_div0 = DATA_BUS[0:0];
 		DAC_div1 = DATA_BUS[1:1];
@@ -306,34 +317,35 @@ begin
 		else if(DATA_BUS[7:6] =='d3)
 			RX_CIC_RATE = 'd1280;
 		
-		k = 117;
-	end
-	else if (k == 117)
-	begin
-		TX_NCO_freq[31:24] = DATA_BUS[7:0];
-		k = 118;
-	end
-	else if (k == 118)
-	begin
-		TX_NCO_freq[23:16] = DATA_BUS[7:0];
 		k = 119;
 	end
 	else if (k == 119)
 	begin
-		TX_NCO_freq[15:8] = DATA_BUS[7:0];
+		TX_NCO_freq[31:24] = DATA_BUS[7:0];
 		k = 120;
 	end
 	else if (k == 120)
 	begin
-		TX_NCO_freq[7:0] = DATA_BUS[7:0];
+		TX_NCO_freq[23:16] = DATA_BUS[7:0];
 		k = 121;
 	end
 	else if (k == 121)
+	begin
+		TX_NCO_freq[15:8] = DATA_BUS[7:0];
+		k = 122;
+	end
+	else if (k == 122)
+	begin
+		TX_NCO_freq[7:0] = DATA_BUS[7:0];
+		k = 123;
+	end
+	else if (k == 123)
 	begin
 		DAC_DRV_A0 = DATA_BUS[0:0];
 		DAC_DRV_A1 = DATA_BUS[1:1];
 		k = 999;
 	end
+	
 	else if (k == 200) //SEND PARAMS
 	begin
 		DATA_BUS_OUT[0:0] = ADC_OTR;
@@ -365,34 +377,15 @@ begin
 	end
 	else if (k == 205)
 	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[31:24];
+		DATA_BUS_OUT[7:0] = ADC_RAW[15:8];
 		k = 206;
 	end
 	else if (k == 206)
 	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[23:16];
-		k = 207;
-	end
-	else if (k == 207)
-	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[15:8];
-		k = 208;
-	end
-	else if (k == 208)
-	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[7:0];
-		k = 209;
-	end
-	else if (k == 209)
-	begin
-		DATA_BUS_OUT[7:0] = ADC_RAW[15:8];
-		k = 210;
-	end
-	else if (k == 210)
-	begin
 		DATA_BUS_OUT[7:0] = ADC_RAW[7:0];
 		k = 999;
 	end
+	
 	else if (k == 300) //TX IQ
 	begin
 		READ_TX_Q[23:16] = DATA_BUS[7:0];
@@ -426,6 +419,7 @@ begin
 		tx_iq_valid = 1;
 		k = 999;
 	end
+	
 	else if (k == 400) //RX1 IQ
 	begin
 		IQ_RX_READ_CLK = 0;
@@ -534,12 +528,12 @@ begin
 	end
 	else if (k == 800) //GET INFO
 	begin
-		DATA_BUS_OUT[7:0] = 'd5; //flash id 1
+		DATA_BUS_OUT[7:0] = 'd6; //flash id 1
 		k = 801;
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd0; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd8; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)

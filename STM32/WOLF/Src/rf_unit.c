@@ -134,7 +134,7 @@ static void RF_UNIT_ProcessATU(void) {
 	// float32_t TRX_PWR = TRX_PWR_Forward - TRX_PWR_Backward;
 	float32_t TRX_PWR = TRX_PWR_Forward;
 
-	if (TRX_PWR >= 5.0f) {
+	if (TRX_PWR >= 0.0f) { // if (TRX_PWR >= 5.0f) {
 		if ((!ATU_BestValsProbed && TRX_SWR_val <= NORMAL_SWR_SAVED) || (ATU_BestValsProbed && TRX_SWR_val <= NORMAL_SWR_TUNE)) {
 			println("Normal SWR, stop!");
 			sprintf(buff, "Best SWR: %.1f", TRX_SWR_val);
@@ -178,7 +178,7 @@ static void RF_UNIT_ProcessATU(void) {
 		LCD_UpdateQuery.StatusInfoBar = true;
 	} else {
 		// best result
-		if (ATU_MinSWR > TRX_SWR_val && TRX_PWR >= (float32_t)CALIBRATE.TUNE_MAX_POWER / 2.0f) {
+		if (ATU_MinSWR > TRX_SWR_val) { //  && TRX_PWR >= (float32_t)CALIBRATE.TUNE_MAX_POWER / 2.0f
 			ATU_MinSWR = TRX_SWR_val;
 			ATU_MinSWR_I = TRX.ATU_I;
 			ATU_MinSWR_C = TRX.ATU_C;

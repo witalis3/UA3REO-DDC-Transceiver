@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="DEBUG" kind="DEBUG" version="1.0" fabric="QSYS">
- <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2022.07.26.20:19:38 -->
+ <!-- Format version 22.1 915 (Future versions may contain additional information.) -->
+ <!-- 2023.01.31.00:10:36 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1658852378</value>
+  <value>1675113036</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -68,7 +68,7 @@
  <module
    name="in_system_sources_probes_0"
    kind="altera_in_system_sources_probes"
-   version="18.1"
+   version="22.1"
    path="in_system_sources_probes_0">
   <!-- Describes a single module. Module parameters are
 the requested settings for a module instance. -->
@@ -189,7 +189,7 @@ the requested settings for a module instance. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <interface name="probes" kind="conduit_end" version="18.1">
+  <interface name="probes" kind="conduit_end" version="22.1">
    <!-- The connection points exposed by a module instance for the
 particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
@@ -240,8 +240,8 @@ parameters are a RESULT of the module parameters. -->
   <name>altera_in_system_sources_probes</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IModule</subtype>
-  <displayName><![CDATA[Altera In-System Sources & Probes]]></displayName>
-  <version>18.1</version>
+  <displayName><![CDATA[Intel FPGA In-System Sources & Probes]]></displayName>
+  <version>22.1</version>
  </plugin>
  <plugin>
   <instanceCount>1</instanceCount>
@@ -249,8 +249,8 @@ parameters are a RESULT of the module parameters. -->
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
   <displayName>Conduit</displayName>
-  <version>18.1</version>
+  <version>22.1</version>
  </plugin>
- <reportVersion>18.1 625</reportVersion>
+ <reportVersion>22.1 915</reportVersion>
  <uniqueIdentifier></uniqueIdentifier>
 </EnsembleReport>

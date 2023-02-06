@@ -101,23 +101,23 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				SET_DATA_PIN;
 			}
 			// U16-D5 ATT_ON_4
-			if (registerNumber == 2 && att_val_4) {
+			if (registerNumber == 2 && !att_val_4) {
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			}
 			// U16-D4 ATT_ON_8
-			if (registerNumber == 3 && att_val_8) {
+			if (registerNumber == 3 && !att_val_8) {
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			}
 			// U16-D3 ATT_ON_16
-			if (registerNumber == 4 && att_val_16) {
+			if (registerNumber == 4 && !att_val_16) {
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			}
 			// U16-D2 ATT_ON_1
-			if (registerNumber == 5 && att_val_1) {
+			if (registerNumber == 5 && !att_val_1) {
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			}
 			// U16-D1 ATT_ON_2
-			if (registerNumber == 6 && att_val_2) {
+			if (registerNumber == 6 && !att_val_2) {
 				HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET);
 			}
 			// U16-D0 Net_LNA

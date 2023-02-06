@@ -4,9 +4,9 @@ editor if you plan to continue editing the block that represents it in
 the Block Editor! File corruption is VERY likely to occur.
 */
 /*
-Copyright (C) 2018  Intel Corporation. All rights reserved.
+Copyright (C) 2022  Intel Corporation. All rights reserved.
 Your use of Intel Corporation's design tools, logic functions 
-and other software and tools, and its AMPP partner logic 
+and other software and tools, and any partner logic 
 functions, and any output files from any of the foregoing 
 (including device programming or simulation files), and any 
 associated documentation or information are expressly subject 
@@ -16,7 +16,8 @@ the Intel FPGA IP License Agreement, or other applicable license
 agreement, including, without limitation, that your use is for
 the sole purpose of programming logic devices manufactured by
 Intel and sold by Intel or its authorized distributors.  Please
-refer to the applicable agreement for further details.
+refer to the applicable agreement for further details, at
+https://fpgasoftware.intel.com/eula.
 */
 (header "symbol" (version "1.1"))
 (symbol
@@ -117,23 +118,16 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 0 240)
 		(input)
-		(text "VCXO_error[31..0]" (rect 0 0 77 12)(font "Arial" ))
-		(text "VCXO_error[31..0]" (rect 21 235 98 247)(font "Arial" ))
-		(line (pt 0 240)(pt 16 240)(line_width 3))
+		(text "in_empty" (rect 0 0 37 12)(font "Arial" ))
+		(text "in_empty" (rect 21 235 58 247)(font "Arial" ))
+		(line (pt 0 240)(pt 16 240)(line_width 1))
 	)
 	(port
 		(pt 0 256)
 		(input)
-		(text "in_empty" (rect 0 0 37 12)(font "Arial" ))
-		(text "in_empty" (rect 21 251 58 263)(font "Arial" ))
-		(line (pt 0 256)(pt 16 256)(line_width 1))
-	)
-	(port
-		(pt 0 272)
-		(input)
 		(text "dacclk_in" (rect 0 0 36 12)(font "Arial" ))
-		(text "dacclk_in" (rect 21 267 57 279)(font "Arial" ))
-		(line (pt 0 272)(pt 16 272)(line_width 1))
+		(text "dacclk_in" (rect 21 251 57 263)(font "Arial" ))
+		(line (pt 0 256)(pt 16 256)(line_width 1))
 	)
 	(port
 		(pt 288 48)
@@ -299,93 +293,100 @@ refer to the applicable agreement for further details.
 	(port
 		(pt 288 416)
 		(output)
-		(text "VCXO_correction[15..0]" (rect 0 0 96 12)(font "Arial" ))
-		(text "VCXO_correction[15..0]" (rect 171 411 267 423)(font "Arial" ))
+		(text "TCXO_divider[15..0]" (rect 0 0 81 12)(font "Arial" ))
+		(text "TCXO_divider[15..0]" (rect 186 411 267 423)(font "Arial" ))
 		(line (pt 288 416)(pt 272 416)(line_width 3))
 	)
 	(port
 		(pt 288 432)
 		(output)
-		(text "DAC_div0" (rect 0 0 44 12)(font "Arial" ))
-		(text "DAC_div0" (rect 223 427 267 439)(font "Arial" ))
-		(line (pt 288 432)(pt 272 432)(line_width 1))
+		(text "VCXO_divider[15..0]" (rect 0 0 83 12)(font "Arial" ))
+		(text "VCXO_divider[15..0]" (rect 184 427 267 439)(font "Arial" ))
+		(line (pt 288 432)(pt 272 432)(line_width 3))
 	)
 	(port
 		(pt 288 448)
 		(output)
-		(text "DAC_div1" (rect 0 0 43 12)(font "Arial" ))
-		(text "DAC_div1" (rect 224 443 267 455)(font "Arial" ))
+		(text "DAC_div0" (rect 0 0 44 12)(font "Arial" ))
+		(text "DAC_div0" (rect 223 443 267 455)(font "Arial" ))
 		(line (pt 288 448)(pt 272 448)(line_width 1))
 	)
 	(port
 		(pt 288 464)
 		(output)
-		(text "DAC_hp1" (rect 0 0 41 12)(font "Arial" ))
-		(text "DAC_hp1" (rect 226 459 267 471)(font "Arial" ))
+		(text "DAC_div1" (rect 0 0 43 12)(font "Arial" ))
+		(text "DAC_div1" (rect 224 459 267 471)(font "Arial" ))
 		(line (pt 288 464)(pt 272 464)(line_width 1))
 	)
 	(port
 		(pt 288 480)
 		(output)
-		(text "DAC_hp2" (rect 0 0 42 12)(font "Arial" ))
-		(text "DAC_hp2" (rect 225 475 267 487)(font "Arial" ))
+		(text "DAC_hp1" (rect 0 0 41 12)(font "Arial" ))
+		(text "DAC_hp1" (rect 226 475 267 487)(font "Arial" ))
 		(line (pt 288 480)(pt 272 480)(line_width 1))
 	)
 	(port
 		(pt 288 496)
 		(output)
-		(text "DAC_x4" (rect 0 0 38 12)(font "Arial" ))
-		(text "DAC_x4" (rect 229 491 267 503)(font "Arial" ))
+		(text "DAC_hp2" (rect 0 0 42 12)(font "Arial" ))
+		(text "DAC_hp2" (rect 225 491 267 503)(font "Arial" ))
 		(line (pt 288 496)(pt 272 496)(line_width 1))
 	)
 	(port
 		(pt 288 512)
 		(output)
-		(text "DCDC_freq" (rect 0 0 50 12)(font "Arial" ))
-		(text "DCDC_freq" (rect 217 507 267 519)(font "Arial" ))
+		(text "DAC_x4" (rect 0 0 38 12)(font "Arial" ))
+		(text "DAC_x4" (rect 229 507 267 519)(font "Arial" ))
 		(line (pt 288 512)(pt 272 512)(line_width 1))
 	)
 	(port
 		(pt 288 528)
 		(output)
-		(text "TX_NCO_freq[31..0]" (rect 0 0 84 12)(font "Arial" ))
-		(text "TX_NCO_freq[31..0]" (rect 183 523 267 535)(font "Arial" ))
-		(line (pt 288 528)(pt 272 528)(line_width 3))
+		(text "DCDC_freq" (rect 0 0 50 12)(font "Arial" ))
+		(text "DCDC_freq" (rect 217 523 267 535)(font "Arial" ))
+		(line (pt 288 528)(pt 272 528)(line_width 1))
 	)
 	(port
 		(pt 288 544)
 		(output)
-		(text "RX_CIC_RATE[10..0]" (rect 0 0 95 12)(font "Arial" ))
-		(text "RX_CIC_RATE[10..0]" (rect 172 539 267 551)(font "Arial" ))
+		(text "TX_NCO_freq[31..0]" (rect 0 0 84 12)(font "Arial" ))
+		(text "TX_NCO_freq[31..0]" (rect 183 539 267 551)(font "Arial" ))
 		(line (pt 288 544)(pt 272 544)(line_width 3))
 	)
 	(port
 		(pt 288 560)
 		(output)
-		(text "IQ_RX_READ_REQ" (rect 0 0 94 12)(font "Arial" ))
-		(text "IQ_RX_READ_REQ" (rect 173 555 267 567)(font "Arial" ))
-		(line (pt 288 560)(pt 272 560)(line_width 1))
+		(text "RX_CIC_RATE[10..0]" (rect 0 0 95 12)(font "Arial" ))
+		(text "RX_CIC_RATE[10..0]" (rect 172 555 267 567)(font "Arial" ))
+		(line (pt 288 560)(pt 272 560)(line_width 3))
 	)
 	(port
 		(pt 288 576)
 		(output)
-		(text "IQ_RX_READ_CLK" (rect 0 0 92 12)(font "Arial" ))
-		(text "IQ_RX_READ_CLK" (rect 175 571 267 583)(font "Arial" ))
+		(text "IQ_RX_READ_REQ" (rect 0 0 94 12)(font "Arial" ))
+		(text "IQ_RX_READ_REQ" (rect 173 571 267 583)(font "Arial" ))
 		(line (pt 288 576)(pt 272 576)(line_width 1))
 	)
 	(port
 		(pt 288 592)
 		(output)
-		(text "DAC_DRV_A0" (rect 0 0 70 12)(font "Arial" ))
-		(text "DAC_DRV_A0" (rect 197 587 267 599)(font "Arial" ))
+		(text "IQ_RX_READ_CLK" (rect 0 0 92 12)(font "Arial" ))
+		(text "IQ_RX_READ_CLK" (rect 175 587 267 599)(font "Arial" ))
 		(line (pt 288 592)(pt 272 592)(line_width 1))
 	)
 	(port
 		(pt 288 608)
 		(output)
-		(text "DAC_DRV_A1" (rect 0 0 69 12)(font "Arial" ))
-		(text "DAC_DRV_A1" (rect 198 603 267 615)(font "Arial" ))
+		(text "DAC_DRV_A0" (rect 0 0 70 12)(font "Arial" ))
+		(text "DAC_DRV_A0" (rect 197 603 267 615)(font "Arial" ))
 		(line (pt 288 608)(pt 272 608)(line_width 1))
+	)
+	(port
+		(pt 288 624)
+		(output)
+		(text "DAC_DRV_A1" (rect 0 0 69 12)(font "Arial" ))
+		(text "DAC_DRV_A1" (rect 198 619 267 631)(font "Arial" ))
+		(line (pt 288 624)(pt 272 624)(line_width 1))
 	)
 	(port
 		(pt 288 32)

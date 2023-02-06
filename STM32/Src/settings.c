@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "6.7.0";
+const char version_string[19] = "6.8.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -155,6 +155,8 @@ void LoadSettings(bool clear) {
 		TRX.FRQ_ENC_STEP = 25000;           // frequency tuning step by main add. encoder
 		TRX.FRQ_ENC_FAST_STEP = 50000;      // frequency tuning step by main add. encoder in FAST mode
 		TRX.FRQ_ENC_WFM_STEP_KHZ = 20;      // frequency WFM tuning step by the main encoder
+		TRX.FRQ_ENC_FM_STEP_KHZ = 2.5;      // frequency FM tuning step by the main encoder
+		TRX.FRQ_ENC_AM_STEP_KHZ = 5;        // frequency AM tuning step by the main encoder
 		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
 		TRX.Debug_Type = TRX_DEBUG_OFF;     // Debug output to DEBUG / UART port
 		TRX.BandMapEnabled = true;          // automatic change of mode according to the range map
@@ -162,6 +164,8 @@ void LoadSettings(bool clear) {
 		TRX.InputType_DIGI = TRX_INPUT_USB; // type of input to transfer (DIGI)
 #ifdef FRONTPANEL_X1
 		TRX.AutoGain = true; // auto-control preamp and attenuator
+#elif defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
+		TRX.AutoGain = false;             // auto-control preamp and attenuator
 #else
 		TRX.AutoGain = true;              // auto-control preamp and attenuator
 #endif
@@ -595,11 +599,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6m = 90;                // 6m
 		CALIBRATE.rf_out_power_4m = 90;                // 4m
 		CALIBRATE.rf_out_power_2m = 80;                // 2m
-		CALIBRATE.rf_out_power_70cm = 50;              // 70cm
-		CALIBRATE.rf_out_power_23cm = 50;              // 23cm
-		CALIBRATE.rf_out_power_13cm = 50;              // 13cm
-		CALIBRATE.rf_out_power_6cm = 50;               // 6cm
-		CALIBRATE.rf_out_power_3cm = 50;               // 3cm
+		CALIBRATE.rf_out_power_70cm = 15;              // 70cm
+		CALIBRATE.rf_out_power_23cm = 15;              // 23cm
+		CALIBRATE.rf_out_power_13cm = 15;              // 13cm
+		CALIBRATE.rf_out_power_6cm = 15;               // 6cm
+		CALIBRATE.rf_out_power_3cm = 15;               // 3cm
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
@@ -646,11 +650,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6m = 90;                // 6m
 		CALIBRATE.rf_out_power_4m = 90;                // 4m
 		CALIBRATE.rf_out_power_2m = 80;                // 2m
-		CALIBRATE.rf_out_power_70cm = 50;              // 70cm
-		CALIBRATE.rf_out_power_23cm = 50;              // 23cm
-		CALIBRATE.rf_out_power_13cm = 50;              // 13cm
-		CALIBRATE.rf_out_power_6cm = 50;               // 6cm
-		CALIBRATE.rf_out_power_3cm = 50;               // 3cm
+		CALIBRATE.rf_out_power_70cm = 15;              // 70cm
+		CALIBRATE.rf_out_power_23cm = 15;              // 23cm
+		CALIBRATE.rf_out_power_13cm = 15;              // 13cm
+		CALIBRATE.rf_out_power_6cm = 15;               // 6cm
+		CALIBRATE.rf_out_power_3cm = 15;               // 3cm
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
@@ -727,6 +731,13 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_7_END = 0;                   // disabled on qrp version
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled on qrp version
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled on qrp version
+#endif
+#if defined(FRONTPANEL_MINI)
+		CALIBRATE.TCXO_frequency = 20000; // TCXO Frequency x1000
+#elif defined(FRONTPANEL_LITE_V2_MINI)
+		CALIBRATE.TCXO_frequency = 10000;              // TCXO Frequency x1000
+#else
+		CALIBRATE.TCXO_frequency = 12288;              // TCXO Frequency x1000
 #endif
 		CALIBRATE.VCXO_correction = 0;          // VCXO Frequency offset
 		CALIBRATE.FW_AD8307_SLP = 25.5f;        // Slope for the log amp used to mreasure the FW power (mV/dB)

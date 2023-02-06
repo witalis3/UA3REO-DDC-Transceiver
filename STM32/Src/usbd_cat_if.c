@@ -513,7 +513,7 @@ void ua3reo_dev_cat_parseCommand(void) {
 			strcat(answer, ";");
 			CAT_Transmit(answer);
 		} else {
-			TRX_setFrequency((uint32_t)atoi(arguments), CurrentVFO);
+			TRX_setFrequency((uint64_t)atoll(arguments), CurrentVFO);
 			LCD_UpdateQuery.FreqInfo = true;
 			LCD_UpdateQuery.TopButtons = true;
 		}
@@ -542,7 +542,7 @@ void ua3reo_dev_cat_parseCommand(void) {
 			strcat(answer, ";");
 			CAT_Transmit(answer);
 		} else {
-			TRX_setFrequency((uint32_t)atoi(arguments), SecondaryVFO);
+			TRX_setFrequency((uint64_t)atoll(arguments), SecondaryVFO);
 			LCD_UpdateQuery.FreqInfo = true;
 			LCD_UpdateQuery.TopButtons = true;
 		}

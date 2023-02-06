@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="tx_cic" kind="tx_cic" version="1.0" fabric="QSYS">
- <!-- Format version 18.1 625 (Future versions may contain additional information.) -->
- <!-- 2022.12.02.01:24:40 -->
+ <!-- Format version 22.1 915 (Future versions may contain additional information.) -->
+ <!-- 2023.01.30.20:14:50 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1669929880</value>
+  <value>1675098890</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -95,7 +95,7 @@
   <visible>true</visible>
   <valid>true</valid>
  </parameter>
- <module name="cic_ii_0" kind="altera_cic_ii" version="18.1" path="cic_ii_0">
+ <module name="cic_ii_0" kind="altera_cic_ii" version="22.1" path="cic_ii_0">
   <!-- Describes a single module. Module parameters are
 the requested settings for a module instance. -->
   <parameter name="design_env">
@@ -548,7 +548,7 @@ the requested settings for a module instance. -->
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
-  <interface name="clock" kind="clock_sink" version="18.1">
+  <interface name="clock" kind="clock_sink" version="22.1">
    <!-- The connection points exposed by a module instance for the
 particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
@@ -593,7 +593,7 @@ parameters are a RESULT of the module parameters. -->
     <role>clk</role>
    </port>
   </interface>
-  <interface name="reset" kind="reset_sink" version="18.1">
+  <interface name="reset" kind="reset_sink" version="22.1">
    <!-- The connection points exposed by a module instance for the
 particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
@@ -638,7 +638,7 @@ parameters are a RESULT of the module parameters. -->
     <role>reset_n</role>
    </port>
   </interface>
-  <interface name="clken" kind="conduit_end" version="18.1">
+  <interface name="clken" kind="conduit_end" version="22.1">
    <!-- The connection points exposed by a module instance for the
 particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
@@ -683,7 +683,7 @@ parameters are a RESULT of the module parameters. -->
     <role>clken</role>
    </port>
   </interface>
-  <interface name="av_st_in" kind="conduit_end" version="18.1">
+  <interface name="av_st_in" kind="conduit_end" version="22.1">
    <!-- The connection points exposed by a module instance for the
 particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
@@ -758,7 +758,7 @@ parameters are a RESULT of the module parameters. -->
     <role>endofpacket</role>
    </port>
   </interface>
-  <interface name="av_st_out" kind="conduit_end" version="18.1">
+  <interface name="av_st_out" kind="conduit_end" version="22.1">
    <!-- The connection points exposed by a module instance for the
 particular module parameters. Connection points and their
 parameters are a RESULT of the module parameters. -->
@@ -850,7 +850,7 @@ parameters are a RESULT of the module parameters. -->
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IModule</subtype>
   <displayName>CIC</displayName>
-  <version>18.1</version>
+  <version>22.1</version>
  </plugin>
  <plugin>
   <instanceCount>1</instanceCount>
@@ -858,7 +858,7 @@ parameters are a RESULT of the module parameters. -->
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
   <displayName>Clock Input</displayName>
-  <version>18.1</version>
+  <version>22.1</version>
  </plugin>
  <plugin>
   <instanceCount>1</instanceCount>
@@ -866,7 +866,7 @@ parameters are a RESULT of the module parameters. -->
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
   <displayName>Reset Input</displayName>
-  <version>18.1</version>
+  <version>22.1</version>
  </plugin>
  <plugin>
   <instanceCount>3</instanceCount>
@@ -874,8 +874,8 @@ parameters are a RESULT of the module parameters. -->
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>
   <displayName>Conduit</displayName>
-  <version>18.1</version>
+  <version>22.1</version>
  </plugin>
- <reportVersion>18.1 625</reportVersion>
+ <reportVersion>22.1 915</reportVersion>
  <uniqueIdentifier></uniqueIdentifier>
 </EnsembleReport>

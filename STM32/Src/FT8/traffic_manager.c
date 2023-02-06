@@ -174,6 +174,12 @@ void service_CQ(void) {
 				if (CheckRecievedRaportRSL(receive_index, 0)) { // check if the oposite side answered corespondingly
 					Beacon_State = 3;                             // Set call - "RR73"
 				}
+				if (CheckRecieved73(receive_index, 1)) // if RR73 after raport
+				{
+					Beacon_State = 7; // Set call - "73"
+					LogQSO();
+					FT8_Clear_TargetCall(); // Clear the place on the display for the "TargetCall"
+				}
 			} else { // The answer we got it was not from the station we were talking till now
 				Beacon_State = 20;
 			}
@@ -287,40 +293,27 @@ void service_CQ(void) {
 
 void GetQSODate(void) {
 	RTC_DateTypeDef sDate = {0};
-	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+	RTC_TimeTypeDef sTime = {0};
+	getUTCDateTime(&sDate, &sTime);
 
 	sprintf(QSODate, "20%02d%02d%02d", sDate.Year, sDate.Month, sDate.Date);
 }
 
 // "QSO_Start" flag showig to take the QSO "Start" or "Stop" time
 void GetQSOTime(uint8_t QSO_Start) {
-	uint32_t Time = RTC->TR;
-	int8_t Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f) - WIFI.Timezone; // corect the time to be in UTC
-	uint8_t Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
-	uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
+	RTC_DateTypeDef sDate = {0};
+	RTC_TimeTypeDef sTime = {0};
+	getUTCDateTime(&sDate, &sTime);
 
-	if (Hours < 0) { // due to the time correction
-		Hours = 24 + Hours;
-	}
-	if (Seconds == 60) { // Fix the seconds
-		Seconds = 0;
+	if (sTime.Seconds == 60) { // Fix the seconds
+		sTime.Seconds = 0;
 	}
 
 	if (QSO_Start == 1) {
-		sprintf(QSOOnTime, "%02d%02d%02d", Hours, Minutes, Seconds);
+		sprintf(QSOOnTime, "%02d%02d%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
 	} else {
-		sprintf(QSOOffTime, "%02d%02d%02d", Hours, Minutes, Seconds);
+		sprintf(QSOOffTime, "%02d%02d%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
 	}
-
-	/*
-	  RTC_TimeTypeDef sTime = {0};
-	  HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-
-	  if(QSO_Start)
-	    sprintf(QSOOnTime, "%02d%02d%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
-	  else
-	    sprintf(QSOOffTime, "%02d%02d%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
-	*/
 }
 
 void LogQSO(void) {

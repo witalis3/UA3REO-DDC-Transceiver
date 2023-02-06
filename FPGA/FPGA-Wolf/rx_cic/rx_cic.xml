@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2022.03.23.10:06:27"
- outputDirectory="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/">
+ date="2023.01.29.14:10:52"
+ outputDirectory="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/">
  <perimeter>
   <parameter
      name="AUTO_GENERATION_ID"
@@ -105,7 +105,7 @@
  </perimeter>
  <entity
    path=""
-   parameterizationKey="rx_cic:1.0:AUTO_CLOCK_CLOCK_DOMAIN=-1,AUTO_CLOCK_CLOCK_RATE=-1,AUTO_CLOCK_RESET_DOMAIN=-1,AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1648015582,AUTO_UNIQUE_ID=(altera_cic_ii:18.1:CH_PER_INT=1,CLK_EN_PORT=true,C_STAGE_0_WIDTH=83,C_STAGE_10_WIDTH=83,C_STAGE_11_WIDTH=83,C_STAGE_1_WIDTH=83,C_STAGE_2_WIDTH=83,C_STAGE_3_WIDTH=83,C_STAGE_4_WIDTH=83,C_STAGE_5_WIDTH=83,C_STAGE_6_WIDTH=83,C_STAGE_7_WIDTH=83,C_STAGE_8_WIDTH=83,C_STAGE_9_WIDTH=83,DIF_MEM=auto,DIF_USE_MEM=false,D_DELAY=1,FILTER_TYPE=decimator,INTERFACES=4,INT_MEM=auto,INT_USE_MEM=false,IN_WIDTH=31,I_STAGE_0_WIDTH=83,I_STAGE_10_WIDTH=83,I_STAGE_11_WIDTH=83,I_STAGE_1_WIDTH=83,I_STAGE_2_WIDTH=83,I_STAGE_3_WIDTH=83,I_STAGE_4_WIDTH=83,I_STAGE_5_WIDTH=83,I_STAGE_6_WIDTH=83,I_STAGE_7_WIDTH=83,I_STAGE_8_WIDTH=83,I_STAGE_9_WIDTH=83,MAX_C_STAGE_WIDTH=83,MAX_I_STAGE_WIDTH=83,OUT_WIDTH=32,PIPELINING=0,RCF_FIX=640,RCF_LB=160,RCF_MAX=1280,RCF_MIN=160,RCF_UB=1280,REQ_DIF_MEM=logic_element,REQ_INT_MEM=logic_element,REQ_OUT_WIDTH=32,REQ_PIPELINE=0,ROUND_TYPE=CONV_ROUND,STAGES=5,VRC_EN=1,design_env=NATIVE,hyper_opt=0,hyper_opt_select=0,selected_device_family=Cyclone IV E)"
+   parameterizationKey="rx_cic:1.0:AUTO_CLOCK_CLOCK_DOMAIN=-1,AUTO_CLOCK_CLOCK_RATE=-1,AUTO_CLOCK_RESET_DOMAIN=-1,AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1674990650,AUTO_UNIQUE_ID=(altera_cic_ii:22.1:CH_PER_INT=1,CLK_EN_PORT=true,C_STAGE_0_WIDTH=83,C_STAGE_10_WIDTH=83,C_STAGE_11_WIDTH=83,C_STAGE_1_WIDTH=83,C_STAGE_2_WIDTH=83,C_STAGE_3_WIDTH=83,C_STAGE_4_WIDTH=83,C_STAGE_5_WIDTH=83,C_STAGE_6_WIDTH=83,C_STAGE_7_WIDTH=83,C_STAGE_8_WIDTH=83,C_STAGE_9_WIDTH=83,DIF_MEM=auto,DIF_USE_MEM=false,D_DELAY=1,FILTER_TYPE=decimator,INTERFACES=4,INT_MEM=auto,INT_USE_MEM=false,IN_WIDTH=31,I_STAGE_0_WIDTH=83,I_STAGE_10_WIDTH=83,I_STAGE_11_WIDTH=83,I_STAGE_1_WIDTH=83,I_STAGE_2_WIDTH=83,I_STAGE_3_WIDTH=83,I_STAGE_4_WIDTH=83,I_STAGE_5_WIDTH=83,I_STAGE_6_WIDTH=83,I_STAGE_7_WIDTH=83,I_STAGE_8_WIDTH=83,I_STAGE_9_WIDTH=83,MAX_C_STAGE_WIDTH=83,MAX_I_STAGE_WIDTH=83,OUT_WIDTH=32,PIPELINING=0,RCF_FIX=640,RCF_LB=160,RCF_MAX=1280,RCF_MIN=160,RCF_UB=1280,REQ_DIF_MEM=logic_element,REQ_INT_MEM=logic_element,REQ_OUT_WIDTH=32,REQ_PIPELINE=0,ROUND_TYPE=CONV_ROUND,STAGES=5,VRC_EN=1,design_env=NATIVE,hyper_opt=0,hyper_opt_select=0,selected_device_family=Cyclone IV E)"
    instancePathKey="rx_cic"
    kind="rx_cic"
    version="1.0"
@@ -113,141 +113,142 @@
   <parameter name="AUTO_CLOCK_CLOCK_RATE" value="-1" />
   <parameter name="AUTO_CLOCK_CLOCK_DOMAIN" value="-1" />
   <parameter name="AUTO_CLOCK_RESET_DOMAIN" value="-1" />
-  <parameter name="AUTO_GENERATION_ID" value="1648015582" />
+  <parameter name="AUTO_GENERATION_ID" value="1674990650" />
   <parameter name="AUTO_DEVICE" value="EP4CE22E22C8" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone IV E" />
   <parameter name="AUTO_UNIQUE_ID" value="" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="8" />
   <generatedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/rx_cic.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/rx_cic.v"
        type="VERILOG" />
   </generatedFiles>
   <childGeneratedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_math_pkg.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_math_pkg.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_text_pkg.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_text_pkg.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_lib_pkg.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_lib_pkg.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_small_fifo.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_small_fifo.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_controller.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_controller.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_sink.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_sink.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_source.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_source.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_delay.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_delay.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_fastaddsub.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_fastaddsub.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_fastadd.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_fastadd.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_pipelined_adder.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_pipelined_adder.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_roundsat.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_roundsat.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_dsp_cic_common_pkg.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_dsp_cic_common_pkg.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_cic_lib_pkg.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_cic_lib_pkg.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_differentiator.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_differentiator.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_downsample.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_downsample.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_integrator.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_integrator.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_upsample.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_upsample.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_channel_buffer.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_channel_buffer.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_variable_downsample.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_variable_downsample.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/hyper_pipeline_interface.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/hyper_pipeline_interface.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/counter_module.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/counter_module.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_cic_int_siso.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_cic_int_siso.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_cic_dec_siso.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_cic_dec_siso.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_cic_int_simo.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_cic_int_simo.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_cic_dec_miso.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_cic_dec_miso.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_cic_core.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_cic_core.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_cic_core.ocp"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_cic_core.ocp"
        type="OTHER"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/rx_cic_cic_ii_0.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/rx_cic_cic_ii_0.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
   </childGeneratedFiles>
   <sourceFiles>
-   <file path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic.qsys" />
+   <file path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic.qsys" />
   </sourceFiles>
   <childSourceFiles>
    <file
-       path="C:/intelfpga/18.1/ip/altera/dsp/altera_cic_ii/altera_cic_ii_hw.tcl" />
-   <file path="C:/intelFPGA/18.1/ip/altera/dsp/altera_cic_ii/cic_helper.jar" />
+       path="C:/intelfpga/22.1std/ip/altera/dsp/altera_cic_ii/altera_cic_ii_hw.tcl" />
+   <file
+       path="C:/intelFPGA/22.1std/ip/altera/dsp/altera_cic_ii/cic_helper.jar" />
   </childSourceFiles>
   <messages>
    <message level="Debug" culprit="rx_cic">queue size: 0 starting:rx_cic "rx_cic"</message>
@@ -270,10 +271,10 @@
  </entity>
  <entity
    path="submodules/"
-   parameterizationKey="altera_cic_ii:18.1:CH_PER_INT=1,CLK_EN_PORT=true,C_STAGE_0_WIDTH=83,C_STAGE_10_WIDTH=83,C_STAGE_11_WIDTH=83,C_STAGE_1_WIDTH=83,C_STAGE_2_WIDTH=83,C_STAGE_3_WIDTH=83,C_STAGE_4_WIDTH=83,C_STAGE_5_WIDTH=83,C_STAGE_6_WIDTH=83,C_STAGE_7_WIDTH=83,C_STAGE_8_WIDTH=83,C_STAGE_9_WIDTH=83,DIF_MEM=auto,DIF_USE_MEM=false,D_DELAY=1,FILTER_TYPE=decimator,INTERFACES=4,INT_MEM=auto,INT_USE_MEM=false,IN_WIDTH=31,I_STAGE_0_WIDTH=83,I_STAGE_10_WIDTH=83,I_STAGE_11_WIDTH=83,I_STAGE_1_WIDTH=83,I_STAGE_2_WIDTH=83,I_STAGE_3_WIDTH=83,I_STAGE_4_WIDTH=83,I_STAGE_5_WIDTH=83,I_STAGE_6_WIDTH=83,I_STAGE_7_WIDTH=83,I_STAGE_8_WIDTH=83,I_STAGE_9_WIDTH=83,MAX_C_STAGE_WIDTH=83,MAX_I_STAGE_WIDTH=83,OUT_WIDTH=32,PIPELINING=0,RCF_FIX=640,RCF_LB=160,RCF_MAX=1280,RCF_MIN=160,RCF_UB=1280,REQ_DIF_MEM=logic_element,REQ_INT_MEM=logic_element,REQ_OUT_WIDTH=32,REQ_PIPELINE=0,ROUND_TYPE=CONV_ROUND,STAGES=5,VRC_EN=1,design_env=NATIVE,hyper_opt=0,hyper_opt_select=0,selected_device_family=Cyclone IV E"
+   parameterizationKey="altera_cic_ii:22.1:CH_PER_INT=1,CLK_EN_PORT=true,C_STAGE_0_WIDTH=83,C_STAGE_10_WIDTH=83,C_STAGE_11_WIDTH=83,C_STAGE_1_WIDTH=83,C_STAGE_2_WIDTH=83,C_STAGE_3_WIDTH=83,C_STAGE_4_WIDTH=83,C_STAGE_5_WIDTH=83,C_STAGE_6_WIDTH=83,C_STAGE_7_WIDTH=83,C_STAGE_8_WIDTH=83,C_STAGE_9_WIDTH=83,DIF_MEM=auto,DIF_USE_MEM=false,D_DELAY=1,FILTER_TYPE=decimator,INTERFACES=4,INT_MEM=auto,INT_USE_MEM=false,IN_WIDTH=31,I_STAGE_0_WIDTH=83,I_STAGE_10_WIDTH=83,I_STAGE_11_WIDTH=83,I_STAGE_1_WIDTH=83,I_STAGE_2_WIDTH=83,I_STAGE_3_WIDTH=83,I_STAGE_4_WIDTH=83,I_STAGE_5_WIDTH=83,I_STAGE_6_WIDTH=83,I_STAGE_7_WIDTH=83,I_STAGE_8_WIDTH=83,I_STAGE_9_WIDTH=83,MAX_C_STAGE_WIDTH=83,MAX_I_STAGE_WIDTH=83,OUT_WIDTH=32,PIPELINING=0,RCF_FIX=640,RCF_LB=160,RCF_MAX=1280,RCF_MIN=160,RCF_UB=1280,REQ_DIF_MEM=logic_element,REQ_INT_MEM=logic_element,REQ_OUT_WIDTH=32,REQ_PIPELINE=0,ROUND_TYPE=CONV_ROUND,STAGES=5,VRC_EN=1,design_env=NATIVE,hyper_opt=0,hyper_opt_select=0,selected_device_family=Cyclone IV E"
    instancePathKey="rx_cic:.:cic_ii_0"
    kind="altera_cic_ii"
-   version="18.1"
+   version="22.1"
    name="rx_cic_cic_ii_0">
   <parameter name="VRC_EN" value="1" />
   <parameter name="D_DELAY" value="1" />
@@ -331,127 +332,128 @@
   <parameter name="C_STAGE_9_WIDTH" value="83" />
   <generatedFiles>
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_math_pkg.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_math_pkg.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_text_pkg.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_text_pkg.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_lib_pkg.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_lib_pkg.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_small_fifo.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_small_fifo.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_controller.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_controller.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_sink.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_sink.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_source.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_avalon_streaming_source.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_delay.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_delay.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_fastaddsub.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_fastaddsub.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_fastadd.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_fastadd.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_pipelined_adder.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_pipelined_adder.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_roundsat.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_roundsat.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_dsp_cic_common_pkg.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_dsp_cic_common_pkg.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_cic_lib_pkg.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_cic_lib_pkg.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_differentiator.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_differentiator.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_downsample.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_downsample.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_integrator.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_integrator.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_upsample.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_upsample.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_channel_buffer.vhd"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_channel_buffer.vhd"
        type="VHDL"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/auk_dspip_variable_downsample.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/auk_dspip_variable_downsample.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/hyper_pipeline_interface.v"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/hyper_pipeline_interface.v"
        type="VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/counter_module.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/counter_module.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_cic_int_siso.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_cic_int_siso.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_cic_dec_siso.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_cic_dec_siso.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_cic_int_simo.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_cic_int_simo.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_cic_dec_miso.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_cic_dec_miso.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_cic_core.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_cic_core.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/alt_cic_core.ocp"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/alt_cic_core.ocp"
        type="OTHER"
        attributes="" />
    <file
-       path="D:/Dropbox/Develop/Projects/WOLF/FPGA/rx_cic/synthesis/submodules/rx_cic_cic_ii_0.sv"
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/rx_cic/synthesis/submodules/rx_cic_cic_ii_0.sv"
        type="SYSTEM_VERILOG"
        attributes="" />
   </generatedFiles>
   <childGeneratedFiles/>
   <sourceFiles>
    <file
-       path="C:/intelfpga/18.1/ip/altera/dsp/altera_cic_ii/altera_cic_ii_hw.tcl" />
-   <file path="C:/intelFPGA/18.1/ip/altera/dsp/altera_cic_ii/cic_helper.jar" />
+       path="C:/intelfpga/22.1std/ip/altera/dsp/altera_cic_ii/altera_cic_ii_hw.tcl" />
+   <file
+       path="C:/intelFPGA/22.1std/ip/altera/dsp/altera_cic_ii/cic_helper.jar" />
   </sourceFiles>
   <childSourceFiles/>
   <instantiator instantiator="rx_cic" as="cic_ii_0" />

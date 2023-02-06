@@ -12,7 +12,6 @@ ADC_RAW,
 adcclk_in,
 FLASH_data_in,
 FLASH_busy,
-VCXO_error,
 in_empty,
 dacclk_in,
 
@@ -70,7 +69,6 @@ input signed [11:0] ADC_RAW;
 input adcclk_in;
 input unsigned [7:0] FLASH_data_in;
 input FLASH_busy;
-input signed [31:0] VCXO_error;
 input in_empty;
 input dacclk_in;
 
@@ -371,30 +369,10 @@ begin
 	end
 	else if (k == 205)
 	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[31:24];
+		DATA_BUS_OUT[7:0] = ADC_RAW[11:8];
 		k = 206;
 	end
 	else if (k == 206)
-	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[23:16];
-		k = 207;
-	end
-	else if (k == 207)
-	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[15:8];
-		k = 208;
-	end
-	else if (k == 208)
-	begin
-		DATA_BUS_OUT[7:0] = VCXO_error[7:0];
-		k = 209;
-	end
-	else if (k == 209)
-	begin
-		DATA_BUS_OUT[7:0] = ADC_RAW[11:8];
-		k = 210;
-	end
-	else if (k == 210)
 	begin
 		DATA_BUS_OUT[7:0] = ADC_RAW[7:0];
 		k = 999;
@@ -503,12 +481,12 @@ begin
 	end
 	else if (k == 800) //GET INFO
 	begin
-		DATA_BUS_OUT[7:0] = 'd4; //flash id 1
+		DATA_BUS_OUT[7:0] = 'd6; //flash id 1
 		k = 801;
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd1; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd8; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)

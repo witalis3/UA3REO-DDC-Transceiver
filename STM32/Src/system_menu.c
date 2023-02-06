@@ -49,6 +49,8 @@ static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER(int8_t direction);
 static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction);
@@ -327,6 +329,7 @@ static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_6M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_6M(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TCXO(int8_t direction);
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction);  // Tisho
 static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction); // Tisho
@@ -510,8 +513,8 @@ const static struct sysmenu_item_handler sysmenu_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"RF Power", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RF_Gain, SYSMENU_HANDL_TRX_RFPower},
-    {"Power for each band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band},
-    {"Power for each mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Mode},
+    {"Pwr for each band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band},
+    {"Pwr for each mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Mode},
     {"Channel Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ChannelMode, SYSMENU_HANDL_TRX_ChannelMode},
     {"Band Map", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
     {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
@@ -526,15 +529,31 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
 #endif
     {"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_TRX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
     {"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_TRX_SAMPLERATE_FM, {"48khz", "96khz", "192khz", "384khz"}},
+#ifdef LAY_320x240
+    {"Fr Step", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
+    {"Fr Step FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
+    {"Fr Step ENC2", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
+    {"Fr Step ENC2 FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
+    {"Fr Step WFM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_WFM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ},
+    {"Fr Step FM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_FM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ},
+    {"Fr Step AM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ},
+    {"CW Fr Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
+#else
     {"Freq Step", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
     {"Freq Step FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
     {"Freq Step ENC2", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
     {"Freq Step ENC2 FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
     {"Freq Step WFM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_WFM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ},
+    {"Freq Step FM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_FM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ},
+    {"Freq Step AM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ},
     {"CW Freq Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
+#endif
     {"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
     {"Att step, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_TRX_ATT_STEP},
     {"Attenuation, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.ATT_DB, SYSMENU_HANDL_TRX_ATT_DB},
+#endif
 #if HRDW_HAS_VGA
     {"VGA Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.VGA_GAIN, SYSMENU_HANDL_TRX_VGA_GAIN},
 #endif
@@ -565,14 +584,18 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
 };
 
 const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
-#if defined(FRONTPANEL_X1) || defined(FRONTPANEL_LITE)
+#if defined(FRONTPANEL_X1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
     {"Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.Volume, SYSMENU_HANDL_AUDIO_Volume},
     {"Volume Step", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.Volume_Step, SYSMENU_HANDL_AUDIO_Volume_Step},
 #endif
     {"IF Gain, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
     {"DNR", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DNR_shadow, SYSMENU_HANDL_AUDIO_DNR, {"OFF", "DNR1", "DNR2"}},
     {"AGC", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_shadow, SYSMENU_HANDL_AUDIO_AGC},
+#ifdef LAY_320x240
+    {"AGC Gain tr, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET},
+#else
     {"AGC Gain target, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET},
+#endif
     {"Mic Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_GAIN_DB, SYSMENU_HANDL_AUDIO_MIC_Gain},
     {"Mic Boost", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.MIC_Boost, SYSMENU_HANDL_AUDIO_MIC_Boost},
     {"MIC Noise Gate", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_NOISE_GATE, SYSMENU_HANDL_AUDIO_MIC_NOISE_GATE},
@@ -595,7 +618,11 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
     {"FM LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass},
     {"FM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass},
     {"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SQL_shadow, SYSMENU_HANDL_AUDIO_Squelch},
+#ifdef LAY_320x240
+    {"FM Squelch level", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dbm_shadow, SYSMENU_HANDL_AUDIO_FMSquelch},
+#else
     {"FM Squelch level, dbm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dbm_shadow, SYSMENU_HANDL_AUDIO_FMSquelch},
+#endif
     {"Beeper", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_AUDIO_Beeper},
 #if !defined(STM32F407xx)
     {"MIC Reverber", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.MIC_REVERBER, SYSMENU_HANDL_AUDIO_MIC_REVERBER},
@@ -620,9 +647,15 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
     {"RX AGC Max gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_Max_gain, SYSMENU_HANDL_AUDIO_RX_AGC_Max_gain},
     {"RX AGC Hold time", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RX_AGC_Hold, SYSMENU_HANDL_AUDIO_RX_AGC_Hold},
     {"TX Compr Speed SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_SSB, SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_SSB},
+#ifdef LAY_320x240
+    {"TX Compr MxGa SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_SSB},
+    {"TX Compr Speed AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_AMFM},
+    {"TX Compr MxGa AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_AMFM},
+#else
     {"TX Compr MaxGain SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_SSB},
     {"TX Compr Speed AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_HANDL_AUDIO_TX_CompressorSpeed_AMFM},
     {"TX Compr MaxGain AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_HANDL_AUDIO_TX_CompressorMaxGain_AMFM},
+#endif
     {"CTCSS Frequency", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CTCSS_Freq, SYSMENU_HANDL_AUDIO_CTCSS_Freq},
     {"SelfHear Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SELFHEAR_Volume, SYSMENU_HANDL_AUDIO_SELFHEAR_Volume},
 #if !defined(STM32F407xx)
@@ -630,11 +663,19 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
 #endif
     {"AGC Spectral", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Spectral, SYSMENU_HANDL_AUDIO_AGC_Spectral},
     {"TX CESSB", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TX_CESSB, SYSMENU_HANDL_AUDIO_TX_CESSB},
+#ifdef LAY_320x240
+    {"TX CESSB Compress", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.TX_CESSB_COMPRESS_DB, SYSMENU_HANDL_AUDIO_TX_CESSB_COMPRESS_DB},
+#else
     {"TX CESSB Compress, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.TX_CESSB_COMPRESS_DB, SYSMENU_HANDL_AUDIO_TX_CESSB_COMPRESS_DB},
+#endif
     {"VAD Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_HANDL_AUDIO_VAD_THRESHOLD},
     {"VOX", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.VOX, SYSMENU_HANDL_AUDIO_VOX},
     {"VOX Timeout, ms", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.VOX_TIMEOUT, SYSMENU_HANDL_AUDIO_VOX_TIMEOUT},
+#ifdef LAY_320x240
+    {"VOX Threshold", SYSMENU_INT8, NULL, (uint32_t *)&TRX.VOX_THRESHOLD, SYSMENU_HANDL_AUDIO_VOX_THRESHOLD},
+#else
     {"VOX Threshold, dbFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.VOX_THRESHOLD, SYSMENU_HANDL_AUDIO_VOX_THRESHOLD},
+#endif
 };
 
 const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
@@ -679,8 +720,13 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"FFT Automatic", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Automatic, SYSMENU_HANDL_SCREEN_FFT_Automatic},
     {"FFT Scale Type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_Scale_Type, SYSMENU_HANDL_SCREEN_FFT_Scale_Type, {"Ampl", "Squared", "dBm"}},
     {"FFT Sensitivity", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Sensitivity, SYSMENU_HANDL_SCREEN_FFT_Sensitivity},
+#ifdef LAY_320x240
+    {"FFT Manual Bottom", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FFT_ManualBottom, SYSMENU_HANDL_SCREEN_FFT_ManualBottom},
+    {"FFT Manual Top", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FFT_ManualTop, SYSMENU_HANDL_SCREEN_FFT_ManualTop},
+#else
     {"FFT Manual Bottom, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FFT_ManualBottom, SYSMENU_HANDL_SCREEN_FFT_ManualBottom},
     {"FFT Manual Top, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FFT_ManualTop, SYSMENU_HANDL_SCREEN_FFT_ManualTop},
+#endif
     {"FFT Height", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Height, SYSMENU_HANDL_SCREEN_FFT_Height},
     {"FFT Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style, {"", "Gradien", "Fill", "Dots", "Contour"}},
 #if !defined(FRONTPANEL_LITE)
@@ -715,8 +761,13 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "GNuttal", "Dolph", "Blckman", "Nuttall", "BlNuttl", "Hann", "Hamming", "No"}},
 #if HRDW_HAS_WIFI
     {"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
+#ifdef LAY_320x240
+    {"FFT DXClus Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
+    {"FFT DXClus Timeout", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_DXCluster_Timeout, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout},
+#else
     {"FFT DXCluster Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
     {"FFT DXCluster Timeout", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_DXCluster_Timeout, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout},
+#endif
 #endif
 #if !defined(FRONTPANEL_LITE)
     {"Show Sec VFO", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Show_Sec_VFO, SYSMENU_HANDL_SCREEN_Show_Sec_VFO},
@@ -758,11 +809,13 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
 #if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 30
     {"Func button 31", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[30], SYSMENU_HANDL_SCREEN_FUNC_BUTTON31},
     {"Func button 32", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[31], SYSMENU_HANDL_SCREEN_FUNC_BUTTON32},
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 32
     {"Func button 33", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[32], SYSMENU_HANDL_SCREEN_FUNC_BUTTON33},
     {"Func button 34", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[33], SYSMENU_HANDL_SCREEN_FUNC_BUTTON34},
     {"Func button 35", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[34], SYSMENU_HANDL_SCREEN_FUNC_BUTTON35},
 #if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 35
     {"Func button 36", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[35], SYSMENU_HANDL_SCREEN_FUNC_BUTTON36},
+#endif
 #endif
 #endif
 #endif
@@ -786,7 +839,8 @@ const static struct sysmenu_item_handler sysmenu_decoders_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_adc_handlers[] = {
     {"ADC Driver", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_Driver, SYSMENU_HANDL_ADC_DRIVER},
-#if !defined(FRONTPANEL_LITE)
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
     {"ADC Preamp", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_PGA, SYSMENU_HANDL_ADC_PGA},       {"ADC Dither", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_DITH, SYSMENU_HANDL_ADC_DITH},
     {"ADC Randomizer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_RAND, SYSMENU_HANDL_ADC_RAND},
 #endif
@@ -795,6 +849,18 @@ const static struct sysmenu_item_handler sysmenu_adc_handlers[] = {
 
 #if HRDW_HAS_WIFI
 const static struct sysmenu_item_handler sysmenu_wifi_handlers[] = {
+#ifdef LAY_320x240
+    {"WIFI Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.Enabled, SYSMENU_HANDL_WIFI_Enabled},
+    {"WIFI Network 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP1},
+    {"WIFI Network 1 Pas", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP1password},
+    {"WIFI Network 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP2},
+    {"WIFI Network 2 Pas", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP2password},
+    {"WIFI Network 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP3},
+    {"WIFI Network 3 Pas", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP3password},
+    {"WIFI Timezone", SYSMENU_INT8, NULL, (uint32_t *)&WIFI.Timezone, SYSMENU_HANDL_WIFI_Timezone},
+    {"WIFI CAT Server", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.CAT_Server, SYSMENU_HANDL_WIFI_CAT_Server},
+    {"WIFI Update ESP", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_UpdateFW},
+#else
     {"WIFI Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.Enabled, SYSMENU_HANDL_WIFI_Enabled},
     {"WIFI Network 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP1},
     {"WIFI Network 1 Pass", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP1password},
@@ -805,6 +871,7 @@ const static struct sysmenu_item_handler sysmenu_wifi_handlers[] = {
     {"WIFI Timezone", SYSMENU_INT8, NULL, (uint32_t *)&WIFI.Timezone, SYSMENU_HANDL_WIFI_Timezone},
     {"WIFI CAT Server", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.CAT_Server, SYSMENU_HANDL_WIFI_CAT_Server},
     {"WIFI Update ESP firmware", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_UpdateFW},
+#endif
     {"", SYSMENU_INFOLINE, 0, 0},
     {"NET:", SYSMENU_INFOLINE, 0, 0},
     {WIFI_AP, SYSMENU_INFOLINE, 0, 0},
@@ -816,25 +883,40 @@ const static struct sysmenu_item_handler sysmenu_wifi_handlers[] = {
 
 #if HRDW_HAS_SD
 const static struct sysmenu_item_handler sysmenu_sd_handlers[] = {
-    {"File Manager", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_Filemanager},
-    {"USB SD Card Reader", SYSMENU_BOOLEAN, NULL, (uint32_t *)&SD_USBCardReader, SYSMENU_HANDL_SD_USB},
-    {"Export Settings to SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettingsDialog},
+    {"File Manager", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_Filemanager},          {"USB SD Card Reader", SYSMENU_BOOLEAN, NULL, (uint32_t *)&SD_USBCardReader, SYSMENU_HANDL_SD_USB},
+#ifdef LAY_320x240
+    {"Export to SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettingsDialog}, {"Import from SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettingsDialog},
+#else
+		{"Export Settings to SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettingsDialog},
     {"Import Settings from SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettingsDialog},
+#endif
     {"Format SD card", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_FormatDialog},
 };
 
 const static struct sysmenu_item_handler sysmenu_sd_export_handlers[] = {
     {"Back", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Back},
+#ifdef LAY_320x240
+    {"Yes, Export Set", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings},
+#else
     {"Yes, Export Settings", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings},
+#endif
 };
 
 const static struct sysmenu_item_handler sysmenu_sd_import_handlers[] = {
     {"Back", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Back},
+#ifdef LAY_320x240
+    {"Yes, Import Set", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings},
+#else
     {"Yes, Import Settings", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings},
+#endif
 };
 const static struct sysmenu_item_handler sysmenu_sd_format_handlers[] = {
     {"Back", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Back},
+#ifdef LAY_320x240
+    {"Yes, Format Card", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_Format},
+#else
     {"Yes, Format SD Card", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_Format},
+#endif
 };
 #endif
 
@@ -845,8 +927,13 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"Encoder2 debounce", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER2_DEBOUNCE, SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE},
     {"Encoder slow rate", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
     {"Encoder on falling", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},
+#ifdef LAY_320x240
+    {"Encoder acceler.", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION},
+#else
     {"Encoder acceleration", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION},
-#if !defined(FRONTPANEL_LITE)
+#endif
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
     {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "SPLIT", "RU4PN", "WF-100D"}},
 #endif
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
@@ -858,7 +945,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"CICCOMP 384K Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.CICFIR_GAINER_384K_val, SYSMENU_HANDL_CALIB_CICCOMP_384K_SHIFT},
     {"TX CICCOMP Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TXCICFIR_GAINER_val, SYSMENU_HANDL_CALIB_TXCICCOMP_SHIFT},
     {"DAC Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.DAC_GAINER_val, SYSMENU_HANDL_CALIB_DAC_SHIFT},
-#if !defined(FRONTPANEL_LITE)
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
     {"DAC Driver Mode", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.DAC_driver_mode, SYSMENU_HANDL_CALIB_DAC_driver_mode},
 #endif
     {"RF GAIN 2200m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_2200m, SYSMENU_HANDL_CALIB_RF_GAIN_2200M},
@@ -875,6 +963,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"RF GAIN 10m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_10m, SYSMENU_HANDL_CALIB_RF_GAIN_10M},
 #if !defined(FRONTPANEL_LITE)
     {"RF GAIN 6m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_HANDL_CALIB_RF_GAIN_6M},
+#if !defined(FRONTPANEL_LITE_V2_MINI) || !defined(FRONTPANEL_LITE_V2_BIG) || !defined(FRONTPANEL_LITE_V2_MICRO)
     {"RF GAIN 4m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_4m, SYSMENU_HANDL_CALIB_RF_GAIN_4M},
     {"RF GAIN 2m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_HANDL_CALIB_RF_GAIN_2M},
     {"RF GAIN 70cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_70cm, SYSMENU_HANDL_CALIB_RF_GAIN_70CM},
@@ -883,10 +972,12 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"RF GAIN 6cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_6cm, SYSMENU_HANDL_CALIB_RF_GAIN_6CM},
     {"RF GAIN 3cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_3cm, SYSMENU_HANDL_CALIB_RF_GAIN_3CM},
 #endif
+#endif
     {"S METER HF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_hf, SYSMENU_HANDL_CALIB_S_METER_HF},
     {"S METER VHF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_vhf, SYSMENU_HANDL_CALIB_S_METER_VHF},
     {"ADC OFFSET", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_HANDL_CALIB_ADC_OFFSET},
-#if !defined(FRONTPANEL_LITE)
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
     {"LPF END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_HAS_LPF, (uint32_t *)&CALIBRATE.RFU_LPF_END, SYSMENU_HANDL_CALIB_LPF_END},
     {"HPF START", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_HAS_LPF, (uint32_t *)&CALIBRATE.RFU_HPF_START, SYSMENU_HANDL_CALIB_HPF_START},
     {"BPF 0 START", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.RFU_BPF_0_START, SYSMENU_HANDL_CALIB_BPF_0_START},
@@ -916,17 +1007,24 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #if !defined(FRONTPANEL_LITE)
     {"SWR FWD RATE 6M", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_6M, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_6M},
     {"SWR BWD RATE 6M", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_BWD_Calibration_6M, SYSMENU_HANDL_CALIB_SWR_REF_RATE_6M},
+#if !defined(FRONTPANEL_LITE_V2_MINI) || !defined(FRONTPANEL_LITE_V2_BIG) || !defined(FRONTPANEL_LITE_V2_MICRO)
     {"SWR FWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF},
     {"SWR BWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_BWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF},
 #endif
+#endif
+#if !defined(FRONTPANEL_LITE)
+    {"TCXO Frequency, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
+#else
     {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
+#endif
 #ifdef SWR_AD8307_LOG
     {"FW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_SLP, SYSMENU_HANDL_CALIB_FW_AD8307_SLP},
     {"FW_AD8307_Offset (mV)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_OFFS, SYSMENU_HANDL_CALIB_FW_AD8307_OFFS},
     {"BW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.BW_AD8307_SLP, SYSMENU_HANDL_CALIB_BW_AD8307_SLP},
     {"BW_AD8307_Offset (mV)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.BW_AD8307_OFFS, SYSMENU_HANDL_CALIB_BW_AD8307_OFFS},
 #endif
-#if !defined(FRONTPANEL_LITE)
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
     {"FAN Medium start", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.FAN_MEDIUM_START, SYSMENU_HANDL_CALIB_FAN_MEDIUM_START},
     {"FAN Medium stop", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.FAN_MEDIUM_STOP, SYSMENU_HANDL_CALIB_FAN_MEDIUM_STOP},
     {"FAN Full start", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.FAN_FULL_START, SYSMENU_HANDL_CALIB_FAN_FULL_START},
@@ -934,7 +1032,11 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
     {"MAX SWR", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TRX_MAX_SWR, SYSMENU_HANDL_CALIB_TRX_MAX_SWR},
     {"FM Deviation Scale", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.FM_DEVIATION_SCALE, SYSMENU_HANDL_CALIB_FM_DEVIATION_SCALE},
+#ifdef LAY_320x240
+    {"AM Mod Index", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.AM_MODULATION_INDEX, SYSMENU_HANDL_CALIB_AM_MODULATION_INDEX},
+#else
     {"AM Modulation Index", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.AM_MODULATION_INDEX, SYSMENU_HANDL_CALIB_AM_MODULATION_INDEX},
+#endif
     {"RTC COARSE CALIBR", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.RTC_Coarse_Calibration, SYSMENU_HANDL_CALIB_RTC_COARSE_CALIBRATION},
     {"RTC FINE CALIBR", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.RTC_Calibration, SYSMENU_HANDL_CALIB_RTC_CALIBRATION},
 #if !defined(FRONTPANEL_LITE)
@@ -960,6 +1062,19 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"EXT Transv 13cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_13cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_13cm},
     {"EXT Transv 6cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_6cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_6cm},
     {"EXT Transv 3cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_3cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_3cm},
+#ifdef LAY_320x240
+    {"Trans. Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
+    {"Trans. 70cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
+    {"Trans. 70cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
+    {"Trans. 23cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_23cm},
+    {"Trans. 23cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_23cm},
+    {"Trans. 13cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_13cm},
+    {"Trans. 13cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_13cm},
+    {"Trans. 6cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_6cm},
+    {"Trans. 6cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
+    {"Trans. 3cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
+    {"Trans. 3cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
+#else
     {"Transverter Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
     {"Transverter 70cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
     {"Transverter 70cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
@@ -971,6 +1086,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"Transverter 6cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
     {"Transverter 3cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
     {"Transverter 3cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
+#endif
 #endif
     {"NOTX NOT HAM", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_NOTHAM, SYSMENU_HANDL_CALIB_NOTX_NOTHAM},
     {"NOTX 2200m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_2200m, SYSMENU_HANDL_CALIB_NOTX_2200m},
@@ -1010,7 +1126,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"INA226_PWR_MON", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_INA226_PWR_MON},                // Tisho
     {"INA226_Cur_Calc(mA/Bit)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_INA226_CUR_CALL}, // Tisho
 #endif
-#if defined(FRONTPANEL_X1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_MINI)
+#if defined(FRONTPANEL_X1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_MINI) || defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
     {"PWR VLT Calibr", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.PWR_VLT_Calibration, SYSMENU_HANDL_CALIB_PWR_VLT_Calibration},
 #endif
 #if defined(FRONTPANEL_X1)
@@ -1018,7 +1134,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
     {"ATU Averaging", SYSMENU_UINT8, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&CALIBRATE.ATU_AVERAGING, SYSMENU_HANDL_CALIB_ATU_AVERAGING},
     {"CAT Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.CAT_Type, SYSMENU_HANDL_CALIB_CAT_Type, {"FT-450", "TS2000"}},
-#if !defined(FRONTPANEL_LITE)
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
     {"LNA Compensation", SYSMENU_INT8, NULL, (uint32_t *)&CALIBRATE.LNA_compensation, SYSMENU_HANDL_CALIB_LNA_compensation},
 #endif
     {"TSignal Balance", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TwoSignalTune_Balance, SYSMENU_HANDL_CALIB_TwoSignalTune_Balance},
@@ -1027,8 +1144,14 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
     {"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
     {"Calibrate reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_CALIBRATION_RESET},
+#ifdef LAY_320x240
+#if HRDW_HAS_WIFI
+    {"WiFi set. reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_WIFI_RESET},
+#endif
+#else
 #if HRDW_HAS_WIFI
     {"WiFi settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_WIFI_RESET},
+#endif
 #endif
 };
 
@@ -1551,6 +1674,56 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ(int8_t direction) {
 		}
 	}
 	TRX.FRQ_ENC_WFM_STEP_KHZ = wfm_freq_steps[0];
+}
+
+static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ(int8_t direction) {
+	const float32_t fm_freq_steps[] = {1, 2, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
+
+	for (uint8_t i = 0; i < ARRLENTH(fm_freq_steps); i++) {
+		if (TRX.FRQ_ENC_FM_STEP_KHZ == fm_freq_steps[i]) {
+			if (direction < 0) {
+				if (i > 0) {
+					TRX.FRQ_ENC_FM_STEP_KHZ = fm_freq_steps[i - 1];
+				} else {
+					TRX.FRQ_ENC_FM_STEP_KHZ = fm_freq_steps[0];
+				}
+				return;
+			} else {
+				if (i < (ARRLENTH(fm_freq_steps) - 1)) {
+					TRX.FRQ_ENC_FM_STEP_KHZ = fm_freq_steps[i + 1];
+				} else {
+					TRX.FRQ_ENC_FM_STEP_KHZ = fm_freq_steps[ARRLENTH(fm_freq_steps) - 1];
+				}
+				return;
+			}
+		}
+	}
+	TRX.FRQ_ENC_FM_STEP_KHZ = fm_freq_steps[0];
+}
+
+static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ(int8_t direction) {
+	const uint32_t am_freq_steps[] = {1, 2, 3, 5, 9, 10, 15, 20, 50};
+
+	for (uint8_t i = 0; i < ARRLENTH(am_freq_steps); i++) {
+		if (TRX.FRQ_ENC_AM_STEP_KHZ == am_freq_steps[i]) {
+			if (direction < 0) {
+				if (i > 0) {
+					TRX.FRQ_ENC_AM_STEP_KHZ = am_freq_steps[i - 1];
+				} else {
+					TRX.FRQ_ENC_AM_STEP_KHZ = am_freq_steps[0];
+				}
+				return;
+			} else {
+				if (i < (ARRLENTH(am_freq_steps) - 1)) {
+					TRX.FRQ_ENC_AM_STEP_KHZ = am_freq_steps[i + 1];
+				} else {
+					TRX.FRQ_ENC_AM_STEP_KHZ = am_freq_steps[ARRLENTH(am_freq_steps) - 1];
+				}
+				return;
+			}
+		}
+	}
+	TRX.FRQ_ENC_AM_STEP_KHZ = am_freq_steps[0];
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER(int8_t direction) {
@@ -3873,7 +4046,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON32(int8_t direction) {
 		TRX.FuncButtons[31] = FUNCBUTTONS_COUNT - 1;
 	}
 }
-
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 32
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON33(int8_t direction) {
 	if (TRX.FuncButtons[32] > 0 || direction > 0) {
 		TRX.FuncButtons[32] += direction;
@@ -3910,6 +4083,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON36(int8_t direction) {
 		TRX.FuncButtons[35] = FUNCBUTTONS_COUNT - 1;
 	}
 }
+#endif
 #endif
 #endif
 #endif
@@ -4780,9 +4954,6 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "ADC MIN/MAX: %d/%d     ", TRX_ADC_MINAMPLITUDE, TRX_ADC_MAXAMPLITUDE);
-	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	y += y_offs;
-	sprintf(out, "VCXO ERROR: %d     ", TRX_VCXO_ERROR);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "VBAT VOLT: %.2f     ", TRX_VBAT_Voltage);
@@ -5795,6 +5966,32 @@ static void SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER(int8_t direction) {
 	if (CALIBRATE.MAX_RF_POWER_ON_METER > 200) {
 		CALIBRATE.MAX_RF_POWER_ON_METER = 200;
 	}
+}
+static void SYSMENU_HANDL_CALIB_TCXO(int8_t direction) {
+	const uint16_t tcxo_freq_steps[] = {5120,  8000,  9600,  10000, 12000, 12288, 13000, 14000, 14400, 15000, 16000, 16800, 19200, 19440,
+	                                    19680, 20000, 20480, 24000, 25000, 26000, 27000, 28000, 30000, 32000, 38400, 40000, 50000};
+
+	for (uint8_t i = 0; i < ARRLENTH(tcxo_freq_steps); i++) {
+		if (CALIBRATE.TCXO_frequency == tcxo_freq_steps[i]) {
+			if (direction < 0) {
+				if (i > 0) {
+					CALIBRATE.TCXO_frequency = tcxo_freq_steps[i - 1];
+				} else {
+					CALIBRATE.TCXO_frequency = tcxo_freq_steps[0];
+				}
+				return;
+			} else {
+				if (i < (ARRLENTH(tcxo_freq_steps) - 1)) {
+					CALIBRATE.TCXO_frequency = tcxo_freq_steps[i + 1];
+				} else {
+					CALIBRATE.TCXO_frequency = tcxo_freq_steps[ARRLENTH(tcxo_freq_steps) - 1];
+				}
+				return;
+			}
+		}
+	}
+
+	CALIBRATE.TCXO_frequency = tcxo_freq_steps[0];
 }
 
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction) {

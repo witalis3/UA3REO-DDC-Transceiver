@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 volatile bool SPI_DMA_TXRX_ready_callback = false;
 
@@ -1059,4 +1060,39 @@ uint8_t getPowerFromALC(float32_t alc) {
 	}
 
 	return power;
+}
+
+void getUTCDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime) {
+	HAL_RTC_GetDate(&hrtc, sDate, RTC_FORMAT_BIN);
+	HAL_RTC_GetTime(&hrtc, sTime, RTC_FORMAT_BIN);
+
+	// println("Local Date: ", sDate->Year, "-", sDate->Month, "-", sDate->Date);
+	// println("Local Time: ", sTime->Hours, "-", sTime->Minutes, "-", sTime->Seconds);
+
+	time_t timestamp;
+	struct tm currTime;
+
+	currTime.tm_year = sDate->Year + 100;
+	currTime.tm_mon = sDate->Month - 1;
+	currTime.tm_mday = sDate->Date;
+
+	currTime.tm_hour = 2; // sTime->Hours;
+	currTime.tm_min = sTime->Minutes;
+	currTime.tm_sec = sTime->Seconds;
+
+	timestamp = mktime(&currTime);
+
+	timestamp -= WIFI.Timezone * 60 * 60;
+
+	currTime = *localtime(&timestamp);
+
+	sDate->Year = currTime.tm_year - 100;
+	sDate->Month = currTime.tm_mon + 1;
+	sDate->Date = currTime.tm_mday;
+	sTime->Hours = currTime.tm_hour;
+	sTime->Minutes = currTime.tm_min;
+	sTime->Seconds = currTime.tm_sec;
+
+	// println("UTC Date: ", sDate->Year, "-", sDate->Month, "-", sDate->Date);
+	// println("UTC Time: ", sTime->Hours, "-", sTime->Minutes, "-", sTime->Seconds);
 }

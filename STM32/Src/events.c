@@ -507,7 +507,6 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		println("USB Audio RX/TX samples: ", dbg_RX_USB_AUDIO_SAMPLES, " / ", dbg_TX_USB_AUDIO_SAMPLES); //~48000
 		println("ADC MIN/MAX Amplitude: ", TRX_ADC_MINAMPLITUDE, " / ", TRX_ADC_MAXAMPLITUDE);
 		print_flush();
-		println("VCXO Error: ", TRX_VCXO_ERROR);
 #if HRDW_HAS_WIFI
 		println("WIFI State: ", WIFI_State);
 #endif

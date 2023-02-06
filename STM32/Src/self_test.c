@@ -127,13 +127,6 @@ void SELF_TEST_Draw(void) {
 		SELF_TEST_printResult(CODEC_test_result, pos_y);
 		pos_y += margin_bottom;
 
-#if !defined(FRONTPANEL_LITE)
-		// TCXO test
-		LCDDriver_printText("TCXO", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-		SELF_TEST_printResult(abs(TRX_VCXO_ERROR) < 10, pos_y);
-		pos_y += margin_bottom;
-#endif
-
 		// Samplerate test
 		LCDDriver_printText("FPGA Clocks", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		SELF_TEST_printResult(abs((int32_t)TRX_GetRXSampleRate - (int32_t)dbg_FPGA_samples) < (TRX_GetRXSampleRate * 0.05f), pos_y); // 5%
@@ -185,8 +178,10 @@ void SELF_TEST_Draw(void) {
 #if !defined(FRONTPANEL_LITE)
 		LCDDriver_printText("13 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[12]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("14 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[13]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+#if !defined(FRONTPANEL_LITE_V2_MINI) || !defined(FRONTPANEL_LITE_V2_BIG) || !defined(FRONTPANEL_LITE_V2_MICRO)
 		LCDDriver_printText("15 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[14]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 		LCDDriver_printText("16 ", LCDDriver_GetCurrentXOffset(), pos_y, (ok[15]) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+#endif
 #endif
 		pos_y += margin_bottom;
 
@@ -288,14 +283,16 @@ void SELF_TEST_Draw(void) {
 			float32_t ADC_PGA_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ADC_PGA_db = rate2dbV(ADC_PGA_signal / base_signal);
 
-#if !defined(FRONTPANEL_LITE)
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
 			LCDDriver_printText("ADC PGA signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d          ", (uint16_t)ADC_PGA_signal);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_PGA_signal < 32000.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 #endif
 			pos_y += margin_bottom;
 
-#if !defined(FRONTPANEL_LITE)
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
 			LCDDriver_printText("ADC PGA gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %.2f dB          ", ADC_PGA_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_PGA_db > 2.0f && ADC_PGA_db < 7.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
@@ -320,14 +317,16 @@ void SELF_TEST_Draw(void) {
 			float32_t ADC_LNA_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ADC_LNA_db = rate2dbV(ADC_LNA_signal / base_signal);
 
-#if !defined(FRONTPANEL_LITE)
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
 			LCDDriver_printText("LNA signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d          ", (uint16_t)ADC_LNA_signal);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_signal < 32000.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 #endif
 			pos_y += margin_bottom;
 
-#if !defined(FRONTPANEL_LITE)
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
 			LCDDriver_printText("LNA gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %.2f dB          ", ADC_LNA_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_db > 23.0f && ADC_LNA_db < 30.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
@@ -381,7 +380,11 @@ void SELF_TEST_Draw(void) {
 		// ATT ON
 		if (current_test == 2) {
 			TRX.ATT = true;
+#if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
+			TRX.ATT_DB = 10.0f;
+#else
 			TRX.ATT_DB = 0;
+#endif
 			FPGA_NeedSendParams = true;
 			current_test = 3;
 			current_test_start_time = HAL_GetTick();
@@ -394,6 +397,9 @@ void SELF_TEST_Draw(void) {
 			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -2.0f && ATT_db < 1.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
+
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
 
 			current_test = 4;
 		} else {
@@ -553,16 +559,25 @@ void SELF_TEST_Draw(void) {
 		} else {
 			pos_y += margin_bottom;
 		}
-
+#else
+			current_test = 0;
+		} else {
+			pos_y += margin_bottom;
+		}
+#endif
 		// redraw loop
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
-
+#if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
 	// Pager
+	pos_y += margin_bottom;
+	LCDDriver_printText("Rotate ENC2", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+	pos_y += margin_bottom;
+#else
 	pos_y += margin_bottom;
 	LCDDriver_printText("Rotate ENC2 to print next page", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 	pos_y += margin_bottom;
-
+#endif
 	LCD_busy = false;
 }
 

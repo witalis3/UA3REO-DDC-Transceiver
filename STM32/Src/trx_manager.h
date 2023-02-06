@@ -132,7 +132,6 @@ volatile extern bool TRX_PWR_ALC_SWR_OVERFLOW;
 volatile extern bool TRX_MIC_BELOW_NOISEGATE;
 volatile extern int16_t TRX_ADC_MINAMPLITUDE;
 volatile extern int16_t TRX_ADC_MAXAMPLITUDE;
-volatile extern int32_t TRX_VCXO_ERROR;
 volatile extern uint32_t TRX_SNTP_Synced;
 volatile extern int_fast16_t TRX_RIT;
 volatile extern int_fast16_t TRX_XIT;
