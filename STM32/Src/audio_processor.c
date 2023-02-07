@@ -63,6 +63,7 @@ demod_fm_instance DFM_RX2 = {.squelchRate = 1.0f};
 static float32_t current_if_gain = 0.0f;
 static float32_t volume_gain = 0.0f;
 static bool preprocessor_buffer_ready = false;
+static uint32_t audio_buffer_in_index = 0;
 
 #ifndef STM32F407xx
 IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
@@ -135,8 +136,7 @@ void preProcessRxAudio(void) {
 
 	// Get and decimate input
 	uint32_t need_decimate_rate = TRX_GetRXSampleRate / TRX_SAMPLERATE;
-	static uint32_t audio_buffer_in_index = 0;
-	if (audio_buffer_in_index + (FPGA_RX_IQ_BUFFER_HALF_SIZE / need_decimate_rate) > FPGA_RX_IQ_BUFFER_HALF_SIZE) {
+	if ((audio_buffer_in_index + (FPGA_RX_IQ_BUFFER_HALF_SIZE / need_decimate_rate)) > FPGA_RX_IQ_BUFFER_HALF_SIZE || DECIMATE_FIR_RX1_AUDIO_I.M != need_decimate_rate) {
 		audio_buffer_in_index = 0;
 	}
 
