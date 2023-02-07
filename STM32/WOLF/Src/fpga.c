@@ -416,7 +416,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 			}
 
 			uint16_t TCXO_PWM_Frequency = CALIBRATE.TCXO_frequency / divider;
-			if (TCXO_PWM_Frequency > 1000) { // pwm freq limit
+			if (TCXO_PWM_Frequency > 200) { // pwm freq limit
 				continue;
 			}
 

@@ -19,6 +19,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_core.h"
 
+#ifndef MIN
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+
 static bool USBD_inited = false;
 
 #ifdef USE_USBD_COMPOSITE

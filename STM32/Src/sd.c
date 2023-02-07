@@ -118,7 +118,7 @@ void SD_Process(void) {
 	// Mount volume
 	if (SD_Present && !SD_Mounted) {
 		uint8_t res = f_mount(&SDFatFs, (TCHAR const *)USERPath, 1);
-		if (res != FR_OK) {
+		if (res != FR_OK && res != FR_NO_FILESYSTEM) {
 			println("[ERR] SD cannot be mounted: code ", res);
 			SD_Present = false;
 		} else {

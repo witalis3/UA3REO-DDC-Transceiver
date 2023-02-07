@@ -12,8 +12,6 @@
 #include "lcd.h"        //For debug
 #include "lcd_driver.h" //For debug
 
-// extern RTC_HandleTypeDef hrtc; // used for the "date" and "time" acquisition
-
 uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
 uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
 int xmit_flag, ft8_xmit_counter;
@@ -23,8 +21,6 @@ char Locator[7];      // four character locator  + /0	for example = "JN48"
 
 #define FT8_TONE_SPACING 6.25
 
-// extern uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
-// extern uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
 extern uint16_t cursor_line;
 
 int Beacon_State; //
@@ -37,35 +33,18 @@ char QSOOnTime[7];  // potential QSO Start time
 char QSOOffTime[7]; // potential QSO Stop time
 
 void transmit_sequence(void) {
-	Set_Data_Colection(0); // Disable the data colection
-	//	FT8_ColectDataFlg = false;  	//Disable the Data colection
-	//	FT8_DatBlockNum = 0; 					// Reset the data buffer
-
+	Set_Data_Colection(0);                    // Disable the data colection
 	set_Xmit_Freq(FT8_BND_Freq, cursor_freq); // Set band frequency and the frequency in the FT8 (cursor freq.)
 	TRX_Tune = true;
 	TRX_Restart_Mode();
-
-	//      si5351.set_freq(F_Long, SI5351_CLK0);
-	//      si4735.setVolume(35);
-	//      si5351.drive_strength(SI5351_CLK0, SI5351_DRIVE_8MA); // Set for max power if desired
-	//      si5351.output_enable(SI5351_CLK0, 1);
-	//      pinMode(PTT_Pin, OUTPUT);
-	//      digitalWrite(PTT_Pin, HIGH);
 }
 
 void receive_sequence(void) {
-	Set_Data_Colection(0); // Disable the data colection (it will be enabled by next 15s marker)
-	xmit_flag = 0;         // disable if transmit was activeted
-
+	Set_Data_Colection(0);          // Disable the data colection (it will be enabled by next 15s marker)
+	xmit_flag = 0;                  // disable if transmit was activeted
 	set_Xmit_Freq(FT8_BND_Freq, 0); // Set band frequency and the frequency in the FT8 (cursor freq.)
 	TRX_Tune = false;
 	TRX_Restart_Mode();
-
-	//       si5351.output_enable(SI5351_CLK0, 0);
-	//       pinMode(PTT_Pin, OUTPUT);
-	//       digitalWrite(PTT_Pin, LOW);
-	//       si4735.setVolume(50);
-	//    clear_FT8_message();
 }
 
 void tune_On_sequence(void) {
@@ -73,12 +52,6 @@ void tune_On_sequence(void) {
 	set_Xmit_Freq(FT8_BND_Freq, cursor_freq); // Set band frequency and the frequency in the FT8 (cursor freq.)
 	TRX_Tune = true;
 	TRX_Restart_Mode();
-
-	//      si5351.set_freq(F_Long, SI5351_CLK0);
-	//      si4735.setVolume(35);
-	//      si5351.output_enable(SI5351_CLK0, 1);
-	//      pinMode(PTT_Pin, OUTPUT);
-	//      digitalWrite(PTT_Pin, HIGH);
 }
 
 void tune_Off_sequence(void) {
@@ -86,39 +59,23 @@ void tune_Off_sequence(void) {
 	set_Xmit_Freq(FT8_BND_Freq, 0); // Set band frequency and the frequency in the FT8 (cursor freq.)
 	TRX_Tune = false;
 	TRX_Restart_Mode();
-
-	//       si5351.output_enable(SI5351_CLK0, 0);
-	//       pinMode(PTT_Pin, OUTPUT);
-	//       digitalWrite(PTT_Pin, LOW);
-	//       si4735.setVolume(50);
 }
 
 void set_Xmit_Freq(uint32_t BandFreq, uint16_t Freq) {
-	uint32_t F_Long;
-
-	//     F_Long = (uint64_t) ((currentFrequency * 1000 + cursor_freq + offset_freq) * 100);
-	F_Long = BandFreq * 1000 + Freq; // BandFreq is in kHz and add the needed offset
+	uint32_t F_Long = BandFreq * 1000 + Freq; // BandFreq is in kHz and add the needed offset
 	TRX_setFrequency(F_Long, CurrentVFO);
-
-	//      si5351.set_freq(F_Long, SI5351_CLK0);
 }
 
 void set_FT8_Tone(char ft8_tone) {
-	// char ctmp[20] = {0}; // Debug
 	uint32_t F_FT8;
-
-	//  F_FT8 =  F_Long + ft8_tone * FT8_TONE_SPACING;
-
 	F_FT8 = ft8_tone * FT8_TONE_SPACING;
 	set_Xmit_Freq(FT8_BND_Freq, cursor_freq + F_FT8);
-
-	//          si5351.set_freq(F_FT8, SI5351_CLK0);
 }
 
 void setup_to_transmit_on_next_DSP_Flag(void) {
 	ft8_xmit_counter = 0;
 	transmit_sequence();
-	//	set_Xmit_Freq(FT8_BND_Freq,cursor_freq);				//Set band frequency and the frequency in the FT8 (cursor freq.)
+	// Set band frequency and the frequency in the FT8 (cursor freq.)
 	xmit_flag = 1;
 }
 
@@ -173,8 +130,7 @@ void service_CQ(void) {
 				Attempt_Count = 0;                              // zero the attempt counter
 				if (CheckRecievedRaportRSL(receive_index, 0)) { // check if the oposite side answered corespondingly
 					Beacon_State = 3;                             // Set call - "RR73"
-				}
-				if (CheckRecieved73(receive_index, 1)) // if RR73 after raport
+				} else if (CheckRecieved73(receive_index, 1))   // if RR73 after raport
 				{
 					Beacon_State = 7; // Set call - "73"
 					LogQSO();

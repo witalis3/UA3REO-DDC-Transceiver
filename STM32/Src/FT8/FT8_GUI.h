@@ -22,8 +22,6 @@
 
 extern uint8_t FT8_Menu_Idx;
 
-extern RTC_HandleTypeDef hrtc;
-
 typedef struct {
 	char *text;
 	bool state;

@@ -11,29 +11,20 @@
 #include "encode.h"
 #include "ldpc.h"
 #include "unpack.h"
-// #include "button.h"
 
 #include "Process_DSP.h"
-// #include "display.h"
-// #include "options.h"
-// #include "log_file.h"
 #include "decode_ft8.h"
-// #include "locator_ft8.h"
-// #include "traffic_manager.h"
 
 #include "FT8_main.h"
 #include "lcd_driver.h"
 
-// #include "stm32h7xx_hal.h"
-// #include "main.h"
-
 // char erase[] = "                   ";
 
-const int kLDPC_iterations = 20;      // original 10
-const int kMax_candidates = 80;       // original 20
-const int kMax_decoded_messages = 30; // original 6
-const int kMax_message_length = 20;
-const int kMin_score = 20; // original 40 Minimum sync score threshold for candidates
+#define kLDPC_iterations 20      // original 10
+#define kMax_candidates 80      // original 20
+#define kMax_decoded_messages 30 // original 6
+#define kMax_message_length 20
+#define kMin_score 40 // original 40 Minimum sync score threshold for candidates
 
 int strindex(char s[], char t[]);
 
@@ -64,7 +55,7 @@ int ft8_decode(void) {
 	char ctmp[20] = {0}; // Debug
 
 	// Find top candidates by Costas sync score and localize them in time and frequency
-	Candidate candidate_list[kMax_candidates + 1];
+	static Candidate candidate_list[kMax_candidates + 1];
 
 	int num_candidates = find_sync(export_fft_power, ft8_msg_samples, ft8_buffer, kCostas_map, kMax_candidates, candidate_list, kMin_score);
 
@@ -181,15 +172,6 @@ int ft8_decode(void) {
 		}
 
 	} // End of big decode loop
-
-	// Debug
-	/*
-	    for (int tmp = 0; tmp < num_decoded; ++tmp)
-	        {
-	        sprintf(ctmp,"%s %s %s", new_decoded[tmp].field1,new_decoded[tmp].field2,new_decoded[tmp].field3);
-	        println(ctmp);	//Debug
-	        }
-	*/
 	return num_decoded;
 }
 

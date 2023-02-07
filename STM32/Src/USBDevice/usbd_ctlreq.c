@@ -24,6 +24,11 @@
 #include "usbd_composite_builder.h"
 #endif /* USE_USBD_COMPOSITE */
 
+#ifndef MIN
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+
 /** @addtogroup STM32_USBD_STATE_DEVICE_LIBRARY
  * @{
  */
