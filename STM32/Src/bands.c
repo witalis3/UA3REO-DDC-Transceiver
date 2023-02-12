@@ -939,7 +939,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .channels = NULL,
         .channelsCount = 0,
     },
-		// QO-100
+    // QO-100
     {
         .name = "QO-100",
         .broadcast = false,
@@ -949,13 +949,13 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .regions =
             (const REGION_MAP[8]){
                 {.startFreq = 10489500000, .endFreq = 10489540000, .mode = TRX_MODE_CW},
-								{.startFreq = 10489540000, .endFreq = 10489650000, .mode = TRX_MODE_DIGI_U},
-								{.startFreq = 10489650000, .endFreq = 10489745000, .mode = TRX_MODE_USB},
-								{.startFreq = 10489745000, .endFreq = 10489755000, .mode = TRX_MODE_DIGI_U},
-								{.startFreq = 10489755000, .endFreq = 10489850000, .mode = TRX_MODE_USB},
-								{.startFreq = 10489850000, .endFreq = 10489870000, .mode = TRX_MODE_DIGI_U},
-								{.startFreq = 10489870000, .endFreq = 10489990000, .mode = TRX_MODE_USB},
-								{.startFreq = 10489990000, .endFreq = 10490000000, .mode = TRX_MODE_DIGI_U},
+                {.startFreq = 10489540000, .endFreq = 10489650000, .mode = TRX_MODE_DIGI_U},
+                {.startFreq = 10489650000, .endFreq = 10489745000, .mode = TRX_MODE_USB},
+                {.startFreq = 10489745000, .endFreq = 10489755000, .mode = TRX_MODE_DIGI_U},
+                {.startFreq = 10489755000, .endFreq = 10489850000, .mode = TRX_MODE_USB},
+                {.startFreq = 10489850000, .endFreq = 10489870000, .mode = TRX_MODE_DIGI_U},
+                {.startFreq = 10489870000, .endFreq = 10489990000, .mode = TRX_MODE_USB},
+                {.startFreq = 10489990000, .endFreq = 10490000000, .mode = TRX_MODE_DIGI_U},
             },
         .regionsCount = 8,
         .channels = NULL,
