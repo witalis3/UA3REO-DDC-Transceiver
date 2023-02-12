@@ -113,7 +113,7 @@ void TRX_Restart_Mode() {
 
 	// Switch mode
 	if (TRX_on_TX) {
-		if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_CW) {
+		if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_CW || FULL_DUPLEX) {
 			TRX_Start_TXRX();
 		} else {
 			TRX_Start_TX();
@@ -484,7 +484,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 	TRX_freq_phrase_tx = getTXPhraseFromFrequency(vfo_tx_freq);
 
-	println("RX1: ", CurrentVFO->RealRXFreq, "TX: ", vfo_tx_freq);
+	// println("RX1: ", CurrentVFO->RealRXFreq, "TX: ", vfo_tx_freq);
 	FPGA_NeedSendParams = true;
 
 	// set DC-DC Sync freq
@@ -780,7 +780,7 @@ void TRX_DoAutoGain(void) {
 	}
 
 	// Process AutoGain feature
-	if (TRX.AutoGain && !TRX_on_TX) {
+	if (TRX.AutoGain && TRX_on_RX) {
 		if (!TRX.ATT) {
 			TRX.ATT = true;
 			LCD_UpdateQuery.TopButtons = true;

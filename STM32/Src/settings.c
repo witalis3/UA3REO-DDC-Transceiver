@@ -190,7 +190,7 @@ void LoadSettings(bool clear) {
 		TRX.Transverter_13cm = false;           // Transvertrs enable
 		TRX.Transverter_6cm = false;            // Transvertrs enable
 		TRX.Transverter_3cm = false;            // Transvertrs enable
-		TRX.Transverter_QO100 = false;            // Transvertrs enable
+		TRX.Transverter_QO100 = false;          // Transvertrs enable
 		TRX.FineRITTune = true;                 // Fine or coarse tune for split/shift
 		TRX.Auto_Input_Switch = false;          // Auto Mic/USB Switch
 		TRX.Auto_Snap = false;                  // Auto track and snap to signal frequency
@@ -524,7 +524,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_13cm = 100;        // 13cm
 		CALIBRATE.rf_out_power_6cm = 100;         // 6cm
 		CALIBRATE.rf_out_power_3cm = 100;         // 3cm
-		CALIBRATE.rf_out_power_QO100 = 100;         // QO-100
+		CALIBRATE.rf_out_power_QO100 = 100;       // QO-100
 		CALIBRATE.smeter_calibration_hf = 0;      // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 0;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.adc_offset = 0;                 // Calibrate the offset at the ADC input (DC)
@@ -574,7 +574,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_13cm = 20;         // 13cm
 		CALIBRATE.rf_out_power_6cm = 20;          // 6cm
 		CALIBRATE.rf_out_power_3cm = 20;          // 3cm
-		CALIBRATE.rf_out_power_QO100 = 20;         // QO-100
+		CALIBRATE.rf_out_power_QO100 = 20;        // QO-100
 		CALIBRATE.smeter_calibration_hf = 12;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 12;    // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.SWR_FWD_Calibration_HF = 10.0f; // SWR Transormator rate forward
@@ -608,7 +608,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_13cm = 15;              // 13cm
 		CALIBRATE.rf_out_power_6cm = 15;               // 6cm
 		CALIBRATE.rf_out_power_3cm = 15;               // 3cm
-		CALIBRATE.rf_out_power_QO100 = 15;         // QO-100
+		CALIBRATE.rf_out_power_QO100 = 15;             // QO-100
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
@@ -660,7 +660,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_13cm = 15;              // 13cm
 		CALIBRATE.rf_out_power_6cm = 15;               // 6cm
 		CALIBRATE.rf_out_power_3cm = 15;               // 3cm
-		CALIBRATE.rf_out_power_QO100 = 15;         // QO-100
+		CALIBRATE.rf_out_power_QO100 = 15;             // QO-100
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH

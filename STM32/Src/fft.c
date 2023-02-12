@@ -478,7 +478,7 @@ void FFT_Init(void) {
 		zoomed_width = FFT_SIZE;
 	}
 
-	if (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK) {
+	if ((TRX_on_TX && !SHOW_RX_FFT_ON_TX) && CurrentVFO->Mode != TRX_MODE_LOOPBACK) {
 		FFT_current_spectrum_width_hz = TRX_SAMPLERATE / fft_zoom;
 	} else {
 		FFT_current_spectrum_width_hz = TRX_GetRXSampleRate / fft_zoom;
@@ -490,12 +490,12 @@ void FFT_Init(void) {
 		color = palette_wtf[(uint32_t)(GET_FFTHeight * 0.9f)];
 	}
 #if HRDW_HAS_FULL_FFT_BUFFER
-	memset16(print_output_buffer, color, sizeof(print_output_buffer) / 2);
+	// memset16(print_output_buffer, color, sizeof(print_output_buffer) / 2);
 #else
-	dma_memset(print_output_short_buffer, 0, sizeof(print_output_short_buffer));
+	// dma_memset(print_output_short_buffer, 0, sizeof(print_output_short_buffer));
 #endif
-	dma_memset(indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
-	dma_memset(wtf_buffer_freqs, 0x00, sizeof(wtf_buffer_freqs));
+	// dma_memset(indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
+	// dma_memset(wtf_buffer_freqs, 0x00, sizeof(wtf_buffer_freqs));
 	dma_memset(fft_meanbuffer_freqs, 0x00, sizeof(fft_meanbuffer_freqs));
 	dma_memset(FFT_meanBuffer, 0x00, sizeof(FFT_meanBuffer));
 	dma_memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge));
@@ -528,18 +528,12 @@ void FFT_bufferPrepare(void) {
 		return;
 	}
 
-	/*if (CPU_LOAD.Load > 90)
-	  return;*/
+	// if (CPU_LOAD.Load > 90) return;
+
 	fft_charge_ready = false;
 
 	float32_t *FFTInput_I_current = FFT_buff_current ? (float32_t *)FFTInput_I_B : (float32_t *)FFTInput_I_A; // inverted
 	float32_t *FFTInput_Q_current = FFT_buff_current ? (float32_t *)FFTInput_Q_B : (float32_t *)FFTInput_Q_A;
-
-	// Process DC corrector filter
-	if (!TRX_on_TX) {
-		// dc_filter(FFTInput_I_current, FFT_HALF_SIZE, DC_FILTER_FFT_I);
-		// dc_filter(FFTInput_Q_current, FFT_HALF_SIZE, DC_FILTER_FFT_Q);
-	}
 
 	// Reset old samples if frequency changed
 	uint64_t nowFFTChargeBufferFreq = CurrentVFO->Freq;
@@ -633,7 +627,7 @@ void FFT_doFFT(void) {
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
 
 	// FFT scale
-	if (TRX.FFT_Scale_Type == 1 && !TRX_on_TX) { // Squared scale
+	if (FFT_SCALE_TYPE == 1) { // Squared scale
 		arm_cmplx_mag_squared_f32(FFTInput, FFTInput, FFT_SIZE);
 	} else { // ampl or dbm scale
 		arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);
@@ -658,7 +652,7 @@ void FFT_doFFT(void) {
 	}*/
 
 	// dBm scale
-	if (TRX.FFT_Scale_Type == 2 && !TRX_on_TX) {
+	if (FFT_SCALE_TYPE == 2) {
 		for (uint_fast16_t i = 0; i < FFT_SIZE; i++) {
 			FFTInput[i] = getDBFromFFTAmpl(FFTInput[i]);
 		}
@@ -783,7 +777,7 @@ void FFT_doFFT(void) {
 		}
 	}
 
-	if (TRX.FFT_Scale_Type == 2 && !TRX_on_TX) { // dBm scale
+	if (FFT_SCALE_TYPE == 2) { // dBm scale
 		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++) {
 			if (FFTOutput_mean_count[i] > 1) {
 				FFTOutput_mean[i] /= (float32_t)FFTOutput_mean_count[i];
@@ -835,7 +829,7 @@ bool FFT_printFFT(void) {
 	if (NeedProcessDecoder) {
 		decoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 	}
-	hz_in_pixel = TRX_on_TX ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
+	hz_in_pixel = (TRX_on_TX && !SHOW_RX_FFT_ON_TX) ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
 
 	if (CurrentVFO->Freq != currentFFTFreq || NeedWTFRedraw) {
 		// calculate scale lines
@@ -904,7 +898,7 @@ bool FFT_printFFT(void) {
 	float32_t minAmplValue = 0;
 	uint32_t minAmplValueIndex = 0;
 	arm_min_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &minAmplValue, &minAmplValueIndex);
-	if (TRX.FFT_Scale_Type == 2 && !TRX_on_TX) {
+	if (FFT_SCALE_TYPE == 2) {
 		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++) {
 			if (FFTOutput_mean[i] == 0.0f) {
 				FFTOutput_mean[i] = minAmplValue;
@@ -937,7 +931,7 @@ bool FFT_printFFT(void) {
 	float32_t minValue = (medianValue * FFT_MIN);
 
 	// dbm scaling
-	if (TRX.FFT_Scale_Type == 2 && !TRX_on_TX) {
+	if (FFT_SCALE_TYPE == 2) {
 		if (TRX.FFT_Automatic) {
 			if (minAmplValue_averaged > minAmplValue) {
 				minAmplValue_averaged = minAmplValue;
@@ -959,7 +953,7 @@ bool FFT_printFFT(void) {
 	// Auto-calibrate FFT levels
 	if (TRX_on_TX || (TRX.FFT_Automatic && TRX.FFT_Sensitivity == FFT_MAX_TOP_SCALE)) // Fit FFT to MAX
 	{
-		if (TRX.FFT_Scale_Type == 2 && !TRX_on_TX) {
+		if (FFT_SCALE_TYPE == 2) {
 			float32_t newMaxAmplValue = maxAmplValue - minAmplValue_averaged;
 			maxValueFFT = maxValueFFT * 0.95f + newMaxAmplValue * 0.05f;
 			if (maxValueFFT < newMaxAmplValue) {
@@ -981,7 +975,7 @@ bool FFT_printFFT(void) {
 		FFT_maxDBM = maxAmplValue;
 	} else if (TRX.FFT_Automatic) // Fit by median (automatic)
 	{
-		if (TRX.FFT_Scale_Type == 2 && !TRX_on_TX) {
+		if (FFT_SCALE_TYPE == 2) {
 			medianValue -= minAmplValue_averaged;
 			if (medianValue < 1.0f) {
 				medianValue = 1.0f;
@@ -1019,7 +1013,7 @@ bool FFT_printFFT(void) {
 		}
 	} else // Manual Scale
 	{
-		if (TRX.FFT_Scale_Type == 2 && !TRX_on_TX) {
+		if (FFT_SCALE_TYPE == 2) {
 			float32_t minManualAmplitude = (float32_t)TRX.FFT_ManualBottom - minAmplValue_averaged;
 			float32_t maxManualAmplitude = (float32_t)TRX.FFT_ManualTop - minAmplValue_averaged;
 			maxValueFFT = maxManualAmplitude;
@@ -1042,7 +1036,7 @@ bool FFT_printFFT(void) {
 	}
 
 	// tx noise scale limit
-	if (TRX_on_TX && maxValueFFT < FFT_TX_MIN_LEVEL) {
+	if ((TRX_on_TX && !SHOW_RX_FFT_ON_TX) && maxValueFFT < FFT_TX_MIN_LEVEL) {
 		maxValueFFT = FFT_TX_MIN_LEVEL;
 	}
 
@@ -1512,13 +1506,13 @@ bool FFT_printFFT(void) {
 	}
 
 	// Show manual Notch filter line
-	if (CurrentVFO->ManualNotchFilter && !TRX_on_TX && rx1_notch_line_pos >= 0 && rx1_notch_line_pos < LAYOUT->FFT_PRINT_SIZE) {
+	if (CurrentVFO->ManualNotchFilter && TRX_on_RX && rx1_notch_line_pos >= 0 && rx1_notch_line_pos < LAYOUT->FFT_PRINT_SIZE) {
 		uint16_t color = palette_fft[fftHeight * 1 / 4];
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
 			print_output_buffer[fft_y][rx1_notch_line_pos] = color;
 		}
 	}
-	if (SecondaryVFO->ManualNotchFilter && !TRX_on_TX && rx2_notch_line_pos >= 0 && rx2_notch_line_pos < LAYOUT->FFT_PRINT_SIZE) {
+	if (SecondaryVFO->ManualNotchFilter && TRX_on_RX && rx2_notch_line_pos >= 0 && rx2_notch_line_pos < LAYOUT->FFT_PRINT_SIZE) {
 		uint16_t color = palette_fft[fftHeight * 1 / 4];
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
 			print_output_buffer[fft_y][rx2_notch_line_pos] = color;
@@ -1589,7 +1583,7 @@ bool FFT_printFFT(void) {
 #endif
 
 	// Print DBM grid (LOG Scale)
-	if (TRX.FFT_dBmGrid && (TRX.FFT_Scale_Type < 2 || TRX_on_TX)) {
+	if (TRX.FFT_dBmGrid && FFT_SCALE_TYPE < 2) {
 		char tmp[64] = {0};
 		float32_t ampl_on_bin = maxValueFFT / (float32_t)fftHeight;
 		if (!TRX.FFT_Automatic) {
@@ -1612,7 +1606,7 @@ bool FFT_printFFT(void) {
 	}
 
 	// Print DBM grid (dBm Scale)
-	if (TRX.FFT_dBmGrid && TRX.FFT_Scale_Type == 2 && !TRX_on_TX) {
+	if (TRX.FFT_dBmGrid && FFT_SCALE_TYPE == 2) {
 		char tmp[64] = {0};
 		float32_t dbm_on_bin = (FFT_maxDBM - FFT_minDBM) / (float32_t)fftHeight;
 		// println(FFT_minDBM, " ", FFT_maxDBM);
@@ -1813,7 +1807,7 @@ void FFT_ShortBufferPrintFFT(void) {
 			}
 
 			// Show manual Notch filter line
-			if (CurrentVFO->ManualNotchFilter && !TRX_on_TX && rx1_notch_line_pos >= 0 && rx1_notch_line_pos < LAYOUT->FFT_PRINT_SIZE) {
+			if (CurrentVFO->ManualNotchFilter && TRX_on_RX && rx1_notch_line_pos >= 0 && rx1_notch_line_pos < LAYOUT->FFT_PRINT_SIZE) {
 				uint16_t color = palette_fft[fftHeight * 1 / 4];
 				print_output_short_buffer[buff_idx][rx1_notch_line_pos] = color;
 			}
@@ -2538,11 +2532,11 @@ static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center) {
 static float32_t getDBFromFFTAmpl(float32_t ampl) {
 	float32_t db = 0.0f;
 
-	if (TRX.FFT_Scale_Type == 0 || TRX.FFT_Scale_Type == 2 || TRX_on_TX) {                        // ampl / dbm scale
+	if (FFT_SCALE_TYPE == 0 || FFT_SCALE_TYPE == 2) {                                             // ampl / dbm scale
 		db = rate2dbP(powf(ampl / (float32_t)FFT_SIZE, 2) / 50.0f / 0.001f) + FFT_DBM_COMPENSATION; // roughly... because window and other...
 	}
 
-	if (TRX.FFT_Scale_Type == 1 && !TRX_on_TX) {                                // squared scale
+	if (FFT_SCALE_TYPE == 1) {                                                  // squared scale
 		db = rate2dbP(ampl / (float32_t)FFT_SIZE / 50.0f) + FFT_DBM_COMPENSATION; // roughly... because window and other...
 	}
 
@@ -2562,13 +2556,13 @@ static float32_t getDBFromFFTAmpl(float32_t ampl) {
 static float32_t getFFTAmplFromDB(float32_t ampl) {
 	float32_t result;
 
-	if (TRX.FFT_Scale_Type == 0 || TRX.FFT_Scale_Type == 2 || TRX_on_TX) { // ampl / dbm scale
+	if (FFT_SCALE_TYPE == 0 || FFT_SCALE_TYPE == 2) { // ampl / dbm scale
 		float32_t power = db2rateP(ampl - FFT_DBM_COMPENSATION + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) -
 		                           ((CurrentVFO->Freq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) *
 		                  0.001f * 50.0f;
 		arm_sqrt_f32(power, &result);
 	}
-	if (TRX.FFT_Scale_Type == 1 && !TRX_on_TX) { // squared scale
+	if (FFT_SCALE_TYPE == 1) { // squared scale
 		result = db2rateP(ampl - FFT_DBM_COMPENSATION + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) -
 		                  ((CurrentVFO->Freq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) *
 		         50.0f;

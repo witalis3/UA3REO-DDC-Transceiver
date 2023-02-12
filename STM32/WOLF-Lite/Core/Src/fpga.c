@@ -230,12 +230,13 @@ void FPGA_fpgadata_iqclock(void) {
 		FPGA_writePacket(3); // TX SEND CLEAN IQ
 		FPGA_syncAndClockRiseFall();
 		FPGA_fpgadata_sendiq(true);
-	}
-	if (TRX_on_TX) {
+	} else if (TRX_on_TX) {
 		FPGA_writePacket(3); // TX SEND IQ
 		FPGA_syncAndClockRiseFall();
 		FPGA_fpgadata_sendiq(false);
-	} else {
+	}
+
+	if (TRX_on_RX) {
 		FPGA_writePacket(4); // RX GET IQ
 		FPGA_syncAndClockRiseFall();
 
@@ -311,11 +312,11 @@ static inline void FPGA_fpgadata_sendparam(void) {
 
 	// STAGE 2
 	// out PTT+PREAMP
-	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // RX1
-	bitWrite(FPGA_fpgadata_out_tmp8, 1, false);                                                                  // RX2
-	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK));                   // TX
-	bitWrite(FPGA_fpgadata_out_tmp8, 3, att_val_05);                                                             // ATT_05
-	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_SHDN);
+	bitWrite(FPGA_fpgadata_out_tmp8, 0, (TRX_on_RX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // RX1
+	bitWrite(FPGA_fpgadata_out_tmp8, 1, false);                                                // RX2
+	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // TX
+	bitWrite(FPGA_fpgadata_out_tmp8, 3, att_val_05);                                           // ATT_05
+	bitWrite(FPGA_fpgadata_out_tmp8, 4, !TRX_on_RX || TRX.ADC_SHDN);
 	if (TRX_on_TX) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 4, true); // shutdown ADC on TX
 	}
@@ -325,9 +326,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	if (TRX.ATT) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 6, att_val_2); // ATT_2
 	}
-	if (!TRX_on_TX) {
-		bitWrite(FPGA_fpgadata_out_tmp8, 7, TRX.ADC_Driver);
-	}
+	bitWrite(FPGA_fpgadata_out_tmp8, 7, TRX_on_RX && TRX.ADC_Driver);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 	FPGA_clockRise();
 	FPGA_clockFall();
