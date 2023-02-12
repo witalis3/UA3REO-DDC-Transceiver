@@ -166,8 +166,7 @@ void MenagerFT8(void) {
 	}
 
 	else if (decode_flag == 1) {
-		HAL_SuspendTick();
-		__disable_irq(); // Disable all interrupts
+		//__disable_irq(); // Disable all interrupts
 
 		FT8_Clear_Mess_Field(); // Clear the recieved mesages field
 
@@ -176,28 +175,20 @@ void MenagerFT8(void) {
 		//			FT8_Bussy = true;							//FT8 Decode => busy
 		Set_Data_Colection(0); // Disable the data colection
 
+		uint32_t decode_srat_time = HAL_GetTick();
 		num_decoded_msg = ft8_decode();
-
-		//			for (uint32_t wait_i = 0; wait_i < 360000000; wait_i++) \
-//				__asm("nop");
 
 		// Debug
 		sprintf(ctmp, "Decoded: %d ", num_decoded_msg);
 		LCDDriver_printText(ctmp, 10, 45, COLOR_GREEN, COLOR_BLACK, 2);
+		println("Decode time, ms: ", HAL_GetTick() - decode_srat_time)
 
-		decode_flag = 0;
+		    decode_flag = 0;
 
 		Service_FT8();
-
 		//			FT8_Bussy = false;
 
-		/* Enable interrupts back */
-		for (int i = 0; i < 5; i++) // Clear Interrupt Pending Register
-		{
-			NVIC->ICPR[i] = 0xFFFFFFFF;
-		}
-		__enable_irq(); // Re-enable all interrupts
-		HAL_ResumeTick();
+		// __enable_irq(); // Re-enable all interrupts
 	}
 
 	update_synchronization();

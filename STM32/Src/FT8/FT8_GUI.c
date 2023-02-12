@@ -122,9 +122,6 @@ void FT8_Menu_Pos_Toggle(void) {
 
 	}      // end if (FT8_Menu_Idx <= FT8_Menu_Max_Idx)			//cursor is in the range of the buttons
 	else { // cursor is in the range of the recieved messages
-
-		//			__disable_irq();   //Disable all interrupts
-
 		if (sButtonData[0].state) {
 			sButtonData[0].state = false;
 		} else {
@@ -151,8 +148,6 @@ void FT8_Menu_Pos_Toggle(void) {
 			FT8_Clear_TX_Mess();
 		}
 		drawButton(0); // update the "CQ" button
-
-		//			__enable_irq(); //Re-enable all interrupts
 	}
 }
 
