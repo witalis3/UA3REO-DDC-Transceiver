@@ -373,6 +373,9 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
 
 	// Transverters
+	if (TRX.Transverter_QO100 && band == BANDID_QO100) { // 3cm
+		band_out = CALIBRATE.EXT_TRANSV_QO100;
+	}
 	if (TRX.Transverter_3cm && band == BANDID_3cm) { // 3cm
 		band_out = CALIBRATE.EXT_TRANSV_3cm;
 	}

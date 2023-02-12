@@ -379,6 +379,11 @@ bool TRX_TX_Disabled(uint64_t freq) {
 			notx = true;
 		}
 		break;
+	case BANDID_QO100:
+		if (!TRX.Transverter_QO100) {
+			notx = true;
+		}
+		break;
 	default:
 		if (CALIBRATE.NOTX_NOTHAM) {
 			notx = true;
@@ -394,7 +399,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 
 	bool transverter_enabled = false;
-	if (TRX.Transverter_70cm || TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm) {
+	if (TRX.Transverter_70cm || TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm || TRX.Transverter_QO100) {
 		transverter_enabled = true;
 	}
 
@@ -426,6 +431,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	if (TRX.Transverter_3cm && getBandFromFreq(vfoa_freq, true) == BANDID_3cm) {
 		vfoa_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_Mhz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_Mhz * 1000000);
 	}
+	if (TRX.Transverter_QO100 && getBandFromFreq(vfoa_freq, true) == BANDID_QO100) {
+		vfoa_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_Khz * 1000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_Khz * 1000);
+	}
 
 	CurrentVFO->RealRXFreq = vfoa_freq;
 	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
@@ -445,6 +453,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 	if (TRX.Transverter_3cm && getBandFromFreq(vfob_freq, true) == BANDID_3cm) {
 		vfob_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_Mhz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_Mhz * 1000000);
+	}
+	if (TRX.Transverter_QO100 && getBandFromFreq(vfob_freq, true) == BANDID_QO100) {
+		vfob_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_Khz * 1000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_Khz * 1000);
 	}
 
 	SecondaryVFO->RealRXFreq = vfob_freq;
@@ -468,8 +479,12 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	if (TRX.Transverter_3cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_3cm) {
 		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_Mhz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_Mhz * 1000000);
 	}
+	if (TRX.Transverter_QO100 && getBandFromFreq(vfo_tx_freq, true) == BANDID_QO100) {
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_TX_Mhz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_Khz * 1000);
+	}
 	TRX_freq_phrase_tx = getTXPhraseFromFrequency(vfo_tx_freq);
 
+	println("RX1: ", CurrentVFO->RealRXFreq, "TX: ", vfo_tx_freq);
 	FPGA_NeedSendParams = true;
 
 	// set DC-DC Sync freq

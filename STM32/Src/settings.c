@@ -185,11 +185,12 @@ void LoadSettings(bool clear) {
 		TRX.ATU_T = false;                      // ATU default state
 		TRX.ATU_Enabled = true;                 // ATU enabled state
 		TRX.TUNER_Enabled = true;               // TUNER enabled state
-		TRX.Transverter_70cm = false;           // Transvertrs enable (2m IF)
-		TRX.Transverter_23cm = false;           // Transvertrs enable (2m IF)
-		TRX.Transverter_13cm = false;           // Transvertrs enable (2m IF)
-		TRX.Transverter_6cm = false;            // Transvertrs enable (2m IF)
-		TRX.Transverter_3cm = false;            // Transvertrs enable (2m IF)
+		TRX.Transverter_70cm = false;           // Transvertrs enable
+		TRX.Transverter_23cm = false;           // Transvertrs enable
+		TRX.Transverter_13cm = false;           // Transvertrs enable
+		TRX.Transverter_6cm = false;            // Transvertrs enable
+		TRX.Transverter_3cm = false;            // Transvertrs enable
+		TRX.Transverter_QO100 = false;            // Transvertrs enable
 		TRX.FineRITTune = true;                 // Fine or coarse tune for split/shift
 		TRX.Auto_Input_Switch = false;          // Auto Mic/USB Switch
 		TRX.Auto_Snap = false;                  // Auto track and snap to signal frequency
@@ -449,6 +450,7 @@ void LoadSettings(bool clear) {
 	BAND_SELECTABLE[BANDID_13cm] = TRX.Transverter_13cm;
 	BAND_SELECTABLE[BANDID_6cm] = TRX.Transverter_6cm;
 	BAND_SELECTABLE[BANDID_3cm] = TRX.Transverter_3cm;
+	BAND_SELECTABLE[BANDID_QO100] = TRX.Transverter_QO100;
 }
 
 static void LoadSettingsFromEEPROM(void) {
@@ -522,6 +524,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_13cm = 100;        // 13cm
 		CALIBRATE.rf_out_power_6cm = 100;         // 6cm
 		CALIBRATE.rf_out_power_3cm = 100;         // 3cm
+		CALIBRATE.rf_out_power_QO100 = 100;         // QO-100
 		CALIBRATE.smeter_calibration_hf = 0;      // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 0;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.adc_offset = 0;                 // Calibrate the offset at the ADC input (DC)
@@ -571,6 +574,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_13cm = 20;         // 13cm
 		CALIBRATE.rf_out_power_6cm = 20;          // 6cm
 		CALIBRATE.rf_out_power_3cm = 20;          // 3cm
+		CALIBRATE.rf_out_power_QO100 = 20;         // QO-100
 		CALIBRATE.smeter_calibration_hf = 12;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 12;    // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.SWR_FWD_Calibration_HF = 10.0f; // SWR Transormator rate forward
@@ -604,6 +608,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_13cm = 15;              // 13cm
 		CALIBRATE.rf_out_power_6cm = 15;               // 6cm
 		CALIBRATE.rf_out_power_3cm = 15;               // 3cm
+		CALIBRATE.rf_out_power_QO100 = 15;         // QO-100
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
@@ -655,6 +660,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_13cm = 15;              // 13cm
 		CALIBRATE.rf_out_power_6cm = 15;               // 6cm
 		CALIBRATE.rf_out_power_3cm = 15;               // 3cm
+		CALIBRATE.rf_out_power_QO100 = 15;         // QO-100
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
@@ -776,6 +782,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.EXT_TRANSV_13cm = 12;
 		CALIBRATE.EXT_TRANSV_6cm = 10;
 		CALIBRATE.EXT_TRANSV_3cm = 0;
+		CALIBRATE.EXT_TRANSV_QO100 = 0;
 		CALIBRATE.NOTX_NOTHAM = true; // disable TX on non-HAM bands
 		CALIBRATE.NOTX_2200m = false; // disable TX on some bands
 		CALIBRATE.NOTX_160m = false;
@@ -808,12 +815,17 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.Transverter_6cm_IF_Mhz = 144;
 		CALIBRATE.Transverter_3cm_RF_Mhz = 10368;
 		CALIBRATE.Transverter_3cm_IF_Mhz = 144;
+		CALIBRATE.Transverter_QO100_RF_Khz = 10489500;
+		CALIBRATE.Transverter_QO100_IF_RX_Khz = 739500;
+		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 144;
 #ifdef FRONTPANEL_LITE
 		CALIBRATE.Transverter_70cm_IF_Mhz = 28;
 		CALIBRATE.Transverter_23cm_IF_Mhz = 28;
 		CALIBRATE.Transverter_13cm_IF_Mhz = 28;
 		CALIBRATE.Transverter_6cm_IF_Mhz = 28;
 		CALIBRATE.Transverter_3cm_IF_Mhz = 28;
+		CALIBRATE.Transverter_QO100_IF_RX_Khz = 28500;
+		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 28;
 #endif
 		CALIBRATE.OTA_update = true;                // enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;                // Relay switch delay before RF signal ON, ms

@@ -8,8 +8,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 77         // Settings config version
-#define CALIB_VERSION 58        // Calibration config version
+#define SETT_VERSION 78         // Settings config version
+#define CALIB_VERSION 59        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
@@ -490,6 +490,7 @@ extern struct TRX_SETTINGS {
 	bool Transverter_13cm;
 	bool Transverter_6cm;
 	bool Transverter_3cm;
+	bool Transverter_QO100;
 	bool Auto_Input_Switch;
 	bool Auto_Snap;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH];
@@ -708,6 +709,9 @@ extern struct TRX_CALIBRATE {
 	uint16_t Transverter_6cm_IF_Mhz;
 	uint16_t Transverter_3cm_RF_Mhz;
 	uint16_t Transverter_3cm_IF_Mhz;
+	uint32_t Transverter_QO100_RF_Khz;
+	uint32_t Transverter_QO100_IF_RX_Khz;
+	uint16_t Transverter_QO100_IF_TX_Mhz;
 	uint8_t DAC_driver_mode;
 	uint8_t rf_out_power_2200m;
 	uint8_t rf_out_power_160m;
@@ -729,6 +733,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t rf_out_power_13cm;
 	uint8_t rf_out_power_6cm;
 	uint8_t rf_out_power_3cm;
+	uint8_t rf_out_power_QO100;
 	uint8_t ENCODER_DEBOUNCE;
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
@@ -772,6 +777,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t EXT_TRANSV_13cm;
 	uint8_t EXT_TRANSV_6cm;
 	uint8_t EXT_TRANSV_3cm;
+	uint8_t EXT_TRANSV_QO100;
 	uint8_t ATU_AVERAGING;
 	uint8_t TwoSignalTune_Balance;
 	uint8_t IF_GAIN_MIN;

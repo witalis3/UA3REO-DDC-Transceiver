@@ -352,8 +352,10 @@ float32_t getMaxTXAmplitudeOnFreq(uint64_t freq) {
 		calibrate_level = CALIBRATE.rf_out_power_13cm;
 	} else if (freq < 8000.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_6cm;
-	} else {
+	} else if (freq < 10489500000) {
 		calibrate_level = CALIBRATE.rf_out_power_3cm;
+	} else {
+		calibrate_level = CALIBRATE.rf_out_power_QO100;
 	}
 
 	if (calibrate_level > 100) {
