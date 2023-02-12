@@ -145,7 +145,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Freq Step FAST** - Frequency step by the main encoder in FAST mode
 * **Freq Step ENC2** - Frequency tuning step by main add. encoder
 * **Freq Step ENC2 FAST** - Frequency step by main add. encoder in FAST mode
-* **Freq Step WFM, kHz** - Frequency step by main encoder in WFM mode
+* **Freq Step *, kHz** - Frequency step by main encoder in WFM/NFM/AM mode
 * **CW Freq Step divider** - Frequency step divider for CW mode
 * **Encoder Accelerate** - Accelerate encoder on fast rates
 * **Att step, dB** - Attenuator tuning step
@@ -309,7 +309,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **HPF START** - HPF filter parameters
 * **BPF x** - Bandpass filter parameters
 * **SWR FWD/BWD RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
-* **VCXO Correction** - Frequency adjustment of the reference oscillator
+* **TCXO Frequency, khz** - Frequency adjustment of the reference oscillator
 * **FAN Medium start** - Temperature of the PA for starting the fan at medium speed
 * **FAN Medium stop** - Temperature of the PA for stopping the fan
 * **FAN Full start** - Temperature of the PA for starting the fan at full speed
