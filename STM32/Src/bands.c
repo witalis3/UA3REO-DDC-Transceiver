@@ -192,7 +192,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "60m ", //BR
+        .name = "60m ", // BR
         .broadcast = true,
         .startFreq = 4700000,
         .endFreq = 5100000,
@@ -489,7 +489,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
             },
         .regionsCount = 4,
         .channels =
-            (const CHANNEL_MAP[45 * 2 + 14]) {
+            (const CHANNEL_MAP[45 * 2 + 14]){
                 {.subname = "C ", .number = 1, .rxFreq = 26965000, .txFreq = 26965000},  {.subname = "C ", .number = 2, .rxFreq = 26975000, .txFreq = 26975000},
                 {.subname = "C ", .number = 3, .rxFreq = 26985000, .txFreq = 26985000},  {.subname = "C ", .number = 4, .rxFreq = 27005000, .txFreq = 27005000},
                 {.subname = "C ", .number = 5, .rxFreq = 27015000, .txFreq = 27015000},  {.subname = "C ", .number = 6, .rxFreq = 27025000, .txFreq = 27025000},

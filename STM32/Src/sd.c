@@ -924,6 +924,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.AM_LPF_TX_Filter", (uint32_t *)&TRX.AM_LPF_TX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.FM_LPF_RX_Filter", (uint32_t *)&TRX.FM_LPF_RX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.FM_LPF_TX_Filter", (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.AMFM_LPF_Stages", (uint32_t *)&TRX.AMFM_LPF_Stages, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.Beeper", (uint32_t *)&TRX.Beeper, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CTCSS_Freq", (uint32_t *)&TRX.CTCSS_Freq, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.SELFHEAR_Volume", (uint32_t *)&TRX.SELFHEAR_Volume, SYSMENU_UINT8);
@@ -1697,6 +1698,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.FM_LPF_TX_Filter") == 0) {
 		TRX.FM_LPF_TX_Filter = (uint16_t)uintval;
+	}
+	if (strcmp(name, "TRX.AMFM_LPF_Stages") == 0) {
+		TRX.AMFM_LPF_Stages = uintval;
 	}
 	if (strcmp(name, "TRX.Beeper") == 0) {
 		TRX.Beeper = uintval;

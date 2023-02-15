@@ -155,7 +155,7 @@ void LoadSettings(bool clear) {
 		TRX.FRQ_ENC_STEP = 25000;           // frequency tuning step by main add. encoder
 		TRX.FRQ_ENC_FAST_STEP = 50000;      // frequency tuning step by main add. encoder in FAST mode
 		TRX.FRQ_ENC_WFM_STEP_KHZ = 20;      // frequency WFM tuning step by the main encoder
-		TRX.FRQ_ENC_FM_STEP_KHZ = 1;      // frequency FM tuning step by the main encoder
+		TRX.FRQ_ENC_FM_STEP_KHZ = 1;        // frequency FM tuning step by the main encoder
 		TRX.FRQ_ENC_AM_STEP_KHZ = 1;        // frequency AM tuning step by the main encoder
 		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
 		TRX.Debug_Type = TRX_DEBUG_OFF;     // Debug output to DEBUG / UART port
@@ -251,6 +251,7 @@ void LoadSettings(bool clear) {
 		TRX.AM_LPF_TX_Filter = 8000;         // default value of AM filter width
 		TRX.FM_LPF_RX_Filter = 12000;        // default value of the FM filter width
 		TRX.FM_LPF_TX_Filter = 8000;         // default value of the FM filter width
+		TRX.AMFM_LPF_Stages = 15;            // stages for NFM LPF filter
 		TRX.Beeper = true;                   // Keyboard beeper
 		TRX.CTCSS_Freq = 0;                  // CTCSS FM Frequency
 		TRX.SELFHEAR_Volume = 15;            // Selfhearing volume
@@ -493,12 +494,12 @@ void LoadCalibration(bool clear) {
 #if defined(FRONTPANEL_LITE)
 		CALIBRATE.ENCODER_SLOW_RATE = 10;
 #endif
-		CALIBRATE.ENCODER_ON_FALLING = true;   // encoder only triggers when level A falls
-		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
-		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
-		CALIBRATE.RF_unit_type = RF_UNIT_QRP;  // RF-unit type
+		CALIBRATE.ENCODER_ON_FALLING = true;  // encoder only triggers when level A falls
+		CALIBRATE.ENCODER_ACCELERATION = 75;  // acceleration rate if rotate
+		CALIBRATE.TangentType = TANGENT_MH48; // Tangent type
+		CALIBRATE.RF_unit_type = RF_UNIT_QRP; // RF-unit type
 #if defined(FRONTPANEL_BIG_V1)
-		CALIBRATE.RF_unit_type = RF_UNIT_RU4PN;  // RF-unit type
+		CALIBRATE.RF_unit_type = RF_UNIT_RU4PN; // RF-unit type
 #endif
 		CALIBRATE.CICFIR_GAINER_48K_val = 7;   // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_96K_val = 12;  // Offset from the output of the CIC compensator

@@ -840,12 +840,11 @@ void FFT_doFFT(void) {
 		float32_t imd7_dbm = ((freq_dbm - imd7_dbm_1) + (freq_dbm - imd7_dbm_2)) / 2.0f;
 		float32_t imd9_dbm = ((freq_dbm - imd9_dbm_1) + (freq_dbm - imd9_dbm_2)) / 2.0f;
 
-		char ctmp[128] = {0};
-		sprintf(ctmp, "IMD3: %d IMD5: %d", (int32_t)imd3_dbm, (int32_t)imd5_dbm);
-		LCD_showTooltip(ctmp);
-		
+		// char ctmp[128] = {0};
+		// sprintf(ctmp, "IMD3: %d IMD5: %d", (int32_t)imd3_dbm, (int32_t)imd5_dbm);
+		// LCD_showTooltip(ctmp);
+
 		println("DBM: ", freq_dbm, " SNR: ", snr_dbm, " IMD3: ", imd3_dbm, " IMD5: ", imd5_dbm, " IMD7: ", imd7_dbm, " IMD9: ", imd9_dbm, " ");
-		// println("ZERO: ", zero_dbm, "DBM1: ", freq_dbm_1, "DBM2: ", freq_dbm_2, " IMD3_1: ", imd3_dbm_1, " IMD3_2: ", imd3_dbm_2);
 	}
 	//
 

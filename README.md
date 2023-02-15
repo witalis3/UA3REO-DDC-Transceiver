@@ -182,6 +182,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **CW LPF Pass** - LPF cutoff frequency when working in CW
 * **DIGI LPF Pass** - LPF cutoff frequency when working in DIGI
 * **FM LPF Pass** - LPF cutoff frequency when working in FM
+* **AM/FM LPF Stages** - Adjusting the slopes of the AM/NFM LPF filters
 * **Squelch** - Enable SSB/AM/CW/FM Squelch
 * **FM Squelch level** - FM squelch level
 * **MIC EQ xxx** - Microphone equalizer levels
