@@ -91,9 +91,9 @@ void LCD_Init(void) {
 
 	LCDDriver_Init();
 #if defined(LCD_ILI9341)
-  LCDDriver_setRotation(1);
+	LCDDriver_setRotation(1);
 #elif defined(LCD_ST7789)
-  LCDDriver_setRotation(3);
+	LCDDriver_setRotation(3);
 #endif
 
 #ifdef HAS_TOUCHPAD
