@@ -820,7 +820,7 @@ void FFT_doFFT(void) {
 		uint64_t imd9_freq_1 = 2 * imd5_freq_1 - freq_1;
 		uint64_t imd9_freq_2 = 2 * imd5_freq_2 - freq_2;
 
-		const uint8_t span_hz = 100;
+		const uint8_t span_hz = 50;
 		float32_t zero_dbm = FFTOutput_mean[LAYOUT->FFT_PRINT_SIZE / 5];
 		float32_t freq_dbm_1 = getMaxDbmFromFreq(freq_1, span_hz);
 		float32_t freq_dbm_2 = getMaxDbmFromFreq(freq_2, span_hz);
@@ -833,14 +833,19 @@ void FFT_doFFT(void) {
 		float32_t imd9_dbm_1 = getMaxDbmFromFreq(imd9_freq_1, span_hz);
 		float32_t imd9_dbm_2 = getMaxDbmFromFreq(imd9_freq_2, span_hz);
 
-		float32_t freq_dbm = (freq_dbm_1 + freq_dbm_2) / 2.0f;
+		float32_t freq_dbm = MAX(freq_dbm_1, freq_dbm_2);
 		float32_t snr_dbm = freq_dbm - zero_dbm;
 		float32_t imd3_dbm = ((freq_dbm - imd3_dbm_1) + (freq_dbm - imd3_dbm_2)) / 2.0f;
 		float32_t imd5_dbm = ((freq_dbm - imd5_dbm_1) + (freq_dbm - imd5_dbm_2)) / 2.0f;
 		float32_t imd7_dbm = ((freq_dbm - imd7_dbm_1) + (freq_dbm - imd7_dbm_2)) / 2.0f;
 		float32_t imd9_dbm = ((freq_dbm - imd9_dbm_1) + (freq_dbm - imd9_dbm_2)) / 2.0f;
 
+		char ctmp[128] = {0};
+		sprintf(ctmp, "IMD3: %d IMD5: %d", (int32_t)imd3_dbm, (int32_t)imd5_dbm);
+		LCD_showTooltip(ctmp);
+		
 		println("DBM: ", freq_dbm, " SNR: ", snr_dbm, " IMD3: ", imd3_dbm, " IMD5: ", imd5_dbm, " IMD7: ", imd7_dbm, " IMD9: ", imd9_dbm, " ");
+		// println("ZERO: ", zero_dbm, "DBM1: ", freq_dbm_1, "DBM2: ", freq_dbm_2, " IMD3_1: ", imd3_dbm_1, " IMD3_2: ", imd3_dbm_2);
 	}
 	//
 
