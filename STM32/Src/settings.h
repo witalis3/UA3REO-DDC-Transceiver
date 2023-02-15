@@ -8,8 +8,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 78         // Settings config version
-#define CALIB_VERSION 59        // Calibration config version
+#define SETT_VERSION 79         // Settings config version
+#define CALIB_VERSION 60        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)

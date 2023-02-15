@@ -133,11 +133,11 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .name = "120m",
         .broadcast = true,
         .startFreq = 2300000,
-        .endFreq = 2495000,
+        .endFreq = 2500000,
         .defaultFreq = 2400000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 2300000, .endFreq = 2495000, .mode = TRX_MODE_SAM},
+                {.startFreq = 2300000, .endFreq = 2500000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -184,7 +184,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 3950000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 3950000, .endFreq = 4000000, .mode = TRX_MODE_SAM},
+                {.startFreq = 3900000, .endFreq = 4000000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -192,14 +192,14 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "62m",
+        .name = "60m ", //BR
         .broadcast = true,
-        .startFreq = 4750000,
-        .endFreq = 4995000,
-        .defaultFreq = 4800000,
+        .startFreq = 4700000,
+        .endFreq = 5100000,
+        .defaultFreq = 5000000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 4750000, .endFreq = 4995000, .mode = TRX_MODE_SAM},
+                {.startFreq = 4700000, .endFreq = 5100000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -224,12 +224,12 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     {
         .name = "49m",
         .broadcast = true,
-        .startFreq = 5900000,
-        .endFreq = 6200000,
+        .startFreq = 5800000,
+        .endFreq = 6300000,
         .defaultFreq = 6000000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 5900000, .endFreq = 6200000, .mode = TRX_MODE_SAM},
+                {.startFreq = 5800000, .endFreq = 6300000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -273,12 +273,12 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     {
         .name = "31m",
         .broadcast = true,
-        .startFreq = 9400000,
-        .endFreq = 9900000,
+        .startFreq = 9300000,
+        .endFreq = 9995000,
         .defaultFreq = 9600000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 9400000, .endFreq = 9900000, .mode = TRX_MODE_SAM},
+                {.startFreq = 9300000, .endFreq = 9995000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -304,12 +304,12 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     {
         .name = "25m",
         .broadcast = true,
-        .startFreq = 11600000,
-        .endFreq = 12100000,
+        .startFreq = 11500000,
+        .endFreq = 12200000,
         .defaultFreq = 11900000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 11600000, .endFreq = 12100000, .mode = TRX_MODE_SAM},
+                {.startFreq = 11500000, .endFreq = 12200000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -319,12 +319,12 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     {
         .name = "22m",
         .broadcast = true,
-        .startFreq = 13570000,
-        .endFreq = 13870000,
+        .startFreq = 13500000,
+        .endFreq = 13900000,
         .defaultFreq = 13700000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 13570000, .endFreq = 13870000, .mode = TRX_MODE_SAM},
+                {.startFreq = 13500000, .endFreq = 13900000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -351,12 +351,12 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     {
         .name = "19m",
         .broadcast = true,
-        .startFreq = 15100000,
+        .startFreq = 15000000,
         .endFreq = 15800000,
-        .defaultFreq = 15500000,
+        .defaultFreq = 15600000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 15100000, .endFreq = 15800000, .mode = TRX_MODE_SAM},
+                {.startFreq = 15000000, .endFreq = 15900000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -364,14 +364,14 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "18m",
+        .name = "16m",
         .broadcast = true,
-        .startFreq = 17480000,
+        .startFreq = 17400000,
         .endFreq = 17900000,
-        .defaultFreq = 17700000,
+        .defaultFreq = 17600000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 17480000, .endFreq = 17900000, .mode = TRX_MODE_SAM},
+                {.startFreq = 17400000, .endFreq = 17995000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -396,14 +396,14 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     },
     // Shortwave Wave Broadcast
     {
-        .name = "16m",
+        .name = "15m ", // BR
         .broadcast = true,
-        .startFreq = 18900000,
-        .endFreq = 19020000,
+        .startFreq = 18800000,
+        .endFreq = 19100000,
         .defaultFreq = 19000000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 18900000, .endFreq = 19020000, .mode = TRX_MODE_SAM},
+                {.startFreq = 18800000, .endFreq = 19100000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -431,11 +431,11 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .name = "13m",
         .broadcast = true,
         .startFreq = 21450000,
-        .endFreq = 21850000,
+        .endFreq = 21995000,
         .defaultFreq = 21600000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 21450000, .endFreq = 21850000, .mode = TRX_MODE_SAM},
+                {.startFreq = 21450000, .endFreq = 21995000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -462,12 +462,12 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     {
         .name = "11m",
         .broadcast = true,
-        .startFreq = 25670000,
-        .endFreq = 26065000,
+        .startFreq = 25500000,
+        .endFreq = 26200000,
         .defaultFreq = 25800000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 25670000, .endFreq = 26065000, .mode = TRX_MODE_SAM},
+                {.startFreq = 25500000, .endFreq = 26200000, .mode = TRX_MODE_SAM},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -477,67 +477,19 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     {
         .name = "CB",
         .broadcast = false,
-        .startFreq = 26065000,
+        .startFreq = 26900000,
         .endFreq = 27995000,
         .defaultFreq = 27135000,
         .regions =
             (const REGION_MAP[4]){
-                {.startFreq = 26065000, .endFreq = 27130000, .mode = TRX_MODE_NFM},
+                {.startFreq = 26900000, .endFreq = 27130000, .mode = TRX_MODE_NFM},
                 {.startFreq = 27130000, .endFreq = 27140000, .mode = TRX_MODE_AM},
                 {.startFreq = 27140000, .endFreq = 27415000, .mode = TRX_MODE_NFM},
                 {.startFreq = 27420000, .endFreq = 27995000, .mode = TRX_MODE_USB},
             },
         .regionsCount = 4,
         .channels =
-            (const CHANNEL_MAP[45 * 4 + 14]){
-                {.subname = "A ", .number = 1, .rxFreq = 26065000, .txFreq = 26065000},  {.subname = "A ", .number = 2, .rxFreq = 26075000, .txFreq = 26075000},
-                {.subname = "A ", .number = 3, .rxFreq = 26085000, .txFreq = 26085000},  {.subname = "A ", .number = 4, .rxFreq = 26105000, .txFreq = 26105000},
-                {.subname = "A ", .number = 5, .rxFreq = 26115000, .txFreq = 26115000},  {.subname = "A ", .number = 6, .rxFreq = 26125000, .txFreq = 26125000},
-                {.subname = "A ", .number = 7, .rxFreq = 26135000, .txFreq = 26135000},  {.subname = "A ", .number = 8, .rxFreq = 26155000, .txFreq = 26155000},
-                {.subname = "A ", .number = 9, .rxFreq = 26165000, .txFreq = 26165000},  {.subname = "A ", .number = 10, .rxFreq = 26175000, .txFreq = 26175000},
-                {.subname = "A ", .number = 11, .rxFreq = 26185000, .txFreq = 26185000}, {.subname = "A ", .number = 12, .rxFreq = 26205000, .txFreq = 26205000},
-                {.subname = "A ", .number = 13, .rxFreq = 26215000, .txFreq = 26215000}, {.subname = "A ", .number = 14, .rxFreq = 26225000, .txFreq = 26225000},
-                {.subname = "A ", .number = 15, .rxFreq = 26235000, .txFreq = 26235000}, {.subname = "A ", .number = 16, .rxFreq = 26255000, .txFreq = 26255000},
-                {.subname = "A ", .number = 17, .rxFreq = 26265000, .txFreq = 26265000}, {.subname = "A ", .number = 18, .rxFreq = 26275000, .txFreq = 26275000},
-                {.subname = "A ", .number = 19, .rxFreq = 26285000, .txFreq = 26285000}, {.subname = "A ", .number = 20, .rxFreq = 26305000, .txFreq = 26305000},
-                {.subname = "A ", .number = 21, .rxFreq = 26315000, .txFreq = 26315000}, {.subname = "A ", .number = 22, .rxFreq = 26325000, .txFreq = 26325000},
-                {.subname = "A ", .number = 23, .rxFreq = 26355000, .txFreq = 26355000}, {.subname = "A ", .number = 24, .rxFreq = 26335000, .txFreq = 26335000},
-                {.subname = "A ", .number = 25, .rxFreq = 26345000, .txFreq = 26345000}, {.subname = "A ", .number = 26, .rxFreq = 26365000, .txFreq = 26365000},
-                {.subname = "A ", .number = 27, .rxFreq = 26375000, .txFreq = 26375000}, {.subname = "A ", .number = 28, .rxFreq = 26385000, .txFreq = 26385000},
-                {.subname = "A ", .number = 29, .rxFreq = 26395000, .txFreq = 26395000}, {.subname = "A ", .number = 30, .rxFreq = 26405000, .txFreq = 26405000},
-                {.subname = "A ", .number = 31, .rxFreq = 26415000, .txFreq = 26415000}, {.subname = "A ", .number = 32, .rxFreq = 26425000, .txFreq = 26425000},
-                {.subname = "A ", .number = 33, .rxFreq = 26435000, .txFreq = 26435000}, {.subname = "A ", .number = 34, .rxFreq = 26445000, .txFreq = 26445000},
-                {.subname = "A ", .number = 35, .rxFreq = 26455000, .txFreq = 26455000}, {.subname = "A ", .number = 36, .rxFreq = 26465000, .txFreq = 26465000},
-                {.subname = "A ", .number = 37, .rxFreq = 26475000, .txFreq = 26475000}, {.subname = "A ", .number = 38, .rxFreq = 26485000, .txFreq = 26485000},
-                {.subname = "A ", .number = 39, .rxFreq = 26495000, .txFreq = 26495000}, {.subname = "A ", .number = 40, .rxFreq = 26505000, .txFreq = 26505000},
-                {.subname = "A ", .number = 41, .rxFreq = 26095000, .txFreq = 26095000}, {.subname = "A ", .number = 42, .rxFreq = 26145000, .txFreq = 26145000},
-                {.subname = "A ", .number = 43, .rxFreq = 26195000, .txFreq = 26195000}, {.subname = "A ", .number = 44, .rxFreq = 26245000, .txFreq = 26245000},
-                {.subname = "A ", .number = 45, .rxFreq = 26295000, .txFreq = 26295000},
-
-                {.subname = "B ", .number = 1, .rxFreq = 26515000, .txFreq = 26515000},  {.subname = "B ", .number = 2, .rxFreq = 26525000, .txFreq = 26525000},
-                {.subname = "B ", .number = 3, .rxFreq = 26535000, .txFreq = 26535000},  {.subname = "B ", .number = 4, .rxFreq = 26555000, .txFreq = 26555000},
-                {.subname = "B ", .number = 5, .rxFreq = 26565000, .txFreq = 26565000},  {.subname = "B ", .number = 6, .rxFreq = 26575000, .txFreq = 26575000},
-                {.subname = "B ", .number = 7, .rxFreq = 26585000, .txFreq = 26585000},  {.subname = "B ", .number = 8, .rxFreq = 26605000, .txFreq = 26605000},
-                {.subname = "B ", .number = 9, .rxFreq = 26615000, .txFreq = 26615000},  {.subname = "B ", .number = 10, .rxFreq = 26625000, .txFreq = 26625000},
-                {.subname = "B ", .number = 11, .rxFreq = 26635000, .txFreq = 26635000}, {.subname = "B ", .number = 12, .rxFreq = 26655000, .txFreq = 26655000},
-                {.subname = "B ", .number = 13, .rxFreq = 26665000, .txFreq = 26665000}, {.subname = "B ", .number = 14, .rxFreq = 26675000, .txFreq = 26675000},
-                {.subname = "B ", .number = 15, .rxFreq = 26685000, .txFreq = 26685000}, {.subname = "B ", .number = 16, .rxFreq = 26705000, .txFreq = 26705000},
-                {.subname = "B ", .number = 17, .rxFreq = 26715000, .txFreq = 26715000}, {.subname = "B ", .number = 18, .rxFreq = 26725000, .txFreq = 26725000},
-                {.subname = "B ", .number = 19, .rxFreq = 26735000, .txFreq = 26735000}, {.subname = "B ", .number = 20, .rxFreq = 26755000, .txFreq = 26755000},
-                {.subname = "B ", .number = 21, .rxFreq = 26765000, .txFreq = 26765000}, {.subname = "B ", .number = 22, .rxFreq = 26775000, .txFreq = 26775000},
-                {.subname = "B ", .number = 23, .rxFreq = 26805000, .txFreq = 26805000}, {.subname = "B ", .number = 24, .rxFreq = 26785000, .txFreq = 26785000},
-                {.subname = "B ", .number = 25, .rxFreq = 26795000, .txFreq = 26795000}, {.subname = "B ", .number = 26, .rxFreq = 26815000, .txFreq = 26815000},
-                {.subname = "B ", .number = 27, .rxFreq = 26825000, .txFreq = 26825000}, {.subname = "B ", .number = 28, .rxFreq = 26835000, .txFreq = 26835000},
-                {.subname = "B ", .number = 29, .rxFreq = 26845000, .txFreq = 26845000}, {.subname = "B ", .number = 30, .rxFreq = 26855000, .txFreq = 26855000},
-                {.subname = "B ", .number = 31, .rxFreq = 26865000, .txFreq = 26865000}, {.subname = "B ", .number = 32, .rxFreq = 26875000, .txFreq = 26875000},
-                {.subname = "B ", .number = 33, .rxFreq = 26885000, .txFreq = 26885000}, {.subname = "B ", .number = 34, .rxFreq = 26895000, .txFreq = 26895000},
-                {.subname = "B ", .number = 35, .rxFreq = 26905000, .txFreq = 26905000}, {.subname = "B ", .number = 36, .rxFreq = 26915000, .txFreq = 26915000},
-                {.subname = "B ", .number = 37, .rxFreq = 26925000, .txFreq = 26925000}, {.subname = "B ", .number = 38, .rxFreq = 26935000, .txFreq = 26935000},
-                {.subname = "B ", .number = 39, .rxFreq = 26945000, .txFreq = 26945000}, {.subname = "B ", .number = 40, .rxFreq = 26955000, .txFreq = 26955000},
-                {.subname = "B ", .number = 41, .rxFreq = 26545000, .txFreq = 26545000}, {.subname = "B ", .number = 42, .rxFreq = 26595000, .txFreq = 26595000},
-                {.subname = "B ", .number = 43, .rxFreq = 26645000, .txFreq = 26645000}, {.subname = "B ", .number = 44, .rxFreq = 26695000, .txFreq = 26695000},
-                {.subname = "B ", .number = 45, .rxFreq = 26745000, .txFreq = 26745000},
-
+            (const CHANNEL_MAP[45 * 2 + 14]) {
                 {.subname = "C ", .number = 1, .rxFreq = 26965000, .txFreq = 26965000},  {.subname = "C ", .number = 2, .rxFreq = 26975000, .txFreq = 26975000},
                 {.subname = "C ", .number = 3, .rxFreq = 26985000, .txFreq = 26985000},  {.subname = "C ", .number = 4, .rxFreq = 27005000, .txFreq = 27005000},
                 {.subname = "C ", .number = 5, .rxFreq = 27015000, .txFreq = 27015000},  {.subname = "C ", .number = 6, .rxFreq = 27025000, .txFreq = 27025000},
@@ -594,7 +546,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
                 {.subname = "E ", .number = 11, .rxFreq = 27985000, .txFreq = 27985000}, {.subname = "E ", .number = 41, .rxFreq = 27895000, .txFreq = 27895000},
                 {.subname = "E ", .number = 42, .rxFreq = 27945000, .txFreq = 27945000}, {.subname = "E ", .number = 43, .rxFreq = 27995000, .txFreq = 27995000},
             },
-        .channelsCount = 45 * 4 + 14,
+        .channelsCount = 45 * 2 + 14,
     },
     // 10METERS
     {
