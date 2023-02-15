@@ -157,6 +157,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Callsign** - User callsign
 * **Locator** - User QTH locator
 * **URSI Code** - Ionogramm URSI Code https://digisonde.com/index.html#stationmap-section
+* **Full Duplex** - Full duplex RX+TX mode
 * **TUNER Enabled** - Turning on the antenna tuner
 * **ATU Enabled** - Turning on the automatic antenna tuner
 * **ATU Ind** - Combination of tuner inductances

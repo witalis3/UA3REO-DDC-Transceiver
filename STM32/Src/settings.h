@@ -44,9 +44,10 @@
 #define CW_ADD_GAIN_AF 10.0f                  // additional AF gain in CW
 #define TX_LPF_TIMEOUT (180 * 1000)           // TX LPF On Timeout, millisec (3 min)
 #define SWR_PROTECTOR_MAX_POWER 20.0f         // drop down to PWR %, if SWR high
-#define FULL_DUPLEX false                     // Enable duplex RX and TX
-#define SHOW_RX_FFT_ON_TX false               // Show RX FFT channel on TX
-#define LISTEN_RX_AUDIO_ON_TX false           // Process audio RX channel for TX mode
+
+#define FULL_DUPLEX TRX.Full_Duplex             // Enable duplex RX and TX
+#define SHOW_RX_FFT_ON_TX FULL_DUPLEX           // Show RX FFT channel on TX
+#define LISTEN_RX_AUDIO_ON_TX SHOW_RX_FFT_ON_TX // Process audio RX channel for TX mode
 
 #define CODEC_BITS_FULL_SCALE 4294967296 // maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
 #define USB_DEBUG_ENABLED true           // allow using USB as a console
@@ -488,6 +489,7 @@ extern struct TRX_SETTINGS {
 	bool Transverter_QO100;
 	bool Auto_Input_Switch;
 	bool Auto_Snap;
+	bool Full_Duplex;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH];
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	char URSI_CODE[MAX_CALLSIGN_LENGTH];

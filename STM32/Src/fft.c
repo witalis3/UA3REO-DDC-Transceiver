@@ -348,6 +348,7 @@ static void FFT_3DPrintFFT(void);
 #endif
 static float32_t getDBFromFFTAmpl(float32_t ampl);
 static float32_t getFFTAmplFromDB(float32_t ampl);
+static float32_t getMaxDbmFromFreq(uint64_t freq, uint8_t span);
 
 // FFT initialization
 void FFT_PreInit(void) {
@@ -796,6 +797,52 @@ void FFT_doFFT(void) {
 			FFTOutput_mean[i] = FFTOutput_average[i];
 		}
 	}
+
+	// IMD calculator
+	static uint32_t last_imd_calculator_time = 0;
+	if (TRX_on_TX && TRX_Tune && TRX.TWO_SIGNAL_TUNE && SHOW_RX_FFT_ON_TX && ((HAL_GetTick() - last_imd_calculator_time) > 1000)) {
+		last_imd_calculator_time = HAL_GetTick();
+
+		uint64_t tx_freq = CurrentVFO->Freq + (TRX.XIT_Enabled ? TRX_XIT : 0);
+		uint64_t freq_1 = tx_freq + TWO_TONE_GEN_FREQ1;
+		uint64_t freq_2 = tx_freq + TWO_TONE_GEN_FREQ2;
+		if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_DIGI_L) {
+			freq_1 = tx_freq - TWO_TONE_GEN_FREQ1;
+			freq_2 = tx_freq - TWO_TONE_GEN_FREQ2;
+		}
+
+		uint64_t imd3_freq_1 = 2 * freq_1 - freq_2;
+		uint64_t imd3_freq_2 = 2 * freq_2 - freq_1;
+		uint64_t imd5_freq_1 = 2 * imd3_freq_1 - freq_1;
+		uint64_t imd5_freq_2 = 2 * imd3_freq_2 - freq_2;
+		uint64_t imd7_freq_1 = 2 * imd5_freq_1 - imd3_freq_1;
+		uint64_t imd7_freq_2 = 2 * imd5_freq_2 - imd3_freq_2;
+		uint64_t imd9_freq_1 = 2 * imd5_freq_1 - freq_1;
+		uint64_t imd9_freq_2 = 2 * imd5_freq_2 - freq_2;
+
+		const uint8_t span_hz = 100;
+		float32_t zero_dbm = FFTOutput_mean[LAYOUT->FFT_PRINT_SIZE / 5];
+		float32_t freq_dbm_1 = getMaxDbmFromFreq(freq_1, span_hz);
+		float32_t freq_dbm_2 = getMaxDbmFromFreq(freq_2, span_hz);
+		float32_t imd3_dbm_1 = getMaxDbmFromFreq(imd3_freq_1, span_hz);
+		float32_t imd3_dbm_2 = getMaxDbmFromFreq(imd3_freq_2, span_hz);
+		float32_t imd5_dbm_1 = getMaxDbmFromFreq(imd5_freq_1, span_hz);
+		float32_t imd5_dbm_2 = getMaxDbmFromFreq(imd5_freq_2, span_hz);
+		float32_t imd7_dbm_1 = getMaxDbmFromFreq(imd7_freq_1, span_hz);
+		float32_t imd7_dbm_2 = getMaxDbmFromFreq(imd7_freq_2, span_hz);
+		float32_t imd9_dbm_1 = getMaxDbmFromFreq(imd9_freq_1, span_hz);
+		float32_t imd9_dbm_2 = getMaxDbmFromFreq(imd9_freq_2, span_hz);
+
+		float32_t freq_dbm = (freq_dbm_1 + freq_dbm_2) / 2.0f;
+		float32_t snr_dbm = freq_dbm - zero_dbm;
+		float32_t imd3_dbm = ((freq_dbm - imd3_dbm_1) + (freq_dbm - imd3_dbm_2)) / 2.0f;
+		float32_t imd5_dbm = ((freq_dbm - imd5_dbm_1) + (freq_dbm - imd5_dbm_2)) / 2.0f;
+		float32_t imd7_dbm = ((freq_dbm - imd7_dbm_1) + (freq_dbm - imd7_dbm_2)) / 2.0f;
+		float32_t imd9_dbm = ((freq_dbm - imd9_dbm_1) + (freq_dbm - imd9_dbm_2)) / 2.0f;
+
+		println("DBM: ", freq_dbm, " SNR: ", snr_dbm, " IMD3: ", imd3_dbm, " IMD5: ", imd5_dbm, " IMD7: ", imd7_dbm, " IMD9: ", imd9_dbm, " ");
+	}
+	//
 
 	FFT_need_fft = false;
 }
@@ -2470,6 +2517,21 @@ static void FFT_fill_color_palette(void) // Fill FFT Color Gradient On Initializ
 		palette_bw_wtf_colors[i] = addColor(palette_wtf[i], FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
 		palette_bw_bg_colors[i] = addColor(palette_bg_gradient[i], FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS, FFT_BW_BRIGHTNESS);
 	}
+}
+
+static float32_t getMaxDbmFromFreq(uint64_t freq, uint8_t span) {
+	float32_t result = -200;
+	for (uint32_t i = freq - span; i <= (freq + span); i++) {
+		int32_t pos = getFreqPositionOnFFT(i, false);
+		if (pos < 0) {
+			continue;
+		}
+
+		float32_t dbm = FFTOutput_mean[pos];
+		result = MAX(dbm, result);
+	}
+
+	return result;
 }
 
 static inline int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos) {

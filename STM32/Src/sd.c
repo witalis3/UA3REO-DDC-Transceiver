@@ -875,6 +875,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.Transverter_QO100", (uint32_t *)&TRX.Transverter_QO100, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Auto_Input_Switch", (uint32_t *)&TRX.Auto_Input_Switch, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Auto_Snap", (uint32_t *)&TRX.Auto_Snap, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.Full_Duplex", (uint32_t *)&TRX.Full_Duplex, SYSMENU_BOOLEAN);
 			// AUDIO
 			SD_WRITE_SETT_LINE("TRX.Volume", (uint32_t *)&TRX.Volume, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.Volume_Step", (uint32_t *)&TRX.Volume_Step, SYSMENU_UINT8);
@@ -1551,6 +1552,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.Auto_Snap") == 0) {
 		TRX.Auto_Snap = bval;
+	}
+	if (strcmp(name, "TRX.Full_Duplex") == 0) {
+		TRX.Full_Duplex = bval;
 	}
 	// AUDIO
 	if (strcmp(name, "TRX.Volume") == 0) {
