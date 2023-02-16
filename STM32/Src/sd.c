@@ -1098,6 +1098,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.SWR_BWD_Calibration_VHF", (uint32_t *)&CALIBRATE.SWR_BWD_Calibration_VHF, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.TCXO_frequency", (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.VCXO_correction", (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_INT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.MAX_ChargePump_Freq", (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.FAN_MEDIUM_START", (uint32_t *)&CALIBRATE.FAN_MEDIUM_START, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.FAN_MEDIUM_STOP", (uint32_t *)&CALIBRATE.FAN_MEDIUM_STOP, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.FAN_FULL_START", (uint32_t *)&CALIBRATE.FAN_FULL_START, SYSMENU_UINT8);
@@ -2264,6 +2265,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "CALIBRATE.VCXO_correction") == 0) {
 		CALIBRATE.VCXO_correction = (int16_t)intval;
+	}
+	if (strcmp(name, "CALIBRATE.MAX_ChargePump_Freq") == 0) {
+		CALIBRATE.MAX_ChargePump_Freq = (uint16_t)uintval;
 	}
 	if (strcmp(name, "CALIBRATE.FAN_MEDIUM_START") == 0) {
 		CALIBRATE.FAN_MEDIUM_START = (uint8_t)uintval;

@@ -335,6 +335,7 @@ static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TCXO(int8_t direction);
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction);
+static void SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction);  // Tisho
 static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction); // Tisho
 static void SYSMENU_HANDL_CALIB_BW_AD8307_SLP(int8_t direction);  // Tisho
@@ -949,6 +950,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
 #if !defined(FRONTPANEL_LITE)
     {"TCXO Frequency, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
+    {"MAX ChargePump, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq},
 #else
     {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 #endif
@@ -6037,6 +6039,7 @@ static void SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER(int8_t direction) {
 		CALIBRATE.MAX_RF_POWER_ON_METER = 200;
 	}
 }
+
 static void SYSMENU_HANDL_CALIB_TCXO(int8_t direction) {
 	const uint16_t tcxo_freq_steps[] = {5120,  8000,  9600,  10000, 12000, 12288, 13000, 14000, 14400, 15000, 16000, 16800, 19200, 19440,
 	                                    19680, 20000, 20480, 24000, 25000, 26000, 27000, 28000, 30000, 32000, 38400, 40000, 50000};
@@ -6074,6 +6077,17 @@ static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction) {
 		CALIBRATE.VCXO_correction = 32750;
 	}
 }
+
+static void SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq(int8_t direction) {
+	CALIBRATE.MAX_ChargePump_Freq += direction;
+	if (CALIBRATE.MAX_ChargePump_Freq < 1) {
+		CALIBRATE.MAX_ChargePump_Freq = 1;
+	}
+	if (CALIBRATE.MAX_ChargePump_Freq > 2000) {
+		CALIBRATE.MAX_ChargePump_Freq = 2000;
+	}
+}
+
 // Tisho
 static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction) {
 	CALIBRATE.FW_AD8307_SLP += (float32_t)direction * 0.1f;

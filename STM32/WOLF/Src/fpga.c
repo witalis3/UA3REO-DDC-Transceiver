@@ -400,10 +400,13 @@ static inline void FPGA_fpgadata_sendparam(void) {
 
 	// Calculate dividers for VCXO corrector
 	static uint16_t TCXO_frequency_calculated = 0;
+	static uint16_t MAX_ChargePump_Freq_calculated = 0;
 	static uint16_t TCXO_Divider = 2;
 	static uint16_t VCXO_Divider = 2;
-	if (CALIBRATE.TCXO_frequency != TCXO_frequency_calculated) {
+	if (CALIBRATE.TCXO_frequency != TCXO_frequency_calculated || MAX_ChargePump_Freq_calculated != CALIBRATE.MAX_ChargePump_Freq) {
 		TCXO_frequency_calculated = CALIBRATE.TCXO_frequency;
+		MAX_ChargePump_Freq_calculated = CALIBRATE.MAX_ChargePump_Freq;
+
 		const uint32_t VCXO_Freq_Khz = ADC_CLOCK / 1000;
 
 		for (uint16_t divider = 2; divider < 4096; divider++) {
@@ -413,7 +416,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 			}
 
 			uint16_t TCXO_PWM_Frequency = CALIBRATE.TCXO_frequency / divider;
-			if (TCXO_PWM_Frequency > 200) { // pwm freq limit
+			if (TCXO_PWM_Frequency > CALIBRATE.MAX_ChargePump_Freq) { // pwm freq limit
 				continue;
 			}
 

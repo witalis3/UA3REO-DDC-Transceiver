@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "6.9.0";
+const char version_string[19] = "7.0.0-dev";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -249,7 +249,7 @@ void LoadSettings(bool clear) {
 		TRX.SSB_HPF_TX_Filter = 200;         // default value of SSB filter width
 		TRX.AM_LPF_RX_Filter = 8000;         // default value of AM filter width
 		TRX.AM_LPF_TX_Filter = 8000;         // default value of AM filter width
-		TRX.FM_LPF_RX_Filter = 12000;        // default value of the FM filter width
+		TRX.FM_LPF_RX_Filter = 8000;         // default value of the FM filter width
 		TRX.FM_LPF_TX_Filter = 8000;         // default value of the FM filter width
 		TRX.AMFM_LPF_Stages = 3;             // stages for NFM LPF filter
 		TRX.Beeper = true;                   // Keyboard beeper
@@ -750,6 +750,7 @@ void LoadCalibration(bool clear) {
 #else
 		CALIBRATE.TCXO_frequency = 12288;              // TCXO Frequency x1000
 #endif
+		CALIBRATE.MAX_ChargePump_Freq = 200;    // Maximum frequency for charge pump pwm
 		CALIBRATE.VCXO_correction = 0;          // VCXO Frequency offset
 		CALIBRATE.FW_AD8307_SLP = 25.5f;        // Slope for the log amp used to mreasure the FW power (mV/dB)
 		CALIBRATE.FW_AD8307_OFFS = 1150.0f;     // Offset to back calculate the output voltage to dBm (mV)

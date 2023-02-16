@@ -692,6 +692,7 @@ extern struct TRX_CALIBRATE {
 	int16_t RTC_Calibration;
 	int16_t VCXO_correction;
 	uint16_t TCXO_frequency;
+	uint16_t MAX_ChargePump_Freq;
 	uint16_t TX_StartDelay;
 	int16_t smeter_calibration_hf;
 	int16_t smeter_calibration_vhf;

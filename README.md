@@ -312,6 +312,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **BPF x** - Bandpass filter parameters
 * **SWR FWD/BWD RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
 * **TCXO Frequency, khz** - Frequency adjustment of the reference oscillator
+* **MAX ChargePump, khz** - Maximum PWM frequency for ChargePump circuit
 * **FAN Medium start** - Temperature of the PA for starting the fan at medium speed
 * **FAN Medium stop** - Temperature of the PA for stopping the fan
 * **FAN Full start** - Temperature of the PA for starting the fan at full speed
