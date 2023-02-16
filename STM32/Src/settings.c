@@ -251,7 +251,7 @@ void LoadSettings(bool clear) {
 		TRX.AM_LPF_TX_Filter = 8000;         // default value of AM filter width
 		TRX.FM_LPF_RX_Filter = 12000;        // default value of the FM filter width
 		TRX.FM_LPF_TX_Filter = 8000;         // default value of the FM filter width
-		TRX.AMFM_LPF_Stages = 15;            // stages for NFM LPF filter
+		TRX.AMFM_LPF_Stages = 3;             // stages for NFM LPF filter
 		TRX.Beeper = true;                   // Keyboard beeper
 		TRX.CTCSS_Freq = 0;                  // CTCSS FM Frequency
 		TRX.SELFHEAR_Volume = 15;            // Selfhearing volume
