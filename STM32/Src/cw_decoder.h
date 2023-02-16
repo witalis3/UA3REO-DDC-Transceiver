@@ -34,12 +34,12 @@
 #define CWDECODER_ERROR_DIFF 0.5f                        // error factor when determining the point and dash
 #define CWDECODER_ERROR_SPACE_DIFF 0.6f                  // error factor when determining the character and space
 #define CWDECODER_MAX_CODE_SIZE 10                       // maximum character code size
-#define CWDECODER_MAX_WPM 30                             // maximum WPM
+#define CWDECODER_MAX_WPM 36                             // maximum WPM
 #define CWDECODER_DEBUG false                            // Show Debug
 
 // Public variables
 extern float32_t CWDEC_FFTBuffer_Export[CWDECODER_FFTSIZE];
-extern volatile uint16_t CW_Decoder_WPM;
+extern volatile float32_t CW_Decoder_WPM;
 extern char CW_Decoder_Text[CWDECODER_STRLEN + 1];
 
 // Public methods
