@@ -52,7 +52,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	// uint8_t bpf_second = getBPFByFreq(SecondaryVFO->Freq);
 
 	uint8_t band_out = 0;
-	int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 
 	// Transverters
 	if (TRX.Transverter_QO100 && band == BANDID_QO100) { // 3cm
