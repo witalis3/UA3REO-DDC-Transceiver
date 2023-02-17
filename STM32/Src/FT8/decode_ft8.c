@@ -41,6 +41,8 @@ Decode new_decoded[40] = {0}; // Decode new_decoded[20]={0};
 
 #if (defined(LAY_800x480))
 int message_limit = 11;
+#elif (defined(LAY_320x240))
+int message_limit = 6;
 #else
 int message_limit = 6;
 #endif
@@ -68,8 +70,11 @@ int ft8_decode(void) {
 
 	// Debug
 	sprintf(ctmp, "Cand: %d ", num_candidates);
+#if (defined(LAY_320x240))
+	LCDDriver_printText(ctmp, 10, 30, COLOR_GREEN, COLOR_BLACK, 1);
+#else
 	LCDDriver_printText(ctmp, 10, 30, COLOR_GREEN, COLOR_BLACK, 2);
-
+#endif
 	//
 	uint16_t chksumAray[kMax_decoded_messages]; // array containing the check sum of already decoded messages
 	                                            // it is used to avoid duplication of messages
@@ -173,7 +178,11 @@ void display_messages(int decoded_messages) {
 
 	for (int i = 0; i < decoded_messages && i < message_limit; i++) {
 		sprintf(message, "%s %s %s", new_decoded[i].field1, new_decoded[i].field2, new_decoded[i].field3);
+#if (defined(LAY_320x240))
+		LCDDriver_printText(message, 10, 100 + i * 18, COLOR_GREEN, COLOR_BLACK, 1);
+#else
 		LCDDriver_printText(message, 10, 100 + i * 25, COLOR_GREEN, COLOR_BLACK, 2);
+#endif
 	}
 }
 
@@ -302,7 +311,11 @@ int Check_Calling_Stations(int num_decoded) {
 
 			if (To_meCallIdx <= message_limit) // Display up to 6 mesages addrssed to us (shuld be enough)
 			{
+#if (defined(LAY_320x240))
+				LCDDriver_printText(message, 200, 100 + To_meCallIdx * 18, COLOR_YELLOW, COLOR_BLACK, 1);
+#else
 				LCDDriver_printText(message, 240, 100 + To_meCallIdx * 25, COLOR_YELLOW, COLOR_BLACK, 2);
+#endif
 				To_meCallIdx++;
 			}
 

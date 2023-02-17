@@ -134,7 +134,11 @@ void MenagerFT8(void) {
 
 			// Debug
 			sprintf(ctmp, "ft8_xmit_c: %d ", ft8_xmit_counter);
+#if (defined(LAY_320x240))
+			LCDDriver_printText(ctmp, 10, 65, COLOR_GREEN, COLOR_BLACK, 1);
+#else
 			LCDDriver_printText(ctmp, 10, 65, COLOR_GREEN, COLOR_BLACK, 2);
+#endif
 
 			bool send_message_done = false;
 			// 80
@@ -180,7 +184,11 @@ void MenagerFT8(void) {
 
 		// Debug
 		sprintf(ctmp, "Decoded: %d ", num_decoded_msg);
+#if (defined(LAY_320x240))
+		LCDDriver_printText(ctmp, 10, 45, COLOR_GREEN, COLOR_BLACK, 1);
+#else
 		LCDDriver_printText(ctmp, 10, 45, COLOR_GREEN, COLOR_BLACK, 2);
+#endif
 		println("Decode time, ms: ", HAL_GetTick() - decode_srat_time)
 
 		    decode_flag = 0;
@@ -233,6 +241,10 @@ void update_synchronization(void) {
 		sprintf(ctmp, "%02d:%02d:%02d", Hours, Minutes, Seconds);
 #if (defined(LAY_800x480))
 		LCDDriver_printText(ctmp, 680, 5, COLOR_WHITE, COLOR_BLACK, 2);
+
+#elif (defined(LAY_320x240))
+		LCDDriver_printText(ctmp, 260, 5, COLOR_WHITE, COLOR_BLACK, 1);
+
 #else
 		LCDDriver_printText(ctmp, 300, 5, COLOR_WHITE, COLOR_BLACK, 2);
 #endif
@@ -241,6 +253,10 @@ void update_synchronization(void) {
 		sprintf(ctmp, "SWR: %.1f, PWR: %.1fW    ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward));
 #if (defined(LAY_800x480))
 		LCDDriver_printText(ctmp, 235, 400, FG_COLOR, BG_COLOR, 2);
+
+#elif (defined(LAY_320x240))
+		LCDDriver_printText(ctmp, 180, 215, FG_COLOR, BG_COLOR, 1);
+
 #else
 		LCDDriver_printText(ctmp, 200, 280, FG_COLOR, BG_COLOR, 2);
 #endif
@@ -248,6 +264,10 @@ void update_synchronization(void) {
 		sprintf(ctmp, "TEMP: % 2d    ", (int16_t)TRX_RF_Temperature);
 #if (defined(LAY_800x480))
 		LCDDriver_printText(ctmp, 235, 420, FG_COLOR, BG_COLOR, 2);
+
+#elif (defined(LAY_320x240))
+		// LCDDriver_printText(ctmp, 180, 225, FG_COLOR, BG_COLOR, 1);
+
 #else
 		LCDDriver_printText(ctmp, 200, 300, FG_COLOR, BG_COLOR, 2);
 #endif

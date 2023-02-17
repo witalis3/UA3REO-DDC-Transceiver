@@ -14,7 +14,7 @@
 #include <string.h>
 
 // Public variables
-volatile float32_t CW_Decoder_WPM = 0;             // decoded speed, WPM
+volatile float32_t CW_Decoder_WPM = 0;            // decoded speed, WPM
 char CW_Decoder_Text[CWDECODER_STRLEN + 1] = {0}; // decoded string
 
 // Private variables
@@ -236,7 +236,7 @@ static void CWDecoder_Recognise(void) {
 			// if(CWDECODER_DEBUG)
 			// sendToDebug_strln("e");
 		}
-		
+
 		CW_Decoder_WPM = CW_Decoder_WPM * 0.7f + (1220.0f / (float32_t)dot_time) * 0.3f; //// the most precise we can do ;o)
 		if (CW_Decoder_WPM > CWDECODER_MAX_WPM) {
 			CW_Decoder_WPM = CWDECODER_MAX_WPM;
@@ -428,7 +428,7 @@ static void CWDecoder_PrintChar(char *str) {
 	if (CWDECODER_DEBUG) {
 		print(str);
 	}
-	
+
 	if (strlen(CW_Decoder_Text) >= CWDECODER_STRLEN) {
 		shiftTextLeft(CW_Decoder_Text, 1);
 	}

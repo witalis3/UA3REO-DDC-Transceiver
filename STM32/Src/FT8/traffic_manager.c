@@ -192,7 +192,11 @@ void service_CQ(void) {
 
 	// Debug
 	sprintf(ctmp, "Beacon_State: %d ", Beacon_State);
+#if (defined(LAY_320x240))
+	LCDDriver_printText(ctmp, 241, 260, COLOR_GREEN, COLOR_BLACK, 1);
+#else
 	LCDDriver_printText(ctmp, 241, 260, COLOR_GREEN, COLOR_BLACK, 2);
+#endif
 
 	switch (Beacon_State) {
 	// CALL initiated by us

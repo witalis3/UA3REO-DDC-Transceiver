@@ -13,6 +13,8 @@
 
 #if (defined(LAY_800x480))
 #define ft8_buffer 700 // 700? arbitrary for 3 kc
+#elif (defined(LAY_320x240))
+#define ft8_buffer 300 // 400 arbitrary for 3 kc
 #else
 #define ft8_buffer 400 // 400 arbitrary for 3 kc
 #endif
