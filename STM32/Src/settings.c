@@ -198,7 +198,7 @@ void LoadSettings(bool clear) {
 		// AUDIO
 		TRX.Volume = 25;             // AF Volume
 		TRX.Volume_Step = 5;         // AF Volume step by sec encoder
-		TRX.IF_Gain = 15;            // IF gain, dB (before all processing and AGC)
+		TRX.IF_Gain = 20;            // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;   // Maximum (target) AGC gain
 		TRX.MIC_GAIN_DB = 9.0f;      // Microphone gain, dB
 		TRX.MIC_Boost = false;       // +20dB mic amplifier
@@ -227,10 +227,10 @@ void LoadSettings(bool clear) {
 		TRX.NOISE_BLANKER = false; // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = false;  // Spectral AGC mode
 #else
-		TRX.NOISE_BLANKER = true;         // suppressor of short impulse noise NOISE BLANKER
+		TRX.NOISE_BLANKER = false;        // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = true;          // Spectral AGC mode
 #endif
-		TRX.NOISE_BLANKER_THRESHOLD = 7;     // threshold for noise blanker
+		TRX.NOISE_BLANKER_THRESHOLD = 15;    // threshold for noise blanker
 		TRX.TX_CESSB = false;                // Controlled-envelope single-sideband modulation
 		TRX.TX_CESSB_COMPRESS_DB = 3.0f;     // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;           // AGC receive rate on SSB
