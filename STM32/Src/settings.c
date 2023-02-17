@@ -780,7 +780,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.EXT_10m = 10;                 // External port by band
 		CALIBRATE.EXT_6m = 12;                  // External port by band
 		CALIBRATE.EXT_4m = 12;                  // External port by band
-		CALIBRATE.EXT_FM = 12;                  // External port by band
+		CALIBRATE.EXT_FM = 11;                  // External port by band
 		CALIBRATE.EXT_2m = 11;                  // External port by band
 		CALIBRATE.EXT_70cm = 8;                 // External port by band
 		CALIBRATE.EXT_TRANSV_70cm = 8;          // External port by band
