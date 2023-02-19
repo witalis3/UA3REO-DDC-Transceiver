@@ -5018,17 +5018,12 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 	LCD_UpdateQuery.SystemMenu = true;
 }
 
-// SYSTEM INFO
+// Support project
 
 static void SYSMENU_HANDL_SUPPORT(int8_t direction) {
 	sysmenu_infowindow_opened = true;
 	LCDDriver_Fill(BG_COLOR);
-#ifndef LCD_SMALL_INTERFACE
-	LCDDriver_printText("MasterCard: 5599 0020 2091 0792", 10, 10, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-#else
-	LCDDriver_printText("MasterCard:", 10, 10, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_printText("5599 0020 2091 0792", 10, 20, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-#endif
+	LCDDriver_printText("https://ua3reo.ru/support/", 10, 10, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 }
 
 // Back to prev menu
