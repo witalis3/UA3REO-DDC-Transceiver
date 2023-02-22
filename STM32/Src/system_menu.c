@@ -1162,7 +1162,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
     {"TSignal Balance", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TwoSignalTune_Balance, SYSMENU_HANDL_CALIB_TwoSignalTune_Balance},
     {"Linear Pwr Control", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_HANDL_CALIB_LinearPowerControl},
-		{"ALC Port Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Port_Enabled, SYSMENU_HANDL_CALIB_ALC_Port_Enabled},
+    {"ALC Port Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Port_Enabled, SYSMENU_HANDL_CALIB_ALC_Port_Enabled},
     {"IF Gain MIN", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_HANDL_CALIB_IF_GAIN_MIN},
     {"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
     {"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
