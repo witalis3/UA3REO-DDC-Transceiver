@@ -1082,7 +1082,7 @@ void getUTCDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime) {
 	currTime.tm_mon = sDate->Month - 1;
 	currTime.tm_mday = sDate->Date;
 
-	currTime.tm_hour = 2; // sTime->Hours;
+	currTime.tm_hour = sTime->Hours;
 	currTime.tm_min = sTime->Minutes;
 	currTime.tm_sec = sTime->Seconds;
 
