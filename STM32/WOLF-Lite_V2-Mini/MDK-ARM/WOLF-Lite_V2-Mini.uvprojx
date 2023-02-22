@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>WOLF\</OutputDirectory>
-          <OutputName>WOLF-Lite_V2-Mini</OutputName>
+          <OutputName>WOLF-Lite2-Mini-ST7789</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -1575,7 +1575,7 @@
       <TargetName>WOLF-Lite_V2-Mini_ILI9341</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>6150000::V6.15::ARMCLANG</pCCUsed>
+      <pCCUsed>6190000::V6.19::ARMCLANG</pCCUsed>
       <uAC6>1</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -1614,7 +1614,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>WOLF\</OutputDirectory>
-          <OutputName>WOLF-Lite_V2-Mini</OutputName>
+          <OutputName>WOLF-Lite2-Mini-ILI9341</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
