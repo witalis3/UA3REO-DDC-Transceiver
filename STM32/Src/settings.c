@@ -611,7 +611,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_70cm = 15;              // 70cm
 		CALIBRATE.rf_out_power_23cm = 15;              // 23cm
 		CALIBRATE.rf_out_power_13cm = 15;              // 13cm
-		CALIBRATE.rf_out_power_6cm = 15;               // 6cm
+		CALIBRATE.rf_out_power_6cm = 16;               // 6cm
 		CALIBRATE.rf_out_power_3cm = 15;               // 3cm
 		CALIBRATE.rf_out_power_QO100 = 15;             // QO-100
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
