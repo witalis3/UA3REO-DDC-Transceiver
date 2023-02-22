@@ -423,6 +423,7 @@ static void SYSMENU_HANDL_CALIB_CAT_Type(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LNA_compensation(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TwoSignalTune_Balance(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LinearPowerControl(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ALC_Port_Enabled(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FlashGT911(int8_t direction);
 static void SYSMENU_HANDL_CALIB_IF_GAIN_MIN(int8_t direction);
 static void SYSMENU_HANDL_CALIB_IF_GAIN_MAX(int8_t direction);
@@ -1161,6 +1162,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
     {"TSignal Balance", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TwoSignalTune_Balance, SYSMENU_HANDL_CALIB_TwoSignalTune_Balance},
     {"Linear Pwr Control", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_HANDL_CALIB_LinearPowerControl},
+		{"ALC Port Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Port_Enabled, SYSMENU_HANDL_CALIB_ALC_Port_Enabled},
     {"IF Gain MIN", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_HANDL_CALIB_IF_GAIN_MIN},
     {"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
     {"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
@@ -5012,7 +5014,7 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 	sprintf(out, "VBAT VOLT: %.2f     ", TRX_VBAT_Voltage);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
-	sprintf(out, "ALC: %.2fv (%d%%)    ", TRX_ALC_IN, getPowerFromALC(TRX_ALC_IN));
+	sprintf(out, "ALC: %.2fv (%d%%)    ", TRX_ALC_IN, getPowerFromALC());
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 
 	LCD_UpdateQuery.SystemMenu = true;
@@ -6827,6 +6829,15 @@ static void SYSMENU_HANDL_CALIB_LinearPowerControl(int8_t direction) {
 	}
 	if (direction < 0) {
 		CALIBRATE.LinearPowerControl = false;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_ALC_Port_Enabled(int8_t direction) {
+	if (direction > 0) {
+		CALIBRATE.ALC_Port_Enabled = true;
+	}
+	if (direction < 0) {
+		CALIBRATE.ALC_Port_Enabled = false;
 	}
 }
 

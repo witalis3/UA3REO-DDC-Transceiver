@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 #define SETT_VERSION 80         // Settings config version
-#define CALIB_VERSION 60        // Calibration config version
+#define CALIB_VERSION 61        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
@@ -815,6 +815,7 @@ extern struct TRX_CALIBRATE {
 	bool TOUCHPAD_horizontal_flip;
 	bool INA226_EN; // Tisho
 	bool LinearPowerControl;
+	bool ALC_Port_Enabled;
 	CHANNEL_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 	uint32_t BAND_MEMORIES[BANDS_COUNT][BANDS_MEMORIES_COUNT];
 

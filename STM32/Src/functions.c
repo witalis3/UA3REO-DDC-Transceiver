@@ -1049,8 +1049,12 @@ float fast_sqrt(const float x) {
 	return x * u.x * (1.5f - xhalf * u.x * u.x); // Newton step, repeating increases accuracy
 }
 
-uint8_t getPowerFromALC(float32_t alc) {
-	float32_t volt = alc - 1.0f;            // 0.0-1.0v - ALC disabled
+uint8_t getPowerFromALC() {
+	if (!CALIBRATE.ALC_Port_Enabled) {
+		return 0;
+	}
+	
+	float32_t volt = TRX_ALC_IN - 1.0f;            // 0.0-1.0v - ALC disabled
 	float32_t power = volt * 100.0f / 2.3f; // 1.0v - 3.3v - power 0-100%
 
 	if (power < 0) {

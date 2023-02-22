@@ -846,6 +846,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.LNA_compensation = 0;       // Compensation for LNA, db
 		CALIBRATE.TwoSignalTune_Balance = 50; // balance of signals on twosignal-tune
 		CALIBRATE.LinearPowerControl = false; // linear or logrithmic power control
+		CALIBRATE.ALC_Port_Enabled = false;		// enable ALC port to set TRX power from external amplifier
 		CALIBRATE.IF_GAIN_MIN = 0;            // min limit for if gain regulator
 		CALIBRATE.IF_GAIN_MAX = 40;           // max limit for if gain regulator
 
