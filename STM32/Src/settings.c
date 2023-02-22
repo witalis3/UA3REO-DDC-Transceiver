@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "6.8.2";
+const char version_string[19] = "7.0.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -155,8 +155,8 @@ void LoadSettings(bool clear) {
 		TRX.FRQ_ENC_STEP = 25000;           // frequency tuning step by main add. encoder
 		TRX.FRQ_ENC_FAST_STEP = 50000;      // frequency tuning step by main add. encoder in FAST mode
 		TRX.FRQ_ENC_WFM_STEP_KHZ = 20;      // frequency WFM tuning step by the main encoder
-		TRX.FRQ_ENC_FM_STEP_KHZ = 2.5;      // frequency FM tuning step by the main encoder
-		TRX.FRQ_ENC_AM_STEP_KHZ = 5;        // frequency AM tuning step by the main encoder
+		TRX.FRQ_ENC_FM_STEP_KHZ = 1;        // frequency FM tuning step by the main encoder
+		TRX.FRQ_ENC_AM_STEP_KHZ = 1;        // frequency AM tuning step by the main encoder
 		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
 		TRX.Debug_Type = TRX_DEBUG_OFF;     // Debug output to DEBUG / UART port
 		TRX.BandMapEnabled = true;          // automatic change of mode according to the range map
@@ -185,18 +185,20 @@ void LoadSettings(bool clear) {
 		TRX.ATU_T = false;                      // ATU default state
 		TRX.ATU_Enabled = true;                 // ATU enabled state
 		TRX.TUNER_Enabled = true;               // TUNER enabled state
-		TRX.Transverter_70cm = false;           // Transvertrs enable (2m IF)
-		TRX.Transverter_23cm = false;           // Transvertrs enable (2m IF)
-		TRX.Transverter_13cm = false;           // Transvertrs enable (2m IF)
-		TRX.Transverter_6cm = false;            // Transvertrs enable (2m IF)
-		TRX.Transverter_3cm = false;            // Transvertrs enable (2m IF)
+		TRX.Transverter_70cm = false;           // Transvertrs enable
+		TRX.Transverter_23cm = false;           // Transvertrs enable
+		TRX.Transverter_13cm = false;           // Transvertrs enable
+		TRX.Transverter_6cm = false;            // Transvertrs enable
+		TRX.Transverter_3cm = false;            // Transvertrs enable
+		TRX.Transverter_QO100 = false;          // Transvertrs enable
 		TRX.FineRITTune = true;                 // Fine or coarse tune for split/shift
 		TRX.Auto_Input_Switch = false;          // Auto Mic/USB Switch
 		TRX.Auto_Snap = false;                  // Auto track and snap to signal frequency
+		TRX.Full_Duplex = false;                // Full Duplex TX+RX Mode
 		// AUDIO
 		TRX.Volume = 25;             // AF Volume
 		TRX.Volume_Step = 5;         // AF Volume step by sec encoder
-		TRX.IF_Gain = 15;            // IF gain, dB (before all processing and AGC)
+		TRX.IF_Gain = 20;            // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;   // Maximum (target) AGC gain
 		TRX.MIC_GAIN_DB = 9.0f;      // Microphone gain, dB
 		TRX.MIC_Boost = false;       // +20dB mic amplifier
@@ -225,10 +227,10 @@ void LoadSettings(bool clear) {
 		TRX.NOISE_BLANKER = false; // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = false;  // Spectral AGC mode
 #else
-		TRX.NOISE_BLANKER = true;         // suppressor of short impulse noise NOISE BLANKER
+		TRX.NOISE_BLANKER = false;        // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = true;          // Spectral AGC mode
 #endif
-		TRX.NOISE_BLANKER_THRESHOLD = 7;     // threshold for noise blanker
+		TRX.NOISE_BLANKER_THRESHOLD = 15;    // threshold for noise blanker
 		TRX.TX_CESSB = false;                // Controlled-envelope single-sideband modulation
 		TRX.TX_CESSB_COMPRESS_DB = 3.0f;     // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;           // AGC receive rate on SSB
@@ -247,8 +249,9 @@ void LoadSettings(bool clear) {
 		TRX.SSB_HPF_TX_Filter = 200;         // default value of SSB filter width
 		TRX.AM_LPF_RX_Filter = 8000;         // default value of AM filter width
 		TRX.AM_LPF_TX_Filter = 8000;         // default value of AM filter width
-		TRX.FM_LPF_RX_Filter = 12000;        // default value of the FM filter width
+		TRX.FM_LPF_RX_Filter = 8000;         // default value of the FM filter width
 		TRX.FM_LPF_TX_Filter = 8000;         // default value of the FM filter width
+		TRX.AMFM_LPF_Stages = 3;             // stages for NFM LPF filter
 		TRX.Beeper = true;                   // Keyboard beeper
 		TRX.CTCSS_Freq = 0;                  // CTCSS FM Frequency
 		TRX.SELFHEAR_Volume = 15;            // Selfhearing volume
@@ -339,7 +342,7 @@ void LoadSettings(bool clear) {
 		TRX.FFT_DXCluster_Azimuth = false; // Add azimut to callsign
 		TRX.FFT_DXCluster_Timeout = 5;     // DXCluser timeout in minutes
 		TRX.Show_Sec_VFO = false;          // Show secondary VFO on FFT
-		TRX.FFT_Scale_Type = 1;            // Scale type (0 - amplitude, 1 - squared, 2 - dbm)
+		TRX.FFT_Scale_Type = 0;            // Scale type (0 - amplitude, 1 - squared, 2 - dbm)
 		TRX.AnalogMeterShowPWR = false;    // false - SWR, true - PWR
 		for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++) {
 			TRX.FuncButtons[i] = i;
@@ -449,6 +452,7 @@ void LoadSettings(bool clear) {
 	BAND_SELECTABLE[BANDID_13cm] = TRX.Transverter_13cm;
 	BAND_SELECTABLE[BANDID_6cm] = TRX.Transverter_6cm;
 	BAND_SELECTABLE[BANDID_3cm] = TRX.Transverter_3cm;
+	BAND_SELECTABLE[BANDID_QO100] = TRX.Transverter_QO100;
 }
 
 static void LoadSettingsFromEEPROM(void) {
@@ -490,10 +494,13 @@ void LoadCalibration(bool clear) {
 #if defined(FRONTPANEL_LITE)
 		CALIBRATE.ENCODER_SLOW_RATE = 10;
 #endif
-		CALIBRATE.ENCODER_ON_FALLING = true;   // encoder only triggers when level A falls
-		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
-		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
-		CALIBRATE.RF_unit_type = RF_UNIT_QRP;  // RF-unit type
+		CALIBRATE.ENCODER_ON_FALLING = true;  // encoder only triggers when level A falls
+		CALIBRATE.ENCODER_ACCELERATION = 75;  // acceleration rate if rotate
+		CALIBRATE.TangentType = TANGENT_MH48; // Tangent type
+		CALIBRATE.RF_unit_type = RF_UNIT_QRP; // RF-unit type
+#if defined(FRONTPANEL_BIG_V1)
+		CALIBRATE.RF_unit_type = RF_UNIT_RU4PN; // RF-unit type
+#endif
 		CALIBRATE.CICFIR_GAINER_48K_val = 7;   // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_96K_val = 12;  // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_192K_val = 17; // Offset from the output of the CIC compensator
@@ -522,6 +529,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_13cm = 100;        // 13cm
 		CALIBRATE.rf_out_power_6cm = 100;         // 6cm
 		CALIBRATE.rf_out_power_3cm = 100;         // 3cm
+		CALIBRATE.rf_out_power_QO100 = 100;       // QO-100
 		CALIBRATE.smeter_calibration_hf = 0;      // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 0;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.adc_offset = 0;                 // Calibrate the offset at the ADC input (DC)
@@ -571,6 +579,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_13cm = 20;         // 13cm
 		CALIBRATE.rf_out_power_6cm = 20;          // 6cm
 		CALIBRATE.rf_out_power_3cm = 20;          // 3cm
+		CALIBRATE.rf_out_power_QO100 = 20;        // QO-100
 		CALIBRATE.smeter_calibration_hf = 12;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 12;    // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.SWR_FWD_Calibration_HF = 10.0f; // SWR Transormator rate forward
@@ -602,8 +611,9 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_70cm = 15;              // 70cm
 		CALIBRATE.rf_out_power_23cm = 15;              // 23cm
 		CALIBRATE.rf_out_power_13cm = 15;              // 13cm
-		CALIBRATE.rf_out_power_6cm = 15;               // 6cm
+		CALIBRATE.rf_out_power_6cm = 16;               // 6cm
 		CALIBRATE.rf_out_power_3cm = 15;               // 3cm
+		CALIBRATE.rf_out_power_QO100 = 15;             // QO-100
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
@@ -655,6 +665,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_13cm = 15;              // 13cm
 		CALIBRATE.rf_out_power_6cm = 15;               // 6cm
 		CALIBRATE.rf_out_power_3cm = 15;               // 3cm
+		CALIBRATE.rf_out_power_QO100 = 15;             // QO-100
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
@@ -739,6 +750,7 @@ void LoadCalibration(bool clear) {
 #else
 		CALIBRATE.TCXO_frequency = 12288;              // TCXO Frequency x1000
 #endif
+		CALIBRATE.MAX_ChargePump_Freq = 200;    // Maximum frequency for charge pump pwm
 		CALIBRATE.VCXO_correction = 0;          // VCXO Frequency offset
 		CALIBRATE.FW_AD8307_SLP = 25.5f;        // Slope for the log amp used to mreasure the FW power (mV/dB)
 		CALIBRATE.FW_AD8307_OFFS = 1150.0f;     // Offset to back calculate the output voltage to dBm (mV)
@@ -755,29 +767,30 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RTC_Coarse_Calibration = 127; // Coarse RTC calibration
 		CALIBRATE.RTC_Calibration = 0;          // Real Time Clock calibration
 		CALIBRATE.EXT_2200m = 0;                // External port by band
-		CALIBRATE.EXT_160m = 1;                 // External port by band
-		CALIBRATE.EXT_80m = 2;                  // External port by band
-		CALIBRATE.EXT_60m = 3;                  // External port by band
-		CALIBRATE.EXT_40m = 4;                  // External port by band
-		CALIBRATE.EXT_30m = 5;                  // External port by band
-		CALIBRATE.EXT_20m = 6;                  // External port by band
-		CALIBRATE.EXT_17m = 7;                  // External port by band
-		CALIBRATE.EXT_15m = 8;                  // External port by band
-		CALIBRATE.EXT_12m = 9;                  // External port by band
+		CALIBRATE.EXT_160m = 0;                 // External port by band
+		CALIBRATE.EXT_80m = 1;                  // External port by band
+		CALIBRATE.EXT_60m = 1;                  // External port by band
+		CALIBRATE.EXT_40m = 2;                  // External port by band
+		CALIBRATE.EXT_30m = 3;                  // External port by band
+		CALIBRATE.EXT_20m = 4;                  // External port by band
+		CALIBRATE.EXT_17m = 5;                  // External port by band
+		CALIBRATE.EXT_15m = 6;                  // External port by band
+		CALIBRATE.EXT_12m = 7;                  // External port by band
 		CALIBRATE.EXT_CB = 10;                  // External port by band
-		CALIBRATE.EXT_10m = 11;                 // External port by band
+		CALIBRATE.EXT_10m = 10;                 // External port by band
 		CALIBRATE.EXT_6m = 12;                  // External port by band
-		CALIBRATE.EXT_4m = 13;                  // External port by band
-		CALIBRATE.EXT_FM = 13;                  // External port by band
-		CALIBRATE.EXT_2m = 14;                  // External port by band
-		CALIBRATE.EXT_70cm = 15;                // External port by band
-		CALIBRATE.EXT_TRANSV_70cm = 15;
-		CALIBRATE.EXT_TRANSV_23cm = 13;
-		CALIBRATE.EXT_TRANSV_13cm = 12;
-		CALIBRATE.EXT_TRANSV_6cm = 10;
-		CALIBRATE.EXT_TRANSV_3cm = 0;
-		CALIBRATE.NOTX_NOTHAM = true; // disable TX on non-HAM bands
-		CALIBRATE.NOTX_2200m = false; // disable TX on some bands
+		CALIBRATE.EXT_4m = 12;                  // External port by band
+		CALIBRATE.EXT_FM = 11;                  // External port by band
+		CALIBRATE.EXT_2m = 11;                  // External port by band
+		CALIBRATE.EXT_70cm = 8;                 // External port by band
+		CALIBRATE.EXT_TRANSV_70cm = 8;          // External port by band
+		CALIBRATE.EXT_TRANSV_23cm = 9;          // External port by band
+		CALIBRATE.EXT_TRANSV_13cm = 13;         // External port by band
+		CALIBRATE.EXT_TRANSV_6cm = 14;          // External port by band
+		CALIBRATE.EXT_TRANSV_3cm = 15;          // External port by band
+		CALIBRATE.EXT_TRANSV_QO100 = 15;        // External port by band
+		CALIBRATE.NOTX_NOTHAM = true;           // disable TX on non-HAM bands
+		CALIBRATE.NOTX_2200m = false;           // disable TX on some bands
 		CALIBRATE.NOTX_160m = false;
 		CALIBRATE.NOTX_80m = false;
 		CALIBRATE.NOTX_60m = false;
@@ -808,12 +821,17 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.Transverter_6cm_IF_Mhz = 144;
 		CALIBRATE.Transverter_3cm_RF_Mhz = 10368;
 		CALIBRATE.Transverter_3cm_IF_Mhz = 144;
+		CALIBRATE.Transverter_QO100_RF_Khz = 10489500;
+		CALIBRATE.Transverter_QO100_IF_RX_Khz = 739500;
+		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 144;
 #ifdef FRONTPANEL_LITE
 		CALIBRATE.Transverter_70cm_IF_Mhz = 28;
 		CALIBRATE.Transverter_23cm_IF_Mhz = 28;
 		CALIBRATE.Transverter_13cm_IF_Mhz = 28;
 		CALIBRATE.Transverter_6cm_IF_Mhz = 28;
 		CALIBRATE.Transverter_3cm_IF_Mhz = 28;
+		CALIBRATE.Transverter_QO100_IF_RX_Khz = 28500;
+		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 28;
 #endif
 		CALIBRATE.OTA_update = true;                // enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;                // Relay switch delay before RF signal ON, ms
@@ -828,6 +846,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.LNA_compensation = 0;       // Compensation for LNA, db
 		CALIBRATE.TwoSignalTune_Balance = 50; // balance of signals on twosignal-tune
 		CALIBRATE.LinearPowerControl = false; // linear or logrithmic power control
+		CALIBRATE.ALC_Port_Enabled = false;   // enable ALC port to set TRX power from external amplifier
 		CALIBRATE.IF_GAIN_MIN = 0;            // min limit for if gain regulator
 		CALIBRATE.IF_GAIN_MAX = 40;           // max limit for if gain regulator
 

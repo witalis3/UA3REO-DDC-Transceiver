@@ -239,7 +239,9 @@ void FPGA_fpgadata_iqclock(void) {
 		FPGA_writePacket(3); // TX SEND IQ
 		FPGA_syncAndClockRiseFall();
 		FPGA_fpgadata_sendiq(false);
-	} else {
+	}
+
+	if (TRX_on_RX) {
 		FPGA_writePacket(4); // RX GET IQ
 		FPGA_syncAndClockRiseFall();
 
@@ -320,24 +322,18 @@ static inline void FPGA_fpgadata_sendparam(void) {
 		LPF_3 = false; // LPF3
 	}
 
-	bitWrite(FPGA_fpgadata_out_tmp8, 0, (!TRX.ADC_SHDN && !TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // RX1
+	bitWrite(FPGA_fpgadata_out_tmp8, 0, (TRX_on_RX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // RX1
 #if HRDW_HAS_DUAL_RX
-	bitWrite(FPGA_fpgadata_out_tmp8, 1, (!TRX.ADC_SHDN && TRX.Dual_RX && !TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // RX2
+	bitWrite(FPGA_fpgadata_out_tmp8, 1, (TRX.Dual_RX && TRX_on_RX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // RX2
 #else
 	bitWrite(FPGA_fpgadata_out_tmp8, 1, false); // RX2
 #endif
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // TX
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_DITH);
-	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX.ADC_SHDN);
-	if (TRX_on_TX) {
-		bitWrite(FPGA_fpgadata_out_tmp8, 4, true); // shutdown ADC on TX
-	}
+	bitWrite(FPGA_fpgadata_out_tmp8, 4, !TRX_on_RX || TRX.ADC_SHDN);
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX.ADC_RAND);
-	//	bitWrite(FPGA_fpgadata_out_tmp8, 6, TRX.ADC_PGA);
-	bitWrite(FPGA_fpgadata_out_tmp8, 6, 0);
-	if (!TRX_on_TX) {
-		bitWrite(FPGA_fpgadata_out_tmp8, 7, TRX.ADC_Driver);
-	}
+	bitWrite(FPGA_fpgadata_out_tmp8, 6, false); // TRX.ADC_PGA
+	bitWrite(FPGA_fpgadata_out_tmp8, 7, TRX_on_RX && TRX.ADC_Driver);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8);
 	FPGA_clockRise();
 	FPGA_clockFall();
@@ -437,10 +433,13 @@ static inline void FPGA_fpgadata_sendparam(void) {
 
 	// Calculate dividers for VCXO corrector
 	static uint16_t TCXO_frequency_calculated = 0;
+	static uint16_t MAX_ChargePump_Freq_calculated = 0;
 	static uint16_t TCXO_Divider = 2;
 	static uint16_t VCXO_Divider = 2;
-	if (CALIBRATE.TCXO_frequency != TCXO_frequency_calculated) {
+	if (CALIBRATE.TCXO_frequency != TCXO_frequency_calculated || MAX_ChargePump_Freq_calculated != CALIBRATE.MAX_ChargePump_Freq) {
 		TCXO_frequency_calculated = CALIBRATE.TCXO_frequency;
+		MAX_ChargePump_Freq_calculated = CALIBRATE.MAX_ChargePump_Freq;
+
 		const uint32_t VCXO_Freq_Khz = ADC_CLOCK / 1000;
 
 		for (uint16_t divider = 2; divider < 4096; divider++) {
@@ -450,7 +449,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 			}
 
 			uint16_t TCXO_PWM_Frequency = CALIBRATE.TCXO_frequency / divider;
-			if (TCXO_PWM_Frequency > 200) { // pwm freq limit
+			if (TCXO_PWM_Frequency > CALIBRATE.MAX_ChargePump_Freq) { // pwm freq limit
 				continue;
 			}
 

@@ -8,8 +8,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 77         // Settings config version
-#define CALIB_VERSION 58        // Calibration config version
+#define SETT_VERSION 80         // Settings config version
+#define CALIB_VERSION 61        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
@@ -45,18 +45,14 @@
 #define TX_LPF_TIMEOUT (180 * 1000)           // TX LPF On Timeout, millisec (3 min)
 #define SWR_PROTECTOR_MAX_POWER 20.0f         // drop down to PWR %, if SWR high
 
-// #define ADC_BITS 16																						// ADC bit depth
-// #define FPGA_BUS_BITS 32																				// bitness of data from FPGA
-// #define CODEC_BITS 32																					// bitness of data in the audio codec
-// #define FPGA_BUS_FULL_SCALE 65536																		// maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
-// #define FPGA_BUS_FULL_SCALE_POW ((float64_t)FPGA_BUS_FULL_SCALE * (float64_t)FPGA_BUS_FULL_SCALE)		// maximum bus signal magnitude //
-//(FPGA_BUS_FULL_SCALE * FPGA_BUS_FULL_SCALE)
+#define FULL_DUPLEX TRX.Full_Duplex             // Enable duplex RX and TX
+#define SHOW_RX_FFT_ON_TX FULL_DUPLEX           // Show RX FFT channel on TX
+#define LISTEN_RX_AUDIO_ON_TX SHOW_RX_FFT_ON_TX // Process audio RX channel for TX mode
+
 #define CODEC_BITS_FULL_SCALE 4294967296 // maximum signal amplitude in the bus // powf (2, FPGA_BUS_BITS)
-// #define CODEC_BITS_FULL_SCALE_POW ((float64_t)CODEC_BITS_FULL_SCALE * (float64_t)CODEC_BITS_FULL_SCALE) // maximum bus signal magnitude //
-//(FPGA_BUS_FULL_SCALE * FPGA_BUS )_FULL_SCALE
-#define USB_DEBUG_ENABLED true  // allow using USB as a console
-#define SWD_DEBUG_ENABLED false // enable SWD as a console
-#define LCD_DEBUG_ENABLED false // enable LCD as a console
+#define USB_DEBUG_ENABLED true           // allow using USB as a console
+#define SWD_DEBUG_ENABLED false          // enable SWD as a console
+#define LCD_DEBUG_ENABLED false          // enable LCD as a console
 
 #define AUTOGAINER_TAGET (ADC_FULL_SCALE / 3)
 #define AUTOGAINER_HYSTERESIS (ADC_FULL_SCALE / 13)
@@ -243,7 +239,7 @@ static char ota_config_lcd[] = "ST7796S";
 #if defined(LCD_ILI9341)
 static char ota_config_lcd[] = "ILI9341";
 #ifdef STM32H743xx
-#define FT8_SUPPORT false
+#define FT8_SUPPORT true
 #endif
 #endif
 #if defined(LCD_ST7789)
@@ -490,8 +486,10 @@ extern struct TRX_SETTINGS {
 	bool Transverter_13cm;
 	bool Transverter_6cm;
 	bool Transverter_3cm;
+	bool Transverter_QO100;
 	bool Auto_Input_Switch;
 	bool Auto_Snap;
+	bool Full_Duplex;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH];
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	char URSI_CODE[MAX_CALLSIGN_LENGTH];
@@ -512,6 +510,7 @@ extern struct TRX_SETTINGS {
 	uint16_t FM_LPF_RX_Filter;
 	uint16_t FM_LPF_TX_Filter;
 	uint16_t VOX_TIMEOUT;
+	uint8_t AMFM_LPF_Stages;
 	uint8_t Volume_Step;
 	uint8_t IF_Gain;
 	uint8_t MIC_REVERBER;
@@ -693,6 +692,7 @@ extern struct TRX_CALIBRATE {
 	int16_t RTC_Calibration;
 	int16_t VCXO_correction;
 	uint16_t TCXO_frequency;
+	uint16_t MAX_ChargePump_Freq;
 	uint16_t TX_StartDelay;
 	int16_t smeter_calibration_hf;
 	int16_t smeter_calibration_vhf;
@@ -708,6 +708,9 @@ extern struct TRX_CALIBRATE {
 	uint16_t Transverter_6cm_IF_Mhz;
 	uint16_t Transverter_3cm_RF_Mhz;
 	uint16_t Transverter_3cm_IF_Mhz;
+	uint32_t Transverter_QO100_RF_Khz;
+	uint32_t Transverter_QO100_IF_RX_Khz;
+	uint16_t Transverter_QO100_IF_TX_Mhz;
 	uint8_t DAC_driver_mode;
 	uint8_t rf_out_power_2200m;
 	uint8_t rf_out_power_160m;
@@ -729,6 +732,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t rf_out_power_13cm;
 	uint8_t rf_out_power_6cm;
 	uint8_t rf_out_power_3cm;
+	uint8_t rf_out_power_QO100;
 	uint8_t ENCODER_DEBOUNCE;
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
@@ -772,6 +776,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t EXT_TRANSV_13cm;
 	uint8_t EXT_TRANSV_6cm;
 	uint8_t EXT_TRANSV_3cm;
+	uint8_t EXT_TRANSV_QO100;
 	uint8_t ATU_AVERAGING;
 	uint8_t TwoSignalTune_Balance;
 	uint8_t IF_GAIN_MIN;
@@ -810,6 +815,7 @@ extern struct TRX_CALIBRATE {
 	bool TOUCHPAD_horizontal_flip;
 	bool INA226_EN; // Tisho
 	bool LinearPowerControl;
+	bool ALC_Port_Enabled;
 	CHANNEL_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 	uint32_t BAND_MEMORIES[BANDS_COUNT][BANDS_MEMORIES_COUNT];
 

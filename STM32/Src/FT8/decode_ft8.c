@@ -20,11 +20,11 @@
 
 // char erase[] = "                   ";
 
-#define kLDPC_iterations 20      // original 10
-#define kMax_candidates 80      // original 20
+#define kLDPC_iterations 15      // original 10
+#define kMax_candidates 150      // original 20
 #define kMax_decoded_messages 30 // original 6
 #define kMax_message_length 20
-#define kMin_score 40 // original 40 Minimum sync score threshold for candidates
+#define kMin_score 60 // original 40 Minimum sync score threshold for candidates
 
 int strindex(char s[], char t[]);
 
@@ -41,6 +41,8 @@ Decode new_decoded[40] = {0}; // Decode new_decoded[20]={0};
 
 #if (defined(LAY_800x480))
 int message_limit = 11;
+#elif (defined(LAY_320x240))
+int message_limit = 6;
 #else
 int message_limit = 6;
 #endif
@@ -68,8 +70,11 @@ int ft8_decode(void) {
 
 	// Debug
 	sprintf(ctmp, "Cand: %d ", num_candidates);
+#if (defined(LAY_320x240))
+	LCDDriver_printText(ctmp, 10, 30, COLOR_GREEN, COLOR_BLACK, 1);
+#else
 	LCDDriver_printText(ctmp, 10, 30, COLOR_GREEN, COLOR_BLACK, 2);
-
+#endif
 	//
 	uint16_t chksumAray[kMax_decoded_messages]; // array containing the check sum of already decoded messages
 	                                            // it is used to avoid duplication of messages
@@ -85,10 +90,10 @@ int ft8_decode(void) {
 		uint8_t plain[N];
 		int n_errors = 0;
 		bp_decode(log174, kLDPC_iterations, plain, &n_errors);
-		print("FT8 Candidate: ", idx, " errors: ", n_errors);
+		print("Cand ", idx, " score ", cand.score, " err ", n_errors, " ");
 
 		if (n_errors > 10) {
-			println(" Many errors");
+			println("Many errors");
 			continue;
 		}
 
@@ -103,7 +108,7 @@ int ft8_decode(void) {
 		a91[11] = 0;
 		uint16_t chksum2 = crc(a91, 96 - 14);
 		if (chksum != chksum2) {
-			println(" CRC error");
+			println("CRC error");
 			continue;
 		}
 
@@ -114,24 +119,22 @@ int ft8_decode(void) {
 		char field3[7] = {0};
 		int rc = unpack77_fields(a91, field1, field2, field3);
 		if (rc < 0) {
-			println(" RC error");
+			println("RC error");
 			continue;
 		}
 
 		sprintf(message, "%s %s %s ", field1, field2, field3);
-		print(" Decoded ");
-		println(field1, " ", field2, " ", field3);
+		print(field1, " ", field2, " ", field3);
 
 		// Check for duplicate messages
 		bool found = false;
 		for (int i = 0; i < num_decoded; ++i) { // Alternative check for duplicate messages (should be much faster)
 			if (chksumAray[i] == chksum) {        // the check sums are controlled
-				found = true;                       // should be much faster!
+				println(" Duplicate");
+				found = true; // should be much faster!
 				break;
 			}
 		}
-
-		println(" Duplicate");
 
 		int raw_RSL;
 		int display_RSL;
@@ -140,21 +143,13 @@ int ft8_decode(void) {
 		if (!found && num_decoded < kMax_decoded_messages) {
 			if (strlen(message) > 4 && strlen(message) < kMax_message_length) {
 				chksumAray[num_decoded] = chksum; // Used to check for duplicate messages
-				// strcpy(decoded[num_decoded], message);
-				// strcpy(decoded[num_decoded], field1);
-				// memcpy(decoded[num_decoded], field1,6);    //Used for check only the first field (not the whole mesage)
 
 				new_decoded[num_decoded].sync_score = cand.score;
-				//           new_decoded[num_decoded].freq_hz = (int)freq_hz;
+				// new_decoded[num_decoded].freq_hz = (int)freq_hz;
 				strcpy(new_decoded[num_decoded].field1, field1);
 				strcpy(new_decoded[num_decoded].field2, field2);
 				strcpy(new_decoded[num_decoded].field3, field3);
-				//            strcpy(new_decoded[num_decoded].decode_time, rtc_string);
-
-				// memcpy(new_decoded[num_decoded].field1, field1,6);
-				// memcpy(new_decoded[num_decoded].field2, field2,6);
-				// memcpy(new_decoded[num_decoded].field3, field3,6);
-				//            memcpy(new_decoded[num_decoded].decode_time, rtc_string,8);
+				// strcpy(new_decoded[num_decoded].decode_time, rtc_string);
 
 				raw_RSL = new_decoded[num_decoded].sync_score;
 				if (raw_RSL > 160) {
@@ -163,9 +158,8 @@ int ft8_decode(void) {
 				display_RSL = (raw_RSL - 160) / 6;
 				new_decoded[num_decoded].snr = display_RSL;
 
+				println("");
 				++num_decoded;
-
-				println(" OK");
 			} else {
 				println(" Length error");
 			}
@@ -184,7 +178,11 @@ void display_messages(int decoded_messages) {
 
 	for (int i = 0; i < decoded_messages && i < message_limit; i++) {
 		sprintf(message, "%s %s %s", new_decoded[i].field1, new_decoded[i].field2, new_decoded[i].field3);
+#if (defined(LAY_320x240))
+		LCDDriver_printText(message, 10, 100 + i * 18, COLOR_GREEN, COLOR_BLACK, 1);
+#else
 		LCDDriver_printText(message, 10, 100 + i * 25, COLOR_GREEN, COLOR_BLACK, 2);
+#endif
 	}
 }
 
@@ -313,7 +311,11 @@ int Check_Calling_Stations(int num_decoded) {
 
 			if (To_meCallIdx <= message_limit) // Display up to 6 mesages addrssed to us (shuld be enough)
 			{
+#if (defined(LAY_320x240))
+				LCDDriver_printText(message, 200, 100 + To_meCallIdx * 18, COLOR_YELLOW, COLOR_BLACK, 1);
+#else
 				LCDDriver_printText(message, 240, 100 + To_meCallIdx * 25, COLOR_YELLOW, COLOR_BLACK, 2);
+#endif
 				To_meCallIdx++;
 			}
 

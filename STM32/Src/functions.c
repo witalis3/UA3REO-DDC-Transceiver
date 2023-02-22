@@ -352,8 +352,10 @@ float32_t getMaxTXAmplitudeOnFreq(uint64_t freq) {
 		calibrate_level = CALIBRATE.rf_out_power_13cm;
 	} else if (freq < 8000.0 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_6cm;
-	} else {
+	} else if (freq < 10489500000) {
 		calibrate_level = CALIBRATE.rf_out_power_3cm;
+	} else {
+		calibrate_level = CALIBRATE.rf_out_power_QO100;
 	}
 
 	if (calibrate_level > 100) {
@@ -1047,8 +1049,12 @@ float fast_sqrt(const float x) {
 	return x * u.x * (1.5f - xhalf * u.x * u.x); // Newton step, repeating increases accuracy
 }
 
-uint8_t getPowerFromALC(float32_t alc) {
-	float32_t volt = alc - 1.0f;            // 0.0-1.0v - ALC disabled
+uint8_t getPowerFromALC() {
+	if (!CALIBRATE.ALC_Port_Enabled) {
+		return 0;
+	}
+
+	float32_t volt = TRX_ALC_IN - 1.0f;     // 0.0-1.0v - ALC disabled
 	float32_t power = volt * 100.0f / 2.3f; // 1.0v - 3.3v - power 0-100%
 
 	if (power < 0) {
@@ -1076,7 +1082,7 @@ void getUTCDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime) {
 	currTime.tm_mon = sDate->Month - 1;
 	currTime.tm_mday = sDate->Date;
 
-	currTime.tm_hour = 2; // sTime->Hours;
+	currTime.tm_hour = sTime->Hours;
 	currTime.tm_min = sTime->Minutes;
 	currTime.tm_sec = sTime->Seconds;
 

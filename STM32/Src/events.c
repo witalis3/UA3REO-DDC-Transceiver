@@ -79,7 +79,9 @@ void EVENTS_do_AUDIO_PROCESSOR(void) // 20 000 hz
 
 	if (TRX_on_TX) {
 		processTxAudio();
-	} else {
+	}
+
+	if (TRX_on_RX) {
 		processRxAudio();
 	}
 
@@ -173,7 +175,7 @@ void EVENTS_do_ENC(void) // 20 0000 hz
 void EVENTS_do_PREPROCESS(void) // 1000 hz
 {
 	// audio buffer RX preprocessor
-	if (!TRX_on_TX) {
+	if (TRX_on_RX) {
 		preProcessRxAudio();
 	}
 
@@ -371,7 +373,7 @@ void EVENTS_do_EVERY_100ms(void) // 10 hz
 	} else {
 		fpga_stuck_errors = 0;
 	}
-	if (fpga_stuck_errors > 5 && !TRX_on_TX && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM) // && !SD_PlayInProcess
+	if (fpga_stuck_errors > 5 && TRX_on_RX && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM) // && !SD_PlayInProcess
 	{
 		println("[ERR] IQ stuck error, restart disabled");
 		fpga_stuck_errors = 0;
@@ -412,7 +414,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 	TRX_Inactive_Time++;
 
 	// Detect FPGA IQ phase error
-	if (fabsf(TRX_IQ_phase_error) > 0.1f && !TRX_on_TX && !TRX_phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM) {
+	if (fabsf(TRX_IQ_phase_error) > 0.1f && TRX_on_RX && !TRX_phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM) {
 		println("[ERR] IQ phase error, restart disabled | ", TRX_IQ_phase_error);
 		// FPGA_NeedRestart_RX = true;
 		TRX_phase_restarted = true;

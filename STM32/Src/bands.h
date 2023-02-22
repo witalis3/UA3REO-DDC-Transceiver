@@ -30,6 +30,7 @@
 #define BANDID_13cm 36
 #define BANDID_6cm 37
 #define BANDID_3cm 38
+#define BANDID_QO100 39
 
 typedef struct // description of the region in the band
 {

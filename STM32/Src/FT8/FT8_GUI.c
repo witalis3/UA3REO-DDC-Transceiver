@@ -42,7 +42,11 @@ void drawButton(uint16_t i) {
 		color = COLOR_GREEN;
 	}
 
+#if (defined(LAY_320x240))
+	LCDDriver_printText(sButtonData[i].text, (FT8_button_spac_x * i) + 7, FT8_button_line + 7, COLOR_WHITE, COLOR_BLACK, 1);
+#else
 	LCDDriver_printText(sButtonData[i].text, (FT8_button_spac_x * i) + 7, FT8_button_line + 7, COLOR_WHITE, COLOR_BLACK, 2);
+#endif
 	LCDDriver_drawRectXY(FT8_button_spac_x * i, FT8_button_line, (FT8_button_spac_x * i) + FT8_button_width, FT8_button_line + FT8_button_height, color);
 }
 
@@ -53,7 +57,11 @@ void Update_FT8_Menu_Cursor(void) {
 	LCDDriver_drawLine(0, FT8_button_line - 5, (FT8_Menu_Max_Idx * FT8_button_spac_x) + FT8_button_width, FT8_button_line - 5, COLOR_BLACK);
 
 	// Clear the old recieved mesage cursor
+#if (defined(LAY_320x240))
+	LCDDriver_drawLine(10, 112 + (old_Sel_Mess_Idx)*18, 100, 112 + (old_Sel_Mess_Idx)*18, COLOR_BLACK);
+#else
 	LCDDriver_drawLine(10, 115 + (old_Sel_Mess_Idx)*25, 70, 115 + (old_Sel_Mess_Idx)*25, COLOR_BLACK);
+#endif
 
 	if (FT8_Menu_Idx <= FT8_Menu_Max_Idx) // cursor is in the range of the buttons
 	{
@@ -74,7 +82,11 @@ void Update_FT8_Menu_Cursor(void) {
 		        LCDDriver_drawLine(10, 115 + (Sel_Mess_Idx+1) *25, 70, 115 + (Sel_Mess_Idx+1) *25, COLOR_BLACK);
 		*/
 		// Draw the new position of the cursor (recieved messages)
+#if (defined(LAY_320x240))
+		LCDDriver_drawLine(10, 112 + Sel_Mess_Idx * 18, 100, 112 + Sel_Mess_Idx * 18, COLOR_WHITE);
+#else
 		LCDDriver_drawLine(10, 115 + Sel_Mess_Idx * 25, 70, 115 + Sel_Mess_Idx * 25, COLOR_WHITE);
+#endif
 	}
 
 	old_Sel_Mess_Idx = Sel_Mess_Idx;
@@ -122,9 +134,6 @@ void FT8_Menu_Pos_Toggle(void) {
 
 	}      // end if (FT8_Menu_Idx <= FT8_Menu_Max_Idx)			//cursor is in the range of the buttons
 	else { // cursor is in the range of the recieved messages
-
-		//			__disable_irq();   //Disable all interrupts
-
 		if (sButtonData[0].state) {
 			sButtonData[0].state = false;
 		} else {
@@ -151,8 +160,6 @@ void FT8_Menu_Pos_Toggle(void) {
 			FT8_Clear_TX_Mess();
 		}
 		drawButton(0); // update the "CQ" button
-
-		//			__enable_irq(); //Re-enable all interrupts
 	}
 }
 
@@ -162,6 +169,8 @@ void FT8_Print_Freq(void) {
 	sprintf(ctmp, "%d kHz ", FT8_BND_Freq);
 #if (defined(LAY_800x480))
 	LCDDriver_printText(ctmp, 680, 30, COLOR_WHITE, COLOR_BLACK, 2);
+#elif (defined(LAY_320x240))
+	LCDDriver_printText(ctmp, 260, 20, COLOR_WHITE, COLOR_BLACK, 1);
 #else
 	LCDDriver_printText(ctmp, 360, 30, COLOR_WHITE, COLOR_BLACK, 2);
 #endif
@@ -169,6 +178,8 @@ void FT8_Print_Freq(void) {
 	sprintf(ctmp, "%d Hz ", cursor_freq);
 #if (defined(LAY_800x480))
 	LCDDriver_printText(ctmp, 680, 55, COLOR_WHITE, COLOR_BLACK, 2);
+#elif (defined(LAY_320x240))
+	LCDDriver_printText(ctmp, 260, 35, COLOR_WHITE, COLOR_BLACK, 1);
 #else
 	LCDDriver_printText(ctmp, 360, 55, COLOR_WHITE, COLOR_BLACK, 2);
 #endif
@@ -178,6 +189,10 @@ void FT8_Print_TargetCall(void) {
 #if (defined(LAY_800x480))
 	LCDDriver_printText(Target_Call, 680, 80, COLOR_YELLOW, COLOR_BLACK,
 	                    2); // Display in the upper right corner (under the clock) the call sign of the partner
+
+#elif (defined(LAY_320x240))
+	LCDDriver_printText(Target_Call, 200, 100, COLOR_YELLOW, COLOR_BLACK, 1); // Display in the upper right corner (under the clock) the call sign of the partner
+
 #else
 	LCDDriver_printText(Target_Call, 360, 80, COLOR_YELLOW, COLOR_BLACK,
 	                    2);                                // Display in the upper right corner (under the clock) the call sign of the partner
@@ -187,6 +202,10 @@ void FT8_Print_TargetCall(void) {
 void FT8_Clear_TargetCall(void) {
 #if (defined(LAY_800x480))
 	LCDDriver_Fill_RectXY(680, 80, 799, 100, COLOR_BLACK); // Clear the old target call mesage
+
+#elif (defined(LAY_320x240))
+	LCDDriver_Fill_RectXY(220, 100, 320, 110, COLOR_BLACK);                   // Clear the old target call mesage
+
 #else
 	LCDDriver_Fill_RectXY(360, 80, 480, 100, COLOR_BLACK); // Clear the old target call mesage
 #endif
@@ -195,6 +214,10 @@ void FT8_Clear_TargetCall(void) {
 void FT8_Clear_Mess_Field(void) {
 #if (defined(LAY_800x480))
 	LCDDriver_Fill_RectXY(0, 100, 480, 380, COLOR_BLACK); // Clear the old mesages
+
+#elif (defined(LAY_320x240))
+	LCDDriver_Fill_RectXY(0, 100, 320, 200, COLOR_BLACK);                     // Clear the old mesages
+
 #else
 	LCDDriver_Fill_RectXY(0, 100, 480, 240, COLOR_BLACK);  // Clear the old mesages
 #endif
@@ -204,6 +227,11 @@ void FT8_Print_TX_Mess(char *message) {
 #if (defined(LAY_800x480))
 	LCDDriver_Fill_RectXY(0, 380, 240, 394, COLOR_BLACK); // Clear the old TX mesage
 	LCDDriver_printText(message, 0, 380, COLOR_RED, COLOR_BLACK, 2);
+
+#elif (defined(LAY_320x240))
+	LCDDriver_Fill_RectXY(200, 130, 320, 145, COLOR_BLACK);                   // Clear the old TX mesage
+	LCDDriver_printText(message, 200, 130, COLOR_RED, COLOR_BLACK, 1);
+
 #else
 	LCDDriver_Fill_RectXY(0, 260, 240, 274, COLOR_BLACK);  // Clear the old TX mesage
 	LCDDriver_printText(message, 0, 260, COLOR_RED, COLOR_BLACK, 2);
@@ -213,6 +241,10 @@ void FT8_Print_TX_Mess(char *message) {
 void FT8_Clear_TX_Mess(void) {
 #if (defined(LAY_800x480))
 	LCDDriver_Fill_RectXY(0, 380, 240, 394, COLOR_BLACK); // Clear the old TX mesage
+
+#elif (defined(LAY_320x240))
+	LCDDriver_Fill_RectXY(200, 100, 240, 120, COLOR_BLACK); // Clear the old TX mesage
+
 #else
 	LCDDriver_Fill_RectXY(0, 260, 240, 274, COLOR_BLACK); // Clear the old TX mesage
 #endif
@@ -260,6 +292,14 @@ void Enc2Rotate_Menager(int8_t direction, uint8_t decoded_msg) {
 		} else {
 			MessIdx = decoded_msg;
 		}
+
+#elif (defined(LAY_320x240))
+		if (decoded_msg > 6) {                                // message_limit it is 6
+			MessIdx = 6;
+		} else {
+			MessIdx = decoded_msg;
+		}
+
 #else
 		if (decoded_msg > 6) {                              // message_limit it is 6
 			MessIdx = 6;

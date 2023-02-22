@@ -13,6 +13,13 @@
 #define FT8_button_height 30
 #define FT8_button_line 400
 #define FT8_button_width 60
+
+#elif (defined(LAY_320x240))
+#define FT8_button_spac_x 50 // Spacing betwenn the buttons
+#define FT8_button_height 20
+#define FT8_button_line 210
+#define FT8_button_width 40
+
 #else
 #define FT8_button_spac_x 75 // Spacing betwenn the buttons
 #define FT8_button_height 30

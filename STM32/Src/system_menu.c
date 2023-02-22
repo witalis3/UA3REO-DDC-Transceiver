@@ -70,8 +70,10 @@ static void SYSMENU_HANDL_TRX_TRANSV_23CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_13CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction);
+static void SYSMENU_HANDL_TRX_TRANSV_QO100(int8_t direction);
 static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction);
 static void SYSMENU_HANDL_TRX_VGA_GAIN(int8_t direction);
+static void SYSMENU_HANDL_TRX_Full_Duplex(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Volume_Step(int8_t direction);
@@ -125,6 +127,7 @@ static void SYSMENU_HANDL_AUDIO_VAD_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VOX(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VOX_TIMEOUT(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VOX_THRESHOLD(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_AMFM_LPF_Stages(int8_t direction);
 
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction);
 static void SYSMENU_HANDL_CW_SelfHear(int8_t direction);
@@ -297,6 +300,7 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_23CM(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_13CM(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_6CM(int8_t direction);
 static void SYSMENU_HANDL_CALIB_RF_GAIN_3CM(int8_t direction);
+static void SYSMENU_HANDL_CALIB_RF_GAIN_QO100(int8_t direction);
 static void SYSMENU_HANDL_CALIB_S_METER_HF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_S_METER_VHF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ADC_OFFSET(int8_t direction);
@@ -331,6 +335,7 @@ static void SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TCXO(int8_t direction);
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction);
+static void SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction);  // Tisho
 static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction); // Tisho
 static void SYSMENU_HANDL_CALIB_BW_AD8307_SLP(int8_t direction);  // Tisho
@@ -368,6 +373,7 @@ static void SYSMENU_HANDL_CALIB_EXT_TRANSV_23cm(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_TRANSV_13cm(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_TRANSV_6cm(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_TRANSV_3cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_EXT_TRANSV_QO100(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_NOTHAM(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_2200m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_NOTX_160m(int8_t direction);
@@ -401,6 +407,9 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_6cm(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_6cm(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_3cm(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_3cm(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_RF_QO100(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100(int8_t direction);
 static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TX_StartDelay(int8_t direction);
 static void SYSMENU_HANDL_CALIB_PWR_VLT_Calibration(int8_t direction);
@@ -414,6 +423,7 @@ static void SYSMENU_HANDL_CALIB_CAT_Type(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LNA_compensation(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TwoSignalTune_Balance(int8_t direction);
 static void SYSMENU_HANDL_CALIB_LinearPowerControl(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ALC_Port_Enabled(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FlashGT911(int8_t direction);
 static void SYSMENU_HANDL_CALIB_IF_GAIN_MIN(int8_t direction);
 static void SYSMENU_HANDL_CALIB_IF_GAIN_MAX(int8_t direction);
@@ -567,11 +577,13 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Callsign", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCallsign},
     {"Locator", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetLocator},
     {"URSI Code", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetURSICode},
+    {"Full Duplex", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Full_Duplex, SYSMENU_HANDL_TRX_Full_Duplex},
     {"Transverter 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_70cm, SYSMENU_HANDL_TRX_TRANSV_70CM},
     {"Transverter 23cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_23cm, SYSMENU_HANDL_TRX_TRANSV_23CM},
     {"Transverter 13cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_13cm, SYSMENU_HANDL_TRX_TRANSV_13CM},
     {"Transverter 6cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_6cm, SYSMENU_HANDL_TRX_TRANSV_6CM},
     {"Transverter 3cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_3cm, SYSMENU_HANDL_TRX_TRANSV_3CM},
+    {"Transverter QO-100", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_QO100, SYSMENU_HANDL_TRX_TRANSV_QO100},
     {"Custom Transverter", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Custom_Transverter_Enabled, SYSMENU_HANDL_TRX_TRANSV_ENABLE},
     {"TUNER Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.TUNER_Enabled, SYSMENU_HANDL_TRX_TUNER_Enabled},
     {"ATU Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_Enabled, SYSMENU_HANDL_TRX_ATU_Enabled},
@@ -617,6 +629,7 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
     {"AM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.AM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass},
     {"FM LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass},
     {"FM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass},
+    {"AM/FM LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.AMFM_LPF_Stages, SYSMENU_HANDL_AUDIO_AMFM_LPF_Stages},
     {"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SQL_shadow, SYSMENU_HANDL_AUDIO_Squelch},
 #ifdef LAY_320x240
     {"FM Squelch level", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dbm_shadow, SYSMENU_HANDL_AUDIO_FMSquelch},
@@ -936,6 +949,12 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     defined(FRONTPANEL_MINI)
     {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "SPLIT", "RU4PN", "WF-100D"}},
 #endif
+#if !defined(FRONTPANEL_LITE)
+    {"TCXO Frequency, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
+    {"MAX ChargePump, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq},
+#else
+    {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
+#endif
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
     {"Tangent Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.TangentType, SYSMENU_HANDL_CALIB_TangentType, {"MH-36", "MH-48"}},
 #endif
@@ -971,6 +990,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"RF GAIN 13cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_13cm, SYSMENU_HANDL_CALIB_RF_GAIN_13CM},
     {"RF GAIN 6cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_6cm, SYSMENU_HANDL_CALIB_RF_GAIN_6CM},
     {"RF GAIN 3cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_3cm, SYSMENU_HANDL_CALIB_RF_GAIN_3CM},
+    {"RF GAIN QO100", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_QO100, SYSMENU_HANDL_CALIB_RF_GAIN_QO100},
 #endif
 #endif
     {"S METER HF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_hf, SYSMENU_HANDL_CALIB_S_METER_HF},
@@ -1011,11 +1031,6 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"SWR FWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF},
     {"SWR BWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_BWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF},
 #endif
-#endif
-#if !defined(FRONTPANEL_LITE)
-    {"TCXO Frequency, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
-#else
-    {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 #endif
 #ifdef SWR_AD8307_LOG
     {"FW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_SLP, SYSMENU_HANDL_CALIB_FW_AD8307_SLP},
@@ -1062,6 +1077,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"EXT Transv 13cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_13cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_13cm},
     {"EXT Transv 6cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_6cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_6cm},
     {"EXT Transv 3cm", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_3cm, SYSMENU_HANDL_CALIB_EXT_TRANSV_3cm},
+    {"EXT Transv QO-100", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_TRANSV_QO100, SYSMENU_HANDL_CALIB_EXT_TRANSV_QO100},
 #ifdef LAY_320x240
     {"Trans. Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
     {"Trans. 70cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
@@ -1074,6 +1090,9 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"Trans. 6cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
     {"Trans. 3cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
     {"Trans. 3cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
+    {"Trans. QO100 RF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_HANDL_CALIB_TRANSV_RF_QO100},
+    {"Trans. QO100 RX IF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
+    {"Trans. QO100 TX IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
 #else
     {"Transverter Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
     {"Transverter 70cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
@@ -1086,6 +1105,9 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"Transverter 6cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
     {"Transverter 3cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
     {"Transverter 3cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
+    {"Transv. QO100 RF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_HANDL_CALIB_TRANSV_RF_QO100},
+    {"Transv. QO100 RX IF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
+    {"Transv. QO100 TX IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
 #endif
 #endif
     {"NOTX NOT HAM", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_NOTHAM, SYSMENU_HANDL_CALIB_NOTX_NOTHAM},
@@ -1140,6 +1162,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
     {"TSignal Balance", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TwoSignalTune_Balance, SYSMENU_HANDL_CALIB_TwoSignalTune_Balance},
     {"Linear Pwr Control", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_HANDL_CALIB_LinearPowerControl},
+    {"ALC Port Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Port_Enabled, SYSMENU_HANDL_CALIB_ALC_Port_Enabled},
     {"IF Gain MIN", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_HANDL_CALIB_IF_GAIN_MIN},
     {"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
     {"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
@@ -1470,6 +1493,15 @@ static void SYSMENU_HANDL_TRX_Auto_Snap(int8_t direction) {
 	}
 }
 
+static void SYSMENU_HANDL_TRX_Full_Duplex(int8_t direction) {
+	if (direction > 0) {
+		TRX.Full_Duplex = true;
+	}
+	if (direction < 0) {
+		TRX.Full_Duplex = false;
+	}
+}
+
 static void SYSMENU_HANDL_TRX_INPUT_TYPE_MAIN(int8_t direction) {
 	if (direction > 0 || TRX.InputType_MAIN > 0) {
 		TRX.InputType_MAIN += direction;
@@ -1677,7 +1709,7 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ(int8_t direction) {
-	const float32_t fm_freq_steps[] = {1, 2, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
+	const float32_t fm_freq_steps[] = {0.25, 0.5, 1, 2, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
 
 	for (uint8_t i = 0; i < ARRLENTH(fm_freq_steps); i++) {
 		if (TRX.FRQ_ENC_FM_STEP_KHZ == fm_freq_steps[i]) {
@@ -2042,6 +2074,17 @@ static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction) {
 	}
 
 	BAND_SELECTABLE[BANDID_3cm] = TRX.Transverter_3cm;
+}
+
+static void SYSMENU_HANDL_TRX_TRANSV_QO100(int8_t direction) {
+	if (direction > 0) {
+		TRX.Transverter_QO100 = true;
+	}
+	if (direction < 0) {
+		TRX.Transverter_QO100 = false;
+	}
+
+	BAND_SELECTABLE[BANDID_QO100] = TRX.Transverter_QO100;
 }
 
 static void SYSMENU_HANDL_TRX_ATU_I(int8_t direction) {
@@ -2792,6 +2835,18 @@ void SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(int8_t direction) {
 	}
 	if (TRX.FM_LPF_TX_Filter > MAX_LPF_WIDTH_NFM) {
 		TRX.FM_LPF_TX_Filter = MAX_LPF_WIDTH_NFM;
+	}
+
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
+}
+
+void SYSMENU_HANDL_AUDIO_AMFM_LPF_Stages(int8_t direction) {
+	if (TRX.AMFM_LPF_Stages > 1 || direction > 0) {
+		TRX.AMFM_LPF_Stages += direction;
+	}
+	if (TRX.AMFM_LPF_Stages > IIR_LPF_STAGES) {
+		TRX.AMFM_LPF_Stages = IIR_LPF_STAGES;
 	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
@@ -4959,23 +5014,18 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 	sprintf(out, "VBAT VOLT: %.2f     ", TRX_VBAT_Voltage);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
-	sprintf(out, "ALC: %.2fv (%d%%)    ", TRX_ALC_IN, getPowerFromALC(TRX_ALC_IN));
+	sprintf(out, "ALC: %.2fv (%d%%)    ", TRX_ALC_IN, getPowerFromALC());
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 
 	LCD_UpdateQuery.SystemMenu = true;
 }
 
-// SYSTEM INFO
+// Support project
 
 static void SYSMENU_HANDL_SUPPORT(int8_t direction) {
 	sysmenu_infowindow_opened = true;
 	LCDDriver_Fill(BG_COLOR);
-#ifndef LCD_SMALL_INTERFACE
-	LCDDriver_printText("MasterCard: 5599 0020 2091 0792", 10, 10, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-#else
-	LCDDriver_printText("MasterCard:", 10, 10, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_printText("5599 0020 2091 0792", 10, 20, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-#endif
+	LCDDriver_printText("https://ua3reo.ru/support/", 10, 10, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 }
 
 // Back to prev menu
@@ -5081,6 +5131,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.rf_out_power_13cm = 100;             // 13cm
 		CALIBRATE.rf_out_power_6cm = 100;              // 6cm
 		CALIBRATE.rf_out_power_3cm = 100;              // 3cm
+		CALIBRATE.rf_out_power_QO100 = 100;            // QO100
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF U14-RF1
 		CALIBRATE.RFU_BPF_0_START = 138 * 1000 * 1000; // 2m U14-RF3
@@ -5131,6 +5182,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.rf_out_power_13cm = 50;          // 13cm
 		CALIBRATE.rf_out_power_6cm = 50;           // 6cm
 		CALIBRATE.rf_out_power_3cm = 50;           // 3cm
+		CALIBRATE.rf_out_power_QO100 = 50;         // QO100
 		CALIBRATE.RFU_LPF_END = 0;                 // disabled in BIG version
 		CALIBRATE.RFU_HPF_START = 0;               // disabled in BIG version
 		CALIBRATE.RFU_BPF_0_START = 0 * 1000;      // 2200m
@@ -5203,6 +5255,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.rf_out_power_13cm = 70;              // 13cm
 		CALIBRATE.rf_out_power_6cm = 70;               // 6cm
 		CALIBRATE.rf_out_power_3cm = 70;               // 3cm
+		CALIBRATE.rf_out_power_QO100 = 70;             // QO100
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
@@ -5668,6 +5721,22 @@ static void SYSMENU_HANDL_CALIB_RF_GAIN_3CM(int8_t direction) {
 	ATU_TunePowerStabilized = false;
 }
 
+static void SYSMENU_HANDL_CALIB_RF_GAIN_QO100(int8_t direction) {
+	if (CALIBRATE.rf_out_power_QO100 > 0) {
+		CALIBRATE.rf_out_power_QO100 += direction;
+	}
+	if (CALIBRATE.rf_out_power_QO100 == 0 && direction > 0) {
+		CALIBRATE.rf_out_power_QO100 += direction;
+	}
+	if (CALIBRATE.rf_out_power_QO100 > 100) {
+		CALIBRATE.rf_out_power_QO100 = 100;
+	}
+
+	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(CurrentVFO->Freq);
+	APROC_TX_clip_gain = 1.0f;
+	ATU_TunePowerStabilized = false;
+}
+
 static void SYSMENU_HANDL_CALIB_S_METER_HF(int8_t direction) {
 	CALIBRATE.smeter_calibration_hf += direction;
 	if (CALIBRATE.smeter_calibration_hf < -50) {
@@ -5967,6 +6036,7 @@ static void SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER(int8_t direction) {
 		CALIBRATE.MAX_RF_POWER_ON_METER = 200;
 	}
 }
+
 static void SYSMENU_HANDL_CALIB_TCXO(int8_t direction) {
 	const uint16_t tcxo_freq_steps[] = {5120,  8000,  9600,  10000, 12000, 12288, 13000, 14000, 14400, 15000, 16000, 16800, 19200, 19440,
 	                                    19680, 20000, 20480, 24000, 25000, 26000, 27000, 28000, 30000, 32000, 38400, 40000, 50000};
@@ -6004,6 +6074,17 @@ static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction) {
 		CALIBRATE.VCXO_correction = 32750;
 	}
 }
+
+static void SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq(int8_t direction) {
+	CALIBRATE.MAX_ChargePump_Freq += direction;
+	if (CALIBRATE.MAX_ChargePump_Freq < 1) {
+		CALIBRATE.MAX_ChargePump_Freq = 1;
+	}
+	if (CALIBRATE.MAX_ChargePump_Freq > 2000) {
+		CALIBRATE.MAX_ChargePump_Freq = 2000;
+	}
+}
+
 // Tisho
 static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction) {
 	CALIBRATE.FW_AD8307_SLP += (float32_t)direction * 0.1f;
@@ -6357,6 +6438,15 @@ static void SYSMENU_HANDL_CALIB_EXT_TRANSV_3cm(int8_t direction) {
 	}
 }
 
+static void SYSMENU_HANDL_CALIB_EXT_TRANSV_QO100(int8_t direction) {
+	if (CALIBRATE.EXT_TRANSV_QO100 > 0 || direction > 0) {
+		CALIBRATE.EXT_TRANSV_QO100 += direction;
+	}
+	if (CALIBRATE.EXT_TRANSV_QO100 > 15) {
+		CALIBRATE.EXT_TRANSV_QO100 = 15;
+	}
+}
+
 static void SYSMENU_HANDL_CALIB_NOTX_NOTHAM(int8_t direction) {
 	if (direction > 0) {
 		CALIBRATE.NOTX_NOTHAM = true;
@@ -6664,6 +6754,36 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_3cm(int8_t direction) {
 	}
 }
 
+static void SYSMENU_HANDL_CALIB_TRANSV_RF_QO100(int8_t direction) {
+	CALIBRATE.Transverter_QO100_RF_Khz += direction;
+	if (CALIBRATE.Transverter_QO100_RF_Khz < 1) {
+		CALIBRATE.Transverter_QO100_RF_Khz = 1;
+	}
+	if (CALIBRATE.Transverter_QO100_RF_Khz > 15000000) {
+		CALIBRATE.Transverter_QO100_RF_Khz = 15000000;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100(int8_t direction) {
+	CALIBRATE.Transverter_QO100_IF_RX_Khz += direction;
+	if (CALIBRATE.Transverter_QO100_IF_RX_Khz < 1) {
+		CALIBRATE.Transverter_QO100_IF_RX_Khz = 1;
+	}
+	if (CALIBRATE.Transverter_QO100_IF_RX_Khz > 750000) {
+		CALIBRATE.Transverter_QO100_IF_RX_Khz = 750000;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100(int8_t direction) {
+	CALIBRATE.Transverter_QO100_IF_TX_Mhz += direction;
+	if (CALIBRATE.Transverter_QO100_IF_TX_Mhz < 1) {
+		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 1;
+	}
+	if (CALIBRATE.Transverter_QO100_IF_TX_Mhz > 750) {
+		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 750;
+	}
+}
+
 static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction) {
 	if (direction > 0) {
 		CALIBRATE.OTA_update = true;
@@ -6709,6 +6829,15 @@ static void SYSMENU_HANDL_CALIB_LinearPowerControl(int8_t direction) {
 	}
 	if (direction < 0) {
 		CALIBRATE.LinearPowerControl = false;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_ALC_Port_Enabled(int8_t direction) {
+	if (direction > 0) {
+		CALIBRATE.ALC_Port_Enabled = true;
+	}
+	if (direction < 0) {
+		CALIBRATE.ALC_Port_Enabled = false;
 	}
 }
 
