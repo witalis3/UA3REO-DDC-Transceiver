@@ -55,6 +55,7 @@ void DPD_StartCalibration() {
 		TRX.TWO_SIGNAL_TUNE = true;
 		TRX.Full_Duplex = true;
 		CALIBRATE.TUNE_MAX_POWER = CALIBRATE.MAX_RF_POWER_ON_METER;
+		TRX.FFT_Averaging = FFT_MAX_MEANS;
 
 		DPD_Init();
 
