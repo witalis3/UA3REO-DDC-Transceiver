@@ -74,7 +74,6 @@ static void SYSMENU_HANDL_TRX_TRANSV_QO100(int8_t direction);
 static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction);
 static void SYSMENU_HANDL_TRX_VGA_GAIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_Full_Duplex(int8_t direction);
-static void SYSMENU_HANDL_TRX_Digital_Pre_Distortion(int8_t direction);
 
 static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Volume_Step(int8_t direction);
@@ -579,7 +578,6 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Locator", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetLocator},
     {"URSI Code", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetURSICode},
     {"Full Duplex", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Full_Duplex, SYSMENU_HANDL_TRX_Full_Duplex},
-    {"Dig PreDistortion", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Digital_Pre_Distortion, SYSMENU_HANDL_TRX_Digital_Pre_Distortion},
     {"Transverter 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_70cm, SYSMENU_HANDL_TRX_TRANSV_70CM},
     {"Transverter 23cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_23cm, SYSMENU_HANDL_TRX_TRANSV_23CM},
     {"Transverter 13cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_13cm, SYSMENU_HANDL_TRX_TRANSV_13CM},
@@ -1501,15 +1499,6 @@ static void SYSMENU_HANDL_TRX_Full_Duplex(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.Full_Duplex = false;
-	}
-}
-
-static void SYSMENU_HANDL_TRX_Digital_Pre_Distortion(int8_t direction) {
-	if (direction > 0) {
-		TRX.Digital_Pre_Distortion = true;
-	}
-	if (direction < 0) {
-		TRX.Digital_Pre_Distortion = false;
 	}
 }
 

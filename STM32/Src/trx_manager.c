@@ -2472,6 +2472,10 @@ void BUTTONHANDLER_DPD(uint32_t parameter) {
 }
 
 void BUTTONHANDLER_DPD_CALIBRATE(uint32_t parameter) {
+	if (!TRX.Digital_Pre_Distortion) {
+		BUTTONHANDLER_DPD(0);
+	}
+
 	LCD_showTooltip("DPD CALIBRATION");
 	DPD_StartCalibration();
 }

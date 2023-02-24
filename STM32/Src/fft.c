@@ -847,11 +847,9 @@ void FFT_doFFT(void) {
 		// sprintf(ctmp, "IMD3: %d IMD5: %d", (int32_t)imd3_dbm, (int32_t)imd5_dbm);
 		// LCD_showTooltip(ctmp);
 
-		if (!TRX.Digital_Pre_Distortion) {
-			println("DBM: ", freq_dbm, " SNR: ", snr_dbm, " IMD3: ", FFT_Current_TX_IMD3, " IMD5: ", FFT_Current_TX_IMD5, " IMD7: ", imd7_dbm, " IMD9: ", imd9_dbm, " ");
-		} else {
-			DPD_ProcessCalibration();
-		}
+		// println("DBM: ", freq_dbm, " SNR: ", snr_dbm, " IMD3: ", FFT_Current_TX_IMD3, " IMD5: ", FFT_Current_TX_IMD5, " IMD7: ", imd7_dbm, " IMD9: ", imd9_dbm, " ");
+
+		DPD_ProcessCalibration();
 	}
 	//
 

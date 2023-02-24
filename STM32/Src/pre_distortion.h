@@ -4,8 +4,7 @@
 #include "hardware.h"
 
 #define DPD_POINTS 2
-#define DPD_CORRECTION_GAIN_STEP 0.005f
-#define DPD_CORRECTION_PHASE_STEP 0.0001f
+#define DPD_CORRECTION_GAIN_STEP 0.001f
 
 void DPD_Init();
 void DPD_ProcessPredistortion(float32_t *buffer_i, float32_t *buffer_q, uint32_t size);
