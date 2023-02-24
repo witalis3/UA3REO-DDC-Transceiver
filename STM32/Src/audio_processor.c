@@ -720,7 +720,7 @@ void processTxAudio(void) {
 	static bool old_CODEC_DMA_state = false;
 	bool start_CODEC_DMA_state = CODEC_DMA_state;
 
-	if (start_CODEC_DMA_state == old_CODEC_DMA_state) {
+	if (start_CODEC_DMA_state == old_CODEC_DMA_state && getInputType() != TRX_INPUT_USB) {
 		return;
 	}
 
