@@ -3,7 +3,7 @@
 
 #include "hardware.h"
 
-#define DPD_POINTS 3
+#define DPD_POINTS 2
 #define DPD_CORRECTION_GAIN_STEP 0.001f
 
 void DPD_Init();

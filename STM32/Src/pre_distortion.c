@@ -83,15 +83,17 @@ void DPD_ProcessCalibration() {
 	if (!ATU_TunePowerStabilized) {
 		return;
 	}
+
+	println("IMD3: ", FFT_Current_TX_IMD3, " IMD5: ", FFT_Current_TX_IMD5);
+
+	static uint32_t DPD_last_dbm_show_time = 0;
+	if (HAL_GetTick() - DPD_last_dbm_show_time > 1000) {
+		DPD_last_dbm_show_time = HAL_GetTick();
+
+		DPD_printDbmStatus(FFT_Current_TX_IMD3, FFT_Current_TX_IMD5);
+	}
+
 	if (!DPD_need_calibration) {
-		println("DPD IMD3: ", FFT_Current_TX_IMD3, " IMD5: ", FFT_Current_TX_IMD5);
-
-		static uint32_t DPD_last_dbm_show_time = 0;
-		if (HAL_GetTick() - DPD_last_dbm_show_time > 1000) {
-			DPD_last_dbm_show_time = HAL_GetTick();
-
-			DPD_printDbmStatus(FFT_Current_TX_IMD3, FFT_Current_TX_IMD5);
-		}
 		return;
 	}
 	if (!TRX.Digital_Pre_Distortion) {
