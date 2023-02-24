@@ -227,8 +227,15 @@ static void DPD_printDbmStatus(float32_t imd3, float32_t imd5) {
 
 static void DPD_getDistortionForSample(float32_t *i, float32_t *q) {
 	float32_t rms = sqrtf(*i * *i + *q * *q);
-	if (rms > DPD_max_rms) {
+	if (rms > DPD_max_rms && DPD_need_calibration) {
 		DPD_max_rms = rms;
+	}
+
+	if (rms > DPD_max_rms) { // overflow over table
+		float32_t gain_correction = DPD_distortion_gain_points[DPD_POINTS - 1];
+		*i = *i * gain_correction;
+		*q = *q * gain_correction;
+		return;
 	}
 
 	float32_t max_rms_in_table = DPD_max_rms;
