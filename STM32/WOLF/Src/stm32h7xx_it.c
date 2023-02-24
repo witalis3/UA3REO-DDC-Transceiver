@@ -142,7 +142,7 @@ void HardFault_Handler(void) {
 	while (1) {
 		/* USER CODE BEGIN W1_HardFault_IRQn 0 */
 		HAL_MPU_Disable();
-		LCD_showError("Hard Fault", false);
+		LCD_showErrorColored("Hard Fault", false, COLOR_RED);
 		static uint32_t i = 0;
 		while (i < 99999999) {
 			i++;
@@ -163,7 +163,7 @@ void MemManage_Handler(void) {
 	while (1) {
 		/* USER CODE BEGIN W1_MemoryManagement_IRQn 0 */
 		HAL_MPU_Disable();
-		LCD_showError("Memory Fault", false);
+		LCD_showErrorColored("Memory Fault", false, COLOR_GREEN);
 		static uint32_t i = 0;
 		while (i < 99999999) {
 			i++;
@@ -183,7 +183,7 @@ void BusFault_Handler(void) {
 	/* USER CODE END BusFault_IRQn 0 */
 	while (1) {
 		/* USER CODE BEGIN W1_BusFault_IRQn 0 */
-		LCD_showError("Bus Fault", false);
+		LCD_showErrorColored("Bus Fault", false, COLOR_BLUE);
 		static uint32_t i = 0;
 		while (i < 99999999) {
 			i++;
@@ -203,7 +203,7 @@ void UsageFault_Handler(void) {
 	/* USER CODE END UsageFault_IRQn 0 */
 	while (1) {
 		/* USER CODE BEGIN W1_UsageFault_IRQn 0 */
-		LCD_showError("Usage Fault", false);
+		LCD_showErrorColored("Usage Fault", false, COLOR_BROWN);
 		static uint32_t i = 0;
 		while (i < 99999999) {
 			i++;
