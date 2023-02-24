@@ -490,6 +490,7 @@ extern struct TRX_SETTINGS {
 	bool Auto_Input_Switch;
 	bool Auto_Snap;
 	bool Full_Duplex;
+	bool Digital_Pre_Distortion;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH];
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	char URSI_CODE[MAX_CALLSIGN_LENGTH];

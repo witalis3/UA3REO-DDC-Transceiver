@@ -14,6 +14,7 @@
 #include "lcd.h"
 #include "main.h"
 #include "noise_reduction.h"
+#include "pre_distortion.h"
 #include "rf_unit.h"
 #include "sd.h"
 #include "settings.h"
@@ -532,6 +533,8 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 
 	// Restore band settings
 	if (bandFromFreq >= 0 && bandFromOldFreq != bandFromFreq) {
+		DPD_Init();
+
 		TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].IF_Gain;
 		TRX.LNA = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].LNA;
 		TRX.ATT = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT;
@@ -2453,6 +2456,24 @@ void BUTTONHANDLER_CESSB(uint32_t parameter) {
 
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
+}
+
+void BUTTONHANDLER_DPD(uint32_t parameter) {
+	TRX.Digital_Pre_Distortion = !TRX.Digital_Pre_Distortion;
+
+	if (TRX.Digital_Pre_Distortion) {
+		LCD_showTooltip("DPD ON");
+	} else {
+		LCD_showTooltip("DPD OFF");
+	}
+
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}
+
+void BUTTONHANDLER_DPD_CALIBRATE(uint32_t parameter) {
+	LCD_showTooltip("DPD CALIBRATION");
+	DPD_StartCalibration();
 }
 
 void BUTTONHANDLER_SCREENSHOT(uint32_t parameter) {

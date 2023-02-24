@@ -10,6 +10,7 @@
 #include "decoder.h"
 #include "noise_blanker.h"
 #include "noise_reduction.h"
+#include "pre_distortion.h"
 #include "rf_unit.h"
 #include "sd.h"
 #include "settings.h"
@@ -108,6 +109,7 @@ void initAudioProcessor(void) {
 #endif
 
 	InitAudioFilters();
+	DPD_Init();
 	DECODER_Init();
 	NeedReinitReverber = true;
 #if HRDW_HAS_SD
@@ -1236,6 +1238,9 @@ void processTxAudio(void) {
 		// Apply DAC bus limit
 		arm_scale_f32(APROC_Audio_Buffer_TX_I, MAX_TX_AMPLITUDE_MULT, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 		arm_scale_f32(APROC_Audio_Buffer_TX_Q, MAX_TX_AMPLITUDE_MULT, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+
+		// Apply Digital Pre-Distortion
+		DPD_ProcessPredistortion(APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 
 		// Delay before the RF signal is applied, so that the relay has time to trigger
 		if ((HAL_GetTick() - TRX_TX_StartTime) < CALIBRATE.TX_StartDelay) {

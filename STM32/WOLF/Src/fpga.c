@@ -811,7 +811,7 @@ static inline void FPGA_fpgadata_sendiq(bool clean) {
 		if (Processor_NeedTXBuffer) {
 			FPGA_Buffer_underrun = true;
 			FPGA_Audio_TXBuffer_Index--;
-			// println("fpga TX underrun");
+			// println("fpga TX underrun 1");
 		} else {
 			FPGA_Audio_TXBuffer_Index = 0;
 			FPGA_Audio_Buffer_State = true;
@@ -821,7 +821,7 @@ static inline void FPGA_fpgadata_sendiq(bool clean) {
 		if (Processor_NeedTXBuffer) {
 			FPGA_Buffer_underrun = true;
 			FPGA_Audio_TXBuffer_Index--;
-			// println("fpga TX underrun");
+			// println("fpga TX underrun 2");
 		} else {
 			FPGA_Audio_Buffer_State = false;
 			Processor_NeedTXBuffer = true;

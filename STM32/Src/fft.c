@@ -4,6 +4,7 @@
 #include "cw_decoder.h"
 #include "lcd.h"
 #include "main.h"
+#include "pre_distortion.h"
 #include "screen_layout.h"
 #include "snap.h"
 #include "trx_manager.h"
@@ -24,6 +25,8 @@ uint16_t FFT_FPS_Last = 0;
 bool NeedWTFRedraw = false;
 bool NeedFFTReinit = false;
 uint32_t FFT_current_spectrum_width_hz = 96000; // Current sectrum width
+float32_t FFT_Current_TX_IMD3 = 0;
+float32_t FFT_Current_TX_IMD5 = 0;
 
 // Private variables
 #if FFT_SIZE == 2048
@@ -799,10 +802,7 @@ void FFT_doFFT(void) {
 	}
 
 	// IMD calculator
-	static uint32_t last_imd_calculator_time = 0;
-	if (TRX_on_TX && TRX_Tune && TRX.TWO_SIGNAL_TUNE && SHOW_RX_FFT_ON_TX && ((HAL_GetTick() - last_imd_calculator_time) > 1000)) {
-		last_imd_calculator_time = HAL_GetTick();
-
+	if (TRX_on_TX && TRX_Tune && TRX.TWO_SIGNAL_TUNE && SHOW_RX_FFT_ON_TX) {
 		uint64_t tx_freq = CurrentVFO->Freq + (TRX.XIT_Enabled ? TRX_XIT : 0);
 		uint64_t freq_1 = tx_freq + TWO_TONE_GEN_FREQ1;
 		uint64_t freq_2 = tx_freq + TWO_TONE_GEN_FREQ2;
@@ -840,11 +840,18 @@ void FFT_doFFT(void) {
 		float32_t imd7_dbm = ((freq_dbm - imd7_dbm_1) + (freq_dbm - imd7_dbm_2)) / 2.0f;
 		float32_t imd9_dbm = ((freq_dbm - imd9_dbm_1) + (freq_dbm - imd9_dbm_2)) / 2.0f;
 
+		FFT_Current_TX_IMD3 = imd3_dbm;
+		FFT_Current_TX_IMD5 = imd5_dbm;
+
 		// char ctmp[128] = {0};
 		// sprintf(ctmp, "IMD3: %d IMD5: %d", (int32_t)imd3_dbm, (int32_t)imd5_dbm);
 		// LCD_showTooltip(ctmp);
 
-		println("DBM: ", freq_dbm, " SNR: ", snr_dbm, " IMD3: ", imd3_dbm, " IMD5: ", imd5_dbm, " IMD7: ", imd7_dbm, " IMD9: ", imd9_dbm, " ");
+		if (!TRX.Digital_Pre_Distortion) {
+			println("DBM: ", freq_dbm, " SNR: ", snr_dbm, " IMD3: ", FFT_Current_TX_IMD3, " IMD5: ", FFT_Current_TX_IMD5, " IMD7: ", imd7_dbm, " IMD9: ", imd9_dbm, " ");
+		} else {
+			DPD_ProcessCalibration();
+		}
 	}
 	//
 
@@ -866,6 +873,11 @@ bool FFT_printFFT(void) {
 		return false;
 	}
 	if (LCD_systemMenuOpened || LCD_window.opened) {
+		if (TRX_on_TX && TRX_Tune && TRX.TWO_SIGNAL_TUNE && SHOW_RX_FFT_ON_TX) {
+			FFT_need_fft = true;
+			return true;
+		}
+
 		return false;
 	}
 	/*if (CPU_LOAD.Load > 90)
