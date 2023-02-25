@@ -815,8 +815,8 @@ void TRX_DoAutoGain(void) {
 			skip_cycles = 5;
 		}
 #endif
-		
-		if(TRX_on_TX) {
+
+		if (TRX_on_TX) {
 			TRX.ADC_Driver = !TRX_on_TX;
 			TRX.ADC_PGA = !TRX_on_TX;
 			LCD_UpdateQuery.TopButtons = true;
