@@ -8,9 +8,9 @@ static float32_t DPD_distortion_gain_points[DPD_POINTS] = {0};
 static float32_t DPD_distortion_gain_points_best[DPD_POINTS] = {0};
 static float32_t DPD_distortion_gain_points_locked[DPD_POINTS] = {0};
 
-static float32_t DPD_distortion_gain_points_lock_stage0[DPD_POINTS] = {1, 0, 0, 0, 1}; // 0 - skip, 1 - in progress, 2 - finished
-static float32_t DPD_distortion_gain_points_lock_stage1[DPD_POINTS] = {2, 0, 1, 0, 2};
-static float32_t DPD_distortion_gain_points_lock_stage2[DPD_POINTS] = {2, 1, 2, 1, 2};
+static const float32_t DPD_distortion_gain_points_lock_stage0[DPD_POINTS] = {1, 0, 0, 0, 2}; // 0 - skip, 1 - in progress, 2 - finished
+static const float32_t DPD_distortion_gain_points_lock_stage1[DPD_POINTS] = {2, 0, 1, 0, 2};
+static const float32_t DPD_distortion_gain_points_lock_stage2[DPD_POINTS] = {2, 1, 2, 1, 2};
 
 static float32_t DPD_best_imd_sum = 0;
 static float32_t DPD_best_imd3 = 0;
