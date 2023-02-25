@@ -806,15 +806,21 @@ void TRX_DoAutoGain(void) {
 
 #ifndef FRONTPANEL_LITE
 		if (new_att_val <= 0.5f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_Driver) {
-			TRX.ADC_Driver = true;
+			TRX.ADC_Driver = !TRX_on_TX;
 			LCD_UpdateQuery.TopButtons = true;
 			skip_cycles = 5;
 		} else if (new_att_val <= 0.5f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_PGA) {
-			TRX.ADC_PGA = true;
+			TRX.ADC_PGA = !TRX_on_TX;
 			LCD_UpdateQuery.TopButtons = true;
 			skip_cycles = 5;
 		}
 #endif
+		
+		if(TRX_on_TX) {
+			TRX.ADC_Driver = !TRX_on_TX;
+			TRX.ADC_PGA = !TRX_on_TX;
+			LCD_UpdateQuery.TopButtons = true;
+		}
 
 		if (new_att_val != TRX.ATT_DB) {
 			TRX.ATT_DB = new_att_val;

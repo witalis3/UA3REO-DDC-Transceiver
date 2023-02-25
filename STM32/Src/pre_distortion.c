@@ -180,6 +180,11 @@ void DPD_ProcessCalibration() {
 						DPD_distortion_gain_points[3] = (DPD_distortion_gain_points[2] + DPD_distortion_gain_points[4]) / 2.0f;
 						DPD_distortion_gain_points_best[3] = DPD_distortion_gain_points[3];
 					}
+					
+					DPD_current_point = 0;
+					while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS) {
+						DPD_current_point++;
+					}
 
 					if (DPD_calibration_stage == 3) {
 						DPD_need_calibration = false;
