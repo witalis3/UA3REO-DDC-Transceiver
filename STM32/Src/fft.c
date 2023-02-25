@@ -809,8 +809,8 @@ void FFT_doFFT(void) {
 		uint64_t freq_1 = tx_freq + TWO_TONE_GEN_FREQ1;
 		uint64_t freq_2 = tx_freq + TWO_TONE_GEN_FREQ2;
 		if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_DIGI_L) {
-			freq_1 = tx_freq - TWO_TONE_GEN_FREQ1;
-			freq_2 = tx_freq - TWO_TONE_GEN_FREQ2;
+			freq_1 = tx_freq - TWO_TONE_GEN_FREQ2;
+			freq_2 = tx_freq - TWO_TONE_GEN_FREQ1;
 		}
 
 		uint64_t imd3_freq_1 = 2 * freq_1 - freq_2;
