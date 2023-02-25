@@ -25,6 +25,7 @@ uint16_t FFT_FPS_Last = 0;
 bool NeedWTFRedraw = false;
 bool NeedFFTReinit = false;
 uint32_t FFT_current_spectrum_width_hz = 96000; // Current sectrum width
+float32_t FFT_Current_TX_SNR = 0;
 float32_t FFT_Current_TX_IMD3 = 0;
 float32_t FFT_Current_TX_IMD5 = 0;
 float32_t FFT_Current_TX_IMD7 = 0;
@@ -836,7 +837,7 @@ void FFT_doFFT(void) {
 		float32_t imd9_dbm_2 = getMaxDbmFromFreq(imd9_freq_2, span_hz);
 
 		float32_t freq_dbm = MAX(freq_dbm_1, freq_dbm_2);
-		float32_t snr_dbm = freq_dbm - zero_dbm;
+		FFT_Current_TX_SNR = freq_dbm - zero_dbm;
 		FFT_Current_TX_IMD3 = MIN((freq_dbm - imd3_dbm_1), (freq_dbm - imd3_dbm_2));
 		FFT_Current_TX_IMD5 = MIN((freq_dbm - imd5_dbm_1), (freq_dbm - imd5_dbm_2));
 		FFT_Current_TX_IMD7 = MIN((freq_dbm - imd7_dbm_1), (freq_dbm - imd7_dbm_2));

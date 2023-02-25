@@ -75,6 +75,7 @@ extern uint16_t FFT_FPS_Last;
 extern bool NeedWTFRedraw;
 extern bool NeedFFTReinit;
 extern uint32_t FFT_current_spectrum_width_hz;
+extern float32_t FFT_Current_TX_SNR;
 extern float32_t FFT_Current_TX_IMD3;
 extern float32_t FFT_Current_TX_IMD5;
 extern float32_t FFT_Current_TX_IMD7;
