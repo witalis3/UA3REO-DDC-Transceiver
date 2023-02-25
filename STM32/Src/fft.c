@@ -837,10 +837,10 @@ void FFT_doFFT(void) {
 
 		float32_t freq_dbm = MAX(freq_dbm_1, freq_dbm_2);
 		float32_t snr_dbm = freq_dbm - zero_dbm;
-		FFT_Current_TX_IMD3 = ((freq_dbm - imd3_dbm_1) + (freq_dbm - imd3_dbm_2)) / 2.0f;
-		FFT_Current_TX_IMD5 = ((freq_dbm - imd5_dbm_1) + (freq_dbm - imd5_dbm_2)) / 2.0f;
-		FFT_Current_TX_IMD7 = ((freq_dbm - imd7_dbm_1) + (freq_dbm - imd7_dbm_2)) / 2.0f;
-		FFT_Current_TX_IMD9 = ((freq_dbm - imd9_dbm_1) + (freq_dbm - imd9_dbm_2)) / 2.0f;
+		FFT_Current_TX_IMD3 = MIN((freq_dbm - imd3_dbm_1), (freq_dbm - imd3_dbm_2));
+		FFT_Current_TX_IMD5 = MIN((freq_dbm - imd5_dbm_1), (freq_dbm - imd5_dbm_2));
+		FFT_Current_TX_IMD7 = MIN((freq_dbm - imd7_dbm_1), (freq_dbm - imd7_dbm_2));
+		FFT_Current_TX_IMD9 = MIN((freq_dbm - imd9_dbm_1), (freq_dbm - imd9_dbm_2));
 
 		// char ctmp[128] = {0};
 		// sprintf(ctmp, "IMD3: %d IMD5: %d", (int32_t)imd3_dbm, (int32_t)imd5_dbm);
