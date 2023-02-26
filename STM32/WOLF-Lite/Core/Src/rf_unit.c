@@ -68,6 +68,8 @@ void RF_UNIT_ATU_Invalidate(void) {
 	ATU_BestValsProbed = false;
 }
 
+void RF_UNIT_ATU_SetCompleted(void) { ATU_Finished = true; }
+
 void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 {}
 

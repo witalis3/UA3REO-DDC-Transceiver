@@ -1982,9 +1982,11 @@ void BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter) {
 	}
 	TRX_DXCluster_UpdateTime = 0;
 
+#if FT8_SUPPORT
 	if (SYSMENU_FT8_DECODER_opened) {
 		InitFT8_Decoder();
 	}
+#endif
 }
 
 void BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter) {
