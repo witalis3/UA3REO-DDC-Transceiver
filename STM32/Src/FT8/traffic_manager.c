@@ -2,15 +2,13 @@
 #include "decode_ft8.h"
 #include "gen_ft8.h"
 #include <stdint.h>
-
 #include "FT8_GUI.h"
 #include "FT8_main.h"
-
 #include "sd.h"
 #include "trx_manager.h"
-
-#include "lcd.h"        //For debug
-#include "lcd_driver.h" //For debug
+#include "rf_unit.h"
+#include "lcd.h"
+#include "lcd_driver.h"
 
 uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
 uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
@@ -35,6 +33,7 @@ char QSOOffTime[7]; // potential QSO Stop time
 void transmit_sequence(void) {
 	Set_Data_Colection(0);                    // Disable the data colection
 	set_Xmit_Freq(FT8_BND_Freq, cursor_freq); // Set band frequency and the frequency in the FT8 (cursor freq.)
+	RF_UNIT_ATU_SetCompleted();
 	TRX_Tune = true;
 	TRX_Restart_Mode();
 }
