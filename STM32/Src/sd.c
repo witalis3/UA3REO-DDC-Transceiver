@@ -890,6 +890,11 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.RX_EQ_P3", (uint32_t *)&TRX.RX_EQ_P3, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.RX_EQ_P4", (uint32_t *)&TRX.RX_EQ_P4, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.RX_EQ_P5", (uint32_t *)&TRX.RX_EQ_P5, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P1_WFM", (uint32_t *)&TRX.RX_EQ_P1_WFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P2_WFM", (uint32_t *)&TRX.RX_EQ_P2_WFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P3_WFM", (uint32_t *)&TRX.RX_EQ_P3_WFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P4_WFM", (uint32_t *)&TRX.RX_EQ_P4_WFM, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_EQ_P5_WFM", (uint32_t *)&TRX.RX_EQ_P5_WFM, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P1_SSB", (uint32_t *)&TRX.MIC_EQ_P1_SSB, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P2_SSB", (uint32_t *)&TRX.MIC_EQ_P2_SSB, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_EQ_P3_SSB", (uint32_t *)&TRX.MIC_EQ_P3_SSB, SYSMENU_INT8);
@@ -1601,6 +1606,21 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.RX_EQ_P5") == 0) {
 		TRX.RX_EQ_P5 = (int8_t)intval;
+	}
+	if (strcmp(name, "TRX.RX_EQ_P1_WFM") == 0) {
+		TRX.RX_EQ_P1_WFM = (int8_t)intval;
+	}
+	if (strcmp(name, "TRX.RX_EQ_P2_WFM") == 0) {
+		TRX.RX_EQ_P2_WFM = (int8_t)intval;
+	}
+	if (strcmp(name, "TRX.RX_EQ_P3_WFM") == 0) {
+		TRX.RX_EQ_P3_WFM = (int8_t)intval;
+	}
+	if (strcmp(name, "TRX.RX_EQ_P4_WFM") == 0) {
+		TRX.RX_EQ_P4_WFM = (int8_t)intval;
+	}
+	if (strcmp(name, "TRX.RX_EQ_P5_WFM") == 0) {
+		TRX.RX_EQ_P5_WFM = (int8_t)intval;
 	}
 	if (strcmp(name, "TRX.MIC_EQ_P1_SSB") == 0) {
 		TRX.MIC_EQ_P1_SSB = (int8_t)intval;

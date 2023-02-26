@@ -86,7 +86,7 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size);           
 static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm,
                          float32_t dbm);                         // FM demodulator
 static void ModulateFM(uint16_t size, float32_t amplitude);      // FM modulator
-static void doRX_EQ(uint16_t size);                              // receiver equalizer
+static void doRX_EQ(uint16_t size, uint8_t mode);                // receiver equalizer
 static void doMIC_EQ(uint16_t size, uint8_t mode);               // microphone equalizer
 static void doVAD(AUDIO_PROC_RX_NUM rx_id, uint16_t size);       // voice activity detector
 static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size); // IF gain
@@ -512,7 +512,7 @@ void processRxAudio(void) {
 
 	// receiver equalizer
 	if (CurrentVFO->Mode != TRX_MODE_DIGI_L && CurrentVFO->Mode != TRX_MODE_DIGI_U && CurrentVFO->Mode != TRX_MODE_RTTY && CurrentVFO->Mode != TRX_MODE_IQ) {
-		doRX_EQ(FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		doRX_EQ(FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode);
 	}
 
 	// muting
@@ -1539,20 +1539,26 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 }
 
 // RX Equalizer
-static void doRX_EQ(uint16_t size) {
-	if (TRX.RX_EQ_P1 != 0) {
+static void doRX_EQ(uint16_t size, uint8_t mode) {
+	bool eq1_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P1_WFM != 0) : (TRX.RX_EQ_P1 != 0);
+	bool eq2_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P2_WFM != 0) : (TRX.RX_EQ_P2 != 0);
+	bool eq3_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P3_WFM != 0) : (TRX.RX_EQ_P3 != 0);
+	bool eq4_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P4_WFM != 0) : (TRX.RX_EQ_P4 != 0);
+	bool eq5_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P5_WFM != 0) : (TRX.RX_EQ_P5 != 0);
+
+	if (eq1_enabled) {
 		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P1_FILTER, &EQ_RX_Q_P1_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
-	if (TRX.RX_EQ_P2 != 0) {
+	if (eq2_enabled) {
 		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P2_FILTER, &EQ_RX_Q_P2_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
-	if (TRX.RX_EQ_P3 != 0) {
+	if (eq3_enabled) {
 		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P3_FILTER, &EQ_RX_Q_P3_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
-	if (TRX.RX_EQ_P4 != 0) {
+	if (eq4_enabled) {
 		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P4_FILTER, &EQ_RX_Q_P4_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
-	if (TRX.RX_EQ_P5 != 0) {
+	if (eq5_enabled) {
 		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P5_FILTER, &EQ_RX_Q_P5_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
 }

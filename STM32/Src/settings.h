@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 82         // Settings config version
+#define SETT_VERSION 83         // Settings config version
 #define CALIB_VERSION 61        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
@@ -537,6 +537,11 @@ extern struct TRX_SETTINGS {
 	int8_t RX_EQ_P3;
 	int8_t RX_EQ_P4;
 	int8_t RX_EQ_P5;
+	int8_t RX_EQ_P1_WFM;
+	int8_t RX_EQ_P2_WFM;
+	int8_t RX_EQ_P3_WFM;
+	int8_t RX_EQ_P4_WFM;
+	int8_t RX_EQ_P5_WFM;
 	int8_t MIC_EQ_P1_SSB;
 	int8_t MIC_EQ_P2_SSB;
 	int8_t MIC_EQ_P3_SSB;

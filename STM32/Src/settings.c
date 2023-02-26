@@ -210,6 +210,11 @@ void LoadSettings(bool clear) {
 		TRX.RX_EQ_P3 = 0;            // Receiver Equalizer 1200hz
 		TRX.RX_EQ_P4 = 0;            // Receiver Equalizer 1800hz
 		TRX.RX_EQ_P5 = 0;            // Receiver Equalizer 2300hz
+		TRX.RX_EQ_P1_WFM = 0;        // Receiver WFM Equalizer 50hz
+		TRX.RX_EQ_P2_WFM = 0;        // Receiver WFM Equalizer 300hz
+		TRX.RX_EQ_P3_WFM = 0;        // Receiver WFM Equalizer 1500hz
+		TRX.RX_EQ_P4_WFM = 0;        // Receiver WFM Equalizer 5000hz
+		TRX.RX_EQ_P5_WFM = 0;        // Receiver WFM Equalizer 12000hz
 		TRX.MIC_EQ_P1_SSB = 0;       // Mic EQ SSB
 		TRX.MIC_EQ_P2_SSB = 0;       // Mic EQ SSB
 		TRX.MIC_EQ_P3_SSB = 0;       // Mic EQ SSB
