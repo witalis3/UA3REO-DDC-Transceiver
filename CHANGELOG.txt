@@ -1,5 +1,6 @@
 ----Version 7.1.0----
 +STM32: Исправлен запуск ATU при первом старте CQ в FT8, Tnx RU4PN
++STM32: Добавлены 60m и 70cm бен во встроенный FT8, Tnx DL1EGQ
 
 ----Version 7.0.0----
 +HARDW: Новая версия платы RF-UNIT-BIG-RU4PN-rev5.5, Tnx RU4PN

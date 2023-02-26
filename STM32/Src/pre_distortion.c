@@ -116,7 +116,7 @@ void DPD_ProcessCalibration() {
 	static int32_t error_count = 0;
 
 	float32_t current_imd_sum = FFT_Current_TX_IMD3 + FFT_Current_TX_IMD5 + FFT_Current_TX_IMD7 + FFT_Current_TX_IMD9;
-	
+
 	if (!DPD_start_imd_printed) {
 		DPD_start_imd_printed = true;
 		DPD_printDbmStatus(FFT_Current_TX_IMD3, FFT_Current_TX_IMD5);

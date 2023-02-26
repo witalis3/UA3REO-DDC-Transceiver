@@ -73,9 +73,7 @@ void RF_UNIT_ATU_Invalidate(void) {
 	ATU_BestValsProbed = false;
 }
 
-void RF_UNIT_ATU_SetCompleted(void) {
-	ATU_Finished = true;
-}
+void RF_UNIT_ATU_SetCompleted(void) { ATU_Finished = true; }
 
 static void RF_UNIT_ProcessATU(void) {
 	if (!TRX.ATU_Enabled || !TRX.TUNER_Enabled) {
