@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 80         // Settings config version
+#define SETT_VERSION 81         // Settings config version
 #define CALIB_VERSION 61        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
@@ -434,7 +434,7 @@ extern struct TRX_SETTINGS {
 	uint32_t FRQ_ENC_FAST_STEP;
 	uint32_t FRQ_ENC_WFM_STEP_KHZ;
 	float32_t FRQ_ENC_FM_STEP_KHZ;
-	uint32_t FRQ_ENC_AM_STEP_KHZ;
+	float32_t FRQ_ENC_AM_STEP_KHZ;
 	VFO VFO_A;
 	VFO VFO_B;
 	uint16_t RIT_INTERVAL;
