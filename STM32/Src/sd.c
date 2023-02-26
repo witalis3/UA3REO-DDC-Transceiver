@@ -2482,10 +2482,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 		CALIBRATE.Transverter_3cm_IF_Mhz = (uint16_t)uintval;
 	}
 	if (strcmp(name, "CALIBRATE.Transverter_QO100_RF_Khz") == 0) {
-		CALIBRATE.Transverter_QO100_RF_Khz = (uint16_t)uintval;
+		CALIBRATE.Transverter_QO100_RF_Khz = uintval;
 	}
 	if (strcmp(name, "CALIBRATE.Transverter_QO100_IF_RX_Khz") == 0) {
-		CALIBRATE.Transverter_QO100_IF_RX_Khz = (uint16_t)uintval;
+		CALIBRATE.Transverter_QO100_IF_RX_Khz = uintval;
 	}
 	if (strcmp(name, "CALIBRATE.Transverter_QO100_IF_TX_Mhz") == 0) {
 		CALIBRATE.Transverter_QO100_IF_TX_Mhz = uintval;
