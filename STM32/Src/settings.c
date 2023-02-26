@@ -165,7 +165,7 @@ void LoadSettings(bool clear) {
 #ifdef FRONTPANEL_X1
 		TRX.AutoGain = true; // auto-control preamp and attenuator
 #elif defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
-		TRX.AutoGain = false;             // auto-control preamp and attenuator
+		TRX.AutoGain = false;                          // auto-control preamp and attenuator
 #else
 		TRX.AutoGain = true;              // auto-control preamp and attenuator
 #endif
@@ -228,8 +228,8 @@ void LoadSettings(bool clear) {
 		TRX.NOISE_BLANKER = false; // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = false;  // Spectral AGC mode
 #else
-		TRX.NOISE_BLANKER = false;        // suppressor of short impulse noise NOISE BLANKER
-		TRX.AGC_Spectral = true;          // Spectral AGC mode
+		TRX.NOISE_BLANKER = false;                     // suppressor of short impulse noise NOISE BLANKER
+		TRX.AGC_Spectral = true;                       // Spectral AGC mode
 #endif
 		TRX.NOISE_BLANKER_THRESHOLD = 15;    // threshold for noise blanker
 		TRX.TX_CESSB = false;                // Controlled-envelope single-sideband modulation
@@ -327,8 +327,8 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Height = 4;         // FFT display height
 		TRX.FFT_Background = false; // FFT gradient background
 #elif defined LAY_320x240
-		TRX.FFT_FreqGrid = 0;             // FFT freq grid style
-		TRX.FFT_Height = 3;               // FFT display height
+		TRX.FFT_FreqGrid = 0;                          // FFT freq grid style
+		TRX.FFT_Height = 3;                            // FFT display height
 #else
 		TRX.FFT_FreqGrid = 1;             // FFT freq grid style
 		TRX.FFT_Height = 2;               // FFT display height
@@ -354,7 +354,7 @@ void LoadSettings(bool clear) {
 #ifdef STM32F407xx
 		TRX.RDS_Decoder = false; // RDS Decoder panel
 #else
-		TRX.RDS_Decoder = true;           // RDS Decoder panel
+		TRX.RDS_Decoder = true;                        // RDS Decoder panel
 #endif
 		TRX.RTTY_Speed = 45;         // RTTY decoder speed
 		TRX.RTTY_Shift = 170;        // RTTY decoder shift
@@ -495,13 +495,10 @@ void LoadCalibration(bool clear) {
 #if defined(FRONTPANEL_LITE)
 		CALIBRATE.ENCODER_SLOW_RATE = 10;
 #endif
-		CALIBRATE.ENCODER_ON_FALLING = true;  // encoder only triggers when level A falls
-		CALIBRATE.ENCODER_ACCELERATION = 75;  // acceleration rate if rotate
-		CALIBRATE.TangentType = TANGENT_MH48; // Tangent type
-		CALIBRATE.RF_unit_type = RF_UNIT_QRP; // RF-unit type
-#if defined(FRONTPANEL_BIG_V1)
-		CALIBRATE.RF_unit_type = RF_UNIT_RU4PN; // RF-unit type
-#endif
+		CALIBRATE.ENCODER_ON_FALLING = true;   // encoder only triggers when level A falls
+		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
+		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
+		CALIBRATE.RF_unit_type = RF_UNIT_QRP;  // RF-unit type
 		CALIBRATE.CICFIR_GAINER_48K_val = 7;   // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_96K_val = 12;  // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_192K_val = 17; // Offset from the output of the CIC compensator
@@ -591,6 +588,57 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 8.5f; // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 5;             // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 15;     // Max TRX Power for indication
+#elif defined(FRONTPANEL_BIG_V1)
+		CALIBRATE.RF_unit_type = RF_UNIT_RU4PN;        // RF-unit type
+		CALIBRATE.rf_out_power_2200m = 40;             // 2200m
+		CALIBRATE.rf_out_power_160m = 40;              // 160m
+		CALIBRATE.rf_out_power_80m = 40;               // 80m
+		CALIBRATE.rf_out_power_60m = 40;               // 60m
+		CALIBRATE.rf_out_power_40m = 40;               // 40m
+		CALIBRATE.rf_out_power_30m = 40;               // 30m
+		CALIBRATE.rf_out_power_20m = 40;               // 20m
+		CALIBRATE.rf_out_power_17m = 40;               // 17m
+		CALIBRATE.rf_out_power_15m = 40;               // 15m
+		CALIBRATE.rf_out_power_12m = 40;               // 12m
+		CALIBRATE.rf_out_power_cb = 40;                // 27mhz
+		CALIBRATE.rf_out_power_10m = 40;               // 10m
+		CALIBRATE.rf_out_power_6m = 40;                // 6m
+		CALIBRATE.rf_out_power_4m = 40;                // 4m
+		CALIBRATE.rf_out_power_2m = 50;                // 2m
+		CALIBRATE.rf_out_power_70cm = 50;              // 70cm
+		CALIBRATE.rf_out_power_23cm = 50;              // 23cm
+		CALIBRATE.rf_out_power_13cm = 50;              // 13cm
+		CALIBRATE.rf_out_power_6cm = 50;               // 6cm
+		CALIBRATE.rf_out_power_3cm = 50;               // 3cm
+		CALIBRATE.rf_out_power_QO100 = 50;             // QO100
+		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
+		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF
+		CALIBRATE.RFU_BPF_0_START = 138 * 1000 * 1000; // 2m U14-RF3
+		CALIBRATE.RFU_BPF_0_END = 150 * 1000 * 1000;   // 2m
+		CALIBRATE.RFU_BPF_1_START = 1500 * 1000;       // 160m U16-RF2
+		CALIBRATE.RFU_BPF_1_END = 2400 * 1000;         // 160m
+		CALIBRATE.RFU_BPF_2_START = 2400 * 1000;       // 80m U16-RF4
+		CALIBRATE.RFU_BPF_2_END = 4700 * 1000;         // 80m
+		CALIBRATE.RFU_BPF_3_START = 4700 * 1000;       // 40m U16-RF1
+		CALIBRATE.RFU_BPF_3_END = 7200 * 1000;         // 40m
+		CALIBRATE.RFU_BPF_4_START = 7200 * 1000;       // 30m U16-RF3
+		CALIBRATE.RFU_BPF_4_END = 11500 * 1000;        // 30m
+		CALIBRATE.RFU_BPF_5_START = 11500 * 1000;      // 20,17m U14-RF2
+		CALIBRATE.RFU_BPF_5_END = 21000 * 1000;        // 20,17m
+		CALIBRATE.RFU_BPF_6_START = 21000 * 1000;      // 15,12,10,6m U14-RF4
+		CALIBRATE.RFU_BPF_6_END = 64000 * 1000;        // 15,12,10,6m
+		CALIBRATE.RFU_BPF_7_START = 0;                 // disabled
+		CALIBRATE.RFU_BPF_7_END = 0;                   // disabled
+		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled
+		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled
+		CALIBRATE.SWR_FWD_Calibration_HF = 22.0f;      // SWR Transormator rate forward
+		CALIBRATE.SWR_BWD_Calibration_HF = 22.0f;      // SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_6M = 22.0f;      // SWR Transormator rate forward
+		CALIBRATE.SWR_BWD_Calibration_6M = 22.0f;      // SWR Transormator rate return
+		CALIBRATE.SWR_FWD_Calibration_VHF = 22.0f;     // SWR Transormator rate forward
+		CALIBRATE.SWR_BWD_Calibration_VHF = 22.0f;     // SWR Transormator rate return
+		CALIBRATE.TUNE_MAX_POWER = 10;                 // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER_ON_METER = 100;         // Max TRX Power for indication
 #elif defined(FRONTPANEL_WF_100D)
 		CALIBRATE.ENCODER2_INVERT = true; // invert left-right rotation of the optional encoder
 		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;
