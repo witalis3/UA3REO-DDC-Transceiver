@@ -1149,6 +1149,10 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 }
 
 void BUTTONHANDLER_TUNE(uint32_t parameter) {
+	if (parameter == 255 && !TRX_Tune) { // only tune off mode
+		return;
+	}
+	
 	if (!TRX_Tune) {
 		APROC_TX_tune_power = 0.0f;
 		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);

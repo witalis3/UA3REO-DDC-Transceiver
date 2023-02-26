@@ -122,6 +122,7 @@ void FT8_Menu_Pos_Toggle(void) {
 			if (sButtonData[1].state) { // Tune button pressed
 				tune_On_sequence();
 			} else {
+				tune_Off_sequence();
 				sButtonData[0].state = false; // if the "CQ" button was active disable it as well
 				receive_sequence();
 

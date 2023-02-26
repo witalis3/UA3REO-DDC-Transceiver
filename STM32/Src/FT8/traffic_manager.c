@@ -50,15 +50,13 @@ void receive_sequence(void) {
 void tune_On_sequence(void) {
 	Set_Data_Colection(0);                    // Disable the data colection
 	set_Xmit_Freq(FT8_BND_Freq, cursor_freq); // Set band frequency and the frequency in the FT8 (cursor freq.)
-	TRX_Tune = true;
-	TRX_Restart_Mode();
+	BUTTONHANDLER_TUNE(0);
 }
 
 void tune_Off_sequence(void) {
 	Set_Data_Colection(0);          // Disable the data colection (it will be enabled by next 15s marker)
 	set_Xmit_Freq(FT8_BND_Freq, 0); // Set band frequency and the frequency in the FT8 (cursor freq.)
-	TRX_Tune = false;
-	TRX_Restart_Mode();
+	BUTTONHANDLER_TUNE(255);
 }
 
 void set_Xmit_Freq(uint32_t BandFreq, uint16_t Freq) {
