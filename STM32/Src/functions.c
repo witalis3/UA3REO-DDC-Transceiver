@@ -201,12 +201,12 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 	if (nyquist == 2) // 110,4-165,6mhz (good 132,48mhz - 154,56mhz) dac freq - (1.2-1.4 dac freq)
 	{
 		TRX_DAC_HP1 = true; // HP1 high-pass
-		TRX_DAC_HP2 = true; // HP3 high-pass
+		TRX_DAC_HP2 = true; // HP2 high-pass
 	}
 	if (nyquist == 3) // 165,6-220,8mhz (good 176,64mhz - 200,0mhz) dac freq - (1.6-1.9 dac freq)
 	{
 		TRX_DAC_HP1 = false; // HP1 low-pass
-		TRX_DAC_HP2 = true;  // HP3 high-pass
+		TRX_DAC_HP2 = true;  // HP2 high-pass
 	}
 
 	if (_freq > (DAC_CLOCK / 2)) // Go Nyquist

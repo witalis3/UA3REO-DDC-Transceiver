@@ -538,6 +538,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].IF_Gain;
 		TRX.LNA = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].LNA;
 		TRX.ATT = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT;
+		if (TRX.ANT_selected != TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_selected || TRX.ANT_mode != TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_mode) {
+			LCD_UpdateQuery.StatusInfoGUI = true;
+		}
 		TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_selected;
 		TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_mode;
 		TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT_DB;
