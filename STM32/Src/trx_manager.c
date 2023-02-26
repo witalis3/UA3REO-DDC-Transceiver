@@ -1,4 +1,5 @@
 #include "trx_manager.h"
+#include "FT8/FT8_main.h"
 #include "agc.h"
 #include "audio_filters.h"
 #include "auto_notch.h"
@@ -1980,6 +1981,10 @@ void BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter) {
 		LCD_closeWindow();
 	}
 	TRX_DXCluster_UpdateTime = 0;
+
+	if (SYSMENU_FT8_DECODER_opened) {
+		InitFT8_Decoder();
+	}
 }
 
 void BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter) {
