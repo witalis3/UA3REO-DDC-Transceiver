@@ -1,4 +1,5 @@
 #include "trx_manager.h"
+#include "FT8/FT8_main.h"
 #include "agc.h"
 #include "audio_filters.h"
 #include "auto_notch.h"
@@ -14,6 +15,7 @@
 #include "lcd.h"
 #include "main.h"
 #include "noise_reduction.h"
+#include "pre_distortion.h"
 #include "rf_unit.h"
 #include "sd.h"
 #include "settings.h"
@@ -532,9 +534,14 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 
 	// Restore band settings
 	if (bandFromFreq >= 0 && bandFromOldFreq != bandFromFreq) {
+		DPD_Init();
+
 		TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].IF_Gain;
 		TRX.LNA = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].LNA;
 		TRX.ATT = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT;
+		if (TRX.ANT_selected != TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_selected || TRX.ANT_mode != TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_mode) {
+			LCD_UpdateQuery.StatusInfoGUI = true;
+		}
 		TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_selected;
 		TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_mode;
 		TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT_DB;
@@ -803,15 +810,21 @@ void TRX_DoAutoGain(void) {
 
 #ifndef FRONTPANEL_LITE
 		if (new_att_val <= 0.5f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_Driver) {
-			TRX.ADC_Driver = true;
+			TRX.ADC_Driver = !TRX_on_TX;
 			LCD_UpdateQuery.TopButtons = true;
 			skip_cycles = 5;
 		} else if (new_att_val <= 0.5f && max_amplitude < (AUTOGAINER_TAGET - AUTOGAINER_HYSTERESIS) && !TRX.ADC_PGA) {
-			TRX.ADC_PGA = true;
+			TRX.ADC_PGA = !TRX_on_TX;
 			LCD_UpdateQuery.TopButtons = true;
 			skip_cycles = 5;
 		}
 #endif
+
+		if (TRX_on_TX) {
+			TRX.ADC_Driver = !TRX_on_TX;
+			TRX.ADC_PGA = !TRX_on_TX;
+			LCD_UpdateQuery.TopButtons = true;
+		}
 
 		if (new_att_val != TRX.ATT_DB) {
 			TRX.ATT_DB = new_att_val;
@@ -1140,6 +1153,10 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 }
 
 void BUTTONHANDLER_TUNE(uint32_t parameter) {
+	if (parameter == 255 && !TRX_Tune) { // only tune off mode
+		return;
+	}
+
 	if (!TRX_Tune) {
 		APROC_TX_tune_power = 0.0f;
 		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
@@ -1964,6 +1981,12 @@ void BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter) {
 		LCD_closeWindow();
 	}
 	TRX_DXCluster_UpdateTime = 0;
+
+#if FT8_SUPPORT
+	if (SYSMENU_FT8_DECODER_opened) {
+		InitFT8_Decoder();
+	}
+#endif
 }
 
 void BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter) {
@@ -2453,6 +2476,28 @@ void BUTTONHANDLER_CESSB(uint32_t parameter) {
 
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
+}
+
+void BUTTONHANDLER_DPD(uint32_t parameter) {
+	TRX.Digital_Pre_Distortion = !TRX.Digital_Pre_Distortion;
+
+	if (TRX.Digital_Pre_Distortion) {
+		LCD_showTooltip("DPD ON");
+	} else {
+		LCD_showTooltip("DPD OFF");
+	}
+
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}
+
+void BUTTONHANDLER_DPD_CALIBRATE(uint32_t parameter) {
+	if (!TRX.Digital_Pre_Distortion) {
+		BUTTONHANDLER_DPD(0);
+	}
+
+	LCD_showTooltip("DPD CALIBRATION");
+	DPD_StartCalibration();
 }
 
 void BUTTONHANDLER_SCREENSHOT(uint32_t parameter) {

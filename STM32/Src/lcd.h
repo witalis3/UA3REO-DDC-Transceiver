@@ -50,6 +50,7 @@ typedef struct {
 extern void LCD_Init(void);
 extern bool LCD_doEvents(void);
 extern void LCD_showError(char text[], bool redraw);
+extern void LCD_showErrorColored(char text[], bool redraw, uint16_t bg_color);
 extern void LCD_showInfo(char text[], bool autohide);
 extern void LCD_redraw(bool do_now);
 extern void LCD_processTouch(uint16_t x, uint16_t y);

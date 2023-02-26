@@ -2066,6 +2066,25 @@ void LCD_showError(char text[], bool redraw) {
 	}
 }
 
+void LCD_showErrorColored(char text[], bool redraw, uint16_t bg_color) {
+	LCD_busy = true;
+	if (!LCD_inited) {
+		LCD_Init();
+	}
+
+	LCDDriver_Fill(bg_color);
+	uint16_t x1, y1, w, h;
+	LCDDriver_getTextBoundsFont(text, 0, 0, &x1, &y1, &w, &h, (GFXfont *)&FreeSans12pt7b);
+	LCDDriver_printTextFont(text, LCD_WIDTH / 2 - w / 2, LCD_HEIGHT / 2 - h / 2, COLOR_WHITE, bg_color, (GFXfont *)&FreeSans12pt7b);
+	if (redraw) {
+		HAL_Delay(2000);
+	}
+	LCD_busy = false;
+	if (redraw) {
+		LCD_redraw(false);
+	}
+}
+
 void LCD_showInfo(char text[], bool autohide) {
 	LCD_showInfo_opened = true;
 	LCD_busy = true;

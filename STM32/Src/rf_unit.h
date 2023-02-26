@@ -13,5 +13,6 @@ extern void RF_UNIT_UpdateState(bool clean);
 extern void RF_UNIT_ProcessSensors(void);
 extern void RF_UNIT_MeasureVoltage(void); // Tisho
 extern void RF_UNIT_ATU_Invalidate(void);
+extern void RF_UNIT_ATU_SetCompleted(void);
 
 #endif

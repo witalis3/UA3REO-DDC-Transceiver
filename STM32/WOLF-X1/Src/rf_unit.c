@@ -12,6 +12,7 @@
 bool ATU_TunePowerStabilized = false;
 
 void RF_UNIT_ATU_Invalidate(void) {}
+void RF_UNIT_ATU_SetCompleted(void) {}
 
 static uint8_t getBPFByFreq(uint32_t freq) {
 	if (!TRX.RF_Filters) {

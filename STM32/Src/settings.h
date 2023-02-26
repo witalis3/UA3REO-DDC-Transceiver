@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 80         // Settings config version
+#define SETT_VERSION 83         // Settings config version
 #define CALIB_VERSION 61        // Calibration config version
 #define WIFI_SETTINGS_VERSION 1 // WiFi config version
 
@@ -434,7 +434,7 @@ extern struct TRX_SETTINGS {
 	uint32_t FRQ_ENC_FAST_STEP;
 	uint32_t FRQ_ENC_WFM_STEP_KHZ;
 	float32_t FRQ_ENC_FM_STEP_KHZ;
-	uint32_t FRQ_ENC_AM_STEP_KHZ;
+	float32_t FRQ_ENC_AM_STEP_KHZ;
 	VFO VFO_A;
 	VFO VFO_B;
 	uint16_t RIT_INTERVAL;
@@ -490,6 +490,7 @@ extern struct TRX_SETTINGS {
 	bool Auto_Input_Switch;
 	bool Auto_Snap;
 	bool Full_Duplex;
+	bool Digital_Pre_Distortion;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH];
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	char URSI_CODE[MAX_CALLSIGN_LENGTH];
@@ -510,6 +511,8 @@ extern struct TRX_SETTINGS {
 	uint16_t FM_LPF_RX_Filter;
 	uint16_t FM_LPF_TX_Filter;
 	uint16_t VOX_TIMEOUT;
+	uint8_t CW_LPF_Stages;
+	uint8_t SSB_LPF_Stages;
 	uint8_t AMFM_LPF_Stages;
 	uint8_t Volume_Step;
 	uint8_t IF_Gain;
@@ -534,6 +537,11 @@ extern struct TRX_SETTINGS {
 	int8_t RX_EQ_P3;
 	int8_t RX_EQ_P4;
 	int8_t RX_EQ_P5;
+	int8_t RX_EQ_P1_WFM;
+	int8_t RX_EQ_P2_WFM;
+	int8_t RX_EQ_P3_WFM;
+	int8_t RX_EQ_P4_WFM;
+	int8_t RX_EQ_P5_WFM;
 	int8_t MIC_EQ_P1_SSB;
 	int8_t MIC_EQ_P2_SSB;
 	int8_t MIC_EQ_P3_SSB;

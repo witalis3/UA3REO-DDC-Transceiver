@@ -1,16 +1,14 @@
 #include "traffic_manager.h"
-#include "decode_ft8.h"
-#include "gen_ft8.h"
-#include <stdint.h>
-
 #include "FT8_GUI.h"
 #include "FT8_main.h"
-
+#include "decode_ft8.h"
+#include "gen_ft8.h"
+#include "lcd.h"
+#include "lcd_driver.h"
+#include "rf_unit.h"
 #include "sd.h"
 #include "trx_manager.h"
-
-#include "lcd.h"        //For debug
-#include "lcd_driver.h" //For debug
+#include <stdint.h>
 
 uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
 uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
@@ -35,6 +33,9 @@ char QSOOffTime[7]; // potential QSO Stop time
 void transmit_sequence(void) {
 	Set_Data_Colection(0);                    // Disable the data colection
 	set_Xmit_Freq(FT8_BND_Freq, cursor_freq); // Set band frequency and the frequency in the FT8 (cursor freq.)
+	RF_UNIT_ATU_SetCompleted();
+	TRX.Full_Duplex = false;
+	TRX.TWO_SIGNAL_TUNE = false;
 	TRX_Tune = true;
 	TRX_Restart_Mode();
 }
@@ -50,15 +51,13 @@ void receive_sequence(void) {
 void tune_On_sequence(void) {
 	Set_Data_Colection(0);                    // Disable the data colection
 	set_Xmit_Freq(FT8_BND_Freq, cursor_freq); // Set band frequency and the frequency in the FT8 (cursor freq.)
-	TRX_Tune = true;
-	TRX_Restart_Mode();
+	BUTTONHANDLER_TUNE(0);
 }
 
 void tune_Off_sequence(void) {
 	Set_Data_Colection(0);          // Disable the data colection (it will be enabled by next 15s marker)
 	set_Xmit_Freq(FT8_BND_Freq, 0); // Set band frequency and the frequency in the FT8 (cursor freq.)
-	TRX_Tune = false;
-	TRX_Restart_Mode();
+	BUTTONHANDLER_TUNE(255);
 }
 
 void set_Xmit_Freq(uint32_t BandFreq, uint16_t Freq) {
@@ -277,7 +276,7 @@ void GetQSOTime(uint8_t QSO_Start) {
 }
 
 void LogQSO(void) {
-	char StrToLog[260];
+	static char StrToLog[260];
 	uint8_t Len;  //=strlen(ctmp);
 	int CR = 0xD; // CR -  ascii code
 	              // ctmp[Len+3] = 0;
@@ -290,6 +289,9 @@ void LogQSO(void) {
 			break;
 		case FT8_Freq_80M:
 			strcpy(cBND, "80m");
+			break;
+		case FT8_Freq_60M:
+			strcpy(cBND, "60m");
 			break;
 		case FT8_Freq_40M:
 			strcpy(cBND, "40m");
@@ -317,6 +319,9 @@ void LogQSO(void) {
 			break;
 		case FT8_Freq_2M:
 			strcpy(cBND, "2m");
+			break;
+		case FT8_Freq_70CM:
+			strcpy(cBND, "70cm");
 			break;
 		}
 

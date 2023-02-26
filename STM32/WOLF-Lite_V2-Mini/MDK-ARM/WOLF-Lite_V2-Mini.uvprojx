@@ -790,6 +790,16 @@
               <FilePath>..\..\Src\noise_reduction.h</FilePath>
             </File>
             <File>
+              <FileName>pre_distortion.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\pre_distortion.c</FilePath>
+            </File>
+            <File>
+              <FileName>pre_distortion.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\pre_distortion.h</FilePath>
+            </File>
+            <File>
               <FileName>print.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\print.h</FilePath>
@@ -2353,6 +2363,16 @@
               <FileName>noise_reduction.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\noise_reduction.h</FilePath>
+            </File>
+            <File>
+              <FileName>pre_distortion.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\pre_distortion.c</FilePath>
+            </File>
+            <File>
+              <FileName>pre_distortion.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\pre_distortion.h</FilePath>
             </File>
             <File>
               <FileName>print.h</FileName>

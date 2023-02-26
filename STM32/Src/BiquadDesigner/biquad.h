@@ -1,7 +1,12 @@
 #ifndef __biquad_h
 #define __biquad_h
 
+#ifdef STM32F407xx
+#define IIR_BIQUAD_MAX_SECTIONS 8
+#else
 #define IIR_BIQUAD_MAX_SECTIONS 15
+#endif
+
 #define IIR_BIQUAD_SECTION_ORDER 2
 
 typedef struct iir_filter {

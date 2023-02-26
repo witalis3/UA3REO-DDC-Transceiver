@@ -1,12 +1,11 @@
 #include "FT8_main.h"
-#include "Process_DSP.h"
-#include "decode_ft8.h"
-#include <stdbool.h>
-// #include "WF_Table.h"
 #include "FT8_GUI.h"
+#include "Process_DSP.h"
 #include "arm_math.h"
+#include "decode_ft8.h"
 #include "locator_ft8.h"
 #include "traffic_manager.h"
+#include <stdbool.h>
 
 #include "lcd.h"
 #include "lcd_driver.h"
@@ -68,6 +67,9 @@ void InitFT8_Decoder(void) {
 	if (band == BANDID_80m) { // 80m
 		FT8_BND_Freq = FT8_Freq_80M;
 	}
+	if (band == BANDID_60m) { // 60m
+		FT8_BND_Freq = FT8_Freq_60M;
+	}
 	if (band == BANDID_40m) { // 40m
 		FT8_BND_Freq = FT8_Freq_40M;
 	}
@@ -94,6 +96,9 @@ void InitFT8_Decoder(void) {
 	}
 	if (band == BANDID_2m) { // 2m
 		FT8_BND_Freq = FT8_Freq_2M;
+	}
+	if (band == BANDID_70cm) { // 70cm
+		FT8_BND_Freq = FT8_Freq_70CM;
 	}
 
 	receive_sequence();

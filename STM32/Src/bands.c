@@ -213,10 +213,12 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .endFreq = 5403500,
         .defaultFreq = 5350000,
         .regions =
-            (const REGION_MAP[1]){
-                {.startFreq = 5330500, .endFreq = 5403500, .mode = TRX_MODE_USB},
+            (const REGION_MAP[3]){
+                {.startFreq = 5330500, .endFreq = 5357000, .mode = TRX_MODE_USB},
+                {.startFreq = 5357000, .endFreq = 5360000, .mode = TRX_MODE_DIGI_U},
+                {.startFreq = 5360000, .endFreq = 5403500, .mode = TRX_MODE_USB},
             },
-        .regionsCount = 1,
+        .regionsCount = 3,
         .channels = NULL,
         .channelsCount = 0,
     },
@@ -753,12 +755,14 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .endFreq = 446200000,
         .defaultFreq = 432200000,
         .regions =
-            (const REGION_MAP[11]){
+            (const REGION_MAP[13]){
                 {.startFreq = 430000000, .endFreq = 432000000, .mode = TRX_MODE_NFM},
                 {.startFreq = 432000000, .endFreq = 432063000, .mode = TRX_MODE_CW},
                 {.startFreq = 432063000, .endFreq = 432066000, .mode = TRX_MODE_DIGI_U},
                 {.startFreq = 432066000, .endFreq = 432100000, .mode = TRX_MODE_CW},
-                {.startFreq = 432100000, .endFreq = 432300000, .mode = TRX_MODE_USB},
+                {.startFreq = 432100000, .endFreq = 432174000, .mode = TRX_MODE_USB},
+                {.startFreq = 432174000, .endFreq = 432177000, .mode = TRX_MODE_DIGI_U},
+                {.startFreq = 432177000, .endFreq = 432300000, .mode = TRX_MODE_USB},
                 {.startFreq = 432300000, .endFreq = 432303000, .mode = TRX_MODE_DIGI_U},
                 {.startFreq = 432303000, .endFreq = 432400000, .mode = TRX_MODE_USB},
                 {.startFreq = 432400000, .endFreq = 432500000, .mode = TRX_MODE_CW},
@@ -766,7 +770,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
                 {.startFreq = 434000000, .endFreq = 434100000, .mode = TRX_MODE_CW},
                 {.startFreq = 434100000, .endFreq = 446200000, .mode = TRX_MODE_NFM},
             },
-        .regionsCount = 11,
+        .regionsCount = 13,
         .channels =
             (const CHANNEL_MAP[85]){
                 {.subname = "LP", .number = 1, .rxFreq = 433075000, .txFreq = 433075000},  {.subname = "LP", .number = 2, .rxFreq = 433100000, .txFreq = 433100000},

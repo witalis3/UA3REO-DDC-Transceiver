@@ -5,6 +5,7 @@
 
 #define FT8_Freq_160M 1840 // in kHz
 #define FT8_Freq_80M 3573
+#define FT8_Freq_60M 5357
 #define FT8_Freq_40M 7074
 #define FT8_Freq_30M 10136
 #define FT8_Freq_20M 14074
@@ -14,6 +15,7 @@
 #define FT8_Freq_10M 28074
 #define FT8_Freq_6M 50313
 #define FT8_Freq_2M 144174
+#define FT8_Freq_70CM 432174
 
 extern uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
 extern uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band

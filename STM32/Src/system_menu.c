@@ -106,6 +106,11 @@ static void SYSMENU_HANDL_AUDIO_RX_EQ_P2(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_EQ_P3(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_EQ_P4(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_EQ_P5(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P1_WFM(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P2_WFM(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P3_WFM(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P4_WFM(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P5_WFM(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_RX_AGC_Max_gain(int8_t direction);
@@ -127,6 +132,8 @@ static void SYSMENU_HANDL_AUDIO_VAD_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VOX(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VOX_TIMEOUT(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VOX_THRESHOLD(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_CW_LPF_Stages(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_SSB_LPF_Stages(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AMFM_LPF_Stages(int8_t direction);
 
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction);
@@ -555,7 +562,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Freq Step ENC2 FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
     {"Freq Step WFM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_WFM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ},
     {"Freq Step FM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_FM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ},
-    {"Freq Step AM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ},
+    {"Freq Step AM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ},
     {"CW Freq Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
 #endif
     {"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
@@ -629,6 +636,8 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
     {"AM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.AM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass},
     {"FM LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass},
     {"FM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass},
+    {"CW LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_LPF_Stages, SYSMENU_HANDL_AUDIO_CW_LPF_Stages},
+    {"SSB LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SSB_LPF_Stages, SYSMENU_HANDL_AUDIO_SSB_LPF_Stages},
     {"AM/FM LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.AMFM_LPF_Stages, SYSMENU_HANDL_AUDIO_AMFM_LPF_Stages},
     {"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SQL_shadow, SYSMENU_HANDL_AUDIO_Squelch},
 #ifdef LAY_320x240
@@ -655,6 +664,11 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
     {"RX EQ 1.2k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P3, SYSMENU_HANDL_AUDIO_RX_EQ_P3},
     {"RX EQ 1.8k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4, SYSMENU_HANDL_AUDIO_RX_EQ_P4},
     {"RX EQ 2.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5, SYSMENU_HANDL_AUDIO_RX_EQ_P5},
+    {"RX WFM EQ 50hz", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P1_WFM, SYSMENU_HANDL_AUDIO_RX_EQ_P1_WFM},
+    {"RX WFM EQ 0.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P2_WFM, SYSMENU_HANDL_AUDIO_RX_EQ_P2_WFM},
+    {"RX WFM EQ 1.5k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P3_WFM, SYSMENU_HANDL_AUDIO_RX_EQ_P3_WFM},
+    {"RX WFM EQ 5.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4_WFM, SYSMENU_HANDL_AUDIO_RX_EQ_P4_WFM},
+    {"RX WFM EQ 12.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5_WFM, SYSMENU_HANDL_AUDIO_RX_EQ_P5_WFM},
     {"RX AGC SSB Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed},
     {"RX AGC CW Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed},
     {"RX AGC Max gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_Max_gain, SYSMENU_HANDL_AUDIO_RX_AGC_Max_gain},
@@ -1709,7 +1723,7 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ(int8_t direction) {
-	const float32_t fm_freq_steps[] = {0.25, 0.5, 1, 2, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
+	const float32_t fm_freq_steps[] = {0.1, 0.25, 0.5, 1, 2, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
 
 	for (uint8_t i = 0; i < ARRLENTH(fm_freq_steps); i++) {
 		if (TRX.FRQ_ENC_FM_STEP_KHZ == fm_freq_steps[i]) {
@@ -1734,7 +1748,7 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ(int8_t direction) {
-	const uint32_t am_freq_steps[] = {1, 2, 3, 5, 9, 10, 15, 20, 50};
+	const float32_t am_freq_steps[] = {0.1, 0.25, 0.5, 1, 2, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
 
 	for (uint8_t i = 0; i < ARRLENTH(am_freq_steps); i++) {
 		if (TRX.FRQ_ENC_AM_STEP_KHZ == am_freq_steps[i]) {
@@ -2609,6 +2623,61 @@ static void SYSMENU_HANDL_AUDIO_RX_EQ_P5(int8_t direction) {
 	NeedReinitAudioFilters = true;
 }
 
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P1_WFM(int8_t direction) {
+	TRX.RX_EQ_P1_WFM += direction;
+	if (TRX.RX_EQ_P1_WFM < -50) {
+		TRX.RX_EQ_P1_WFM = -50;
+	}
+	if (TRX.RX_EQ_P1_WFM > 50) {
+		TRX.RX_EQ_P1_WFM = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P2_WFM(int8_t direction) {
+	TRX.RX_EQ_P2_WFM += direction;
+	if (TRX.RX_EQ_P2_WFM < -50) {
+		TRX.RX_EQ_P2_WFM = -50;
+	}
+	if (TRX.RX_EQ_P2_WFM > 50) {
+		TRX.RX_EQ_P2_WFM = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P3_WFM(int8_t direction) {
+	TRX.RX_EQ_P3_WFM += direction;
+	if (TRX.RX_EQ_P3_WFM < -50) {
+		TRX.RX_EQ_P3_WFM = -50;
+	}
+	if (TRX.RX_EQ_P3_WFM > 50) {
+		TRX.RX_EQ_P3_WFM = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P4_WFM(int8_t direction) {
+	TRX.RX_EQ_P4_WFM += direction;
+	if (TRX.RX_EQ_P4_WFM < -50) {
+		TRX.RX_EQ_P4_WFM = -50;
+	}
+	if (TRX.RX_EQ_P4_WFM > 50) {
+		TRX.RX_EQ_P4_WFM = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_AUDIO_RX_EQ_P5_WFM(int8_t direction) {
+	TRX.RX_EQ_P5_WFM += direction;
+	if (TRX.RX_EQ_P5_WFM < -50) {
+		TRX.RX_EQ_P5_WFM = -50;
+	}
+	if (TRX.RX_EQ_P5_WFM > 50) {
+		TRX.RX_EQ_P5_WFM = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
 static void SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed(int8_t direction) {
 	TRX.RX_AGC_SSB_speed += direction;
 	if (TRX.RX_AGC_SSB_speed < 1) {
@@ -2835,6 +2904,30 @@ void SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(int8_t direction) {
 	}
 	if (TRX.FM_LPF_TX_Filter > MAX_LPF_WIDTH_NFM) {
 		TRX.FM_LPF_TX_Filter = MAX_LPF_WIDTH_NFM;
+	}
+
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
+}
+
+void SYSMENU_HANDL_AUDIO_CW_LPF_Stages(int8_t direction) {
+	if (TRX.CW_LPF_Stages > 1 || direction > 0) {
+		TRX.CW_LPF_Stages += direction;
+	}
+	if (TRX.CW_LPF_Stages > IIR_LPF_STAGES) {
+		TRX.CW_LPF_Stages = IIR_LPF_STAGES;
+	}
+
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
+}
+
+void SYSMENU_HANDL_AUDIO_SSB_LPF_Stages(int8_t direction) {
+	if (TRX.SSB_LPF_Stages > 1 || direction > 0) {
+		TRX.SSB_LPF_Stages += direction;
+	}
+	if (TRX.SSB_LPF_Stages > IIR_LPF_STAGES) {
+		TRX.SSB_LPF_Stages = IIR_LPF_STAGES;
 	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
