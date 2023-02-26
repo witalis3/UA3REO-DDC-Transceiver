@@ -9,10 +9,10 @@
 #include <string.h>
 
 #ifdef STM32F407xx
-#define IQ_HILBERT_TAPS_RX 101        // Hilbert filter order RX
-#define IIR_LPF_STAGES 8              // order of IIR LPF filters
-#define IIR_HPF_STAGES 3              // order of IIR HPF filters
-#define IIR_DECIMATOR_FILTER_STAGES 5 // order of decimator filter
+#define IQ_HILBERT_TAPS_RX 101                 // Hilbert filter order RX
+#define IIR_LPF_STAGES IIR_BIQUAD_MAX_SECTIONS // order of IIR LPF filters
+#define IIR_HPF_STAGES 3                       // order of IIR HPF filters
+#define IIR_DECIMATOR_FILTER_STAGES 5          // order of decimator filter
 #else
 #define IQ_HILBERT_TAPS_RX 201                 // Hilbert filter order RX
 #define IIR_LPF_STAGES IIR_BIQUAD_MAX_SECTIONS // order of IIR LPF filters (12)

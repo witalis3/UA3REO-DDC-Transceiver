@@ -1,4 +1,5 @@
 #include "settings.h"
+#include "audio_filters.h"
 #include "bands.h"
 #include "fpga.h"
 #include "front_unit.h"
@@ -231,36 +232,38 @@ void LoadSettings(bool clear) {
 		TRX.NOISE_BLANKER = false;                     // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = true;                       // Spectral AGC mode
 #endif
-		TRX.NOISE_BLANKER_THRESHOLD = 15;    // threshold for noise blanker
-		TRX.TX_CESSB = false;                // Controlled-envelope single-sideband modulation
-		TRX.TX_CESSB_COMPRESS_DB = 3.0f;     // CSSB additional gain (compress)
-		TRX.RX_AGC_SSB_speed = 10;           // AGC receive rate on SSB
-		TRX.RX_AGC_CW_speed = 1;             // AGC receive rate on CW
-		TRX.RX_AGC_Max_gain = 30;            // Maximum AGC gain
-		TRX.RX_AGC_Hold = 700;               // AGC Hold time on peaks
-		TRX.TX_Compressor_speed_SSB = 3;     // TX compressor speed SSB
-		TRX.TX_Compressor_maxgain_SSB = 10;  // TX compressor max gain SSB
-		TRX.TX_Compressor_speed_AMFM = 3;    // TX compressor speed AM/FM
-		TRX.TX_Compressor_maxgain_AMFM = 10; // TX compressor max gain AM/FM
-		TRX.CW_LPF_Filter = 600;             // default value of CW filter width
-		TRX.DIGI_LPF_Filter = 3000;          // default value of DIGI filter width
-		TRX.SSB_LPF_RX_Filter = 2700;        // default value of SSB filter width
-		TRX.SSB_LPF_TX_Filter = 2700;        // default value of SSB filter width
-		TRX.SSB_HPF_RX_Filter = 200;         // default value of SSB filter width
-		TRX.SSB_HPF_TX_Filter = 200;         // default value of SSB filter width
-		TRX.AM_LPF_RX_Filter = 8000;         // default value of AM filter width
-		TRX.AM_LPF_TX_Filter = 8000;         // default value of AM filter width
-		TRX.FM_LPF_RX_Filter = 8000;         // default value of the FM filter width
-		TRX.FM_LPF_TX_Filter = 8000;         // default value of the FM filter width
-		TRX.AMFM_LPF_Stages = 3;             // stages for NFM LPF filter
-		TRX.Beeper = true;                   // Keyboard beeper
-		TRX.CTCSS_Freq = 0;                  // CTCSS FM Frequency
-		TRX.SELFHEAR_Volume = 15;            // Selfhearing volume
-		TRX.FM_Stereo = false;               // Stereo FM Mode
-		TRX.VAD_THRESHOLD = 150;             // Threshold of SSB/SCAN squelch
-		TRX.VOX = false;                     // TX by voice activation
-		TRX.VOX_TIMEOUT = 300;               // VOX timeout in ms
-		TRX.VOX_THRESHOLD = -27;             // VOX threshold in dbFS
+		TRX.NOISE_BLANKER_THRESHOLD = 15;                              // threshold for noise blanker
+		TRX.TX_CESSB = false;                                          // Controlled-envelope single-sideband modulation
+		TRX.TX_CESSB_COMPRESS_DB = 3.0f;                               // CSSB additional gain (compress)
+		TRX.RX_AGC_SSB_speed = 10;                                     // AGC receive rate on SSB
+		TRX.RX_AGC_CW_speed = 1;                                       // AGC receive rate on CW
+		TRX.RX_AGC_Max_gain = 30;                                      // Maximum AGC gain
+		TRX.RX_AGC_Hold = 700;                                         // AGC Hold time on peaks
+		TRX.TX_Compressor_speed_SSB = 3;                               // TX compressor speed SSB
+		TRX.TX_Compressor_maxgain_SSB = 10;                            // TX compressor max gain SSB
+		TRX.TX_Compressor_speed_AMFM = 3;                              // TX compressor speed AM/FM
+		TRX.TX_Compressor_maxgain_AMFM = 10;                           // TX compressor max gain AM/FM
+		TRX.CW_LPF_Filter = 600;                                       // default value of CW filter width
+		TRX.DIGI_LPF_Filter = 3000;                                    // default value of DIGI filter width
+		TRX.SSB_LPF_RX_Filter = 2700;                                  // default value of SSB filter width
+		TRX.SSB_LPF_TX_Filter = 2700;                                  // default value of SSB filter width
+		TRX.SSB_HPF_RX_Filter = 200;                                   // default value of SSB filter width
+		TRX.SSB_HPF_TX_Filter = 200;                                   // default value of SSB filter width
+		TRX.AM_LPF_RX_Filter = 8000;                                   // default value of AM filter width
+		TRX.AM_LPF_TX_Filter = 8000;                                   // default value of AM filter width
+		TRX.FM_LPF_RX_Filter = 8000;                                   // default value of the FM filter width
+		TRX.FM_LPF_TX_Filter = 8000;                                   // default value of the FM filter width
+		TRX.CW_LPF_Stages = IIR_LPF_STAGES < 10 ? IIR_LPF_STAGES : 10; // stages for CW LPF filter
+		TRX.SSB_LPF_Stages = IIR_LPF_STAGES;                           // stages for SSB LPF filter
+		TRX.AMFM_LPF_Stages = 3;                                       // stages for NFM LPF filter
+		TRX.Beeper = true;                                             // Keyboard beeper
+		TRX.CTCSS_Freq = 0;                                            // CTCSS FM Frequency
+		TRX.SELFHEAR_Volume = 15;                                      // Selfhearing volume
+		TRX.FM_Stereo = false;                                         // Stereo FM Mode
+		TRX.VAD_THRESHOLD = 150;                                       // Threshold of SSB/SCAN squelch
+		TRX.VOX = false;                                               // TX by voice activation
+		TRX.VOX_TIMEOUT = 300;                                         // VOX timeout in ms
+		TRX.VOX_THRESHOLD = -27;                                       // VOX threshold in dbFS
 		// CW
 		TRX.CW_Pitch = 600;                                             // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key

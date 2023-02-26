@@ -127,6 +127,8 @@ static void SYSMENU_HANDL_AUDIO_VAD_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VOX(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VOX_TIMEOUT(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_VOX_THRESHOLD(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_CW_LPF_Stages(int8_t direction);
+static void SYSMENU_HANDL_AUDIO_SSB_LPF_Stages(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AMFM_LPF_Stages(int8_t direction);
 
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction);
@@ -629,6 +631,8 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
     {"AM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.AM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass},
     {"FM LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass},
     {"FM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass},
+    {"CW LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_LPF_Stages, SYSMENU_HANDL_AUDIO_CW_LPF_Stages},
+    {"SSB LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SSB_LPF_Stages, SYSMENU_HANDL_AUDIO_SSB_LPF_Stages},
     {"AM/FM LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.AMFM_LPF_Stages, SYSMENU_HANDL_AUDIO_AMFM_LPF_Stages},
     {"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SQL_shadow, SYSMENU_HANDL_AUDIO_Squelch},
 #ifdef LAY_320x240
@@ -2835,6 +2839,30 @@ void SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(int8_t direction) {
 	}
 	if (TRX.FM_LPF_TX_Filter > MAX_LPF_WIDTH_NFM) {
 		TRX.FM_LPF_TX_Filter = MAX_LPF_WIDTH_NFM;
+	}
+
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
+}
+
+void SYSMENU_HANDL_AUDIO_CW_LPF_Stages(int8_t direction) {
+	if (TRX.CW_LPF_Stages > 1 || direction > 0) {
+		TRX.CW_LPF_Stages += direction;
+	}
+	if (TRX.CW_LPF_Stages > IIR_LPF_STAGES) {
+		TRX.CW_LPF_Stages = IIR_LPF_STAGES;
+	}
+
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
+}
+
+void SYSMENU_HANDL_AUDIO_SSB_LPF_Stages(int8_t direction) {
+	if (TRX.SSB_LPF_Stages > 1 || direction > 0) {
+		TRX.SSB_LPF_Stages += direction;
+	}
+	if (TRX.SSB_LPF_Stages > IIR_LPF_STAGES) {
+		TRX.SSB_LPF_Stages = IIR_LPF_STAGES;
 	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
