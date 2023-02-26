@@ -277,7 +277,7 @@ void GetQSOTime(uint8_t QSO_Start) {
 }
 
 void LogQSO(void) {
-	char StrToLog[260];
+	static char StrToLog[260];
 	uint8_t Len;  //=strlen(ctmp);
 	int CR = 0xD; // CR -  ascii code
 	              // ctmp[Len+3] = 0;
