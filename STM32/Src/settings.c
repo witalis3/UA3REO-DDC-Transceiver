@@ -696,7 +696,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_FWD_Calibration_6M = 23.0f;      // SWR Transormator rate forward
 		CALIBRATE.SWR_BWD_Calibration_6M = 23.0f;      // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 16.6f;     // SWR Transormator rate forward
-		CALIBRATE.SWR_BWD_Calibration_VHF = 9.5f;      // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_VHF = 8.5f;      // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;                 // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;         // Max TRX Power for indication
 #elif defined(FRONTPANEL_WOLF_2)
