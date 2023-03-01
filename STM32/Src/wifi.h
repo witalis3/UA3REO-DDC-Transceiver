@@ -47,8 +47,10 @@ typedef enum {
 	WIFI_COMM_CREATESERVER,
 	WIFI_COMM_SENDTCPDATA,
 	WIFI_COMM_UPDATEFW,
-	WIFI_COMM_TCP_CONNECT,
+	WIFI_COMM_TCP_GET_CONNECT,
 	WIFI_COMM_TCP_GET_RESPONSE,
+	WIFI_COMM_TCP_POST_CONNECT,
+	WIFI_COMM_TCP_POST_RESPONSE,
 	WIFI_COMM_SW_RESTART,
 } WiFiProcessingCommand;
 
@@ -73,12 +75,12 @@ extern void WIFI_Process(void);
 extern bool WIFI_ListAP(void (*callback)(void));
 extern bool WIFI_GetSNTPTime(void (*callback)(void));
 extern bool WIFI_GetIP(void (*callback)(void));
-// extern void WIFI_GetStatus(void);
 extern void WIFI_GoSleep(void);
 extern bool WIFI_StartCATServer(void (*callback)(void));
 extern bool WIFI_UpdateFW(void (*callback)(void));
 extern bool WIFI_SendCatAnswer(char *data, uint32_t link_id, void (*callback)(void));
 extern bool WIFI_getHTTPpage(char *host, char *url, void (*callback)(void), bool https, bool is_repeat);
+extern bool WIFI_postHTTPpage(char *host, char *url, void (*callback)(void), bool https, bool is_repeat);
 extern void WIFI_getRDA(void);
 extern void WIFI_getDXCluster(void);
 extern void WIFI_getPropagination(void);
@@ -90,6 +92,7 @@ extern void WIFI_downloadFileToSD(char *url, char *filename);
 extern bool WIFI_getDXCluster_background(void);
 extern bool WIFI_SendIQData(uint8_t *data, uint32_t size);
 extern bool WIFI_AbortCallback();
+extern void WIFI_postQSOtoAllQSO(char *call, char *note, char *date, char *time, char *rsts, char *rstr, char *mode, char *band, char *name, char *qth);
 
 #endif
 #endif

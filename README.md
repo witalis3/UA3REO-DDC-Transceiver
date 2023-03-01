@@ -47,6 +47,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * SWR Graphs
 * Spectrum analyzer
 * FT8 receiver/transmitter
+* Automatic send FT8 qso to log https://allqso.ru/
 * WSPR Beacon
 * VOX
 * Equalizer TX/RX, reverber
@@ -280,6 +281,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **WIFI Timezone** - Time zone (for updating the time via the Internet)
 * **WIFI CAT Server** - Server for receiving CAT commands via WIFI
 * **WIFI Update ESP firmware** - Start cloud autoupdate firmware for ESP-01 (if present)
+* **ALLQSO.RU Token/LogId** - Token и LogID from https://allqso.ru/ web-log
 
 ### SD Card
 

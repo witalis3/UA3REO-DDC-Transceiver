@@ -8,6 +8,7 @@
 #include "rf_unit.h"
 #include "sd.h"
 #include "trx_manager.h"
+#include "wifi.h"
 #include <stdint.h>
 
 uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
@@ -355,5 +356,11 @@ void LogQSO(void) {
 		SDCOMM_WRITE_TO_FILE_partsize = Len;
 
 		SD_doCommand(SDCOMM_WRITE_TO_FILE, false);
+
+		static char cFreq[16] = {0};
+		sprintf(cFreq, "%1.6f", QSO_Freq);
+		static char cTarget_RSL[16] = {0};
+		sprintf(cTarget_RSL, "%3i", Target_RSL);
+		WIFI_postQSOtoAllQSO(Target_Call, cFreq, QSODate, QSOOffTime, cTarget_RSL, RapRcv_RSL_filtered, "FT8", cBND, "", Target_Grid);
 	}
 }

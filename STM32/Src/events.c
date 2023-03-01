@@ -440,7 +440,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 			WIFI_checkFWUpdates();
 			maySendIQ = false;
 		}
-		if (TRX.FFT_DXCluster && ((HAL_GetTick() - TRX_DXCluster_UpdateTime) > DXCLUSTER_UPDATE_TIME || TRX_DXCluster_UpdateTime == 0)) // get and show dx cluster
+		if (TRX.FFT_DXCluster && ((HAL_GetTick() - TRX_DXCluster_UpdateTime) > DXCLUSTER_UPDATE_TIME || TRX_DXCluster_UpdateTime == 0) && !SYSMENU_FT8_DECODER_opened) // get and show dx cluster
 		{
 			if (WIFI_getDXCluster_background()) {
 				TRX_DXCluster_UpdateTime = HAL_GetTick();

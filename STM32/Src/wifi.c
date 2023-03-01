@@ -31,6 +31,7 @@ static uint32_t commandStartTime = 0;
 static uint8_t WIFI_FoundedAP_Index = 0;
 static bool WIFI_stop_auto_ap_list = false;
 static uint8_t get_HTTP_tryes = 0;
+static uint8_t post_HTTP_tryes = 0;
 
 DXCLUSTER_ENTRY WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_MAX_RECORDS] = {0};
 uint16_t WIFI_DXCLUSTER_list_count = 0;
@@ -39,7 +40,8 @@ static void WIFI_SendCommand(char *command);
 static bool WIFI_WaitForOk(void);
 static bool WIFI_ListAP_Sync(void);
 static bool WIFI_TryGetLine(void);
-static void WIFI_sendHTTPRequest(void);
+static void WIFI_sendHTTPGetRequest(void);
+static void WIFI_sendHTTPPostRequest(void);
 static void WIFI_getHTTPResponse(void);
 static void WIFI_printImage_stream_callback(void);
 static void WIFI_printImage_stream_partial_callback(void);
@@ -57,7 +59,8 @@ static uint16_t WIFI_HTTP_Response_Status = 0;
 static uint32_t WIFI_HTTP_Response_ContentLength = 0;
 SRAM static char WIFI_HOSTuri[128] = {0};
 SRAM static char WIFI_GETuri[128] = {0};
-SRAM static char WIFI_HTTRequest[256] = {0};
+SRAM static char WIFI_HTTRequest[300] = {0};
+SRAM4 static char WIFI_POSTdata[256] = {0};
 SRAM4 static char WIFI_HTTResponseHTML[WIFI_HTML_RESP_BUFFER_SIZE] = {0};
 bool WIFI_NewFW_checked = false;
 bool WIFI_NewFW_STM32 = false;
@@ -373,13 +376,22 @@ void WIFI_Process(void) {
 		if ((HAL_GetTick() - commandStartTime) > WIFI_COMMAND_TIMEOUT) {
 			println("[WIFI] command timeout");
 
-			if (WIFI_ProcessingCommand == WIFI_COMM_TCP_CONNECT || WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE) {
+			if (WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_CONNECT || WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE) {
 				if (get_HTTP_tryes >= 3) {
 					WIFI_SendCommand("AT+CIPCLOSE=0\r\n");
 					WIFI_WaitForOk();
 				}
 				WIFI_State = WIFI_READY;
 				WIFI_getHTTPpage("", "", NULL, false, true);
+				return;
+			}
+			if (WIFI_ProcessingCommand == WIFI_COMM_TCP_POST_CONNECT || WIFI_ProcessingCommand == WIFI_COMM_TCP_POST_RESPONSE) {
+				if (post_HTTP_tryes >= 3) {
+					WIFI_SendCommand("AT+CIPCLOSE=0\r\n");
+					WIFI_WaitForOk();
+				}
+				WIFI_State = WIFI_READY;
+				WIFI_postHTTPpage("", "", NULL, false, true);
 				return;
 			} else {
 				WIFI_State = WIFI_TIMEOUT;
@@ -416,11 +428,19 @@ void WIFI_Process(void) {
 				WIFI_State = WIFI_READY;
 			}
 			// TCP connect
-			if (WIFI_ProcessingCommand == WIFI_COMM_TCP_CONNECT) {
-				WIFI_sendHTTPRequest();
+			if (WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_CONNECT) {
+				WIFI_sendHTTPGetRequest();
+				return;
+			}
+			if (WIFI_ProcessingCommand == WIFI_COMM_TCP_POST_CONNECT) {
+				WIFI_sendHTTPPostRequest();
 				return;
 			}
 			if (WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE) {
+				WIFI_getHTTPResponse();
+				return;
+			}
+			if (WIFI_ProcessingCommand == WIFI_COMM_TCP_POST_RESPONSE) {
 				WIFI_getHTTPResponse();
 				return;
 			}
@@ -618,7 +638,14 @@ void WIFI_Process(void) {
 						}
 					}
 				}
-			} else if (WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE) // TCP_GET_RESPONSE Command process
+			} else if (WIFI_ProcessingCommand == WIFI_COMM_TCP_GET_RESPONSE) // WIFI_COMM_TCP_GET_RESPONSE Command process
+			{
+				char *istr;
+				istr = strstr(WIFI_readedLine, "+IPD");
+				if (istr != NULL) {
+					WIFI_getHTTPResponse();
+				}
+			} else if (WIFI_ProcessingCommand == WIFI_COMM_TCP_POST_RESPONSE) // WIFI_COMM_TCP_POST_RESPONSE Command process
 			{
 				char *istr;
 				istr = strstr(WIFI_readedLine, "+IPD");
@@ -1010,7 +1037,7 @@ static void WIFI_getHTTPResponse(void) {
 	}
 }
 
-static void WIFI_sendHTTPRequest(void) {
+static void WIFI_sendHTTPGetRequest(void) {
 	WIFI_State = WIFI_PROCESS_COMMAND;
 	WIFI_ProcessingCommand = WIFI_COMM_TCP_GET_RESPONSE;
 	dma_memset(WIFI_HTTRequest, 0x00, sizeof(WIFI_HTTRequest));
@@ -1021,6 +1048,26 @@ static void WIFI_sendHTTPRequest(void) {
 	strcat(WIFI_HTTRequest, WIFI_HOSTuri);
 	strcat(WIFI_HTTRequest, "\r\nConnection: close\r\n\r\n");
 	char comm_line[64] = {0};
+	sprintf(comm_line, "AT+CIPSEND=0,%d\r\n", strlen(WIFI_HTTRequest));
+	WIFI_SendCommand(comm_line);
+	WIFI_SendCommand(WIFI_HTTRequest);
+}
+
+static void WIFI_sendHTTPPostRequest(void) {
+	char comm_line[64] = {0};
+	WIFI_State = WIFI_PROCESS_COMMAND;
+	WIFI_ProcessingCommand = WIFI_COMM_TCP_POST_RESPONSE;
+	dma_memset(WIFI_HTTRequest, 0x00, sizeof(WIFI_HTTRequest));
+	strcat(WIFI_HTTRequest, "POST ");
+	strcat(WIFI_HTTRequest, WIFI_GETuri);
+	strcat(WIFI_HTTRequest, " HTTP/1.1\r\n");
+	strcat(WIFI_HTTRequest, "Host: ");
+	strcat(WIFI_HTTRequest, WIFI_HOSTuri);
+	strcat(WIFI_HTTRequest, "\r\nContent-Type: application/x-www-form-urlencoded\r\n");
+	sprintf(comm_line, "Content-Length: %d\r\n", strlen(WIFI_POSTdata));
+	strcat(WIFI_HTTRequest, comm_line);
+	strcat(WIFI_HTTRequest, "Connection: close\r\n\r\n");
+	strcat(WIFI_HTTRequest, WIFI_POSTdata);
 	sprintf(comm_line, "AT+CIPSEND=0,%d\r\n", strlen(WIFI_HTTRequest));
 	WIFI_SendCommand(comm_line);
 	WIFI_SendCommand(WIFI_HTTRequest);
@@ -1043,7 +1090,53 @@ bool WIFI_getHTTPpage(char *host, char *url, void (*callback)(void), bool https,
 		get_HTTP_tryes++;
 	}
 	WIFI_State = WIFI_PROCESS_COMMAND;
-	WIFI_ProcessingCommand = WIFI_COMM_TCP_CONNECT;
+	WIFI_ProcessingCommand = WIFI_COMM_TCP_GET_CONNECT;
+	WIFI_HTTP_Response_Status = 0;
+
+	dma_memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
+	strcat(WIFI_HOSTuri, "AT+CIPSTART=0,");
+	if (!_https) {
+		strcat(WIFI_HOSTuri, "\"TCP\"");
+	} else {
+		strcat(WIFI_HOSTuri, "\"SSL\"");
+	}
+	strcat(WIFI_HOSTuri, ",\"");
+	strcat(WIFI_HOSTuri, _host);
+
+	if (!_https) {
+		strcat(WIFI_HOSTuri, "\",80,10\r\n");
+	} else {
+		strcat(WIFI_HOSTuri, "\",443,10\r\n");
+	}
+
+	dma_memset(WIFI_GETuri, 0x00, sizeof(WIFI_GETuri));
+	strcat(WIFI_GETuri, _url);
+
+	WIFI_SendCommand(WIFI_HOSTuri);
+
+	dma_memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
+	strcat(WIFI_HOSTuri, _host);
+	return true;
+}
+
+bool WIFI_postHTTPpage(char *host, char *url, void (*callback)(void), bool https, bool is_repeat) {
+	if (WIFI_State != WIFI_READY && !is_repeat) {
+		return false;
+	}
+	static char _host[32] = {0};
+	static char _url[128] = {0};
+	static bool _https;
+	if (!is_repeat) {
+		post_HTTP_tryes = 0;
+		strcpy(_host, host);
+		strcpy(_url, url);
+		_https = https;
+		WIFI_ProcessingCommandCallback = callback;
+	} else {
+		post_HTTP_tryes++;
+	}
+	WIFI_State = WIFI_PROCESS_COMMAND;
+	WIFI_ProcessingCommand = WIFI_COMM_TCP_POST_CONNECT;
 	WIFI_HTTP_Response_Status = 0;
 
 	dma_memset(WIFI_HOSTuri, 0x00, sizeof(WIFI_HOSTuri));
@@ -1520,6 +1613,32 @@ void WIFI_downloadFileToSD(char *url, char *filename) {
 	strcpy(WIFI_downloadFileToSD_url, url);
 	sprintf(url, "%s&start=%d&count=%d", url, WIFI_downloadFileToSD_startIndex, WIFI_downloadFileToSD_part_size);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_downloadFileToSD_callback, false, false);
+}
+
+void WIFI_postQSOtoAllQSO(char *call, char *note, char *date, char *time, char *rsts, char *rstr, char *mode, char *band, char *name, char *qth) {
+	if (WIFI_connected && WIFI_State != WIFI_READY) {
+		return;
+	}
+	if (strlen(WIFI.ALLQSO_TOKEN) == 0 || strlen(WIFI.ALLQSO_LOGID) == 0) {
+		return;
+	}
+
+	//	"lid"   : ID-номер лога *
+	//  "token" : 16-символьный токен пользователя (Например: "abcd44er55uiopa6") *
+	//  "call"  : Позывной корреспондента в верхнем регистре (Например: "RU4PN") *
+	//  "note"  : Текстовая заметка (для моды FT8 - частота трансивера. Например: "3.574225")
+	//  "date"  : Дата проведения QSO (формат YYYYMMDD, например: "20230227") *
+	//  "time"  : Время проведения QSO (формат HHMMSS или HHMM, например: "233459" или "2334") *
+	//  "rsts"  : Переданный RST (Формат в зависимости от моды, 3 знака максимально. Если не заполнено, то = 59. Для FT8 значение от "-24" до "+24")
+	//  "rstr"  : Принятый RST (Формат в зависимости от моды, 3 знака максимально. Если не заполнено, то = 59. Для FT8 значение от "-24" до "+24")
+	//  "mode"  : Вид излучения (Принимаются только значения: "SSB", "CW", "FM", "PSK", "RTTY", "SSTV", "MFSK", "BPSK", "HELL", "AMTOR", "PACKET", "THROB", "MT63", "OLIVIA", "AM", "FT8",
+	//  "JT65". "band"  : Диапазон (Метровые обозначения. Принимаются: "160m", "80m", "40m", "30m", "20m", "17m", "15m", "12m", "10m", "6m", "2m", "70cm", "23cm", "13cm", "9cm", "6cm", "3cm",
+	//  "1.25cm". "name"  : Имя оператора (Например, "Вадим") "qth"   : QTH оператора (Например, "Астрахань")
+
+	sprintf(WIFI_POSTdata, "lid=%s&token=%s&call=%s&note=%s&date=%s&time=%s&rsts=%s&rstr=%s&mode=%s&band=%s&name=%s&qth=%s", WIFI.ALLQSO_LOGID, WIFI.ALLQSO_TOKEN, call, note, date, time, rsts,
+	        rstr, mode, band, name, qth);
+
+	WIFI_postHTTPpage("allqso.ru", "/api_wolf.php", NULL, false, false);
 }
 
 #endif
