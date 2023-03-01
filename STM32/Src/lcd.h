@@ -62,7 +62,7 @@ extern void LCD_openWindow(uint16_t w, uint16_t h);
 extern void LCD_closeWindow(void);
 extern void LCD_showRFPowerWindow(void);
 extern void LCD_showManualFreqWindow(bool secondary_vfo);
-extern void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase);
+extern void LCD_printKeyboard(void (*keyboardHandler)(char *string, uint32_t max_size, char entered), char *string, uint32_t max_size, bool lowcase);
 extern void LCD_hideKeyboard(void);
 
 volatile extern DEF_LCD_UpdateQuery LCD_UpdateQuery;

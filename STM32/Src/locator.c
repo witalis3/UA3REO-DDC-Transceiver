@@ -11,7 +11,7 @@
 bool SYSMENU_locator_info_opened = false;
 
 // Private Variables
-static char entered_locator[32] = {0};
+static char entered_locator[11] = {0};
 
 // Prototypes
 
@@ -31,16 +31,16 @@ void LOCINFO_Start(void) {
 // stop
 void LOCINFO_Stop(void) { LCD_hideKeyboard(); }
 
-static void LOCINFO_keyboardHandler(uint32_t parameter) {
+static void LOCINFO_keyboardHandler(char *string, uint32_t max_size, char entered) {
 	char str[2] = {0};
-	str[0] = parameter;
-	if (parameter == '<') // backspace
+	str[0] = entered;
+	if (entered == '<') // backspace
 	{
 		if (strlen(entered_locator) > 0) {
-			entered_locator[strlen(entered_locator) - 1] = 0;
+			string[strlen(entered_locator) - 1] = 0;
 		}
-	} else if (strlen(entered_locator) < 8) {
-		strcat(entered_locator, str);
+	} else if (strlen(string) < 8) {
+		strcat(string, str);
 	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -87,7 +87,7 @@ void LOCINFO_Draw(void) {
 	addSymbols(tmp, tmp, 15 + 8, " ", true);
 	LCDDriver_printText(tmp, 10, 130, FG_COLOR, BG_COLOR, 2);
 
-	LCD_printKeyboard(LOCINFO_keyboardHandler, false);
+	LCD_printKeyboard(LOCINFO_keyboardHandler, entered_locator, 10, false);
 
 	LCD_busy = false;
 }

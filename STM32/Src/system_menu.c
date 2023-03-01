@@ -1293,34 +1293,25 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 static void SYSMENU_WIFI_DrawSelectAP1Menu(bool full_redraw);
 static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir);
 static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw);
-static void SYSMENU_WIFI_RotatePasswordChar1(int8_t dir);
 static void SYSMENU_WIFI_DrawSelectAP2Menu(bool full_redraw);
 static void SYSMENU_WIFI_SelectAP2MenuMove(int8_t dir);
 static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw);
-static void SYSMENU_WIFI_RotatePasswordChar2(int8_t dir);
 static void SYSMENU_WIFI_DrawSelectAP3Menu(bool full_redraw);
 static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir);
 static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw);
-static void SYSMENU_WIFI_RotatePasswordChar3(int8_t dir);
 #endif
 static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw);
-static void SYSMENU_TRX_RotateCallsignChar(int8_t dir);
 static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw);
-static void SYSMENU_TRX_RotateLocatorChar(int8_t dir);
 static void SYSMENU_TRX_DrawURSICodeMenu(bool full_redraw);
-static void SYSMENU_TRX_RotateURSICodeChar(int8_t dir);
 static void SYSMENU_TRX_DrawCWMacros1Menu(bool full_redraw);
-static void SYSMENU_TRX_RotateCWMacros1Char(int8_t dir);
 static void SYSMENU_TRX_DrawCWMacros2Menu(bool full_redraw);
-static void SYSMENU_TRX_RotateCWMacros2Char(int8_t dir);
 static void SYSMENU_TRX_DrawCWMacros3Menu(bool full_redraw);
-static void SYSMENU_TRX_RotateCWMacros3Char(int8_t dir);
 static void SYSMENU_TRX_DrawCWMacros4Menu(bool full_redraw);
-static void SYSMENU_TRX_RotateCWMacros4Char(int8_t dir);
 static void SYSMENU_TRX_DrawCWMacros5Menu(bool full_redraw);
-static void SYSMENU_TRX_RotateCWMacros5Char(int8_t dir);
 static uint8_t SYSTMENU_getVisibleIdFromReal(uint8_t realIndex);
 static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex);
+static void SYSMENU_RotateChar(char *string, int8_t dir);
+static void SYSMENU_KeyboardHandler(char *string, uint32_t max_size, char entered);
 static void setCurrentMenuIndex(uint8_t index);
 static uint8_t getCurrentMenuIndex(void);
 static uint16_t getIndexByName(const struct sysmenu_item_handler *menu, uint16_t menu_length, char *name);
@@ -1357,15 +1348,7 @@ static bool sysmenu_trx_setCWMacros3_menu_opened = false;
 static bool sysmenu_trx_setCWMacros4_menu_opened = false;
 static bool sysmenu_trx_setCWMacros5_menu_opened = false;
 static uint8_t sysmenu_wifi_selected_ap_index = 0;
-static uint8_t sysmenu_wifi_selected_ap_password_char_index = 0;
-static uint8_t sysmenu_trx_selected_callsign_char_index = 0;
-static uint8_t sysmenu_trx_selected_locator_char_index = 0;
-static uint8_t sysmenu_trx_selected_ursi_code_char_index = 0;
-static uint8_t sysmenu_trx_selected_CWMacros1_char_index = 0;
-static uint8_t sysmenu_trx_selected_CWMacros2_char_index = 0;
-static uint8_t sysmenu_trx_selected_CWMacros3_char_index = 0;
-static uint8_t sysmenu_trx_selected_CWMacros4_char_index = 0;
-static uint8_t sysmenu_trx_selected_CWMacros5_char_index = 0;
+static uint8_t sysmenu_selected_char_index = 0;
 
 // Time menu
 static bool sysmenu_timeMenuOpened = false;
@@ -1823,25 +1806,6 @@ static void SYSMENU_HANDL_TRX_VGA_GAIN(int8_t direction) {
 }
 #endif
 
-static void SYSMENU_TRX_Callsign_keyboardHandler(uint32_t parameter) {
-	if (parameter == '<') // backspace
-	{
-		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = 0;
-
-		if (sysmenu_trx_selected_callsign_char_index > 0) {
-			sysmenu_trx_selected_callsign_char_index--;
-		}
-	} else {
-		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = parameter;
-
-		if (sysmenu_trx_selected_callsign_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
-			sysmenu_trx_selected_callsign_char_index++;
-		}
-	}
-
-	LCD_UpdateQuery.SystemMenuRedraw = true;
-}
-
 static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw) {
 	if (full_redraw) {
 		LCDDriver_Fill(BG_COLOR);
@@ -1849,30 +1813,11 @@ static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.CALLSIGN, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_callsign_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	LCD_printKeyboard(SYSMENU_TRX_Callsign_keyboardHandler, false);
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.CALLSIGN, MAX_CALLSIGN_LENGTH - 1, false);
 #endif
-}
-
-static void SYSMENU_TRX_Locator_keyboardHandler(uint32_t parameter) {
-	if (parameter == '<') // backspace
-	{
-		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = 0;
-
-		if (sysmenu_trx_selected_locator_char_index > 0) {
-			sysmenu_trx_selected_locator_char_index--;
-		}
-	} else {
-		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = parameter;
-
-		if (sysmenu_trx_selected_locator_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
-			sysmenu_trx_selected_locator_char_index++;
-		}
-	}
-
-	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw) {
@@ -1882,30 +1827,11 @@ static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.LOCATOR, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_locator_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	LCD_printKeyboard(SYSMENU_TRX_Locator_keyboardHandler, false);
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.LOCATOR, MAX_CALLSIGN_LENGTH - 1, false);
 #endif
-}
-
-static void SYSMENU_TRX_URSICode_keyboardHandler(uint32_t parameter) {
-	if (parameter == '<') // backspace
-	{
-		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = 0;
-
-		if (sysmenu_trx_selected_ursi_code_char_index > 0) {
-			sysmenu_trx_selected_ursi_code_char_index--;
-		}
-	} else {
-		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = parameter;
-
-		if (sysmenu_trx_selected_ursi_code_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
-			sysmenu_trx_selected_ursi_code_char_index++;
-		}
-	}
-
-	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_TRX_DrawURSICodeMenu(bool full_redraw) {
@@ -1915,100 +1841,16 @@ static void SYSMENU_TRX_DrawURSICodeMenu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.URSI_CODE, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_ursi_code_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
-	                        COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	LCD_printKeyboard(SYSMENU_TRX_URSICode_keyboardHandler, false);
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.URSI_CODE, MAX_CALLSIGN_LENGTH - 1, false);
 #endif
-}
-
-static void SYSMENU_TRX_RotateCallsignChar(int8_t dir) {
-	bool full_redraw = false;
-	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] == 0) {
-		full_redraw = true;
-	}
-	TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] += dir;
-
-	// do not show special characters
-	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] >= 1 && TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] <= 32 && dir > 0) {
-		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = 33;
-	}
-	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] >= 1 && TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] <= 32 && dir < 0) {
-		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = 0;
-	}
-	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] >= 127) {
-		TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] = 0;
-	}
-	if (TRX.CALLSIGN[sysmenu_trx_selected_callsign_char_index] == 0) {
-		full_redraw = true;
-	}
-
-	if (full_redraw) {
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	} else {
-		LCD_UpdateQuery.SystemMenu = true;
-	}
-}
-
-static void SYSMENU_TRX_RotateLocatorChar(int8_t dir) {
-	bool full_redraw = false;
-	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] == 0) {
-		full_redraw = true;
-	}
-	TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] += dir;
-
-	// do not show special characters
-	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] >= 1 && TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] <= 32 && dir > 0) {
-		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = 33;
-	}
-	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] >= 1 && TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] <= 32 && dir < 0) {
-		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = 0;
-	}
-	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] >= 127) {
-		TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] = 0;
-	}
-	if (TRX.LOCATOR[sysmenu_trx_selected_locator_char_index] == 0) {
-		full_redraw = true;
-	}
-
-	if (full_redraw) {
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	} else {
-		LCD_UpdateQuery.SystemMenu = true;
-	}
-}
-
-static void SYSMENU_TRX_RotateURSICodeChar(int8_t dir) {
-	bool full_redraw = false;
-	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] == 0) {
-		full_redraw = true;
-	}
-	TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] += dir;
-
-	// do not show special characters
-	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] >= 1 && TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] <= 32 && dir > 0) {
-		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = 33;
-	}
-	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] >= 1 && TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] <= 32 && dir < 0) {
-		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = 0;
-	}
-	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] >= 127) {
-		TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] = 0;
-	}
-	if (TRX.URSI_CODE[sysmenu_trx_selected_ursi_code_char_index] == 0) {
-		full_redraw = true;
-	}
-
-	if (full_redraw) {
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	} else {
-		LCD_UpdateQuery.SystemMenu = true;
-	}
 }
 
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction) {
 #pragma unused(direction)
+	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setCallsign_menu_opened = true;
 	SYSMENU_TRX_DrawCallsignMenu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2016,6 +1858,7 @@ static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction) {
 
 static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction) {
 #pragma unused(direction)
+	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setLocator_menu_opened = true;
 	SYSMENU_TRX_DrawLocatorMenu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -2023,6 +1866,7 @@ static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction) {
 
 static void SYSMENU_HANDL_TRX_SetURSICode(int8_t direction) {
 #pragma unused(direction)
+	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setURSICode_menu_opened = true;
 	SYSMENU_TRX_DrawURSICodeMenu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -3180,277 +3024,37 @@ static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_SetCWMacros1(int8_t direction) {
+	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setCWMacros1_menu_opened = true;
 	SYSMENU_TRX_DrawCWMacros1Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_TRX_SetCWMacros2(int8_t direction) {
+	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setCWMacros2_menu_opened = true;
 	SYSMENU_TRX_DrawCWMacros2Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_TRX_SetCWMacros3(int8_t direction) {
+	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setCWMacros3_menu_opened = true;
 	SYSMENU_TRX_DrawCWMacros3Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_TRX_SetCWMacros4(int8_t direction) {
+	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setCWMacros4_menu_opened = true;
 	SYSMENU_TRX_DrawCWMacros4Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_TRX_SetCWMacros5(int8_t direction) {
+	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setCWMacros5_menu_opened = true;
 	SYSMENU_TRX_DrawCWMacros5Menu(true);
-	LCD_UpdateQuery.SystemMenuRedraw = true;
-}
-
-static void SYSMENU_TRX_RotateCWMacros1Char(int8_t dir) {
-	uint16_t index = sysmenu_trx_selected_CWMacros1_char_index;
-
-	bool full_redraw = false;
-	if (TRX.CW_Macros_1[index] == 0) {
-		full_redraw = true;
-	}
-	TRX.CW_Macros_1[index] += dir;
-
-	// do not show special characters
-	if (TRX.CW_Macros_1[index] >= 1 && TRX.CW_Macros_1[index] <= 32 && dir > 0) {
-		TRX.CW_Macros_1[index] = 33;
-	}
-	if (TRX.CW_Macros_1[index] >= 1 && TRX.CW_Macros_1[index] <= 32 && dir < 0) {
-		TRX.CW_Macros_1[index] = 0;
-	}
-	if (TRX.CW_Macros_1[index] >= 127) {
-		TRX.CW_Macros_1[index] = 0;
-	}
-	if (TRX.CW_Macros_1[index] == 0) {
-		full_redraw = true;
-	}
-
-	if (full_redraw) {
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	} else {
-		LCD_UpdateQuery.SystemMenu = true;
-	}
-}
-
-static void SYSMENU_TRX_RotateCWMacros2Char(int8_t dir) {
-	uint16_t index = sysmenu_trx_selected_CWMacros2_char_index;
-
-	bool full_redraw = false;
-	if (TRX.CW_Macros_2[index] == 0) {
-		full_redraw = true;
-	}
-	TRX.CW_Macros_2[index] += dir;
-
-	// do not show special characters
-	if (TRX.CW_Macros_2[index] >= 1 && TRX.CW_Macros_2[index] <= 32 && dir > 0) {
-		TRX.CW_Macros_2[index] = 33;
-	}
-	if (TRX.CW_Macros_2[index] >= 1 && TRX.CW_Macros_2[index] <= 32 && dir < 0) {
-		TRX.CW_Macros_2[index] = 0;
-	}
-	if (TRX.CW_Macros_2[index] >= 127) {
-		TRX.CW_Macros_2[index] = 0;
-	}
-	if (TRX.CW_Macros_2[index] == 0) {
-		full_redraw = true;
-	}
-
-	if (full_redraw) {
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	} else {
-		LCD_UpdateQuery.SystemMenu = true;
-	}
-}
-
-static void SYSMENU_TRX_RotateCWMacros3Char(int8_t dir) {
-	uint16_t index = sysmenu_trx_selected_CWMacros3_char_index;
-
-	bool full_redraw = false;
-	if (TRX.CW_Macros_3[index] == 0) {
-		full_redraw = true;
-	}
-	TRX.CW_Macros_3[index] += dir;
-
-	// do not show special characters
-	if (TRX.CW_Macros_3[index] >= 1 && TRX.CW_Macros_3[index] <= 32 && dir > 0) {
-		TRX.CW_Macros_3[index] = 33;
-	}
-	if (TRX.CW_Macros_3[index] >= 1 && TRX.CW_Macros_3[index] <= 32 && dir < 0) {
-		TRX.CW_Macros_3[index] = 0;
-	}
-	if (TRX.CW_Macros_3[index] >= 127) {
-		TRX.CW_Macros_3[index] = 0;
-	}
-	if (TRX.CW_Macros_3[index] == 0) {
-		full_redraw = true;
-	}
-
-	if (full_redraw) {
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	} else {
-		LCD_UpdateQuery.SystemMenu = true;
-	}
-}
-
-static void SYSMENU_TRX_RotateCWMacros4Char(int8_t dir) {
-	uint16_t index = sysmenu_trx_selected_CWMacros4_char_index;
-
-	bool full_redraw = false;
-	if (TRX.CW_Macros_4[index] == 0) {
-		full_redraw = true;
-	}
-	TRX.CW_Macros_4[index] += dir;
-
-	// do not show special characters
-	if (TRX.CW_Macros_4[index] >= 1 && TRX.CW_Macros_4[index] <= 32 && dir > 0) {
-		TRX.CW_Macros_4[index] = 33;
-	}
-	if (TRX.CW_Macros_4[index] >= 1 && TRX.CW_Macros_4[index] <= 32 && dir < 0) {
-		TRX.CW_Macros_4[index] = 0;
-	}
-	if (TRX.CW_Macros_4[index] >= 127) {
-		TRX.CW_Macros_4[index] = 0;
-	}
-	if (TRX.CW_Macros_4[index] == 0) {
-		full_redraw = true;
-	}
-
-	if (full_redraw) {
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	} else {
-		LCD_UpdateQuery.SystemMenu = true;
-	}
-}
-
-static void SYSMENU_TRX_RotateCWMacros5Char(int8_t dir) {
-	uint16_t index = sysmenu_trx_selected_CWMacros4_char_index;
-
-	bool full_redraw = false;
-	if (TRX.CW_Macros_5[index] == 0) {
-		full_redraw = true;
-	}
-	TRX.CW_Macros_5[index] += dir;
-
-	// do not show special characters
-	if (TRX.CW_Macros_5[index] >= 1 && TRX.CW_Macros_5[index] <= 32 && dir > 0) {
-		TRX.CW_Macros_5[index] = 33;
-	}
-	if (TRX.CW_Macros_5[index] >= 1 && TRX.CW_Macros_5[index] <= 32 && dir < 0) {
-		TRX.CW_Macros_5[index] = 0;
-	}
-	if (TRX.CW_Macros_5[index] >= 127) {
-		TRX.CW_Macros_5[index] = 0;
-	}
-	if (TRX.CW_Macros_5[index] == 0) {
-		full_redraw = true;
-	}
-
-	if (full_redraw) {
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	} else {
-		LCD_UpdateQuery.SystemMenu = true;
-	}
-}
-
-static void SYSMENU_TRX_CWMacros1_keyboardHandler(uint32_t parameter) {
-	if (parameter == '<') // backspace
-	{
-		TRX.CW_Macros_1[sysmenu_trx_selected_CWMacros1_char_index] = 0;
-
-		if (sysmenu_trx_selected_CWMacros1_char_index > 0) {
-			sysmenu_trx_selected_CWMacros1_char_index--;
-		}
-	} else {
-		TRX.CW_Macros_1[sysmenu_trx_selected_CWMacros1_char_index] = parameter;
-
-		if (sysmenu_trx_selected_CWMacros1_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
-			sysmenu_trx_selected_CWMacros1_char_index++;
-		}
-	}
-
-	LCD_UpdateQuery.SystemMenuRedraw = true;
-}
-
-static void SYSMENU_TRX_CWMacros2_keyboardHandler(uint32_t parameter) {
-	if (parameter == '<') // backspace
-	{
-		TRX.CW_Macros_2[sysmenu_trx_selected_CWMacros2_char_index] = 0;
-
-		if (sysmenu_trx_selected_CWMacros2_char_index > 0) {
-			sysmenu_trx_selected_CWMacros2_char_index--;
-		}
-	} else {
-		TRX.CW_Macros_2[sysmenu_trx_selected_CWMacros2_char_index] = parameter;
-
-		if (sysmenu_trx_selected_CWMacros2_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
-			sysmenu_trx_selected_CWMacros2_char_index++;
-		}
-	}
-
-	LCD_UpdateQuery.SystemMenuRedraw = true;
-}
-
-static void SYSMENU_TRX_CWMacros3_keyboardHandler(uint32_t parameter) {
-	if (parameter == '<') // backspace
-	{
-		TRX.CW_Macros_3[sysmenu_trx_selected_CWMacros3_char_index] = 0;
-
-		if (sysmenu_trx_selected_CWMacros3_char_index > 0) {
-			sysmenu_trx_selected_CWMacros3_char_index--;
-		}
-	} else {
-		TRX.CW_Macros_3[sysmenu_trx_selected_CWMacros3_char_index] = parameter;
-
-		if (sysmenu_trx_selected_CWMacros3_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
-			sysmenu_trx_selected_CWMacros3_char_index++;
-		}
-	}
-
-	LCD_UpdateQuery.SystemMenuRedraw = true;
-}
-
-static void SYSMENU_TRX_CWMacros4_keyboardHandler(uint32_t parameter) {
-	if (parameter == '<') // backspace
-	{
-		TRX.CW_Macros_4[sysmenu_trx_selected_CWMacros4_char_index] = 0;
-
-		if (sysmenu_trx_selected_CWMacros4_char_index > 0) {
-			sysmenu_trx_selected_CWMacros4_char_index--;
-		}
-	} else {
-		TRX.CW_Macros_4[sysmenu_trx_selected_CWMacros4_char_index] = parameter;
-
-		if (sysmenu_trx_selected_CWMacros4_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
-			sysmenu_trx_selected_CWMacros4_char_index++;
-		}
-	}
-
-	LCD_UpdateQuery.SystemMenuRedraw = true;
-}
-
-static void SYSMENU_TRX_CWMacros5_keyboardHandler(uint32_t parameter) {
-	if (parameter == '<') // backspace
-	{
-		TRX.CW_Macros_5[sysmenu_trx_selected_CWMacros5_char_index] = 0;
-
-		if (sysmenu_trx_selected_CWMacros5_char_index > 0) {
-			sysmenu_trx_selected_CWMacros5_char_index--;
-		}
-	} else {
-		TRX.CW_Macros_5[sysmenu_trx_selected_CWMacros5_char_index] = parameter;
-
-		if (sysmenu_trx_selected_CWMacros5_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
-			sysmenu_trx_selected_CWMacros5_char_index++;
-		}
-	}
-
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -3461,11 +3065,10 @@ static void SYSMENU_TRX_DrawCWMacros1Menu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.CW_Macros_1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros1_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
-	                        COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	LCD_printKeyboard(SYSMENU_TRX_CWMacros1_keyboardHandler, false);
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.CW_Macros_1, MAX_CW_MACROS_LENGTH - 1, false);
 #endif
 }
 
@@ -3476,11 +3079,10 @@ static void SYSMENU_TRX_DrawCWMacros2Menu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.CW_Macros_2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros2_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
-	                        COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	LCD_printKeyboard(SYSMENU_TRX_CWMacros2_keyboardHandler, false);
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.CW_Macros_2, MAX_CW_MACROS_LENGTH - 1, false);
 #endif
 }
 
@@ -3491,11 +3093,10 @@ static void SYSMENU_TRX_DrawCWMacros3Menu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.CW_Macros_3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros3_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
-	                        COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	LCD_printKeyboard(SYSMENU_TRX_CWMacros3_keyboardHandler, false);
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.CW_Macros_3, MAX_CW_MACROS_LENGTH - 1, false);
 #endif
 }
 
@@ -3506,11 +3107,10 @@ static void SYSMENU_TRX_DrawCWMacros4Menu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.CW_Macros_4, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros4_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
-	                        COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	LCD_printKeyboard(SYSMENU_TRX_CWMacros4_keyboardHandler, false);
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.CW_Macros_4, MAX_CW_MACROS_LENGTH - 1, false);
 #endif
 }
 
@@ -3521,11 +3121,10 @@ static void SYSMENU_TRX_DrawCWMacros5Menu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(TRX.CW_Macros_5, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_trx_selected_CWMacros5_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
-	                        COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	LCD_printKeyboard(SYSMENU_TRX_CWMacros5_keyboardHandler, false);
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.CW_Macros_5, MAX_CW_MACROS_LENGTH - 1, false);
 #endif
 }
 
@@ -4606,25 +4205,6 @@ static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir) {
 	}
 }
 
-static void SYSMENU_WIFI_AP1_Password_keyboardHandler(uint32_t parameter) {
-	if (parameter == '<') // backspace
-	{
-		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
-
-		if (sysmenu_wifi_selected_ap_password_char_index > 0) {
-			sysmenu_wifi_selected_ap_password_char_index--;
-		}
-	} else {
-		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = parameter;
-
-		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1)) {
-			sysmenu_wifi_selected_ap_password_char_index++;
-		}
-	}
-
-	LCD_UpdateQuery.SystemMenuRedraw = true;
-}
-
 static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw) {
 	if (full_redraw) {
 		LCDDriver_Fill(BG_COLOR);
@@ -4632,31 +4212,11 @@ static void SYSMENU_WIFI_DrawAP1passwordMenu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(WIFI.Password_1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
-	                        COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	LCD_printKeyboard(SYSMENU_WIFI_AP1_Password_keyboardHandler, true);
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, WIFI.Password_1, MAX_WIFIPASS_LENGTH - 1, true);
 #endif
-}
-
-static void SYSMENU_WIFI_AP2_Password_keyboardHandler(uint32_t parameter) {
-	if (parameter == '<') // backspace
-	{
-		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
-
-		if (sysmenu_wifi_selected_ap_password_char_index > 0) {
-			sysmenu_wifi_selected_ap_password_char_index--;
-		}
-	} else {
-		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = parameter;
-
-		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1)) {
-			sysmenu_wifi_selected_ap_password_char_index++;
-		}
-	}
-
-	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw) {
@@ -4666,31 +4226,11 @@ static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(WIFI.Password_2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
-	                        COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	LCD_printKeyboard(SYSMENU_WIFI_AP2_Password_keyboardHandler, true);
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, WIFI.Password_1, MAX_WIFIPASS_LENGTH - 1, true);
 #endif
-}
-
-static void SYSMENU_WIFI_AP3_Password_keyboardHandler(uint32_t parameter) {
-	if (parameter == '<') // backspace
-	{
-		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
-
-		if (sysmenu_wifi_selected_ap_password_char_index > 0) {
-			sysmenu_wifi_selected_ap_password_char_index--;
-		}
-	} else {
-		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = parameter;
-
-		if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1)) {
-			sysmenu_wifi_selected_ap_password_char_index++;
-		}
-	}
-
-	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw) {
@@ -4700,96 +4240,11 @@ static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw) {
 	}
 
 	LCDDriver_printText(WIFI.Password_3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
-	LCDDriver_drawFastHLine(8 + sysmenu_wifi_selected_ap_password_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE,
-	                        COLOR_RED);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	LCD_printKeyboard(SYSMENU_WIFI_AP3_Password_keyboardHandler, true);
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, WIFI.Password_1, MAX_WIFIPASS_LENGTH - 1, true);
 #endif
-}
-
-static void SYSMENU_WIFI_RotatePasswordChar1(int8_t dir) {
-	bool full_redraw = false;
-	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] == 0) {
-		full_redraw = true;
-	}
-	WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] += dir;
-
-	// do not show special characters
-	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0) {
-		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	}
-	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0) {
-		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	}
-	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] >= 127) {
-		WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	}
-	if (WIFI.Password_1[sysmenu_wifi_selected_ap_password_char_index] == 0) {
-		full_redraw = true;
-	}
-
-	if (full_redraw) {
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	} else {
-		LCD_UpdateQuery.SystemMenu = true;
-	}
-}
-
-static void SYSMENU_WIFI_RotatePasswordChar2(int8_t dir) {
-	bool full_redraw = false;
-	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] == 0) {
-		full_redraw = true;
-	}
-	WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] += dir;
-
-	// do not show special characters
-	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0) {
-		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	}
-	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0) {
-		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	}
-	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] >= 127) {
-		WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	}
-	if (WIFI.Password_2[sysmenu_wifi_selected_ap_password_char_index] == 0) {
-		full_redraw = true;
-	}
-
-	if (full_redraw) {
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	} else {
-		LCD_UpdateQuery.SystemMenu = true;
-	}
-}
-
-static void SYSMENU_WIFI_RotatePasswordChar3(int8_t dir) {
-	bool full_redraw = false;
-	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] == 0) {
-		full_redraw = true;
-	}
-	WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] += dir;
-
-	// do not show special characters
-	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir > 0) {
-		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 33;
-	}
-	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 1 && WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] <= 32 && dir < 0) {
-		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	}
-	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] >= 127) {
-		WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] = 0;
-	}
-	if (WIFI.Password_3[sysmenu_wifi_selected_ap_password_char_index] == 0) {
-		full_redraw = true;
-	}
-
-	if (full_redraw) {
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	} else {
-		LCD_UpdateQuery.SystemMenu = true;
-	}
 }
 
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction) {
@@ -4829,21 +4284,21 @@ static void SYSMENU_HANDL_WIFI_SelectAP3(int8_t direction) {
 
 static void SYSMENU_HANDL_WIFI_SetAP1password(int8_t direction) {
 #pragma unused(direction)
-	sysmenu_wifi_selected_ap_password_char_index = 0;
+	sysmenu_selected_char_index = 0;
 	sysmenu_wifi_setAP1password_menu_opened = true;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_WIFI_SetAP2password(int8_t direction) {
 #pragma unused(direction)
-	sysmenu_wifi_selected_ap_password_char_index = 0;
+	sysmenu_selected_char_index = 0;
 	sysmenu_wifi_setAP2password_menu_opened = true;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_WIFI_SetAP3password(int8_t direction) {
 #pragma unused(direction)
-	sysmenu_wifi_selected_ap_password_char_index = 0;
+	sysmenu_selected_char_index = 0;
 	sysmenu_wifi_setAP3password_menu_opened = true;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
@@ -7651,49 +7106,49 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction) {
 		return;
 	}
 	if (sysmenu_wifi_setAP1password_menu_opened) {
-		SYSMENU_WIFI_RotatePasswordChar1(direction);
+		SYSMENU_RotateChar(WIFI.Password_1, direction);
 		return;
 	}
 	if (sysmenu_wifi_setAP2password_menu_opened) {
-		SYSMENU_WIFI_RotatePasswordChar2(direction);
+		SYSMENU_RotateChar(WIFI.Password_2, direction);
 		return;
 	}
 	if (sysmenu_wifi_setAP3password_menu_opened) {
-		SYSMENU_WIFI_RotatePasswordChar3(direction);
+		SYSMENU_RotateChar(WIFI.Password_3, direction);
 		return;
 	}
 #endif
 
 	if (sysmenu_trx_setCallsign_menu_opened) {
-		SYSMENU_TRX_RotateCallsignChar(direction);
+		SYSMENU_RotateChar(TRX.CALLSIGN, direction);
 		return;
 	}
 	if (sysmenu_trx_setLocator_menu_opened) {
-		SYSMENU_TRX_RotateLocatorChar(direction);
+		SYSMENU_RotateChar(TRX.LOCATOR, direction);
 		return;
 	}
 	if (sysmenu_trx_setURSICode_menu_opened) {
-		SYSMENU_TRX_RotateURSICodeChar(direction);
+		SYSMENU_RotateChar(TRX.URSI_CODE, direction);
 		return;
 	}
 	if (sysmenu_trx_setCWMacros1_menu_opened) {
-		SYSMENU_TRX_RotateCWMacros1Char(direction);
+		SYSMENU_RotateChar(TRX.CW_Macros_1, direction);
 		return;
 	}
 	if (sysmenu_trx_setCWMacros2_menu_opened) {
-		SYSMENU_TRX_RotateCWMacros2Char(direction);
+		SYSMENU_RotateChar(TRX.CW_Macros_2, direction);
 		return;
 	}
 	if (sysmenu_trx_setCWMacros3_menu_opened) {
-		SYSMENU_TRX_RotateCWMacros3Char(direction);
+		SYSMENU_RotateChar(TRX.CW_Macros_3, direction);
 		return;
 	}
 	if (sysmenu_trx_setCWMacros4_menu_opened) {
-		SYSMENU_TRX_RotateCWMacros4Char(direction);
+		SYSMENU_RotateChar(TRX.CW_Macros_4, direction);
 		return;
 	}
 	if (sysmenu_trx_setCWMacros5_menu_opened) {
-		SYSMENU_TRX_RotateCWMacros5Char(direction);
+		SYSMENU_RotateChar(TRX.CW_Macros_5, direction);
 		return;
 	}
 	if (sysmenu_timeMenuOpened) {
@@ -7957,31 +7412,31 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 
 	// wifi set password menu
 	if (sysmenu_wifi_setAP1password_menu_opened) {
-		if (direction < 0 && sysmenu_wifi_selected_ap_password_char_index > 0) {
-			sysmenu_wifi_selected_ap_password_char_index--;
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
 			SYSMENU_WIFI_DrawAP1passwordMenu(true);
-		} else if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1)) {
-			sysmenu_wifi_selected_ap_password_char_index++;
+		} else if (sysmenu_selected_char_index < (MAX_WIFIPASS_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
 			SYSMENU_WIFI_DrawAP1passwordMenu(true);
 		}
 		return;
 	}
 	if (sysmenu_wifi_setAP2password_menu_opened) {
-		if (direction < 0 && sysmenu_wifi_selected_ap_password_char_index > 0) {
-			sysmenu_wifi_selected_ap_password_char_index--;
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
 			SYSMENU_WIFI_DrawAP2passwordMenu(true);
-		} else if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1)) {
-			sysmenu_wifi_selected_ap_password_char_index++;
+		} else if (sysmenu_selected_char_index < (MAX_WIFIPASS_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
 			SYSMENU_WIFI_DrawAP2passwordMenu(true);
 		}
 		return;
 	}
 	if (sysmenu_wifi_setAP3password_menu_opened) {
-		if (direction < 0 && sysmenu_wifi_selected_ap_password_char_index > 0) {
-			sysmenu_wifi_selected_ap_password_char_index--;
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
 			SYSMENU_WIFI_DrawAP3passwordMenu(true);
-		} else if (sysmenu_wifi_selected_ap_password_char_index < (MAX_WIFIPASS_LENGTH - 1)) {
-			sysmenu_wifi_selected_ap_password_char_index++;
+		} else if (sysmenu_selected_char_index < (MAX_WIFIPASS_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
 			SYSMENU_WIFI_DrawAP3passwordMenu(true);
 		}
 		return;
@@ -7990,88 +7445,88 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 
 	// Callsign menu
 	if (sysmenu_trx_setCallsign_menu_opened) {
-		if (direction < 0 && sysmenu_trx_selected_callsign_char_index > 0) {
-			sysmenu_trx_selected_callsign_char_index--;
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
 			SYSMENU_TRX_DrawCallsignMenu(true);
-		} else if (sysmenu_trx_selected_callsign_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
-			sysmenu_trx_selected_callsign_char_index++;
+		} else if (sysmenu_selected_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
 			SYSMENU_TRX_DrawCallsignMenu(true);
 		}
 		return;
 	}
 	// Locator menu
 	if (sysmenu_trx_setLocator_menu_opened) {
-		if (direction < 0 && sysmenu_trx_selected_locator_char_index > 0) {
-			sysmenu_trx_selected_locator_char_index--;
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
 			SYSMENU_TRX_DrawLocatorMenu(true);
-		} else if (sysmenu_trx_selected_locator_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
-			sysmenu_trx_selected_locator_char_index++;
+		} else if (sysmenu_selected_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
 			SYSMENU_TRX_DrawLocatorMenu(true);
 		}
 		return;
 	}
 	// URSI Code menu
 	if (sysmenu_trx_setURSICode_menu_opened) {
-		if (direction < 0 && sysmenu_trx_selected_ursi_code_char_index > 0) {
-			sysmenu_trx_selected_ursi_code_char_index--;
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
 			SYSMENU_TRX_DrawURSICodeMenu(true);
-		} else if (sysmenu_trx_selected_ursi_code_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
-			sysmenu_trx_selected_ursi_code_char_index++;
+		} else if (sysmenu_selected_char_index < (MAX_CALLSIGN_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
 			SYSMENU_TRX_DrawURSICodeMenu(true);
 		}
 		return;
 	}
 	// CW Macros 1 menu
 	if (sysmenu_trx_setCWMacros1_menu_opened) {
-		if (direction < 0 && sysmenu_trx_selected_CWMacros1_char_index > 0) {
-			sysmenu_trx_selected_CWMacros1_char_index--;
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
 			SYSMENU_TRX_DrawCWMacros1Menu(true);
-		} else if (sysmenu_trx_selected_CWMacros1_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
-			sysmenu_trx_selected_CWMacros1_char_index++;
+		} else if (sysmenu_selected_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
 			SYSMENU_TRX_DrawCWMacros1Menu(true);
 		}
 		return;
 	}
 	// CW Macros 2 menu
 	if (sysmenu_trx_setCWMacros2_menu_opened) {
-		if (direction < 0 && sysmenu_trx_selected_CWMacros2_char_index > 0) {
-			sysmenu_trx_selected_CWMacros2_char_index--;
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
 			SYSMENU_TRX_DrawCWMacros2Menu(true);
-		} else if (sysmenu_trx_selected_CWMacros2_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
-			sysmenu_trx_selected_CWMacros2_char_index++;
+		} else if (sysmenu_selected_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
 			SYSMENU_TRX_DrawCWMacros2Menu(true);
 		}
 		return;
 	}
 	// CW Macros 3 menu
 	if (sysmenu_trx_setCWMacros3_menu_opened) {
-		if (direction < 0 && sysmenu_trx_selected_CWMacros3_char_index > 0) {
-			sysmenu_trx_selected_CWMacros3_char_index--;
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
 			SYSMENU_TRX_DrawCWMacros3Menu(true);
-		} else if (sysmenu_trx_selected_CWMacros3_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
-			sysmenu_trx_selected_CWMacros3_char_index++;
+		} else if (sysmenu_selected_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
 			SYSMENU_TRX_DrawCWMacros3Menu(true);
 		}
 		return;
 	}
 	// CW Macros 4 menu
 	if (sysmenu_trx_setCWMacros4_menu_opened) {
-		if (direction < 0 && sysmenu_trx_selected_CWMacros4_char_index > 0) {
-			sysmenu_trx_selected_CWMacros4_char_index--;
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
 			SYSMENU_TRX_DrawCWMacros4Menu(true);
-		} else if (sysmenu_trx_selected_CWMacros4_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
-			sysmenu_trx_selected_CWMacros4_char_index++;
+		} else if (sysmenu_selected_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
 			SYSMENU_TRX_DrawCWMacros4Menu(true);
 		}
 		return;
 	}
 	// CW Macros 5 menu
 	if (sysmenu_trx_setCWMacros5_menu_opened) {
-		if (direction < 0 && sysmenu_trx_selected_CWMacros5_char_index > 0) {
-			sysmenu_trx_selected_CWMacros5_char_index--;
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
 			SYSMENU_TRX_DrawCWMacros5Menu(true);
-		} else if (sysmenu_trx_selected_CWMacros5_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
-			sysmenu_trx_selected_CWMacros5_char_index++;
+		} else if (sysmenu_selected_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
 			SYSMENU_TRX_DrawCWMacros5Menu(true);
 		}
 		return;
@@ -8486,4 +7941,51 @@ static uint16_t getIndexByName(const struct sysmenu_item_handler *menu, uint16_t
 		}
 	}
 	return 0;
+}
+
+static void SYSMENU_RotateChar(char *string, int8_t dir) {
+	bool full_redraw = false;
+	if (string[sysmenu_selected_char_index] == 0) {
+		full_redraw = true;
+	}
+	string[sysmenu_selected_char_index] += dir;
+
+	// do not show special characters
+	if (string[sysmenu_selected_char_index] >= 1 && string[sysmenu_selected_char_index] <= 32 && dir > 0) {
+		string[sysmenu_selected_char_index] = 33;
+	}
+	if (string[sysmenu_selected_char_index] >= 1 && string[sysmenu_selected_char_index] <= 32 && dir < 0) {
+		string[sysmenu_selected_char_index] = 0;
+	}
+	if (string[sysmenu_selected_char_index] >= 127) {
+		string[sysmenu_selected_char_index] = 0;
+	}
+	if (string[sysmenu_selected_char_index] == 0) {
+		full_redraw = true;
+	}
+
+	if (full_redraw) {
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else {
+		LCD_UpdateQuery.SystemMenu = true;
+	}
+}
+
+static void SYSMENU_KeyboardHandler(char *string, uint32_t max_size, char entered) {
+	if (entered == '<') // backspace
+	{
+		TRX.CALLSIGN[sysmenu_selected_char_index] = 0;
+
+		if (sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
+		}
+	} else {
+		TRX.CALLSIGN[sysmenu_selected_char_index] = entered;
+
+		if (sysmenu_selected_char_index < max_size) {
+			sysmenu_selected_char_index++;
+		}
+	}
+
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
