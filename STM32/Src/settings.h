@@ -10,7 +10,7 @@
 
 #define SETT_VERSION 83         // Settings config version
 #define CALIB_VERSION 61        // Calibration config version
-#define WIFI_SETTINGS_VERSION 1 // WiFi config version
+#define WIFI_SETTINGS_VERSION 2 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f // Maximum amplitude when transmitting to FPGA
@@ -60,6 +60,7 @@
 #define MAX_WIFIPASS_LENGTH 32
 #define MAX_CALLSIGN_LENGTH 16
 #define MAX_CW_MACROS_LENGTH 48
+#define ALLQSO_TOKEN_SIZE 16
 
 #define W25Q16_COMMAND_Write_Disable 0x04
 #define W25Q16_COMMAND_Write_Enable 0x06
@@ -844,7 +845,8 @@ extern struct TRX_WIFI {
 	char Password_2[MAX_WIFIPASS_LENGTH];
 	char AP_3[MAX_WIFIPASS_LENGTH];
 	char Password_3[MAX_WIFIPASS_LENGTH];
-
+	char ALLQSO_TOKEN[ALLQSO_TOKEN_SIZE + 1];
+	char ALLQSO_LOGID[ALLQSO_TOKEN_SIZE + 1];
 	uint8_t csum;   // check sum
 	uint8_t ENDBit; // end bit
 } WIFI;

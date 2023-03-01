@@ -1018,6 +1018,8 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_STRING("WIFI.Password_1", WIFI.Password_1);
 			SD_WRITE_SETT_STRING("WIFI.Password_2", WIFI.Password_2);
 			SD_WRITE_SETT_STRING("WIFI.Password_3", WIFI.Password_3);
+			SD_WRITE_SETT_STRING("WIFI.ALLQSO_TOKEN", WIFI.ALLQSO_TOKEN);
+			SD_WRITE_SETT_STRING("WIFI.ALLQSO_LOGID", WIFI.ALLQSO_LOGID);
 			// SERVICES
 			SD_WRITE_SETT_LINE("TRX.SWR_CUSTOM_Begin", (uint32_t *)&TRX.SWR_CUSTOM_Begin, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.SWR_CUSTOM_End", (uint32_t *)&TRX.SWR_CUSTOM_End, SYSMENU_UINT32);
@@ -2035,6 +2037,22 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 			lens = sizeof(WIFI.Password_3) - 1;
 		}
 		strncpy(WIFI.Password_3, value, lens);
+	}
+	if (strcmp(name, "WIFI.ALLQSO_TOKEN") == 0) {
+		dma_memset(WIFI.ALLQSO_TOKEN, 0x00, sizeof(WIFI.ALLQSO_TOKEN));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(WIFI.ALLQSO_TOKEN) - 1) {
+			lens = sizeof(WIFI.ALLQSO_TOKEN) - 1;
+		}
+		strncpy(WIFI.ALLQSO_TOKEN, value, lens);
+	}
+	if (strcmp(name, "WIFI.ALLQSO_LOGID") == 0) {
+		dma_memset(WIFI.ALLQSO_LOGID, 0x00, sizeof(WIFI.ALLQSO_LOGID));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(WIFI.ALLQSO_LOGID) - 1) {
+			lens = sizeof(WIFI.ALLQSO_LOGID) - 1;
+		}
+		strncpy(WIFI.ALLQSO_LOGID, value, lens);
 	}
 	// SERVICES
 	if (strcmp(name, "TRX.SWR_CUSTOM_Begin") == 0) {

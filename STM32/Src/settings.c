@@ -968,6 +968,8 @@ void LoadWiFiSettings(bool clear) {
 		strcpy(WIFI.Password_3, "WIFI-PASSWORD"); // password to the WiFi point 3
 		WIFI.Timezone = 3;                        // time zone (for time synchronization)
 		WIFI.CAT_Server = false;                  // Server for receiving CAT commands via WIFI
+		strcpy(WIFI.ALLQSO_TOKEN, "");            // Token from AllQSO.ru
+		strcpy(WIFI.ALLQSO_LOGID, "");            // LogId from AllQSO.ru
 
 		WIFI.ENDBit = 100; // Bit for the end of a successful write to eeprom
 
