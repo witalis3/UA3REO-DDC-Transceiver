@@ -357,10 +357,10 @@ void LogQSO(void) {
 
 		SD_doCommand(SDCOMM_WRITE_TO_FILE, false);
 
-		static char cFreq[16] = {0};
-		sprintf(cFreq, "%1.6f", QSO_Freq);
+		static char cNote[32] = {0};
+		sprintf(cNote, "%1.6f Loc: %s", QSO_Freq, Target_Grid);
 		static char cTarget_RSL[16] = {0};
 		sprintf(cTarget_RSL, "%3i", Target_RSL);
-		WIFI_postQSOtoAllQSO(Target_Call, cFreq, QSODate, QSOOffTime, cTarget_RSL, RapRcv_RSL_filtered, "FT8", cBND, "", Target_Grid);
+		WIFI_postQSOtoAllQSO(Target_Call, cNote, QSODate, QSOOnTime, cTarget_RSL, RapRcv_RSL_filtered, "FT8", cBND, "", "");
 	}
 }
