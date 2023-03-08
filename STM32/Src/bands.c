@@ -832,7 +832,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
                 {.startFreq = 1270000000, .endFreq = 1290994000, .mode = TRX_MODE_NFM},
                 {.startFreq = 1290994000, .endFreq = 1291481000, .mode = TRX_MODE_NFM},
                 {.startFreq = 1291481000, .endFreq = 1296000000, .mode = TRX_MODE_NFM},
-                {.startFreq = 1296025000, .endFreq = 1296065000, .mode = TRX_MODE_CW},
+                {.startFreq = 1296000000, .endFreq = 1296065000, .mode = TRX_MODE_CW},
                 {.startFreq = 1296065000, .endFreq = 1296068000, .mode = TRX_MODE_DIGI_U},
                 {.startFreq = 1296068000, .endFreq = 1296800000, .mode = TRX_MODE_CW},
                 {.startFreq = 1296800000, .endFreq = 1296994000, .mode = TRX_MODE_CW},

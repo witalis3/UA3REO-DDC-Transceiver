@@ -666,7 +666,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_4m = 90;                // 4m
 		CALIBRATE.rf_out_power_2m = 80;                // 2m
 		CALIBRATE.rf_out_power_70cm = 15;              // 70cm
-		CALIBRATE.rf_out_power_23cm = 15;              // 23cm
+		CALIBRATE.rf_out_power_23cm = 80;              // 23cm
 		CALIBRATE.rf_out_power_13cm = 15;              // 13cm
 		CALIBRATE.rf_out_power_6cm = 16;               // 6cm
 		CALIBRATE.rf_out_power_3cm = 15;               // 3cm
