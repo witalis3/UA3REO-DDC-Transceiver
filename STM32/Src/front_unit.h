@@ -53,11 +53,19 @@ extern bool FRONTPanel_MCP3008_2_Enabled;
 extern bool FRONTPanel_MCP3008_3_Enabled;
 
 extern void FRONTPANEL_ENCODER_checkRotate(void);
-extern void FRONTPANEL_ENCODER2_checkRotate(void);
-extern void FRONTPANEL_check_ENC2SW(bool state);
 extern void FRONTPANEL_Init(void);
 extern void FRONTPANEL_Process(void);
 extern void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value);
 extern void FRONTPANEL_ENC2SW_validate();
+extern void FRONTPANEL_ENCODER2_checkRotate(void);
+extern void FRONTPANEL_check_ENC2SW(bool state);
+#ifdef HRDW_HAS_ENC3
+extern void FRONTPANEL_ENCODER3_checkRotate(void);
+extern void FRONTPANEL_check_ENC3SW(bool state);
+#endif
+#ifdef HRDW_HAS_ENC4
+extern void FRONTPANEL_ENCODER4_checkRotate(void);
+extern void FRONTPANEL_check_ENC4SW(bool state);
+#endif
 
 #endif

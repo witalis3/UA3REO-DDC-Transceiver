@@ -890,7 +890,7 @@ const static struct sysmenu_item_handler sysmenu_wifi_handlers[] = {
     {"WIFI CAT Server", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.CAT_Server, SYSMENU_HANDL_WIFI_CAT_Server},
     {"WIFI Update ESP", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_UpdateFW},
     {"ALLQSO.RU Token", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetALLQSO_TOKEN},
-    {"ALLQSO.RU LogId", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetSetALLQSO_LOGID},
+    {"ALLQSO.RU LogId", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetALLQSO_LOGID},
 #else
     {"WIFI Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.Enabled, SYSMENU_HANDL_WIFI_Enabled},
     {"WIFI Network 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP1},

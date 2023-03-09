@@ -1244,7 +1244,7 @@ void LCD_showManualFreqWindow(bool secondary_vfo) {}
 
 void LCD_ManualFreqButtonHandler(uint32_t parameter) {}
 
-void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase) {}
+void LCD_printKeyboard(void (*keyboardHandler)(char *string, uint32_t max_size, char entered), char *string, uint32_t max_size, bool lowcase) {}
 
 void LCD_hideKeyboard(void) {
 	LCD_screenKeyboardOpened = false;
