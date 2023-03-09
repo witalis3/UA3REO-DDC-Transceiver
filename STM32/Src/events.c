@@ -158,7 +158,7 @@ void EVENTS_do_ENC(void) // 20 0000 hz
 		}
 		ENC2lastClkVal = ENCODER2_CLKVal;
 	}
-	
+
 #ifdef HRDW_HAS_ENC3
 	static uint8_t ENC3lastClkVal = 0;
 	static bool ENC3first = true;
@@ -190,7 +190,7 @@ void EVENTS_do_ENC(void) // 20 0000 hz
 		ENC4lastClkVal = ENCODER4_CLKVal;
 	}
 #endif
-	
+
 #ifdef HAS_TOUCHPAD
 	static bool TOUCH_Int_Last = true;
 	bool TOUCH_Int_Now = HAL_GPIO_ReadPin(T_INT_GPIO_Port, T_INT_Pin);

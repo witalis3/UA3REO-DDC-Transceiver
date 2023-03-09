@@ -84,8 +84,17 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     //.holdHandler = }, // RESERVED
     //{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 170, .tres_max = 263, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = ,
     //.holdHandler = }, // RESERVED
-    {.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 263, .tres_max = 369, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_RIGHT_ARR,
-    .holdHandler = BUTTONHANDLER_LEFT_ARR}, //F
+    {.port = 1,
+     .channel = 1,
+     .type = FUNIT_CTRL_BUTTON,
+     .tres_min = 263,
+     .tres_max = 369,
+     .state = false,
+     .prev_state = false,
+     .work_in_menu = true,
+     .parameter = 0,
+     .clickHandler = BUTTONHANDLER_RIGHT_ARR,
+     .holdHandler = BUTTONHANDLER_LEFT_ARR}, // F
     {.port = 1,
      .channel = 1,
      .type = FUNIT_CTRL_BUTTON,
@@ -809,56 +818,6 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		}
 	}
 
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF) // LPF
-	{
-		if (!TRX_on_TX) {
-			if (CurrentVFO->Mode == TRX_MODE_CW) {
-				SYSMENU_HANDL_AUDIO_CW_LPF_pass(direction);
-			}
-			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
-				SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(direction);
-			}
-			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
-				SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(direction);
-			}
-			if (CurrentVFO->Mode == TRX_MODE_NFM) {
-				SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(direction);
-			}
-			if (CurrentVFO->Mode == TRX_MODE_DIGI_L) {
-				SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(direction);
-			}
-		} else {
-			if (CurrentVFO->Mode == TRX_MODE_CW) {
-				SYSMENU_HANDL_AUDIO_CW_LPF_pass(direction);
-			}
-			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
-				SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(direction);
-			}
-			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
-				SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(direction);
-			}
-			if (CurrentVFO->Mode == TRX_MODE_NFM) {
-				SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(direction);
-			}
-			if (CurrentVFO->Mode == TRX_MODE_DIGI_L) {
-				SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(direction);
-			}
-		}
-	}
-
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF) // HPF
-	{
-		if (!TRX_on_TX) {
-			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
-				SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(direction);
-			}
-		} else {
-			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
-				SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(direction);
-			}
-		}
-	}
-
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL) // SQL
 	{
 		CurrentVFO->FM_SQL_threshold_dbm += direction * 1;
@@ -898,10 +857,10 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH && !CurrentVFO->ManualNotchFilter) { // nothing to NOTCH tune
 			TRX.ENC2_func_mode++;
 		}
-		if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF && CurrentVFO->Mode == TRX_MODE_WFM) { // nothing to LPF tune
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF) { // unsupported
 			TRX.ENC2_func_mode++;
 		}
-		if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF && CurrentVFO->Mode != TRX_MODE_LSB && CurrentVFO->Mode != TRX_MODE_USB) { // fast tune HPF in SSB only
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF) { // unsupported
 			TRX.ENC2_func_mode++;
 		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && ((CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM) || !CurrentVFO->SQL)) { // nothing to SQL tune
@@ -971,9 +930,12 @@ static void FRONTPANEL_ENCODER3_Rotated(int8_t direction) // rotated encoder, ha
 	if (TRX.Locked || LCD_window.opened) {
 		return;
 	}
-	
-	if (direction > 0 || TRX.RF_Gain > 0) {
-		TRX.RF_Gain += direction;
+
+	if (direction > 0 || TRX.RF_Gain > 4) {
+		TRX.RF_Gain += direction * 5;
+	}
+	if (direction < 0 && TRX.RF_Gain <= 5) {
+		TRX.RF_Gain = 0;
 	}
 	if (TRX.RF_Gain > 100) {
 		TRX.RF_Gain = 100;
@@ -1026,6 +988,56 @@ static void FRONTPANEL_ENCODER4_Rotated(int8_t direction) // rotated encoder, ha
 	if (TRX.Locked || LCD_window.opened) {
 		return;
 	}
+
+	// LPF
+	if (PERIPH_FrontPanel_Buttons[0].state == false) { // enc4_sw button
+		if (!TRX_on_TX) {
+			if (CurrentVFO->Mode == TRX_MODE_CW) {
+				SYSMENU_HANDL_AUDIO_CW_LPF_pass(direction);
+			}
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
+				SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(direction);
+			}
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+				SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(direction);
+			}
+			if (CurrentVFO->Mode == TRX_MODE_NFM) {
+				SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(direction);
+			}
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L) {
+				SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(direction);
+			}
+		} else {
+			if (CurrentVFO->Mode == TRX_MODE_CW) {
+				SYSMENU_HANDL_AUDIO_CW_LPF_pass(direction);
+			}
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
+				SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(direction);
+			}
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+				SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(direction);
+			}
+			if (CurrentVFO->Mode == TRX_MODE_NFM) {
+				SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(direction);
+			}
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L) {
+				SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(direction);
+			}
+		}
+	}
+
+	// HPF
+	if (PERIPH_FrontPanel_Buttons[0].state == true) { // enc4_sw button
+		if (!TRX_on_TX) {
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
+				SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(direction);
+			}
+		} else {
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
+				SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(direction);
+			}
+		}
+	}
 }
 
 static void FRONTPANEL_ENC4SW_click_handler(uint32_t parameter) {
@@ -1052,10 +1064,10 @@ void FRONTPANEL_ENC2SW_validate() {
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH && !CurrentVFO->ManualNotchFilter) { // nothing to NOTCH tune
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	}
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF && CurrentVFO->Mode == TRX_MODE_WFM) { // nothing to LPF tune
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_LPF) { // unsupported
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	}
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF && CurrentVFO->Mode != TRX_MODE_LSB && CurrentVFO->Mode != TRX_MODE_USB) { // fast tune HPF in SSB only
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_HPF) { // unsupported
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	}
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && ((CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM) || !CurrentVFO->SQL)) { // nothing to SQL tune
@@ -1102,12 +1114,12 @@ void FRONTPANEL_Process(void) {
 		FRONTPANEL_ENCODER2_Rotated(FRONTPANEL_ProcessEncoder2);
 		FRONTPANEL_ProcessEncoder2 = 0;
 	}
-	
+
 	if (FRONTPANEL_ProcessEncoder3 != 0) {
 		FRONTPANEL_ENCODER3_Rotated(FRONTPANEL_ProcessEncoder3);
 		FRONTPANEL_ProcessEncoder3 = 0;
 	}
-	
+
 	if (FRONTPANEL_ProcessEncoder4 != 0) {
 		FRONTPANEL_ENCODER4_Rotated(FRONTPANEL_ProcessEncoder4);
 		FRONTPANEL_ProcessEncoder4 = 0;
