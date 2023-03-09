@@ -1185,14 +1185,14 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	// RIT / XIT
 	if (button->type == FUNIT_CTRL_RIT) {
 		static float32_t RIT_mcp3008_averaged = 0.0f;
-		RIT_mcp3008_averaged = RIT_mcp3008_averaged * 0.6f + mcp3008_value * 0.4f;
+		RIT_mcp3008_averaged = RIT_mcp3008_averaged * 0.8f + mcp3008_value * 0.2f;
 
 		if (TRX.RIT_Enabled) {
-			static int_fast16_t TRX_RIT_old = 0;
-			TRX_RIT = (int_fast16_t)(((1023.0f - RIT_mcp3008_averaged) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
+			float32_t TRX_RIT_new = (int_fast16_t)(((1023.0f - RIT_mcp3008_averaged) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
+			TRX_RIT_new = roundf(roundf(TRX_RIT_new / 5.0f) * 5.0f);
 
-			if (abs(TRX_RIT_old - TRX_RIT) >= 2.0f) {
-				TRX_RIT_old = TRX_RIT;
+			if (TRX_RIT != TRX_RIT_new) {
+				TRX_RIT = TRX_RIT_new;
 				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
 				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_RIT / (float32_t)TRX.RIT_INTERVAL));
@@ -1204,11 +1204,11 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 		}
 
 		if (TRX.XIT_Enabled) {
-			static int_fast16_t TRX_XIT_old = 0;
-			TRX_XIT = (int_fast16_t)(((1023.0f - RIT_mcp3008_averaged) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
+			float32_t TRX_XIT_new = (int_fast16_t)(((1023.0f - RIT_mcp3008_averaged) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
+			TRX_XIT_new = roundf(roundf(TRX_XIT_new / 5.0f) * 5.0f);
 
-			if (abs(TRX_XIT_old - TRX_XIT) >= 2.0f) {
-				TRX_XIT_old = TRX_XIT;
+			if (TRX_XIT != TRX_XIT_new) {
+				TRX_XIT = TRX_XIT_new;
 				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
 				LCD_bw_trapez_stripe_pos_new += (int16_t)((float32_t)(LAYOUT->BW_TRAPEZ_WIDTH * 0.9f) / 2.0f * ((float32_t)TRX_XIT / (float32_t)TRX.XIT_INTERVAL));
