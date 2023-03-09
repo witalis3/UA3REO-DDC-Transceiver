@@ -76,8 +76,8 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     //.holdHandler = }, // RESERVED
     //{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 170, .tres_max = 263, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = ,
     //.holdHandler = }, // RESERVED
-    //{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 263, .tres_max = 369, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = ,
-    //.holdHandler = }, //F
+    {.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 263, .tres_max = 369, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = BUTTONHANDLER_RIGHT_ARR,
+    .holdHandler = BUTTONHANDLER_LEFT_ARR}, //F
     {.port = 1,
      .channel = 1,
      .type = FUNIT_CTRL_BUTTON,
@@ -1189,11 +1189,9 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 
 		if (TRX.RIT_Enabled) {
 			static int_fast16_t TRX_RIT_old = 0;
-			if (!TRX.FineRITTune) {
-				TRX_RIT = (int_fast16_t)(((1023.0f - RIT_mcp3008_averaged) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
-			}
+			TRX_RIT = (int_fast16_t)(((1023.0f - RIT_mcp3008_averaged) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
 
-			if (TRX_RIT_old != TRX_RIT) {
+			if (abs(TRX_RIT_old - TRX_RIT) >= 2.0f) {
 				TRX_RIT_old = TRX_RIT;
 				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;
@@ -1207,11 +1205,9 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 
 		if (TRX.XIT_Enabled) {
 			static int_fast16_t TRX_XIT_old = 0;
-			if (!TRX.FineRITTune) {
-				TRX_XIT = (int_fast16_t)(((1023.0f - RIT_mcp3008_averaged) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
-			}
+			TRX_XIT = (int_fast16_t)(((1023.0f - RIT_mcp3008_averaged) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
 
-			if (TRX_XIT_old != TRX_XIT) {
+			if (abs(TRX_XIT_old - TRX_XIT) >= 2.0f) {
 				TRX_XIT_old = TRX_XIT;
 				TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 				uint16_t LCD_bw_trapez_stripe_pos_new = LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2;

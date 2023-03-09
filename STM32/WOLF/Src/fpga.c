@@ -80,6 +80,7 @@ void FPGA_Init(bool bus_test, bool firmware_test) {
 	FPGA_syncAndClockRiseFall();
 
 	// BUS TEST
+	LCD_busy = true;
 	for (uint16_t i = 0; i < 256; i++) {
 		FPGA_setBusOutput();
 		FPGA_writePacket(0);
@@ -99,9 +100,11 @@ void FPGA_Init(bool bus_test, bool firmware_test) {
 			sprintf(buff, "BUS Error: %d -> %d", i, ret);
 			FPGA_bus_test_result = false;
 			LCD_showError(buff, false);
+			LCD_busy = true;
 			HAL_Delay(300);
 		}
 	}
+	LCD_busy = false;
 
 	// GET FW VERSION
 	FPGA_setBusOutput();
