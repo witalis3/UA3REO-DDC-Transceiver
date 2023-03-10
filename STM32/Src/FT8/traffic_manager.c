@@ -15,18 +15,13 @@ uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly f
 uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
 int xmit_flag, ft8_xmit_counter;
 
-char Station_Call[7]; // six character call sign + /0 for example  => "DB5AT"
-char Locator[7];      // four character locator  + /0	for example = "JN48"
-
 #define FT8_TONE_SPACING 6.25
 
 extern uint16_t cursor_line;
 
 int Beacon_State; //
 extern int num_decoded_msg;
-
 uint32_t F_Offset;
-
 char QSODate[9];    // string containing the potential QSO date
 char QSOOnTime[7];  // potential QSO Start time
 char QSOOffTime[7]; // potential QSO Stop time
@@ -346,7 +341,7 @@ void LogQSO(void) {
 		        " <call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s "
 		        "<time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>",
 		        strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, QSO_Freq,
-		        Station_Call, Locator);
+		        TRX.CALLSIGN, TRX.LOCATOR);
 		StrToLog[0] = CR;
 
 		Len = strlen(StrToLog);

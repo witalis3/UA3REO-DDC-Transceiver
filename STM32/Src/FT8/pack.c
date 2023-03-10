@@ -1,7 +1,5 @@
 #include "pack.h"
-
 #include "text.h"
-
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>

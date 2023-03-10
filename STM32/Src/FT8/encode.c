@@ -1,19 +1,14 @@
 #include "encode.h"
 #include "constants.h"
-
 #include <stdio.h>
 
 extern int ND;
 extern int NS;
-
 extern int NN;
 // Define the LDPC sizes
 extern int N;
 extern int K;
-
 extern int M;
-
-// extern int K_BYTES;
 
 extern uint16_t CRC_POLYNOMIAL; // CRC-14 polynomial without the leading (MSB) 1
 extern int CRC_WIDTH;

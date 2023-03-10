@@ -1,11 +1,7 @@
 #include "unpack.h"
 #include "text.h"
-
 #include <stdbool.h>
 #include <string.h>
-
-// extern _Bool true;
-// extern _Bool false;
 
 // const uint32_t NBASE = 37L*36L*10L*27L*27L*27L;
 static const uint32_t MAX22 = 4194304L;
