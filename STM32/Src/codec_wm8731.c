@@ -42,8 +42,8 @@ void CODEC_TXRX_mode(void) // loopback
 
 	if (getInputType() == TRX_INPUT_MIC) // mic
 	{
-		WM8731_SendI2CCommand(B8(00000001), B8(10000000)); // R0 Left Line In
-		WM8731_SendI2CCommand(B8(00000011), B8(10000000)); // R1 Right Line In
+		WM8731_SendI2CCommand(B8(00000001), B8(10010111)); // R0 Left Line In
+		WM8731_SendI2CCommand(B8(00000011), B8(10010111)); // R1 Right Line In
 		if (TRX.MIC_Boost) {
 			WM8731_SendI2CCommand(B8(00001000), B8(00010101)); // R4 Analogue Audio Path Control
 		} else {
