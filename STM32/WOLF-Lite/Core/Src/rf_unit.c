@@ -9,15 +9,6 @@
 #include "system_menu.h"
 #include "trx_manager.h"
 
-static bool ATU_Finished = false;
-static bool ATU_InProcess = false;
-static bool ATU_BestValsProbed = false;
-static float32_t ATU_MinSWR = 1.0;
-static uint8_t ATU_MinSWR_I = 0;
-static uint8_t ATU_MinSWR_C = 0;
-static bool ATU_MinSWR_T = false;
-static uint8_t ATU_Stage = 0;
-bool ATU_TunePowerStabilized = false;
 bool FAN_Active = false;
 static bool FAN_Active_old = false;
 
@@ -60,15 +51,6 @@ static uint8_t getBPFByFreq(uint32_t freq) {
 	}
 	return 255;
 }
-
-void RF_UNIT_ATU_Invalidate(void) {
-	ATU_Finished = false;
-	ATU_InProcess = false;
-	ATU_TunePowerStabilized = false;
-	ATU_BestValsProbed = false;
-}
-
-void RF_UNIT_ATU_SetCompleted(void) { ATU_Finished = true; }
 
 void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 {}

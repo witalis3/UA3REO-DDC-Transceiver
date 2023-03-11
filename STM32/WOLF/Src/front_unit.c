@@ -1,5 +1,6 @@
 #include "front_unit.h"
 #include "agc.h"
+#include "atu.h"
 #include "audio_filters.h"
 #include "auto_notch.h"
 #include "functions.h"

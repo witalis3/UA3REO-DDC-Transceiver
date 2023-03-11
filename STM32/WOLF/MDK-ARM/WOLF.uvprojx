@@ -2821,6 +2821,16 @@
               <FilePath>..\..\Src\agc.h</FilePath>
             </File>
             <File>
+              <FileName>atu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\atu.c</FilePath>
+            </File>
+            <File>
+              <FileName>atu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\atu.h</FilePath>
+            </File>
+            <File>
               <FileName>audio_filters.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\audio_filters.c</FilePath>
@@ -4409,6 +4419,16 @@
               <FileName>agc.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\agc.h</FilePath>
+            </File>
+            <File>
+              <FileName>atu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\atu.c</FilePath>
+            </File>
+            <File>
+              <FileName>atu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\atu.h</FilePath>
             </File>
             <File>
               <FileName>audio_filters.c</FileName>
@@ -6070,6 +6090,16 @@
               <FilePath>..\..\Src\agc.h</FilePath>
             </File>
             <File>
+              <FileName>atu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\atu.c</FilePath>
+            </File>
+            <File>
+              <FileName>atu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\atu.h</FilePath>
+            </File>
+            <File>
               <FileName>audio_filters.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\audio_filters.c</FilePath>
@@ -7727,6 +7757,16 @@
               <FileName>agc.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\agc.h</FilePath>
+            </File>
+            <File>
+              <FileName>atu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\atu.c</FilePath>
+            </File>
+            <File>
+              <FileName>atu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\atu.h</FilePath>
             </File>
             <File>
               <FileName>audio_filters.c</FileName>
@@ -9388,6 +9428,16 @@
               <FilePath>..\..\Src\agc.h</FilePath>
             </File>
             <File>
+              <FileName>atu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\atu.c</FilePath>
+            </File>
+            <File>
+              <FileName>atu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\atu.h</FilePath>
+            </File>
+            <File>
               <FileName>audio_filters.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\audio_filters.c</FilePath>
@@ -11045,6 +11095,16 @@
               <FileName>agc.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\agc.h</FilePath>
+            </File>
+            <File>
+              <FileName>atu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\atu.c</FilePath>
+            </File>
+            <File>
+              <FileName>atu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\atu.h</FilePath>
             </File>
             <File>
               <FileName>audio_filters.c</FileName>
@@ -12706,6 +12766,16 @@
               <FilePath>..\..\Src\agc.h</FilePath>
             </File>
             <File>
+              <FileName>atu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\atu.c</FilePath>
+            </File>
+            <File>
+              <FileName>atu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\atu.h</FilePath>
+            </File>
+            <File>
               <FileName>audio_filters.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\audio_filters.c</FilePath>
@@ -14294,6 +14364,16 @@
               <FileName>agc.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\agc.h</FilePath>
+            </File>
+            <File>
+              <FileName>atu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\atu.c</FilePath>
+            </File>
+            <File>
+              <FileName>atu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\atu.h</FilePath>
             </File>
             <File>
               <FileName>audio_filters.c</FileName>
@@ -15935,6 +16015,16 @@
               <FileName>agc.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\agc.h</FilePath>
+            </File>
+            <File>
+              <FileName>atu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\atu.c</FilePath>
+            </File>
+            <File>
+              <FileName>atu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\atu.h</FilePath>
             </File>
             <File>
               <FileName>audio_filters.c</FileName>

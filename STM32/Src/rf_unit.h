@@ -6,13 +6,10 @@
 
 #define SET_DATA_PIN HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_SET)
 
-extern bool ATU_TunePowerStabilized;
 extern bool FAN_Active;
 
 extern void RF_UNIT_UpdateState(bool clean);
 extern void RF_UNIT_ProcessSensors(void);
 extern void RF_UNIT_MeasureVoltage(void); // Tisho
-extern void RF_UNIT_ATU_Invalidate(void);
-extern void RF_UNIT_ATU_SetCompleted(void);
 
 #endif

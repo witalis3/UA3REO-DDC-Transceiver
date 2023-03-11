@@ -2,6 +2,7 @@
 #include "FT8/FT8_main.h"
 #include "FT8/decode_ft8.h"
 #include "agc.h"
+#include "atu.h"
 #include "audio_filters.h"
 #include "auto_calibration.h"
 #include "auto_notch.h"

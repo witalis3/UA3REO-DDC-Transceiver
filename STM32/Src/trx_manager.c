@@ -1,6 +1,7 @@
 #include "trx_manager.h"
 #include "FT8/FT8_main.h"
 #include "agc.h"
+#include "atu.h"
 #include "audio_filters.h"
 #include "auto_notch.h"
 #include "bands.h"
@@ -1216,7 +1217,7 @@ void BUTTONHANDLER_TUNE(uint32_t parameter) {
 				TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
 			}
 		}
-		RF_UNIT_ATU_Invalidate();
+		ATU_Invalidate();
 		ATU_TunePowerStabilized = false;
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}

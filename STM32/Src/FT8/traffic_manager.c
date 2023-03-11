@@ -1,6 +1,7 @@
 #include "traffic_manager.h"
 #include "FT8_GUI.h"
 #include "FT8_main.h"
+#include "atu.h"
 #include "decode_ft8.h"
 #include "gen_ft8.h"
 #include "lcd.h"
@@ -29,7 +30,7 @@ char QSOOffTime[7]; // potential QSO Stop time
 void transmit_sequence(void) {
 	Set_Data_Colection(0);                    // Disable the data colection
 	set_Xmit_Freq(FT8_BND_Freq, cursor_freq); // Set band frequency and the frequency in the FT8 (cursor freq.)
-	RF_UNIT_ATU_SetCompleted();
+	ATU_SetCompleted();
 	TRX.Full_Duplex = false;
 	TRX.TWO_SIGNAL_TUNE = false;
 	TRX_Tune = true;
