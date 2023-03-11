@@ -133,6 +133,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Power for each band** - Save power settings for each band individually
 * **Power for each mode** - Save power settings for each mode individually
 * **Channel Mode** - Channel frequency mode (for LPD/PMR and etc.)
+* **Repeater Mode"** -  Operation mode via repeater
 * **Band Map** - Band Map, automatically switches mode depending on the frequency
 * **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
 * **RF Filters** - Hardware filter management (LPF / HPF / BPF)
@@ -160,6 +161,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Locator** - User QTH locator
 * **URSI Code** - Ionogramm URSI Code https://digisonde.com/index.html#stationmap-section
 * **DX Cluster Type** - Selecting a Data Source for a DX Cluster
+* **Repeater offset, kHz"** -  Transmission frequency offset in repeater mode
 * **Full Duplex** - Full duplex RX+TX mode
 * **TUNER Enabled** - Turning on the antenna tuner
 * **ATU Enabled** - Turning on the automatic antenna tuner

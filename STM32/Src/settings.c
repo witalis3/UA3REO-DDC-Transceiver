@@ -199,6 +199,8 @@ void LoadSettings(bool clear) {
 		TRX.Digital_Pre_Distortion = false;        // enable digital pre-distortion
 		TRX.Split_Mode_Sync_Freq = false;          // enable VFO freq syncronization in SPLIT mode
 		TRX.DXCluster_Type = DX_CLUSTER_DX_SUMMIT; // DX cluster type
+		TRX.RepeaterMode = false;                  // repeater mode with custom offset
+		TRX.REPEATER_Offset = 600;                 // repeater mode custom offset
 		// AUDIO
 		TRX.Volume = 25;             // AF Volume
 		TRX.Volume_Step = 5;         // AF Volume step by sec encoder

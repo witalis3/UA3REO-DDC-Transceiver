@@ -834,6 +834,8 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Band", (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Mode", (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ChannelMode", (uint32_t *)&TRX.ChannelMode, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.RepeaterMode", (uint32_t *)&TRX.RepeaterMode, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.REPEATER_Offset", (uint32_t *)&TRX.REPEATER_Offset, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.RIT_Enabled", (uint32_t *)&TRX.RIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.XIT_Enabled", (uint32_t *)&TRX.XIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FineRITTune", (uint32_t *)&TRX.FineRITTune, SYSMENU_BOOLEAN);
@@ -1409,6 +1411,12 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.ChannelMode") == 0) {
 		TRX.ChannelMode = bval;
+	}
+	if (strcmp(name, "TRX.RepeaterMode") == 0) {
+		TRX.RepeaterMode = bval;
+	}
+	if (strcmp(name, "TRX.REPEATER_Offset") == 0) {
+		TRX.REPEATER_Offset = intval;
 	}
 	if (strcmp(name, "TRX.RF_Gain") == 0) {
 		TRX.RF_Gain = (uint8_t)uintval;

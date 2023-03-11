@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 87         // Settings config version
+#define SETT_VERSION 88         // Settings config version
 #define CALIB_VERSION 61        // Calibration config version
 #define WIFI_SETTINGS_VERSION 2 // WiFi config version
 
@@ -449,6 +449,7 @@ extern struct TRX_SETTINGS {
 	VFO VFO_B;
 	uint16_t RIT_INTERVAL;
 	uint16_t XIT_INTERVAL;
+	int16_t REPEATER_Offset;
 	uint8_t ATT_STEP;
 	uint8_t RF_Gain;
 	uint8_t RF_Gain_By_Mode_CW;
@@ -479,6 +480,7 @@ extern struct TRX_SETTINGS {
 	bool ANT_selected; // false - 1, true - 2
 	bool ANT_mode;     // false - RX=TX, true - 1RX 2TX
 	bool ChannelMode;
+	bool RepeaterMode;
 	bool RIT_Enabled;
 	bool XIT_Enabled;
 	bool SPLIT_Enabled;
@@ -488,10 +490,10 @@ extern struct TRX_SETTINGS {
 	bool AutoGain;
 	bool Locked;
 	bool Encoder_Accelerate;
-	bool Custom_Transverter_Enabled;
 	bool TUNER_Enabled;
 	bool ATU_Enabled;
 	bool ATU_T;
+	bool Custom_Transverter_Enabled;
 	bool Transverter_70cm;
 	bool Transverter_23cm;
 	bool Transverter_13cm;

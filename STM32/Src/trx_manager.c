@@ -94,6 +94,7 @@ uint8_t TRX_TX_sendZeroes = 0;
 
 static uint_fast8_t TRX_TXRXMode = 0; // 0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static bool TRX_SPLIT_Applied = false;
+static bool TRX_REPEATER_Applied = false;
 static bool TRX_ANT_swap_applyed = false;
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
@@ -148,6 +149,21 @@ void TRX_Restart_Mode() {
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	}
 
+	// Repeater mode
+	if (TRX.RepeaterMode && !TRX_REPEATER_Applied) {
+		TRX_REPEATER_Applied = true;
+
+		if (TRX_on_TX) {
+			TRX_setFrequency(CurrentVFO->Freq + TRX.REPEATER_Offset * 1000, CurrentVFO);
+		} else {
+			TRX_setFrequency(CurrentVFO->Freq - TRX.REPEATER_Offset * 1000, CurrentVFO);
+		}
+
+		LCD_UpdateQuery.FreqInfoRedraw = true;
+		LCD_UpdateQuery.TopButtons = true;
+		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
+	}
+
 	// Ant swap for mode 1RX/2TX and others
 	if (TRX.ANT_mode && !TRX_ANT_swap_applyed) {
 		TRX_ANT_swap_applyed = true;
@@ -184,6 +200,7 @@ static void TRX_Start_RX() {
 	CODEC_Buffer_underrun = false;
 	CODEC_DMA_state = true;
 	TRX_SPLIT_Applied = false;
+	TRX_REPEATER_Applied = false;
 	TRX_ANT_swap_applyed = false;
 	TRX_TXRXMode = 1;
 
@@ -207,6 +224,7 @@ static void TRX_Start_TX() {
 	CODEC_CleanBuffer();
 	TRX_TX_StartTime = HAL_GetTick();
 	TRX_SPLIT_Applied = false;
+	TRX_REPEATER_Applied = false;
 	TRX_ANT_swap_applyed = false;
 	TRX_TXRXMode = 2;
 
@@ -224,6 +242,7 @@ static void TRX_Start_TXRX() {
 	CODEC_CleanBuffer();
 	TRX_TX_StartTime = HAL_GetTick();
 	TRX_SPLIT_Applied = false;
+	TRX_REPEATER_Applied = false;
 	TRX_ANT_swap_applyed = false;
 	TRX_TXRXMode = 3;
 

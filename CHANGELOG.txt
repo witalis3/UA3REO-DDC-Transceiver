@@ -8,6 +8,7 @@
 +STM32: Добавлена настройка "Split freq sync", отвечающая за синхронное изменение частоты VFO в SPLIT режиме, Tnx SP7SP
 +STM32: Добавлена настройка "DX Cluster Type", отвечающая за выбор источника данных кластера (reversebeacon.net или dxsummit.fi), Tnx SP7SP
 +STM32: CESSB активирован по умолчанию (с компрессией в 1дб, настройте по вкусу)
++STM32: Добавлен режим работы через репитеры "Repeater Mode" со смещением во время передачи из настройки "Repeater offset, kHz", Tnx EA7HOG
 
 ----Version 7.1.0----
 +STM32: Исправлен запуск ATU при первом старте CQ в FT8, Tnx RU4PN

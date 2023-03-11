@@ -31,6 +31,8 @@
 static void SYSMENU_HANDL_TRX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
 static void SYSMENU_HANDL_TRX_ChannelMode(int8_t direction);
+static void SYSMENU_HANDL_TRX_RepeaterMode(int8_t direction);
+static void SYSMENU_HANDL_TRX_REPEATER_Offset(int8_t direction);
 static void SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band(int8_t direction);
 static void SYSMENU_HANDL_TRX_RF_Gain_For_Each_Mode(int8_t direction);
 static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction);
@@ -537,6 +539,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Pwr for each band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band},
     {"Pwr for each mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Mode},
     {"Channel Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ChannelMode, SYSMENU_HANDL_TRX_ChannelMode},
+    {"Repeater Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RepeaterMode, SYSMENU_HANDL_TRX_RepeaterMode},
     {"Band Map", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
     {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
 #if !defined(FRONTPANEL_LITE)
@@ -591,6 +594,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"URSI Code", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetURSICode},
     {"DX Cluster type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DXCluster_Type, SYSMENU_HANDL_TRX_DXCluster_Type, {"RBN", "DXSUMMIT"}},
     {"Full Duplex", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Full_Duplex, SYSMENU_HANDL_TRX_Full_Duplex},
+    {"Repeater offset, kHz", SYSMENU_INT16, NULL, (uint32_t *)&TRX.REPEATER_Offset, SYSMENU_HANDL_TRX_REPEATER_Offset},
     {"Transverter 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_70cm, SYSMENU_HANDL_TRX_TRANSV_70CM},
     {"Transverter 23cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_23cm, SYSMENU_HANDL_TRX_TRANSV_23CM},
     {"Transverter 13cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_13cm, SYSMENU_HANDL_TRX_TRANSV_13CM},
@@ -1426,6 +1430,25 @@ static void SYSMENU_HANDL_TRX_ChannelMode(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.ChannelMode = false;
+	}
+}
+
+static void SYSMENU_HANDL_TRX_RepeaterMode(int8_t direction) {
+	if (direction > 0) {
+		TRX.RepeaterMode = true;
+	}
+	if (direction < 0) {
+		TRX.RepeaterMode = false;
+	}
+}
+
+static void SYSMENU_HANDL_TRX_REPEATER_Offset(int8_t direction) {
+	TRX.REPEATER_Offset += direction;
+	if (TRX.REPEATER_Offset > 30000) {
+		TRX.REPEATER_Offset = 30000;
+	}
+	if (TRX.REPEATER_Offset < -30000) {
+		TRX.REPEATER_Offset = -30000;
 	}
 }
 
