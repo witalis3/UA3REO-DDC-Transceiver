@@ -13,7 +13,6 @@
 #define M_PI 3.14159265358979323846264338
 
 extern uint16_t cursor_line;
-
 extern int num_decoded_msg;
 
 static int master_offset, offset_step;
@@ -73,7 +72,6 @@ void init_DSP(void) {
 	input_gulp = alloc_to_wtf(input_gulp_size * sizeof(q15_t), false);
 #endif
 
-	// arm_rfft_init_q15(&fft_inst, &aux_inst, FFT_SIZE_FT8, 0, 1);
 	arm_rfft_init_q15(&fft_inst, FFT_SIZE_FT8, 0, 1);
 	arm_cfft_radix4_init_q15(&aux_inst, FFT_SIZE_FT8, 0, 1);
 

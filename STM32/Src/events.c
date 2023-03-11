@@ -159,6 +159,38 @@ void EVENTS_do_ENC(void) // 20 0000 hz
 		ENC2lastClkVal = ENCODER2_CLKVal;
 	}
 
+#ifdef HRDW_HAS_ENC3
+	static uint8_t ENC3lastClkVal = 0;
+	static bool ENC3first = true;
+	uint8_t ENCODER3_CLKVal = HAL_GPIO_ReadPin(ENC3_CLK_GPIO_Port, ENC3_CLK_Pin);
+	if (ENC3first) {
+		ENC3lastClkVal = ENCODER3_CLKVal;
+		ENC3first = false;
+	}
+	if (ENC3lastClkVal != ENCODER3_CLKVal) {
+		if (TRX_Inited) {
+			FRONTPANEL_ENCODER3_checkRotate();
+		}
+		ENC3lastClkVal = ENCODER3_CLKVal;
+	}
+#endif
+
+#ifdef HRDW_HAS_ENC4
+	static uint8_t ENC4lastClkVal = 0;
+	static bool ENC4first = true;
+	uint8_t ENCODER4_CLKVal = HAL_GPIO_ReadPin(ENC4_CLK_GPIO_Port, ENC4_CLK_Pin);
+	if (ENC4first) {
+		ENC4lastClkVal = ENCODER4_CLKVal;
+		ENC4first = false;
+	}
+	if (ENC4lastClkVal != ENCODER4_CLKVal) {
+		if (TRX_Inited) {
+			FRONTPANEL_ENCODER4_checkRotate();
+		}
+		ENC4lastClkVal = ENCODER4_CLKVal;
+	}
+#endif
+
 #ifdef HAS_TOUCHPAD
 	static bool TOUCH_Int_Last = true;
 	bool TOUCH_Int_Now = HAL_GPIO_ReadPin(T_INT_GPIO_Port, T_INT_Pin);
@@ -440,7 +472,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 			WIFI_checkFWUpdates();
 			maySendIQ = false;
 		}
-		if (TRX.FFT_DXCluster && ((HAL_GetTick() - TRX_DXCluster_UpdateTime) > DXCLUSTER_UPDATE_TIME || TRX_DXCluster_UpdateTime == 0)) // get and show dx cluster
+		if (TRX.FFT_DXCluster && ((HAL_GetTick() - TRX_DXCluster_UpdateTime) > DXCLUSTER_UPDATE_TIME || TRX_DXCluster_UpdateTime == 0) && !SYSMENU_FT8_DECODER_opened) // get and show dx cluster
 		{
 			if (WIFI_getDXCluster_background()) {
 				TRX_DXCluster_UpdateTime = HAL_GetTick();

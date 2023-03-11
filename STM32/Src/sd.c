@@ -834,6 +834,8 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Band", (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Mode", (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ChannelMode", (uint32_t *)&TRX.ChannelMode, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.RepeaterMode", (uint32_t *)&TRX.RepeaterMode, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.REPEATER_Offset", (uint32_t *)&TRX.REPEATER_Offset, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.RIT_Enabled", (uint32_t *)&TRX.RIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.XIT_Enabled", (uint32_t *)&TRX.XIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FineRITTune", (uint32_t *)&TRX.FineRITTune, SYSMENU_BOOLEAN);
@@ -851,11 +853,13 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_AM_STEP_KHZ", (uint32_t *)&TRX.FRQ_ENC_AM_STEP_KHZ, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.FRQ_CW_STEP_DIVIDER", (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.Debug_Type", (uint32_t *)&TRX.Debug_Type, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.DXCluster_Type", (uint32_t *)&TRX.DXCluster_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.BandMapEnabled", (uint32_t *)&TRX.BandMapEnabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.InputType_MAIN", (uint32_t *)&TRX.InputType_MAIN, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.InputType_DIGI", (uint32_t *)&TRX.InputType_DIGI, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AutoGain", (uint32_t *)&TRX.AutoGain, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.SPLIT_Enabled", (uint32_t *)&TRX.SPLIT_Enabled, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.Split_Mode_Sync_Freq", (uint32_t *)&TRX.Split_Mode_Sync_Freq, SYSMENU_BOOLEAN);
 #if HRDW_HAS_DUAL_RX
 			SD_WRITE_SETT_LINE("TRX.Dual_RX", (uint32_t *)&TRX.Dual_RX, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Dual_RX_Type", (uint32_t *)&TRX.Dual_RX_Type, SYSMENU_UINT8);
@@ -1018,6 +1022,8 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_STRING("WIFI.Password_1", WIFI.Password_1);
 			SD_WRITE_SETT_STRING("WIFI.Password_2", WIFI.Password_2);
 			SD_WRITE_SETT_STRING("WIFI.Password_3", WIFI.Password_3);
+			SD_WRITE_SETT_STRING("WIFI.ALLQSO_TOKEN", WIFI.ALLQSO_TOKEN);
+			SD_WRITE_SETT_STRING("WIFI.ALLQSO_LOGID", WIFI.ALLQSO_LOGID);
 			// SERVICES
 			SD_WRITE_SETT_LINE("TRX.SWR_CUSTOM_Begin", (uint32_t *)&TRX.SWR_CUSTOM_Begin, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.SWR_CUSTOM_End", (uint32_t *)&TRX.SWR_CUSTOM_End, SYSMENU_UINT32);
@@ -1202,71 +1208,56 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			}
 
 			// Bands settings
-			/*char buff[64] = {0};
-			for (uint8_t i = 0; i < BANDS_COUNT; i++)
-			{
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Freq", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].Freq, SYSMENU_UINT64);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Mode", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].Mode, SYSMENU_UINT8);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].LNA", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].LNA, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ATT, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT_DB", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ATT_DB, SYSMENU_FLOAT32);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_selected", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT_selected, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_mode", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT_mode, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_Driver", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SQL", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].SQL, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dbm", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm, SYSMENU_INT8);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].DNR_Type, SYSMENU_UINT8);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AGC", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].AGC, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE, SYSMENU_UINT8);
+			for (uint8_t i = 0; i < BANDS_COUNT; i++) {
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Freq", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].Freq, SYSMENU_UINT64);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Mode", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].Mode, SYSMENU_UINT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].LNA", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].LNA, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ATT, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT_DB", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ATT_DB, SYSMENU_FLOAT32);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_selected", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT_selected, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_mode", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT_mode, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_Driver", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SQL", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].SQL, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dbm", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm, SYSMENU_INT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].DNR_Type, SYSMENU_UINT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AGC", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].AGC, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE, SYSMENU_UINT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT1_ATU_I", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_I, SYSMENU_UINT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT1_ATU_C", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_C, SYSMENU_UINT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT2_ATU_I", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_I, SYSMENU_UINT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT2_ATU_C", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_C, SYSMENU_UINT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT1_ATU_T", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_T, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT2_ATU_T", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_T, SYSMENU_BOOLEAN);
 			}
 
 			// Memory channels settings
-			for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)
-			{
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Freq", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].Freq, SYSMENU_UINT64);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Mode", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].Mode, SYSMENU_UINT8);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].LNA", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].LNA, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ATT", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ATT, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ATT_DB", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ATT_DB, SYSMENU_FLOAT32);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ANT_selected", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ANT_selected, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ANT_mode", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ANT_mode, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_Driver", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ADC_Driver, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SQL", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].SQL, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].FM_SQL_threshold_dbm", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold_dbm, SYSMENU_INT8);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_PGA", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].ADC_PGA, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].DNR_Type", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].DNR_Type, SYSMENU_UINT8);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].AGC", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].AGC, SYSMENU_BOOLEAN);
-			  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SAMPLERATE", i);
-			  SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].SAMPLERATE, SYSMENU_UINT8);
-			}*/
+			for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Freq", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].Freq, SYSMENU_UINT64);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Mode", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&CALIBRATE.MEMORY_CHANNELS[i].Mode, SYSMENU_UINT8);
+			}
 		}
 
 		if (!res) {
@@ -1421,6 +1412,12 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	if (strcmp(name, "TRX.ChannelMode") == 0) {
 		TRX.ChannelMode = bval;
 	}
+	if (strcmp(name, "TRX.RepeaterMode") == 0) {
+		TRX.RepeaterMode = bval;
+	}
+	if (strcmp(name, "TRX.REPEATER_Offset") == 0) {
+		TRX.REPEATER_Offset = intval;
+	}
 	if (strcmp(name, "TRX.RF_Gain") == 0) {
 		TRX.RF_Gain = (uint8_t)uintval;
 	}
@@ -1481,6 +1478,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	if (strcmp(name, "TRX.Debug_Type") == 0) {
 		TRX.Debug_Type = (uint8_t)uintval;
 	}
+	if (strcmp(name, "TRX.DXCluster_Type") == 0) {
+		TRX.DXCluster_Type = (uint8_t)uintval;
+	}
 	if (strcmp(name, "TRX.BandMapEnabled") == 0) {
 		TRX.BandMapEnabled = bval;
 	}
@@ -1495,6 +1495,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.SPLIT_Enabled") == 0) {
 		TRX.SPLIT_Enabled = bval;
+	}
+	if (strcmp(name, "TRX.Split_Mode_Sync_Freq") == 0) {
+		TRX.Split_Mode_Sync_Freq = bval;
 	}
 #if HRDW_HAS_DUAL_RX
 	if (strcmp(name, "TRX.Dual_RX") == 0) {
@@ -2036,6 +2039,22 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 		}
 		strncpy(WIFI.Password_3, value, lens);
 	}
+	if (strcmp(name, "WIFI.ALLQSO_TOKEN") == 0) {
+		dma_memset(WIFI.ALLQSO_TOKEN, 0x00, sizeof(WIFI.ALLQSO_TOKEN));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(WIFI.ALLQSO_TOKEN) - 1) {
+			lens = sizeof(WIFI.ALLQSO_TOKEN) - 1;
+		}
+		strncpy(WIFI.ALLQSO_TOKEN, value, lens);
+	}
+	if (strcmp(name, "WIFI.ALLQSO_LOGID") == 0) {
+		dma_memset(WIFI.ALLQSO_LOGID, 0x00, sizeof(WIFI.ALLQSO_LOGID));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(WIFI.ALLQSO_LOGID) - 1) {
+			lens = sizeof(WIFI.ALLQSO_LOGID) - 1;
+		}
+		strncpy(WIFI.ALLQSO_LOGID, value, lens);
+	}
 	// SERVICES
 	if (strcmp(name, "TRX.SWR_CUSTOM_Begin") == 0) {
 		TRX.SWR_CUSTOM_Begin = uintval;
@@ -2566,99 +2585,114 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 
 	// Bands settings
-	/*char buff[64] = {0};
-	for (uint8_t i = 0; i < BANDS_COUNT; i++)
-	{
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Freq", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].Freq = uint64val;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Mode", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)uintval;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].LNA", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].LNA = bval;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].ATT = bval;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT_DB", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = floatval;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_selected", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].ANT_selected = bval;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_mode", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].ANT_mode = bval;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_Driver", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = bval;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SQL", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].SQL = bval;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dbm", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm = (int8_t)intval;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = bval;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = (uint8_t)uintval;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AGC", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].AGC = bval;
-	  sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
-	  if (strcmp(name, buff) == 0)
-	    TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = (uint8_t)uintval;
+	for (uint8_t i = 0; i < BANDS_COUNT; i++) {
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Freq", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].Freq = uint64val;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Mode", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].Mode = (uint8_t)uintval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].LNA", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].LNA = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].ATT = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ATT_DB", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = floatval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_selected", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].ANT_selected = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_mode", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].ANT_mode = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_Driver", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SQL", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].SQL = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dbm", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm = (int8_t)intval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = (uint8_t)uintval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AGC", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].AGC = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = (uint8_t)uintval;
+		}
+
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT1_ATU_I", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_I = (uint8_t)uintval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT1_ATU_C", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_C = (uint8_t)uintval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT2_ATU_I", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_I = (uint8_t)uintval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT2_ATU_C", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_C = (uint8_t)uintval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT1_ATU_T", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_T = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT2_ATU_T", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_T = bval;
+		}
 	}
 
 	// Memory channels settings
-	for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++)
-	{
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Freq", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].Freq = uint64val;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Mode", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].Mode = (uint8_t)uintval;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].LNA", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].LNA = bval;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ATT", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].ATT = bval;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ATT_DB", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].ATT_DB = floatval;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ANT_selected", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].ANT_selected = bval;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ANT_mode", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].ANT_mode = bval;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_Driver", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].ADC_Driver = bval;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SQL", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].SQL = bval;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].FM_SQL_threshold_dbm", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].FM_SQL_threshold_dbm = (int8_t)intval;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].ADC_PGA", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].ADC_PGA = bval;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].DNR_Type", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].DNR_Type = (uint8_t)uintval;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].AGC", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].AGC = bval;
-	  sprintf(buff, "TRX.MEMORY_CHANNELS[%d].SAMPLERATE", i);
-	  if (strcmp(name, buff) == 0)
-	    CALIBRATE.MEMORY_CHANNELS[i].SAMPLERATE = (uint8_t)uintval;
-	}*/
+	for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Freq", i);
+		if (strcmp(name, buff) == 0) {
+			CALIBRATE.MEMORY_CHANNELS[i].Freq = uint64val;
+		}
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Mode", i);
+		if (strcmp(name, buff) == 0) {
+			CALIBRATE.MEMORY_CHANNELS[i].Mode = (uint8_t)uintval;
+		}
+	}
+
+	int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
+	if (band >= 0) {
+		if (!TRX.ANT_selected) {
+			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
+			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
+			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
+		} else {
+			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
+			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
+			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
+		}
+	}
 }
 
 static void SDCOMM_IMPORT_SETT_handler(void) {

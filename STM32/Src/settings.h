@@ -8,9 +8,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 83         // Settings config version
+#define SETT_VERSION 88         // Settings config version
 #define CALIB_VERSION 61        // Calibration config version
-#define WIFI_SETTINGS_VERSION 1 // WiFi config version
+#define WIFI_SETTINGS_VERSION 2 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f // Maximum amplitude when transmitting to FPGA
@@ -60,6 +60,7 @@
 #define MAX_WIFIPASS_LENGTH 32
 #define MAX_CALLSIGN_LENGTH 16
 #define MAX_CW_MACROS_LENGTH 48
+#define ALLQSO_TOKEN_SIZE 16
 
 #define W25Q16_COMMAND_Write_Disable 0x04
 #define W25Q16_COMMAND_Write_Enable 0x06
@@ -372,6 +373,12 @@ typedef enum {
 	KEY_AND_EXT_PTT,
 } CW_PTT_TYPE;
 
+// DX Cluster Type
+typedef enum {
+	DX_CLUSTER_RBN,
+	DX_CLUSTER_DX_SUMMIT,
+} DX_CLUSTER_TYPE;
+
 // ENC2 FUNC MODE
 typedef enum {
 	ENC_FUNC_PAGER,
@@ -392,8 +399,10 @@ typedef struct {
 	float32_t ATT_DB;
 	uint8_t Mode;
 	uint8_t DNR_Type;
-	uint8_t BEST_ATU_I;
-	uint8_t BEST_ATU_C;
+	uint8_t ANT1_ATU_I;
+	uint8_t ANT1_ATU_C;
+	uint8_t ANT2_ATU_I;
+	uint8_t ANT2_ATU_C;
 	int8_t FM_SQL_threshold_dbm;
 	uint8_t IF_Gain;
 	uint8_t RF_Gain;
@@ -410,7 +419,8 @@ typedef struct {
 	bool ADC_PGA;
 	bool AGC;
 	bool SQL;
-	bool BEST_ATU_T;
+	bool ANT1_ATU_T;
+	bool ANT2_ATU_T;
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
 } BAND_SAVED_SETTINGS_TYPE;
 
@@ -439,6 +449,7 @@ extern struct TRX_SETTINGS {
 	VFO VFO_B;
 	uint16_t RIT_INTERVAL;
 	uint16_t XIT_INTERVAL;
+	int16_t REPEATER_Offset;
 	uint8_t ATT_STEP;
 	uint8_t RF_Gain;
 	uint8_t RF_Gain_By_Mode_CW;
@@ -449,6 +460,7 @@ extern struct TRX_SETTINGS {
 	uint8_t FRQ_CW_STEP_DIVIDER;
 	uint8_t ATU_I;
 	uint8_t ATU_C;
+	DX_CLUSTER_TYPE DXCluster_Type;
 	TRX_DEBUG_TYPE Debug_Type;
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE_MAIN;
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE_FM;
@@ -468,6 +480,7 @@ extern struct TRX_SETTINGS {
 	bool ANT_selected; // false - 1, true - 2
 	bool ANT_mode;     // false - RX=TX, true - 1RX 2TX
 	bool ChannelMode;
+	bool RepeaterMode;
 	bool RIT_Enabled;
 	bool XIT_Enabled;
 	bool SPLIT_Enabled;
@@ -477,10 +490,10 @@ extern struct TRX_SETTINGS {
 	bool AutoGain;
 	bool Locked;
 	bool Encoder_Accelerate;
-	bool Custom_Transverter_Enabled;
 	bool TUNER_Enabled;
 	bool ATU_Enabled;
 	bool ATU_T;
+	bool Custom_Transverter_Enabled;
 	bool Transverter_70cm;
 	bool Transverter_23cm;
 	bool Transverter_13cm;
@@ -491,6 +504,7 @@ extern struct TRX_SETTINGS {
 	bool Auto_Snap;
 	bool Full_Duplex;
 	bool Digital_Pre_Distortion;
+	bool Split_Mode_Sync_Freq;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH];
 	char LOCATOR[MAX_CALLSIGN_LENGTH];
 	char URSI_CODE[MAX_CALLSIGN_LENGTH];
@@ -844,7 +858,8 @@ extern struct TRX_WIFI {
 	char Password_2[MAX_WIFIPASS_LENGTH];
 	char AP_3[MAX_WIFIPASS_LENGTH];
 	char Password_3[MAX_WIFIPASS_LENGTH];
-
+	char ALLQSO_TOKEN[ALLQSO_TOKEN_SIZE + 1];
+	char ALLQSO_LOGID[ALLQSO_TOKEN_SIZE + 1];
 	uint8_t csum;   // check sum
 	uint8_t ENDBit; // end bit
 } WIFI;

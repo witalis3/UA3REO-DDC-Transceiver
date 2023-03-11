@@ -47,6 +47,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * SWR Graphs
 * Spectrum analyzer
 * FT8 receiver/transmitter
+* Automatic send FT8 qso to log https://allqso.ru/
 * WSPR Beacon
 * VOX
 * Equalizer TX/RX, reverber
@@ -132,6 +133,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Power for each band** - Save power settings for each band individually
 * **Power for each mode** - Save power settings for each mode individually
 * **Channel Mode** - Channel frequency mode (for LPD/PMR and etc.)
+* **Repeater Mode"** -  Operation mode via repeater
 * **Band Map** - Band Map, automatically switches mode depending on the frequency
 * **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
 * **RF Filters** - Hardware filter management (LPF / HPF / BPF)
@@ -148,6 +150,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Freq Step *, kHz** - Frequency step by main encoder in WFM/NFM/AM mode
 * **CW Freq Step divider** - Frequency step divider for CW mode
 * **Encoder Accelerate** - Accelerate encoder on fast rates
+* **Split freq sync** - Synchronous VFO frequency change in SPLIT mode
 * **Att step, dB** - Attenuator tuning step
 * **Attenuation, dB** - Current attenuation
 * **DEBUG Type** - Output of debug and service information to USB / UART ports
@@ -157,6 +160,8 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Callsign** - User callsign
 * **Locator** - User QTH locator
 * **URSI Code** - Ionogramm URSI Code https://digisonde.com/index.html#stationmap-section
+* **DX Cluster Type** - Selecting a Data Source for a DX Cluster
+* **Repeater offset, kHz"** -  Transmission frequency offset in repeater mode
 * **Full Duplex** - Full duplex RX+TX mode
 * **TUNER Enabled** - Turning on the antenna tuner
 * **ATU Enabled** - Turning on the automatic antenna tuner
@@ -280,6 +285,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **WIFI Timezone** - Time zone (for updating the time via the Internet)
 * **WIFI CAT Server** - Server for receiving CAT commands via WIFI
 * **WIFI Update ESP firmware** - Start cloud autoupdate firmware for ESP-01 (if present)
+* **ALLQSO.RU Token/LogId** - Token и LogID from https://allqso.ru/ web-log
 
 ### SD Card
 

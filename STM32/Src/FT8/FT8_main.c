@@ -2,29 +2,23 @@
 #include "FT8_GUI.h"
 #include "Process_DSP.h"
 #include "arm_math.h"
+#include "constants.h"
 #include "decode_ft8.h"
+#include "lcd.h"
+#include "lcd_driver.h"
 #include "locator_ft8.h"
 #include "traffic_manager.h"
 #include <stdbool.h>
-
-#include "lcd.h"
-#include "lcd_driver.h"
-
-#include "constants.h"
 
 #define ft8_shift 6.25
 
 int ft8_flag, FT_8_counter, ft8_marker, decode_flag, WF_counter;
 int num_decoded_msg = 0;
-
 int DSP_Flag;
-
 uint16_t cursor_line = 100;
-
 uint16_t FT8_DatBlockNum;
 bool FT8_DecodeActiveFlg;
 bool FT8_ColectDataFlg;
-// bool FT8_Bussy = false;
 
 // Function prototypes
 void process_data(void);
@@ -41,9 +35,6 @@ void InitFT8_Decoder(void) {
 
 	LCDDriver_printText("FT-8 Decoder", 100, 5, COLOR_GREEN, COLOR_BLACK, 2);
 
-	strcpy(Station_Call, TRX.CALLSIGN); // set out callsign
-	strcpy(Locator, TRX.LOCATOR);       // set out grid Locator
-
 	init_DSP();
 	initalize_constants();
 
@@ -51,7 +42,7 @@ void InitFT8_Decoder(void) {
 	FT8_DecodeActiveFlg = true;
 
 	update_synchronization();
-	set_Station_Coordinates(Locator);
+	set_Station_Coordinates(TRX.LOCATOR);
 
 	println("FT8-Initialised"); // Debug
 

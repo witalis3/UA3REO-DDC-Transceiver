@@ -20,11 +20,7 @@
 extern uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
 extern uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
 extern int xmit_flag, ft8_xmit_counter;
-
 extern int Beacon_State; //
-
-extern char Station_Call[]; // six character call sign + /0
-extern char Locator[];      // four character locator  + /0
 
 void transmit_sequence(void);
 void receive_sequence(void);

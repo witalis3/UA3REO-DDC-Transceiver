@@ -1,28 +1,22 @@
 #include "decode.h"
+#include "Process_DSP.h"
 #include "constants.h"
 #include <math.h>
-// #include "display.h"
-#include "Process_DSP.h"
 
 static float max2(float a, float b);
 static float max4(float a, float b, float c, float d);
 static void heapify_down(Candidate *heap, int heap_size);
 static void heapify_up(Candidate *heap, int heap_size);
-// void decode_symbol(int offset, const uint8_t *code_map, int bit_idx, float *log174);
 static void decode_symbol(const uint8_t *power, const uint8_t *code_map, int bit_idx, float *log174);
 static void decode_multi_symbols(const uint8_t *power, int num_bins, int n_syms, const uint8_t *code_map, int bit_idx, float *log174);
 
 extern int ND;
 extern int NS;
-
 extern int NN;
 // Define the LDPC sizes
 extern int N;
 extern int K;
-
 extern int M;
-
-// extern int K_BYTES;
 
 int max_score;
 

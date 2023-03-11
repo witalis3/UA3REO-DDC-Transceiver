@@ -1,6 +1,7 @@
 #include "traffic_manager.h"
 #include "FT8_GUI.h"
 #include "FT8_main.h"
+#include "atu.h"
 #include "decode_ft8.h"
 #include "gen_ft8.h"
 #include "lcd.h"
@@ -8,14 +9,12 @@
 #include "rf_unit.h"
 #include "sd.h"
 #include "trx_manager.h"
+#include "wifi.h"
 #include <stdint.h>
 
 uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
 uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
 int xmit_flag, ft8_xmit_counter;
-
-char Station_Call[7]; // six character call sign + /0 for example  => "DB5AT"
-char Locator[7];      // four character locator  + /0	for example = "JN48"
 
 #define FT8_TONE_SPACING 6.25
 
@@ -23,9 +22,7 @@ extern uint16_t cursor_line;
 
 int Beacon_State; //
 extern int num_decoded_msg;
-
 uint32_t F_Offset;
-
 char QSODate[9];    // string containing the potential QSO date
 char QSOOnTime[7];  // potential QSO Start time
 char QSOOffTime[7]; // potential QSO Stop time
@@ -33,7 +30,7 @@ char QSOOffTime[7]; // potential QSO Stop time
 void transmit_sequence(void) {
 	Set_Data_Colection(0);                    // Disable the data colection
 	set_Xmit_Freq(FT8_BND_Freq, cursor_freq); // Set band frequency and the frequency in the FT8 (cursor freq.)
-	RF_UNIT_ATU_SetCompleted();
+	ATU_SetCompleted();
 	TRX.Full_Duplex = false;
 	TRX.TWO_SIGNAL_TUNE = false;
 	TRX_Tune = true;
@@ -345,7 +342,7 @@ void LogQSO(void) {
 		        " <call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s "
 		        "<time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>",
 		        strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, QSO_Freq,
-		        Station_Call, Locator);
+		        TRX.CALLSIGN, TRX.LOCATOR);
 		StrToLog[0] = CR;
 
 		Len = strlen(StrToLog);
@@ -355,5 +352,11 @@ void LogQSO(void) {
 		SDCOMM_WRITE_TO_FILE_partsize = Len;
 
 		SD_doCommand(SDCOMM_WRITE_TO_FILE, false);
+
+		static char cNote[32] = {0};
+		sprintf(cNote, "%1.6f Loc: %s", QSO_Freq, Target_Grid);
+		static char cTarget_RSL[16] = {0};
+		sprintf(cTarget_RSL, "%3i", Target_RSL);
+		WIFI_postQSOtoAllQSO(Target_Call, cNote, QSODate, QSOOffTime, cTarget_RSL, RapRcv_RSL_filtered, "FT8", cBND, "", "");
 	}
 }

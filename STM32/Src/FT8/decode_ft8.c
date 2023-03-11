@@ -1,24 +1,19 @@
+#include "decode_ft8.h"
+#include "FT8_main.h"
+#include "Process_DSP.h"
+#include "constants.h"
+#include "decode.h"
+#include "encode.h"
 #include "gen_ft8.h"
+#include "lcd_driver.h"
+#include "ldpc.h"
+#include "unpack.h"
 #include <ctype.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "constants.h"
-#include "decode.h"
-#include "encode.h"
-#include "ldpc.h"
-#include "unpack.h"
-
-#include "Process_DSP.h"
-#include "decode_ft8.h"
-
-#include "FT8_main.h"
-#include "lcd_driver.h"
-
-// char erase[] = "                   ";
 
 #define kLDPC_iterations 15      // original 10
 #define kMax_candidates 150      // original 20
@@ -47,7 +42,6 @@ int message_limit = 6;
 int message_limit = 6;
 #endif
 
-extern char Station_Call[];
 char Target_Call[7]; // target station (partner) callsign
 int Target_RSL;      // four character RSL  + /0
 char Target_Grid[5]; // Grid square of the target station (partner)
@@ -306,7 +300,7 @@ int Check_Calling_Stations(int num_decoded) {
 	char To_meCallIdx = 0; // used to indicate on the right the mesages addresed to us
 
 	for (int i = 0; i < num_decoded; i++) {
-		if (strindex(new_decoded[i].field1, Station_Call) >= 0) {
+		if (strindex(new_decoded[i].field1, TRX.CALLSIGN) >= 0) {
 			sprintf(message, "%s %s %s", new_decoded[i].field1, new_decoded[i].field2, new_decoded[i].field3);
 
 			if (To_meCallIdx <= message_limit) // Display up to 6 mesages addrssed to us (shuld be enough)

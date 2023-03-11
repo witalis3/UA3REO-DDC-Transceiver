@@ -9,11 +9,6 @@
 #include "system_menu.h"
 #include "trx_manager.h"
 
-bool ATU_TunePowerStabilized = false;
-
-void RF_UNIT_ATU_Invalidate(void) {}
-void RF_UNIT_ATU_SetCompleted(void) {}
-
 static uint8_t getBPFByFreq(uint32_t freq) {
 	if (!TRX.RF_Filters) {
 		return 255;

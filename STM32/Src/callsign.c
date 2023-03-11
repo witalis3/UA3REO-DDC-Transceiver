@@ -1539,7 +1539,7 @@ static const CALLSIGN_INFO_LINE CALLSIGN_INFO_RUSSIAN_DB[CALLSIGN_DB_RUS_COUNT] 
 bool SYSMENU_callsign_info_opened = false;
 
 // Private Variables
-char entered_callsign[32] = {0};
+char entered_callsign[MAX_CALLSIGN_LENGTH] = {0};
 
 // Prototypes
 
@@ -1556,16 +1556,16 @@ void CALLSIGN_INFO_Start(void) {
 // stop
 void CALLSIGN_INFO_Stop(void) { LCD_hideKeyboard(); }
 
-static void CALLSIGN_INFO_keyboardHandler(uint32_t parameter) {
+static void CALLSIGN_INFO_keyboardHandler(char *string, uint32_t max_size, char entered) {
 	char str[2] = {0};
-	str[0] = parameter;
-	if (parameter == '<') // backspace
+	str[0] = entered;
+	if (entered == '<') // backspace
 	{
-		if (entered_callsign[0] != '\0') {
-			entered_callsign[strlen(entered_callsign) - 1] = 0;
+		if (string[0] != '\0') {
+			string[strlen(string) - 1] = 0;
 		}
-	} else if (strlen(entered_callsign) < 8) {
-		strcat(entered_callsign, str);
+	} else if (strlen(string) < 8) {
+		strcat(string, str);
 	}
 
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -1634,7 +1634,7 @@ void CALLSIGN_INFO_Draw(void) {
 		}
 	}
 
-	LCD_printKeyboard(CALLSIGN_INFO_keyboardHandler, false);
+	LCD_printKeyboard(CALLSIGN_INFO_keyboardHandler, entered_callsign, MAX_CALLSIGN_LENGTH - 1, false);
 
 	LCD_busy = false;
 }

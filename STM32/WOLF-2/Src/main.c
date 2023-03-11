@@ -1585,7 +1585,8 @@ static void MX_GPIO_Init(void) {
 	HAL_GPIO_WritePin(GPIOC, FPGA_CLK_Pin | FPGA_SYNC_Pin, GPIO_PIN_RESET);
 
 	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOA, FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(GPIOA, FPGA_BUS_D0_Pin | FPGA_BUS_D1_Pin | FPGA_BUS_D2_Pin | FPGA_BUS_D3_Pin | FPGA_BUS_D4_Pin | FPGA_BUS_D5_Pin | FPGA_BUS_D6_Pin | FPGA_BUS_D7_Pin | PTT_OUT_Pin,
+	                  GPIO_PIN_RESET);
 
 	/*Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin(GPIOB, W25Q16_CS_Pin | SD_CS_Pin | T_I2C_SDA_Pin | RFUNIT_OE_Pin, GPIO_PIN_SET);
@@ -1697,6 +1698,13 @@ static void MX_GPIO_Init(void) {
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	HAL_GPIO_Init(T_INT_GPIO_Port, &GPIO_InitStruct);
+
+	/*Configure GPIO pin : PTT_OUT_Pin */
+	GPIO_InitStruct.Pin = PTT_OUT_Pin;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(PTT_OUT_GPIO_Port, &GPIO_InitStruct);
 
 	/*Configure GPIO pin : ENC4_CLK_Pin */
 	GPIO_InitStruct.Pin = ENC4_CLK_Pin;

@@ -52,7 +52,6 @@ static uint16_t LCD_last_showed_freq_hz_B = 9999;
 #endif
 static uint64_t manualFreqEnter = 0;
 static bool LCD_screenKeyboardOpened = false;
-static void (*LCD_keyboardHandler)(uint32_t parameter) = NULL;
 
 static bool LCD_inited = false;
 static float32_t LCD_last_s_meter = 1.0f;
@@ -72,6 +71,11 @@ static bool LCD_showInfo_opened = false;
 
 static TouchpadButton_handler TouchpadButton_handlers[64] = {0};
 static uint8_t TouchpadButton_handlers_count = 0;
+
+static void (*LCD_keyboardHandlerCurrent)(char *string, uint32_t max_size, char entered) = NULL;
+static bool LCD_keyboards_current_lowcase_status = false;
+static char *LCD_keyboards_current_string;
+static uint32_t LCD_keyboards_current_max_string_size = 0;
 
 static void printInfoSmall(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
 static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
@@ -3098,13 +3102,24 @@ static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter) {
 #endif
 }
 
-static bool LCD_keyboards_current_lowcase_status = false;
-static void LCD_printKeyboardShiftHandler(uint32_t parameter) { LCD_printKeyboard(LCD_keyboardHandler, !LCD_keyboards_current_lowcase_status); }
+static void LCD_keyboardHandler(uint32_t parameter) {
+	if (LCD_keyboardHandlerCurrent == NULL) {
+		return;
+	}
 
-void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase) {
+	LCD_keyboardHandlerCurrent(LCD_keyboards_current_string, LCD_keyboards_current_max_string_size, parameter);
+}
+
+static void LCD_printKeyboardShiftHandler(uint32_t parameter) {
+	LCD_printKeyboard(LCD_keyboardHandlerCurrent, LCD_keyboards_current_string, LCD_keyboards_current_max_string_size, !LCD_keyboards_current_lowcase_status);
+}
+
+void LCD_printKeyboard(void (*keyboardHandler)(char *string, uint32_t max_size, char entered), char *string, uint32_t max_size, bool lowcase) {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	TouchpadButton_handlers_count = 0;
-	LCD_keyboardHandler = keyboardHandler;
+	LCD_keyboards_current_string = string;
+	LCD_keyboards_current_max_string_size = max_size;
+	LCD_keyboardHandlerCurrent = keyboardHandler;
 
 	LCD_screenKeyboardOpened = true;
 	LCDDriver_Fill_RectWH(0, LCD_HEIGHT / 2, LCD_WIDTH, LCD_HEIGHT / 2, COLOR->KEYBOARD_BG);
@@ -3188,7 +3203,7 @@ void LCD_printKeyboard(void (*keyboardHandler)(uint32_t parameter), bool lowcase
 
 void LCD_hideKeyboard(void) {
 	LCD_screenKeyboardOpened = false;
-	LCD_keyboardHandler = NULL;
+	LCD_keyboardHandlerCurrent = NULL;
 }
 
 void LCD_showATTWindow(uint32_t parameter) {

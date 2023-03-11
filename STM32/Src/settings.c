@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "7.1.0";
+const char version_string[19] = "7.2.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -176,27 +176,31 @@ void LoadSettings(bool clear) {
 		TRX.Dual_RX = false;             // Dual RX feature
 		TRX.Dual_RX_Type = VFO_A_PLUS_B; // dual receiver mode
 #endif
-		TRX.Encoder_Accelerate = true;          // Accelerate Encoder on fast rate
-		strcpy(TRX.CALLSIGN, "HamRad");         // Callsign
-		strcpy(TRX.LOCATOR, "LO02RR");          // Locator
-		strcpy(TRX.URSI_CODE, "SO148");         // URSI Ionogramm location CODE https://digisonde.com/index.html#stationmap-section
-		TRX.Custom_Transverter_Enabled = false; // Enable transverter mode
-		TRX.ATU_I = 0;                          // ATU default state
-		TRX.ATU_C = 0;                          // ATU default state
-		TRX.ATU_T = false;                      // ATU default state
-		TRX.ATU_Enabled = true;                 // ATU enabled state
-		TRX.TUNER_Enabled = true;               // TUNER enabled state
-		TRX.Transverter_70cm = false;           // Transvertrs enable
-		TRX.Transverter_23cm = false;           // Transvertrs enable
-		TRX.Transverter_13cm = false;           // Transvertrs enable
-		TRX.Transverter_6cm = false;            // Transvertrs enable
-		TRX.Transverter_3cm = false;            // Transvertrs enable
-		TRX.Transverter_QO100 = false;          // Transvertrs enable
-		TRX.FineRITTune = true;                 // Fine or coarse tune for split/shift
-		TRX.Auto_Input_Switch = false;          // Auto Mic/USB Switch
-		TRX.Auto_Snap = false;                  // Auto track and snap to signal frequency
-		TRX.Full_Duplex = false;                // Full Duplex TX+RX Mode
-		TRX.Digital_Pre_Distortion = false;     // enable digital pre-distortion
+		TRX.Encoder_Accelerate = true;             // Accelerate Encoder on fast rate
+		strcpy(TRX.CALLSIGN, "HamRad");            // Callsign
+		strcpy(TRX.LOCATOR, "LO02RR");             // Locator
+		strcpy(TRX.URSI_CODE, "SO148");            // URSI Ionogramm location CODE https://digisonde.com/index.html#stationmap-section
+		TRX.Custom_Transverter_Enabled = false;    // Enable transverter mode
+		TRX.ATU_I = 0;                             // ATU default state
+		TRX.ATU_C = 0;                             // ATU default state
+		TRX.ATU_T = false;                         // ATU default state
+		TRX.ATU_Enabled = true;                    // ATU enabled state
+		TRX.TUNER_Enabled = true;                  // TUNER enabled state
+		TRX.Transverter_70cm = false;              // Transvertrs enable
+		TRX.Transverter_23cm = false;              // Transvertrs enable
+		TRX.Transverter_13cm = false;              // Transvertrs enable
+		TRX.Transverter_6cm = false;               // Transvertrs enable
+		TRX.Transverter_3cm = false;               // Transvertrs enable
+		TRX.Transverter_QO100 = false;             // Transvertrs enable
+		TRX.FineRITTune = true;                    // Fine or coarse tune for split/shift
+		TRX.Auto_Input_Switch = false;             // Auto Mic/USB Switch
+		TRX.Auto_Snap = false;                     // Auto track and snap to signal frequency
+		TRX.Full_Duplex = false;                   // Full Duplex TX+RX Mode
+		TRX.Digital_Pre_Distortion = false;        // enable digital pre-distortion
+		TRX.Split_Mode_Sync_Freq = false;          // enable VFO freq syncronization in SPLIT mode
+		TRX.DXCluster_Type = DX_CLUSTER_DX_SUMMIT; // DX cluster type
+		TRX.RepeaterMode = false;                  // repeater mode with custom offset
+		TRX.REPEATER_Offset = 600;                 // repeater mode custom offset
 		// AUDIO
 		TRX.Volume = 25;             // AF Volume
 		TRX.Volume_Step = 5;         // AF Volume step by sec encoder
@@ -238,8 +242,8 @@ void LoadSettings(bool clear) {
 		TRX.AGC_Spectral = true;                       // Spectral AGC mode
 #endif
 		TRX.NOISE_BLANKER_THRESHOLD = 15;                              // threshold for noise blanker
-		TRX.TX_CESSB = false;                                          // Controlled-envelope single-sideband modulation
-		TRX.TX_CESSB_COMPRESS_DB = 3.0f;                               // CSSB additional gain (compress)
+		TRX.TX_CESSB = true;                                           // Controlled-envelope single-sideband modulation
+		TRX.TX_CESSB_COMPRESS_DB = 1.0f;                               // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;                                     // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;                                       // AGC receive rate on CW
 		TRX.RX_AGC_Max_gain = 30;                                      // Maximum AGC gain
@@ -428,9 +432,15 @@ void LoadSettings(bool clear) {
 			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
-			TRX.BANDS_SAVED_SETTINGS[i].BEST_ATU_I = TRX.ATU_I;
-			TRX.BANDS_SAVED_SETTINGS[i].BEST_ATU_C = TRX.ATU_C;
-			TRX.BANDS_SAVED_SETTINGS[i].BEST_ATU_T = TRX.ATU_T;
+			if (!TRX.ANT_selected) {
+				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_I = TRX.ATU_I;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_C = TRX.ATU_C;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_T = TRX.ATU_T;
+			} else {
+				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_I = TRX.ATU_I;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_C = TRX.ATU_C;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_T = TRX.ATU_T;
+			}
 		}
 
 		// Shadow variables
@@ -666,10 +676,10 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_4m = 90;                // 4m
 		CALIBRATE.rf_out_power_2m = 80;                // 2m
 		CALIBRATE.rf_out_power_70cm = 15;              // 70cm
-		CALIBRATE.rf_out_power_23cm = 15;              // 23cm
+		CALIBRATE.rf_out_power_23cm = 80;              // 23cm
 		CALIBRATE.rf_out_power_13cm = 15;              // 13cm
 		CALIBRATE.rf_out_power_6cm = 16;               // 6cm
-		CALIBRATE.rf_out_power_3cm = 15;               // 3cm
+		CALIBRATE.rf_out_power_3cm = 17;               // 3cm
 		CALIBRATE.rf_out_power_QO100 = 15;             // QO-100
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
@@ -696,7 +706,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_FWD_Calibration_6M = 23.0f;      // SWR Transormator rate forward
 		CALIBRATE.SWR_BWD_Calibration_6M = 23.0f;      // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 16.6f;     // SWR Transormator rate forward
-		CALIBRATE.SWR_BWD_Calibration_VHF = 9.5f;      // SWR Transormator rate return
+		CALIBRATE.SWR_BWD_Calibration_VHF = 8.5f;      // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;                 // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;         // Max TRX Power for indication
 #elif defined(FRONTPANEL_WOLF_2)
@@ -968,6 +978,8 @@ void LoadWiFiSettings(bool clear) {
 		strcpy(WIFI.Password_3, "WIFI-PASSWORD"); // password to the WiFi point 3
 		WIFI.Timezone = 3;                        // time zone (for time synchronization)
 		WIFI.CAT_Server = false;                  // Server for receiving CAT commands via WIFI
+		strcpy(WIFI.ALLQSO_TOKEN, "");            // Token from AllQSO.ru
+		strcpy(WIFI.ALLQSO_LOGID, "");            // LogId from AllQSO.ru
 
 		WIFI.ENDBit = 100; // Bit for the end of a successful write to eeprom
 
