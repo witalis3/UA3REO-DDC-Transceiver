@@ -171,6 +171,8 @@ void Error_Handler(void);
 #define T_I2C_SCL_GPIO_Port GPIOA
 #define T_INT_Pin GPIO_PIN_9
 #define T_INT_GPIO_Port GPIOA
+#define PTT_OUT_Pin GPIO_PIN_10
+#define PTT_OUT_GPIO_Port GPIOA
 #define WM8731_WS_LRC_Pin GPIO_PIN_15
 #define WM8731_WS_LRC_GPIO_Port GPIOA
 #define WM8731_BCLK_Pin GPIO_PIN_10
