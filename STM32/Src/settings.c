@@ -197,6 +197,7 @@ void LoadSettings(bool clear) {
 		TRX.Auto_Snap = false;                  // Auto track and snap to signal frequency
 		TRX.Full_Duplex = false;                // Full Duplex TX+RX Mode
 		TRX.Digital_Pre_Distortion = false;     // enable digital pre-distortion
+		TRX.Split_Mode_Sync_Freq = false;       // enable VFO freq syncronization in SPLIT mode
 		// AUDIO
 		TRX.Volume = 25;             // AF Volume
 		TRX.Volume_Step = 5;         // AF Volume step by sec encoder

@@ -149,6 +149,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Freq Step *, kHz** - Frequency step by main encoder in WFM/NFM/AM mode
 * **CW Freq Step divider** - Frequency step divider for CW mode
 * **Encoder Accelerate** - Accelerate encoder on fast rates
+* **Split freq sync** - Synchronous VFO frequency change in SPLIT mode
 * **Att step, dB** - Attenuator tuning step
 * **Attenuation, dB** - Current attenuation
 * **DEBUG Type** - Output of debug and service information to USB / UART ports

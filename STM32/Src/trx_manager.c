@@ -580,7 +580,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 
 	// SPLIT freq secondary VFO sync
-	if (TRX.SPLIT_Enabled && vfo == CurrentVFO) {
+	if (TRX.Split_Mode_Sync_Freq && TRX.SPLIT_Enabled && vfo == CurrentVFO) {
 		TRX_setFrequency(SecondaryVFO->Freq + freq_diff, SecondaryVFO);
 	}
 }

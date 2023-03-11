@@ -72,6 +72,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_QO100(int8_t direction);
 static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction);
+static void SYSMENU_HANDL_TRX_Split_Mode_Sync_Freq(int8_t direction);
 static void SYSMENU_HANDL_TRX_VGA_GAIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_Full_Duplex(int8_t direction);
 
@@ -567,6 +568,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Freq Step AM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ},
     {"CW Freq Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
 #endif
+    {"Split freq sync", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Split_Mode_Sync_Freq, SYSMENU_HANDL_TRX_Split_Mode_Sync_Freq},
     {"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
     defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
@@ -1459,6 +1461,15 @@ static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.FineRITTune = false;
+	}
+}
+
+static void SYSMENU_HANDL_TRX_Split_Mode_Sync_Freq(int8_t direction) {
+	if (direction > 0) {
+		TRX.Split_Mode_Sync_Freq = true;
+	}
+	if (direction < 0) {
+		TRX.Split_Mode_Sync_Freq = false;
 	}
 }
 
