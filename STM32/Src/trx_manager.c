@@ -1164,6 +1164,7 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	TRX.SQL_shadow = CurrentVFO->SQL;
 	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
 
+	TRX_DXCluster_UpdateTime = 0;
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.BottomButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;

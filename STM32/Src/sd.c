@@ -851,6 +851,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_AM_STEP_KHZ", (uint32_t *)&TRX.FRQ_ENC_AM_STEP_KHZ, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.FRQ_CW_STEP_DIVIDER", (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.Debug_Type", (uint32_t *)&TRX.Debug_Type, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.DXCluster_Type", (uint32_t *)&TRX.DXCluster_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.BandMapEnabled", (uint32_t *)&TRX.BandMapEnabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.InputType_MAIN", (uint32_t *)&TRX.InputType_MAIN, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.InputType_DIGI", (uint32_t *)&TRX.InputType_DIGI, SYSMENU_UINT8);
@@ -1468,6 +1469,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.Debug_Type") == 0) {
 		TRX.Debug_Type = (uint8_t)uintval;
+	}
+	if (strcmp(name, "TRX.DXCluster_Type") == 0) {
+		TRX.DXCluster_Type = (uint8_t)uintval;
 	}
 	if (strcmp(name, "TRX.BandMapEnabled") == 0) {
 		TRX.BandMapEnabled = bval;

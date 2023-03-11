@@ -56,6 +56,7 @@ static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_ATT_DB(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction);
+static void SYSMENU_HANDL_TRX_DXCluster_Type(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetURSICode(int8_t direction);
@@ -588,6 +589,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Callsign", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCallsign},
     {"Locator", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetLocator},
     {"URSI Code", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetURSICode},
+    {"DX Cluster type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DXCluster_Type, SYSMENU_HANDL_TRX_DXCluster_Type, {"RBN", "DXSUMMIT"}},
     {"Full Duplex", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Full_Duplex, SYSMENU_HANDL_TRX_Full_Duplex},
     {"Transverter 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_70cm, SYSMENU_HANDL_TRX_TRANSV_70CM},
     {"Transverter 23cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_23cm, SYSMENU_HANDL_TRX_TRANSV_23CM},
@@ -1544,6 +1546,17 @@ static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction) {
 	if (TRX.Debug_Type > 5) {
 		TRX.Debug_Type = 5;
 	}
+}
+
+static void SYSMENU_HANDL_TRX_DXCluster_Type(int8_t direction) {
+	if (direction > 0 || TRX.DXCluster_Type > 0) {
+		TRX.DXCluster_Type += direction;
+	}
+	if (TRX.DXCluster_Type > 1) {
+		TRX.DXCluster_Type = 1;
+	}
+
+	TRX_DXCluster_UpdateTime = 0;
 }
 
 static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction) {

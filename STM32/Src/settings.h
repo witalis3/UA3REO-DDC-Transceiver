@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 86         // Settings config version
+#define SETT_VERSION 87         // Settings config version
 #define CALIB_VERSION 61        // Calibration config version
 #define WIFI_SETTINGS_VERSION 2 // WiFi config version
 
@@ -373,6 +373,12 @@ typedef enum {
 	KEY_AND_EXT_PTT,
 } CW_PTT_TYPE;
 
+// DX Cluster Type
+typedef enum {
+	DX_CLUSTER_RBN,
+	DX_CLUSTER_DX_SUMMIT,
+} DX_CLUSTER_TYPE;
+
 // ENC2 FUNC MODE
 typedef enum {
 	ENC_FUNC_PAGER,
@@ -453,6 +459,7 @@ extern struct TRX_SETTINGS {
 	uint8_t FRQ_CW_STEP_DIVIDER;
 	uint8_t ATU_I;
 	uint8_t ATU_C;
+	DX_CLUSTER_TYPE DXCluster_Type;
 	TRX_DEBUG_TYPE Debug_Type;
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE_MAIN;
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE_FM;

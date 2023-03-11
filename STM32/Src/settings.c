@@ -176,28 +176,29 @@ void LoadSettings(bool clear) {
 		TRX.Dual_RX = false;             // Dual RX feature
 		TRX.Dual_RX_Type = VFO_A_PLUS_B; // dual receiver mode
 #endif
-		TRX.Encoder_Accelerate = true;          // Accelerate Encoder on fast rate
-		strcpy(TRX.CALLSIGN, "HamRad");         // Callsign
-		strcpy(TRX.LOCATOR, "LO02RR");          // Locator
-		strcpy(TRX.URSI_CODE, "SO148");         // URSI Ionogramm location CODE https://digisonde.com/index.html#stationmap-section
-		TRX.Custom_Transverter_Enabled = false; // Enable transverter mode
-		TRX.ATU_I = 0;                          // ATU default state
-		TRX.ATU_C = 0;                          // ATU default state
-		TRX.ATU_T = false;                      // ATU default state
-		TRX.ATU_Enabled = true;                 // ATU enabled state
-		TRX.TUNER_Enabled = true;               // TUNER enabled state
-		TRX.Transverter_70cm = false;           // Transvertrs enable
-		TRX.Transverter_23cm = false;           // Transvertrs enable
-		TRX.Transverter_13cm = false;           // Transvertrs enable
-		TRX.Transverter_6cm = false;            // Transvertrs enable
-		TRX.Transverter_3cm = false;            // Transvertrs enable
-		TRX.Transverter_QO100 = false;          // Transvertrs enable
-		TRX.FineRITTune = true;                 // Fine or coarse tune for split/shift
-		TRX.Auto_Input_Switch = false;          // Auto Mic/USB Switch
-		TRX.Auto_Snap = false;                  // Auto track and snap to signal frequency
-		TRX.Full_Duplex = false;                // Full Duplex TX+RX Mode
-		TRX.Digital_Pre_Distortion = false;     // enable digital pre-distortion
-		TRX.Split_Mode_Sync_Freq = false;       // enable VFO freq syncronization in SPLIT mode
+		TRX.Encoder_Accelerate = true;             // Accelerate Encoder on fast rate
+		strcpy(TRX.CALLSIGN, "HamRad");            // Callsign
+		strcpy(TRX.LOCATOR, "LO02RR");             // Locator
+		strcpy(TRX.URSI_CODE, "SO148");            // URSI Ionogramm location CODE https://digisonde.com/index.html#stationmap-section
+		TRX.Custom_Transverter_Enabled = false;    // Enable transverter mode
+		TRX.ATU_I = 0;                             // ATU default state
+		TRX.ATU_C = 0;                             // ATU default state
+		TRX.ATU_T = false;                         // ATU default state
+		TRX.ATU_Enabled = true;                    // ATU enabled state
+		TRX.TUNER_Enabled = true;                  // TUNER enabled state
+		TRX.Transverter_70cm = false;              // Transvertrs enable
+		TRX.Transverter_23cm = false;              // Transvertrs enable
+		TRX.Transverter_13cm = false;              // Transvertrs enable
+		TRX.Transverter_6cm = false;               // Transvertrs enable
+		TRX.Transverter_3cm = false;               // Transvertrs enable
+		TRX.Transverter_QO100 = false;             // Transvertrs enable
+		TRX.FineRITTune = true;                    // Fine or coarse tune for split/shift
+		TRX.Auto_Input_Switch = false;             // Auto Mic/USB Switch
+		TRX.Auto_Snap = false;                     // Auto track and snap to signal frequency
+		TRX.Full_Duplex = false;                   // Full Duplex TX+RX Mode
+		TRX.Digital_Pre_Distortion = false;        // enable digital pre-distortion
+		TRX.Split_Mode_Sync_Freq = false;          // enable VFO freq syncronization in SPLIT mode
+		TRX.DXCluster_Type = DX_CLUSTER_DX_SUMMIT; // DX cluster type
 		// AUDIO
 		TRX.Volume = 25;             // AF Volume
 		TRX.Volume_Step = 5;         // AF Volume step by sec encoder

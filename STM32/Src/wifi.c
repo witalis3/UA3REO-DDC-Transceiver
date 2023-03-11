@@ -1394,11 +1394,22 @@ bool WIFI_getDXCluster_background(void) {
 	if (!WIFI_connected || WIFI_State != WIFI_READY) {
 		return false;
 	}
-	char url[64] = "/trx_services/cluster2.php?background&band=";
+
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		strcat(url, BANDS[band].name);
+	if (band < 0) {
+		return false;
 	}
+
+	char url[64];
+	if (BANDS[band].broadcast) {
+		strcpy(url, "/trx_services/cluster_short-wave.php?background&band=");
+	} else if (TRX.DXCluster_Type == 0) {
+		strcpy(url, "/trx_services/cluster_rbn.php?background&band=");
+	} else {
+		strcpy(url, "/trx_services/cluster_dxsummit.php?background&band=");
+	}
+
+	strcat(url, BANDS[band].name);
 	sprintf(url, "%s&timeout=%d", url, TRX.FFT_DXCluster_Timeout);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_getDXCluster_background_callback, false, false);
 	return true;
@@ -1421,11 +1432,22 @@ void WIFI_getDXCluster(void) {
 
 		return;
 	}
-	char url[64] = "/trx_services/cluster2.php?band=";
+
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		strcat(url, BANDS[band].name);
+	if (band < 0) {
+		return;
 	}
+
+	char url[64];
+	if (BANDS[band].broadcast) {
+		strcpy(url, "/trx_services/cluster_short-wave.php?band=");
+	} else if (TRX.DXCluster_Type == 0) {
+		strcpy(url, "/trx_services/cluster_rbn.php?band=");
+	} else {
+		strcpy(url, "/trx_services/cluster_dxsummit.php?band=");
+	}
+
+	strcat(url, BANDS[band].name);
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false, false);
 }
 
