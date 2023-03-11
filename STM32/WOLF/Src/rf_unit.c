@@ -106,9 +106,15 @@ static void RF_UNIT_ProcessATU(void) {
 	if (!ATU_BestValsProbed) {
 		int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
 		if (band >= 0) {
-			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I;
-			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C;
-			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T;
+			if (!TRX.ANT_selected) {
+				TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
+				TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
+				TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
+			} else {
+				TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
+				TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
+				TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
+			}
 		}
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
@@ -147,9 +153,15 @@ static void RF_UNIT_ProcessATU(void) {
 
 			int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
 			if (band >= 0) {
-				TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I = TRX.ATU_I;
-				TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C = TRX.ATU_C;
-				TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T = TRX.ATU_T;
+				if (!TRX.ANT_selected) {
+					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I = TRX.ATU_I;
+					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C = TRX.ATU_C;
+					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T = TRX.ATU_T;
+				} else {
+					TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I = TRX.ATU_I;
+					TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C = TRX.ATU_C;
+					TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T = TRX.ATU_T;
+				}
 			}
 			return;
 		}
@@ -311,9 +323,15 @@ static void RF_UNIT_ProcessATU(void) {
 
 			int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
 			if (band >= 0) {
-				TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_I = TRX.ATU_I;
-				TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_C = TRX.ATU_C;
-				TRX.BANDS_SAVED_SETTINGS[band].BEST_ATU_T = TRX.ATU_T;
+				if (!TRX.ANT_selected) {
+					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I = TRX.ATU_I;
+					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C = TRX.ATU_C;
+					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T = TRX.ATU_T;
+				} else {
+					TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I = TRX.ATU_I;
+					TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C = TRX.ATU_C;
+					TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T = TRX.ATU_T;
+				}
 			}
 
 			BUTTONHANDLER_TUNE(0);

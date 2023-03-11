@@ -238,7 +238,7 @@ void LoadSettings(bool clear) {
 		TRX.AGC_Spectral = true;                       // Spectral AGC mode
 #endif
 		TRX.NOISE_BLANKER_THRESHOLD = 15;                              // threshold for noise blanker
-		TRX.TX_CESSB = true;                                          // Controlled-envelope single-sideband modulation
+		TRX.TX_CESSB = true;                                           // Controlled-envelope single-sideband modulation
 		TRX.TX_CESSB_COMPRESS_DB = 1.0f;                               // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;                                     // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;                                       // AGC receive rate on CW
@@ -428,9 +428,15 @@ void LoadSettings(bool clear) {
 			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
-			TRX.BANDS_SAVED_SETTINGS[i].BEST_ATU_I = TRX.ATU_I;
-			TRX.BANDS_SAVED_SETTINGS[i].BEST_ATU_C = TRX.ATU_C;
-			TRX.BANDS_SAVED_SETTINGS[i].BEST_ATU_T = TRX.ATU_T;
+			if (!TRX.ANT_selected) {
+				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_I = TRX.ATU_I;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_C = TRX.ATU_C;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_T = TRX.ATU_T;
+			} else {
+				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_I = TRX.ATU_I;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_C = TRX.ATU_C;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_T = TRX.ATU_T;
+			}
 		}
 
 		// Shadow variables

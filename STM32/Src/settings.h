@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 84         // Settings config version
+#define SETT_VERSION 85         // Settings config version
 #define CALIB_VERSION 61        // Calibration config version
 #define WIFI_SETTINGS_VERSION 2 // WiFi config version
 
@@ -393,8 +393,10 @@ typedef struct {
 	float32_t ATT_DB;
 	uint8_t Mode;
 	uint8_t DNR_Type;
-	uint8_t BEST_ATU_I;
-	uint8_t BEST_ATU_C;
+	uint8_t ANT1_ATU_I;
+	uint8_t ANT1_ATU_C;
+	uint8_t ANT2_ATU_I;
+	uint8_t ANT2_ATU_C;
 	int8_t FM_SQL_threshold_dbm;
 	uint8_t IF_Gain;
 	uint8_t RF_Gain;
@@ -411,7 +413,8 @@ typedef struct {
 	bool ADC_PGA;
 	bool AGC;
 	bool SQL;
-	bool BEST_ATU_T;
+	bool ANT1_ATU_T;
+	bool ANT2_ATU_T;
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
 } BAND_SAVED_SETTINGS_TYPE;
 
