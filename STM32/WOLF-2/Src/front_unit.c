@@ -67,7 +67,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     //.holdHandler = }, // RESERVED
     //{.port = 1, .channel = 0, .type = FUNIT_CTRL_BUTTON, .tres_min = 729, .tres_max = 822, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = ,
     //.holdHandler = }, // RESERVED
-    //{.port = 1, .channel = 0, .type = FUNIT_CTRL_BUTTON, .tres_min = 822, .tres_max = 930, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = ,
+    //{.port = 1, .channel = 0, .type = FUNIT_CTRL_BUTTON, .tres_min = 822, .tres_max = 884, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = ,
     //.holdHandler = }, // RESERVED
 
     {.port = 1,
@@ -124,7 +124,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .parameter = 0,
      .clickHandler = BUTTONHANDLER_ANT,
      .holdHandler = BUTTONHANDLER_ANT},
-    //{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 822, .tres_max = 930, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = ,
+    //{.port = 1, .channel = 1, .type = FUNIT_CTRL_BUTTON, .tres_min = 822, .tres_max = 884, .state = false, .prev_state = false, .work_in_menu = true, .parameter = 0, .clickHandler = ,
     //.holdHandler = }, // RESERVED
 
     {.port = 1,
@@ -230,7 +230,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .channel = 2,
      .type = FUNIT_CTRL_BUTTON,
      .tres_min = 822,
-     .tres_max = 930,
+     .tres_max = 884,
      .state = false,
      .prev_state = false,
      .work_in_menu = true,
@@ -326,7 +326,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .channel = 6,
      .type = FUNIT_CTRL_BUTTON,
      .tres_min = 822,
-     .tres_max = 930,
+     .tres_max = 884,
      .state = false,
      .prev_state = false,
      .work_in_menu = true,
@@ -437,7 +437,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .channel = 7,
      .type = FUNIT_CTRL_BUTTON,
      .tres_min = 822,
-     .tres_max = 930,
+     .tres_max = 884,
      .state = false,
      .prev_state = false,
      .work_in_menu = true,
