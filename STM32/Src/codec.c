@@ -61,7 +61,7 @@ void CODEC_UnMute(void) {
 		CODEC_UnMute_AF_AMP();
 	}
 }
-#if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
+#if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO) || defined(FRONTPANEL_WOLF_2)
 void CODEC_Mute_AF_AMP(void) {
 #ifdef AF_AMP_MUTE_Pin
 	HAL_GPIO_WritePin(AF_AMP_MUTE_GPIO_Port, AF_AMP_MUTE_Pin, GPIO_PIN_SET);
