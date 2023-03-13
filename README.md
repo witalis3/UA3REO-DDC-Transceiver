@@ -312,7 +312,6 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **DAC Driver Mode** - DAC Driver OPA2673 bias mode (2 = 100% bias, 1 = 75% bias, 0 = 50% bias)
 * **RF GAIN xxx** - Calibration of the maximum output power for each range. RF GAIN 0-100% - 50% driver bias, 101-200% - 75% driver bias, 201-300% - 100% driver bias.
 * **S METER** - S-meter calibration
-* **ADC OFFSET** - ADC offset calibration
 * **LPF END** - LPF filter parameters
 * **HPF START** - HPF filter parameters
 * **BPF x** - Bandpass filter parameters

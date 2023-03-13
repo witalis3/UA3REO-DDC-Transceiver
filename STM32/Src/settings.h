@@ -9,7 +9,7 @@
 #include <stdio.h>
 
 #define SETT_VERSION 88         // Settings config version
-#define CALIB_VERSION 61        // Calibration config version
+#define CALIB_VERSION 62        // Calibration config version
 #define WIFI_SETTINGS_VERSION 2 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
@@ -718,7 +718,6 @@ extern struct TRX_CALIBRATE {
 	uint16_t TX_StartDelay;
 	int16_t smeter_calibration_hf;
 	int16_t smeter_calibration_vhf;
-	int16_t adc_offset;
 	uint16_t Transverter_Custom_Offset_Mhz;
 	uint16_t Transverter_70cm_RF_Mhz;
 	uint16_t Transverter_70cm_IF_Mhz;

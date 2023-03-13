@@ -548,7 +548,6 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_QO100 = 100;       // QO-100
 		CALIBRATE.smeter_calibration_hf = 0;      // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 0;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
-		CALIBRATE.adc_offset = 0;                 // Calibrate the offset at the ADC input (DC)
 		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f; // SWR Transormator rate forward
 		CALIBRATE.SWR_BWD_Calibration_HF = 11.0f; // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_6M = 10.0f; // SWR Transormator rate forward

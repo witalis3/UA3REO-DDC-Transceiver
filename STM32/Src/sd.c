@@ -1083,7 +1083,6 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.rf_out_power_QO100", (uint32_t *)&CALIBRATE.rf_out_power_QO100, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.smeter_calibration_hf", (uint32_t *)&CALIBRATE.smeter_calibration_hf, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.smeter_calibration_vhf", (uint32_t *)&CALIBRATE.smeter_calibration_vhf, SYSMENU_INT16);
-			SD_WRITE_SETT_LINE("CALIBRATE.adc_offset", (uint32_t *)&CALIBRATE.adc_offset, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.RFU_LPF_END", (uint32_t *)&CALIBRATE.RFU_LPF_END, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.RFU_BPF_0_START", (uint32_t *)&CALIBRATE.RFU_BPF_0_START, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.RFU_BPF_0_END", (uint32_t *)&CALIBRATE.RFU_BPF_0_END, SYSMENU_UINT32);
@@ -2227,9 +2226,6 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "CALIBRATE.smeter_calibration_vhf") == 0) {
 		CALIBRATE.smeter_calibration_vhf = (int16_t)intval;
-	}
-	if (strcmp(name, "CALIBRATE.adc_offset") == 0) {
-		CALIBRATE.adc_offset = (int16_t)intval;
 	}
 	if (strcmp(name, "CALIBRATE.RFU_LPF_END") == 0) {
 		CALIBRATE.RFU_LPF_END = uintval;
