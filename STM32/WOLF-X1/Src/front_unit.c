@@ -324,7 +324,7 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 		direction = (direction < 0.0f) ? -1.0f : 1.0f;
 	}
 
-	if (TRX.RIT_Enabled) {
+	if ((!TRX.XIT_Enabled || !TRX_on_TX) && TRX.RIT_Enabled) {
 		TRX_RIT += direction * 10;
 		TRX_RIT = (TRX_RIT / 10) * 10;
 
@@ -339,7 +339,7 @@ static void FRONTPANEL_ENCODER_Rotated(float32_t direction) // rotated encoder, 
 		return;
 	}
 
-	if (TRX.XIT_Enabled) {
+	if ((!TRX.RIT_Enabled || TRX_on_TX) && TRX.XIT_Enabled) {
 		TRX_XIT += direction * 10;
 		TRX_XIT = (TRX_XIT / 10) * 10;
 

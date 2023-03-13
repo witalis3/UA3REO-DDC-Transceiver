@@ -540,7 +540,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_RIT) // Fine RIT/XIT
 	{
-		if (TRX.RIT_Enabled && TRX.FineRITTune) {
+		if ((!TRX.XIT_Enabled || !TRX_on_TX) && TRX.RIT_Enabled && TRX.FineRITTune) {
 			TRX_RIT += direction * 10;
 			if (TRX_RIT > TRX.RIT_INTERVAL) {
 				TRX_RIT = TRX.RIT_INTERVAL;
@@ -552,7 +552,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 			TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		}
 
-		if (TRX.XIT_Enabled && TRX.FineRITTune) {
+		if ((!TRX.RIT_Enabled || TRX_on_TX) && TRX.XIT_Enabled && TRX.FineRITTune) {
 			TRX_XIT += direction * 10;
 			if (TRX_XIT > TRX.XIT_INTERVAL) {
 				TRX_XIT = TRX.XIT_INTERVAL;

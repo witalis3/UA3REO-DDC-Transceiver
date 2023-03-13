@@ -603,6 +603,8 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	if (TRX.Split_Mode_Sync_Freq && TRX.SPLIT_Enabled && vfo == CurrentVFO) {
 		TRX_setFrequency(SecondaryVFO->Freq + freq_diff, SecondaryVFO);
 	}
+
+	LCD_UpdateQuery.FreqInfo = true;
 }
 
 void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo) {
@@ -1773,10 +1775,9 @@ void BUTTONHANDLER_RIT(uint32_t parameter) {
 	if (TRX.RIT_Enabled) {
 		TRX.ENC2_func_mode = ENC_FUNC_SET_RIT;
 	}
-	if (!TRX.RIT_Enabled && TRX.ENC2_func_mode == ENC_FUNC_SET_RIT) {
+	if (!TRX.XIT_Enabled && !TRX.RIT_Enabled && TRX.ENC2_func_mode == ENC_FUNC_SET_RIT) {
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	}
-	TRX.XIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
@@ -1790,13 +1791,13 @@ void BUTTONHANDLER_XIT(uint32_t parameter) {
 	if (TRX.XIT_Enabled) {
 		TRX.ENC2_func_mode = ENC_FUNC_SET_RIT;
 	}
-	if (!TRX.XIT_Enabled && TRX.ENC2_func_mode == ENC_FUNC_SET_RIT) {
+	if (!TRX.XIT_Enabled && !TRX.RIT_Enabled && TRX.ENC2_func_mode == ENC_FUNC_SET_RIT) {
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	}
-	TRX.RIT_Enabled = false;
 	TRX.SPLIT_Enabled = false;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
+	LCD_UpdateQuery.FreqInfo = true;
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;

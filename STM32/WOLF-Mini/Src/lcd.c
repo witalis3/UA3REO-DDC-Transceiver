@@ -199,17 +199,6 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	if (LCD_systemMenuOpened || LCD_window.opened) {
 		return;
 	}
-	if (!redraw && (LCD_last_showed_freq == CurrentVFO->Freq)) {
-		return;
-	}
-	if (LCD_busy) {
-		LCD_UpdateQuery.FreqInfo = true;
-		if (redraw) {
-			LCD_UpdateQuery.FreqInfoRedraw = true;
-		}
-		return;
-	}
-	LCD_busy = true;
 
 	uint64_t display_freq = CurrentVFO->Freq;
 	if (TRX.Custom_Transverter_Enabled) {
@@ -218,6 +207,19 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	if (TRX_on_TX && !TRX.selected_vfo) {
 		display_freq += TRX_XIT;
 	}
+
+	if (!redraw && (LCD_last_showed_freq == display_freq)) {
+		return;
+	}
+
+	if (LCD_busy) {
+		LCD_UpdateQuery.FreqInfo = true;
+		if (redraw) {
+			LCD_UpdateQuery.FreqInfoRedraw = true;
+		}
+		return;
+	}
+	LCD_busy = true;
 
 	LCD_last_showed_freq = display_freq;
 	uint16_t hz = (display_freq % 1000);
@@ -909,13 +911,13 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	// RIT
 	if (TRX.SPLIT_Enabled) {
 		sprintf(buff, "SPLIT");
-	} else if (TRX.RIT_Enabled && TRX_RIT > 0) {
+	} else if ((!TRX.XIT_Enabled || !TRX_on_TX) && TRX.RIT_Enabled && TRX_RIT > 0) {
 		sprintf(buff, "RIT:+%d", TRX_RIT);
-	} else if (TRX.RIT_Enabled) {
+	} else if ((!TRX.XIT_Enabled || !TRX_on_TX) && TRX.RIT_Enabled) {
 		sprintf(buff, "RIT:%d", TRX_RIT);
-	} else if (TRX.XIT_Enabled && TRX_XIT > 0) {
+	} else if ((!TRX.RIT_Enabled || TRX_on_TX) && TRX.XIT_Enabled && TRX_XIT > 0) {
 		sprintf(buff, "XIT:+%d", TRX_XIT);
-	} else if (TRX.XIT_Enabled) {
+	} else if ((!TRX.RIT_Enabled || TRX_on_TX) && TRX.XIT_Enabled) {
 		sprintf(buff, "XIT:%d", TRX_XIT);
 	} else {
 		sprintf(buff, "RIT:OFF");

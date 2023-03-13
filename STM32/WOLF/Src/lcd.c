@@ -328,12 +328,36 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	if (LCD_systemMenuOpened || LCD_window.opened) {
 		return;
 	}
-	if (!redraw && (LCD_last_showed_freq == CurrentVFO->Freq)
+
+	uint64_t display_freq_a = CurrentVFO->Freq;
 #if (defined(LAY_800x480))
-	    && (LCD_last_showed_freq_B == SecondaryVFO->Freq)
+	display_freq_a = TRX.VFO_A.Freq;
 #endif
-	)
+	if (TRX.Custom_Transverter_Enabled) {
+		display_freq_a += (uint64_t)CALIBRATE.Transverter_Custom_Offset_Mhz * 1000 * 1000;
+	}
+	if (TRX_on_TX && !TRX.selected_vfo) {
+		display_freq_a += TRX_XIT;
+	}
+
+#if (defined(LAY_800x480))
+	uint64_t display_freq_b = TRX.VFO_B.Freq;
+	if (TRX.Custom_Transverter_Enabled) {
+		display_freq_b += (uint64_t)CALIBRATE.Transverter_Custom_Offset_Mhz * 1000 * 1000;
+	}
+	if (TRX_on_TX && TRX.selected_vfo) {
+		display_freq_b += TRX_XIT;
+	}
+#endif
+
+	if (!redraw && (LCD_last_showed_freq == display_freq_a)
+#if (defined(LAY_800x480))
+	    && (LCD_last_showed_freq_B == display_freq_b)
+#endif
+	) {
 		return;
+	}
+
 	if (LCD_busy) {
 		LCD_UpdateQuery.FreqInfo = true;
 		if (redraw) {
@@ -343,23 +367,12 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	}
 	LCD_busy = true;
 
-	uint64_t display_freq = CurrentVFO->Freq;
-#if (defined(LAY_800x480))
-	display_freq = TRX.VFO_A.Freq;
-#endif
-	if (TRX.Custom_Transverter_Enabled) {
-		display_freq += (uint64_t)CALIBRATE.Transverter_Custom_Offset_Mhz * 1000 * 1000;
-	}
-	if (TRX_on_TX && !TRX.selected_vfo) {
-		display_freq += TRX_XIT;
-	}
-
-	LCD_last_showed_freq = display_freq;
-	uint16_t hz = (display_freq % 1000);
-	uint16_t khz = ((display_freq / 1000) % 1000);
-	uint16_t mhz = ((display_freq / 1000000) % 1000);
-	uint16_t ghz = ((display_freq / 1000000000) % 1000);
-	if (display_freq >= 1000000000) //>= 1GHZ
+	LCD_last_showed_freq = display_freq_a;
+	uint16_t hz = (display_freq_a % 1000);
+	uint16_t khz = ((display_freq_a / 1000) % 1000);
+	uint16_t mhz = ((display_freq_a / 1000000) % 1000);
+	uint16_t ghz = ((display_freq_a / 1000000000) % 1000);
+	if (display_freq_a >= 1000000000) //>= 1GHZ
 	{
 		hz = khz;
 		khz = mhz;
@@ -404,11 +417,11 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 		int_fast8_t band = -1;
 		int_fast16_t channel = -1;
 		if (TRX.ChannelMode) {
-			band = getBandFromFreq(display_freq, false);
+			band = getBandFromFreq(display_freq_a, false);
 			if (!TRX.selected_vfo) {
-				channel = getChannelbyFreq(display_freq, false);
+				channel = getChannelbyFreq(display_freq_a, false);
 			} else {
-				channel = getChannelbyFreq(display_freq, true);
+				channel = getChannelbyFreq(display_freq_a, true);
 			}
 		}
 		if (TRX.ChannelMode && band >= 0 && BANDS[band].channelsCount > 0) {
@@ -435,20 +448,12 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	}
 
 #if (defined(LAY_800x480))
-	display_freq = TRX.VFO_B.Freq;
-	if (TRX.Custom_Transverter_Enabled) {
-		display_freq += (uint64_t)CALIBRATE.Transverter_Custom_Offset_Mhz * 1000 * 1000;
-	}
-	if (TRX_on_TX && TRX.selected_vfo) {
-		display_freq += TRX_XIT;
-	}
-
-	LCD_last_showed_freq_B = display_freq;
+	LCD_last_showed_freq_B = display_freq_b;
 	uint16_t hz_B = (LCD_last_showed_freq_B % 1000);
 	uint16_t khz_B = ((LCD_last_showed_freq_B / 1000) % 1000);
 	uint16_t mhz_B = ((LCD_last_showed_freq_B / 1000000) % 1000);
 	uint16_t ghz_B = ((LCD_last_showed_freq_B / 1000000000) % 1000);
-	if (display_freq >= 1000000000) //>= 1GHZ
+	if (display_freq_b >= 1000000000) //>= 1GHZ
 	{
 		hz_B = khz_B;
 		khz_B = mhz_B;
@@ -1672,13 +1677,13 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		// RIT
 		if (TRX.SPLIT_Enabled) {
 			sprintf(buff, "SPLIT");
-		} else if (TRX.RIT_Enabled && TRX_RIT > 0) {
+		} else if ((!TRX.XIT_Enabled || !TRX_on_TX) && TRX.RIT_Enabled && TRX_RIT > 0) {
 			sprintf(buff, "RIT:+%d", TRX_RIT);
-		} else if (TRX.RIT_Enabled) {
+		} else if ((!TRX.XIT_Enabled || !TRX_on_TX) && TRX.RIT_Enabled) {
 			sprintf(buff, "RIT:%d", TRX_RIT);
-		} else if (TRX.XIT_Enabled && TRX_XIT > 0) {
+		} else if ((!TRX.RIT_Enabled || TRX_on_TX) && TRX.XIT_Enabled && TRX_XIT > 0) {
 			sprintf(buff, "XIT:+%d", TRX_XIT);
-		} else if (TRX.XIT_Enabled) {
+		} else if ((!TRX.RIT_Enabled || TRX_on_TX) && TRX.XIT_Enabled) {
 			sprintf(buff, "XIT:%d", TRX_XIT);
 		} else {
 			sprintf(buff, "RIT:OFF");

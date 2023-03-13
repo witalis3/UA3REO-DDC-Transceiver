@@ -37,15 +37,6 @@ static uint64_t LCD_last_showed_freq = 0;
 static uint16_t LCD_last_showed_freq_mhz = 9999;
 static uint16_t LCD_last_showed_freq_khz = 9999;
 static uint16_t LCD_last_showed_freq_hz = 9999;
-#if (defined(LAY_800x480))
-static char LCD_freq_string_hz_B[6] = {0};
-static char LCD_freq_string_khz_B[6] = {0};
-static char LCD_freq_string_mhz_B[6] = {0};
-static uint64_t LCD_last_showed_freq_B = 0;
-static uint16_t LCD_last_showed_freq_mhz_B = 9999;
-static uint16_t LCD_last_showed_freq_khz_B = 9999;
-static uint16_t LCD_last_showed_freq_hz_B = 9999;
-#endif
 
 static uint32_t manualFreqEnter = 0;
 static bool LCD_screenKeyboardOpened = false;
@@ -84,10 +75,6 @@ static void LCD_showBWWindow(void);
 static void LCD_showATTWindow(uint32_t parameter);
 static void LCD_ManualFreqButtonHandler(uint32_t parameter);
 static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter);
-#if (defined(LAY_800x480))
-static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, bool in_window, uint32_t parameter,
-                        void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter), uint16_t active_color, uint16_t inactive_color);
-#endif
 
 void LCD_Init(void) {
 	COLOR = &COLOR_THEMES[TRX.ColorThemeId];
@@ -181,26 +168,6 @@ static void LCD_displayBottomButtons(bool redraw) {
 	}
 	LCD_busy = true;
 
-#if (defined(LAY_800x480))
-	if (redraw) {
-		LCDDriver_Fill_RectWH(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LCD_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, BG_COLOR);
-	}
-	TouchpadButton_handlers_count = 0;
-	uint16_t curr_x = 0;
-	printButton(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<-", true, false, false, 0, FRONTPANEL_BUTTONHANDLER_LEFT_ARR,
-	            FRONTPANEL_BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-	curr_x += LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH;
-	for (uint8_t i = 0; i < FUNCBUTTONS_ON_PAGE; i++) {
-		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT,
-		            (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name, true, false, false, 0,
-		            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].clickHandler,
-		            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].holdHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-		curr_x += LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH;
-	}
-	printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ARROWS_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "->", true, false, false, 0,
-	            FRONTPANEL_BUTTONHANDLER_RIGHT_ARR, FRONTPANEL_BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
-#endif
-
 	LCD_UpdateQuery.BottomButtons = false;
 	if (redraw) {
 		LCD_UpdateQuery.BottomButtonsRedraw = false;
@@ -212,12 +179,20 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	if (LCD_systemMenuOpened || LCD_window.opened) {
 		return;
 	}
-	if (!redraw && (LCD_last_showed_freq == CurrentVFO->Freq)
-#if (defined(LAY_800x480))
-	    && (LCD_last_showed_freq_B == SecondaryVFO->Freq)
-#endif
-	)
+
+	uint64_t display_freq = CurrentVFO->Freq;
+
+	if (TRX.Custom_Transverter_Enabled) {
+		display_freq += (uint64_t)CALIBRATE.Transverter_Custom_Offset_Mhz * 1000 * 1000;
+	}
+	if (TRX_on_TX && !TRX.selected_vfo) {
+		display_freq += TRX_XIT;
+	}
+
+	if (!redraw && (LCD_last_showed_freq == display_freq)) {
 		return;
+	}
+
 	if (LCD_busy) {
 		LCD_UpdateQuery.FreqInfo = true;
 		if (redraw) {
@@ -226,17 +201,6 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 		return;
 	}
 	LCD_busy = true;
-
-	uint64_t display_freq = CurrentVFO->Freq;
-#if (defined(LAY_800x480))
-	display_freq = TRX.VFO_A.Freq;
-#endif
-	if (TRX.Custom_Transverter_Enabled) {
-		display_freq += (uint64_t)CALIBRATE.Transverter_Custom_Offset_Mhz * 1000 * 1000;
-	}
-	if (TRX_on_TX && !TRX.selected_vfo) {
-		display_freq += TRX_XIT;
-	}
 
 	LCD_last_showed_freq = display_freq;
 	uint16_t hz = (display_freq % 1000);
@@ -825,7 +789,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	uint16_t color = COLOR->STATUS_LABEL_RIT;
 	if (TRX.SPLIT_Enabled) {
 		sprintf(buff, "SPLT");
-	} else if (TRX.RIT_Enabled) {
+	} else if ((!TRX.XIT_Enabled || !TRX_on_TX) && TRX.RIT_Enabled) {
 		if (TRX_RIT == 0) {
 			sprintf(buff, "RIT");
 		} else if (TRX_RIT > 0) {
@@ -833,7 +797,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		} else {
 			sprintf(buff, "%d", TRX_RIT);
 		}
-	} else if (TRX.XIT_Enabled) {
+	} else if ((!TRX.RIT_Enabled || TRX_on_TX) && TRX.XIT_Enabled) {
 		if (TRX_XIT == 0) {
 			sprintf(buff, "XIT");
 		} else if (TRX_XIT > 0) {
@@ -911,25 +875,6 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	addSymbols(buff, buff, 3, " ", true);
 	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_FFT_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_FFT_BW_Y_OFFSET, COLOR->STATUS_LABELS_BW, BG_COLOR,
 	                    LAYOUT->STATUS_LABELS_FONT_SIZE);
-
-#if (defined(LAY_800x480))
-	// CPU
-	sprintf(buff, "CPU:%d%% FPS:%d  ", (uint32_t)CPU_LOAD.Load, FFT_FPS_Last);
-	LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_CPU_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_CPU_Y_OFFSET, COLOR->STATUS_LABEL_THERM, BG_COLOR,
-	                    LAYOUT->STATUS_LABELS_FONT_SIZE);
-	// AUTOGAIN
-	LCDDriver_printText("AUTOGAIN", LAYOUT->STATUS_LABEL_AUTOGAIN_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_AUTOGAIN_Y_OFFSET,
-	                    TRX.AutoGain ? COLOR->STATUS_LABEL_ACTIVE : COLOR->STATUS_LABEL_INACTIVE, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-	// LOCK
-	LCDDriver_printText("LOCK", LAYOUT->STATUS_LABEL_LOCK_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_LOCK_Y_OFFSET, TRX.Locked ? COLOR_RED : COLOR->STATUS_LABEL_INACTIVE,
-	                    BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-#endif
-
-// SD REC
-/*if (SD_RecordInProcess)
-	LCDDriver_printText("REC", LAYOUT->STATUS_LABEL_REC_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_REC_Y_OFFSET, COLOR_RED, BG_COLOR,
-LAYOUT->STATUS_LABELS_FONT_SIZE); else LCDDriver_printText("   ", LAYOUT->STATUS_LABEL_REC_X_OFFSET, LAYOUT->STATUS_Y_OFFSET +
-LAYOUT->STATUS_LABEL_REC_Y_OFFSET, COLOR_RED, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);*/
 
 // ERRORS LABELS
 #define CLEAN_SPACE LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
