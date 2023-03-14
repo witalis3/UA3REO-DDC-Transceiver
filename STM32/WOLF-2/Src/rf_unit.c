@@ -179,14 +179,12 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	if (TRX_Tune && CurrentVFO->RealRXFreq <= 70000000) {
 		ATU_Process();
 	}
-	bool tune_c0 = true;
-	bool tune_c1 = true;
-	bool tune_c2 = true;
-	bool tune_i0 = true;
-	bool tune_i1 = true;
-	bool tune_i2 = true;
-
-	// bitRead(TRX.ATU_C, 0)
+	bool tune_c0 = bitRead(TRX.ATU_C, 0) || bitRead(TRX.ATU_C, 2) || bitRead(TRX.ATU_C, 4) || bitRead(TRX.ATU_C, 6);
+	bool tune_c1 = bitRead(TRX.ATU_C, 0) || bitRead(TRX.ATU_C, 1) || bitRead(TRX.ATU_C, 4) || bitRead(TRX.ATU_C, 5);
+	bool tune_c2 = bitRead(TRX.ATU_C, 0) || bitRead(TRX.ATU_C, 1) || bitRead(TRX.ATU_C, 2) || bitRead(TRX.ATU_C, 3);
+	bool tune_i0 = bitRead(TRX.ATU_I, 0) || bitRead(TRX.ATU_I, 2) || bitRead(TRX.ATU_I, 4) || bitRead(TRX.ATU_I, 6);
+	bool tune_i1 = bitRead(TRX.ATU_I, 0) || bitRead(TRX.ATU_I, 1) || bitRead(TRX.ATU_I, 4) || bitRead(TRX.ATU_I, 5);
+	bool tune_i2 = bitRead(TRX.ATU_I, 0) || bitRead(TRX.ATU_I, 1) || bitRead(TRX.ATU_I, 2) || bitRead(TRX.ATU_I, 3);
 
 	// TX LPF
 	bool tx_lpf_0 = true;
@@ -236,7 +234,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		tx_lpf_3 = false;
 	}
 
-// Shift array
+	// Shift array
 #define SHIFT_ARRAY_SIZE 48
 	bool shift_array[SHIFT_ARRAY_SIZE];
 	static bool shift_array_old[SHIFT_ARRAY_SIZE];
@@ -261,12 +259,12 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 	shift_array[31] = TRX.ANT_selected;               // U21	ANT
 	shift_array[30] = TRX.TUNER_Enabled && TRX.ATU_T; // U21	TUNE T
-	shift_array[29] = TRX.TUNER_Enabled && !tune_c1;  // U21	TUNE C1
-	shift_array[28] = TRX.TUNER_Enabled && !tune_c2;  // U21	TUNE C2
-	shift_array[27] = TRX.TUNER_Enabled && !tune_i0;  // U21	TUNE L0
-	shift_array[26] = TRX.TUNER_Enabled && !tune_i1;  // U21	TUNE L1
-	shift_array[25] = TRX.TUNER_Enabled && !tune_i2;  // U21	TUNE L2
-	shift_array[24] = TRX.TUNER_Enabled && !tune_c0;  // U21	TUNE C0
+	shift_array[29] = TRX.TUNER_Enabled && tune_c1;   // U21	TUNE C1
+	shift_array[28] = TRX.TUNER_Enabled && tune_c2;   // U21	TUNE C2
+	shift_array[27] = TRX.TUNER_Enabled && tune_i0;   // U21	TUNE L0
+	shift_array[26] = TRX.TUNER_Enabled && tune_i1;   // U21	TUNE L1
+	shift_array[25] = TRX.TUNER_Enabled && tune_i2;   // U21	TUNE L2
+	shift_array[24] = TRX.TUNER_Enabled && tune_c0;   // U21	TUNE C0
 
 	shift_array[23] = false;                // U23	Reserved
 	shift_array[22] = bitRead(band_out, 0); // U23	EXT BAND0

@@ -7949,7 +7949,7 @@ static bool SYSMENU_HANDL_CHECK_HAS_HPF(void) {
 #ifdef FRONTPANEL_WOLF_2
 	return true;
 #endif
-	
+
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_QRP:
 		return true;
@@ -7970,7 +7970,7 @@ static bool SYSMENU_HANDL_CHECK_HAS_BPF_8(void) {
 #ifdef FRONTPANEL_WOLF_2
 	return false;
 #endif
-	
+
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_QRP:
 		return false;
@@ -7991,7 +7991,7 @@ static bool SYSMENU_HANDL_CHECK_HAS_BPF_9(void) {
 #ifdef FRONTPANEL_WOLF_2
 	return false;
 #endif
-	
+
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_QRP:
 		return false;
@@ -8012,7 +8012,7 @@ bool SYSMENU_HANDL_CHECK_HAS_ATU(void) {
 #ifdef FRONTPANEL_WOLF_2
 	return true;
 #endif
-	
+
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_QRP:
 		return false;
@@ -8033,7 +8033,7 @@ static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void) {
 #ifdef FRONTPANEL_WOLF_2
 	return true;
 #endif
-	
+
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_QRP:
 		return true;
