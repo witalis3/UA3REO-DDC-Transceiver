@@ -137,7 +137,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Band Map** - Band Map, automatically switches mode depending on the frequency
 * **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
 * **RF Filters** - Hardware filter management (LPF / HPF / BPF)
-* **Two Signal tune** - Two-signal generator in TUNE mode (1 + 2kHz)
+* **Two Signal tune** - Two-signal generator in TUNE mode (1.0 + 2.2kHz)
 * **RIT Interval** - Offset range RIT (+ -)
 * **XIT Interval** - Offset range XIT (+ -)
 * **Fine RIT Tune** - Fine or coarse tuning for RIT/XIT (encoder or resistor)
