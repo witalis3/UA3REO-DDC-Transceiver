@@ -421,13 +421,13 @@ static inline void FPGA_fpgadata_sendparam(void) {
 
 	// STAGE 14
 	// OUT ADC OFFSET
-	FPGA_writePacket(((CALIBRATE.adc_offset & (0XFFU << 8)) >> 8));
+	FPGA_writePacket(((0 & (0XFFU << 8)) >> 8)); // CALIBRATE.adc_offset
 	FPGA_clockRise();
 	FPGA_clockFall();
 
 	// STAGE 15
 	// OUT ADC OFFSET
-	FPGA_writePacket(CALIBRATE.adc_offset & 0XFFU);
+	FPGA_writePacket(0 & 0XFFU); // CALIBRATE.adc_offset
 	FPGA_clockRise();
 	FPGA_clockFall();
 
