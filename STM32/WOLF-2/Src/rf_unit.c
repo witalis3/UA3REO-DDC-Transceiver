@@ -241,7 +241,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 	shift_array[47] = false;                                                                                    // U19	Reserved
 	shift_array[46] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq >= 70000000; // U19	VHF_TX
-	shift_array[45] = band == BANDID_2m;                                                                        // U19	FM BAND
+	shift_array[45] = band == BANDID_FM;                                                                        // U19	FM BAND
 	shift_array[44] = !TRX_on_TX && TRX.LNA;                                                                    // U19	LNA
 	shift_array[43] = band == BANDID_13cm;                                                                      // U19	2.4G BAND
 	shift_array[42] = band == BANDID_23cm;                                                                      // U19	1.2G BAND
