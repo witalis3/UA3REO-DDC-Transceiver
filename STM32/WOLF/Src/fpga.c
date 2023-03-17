@@ -155,6 +155,11 @@ void FPGA_Init(bool bus_test, bool firmware_test) {
 
 	// start FPGA bus
 	FPGA_bus_stop = false;
+
+	// go internal clock if FPGA failed
+	if (!FPGA_bus_test_result) {
+		HRDW_GoToInternalSPIClock();
+	}
 }
 
 // restart FPGA modules

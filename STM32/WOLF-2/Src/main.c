@@ -236,6 +236,8 @@ int main(void) {
 	MX_CRC_Init();
 	MX_JPEG_Init();
 	/* USER CODE BEGIN 2 */
+	// HRDW_GoToInternalSPIClock();
+
 #ifdef HAS_TOUCHPAD
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	GPIO_InitStruct.Pin = T_INT_Pin;

@@ -422,7 +422,7 @@
             <File>
               <FileName>hardware.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\Src\hardware.c</FilePath>
+              <FilePath>..\..\WOLF\Src\hardware.c</FilePath>
             </File>
             <File>
               <FileName>hardware.h</FileName>

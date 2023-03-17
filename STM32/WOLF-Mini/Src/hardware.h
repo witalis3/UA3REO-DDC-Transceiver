@@ -55,9 +55,9 @@
 #define HRDW_AUDIO_COPY2_MDMA hmdma_mdma_channel42_sw_0
 
 // SPI Speed
-#define SPI_FRONT_UNIT_PRESCALER SPI_BAUDRATEPRESCALER_4
-#define SPI_SD_PRESCALER SPI_BAUDRATEPRESCALER_2
-#define SPI_EEPROM_PRESCALER SPI_BAUDRATEPRESCALER_4
+#define SPI_FRONT_UNIT_PRESCALER (!HRDW_SPI_Internal_STM32_Clock ? SPI_BAUDRATEPRESCALER_4 : SPI_BAUDRATEPRESCALER_32)
+#define SPI_SD_PRESCALER (!HRDW_SPI_Internal_STM32_Clock ? SPI_BAUDRATEPRESCALER_2 : SPI_BAUDRATEPRESCALER_16)
+#define SPI_EEPROM_PRESCALER (!HRDW_SPI_Internal_STM32_Clock ? SPI_BAUDRATEPRESCALER_4 : SPI_BAUDRATEPRESCALER_32)
 
 // buffers
 #define CODEC_AUDIO_BUFFER_SIZE (AUDIO_BUFFER_SIZE * 2)          // the size of the circular buffer is 2 times larger than the FPGA buffer, we work in the first half, then on the other
@@ -82,6 +82,7 @@ typedef struct {
 } CPULOAD_t;
 
 // variables
+extern bool HRDW_SPI_Internal_STM32_Clock;
 extern bool HRDW_SPI_Periph_busy;
 extern volatile bool HRDW_SPI_Locked;
 extern bool dma_memset32_busy;
@@ -103,5 +104,6 @@ extern bool HRDW_FrontUnit2_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t co
 extern bool HRDW_FrontUnit3_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs);
 extern bool HRDW_EEPROM_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs);
 extern bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs);
+extern void HRDW_GoToInternalSPIClock(void);
 
 #endif
