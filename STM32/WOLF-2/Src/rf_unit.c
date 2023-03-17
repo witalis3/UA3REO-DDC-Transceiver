@@ -40,9 +40,7 @@ static uint8_t getBPFByFreq(uint32_t freq) {
 	if (freq >= CALIBRATE.RFU_BPF_6_START && freq < CALIBRATE.RFU_BPF_6_END) {
 		return 6;
 	}
-	if (freq >= CALIBRATE.RFU_HPF_START) {
-		return 7;
-	}
+
 	return 255;
 }
 
@@ -50,18 +48,6 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 {
 	// STM32 PTT_OUT
 	HAL_GPIO_WritePin(PTT_OUT_GPIO_Port, PTT_OUT_Pin, TRX_on_TX ? GPIO_PIN_SET : GPIO_PIN_RESET);
-
-	// Dual RX
-	bool dualrx_lpf_disabled = false;
-	bool dualrx_bpf_disabled = false;
-	if (CALIBRATE.RF_unit_type == RF_UNIT_QRP || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_WF_100D) {
-		if (TRX.Dual_RX && SecondaryVFO->RealRXFreq > CALIBRATE.RFU_LPF_END) {
-			dualrx_lpf_disabled = true;
-		}
-		if (TRX.Dual_RX && getBPFByFreq(CurrentVFO->RealRXFreq) != getBPFByFreq(SecondaryVFO->RealRXFreq)) {
-			dualrx_bpf_disabled = true;
-		}
-	}
 
 	// Attenuator
 	float32_t att_val = TRX.ATT_DB;
@@ -89,15 +75,6 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	if (att_val >= 0.5f) {
 		att_val_05 = true;
 		att_val -= 0.5f;
-	}
-
-	// BPF/LPF
-	uint8_t bpf = getBPFByFreq(CurrentVFO->RealRXFreq);
-	uint8_t bpf_second = getBPFByFreq(SecondaryVFO->RealRXFreq);
-
-	bool turn_on_tx_lpf = true;
-	if (((HAL_GetTick() - TRX_TX_EndTime) > TX_LPF_TIMEOUT || TRX_TX_EndTime == 0) && !TRX_on_TX) {
-		turn_on_tx_lpf = false;
 	}
 
 	// Transverters / External port
@@ -187,6 +164,11 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	bool tune_i2 = bitRead(TRX.ATU_I, 0) || bitRead(TRX.ATU_I, 1) || bitRead(TRX.ATU_I, 2) || bitRead(TRX.ATU_I, 3);
 
 	// TX LPF
+	// bool turn_on_tx_lpf = true;
+	// if (((HAL_GetTick() - TRX_TX_EndTime) > TX_LPF_TIMEOUT || TRX_TX_EndTime == 0) && !TRX_on_TX) {
+	// 	turn_on_tx_lpf = false;
+	// }
+
 	bool tx_lpf_0 = true;
 	bool tx_lpf_1 = true;
 	bool tx_lpf_2 = true;
@@ -227,11 +209,89 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		tx_lpf_2 = false;
 		tx_lpf_3 = false;
 	}
-	if (CurrentVFO->RealRXFreq > 30000000 && CurrentVFO->RealRXFreq < 70000000) { // 6m+
+	if (CurrentVFO->RealRXFreq > 30000000 && CurrentVFO->RealRXFreq < 60000000) { // 6m+
 		tx_lpf_0 = false;
 		tx_lpf_1 = false;
 		tx_lpf_2 = true;
 		tx_lpf_3 = false;
+	}
+
+	// Dual RX
+	uint8_t bpf = getBPFByFreq(CurrentVFO->RealRXFreq);
+	uint8_t second_bpf = getBPFByFreq(SecondaryVFO->RealRXFreq);
+	bool dualrx_bpf_disabled = TRX.Dual_RX && bpf != second_bpf;
+
+	// BPF/LPF
+	bool BPF1_EN = false;
+	bool BPF1_A1 = false;
+	bool BPF1_A0 = false;
+	bool BPF2_EN = false;
+	bool BPF2_A1 = false;
+	bool BPF2_A0 = false;
+
+	if (CurrentVFO->RealRXFreq >= 60000000) { // VHF, disabled bpf
+		BPF1_EN = true;
+		BPF1_A1 = false;
+		BPF1_A0 = false;
+		BPF2_EN = true;
+		BPF2_A1 = false;
+		BPF2_A0 = false;
+	} else if (!TRX.RF_Filters || dualrx_bpf_disabled || bpf == 255) {
+		BPF1_EN = false;
+		BPF1_A1 = false;
+		BPF1_A0 = false;
+		BPF2_EN = true;
+		BPF2_A1 = false;
+		BPF2_A0 = false;
+	} else if (bpf == 0) { // 160
+		BPF1_EN = true;
+		BPF1_A1 = false;
+		BPF1_A0 = false;
+		BPF2_EN = false;
+		BPF2_A1 = true;
+		BPF2_A0 = true;
+	} else if (bpf == 1) { // 80
+		BPF1_EN = true;
+		BPF1_A1 = false;
+		BPF1_A0 = false;
+		BPF2_EN = false;
+		BPF2_A1 = true;
+		BPF2_A0 = false;
+	} else if (bpf == 2) { // 40
+		BPF1_EN = true;
+		BPF1_A1 = false;
+		BPF1_A0 = false;
+		BPF2_EN = false;
+		BPF2_A1 = false;
+		BPF2_A0 = true;
+	} else if (bpf == 3) { // 30
+		BPF1_EN = true;
+		BPF1_A1 = false;
+		BPF1_A0 = false;
+		BPF2_EN = false;
+		BPF2_A1 = false;
+		BPF2_A0 = false;
+	} else if (bpf == 4) { // 20
+		BPF1_EN = false;
+		BPF1_A1 = true;
+		BPF1_A0 = true;
+		BPF2_EN = true;
+		BPF2_A1 = false;
+		BPF2_A0 = false;
+	} else if (bpf == 5) { // 17,15
+		BPF1_EN = false;
+		BPF1_A1 = true;
+		BPF1_A0 = false;
+		BPF2_EN = true;
+		BPF2_A1 = false;
+		BPF2_A0 = false;
+	} else if (bpf == 6) { // 12,10
+		BPF1_EN = false;
+		BPF1_A1 = false;
+		BPF1_A0 = true;
+		BPF2_EN = true;
+		BPF2_A1 = false;
+		BPF2_A0 = false;
 	}
 
 	// Shift array
@@ -240,7 +300,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	static bool shift_array_old[SHIFT_ARRAY_SIZE];
 
 	shift_array[47] = false;                                                                                    // U19	Reserved
-	shift_array[46] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq >= 70000000; // U19	VHF_TX
+	shift_array[46] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq >= 60000000; // U19	VHF_TX
 	shift_array[45] = band == BANDID_FM;                                                                        // U19	FM BAND
 	shift_array[44] = !TRX_on_TX && TRX.LNA;                                                                    // U19	LNA
 	shift_array[43] = band == BANDID_13cm;                                                                      // U19	2.4G BAND
@@ -252,7 +312,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	shift_array[38] = !tx_lpf_1;                                                                               // U20	HFAMP_B1 !!!
 	shift_array[37] = !tx_lpf_2;                                                                               // U20	HFAMP_B2 !!!
 	shift_array[36] = !tx_lpf_3;                                                                               // U20	HFAMP_B3 !!!
-	shift_array[35] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq < 70000000; // U20	HF TX
+	shift_array[35] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq < 60000000; // U20	HF TX
 	shift_array[34] = false;                                                                                   // U20	Reserved
 	shift_array[33] = false;                                                                                   // U20	Reserved
 	shift_array[32] = false;                                                                                   // U20	FAN (code in bottom)
@@ -266,32 +326,32 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	shift_array[25] = TRX.TUNER_Enabled && tune_i2;   // U21	TUNE L2
 	shift_array[24] = TRX.TUNER_Enabled && tune_c0;   // U21	TUNE C0
 
-	shift_array[23] = false;                // U23	Reserved
-	shift_array[22] = bitRead(band_out, 0); // U23	EXT BAND0
-	shift_array[21] = bitRead(band_out, 1); // U23	EXT BAND1
-	shift_array[20] = bitRead(band_out, 2); // U23	EXT BAND2
-	shift_array[19] = bitRead(band_out, 3); // U23	EXT BAND3
-	shift_array[18] = TRX_on_TX;            // U23	EXT TX
-	shift_array[17] = TRX_Tune;             // U23	EXT TUNE
-	shift_array[16] = false;                // U23	EXT Reserved
+	shift_array[23] = false;                                              // U23	Reserved
+	shift_array[22] = bitRead(band_out, 0);                               // U23	EXT BAND0
+	shift_array[21] = bitRead(band_out, 1);                               // U23	EXT BAND1
+	shift_array[20] = bitRead(band_out, 2);                               // U23	EXT BAND2
+	shift_array[19] = bitRead(band_out, 3);                               // U23	EXT BAND3
+	shift_array[18] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U23	EXT TX
+	shift_array[17] = TRX_Tune;                                           // U23	EXT TUNE
+	shift_array[16] = false;                                              // U23	EXT Reserved
 
 	shift_array[15] = false;                              // U24	Reserved
-	shift_array[14] = CurrentVFO->RealRXFreq >= 70000000; // U24	HF/VHF
+	shift_array[14] = CurrentVFO->RealRXFreq >= 60000000; // U24	HF/VHF
 	shift_array[13] = false;                              // U24	Reserved
 	shift_array[12] = false;                              // U24	Reserved
-	shift_array[11] = !(TRX.ATT && att_val_16);           // U24	ATT 16
-	shift_array[10] = !(TRX.ATT && att_val_05);           // U24	ATT 0.5
-	shift_array[9] = !(TRX.ATT && att_val_1);             // U24	ATT 1
-	shift_array[8] = !(TRX.ATT && att_val_2);             // U24	ATT 2
+	shift_array[11] = (TRX.ATT && att_val_16);            // U24	ATT 16
+	shift_array[10] = (TRX.ATT && att_val_05);            // U24	ATT 0.5
+	shift_array[9] = (TRX.ATT && att_val_1);              // U24	ATT 1
+	shift_array[8] = (TRX.ATT && att_val_2);              // U24	ATT 2
 
-	shift_array[7] = !(TRX.ATT && att_val_4);                                                                     // U22	ATT 4
-	shift_array[6] = !(TRX.ATT && att_val_8);                                                                     // U22	ATT 8
-	shift_array[5] = !(!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 1 && bpf != 2 && bpf != 3 && bpf != 4)); // U22	BPF2_EN 1,2,3,4 - bpf2
-	shift_array[4] = !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6)); // U22	BPF2_A1 4,2 - bpf2; 0,6 - bpf1
-	shift_array[3] = !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6)); // U22	BPF2_A0 1,2 - bpf2; 5,6 - bpf1
-	shift_array[2] = !(!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 0 && bpf != 5 && bpf != 6 && bpf != 7)); // U22	BPF1_EN 1,2 - bpf2; 5,6 - bpf1
-	shift_array[1] = !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 4 || bpf == 2 || bpf == 0 || bpf == 6)); // U22	BPF1_A1 4,2 - bpf2; 0,6 - bpf1
-	shift_array[0] = !(TRX.RF_Filters && !dualrx_bpf_disabled && (bpf == 1 || bpf == 2 || bpf == 5 || bpf == 6)); // U22	BPF1_A0 5,6,7,0 - bpf1
+	shift_array[7] = (TRX.ATT && att_val_4); // U22	ATT 4
+	shift_array[6] = (TRX.ATT && att_val_8); // U22	ATT 8
+	shift_array[5] = BPF2_EN;                // U22	BPF2_EN
+	shift_array[4] = BPF2_A1;                // U22	BPF2_A1
+	shift_array[3] = BPF2_A0;                // U22	BPF2_A0
+	shift_array[2] = BPF1_EN;                // U22	BPF1_EN
+	shift_array[1] = BPF1_A1;                // U22	BPF1_A1
+	shift_array[0] = BPF1_A0;                // U22	BPF1_A0
 
 	static bool fan_pwm = false;
 	if (FAN_Active && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) { // Temperature at which the fan stops

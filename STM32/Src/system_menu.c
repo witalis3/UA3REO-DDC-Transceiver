@@ -7949,7 +7949,7 @@ static bool SYSMENU_HANDL_CHECK_HAS_LPF(void) {
 
 static bool SYSMENU_HANDL_CHECK_HAS_HPF(void) {
 #ifdef FRONTPANEL_WOLF_2
-	return true;
+	return false;
 #endif
 
 	switch (CALIBRATE.RF_unit_type) {
