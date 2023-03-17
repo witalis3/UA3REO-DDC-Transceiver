@@ -151,7 +151,7 @@ void TRX_Restart_Mode() {
 	}
 
 	// Repeater mode
-	if (TRX.RepeaterMode && !TRX_REPEATER_Applied) {
+	if (TRX.RepeaterMode_shadow && !TRX_REPEATER_Applied) {
 		TRX_REPEATER_Applied = true;
 
 		if (TRX_on_TX) {
@@ -592,9 +592,12 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].FM_SQL_threshold_dbm;
 		CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].DNR_Type;
 		CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].AGC;
+		CurrentVFO->RepeaterMode = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].RepeaterMode;
 		CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].SQL;
 		TRX.FM_SQL_threshold_dbm_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].FM_SQL_threshold_dbm;
 		TRX.SQL_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].SQL;
+		TRX.AGC_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].AGC;
+		TRX.RepeaterMode_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].RepeaterMode;
 		TRX_Temporary_Stop_BandMap = false;
 		TRX_DXCluster_UpdateTime = 0;
 	}
@@ -1183,8 +1186,11 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
 	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
+	CurrentVFO->RepeaterMode = TRX.BANDS_SAVED_SETTINGS[band].RepeaterMode;
 	TRX.SQL_shadow = CurrentVFO->SQL;
 	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
+	TRX.AGC_shadow = CurrentVFO->AGC;
+	TRX.RepeaterMode_shadow = CurrentVFO->RepeaterMode;
 
 	TRX_DXCluster_UpdateTime = 0;
 	LCD_UpdateQuery.TopButtons = true;

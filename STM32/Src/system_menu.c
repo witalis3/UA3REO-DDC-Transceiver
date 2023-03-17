@@ -539,7 +539,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Pwr for each band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Band},
     {"Pwr for each mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_HANDL_TRX_RF_Gain_For_Each_Mode},
     {"Channel Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ChannelMode, SYSMENU_HANDL_TRX_ChannelMode},
-    {"Repeater Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RepeaterMode, SYSMENU_HANDL_TRX_RepeaterMode},
+    {"Repeater Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RepeaterMode_shadow, SYSMENU_HANDL_TRX_RepeaterMode},
     {"Band Map", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
     {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
 #if !defined(FRONTPANEL_LITE)
@@ -1435,10 +1435,17 @@ static void SYSMENU_HANDL_TRX_ChannelMode(int8_t direction) {
 
 static void SYSMENU_HANDL_TRX_RepeaterMode(int8_t direction) {
 	if (direction > 0) {
-		TRX.RepeaterMode = true;
+		CurrentVFO->RepeaterMode = true;
 	}
 	if (direction < 0) {
-		TRX.RepeaterMode = false;
+		CurrentVFO->RepeaterMode = false;
+	}
+	
+	TRX.RepeaterMode_shadow = CurrentVFO->RepeaterMode;
+
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band > 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].RepeaterMode = CurrentVFO->RepeaterMode;
 	}
 }
 

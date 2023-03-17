@@ -806,6 +806,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint32_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SQL", (uint32_t *)&TRX.VFO_A.SQL, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold_dbm", (uint32_t *)&TRX.VFO_A.FM_SQL_threshold_dbm, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.RepeaterMode", (uint32_t *)&TRX.VFO_A.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Freq", (uint32_t *)&TRX.VFO_B.Freq, SYSMENU_UINT64);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Mode", (uint32_t *)&TRX.VFO_B.Mode, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.LPF_RX_Filter_Width", (uint32_t *)&TRX.VFO_B.LPF_RX_Filter_Width, SYSMENU_UINT32);
@@ -819,6 +820,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VFO_B.AGC", (uint32_t *)&TRX.VFO_B.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.SQL", (uint32_t *)&TRX.VFO_B.SQL, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold_dbm", (uint32_t *)&TRX.VFO_B.FM_SQL_threshold_dbm, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.RepeaterMode", (uint32_t *)&TRX.VFO_B.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.selected_vfo", (uint32_t *)&TRX.selected_vfo, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint32_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.LNA", (uint32_t *)&TRX.LNA, SYSMENU_BOOLEAN);
@@ -834,7 +836,6 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Band", (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Mode", (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ChannelMode", (uint32_t *)&TRX.ChannelMode, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.RepeaterMode", (uint32_t *)&TRX.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.REPEATER_Offset", (uint32_t *)&TRX.REPEATER_Offset, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.RIT_Enabled", (uint32_t *)&TRX.RIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.XIT_Enabled", (uint32_t *)&TRX.XIT_Enabled, SYSMENU_BOOLEAN);
@@ -1234,6 +1235,8 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].DNR_Type, SYSMENU_UINT8);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AGC", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].AGC, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].RepeaterMode", i);
+				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].RepeaterMode, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE, SYSMENU_UINT8);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT1_ATU_I", i);
@@ -1336,6 +1339,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	if (strcmp(name, "TRX.VFO_A.AGC") == 0) {
 		TRX.VFO_A.AGC = bval;
 	}
+	if (strcmp(name, "TRX.VFO_A.RepeaterMode") == 0) {
+		TRX.VFO_A.RepeaterMode = bval;
+	}
 	if (strcmp(name, "TRX.VFO_A.SQL") == 0) {
 		TRX.VFO_A.SQL = bval;
 	}
@@ -1375,6 +1381,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	if (strcmp(name, "TRX.VFO_B.AGC") == 0) {
 		TRX.VFO_B.AGC = bval;
 	}
+	if (strcmp(name, "TRX.VFO_B.RepeaterMode") == 0) {
+		TRX.VFO_B.RepeaterMode = bval;
+	}
 	if (strcmp(name, "TRX.VFO_B.SQL") == 0) {
 		TRX.VFO_B.SQL = bval;
 	}
@@ -1410,9 +1419,6 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.ChannelMode") == 0) {
 		TRX.ChannelMode = bval;
-	}
-	if (strcmp(name, "TRX.RepeaterMode") == 0) {
-		TRX.RepeaterMode = bval;
 	}
 	if (strcmp(name, "TRX.REPEATER_Offset") == 0) {
 		TRX.REPEATER_Offset = intval;
@@ -2633,6 +2639,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AGC", i);
 		if (strcmp(name, buff) == 0) {
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].RepeaterMode", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].RepeaterMode = bval;
 		}
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
 		if (strcmp(name, buff) == 0) {

@@ -97,6 +97,7 @@ void LoadSettings(bool clear) {
 		TRX.VFO_A.DNR_Type = 0;               // digital noise reduction
 		TRX.VFO_A.AGC = true;                 // AGC
 		TRX.VFO_A.SQL = false;                // SSB/FM Squelch
+		TRX.VFO_A.RepeaterMode = false;				// Repeater mode
 		TRX.VFO_A.FM_SQL_threshold_dbm = -90; // FM noise squelch
 		TRX.VFO_B.Freq = 14150000;            // stored VFO-B frequency
 		TRX.VFO_B.Mode = TRX_MODE_USB;        // saved VFO-B mode
@@ -111,6 +112,7 @@ void LoadSettings(bool clear) {
 		TRX.VFO_B.AGC = true;                 // AGC
 		TRX.VFO_B.SQL = false;                // SSB/FM Squelch
 		TRX.VFO_B.FM_SQL_threshold_dbm = -90; // FM noise squelch
+		TRX.VFO_B.RepeaterMode = false;				// Repeater mode
 		TRX.Fast = true;                      // accelerated frequency change when the encoder rotates
 		TRX.LNA = false;                      // LNA (Low Noise Amplifier)
 		TRX.ATT = false;                      // attenuator
@@ -199,7 +201,6 @@ void LoadSettings(bool clear) {
 		TRX.Digital_Pre_Distortion = false;        // enable digital pre-distortion
 		TRX.Split_Mode_Sync_Freq = false;          // enable VFO freq syncronization in SPLIT mode
 		TRX.DXCluster_Type = DX_CLUSTER_DX_SUMMIT; // DX cluster type
-		TRX.RepeaterMode = false;                  // repeater mode with custom offset
 		TRX.REPEATER_Offset = 600;                 // repeater mode custom offset
 		// AUDIO
 		TRX.Volume = 25;             // AF Volume
@@ -422,15 +423,12 @@ void LoadSettings(bool clear) {
 			TRX.BANDS_SAVED_SETTINGS[i].ANT_selected = TRX.ANT_selected;
 			TRX.BANDS_SAVED_SETTINGS[i].ANT_mode = TRX.ANT_mode;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
-			if (TRX.BANDS_SAVED_SETTINGS[i].Freq < 70000000) {
-				TRX.BANDS_SAVED_SETTINGS[i].SQL = false;
-			} else {
-				TRX.BANDS_SAVED_SETTINGS[i].SQL = true;
-			}
+			TRX.BANDS_SAVED_SETTINGS[i].SQL = false;
 			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm = TRX.VFO_A.FM_SQL_threshold_dbm;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = TRX.ADC_PGA;
 			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
+			TRX.BANDS_SAVED_SETTINGS[i].RepeaterMode = false;
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
 			if (!TRX.ANT_selected) {
 				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_I = TRX.ATU_I;
@@ -447,6 +445,7 @@ void LoadSettings(bool clear) {
 		TRX.SQL_shadow = TRX.VFO_A.SQL;
 		TRX.AGC_shadow = TRX.VFO_A.AGC;
 		TRX.DNR_shadow = TRX.VFO_A.DNR_Type;
+		TRX.RepeaterMode_shadow = TRX.VFO_A.RepeaterMode;
 		TRX.Notch_on_shadow = false;
 		TRX.FM_SQL_threshold_dbm_shadow = TRX.VFO_A.FM_SQL_threshold_dbm;
 		TRX.FRONTPANEL_funcbuttons_page = 0;

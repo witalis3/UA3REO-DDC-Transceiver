@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 88         // Settings config version
+#define SETT_VERSION 89         // Settings config version
 #define CALIB_VERSION 63        // Calibration config version
 #define WIFI_SETTINGS_VERSION 2 // WiFi config version
 
@@ -310,6 +310,7 @@ typedef struct {
 	bool AutoNotchFilter;
 	bool AGC;
 	bool SQL;
+	bool RepeaterMode;
 } VFO;
 
 #if HRDW_HAS_DUAL_RX
@@ -418,6 +419,7 @@ typedef struct {
 	bool ADC_Driver;
 	bool ADC_PGA;
 	bool AGC;
+	bool RepeaterMode;
 	bool SQL;
 	bool ANT1_ATU_T;
 	bool ANT2_ATU_T;
@@ -480,7 +482,6 @@ extern struct TRX_SETTINGS {
 	bool ANT_selected; // false - 1, true - 2
 	bool ANT_mode;     // false - RX=TX, true - 1RX 2TX
 	bool ChannelMode;
-	bool RepeaterMode;
 	bool RIT_Enabled;
 	bool XIT_Enabled;
 	bool SPLIT_Enabled;
@@ -668,6 +669,7 @@ extern struct TRX_SETTINGS {
 	bool SQL_shadow;
 	bool AGC_shadow;
 	bool Notch_on_shadow;
+	bool RepeaterMode_shadow;
 	// Memory
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 	//
