@@ -1202,7 +1202,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 
 			// Func buttons settings
 			char buff[64] = {0};
-			for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++) {
+			for (uint8_t i = 0; i < (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE); i++) {
 				sprintf(buff, "TRX.FuncButtons[%d]", i);
 				SD_WRITE_SETT_LINE(buff, (uint32_t *)&TRX.FuncButtons[i], SYSMENU_UINT8);
 			}
@@ -2579,7 +2579,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 
 	// Func buttons settings
 	char buff[64] = {0};
-	for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++) {
+	for (uint8_t i = 0; i < (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE); i++) {
 		sprintf(buff, "TRX.FuncButtons[%d]", i);
 		if (strcmp(name, buff) == 0) {
 			TRX.FuncButtons[i] = (uint8_t)uintval;

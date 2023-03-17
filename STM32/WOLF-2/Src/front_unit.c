@@ -449,11 +449,11 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {
     {.name = "A / B", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AsB, .holdHandler = BUTTONHANDLER_AsB, .checkBool = NULL},
     {.name = "B=A", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ArB, .holdHandler = BUTTONHANDLER_ArB, .checkBool = NULL},
-    {.name = "POWER", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER, .checkBool = NULL},
-    {.name = "DOUBLE", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DOUBLE, .holdHandler = BUTTONHANDLER_DOUBLEMODE, .checkBool = (uint32_t *)&TRX.Dual_RX},
+    {.name = "SPLIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SPLIT, .holdHandler = BUTTONHANDLER_SPLIT, .checkBool = (uint32_t *)&TRX.SPLIT_Enabled},
     {.name = "XIT", .work_in_menu = true, .clickHandler = BUTTONHANDLER_XIT, .holdHandler = BUTTONHANDLER_XIT, .checkBool = (uint32_t *)&TRX.XIT_Enabled},
     {.name = "RIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_RIT, .holdHandler = BUTTONHANDLER_RIT, .checkBool = (uint32_t *)&TRX.RIT_Enabled},
-    {.name = "CQ", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CQ, .holdHandler = BUTTONHANDLER_FILEMANAGER, .checkBool = (uint32_t *)&SD_PlayInProcess},
+    {.name = "DOUBLE", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DOUBLE, .holdHandler = BUTTONHANDLER_DOUBLEMODE, .checkBool = (uint32_t *)&TRX.Dual_RX},
+    {.name = "POWER", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER, .checkBool = NULL},
     {.name = "REC", .work_in_menu = false, .clickHandler = BUTTONHANDLER_REC, .holdHandler = BUTTONHANDLER_REC, .checkBool = (uint32_t *)&SD_RecordInProcess},
     {.name = "SERVICE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SERVICES, .holdHandler = BUTTONHANDLER_SCREENSHOT, .checkBool = NULL},
 
@@ -463,8 +463,9 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "ZOOM+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_P, .holdHandler = BUTTONHANDLER_ZOOM_P, .checkBool = NULL},
     {.name = "SNAP <", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SNAP_LEFT, .holdHandler = BUTTONHANDLER_AUTO_SNAP, .checkBool = (uint32_t *)&TRX.Auto_Snap},
     {.name = "SNAP >", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SNAP_RIGHT, .holdHandler = BUTTONHANDLER_AUTO_SNAP, .checkBool = (uint32_t *)&TRX.Auto_Snap},
-    {.name = "SPLIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SPLIT, .holdHandler = BUTTONHANDLER_SPLIT, .checkBool = (uint32_t *)&TRX.SPLIT_Enabled},
+    {.name = "CQ", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CQ, .holdHandler = BUTTONHANDLER_FILEMANAGER, .checkBool = (uint32_t *)&SD_PlayInProcess},
     {.name = "WPM", .work_in_menu = true, .clickHandler = BUTTONHANDLER_WPM, .holdHandler = BUTTONHANDLER_WPM, .checkBool = NULL},
+    //{.name = "DPD", .work_in_menu = true, .clickHandler = BUTTONHANDLER_DPD, .holdHandler = BUTTONHANDLER_DPD_CALIBRATE, .checkBool = (uint32_t *)&TRX.Digital_Pre_Distortion},
     {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNE, .checkBool = (uint32_t *)&TRX_Tune},
 
     {.name = "SCAN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SCAN, .holdHandler = BUTTONHANDLER_SCAN, .checkBool = (uint32_t *)&TRX_ScanMode},
@@ -477,14 +478,21 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "AUTOGN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_AUTOGAINER, .holdHandler = BUTTONHANDLER_AUTOGAINER, .checkBool = (uint32_t *)&TRX.AutoGain},
     {.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
 
-    // hidden entry for menu editor
-    {.name = "MENU", .work_in_menu = true, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_MENU, .checkBool = NULL},
+    {.name = "MACRO1", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 1},
+    {.name = "MACRO2", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 2},
+    {.name = "MACRO3", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 3},
+    {.name = "MACRO4", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 4},
+    {.name = "MACRO5", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 5},
+    {.name = "CESSB", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CESSB, .holdHandler = BUTTONHANDLER_CESSB, .checkBool = (uint32_t *)&TRX.TX_CESSB},
     {.name = "FT8", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FT8, .holdHandler = BUTTONHANDLER_FT8, .checkBool = NULL},
-    {.name = "SQL", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SQUELCH, .holdHandler = BUTTONHANDLER_SQUELCH, .checkBool = (uint32_t *)&TRX.SQL_shadow},
     {.name = "VOX", .work_in_menu = true, .clickHandler = BUTTONHANDLER_VOX, .holdHandler = BUTTONHANDLER_VOX, .checkBool = (uint32_t *)&TRX.VOX},
     {.name = "FILES", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FILEMANAGER, .holdHandler = BUTTONHANDLER_FILEMANAGER, .checkBool = NULL},
+
+    // hidden entry for menu editor
+    {.name = "MENU", .work_in_menu = true, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_MENU, .checkBool = NULL},
+    {.name = "SQL", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SQUELCH, .holdHandler = BUTTONHANDLER_SQUELCH, .checkBool = (uint32_t *)&TRX.SQL_shadow},
     {.name = "ANT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ANT, .holdHandler = BUTTONHANDLER_ANT, .checkBool = NULL},
-    {.name = "CESSB", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CESSB, .holdHandler = BUTTONHANDLER_CESSB, .checkBool = (uint32_t *)&TRX.TX_CESSB},
+    {.name = "REPIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_REPEATER_MODE, .holdHandler = BUTTONHANDLER_REPEATER_MODE, .checkBool = (uint32_t *)&TRX.RepeaterMode_shadow},
 };
 
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_TANGENT_MH36[] = {

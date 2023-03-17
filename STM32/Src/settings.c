@@ -97,7 +97,7 @@ void LoadSettings(bool clear) {
 		TRX.VFO_A.DNR_Type = 0;               // digital noise reduction
 		TRX.VFO_A.AGC = true;                 // AGC
 		TRX.VFO_A.SQL = false;                // SSB/FM Squelch
-		TRX.VFO_A.RepeaterMode = false;				// Repeater mode
+		TRX.VFO_A.RepeaterMode = false;       // Repeater mode
 		TRX.VFO_A.FM_SQL_threshold_dbm = -90; // FM noise squelch
 		TRX.VFO_B.Freq = 14150000;            // stored VFO-B frequency
 		TRX.VFO_B.Mode = TRX_MODE_USB;        // saved VFO-B mode
@@ -112,7 +112,7 @@ void LoadSettings(bool clear) {
 		TRX.VFO_B.AGC = true;                 // AGC
 		TRX.VFO_B.SQL = false;                // SSB/FM Squelch
 		TRX.VFO_B.FM_SQL_threshold_dbm = -90; // FM noise squelch
-		TRX.VFO_B.RepeaterMode = false;				// Repeater mode
+		TRX.VFO_B.RepeaterMode = false;       // Repeater mode
 		TRX.Fast = true;                      // accelerated frequency change when the encoder rotates
 		TRX.LNA = false;                      // LNA (Low Noise Amplifier)
 		TRX.ATT = false;                      // attenuator

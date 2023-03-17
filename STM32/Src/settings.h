@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 89         // Settings config version
+#define SETT_VERSION 90         // Settings config version
 #define CALIB_VERSION 63        // Calibration config version
 #define WIFI_SETTINGS_VERSION 2 // WiFi config version
 
@@ -142,7 +142,7 @@ static char ota_config_frontpanel[] = "LITE";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 8
 #define FUNCBUTTONS_PAGES 5
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 2)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 3)
 static char ota_config_frontpanel[] = "BIG";
 #endif
 
@@ -152,7 +152,7 @@ static char ota_config_frontpanel[] = "BIG";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 9
 #define FUNCBUTTONS_PAGES 4
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 3)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 4)
 static char ota_config_frontpanel[] = "WF_100D";
 #endif
 
@@ -162,7 +162,7 @@ static char ota_config_frontpanel[] = "WF_100D";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 9
 #define FUNCBUTTONS_PAGES 4
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 3)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 4)
 static char ota_config_frontpanel[] = "WOLF-2";
 #endif
 
@@ -614,7 +614,7 @@ extern struct TRX_SETTINGS {
 	uint8_t FFT_3D;
 	uint8_t FFT_DXCluster_Timeout;
 	uint8_t FFT_Scale_Type;
-	uint8_t FuncButtons[FUNCBUTTONS_COUNT];
+	uint8_t FuncButtons[(FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE)];
 	bool FFT_Enabled;
 	bool WTF_Moving;
 	bool FFT_Automatic;

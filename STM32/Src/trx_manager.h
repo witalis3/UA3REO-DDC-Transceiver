@@ -68,6 +68,7 @@ extern void BUTTONHANDLER_PGA_ONLY(uint32_t parameter);
 extern void BUTTONHANDLER_DRV_ONLY(uint32_t parameter);
 extern void BUTTONHANDLER_AGC(uint32_t parameter);
 extern void BUTTONHANDLER_AGC_SPEED(uint32_t parameter);
+extern void BUTTONHANDLER_REPEATER_MODE(uint32_t parameter);
 extern void BUTTONHANDLER_DNR(uint32_t parameter);
 extern void BUTTONHANDLER_DNR_HOLD(uint32_t parameter);
 extern void BUTTONHANDLER_NB(uint32_t parameter);

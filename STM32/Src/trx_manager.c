@@ -1608,6 +1608,18 @@ void BUTTONHANDLER_AGC_SPEED(uint32_t parameter) {
 	}
 }
 
+void BUTTONHANDLER_REPEATER_MODE(uint32_t parameter) {
+	CurrentVFO->RepeaterMode = !CurrentVFO->RepeaterMode;
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].RepeaterMode = CurrentVFO->RepeaterMode;
+	}
+	TRX.RepeaterMode_shadow = CurrentVFO->RepeaterMode;
+	LCD_UpdateQuery.TopButtons = true;
+	LCD_UpdateQuery.BottomButtons = true;
+	NeedSaveSettings = true;
+}
+
 void BUTTONHANDLER_SQUELCH(uint32_t parameter) {
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;

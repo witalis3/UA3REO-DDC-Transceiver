@@ -1440,7 +1440,7 @@ static void SYSMENU_HANDL_TRX_RepeaterMode(int8_t direction) {
 	if (direction < 0) {
 		CurrentVFO->RepeaterMode = false;
 	}
-	
+
 	TRX.RepeaterMode_shadow = CurrentVFO->RepeaterMode;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
@@ -3581,7 +3581,7 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction) {
 	}
 }
 
-#if FUNCBUTTONS_COUNT > 1
+#if (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE) > 1
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON2(int8_t direction) {
 	if (TRX.FuncButtons[1] > 0 || direction > 0) {
 		TRX.FuncButtons[1] += direction;
