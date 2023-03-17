@@ -345,7 +345,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **LNA Compensation** - Compensates the S-meter value when the LNA is turned on, dBm
 * **TSignal Balance** - Sets the power balance between signals in Two signal tune mode
 * **Linear Pwr Control** - Sets a linear way to change the signal amplitude when adjusting the power (if disabled - logarithmic)
-* **ALC Port Enabled** - Activation of transceiver power control by an external amplifier via the ALC line: up to 1 volt - ALC is disabled and the power set in the transceiver is used. from 1.0v to 3.3v - power adjustment from 0 to 100%
+* **ALC Port Enabled** - Activation of transceiver power control by an external amplifier via the ALC line: up to 1 volt - ALC is disabled and the power set in the transceiver is used. from 1.0v to 3.0v - power adjustment from 0 to 100%
 * **Flash GT911** - Starting the touchpad update procedure according to LCD screen resolution
 * **IF Gain MIN/MAX** - IF Gain adjusting limits
 * **Settings reset** - Reset all settings to defaults

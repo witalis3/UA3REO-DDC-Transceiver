@@ -1055,7 +1055,7 @@ uint8_t getPowerFromALC() {
 	}
 
 	float32_t volt = TRX_ALC_IN - 1.0f;     // 0.0-1.0v - ALC disabled
-	float32_t power = volt * 100.0f / 2.3f; // 1.0v - 3.3v - power 0-100%
+	float32_t power = volt * 100.0f / 2.0f; // 1.0v - 3.0v - power 0-100%
 
 	if (power < 0) {
 		return 0;
