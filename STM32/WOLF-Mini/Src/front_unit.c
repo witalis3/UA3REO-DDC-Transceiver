@@ -451,35 +451,35 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	{
 		if (!TRX_on_TX) {
 			if (CurrentVFO->Mode == TRX_MODE_CW) {
-				SYSMENU_HANDL_AUDIO_CW_LPF_pass(direction);
+				SYSMENU_HANDL_FILTER_CW_LPF_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
-				SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass(direction);
+				SYSMENU_HANDL_FILTER_SSB_LPF_RX_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
-				SYSMENU_HANDL_AUDIO_AM_LPF_RX_pass(direction);
+				SYSMENU_HANDL_FILTER_AM_LPF_RX_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
-				SYSMENU_HANDL_AUDIO_FM_LPF_RX_pass(direction);
+				SYSMENU_HANDL_FILTER_FM_LPF_RX_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_DIGI_L) {
-				SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(direction);
+				SYSMENU_HANDL_FILTER_DIGI_LPF_pass(direction);
 			}
 		} else {
 			if (CurrentVFO->Mode == TRX_MODE_CW) {
-				SYSMENU_HANDL_AUDIO_CW_LPF_pass(direction);
+				SYSMENU_HANDL_FILTER_CW_LPF_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
-				SYSMENU_HANDL_AUDIO_SSB_LPF_TX_pass(direction);
+				SYSMENU_HANDL_FILTER_SSB_LPF_TX_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
-				SYSMENU_HANDL_AUDIO_AM_LPF_TX_pass(direction);
+				SYSMENU_HANDL_FILTER_AM_LPF_TX_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
-				SYSMENU_HANDL_AUDIO_FM_LPF_TX_pass(direction);
+				SYSMENU_HANDL_FILTER_FM_LPF_TX_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_DIGI_L) {
-				SYSMENU_HANDL_AUDIO_DIGI_LPF_pass(direction);
+				SYSMENU_HANDL_FILTER_DIGI_LPF_pass(direction);
 			}
 		}
 	}
@@ -488,11 +488,11 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	{
 		if (!TRX_on_TX) {
 			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
-				SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(direction);
+				SYSMENU_HANDL_FILTER_SSB_HPF_RX_pass(direction);
 			}
 		} else {
 			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
-				SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass(direction);
+				SYSMENU_HANDL_FILTER_SSB_HPF_TX_pass(direction);
 			}
 		}
 	}

@@ -667,7 +667,7 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_RX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
     {"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_RX_SAMPLERATE_FM, {"48khz", "96khz", "192khz", "384khz"}},
 #if HRDW_HAS_VGA
-    {"VGA Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.VGA_GAIN, SYSMENU_HANDL_TRX_VGA_GAIN},
+    {"VGA Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.VGA_GAIN, SYSMENU_HANDL_RX_VGA_GAIN},
 #endif
 #if !defined(STM32F407xx)
     {"WFM Stereo", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FM_Stereo, SYSMENU_HANDL_RX_FM_Stereo},
@@ -2614,7 +2614,7 @@ static void SYSMENU_HANDL_TXMENU(int8_t direction) {
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
-void SYSMENU_TRX_RFPOWER_HOTKEY(void) {
+void SYSMENU_TX_RFPOWER_HOTKEY(void) {
 	SYSMENU_HANDL_TXMENU(0);
 	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "RF Power");
 	setCurrentMenuIndex(index);

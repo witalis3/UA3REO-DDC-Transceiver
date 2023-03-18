@@ -1581,7 +1581,7 @@ void BUTTONHANDLER_RF_POWER(uint32_t parameter) {
 #else
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
-		SYSMENU_TRX_RFPOWER_HOTKEY();
+		SYSMENU_TX_RFPOWER_HOTKEY();
 	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
