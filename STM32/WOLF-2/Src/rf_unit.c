@@ -299,7 +299,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	bool shift_array[SHIFT_ARRAY_SIZE];
 	static bool shift_array_old[SHIFT_ARRAY_SIZE];
 
-	shift_array[47] = false;                                                                                    // U19	Reserved
+	shift_array[47] = false;                                                                                    // U19 STPIC6C595TTR	Reserved
 	shift_array[46] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq >= 60000000; // U19	VHF_TX
 	shift_array[45] = band == BANDID_FM;                                                                        // U19	FM BAND
 	shift_array[44] = !TRX_on_TX && TRX.LNA;                                                                    // U19	LNA
@@ -308,7 +308,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	shift_array[41] = band == BANDID_70cm;                                                                      // U19	430 BAND
 	shift_array[40] = band == BANDID_2m;                                                                        // U19	144 BAND
 
-	shift_array[39] = !tx_lpf_0;                                                                               // U20	HFAMP_B0 !!!
+	shift_array[39] = !tx_lpf_0;                                                                               // U20 STPIC6C595TTR	HFAMP_B0 !!!
 	shift_array[38] = !tx_lpf_1;                                                                               // U20	HFAMP_B1 !!!
 	shift_array[37] = !tx_lpf_2;                                                                               // U20	HFAMP_B2 !!!
 	shift_array[36] = !tx_lpf_3;                                                                               // U20	HFAMP_B3 !!!
@@ -317,7 +317,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	shift_array[33] = false;                                                                                   // U20	Reserved
 	shift_array[32] = false;                                                                                   // U20	FAN (code in bottom)
 
-	shift_array[31] = TRX.ANT_selected;               // U21	ANT
+	shift_array[31] = TRX.ANT_selected;               // U21 STPIC6C595TTR	ANT
 	shift_array[30] = TRX.TUNER_Enabled && TRX.ATU_T; // U21	TUNE T
 	shift_array[29] = TRX.TUNER_Enabled && tune_c1;   // U21	TUNE C1
 	shift_array[28] = TRX.TUNER_Enabled && tune_c2;   // U21	TUNE C2
@@ -326,7 +326,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	shift_array[25] = TRX.TUNER_Enabled && tune_i2;   // U21	TUNE L2
 	shift_array[24] = TRX.TUNER_Enabled && tune_c0;   // U21	TUNE C0
 
-	shift_array[23] = false;                                              // U23	Reserved
+	shift_array[23] = false;                                              // U23 74HC595	Reserved
 	shift_array[22] = bitRead(band_out, 0);                               // U23	EXT BAND0
 	shift_array[21] = bitRead(band_out, 1);                               // U23	EXT BAND1
 	shift_array[20] = bitRead(band_out, 2);                               // U23	EXT BAND2
@@ -335,23 +335,23 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	shift_array[17] = TRX_Tune;                                           // U23	EXT TUNE
 	shift_array[16] = false;                                              // U23	EXT Reserved
 
-	shift_array[15] = false;                              // U24	Reserved
+	shift_array[15] = false;                              // U24 74HC595	Reserved
 	shift_array[14] = CurrentVFO->RealRXFreq >= 60000000; // U24	HF/VHF
 	shift_array[13] = false;                              // U24	Reserved
 	shift_array[12] = false;                              // U24	Reserved
-	shift_array[11] = (TRX.ATT && att_val_16);            // U24	ATT 16
-	shift_array[10] = (TRX.ATT && att_val_05);            // U24	ATT 0.5
-	shift_array[9] = (TRX.ATT && att_val_1);              // U24	ATT 1
-	shift_array[8] = (TRX.ATT && att_val_2);              // U24	ATT 2
+	shift_array[11] = TRX.ATT && att_val_16;              // U24	ATT 16
+	shift_array[10] = TRX.ATT && att_val_05;              // U24	ATT 0.5
+	shift_array[9] = TRX.ATT && att_val_1;                // U24	ATT 1
+	shift_array[8] = TRX.ATT && att_val_2;                // U24	ATT 2
 
-	shift_array[7] = (TRX.ATT && att_val_4); // U22	ATT 4
-	shift_array[6] = (TRX.ATT && att_val_8); // U22	ATT 8
-	shift_array[5] = BPF2_EN;                // U22	BPF2_EN
-	shift_array[4] = BPF2_A1;                // U22	BPF2_A1
-	shift_array[3] = BPF2_A0;                // U22	BPF2_A0
-	shift_array[2] = BPF1_EN;                // U22	BPF1_EN
-	shift_array[1] = BPF1_A1;                // U22	BPF1_A1
-	shift_array[0] = BPF1_A0;                // U22	BPF1_A0
+	shift_array[7] = TRX.ATT && att_val_4; // U22 74HC595	ATT 4
+	shift_array[6] = TRX.ATT && att_val_8; // U22	ATT 8
+	shift_array[5] = BPF2_EN;              // U22	BPF2_EN
+	shift_array[4] = BPF2_A1;              // U22	BPF2_A1
+	shift_array[3] = BPF2_A0;              // U22	BPF2_A0
+	shift_array[2] = BPF1_EN;              // U22	BPF1_EN
+	shift_array[1] = BPF1_A1;              // U22	BPF1_A1
+	shift_array[0] = BPF1_A0;              // U22	BPF1_A0
 
 	static bool fan_pwm = false;
 	if (FAN_Active && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) { // Temperature at which the fan stops
