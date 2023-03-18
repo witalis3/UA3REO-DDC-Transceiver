@@ -78,6 +78,7 @@ After assembly, you need to flash FPGA and STM32 chips. <br>
 If necessary, calibrate the transceiver through the appropriate menu <br>
 WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT commands 1.7.4 and higher <br>
 
+
 ## Management
 
 * **AF GAIN** - Volume
@@ -129,15 +130,10 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 ### TRX Settings
 
-* **RF Power** - Transmission power,%
-* **Power for each band** - Save power settings for each band individually
-* **Power for each mode** - Save power settings for each mode individually
 * **Channel Mode** - Channel frequency mode (for LPD/PMR and etc.)
-* **Repeater Mode"** -  Operation mode via repeater
 * **Band Map** - Band Map, automatically switches mode depending on the frequency
 * **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
 * **RF Filters** - Hardware filter management (LPF / HPF / BPF)
-* **Two Signal tune** - Two-signal generator in TUNE mode (1.0 + 2.2kHz)
 * **RIT Interval** - Offset range RIT (+ -)
 * **XIT Interval** - Offset range XIT (+ -)
 * **Fine RIT Tune** - Fine or coarse tuning for RIT/XIT (encoder or resistor)
@@ -154,20 +150,11 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Att step, dB** - Attenuator tuning step
 * **Attenuation, dB** - Current attenuation
 * **DEBUG Type** - Output of debug and service information to USB / UART ports
-* **Auto Input Switch** - Auto input switch (PTT - mix, CAT - USB)
 * **Auto Snap** - Automaticly track and snap to near signal frequency (CW mode)
-* **Input Type** - Select audio input (microphone, line in, USB)
 * **Callsign** - User callsign
 * **Locator** - User QTH locator
 * **URSI Code** - Ionogramm URSI Code https://digisonde.com/index.html#stationmap-section
-* **DX Cluster Type** - Selecting a Data Source for a DX Cluster
-* **Repeater offset, kHz"** -  Transmission frequency offset in repeater mode
 * **Full Duplex** - Full duplex RX+TX mode
-* **TUNER Enabled** - Turning on the antenna tuner
-* **ATU Enabled** - Turning on the automatic antenna tuner
-* **ATU Ind** - Combination of tuner inductances
-* **ATU Cap** - Tuner Capacitance Combination
-* **ATU T** - Tuner capacitive arm position
 * **Transverter XXcm** - Enable external ham band transverter support
 * **Custom Transverter** - Enable external transverter on non-ham band (just offset display frequency)
 
@@ -177,8 +164,6 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Volume step** - AF gain step by ENC2 (X1, Lite)
 * **IF Gain, dB** - IF gain
 * **AGC Gain target, LKFS** - Maximum AGC gain (Maximum volume with AGC on)
-* **Mic Gain** - Microphone gain
-* **Mic Boost** - +20db hardware mic amplifier
 * **DNR xxx** - Digital squelch adjustment
 * **Noise Blanker** - Activating the Surge Suppressor
 * **NB Threshold** - Threshold of Noise blanker
@@ -190,26 +175,44 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **AM/FM/CW/SSB LPF Stages** - Adjusting the slopes of the LPF filters in defferent modes
 * **Squelch** - Enable SSB/AM/CW/FM Squelch
 * **FM Squelch level** - FM squelch level
-* **MIC EQ xxx** - Microphone equalizer levels
-* **MIC Reverber** - Microphone reverberator level
-* **MIC Noise Gate** - The level below which the microphone signal is muted, dbFS
 * **RX EQ xxx** - Receiver equalizer levels
 * **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
 * **RX AGC Max gain** - Limit of AGC gain, dB
 * **RX AGC Hold time** - Time of AGC gain holding on signal peaks, ms
-* **TX Compressor Speed** - TX compressor response speed for transmission (more-faster)
-* **TX Compressor MaxGain** - Maximum comressor gain
 * **Beeper** - Beep on key press
-* **CTCSS Frequency** - Transmit FM CTCSS sub-tone frequency
-* **SelfHear Volume** - Self Hearing (CW/DIGI) volume relative to the overall transceiver volume
 * **WFM Stereo** - select WFM stereo or mono decoder
 * **AGC Spectral** - Enable FFT-based AGC
-* **TX CESSB** - Enable controlled-envelope single-sideband modulation
-* **TX CESSB Compress, dB** - Level of signal compression in CESSB
 * **VAD Threshold** - VAD voice detector threshold (noise suppressor for SSB mode and SCAN mode)
+
+### TX Settings
+
+* **RF Power** - Transmission power,%
+* **Power for each band** - Save power settings for each band individually
+* **Power for each mode** - Save power settings for each mode individually
+* **Repeater Mode"** -  Operation mode via repeater
+* **Two Signal tune** - Two-signal generator in TUNE mode (1.0 + 2.2kHz)
+* **Auto Input Switch** - Auto input switch (PTT - mix, CAT - USB)
+* **Input Type** - Select audio input (microphone, line in, USB)
+* **Repeater offset, kHz"** -  Transmission frequency offset in repeater mode
+* **TUNER Enabled** - Turning on the antenna tuner
+* **ATU Enabled** - Turning on the automatic antenna tuner
+* **ATU Ind** - Combination of tuner inductances
+* **ATU Cap** - Tuner Capacitance Combination
+* **ATU T** - Tuner capacitive arm position
+* **CTCSS Frequency** - Transmit FM CTCSS sub-tone frequency
+* **SelfHear Volume** - Self Hearing (CW/DIGI) volume relative to the overall transceiver volume
+* **MIC Gain** - Microphone gain
+* **MIC Boost** - +20db hardware mic amplifier
+* **MIC EQ xxx** - Microphone equalizer levels
+* **MIC Reverber** - Microphone reverberator level
+* **MIC Noise Gate** - The level below which the microphone signal is muted, dbFS
 * **VOX** - TX Voice activation
 * **VOX Timeout, ms** - VOX transmission delay after silence, milliseconds
 * **VOX Threshold, dbFS** - VOX Threshold, dbFS
+* **TX CESSB** - Enable controlled-envelope single-sideband modulation
+* **TX CESSB Compress, dB** - Level of signal compression in CESSB
+* **TX Compressor Speed** - TX compressor response speed for transmission (more-faster)
+* **TX Compressor MaxGain** - Maximum comressor gain
 
 ### CW Settings
 
@@ -253,6 +256,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **FFT Compressor** - Enable FFT peak comressor
 * **FFT Averaging** - FFT burst averaging level
 * **FFT Window** - Select FFT window (1-Dolph–Chebyshev 2-Blackman-Harris 3-Nutall 4-Blackman-Nutall 5-Hann 6-Hamming 7-No window)
+* **DX Cluster Type** - Selecting a Data Source for a DX Cluster
 * **FFT DXCluster** - Show DXCluster info over FFT
 * **FFT DXCluster Azimuth** - Add azimuth data to DX-cluster
 * **FFT DXCluster Timeout** - Timeout of DX-cluser spots in minutes
