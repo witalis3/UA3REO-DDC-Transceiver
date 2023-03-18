@@ -130,156 +130,156 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 ### TRX Settings
 
-* **Channel Mode** - Channel frequency mode (for LPD/PMR and etc.)
 * **Band Map** - Band Map, automatically switches mode depending on the frequency
-* **RIT Interval** - Offset range RIT (+ -)
-* **XIT Interval** - Offset range XIT (+ -)
-* **Fine RIT Tune** - Fine or coarse tuning for RIT/XIT (encoder or resistor)
-* **Freq Step** - Frequency step by the main encoder
-* **Freq Step FAST** - Frequency step by the main encoder in FAST mode
-* **Freq Step ENC2** - Frequency tuning step by main add. encoder
-* **Freq Step ENC2 FAST** - Frequency step by main add. encoder in FAST mode
-* **Freq Step *, kHz** - Frequency step by main encoder in WFM/NFM/AM mode
+* **Beeper** - Beep on key press
 * **CW Freq Step divider** - Frequency step divider for CW mode
-* **Encoder Accelerate** - Accelerate encoder on fast rates
-* **Split freq sync** - Synchronous VFO frequency change in SPLIT mode
-* **DEBUG Type** - Output of debug and service information to USB / UART ports
 * **Callsign** - User callsign
-* **Locator** - User QTH locator
-* **URSI Code** - Ionogramm URSI Code https://digisonde.com/index.html#stationmap-section
-* **Full Duplex** - Full duplex RX+TX mode
-* **Transverter XXcm** - Enable external ham band transverter support
+* **Channel Mode** - Channel frequency mode (for LPD/PMR and etc.)
 * **Custom Transverter** - Enable external transverter on non-ham band (just offset display frequency)
+* **DEBUG Type** - Output of debug and service information to USB / UART ports
+* **Encoder Accelerate** - Accelerate encoder on fast rates
+* **Fine RIT Tune** - Fine or coarse tuning for RIT/XIT (encoder or resistor)
+* **Freq Step *, kHz** - Frequency step by main encoder in WFM/NFM/AM mode
+* **Freq Step ENC2 FAST** - Frequency step by main add. encoder in FAST mode
+* **Freq Step ENC2** - Frequency tuning step by main add. encoder
+* **Freq Step FAST** - Frequency step by the main encoder in FAST mode
+* **Freq Step** - Frequency step by the main encoder
+* **Full Duplex** - Full duplex RX+TX mode
+* **Locator** - User QTH locator
+* **RIT Interval** - Offset range RIT (+ -)
+* **Split freq sync** - Synchronous VFO frequency change in SPLIT mode
+* **Transverter XXcm** - Enable external ham band transverter support
+* **URSI Code** - Ionogramm URSI Code https://digisonde.com/index.html#stationmap-section
+* **XIT Interval** - Offset range XIT (+ -)
 
-### AUDIO Settings
+### FILTERS Settings
 
-* **SSB HPF Pass** - HPF cutoff frequency when operating in SSB
-* **SSB LPF Pass** - LPF cutoff frequency when operating in SSB
+* **AM/FM/CW/SSB LPF Stages** - Adjusting the slopes of the LPF filters in defferent modes
 * **CW LPF Pass** - LPF cutoff frequency when working in CW
+* **CW Gauss filter** - Gauss responce LPF filter
 * **DIGI LPF Pass** - LPF cutoff frequency when working in DIGI
 * **FM LPF Pass** - LPF cutoff frequency when working in FM
-* **AM/FM/CW/SSB LPF Stages** - Adjusting the slopes of the LPF filters in defferent modes
-* **Beeper** - Beep on key press
+* **SSB HPF Pass** - HPF cutoff frequency when operating in SSB
+* **SSB LPF Pass** - LPF cutoff frequency when operating in SSB
 
 ### RX Settings
 
-* **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
-* **RF Filters** - Hardware filter management (LPF / HPF / BPF)
-* **TRX Samplerate** - Max FFT/samplerate on CW/SSB/NFM/DIGI/etc modes
-* **FM Samplerate** - Max FFT/samplerate on NFM/WFM mode
+* **ADC Dither** - Enable ADC dither for receiving weak signals
+* **ADC Driver** - Turn on the preamplifier-ADC driver
+* **ADC Preamp** - Turn on the preamplifier built into the ADC
+* **ADC Randomizer** - Enables ADC digital line encryption
+* **ADC Shutdown** - Turn off the ADC
+* **AGC Gain target, LKFS** - Maximum AGC gain (Maximum volume with AGC on)
+* **AGC Spectral** - Enable FFT-based AGC
 * **Att step, dB** - Attenuator tuning step
 * **Attenuation, dB** - Current attenuation
 * **Auto Snap** - Automaticly track and snap to near signal frequency (CW mode)
-* **Volume** - AF gain
-* **Volume step** - AF gain step by ENC2 (X1, Lite)
-* **IF Gain, dB** - IF gain
-* **AGC Gain target, LKFS** - Maximum AGC gain (Maximum volume with AGC on)
+* **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
 * **DNR xxx** - Digital squelch adjustment
-* **Noise Blanker** - Activating the Surge Suppressor
-* **NB Threshold** - Threshold of Noise blanker
-* **Squelch** - Enable SSB/AM/CW/FM Squelch
+* **FM Samplerate** - Max FFT/samplerate on NFM/WFM mode
 * **FM Squelch level** - FM squelch level
-* **RX EQ xxx** - Receiver equalizer levels
-* **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
-* **RX AGC Max gain** - Limit of AGC gain, dB
+* **IF Gain, dB** - IF gain
+* **NB Threshold** - Threshold of Noise blanker
+* **Noise Blanker** - Activating the Surge Suppressor
+* **RF Filters** - Hardware filter management (LPF / HPF / BPF)
 * **RX AGC Hold time** - Time of AGC gain holding on signal peaks, ms
-* **WFM Stereo** - select WFM stereo or mono decoder
-* **AGC Spectral** - Enable FFT-based AGC
+* **RX AGC Max gain** - Limit of AGC gain, dB
+* **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
+* **RX EQ xxx** - Receiver equalizer levels
+* **Squelch** - Enable SSB/AM/CW/FM Squelch
+* **TRX Samplerate** - Max FFT/samplerate on CW/SSB/NFM/DIGI/etc modes
 * **VAD Threshold** - VAD voice detector threshold (noise suppressor for SSB mode and SCAN mode)
-* **ADC Driver** - Turn on the preamplifier-ADC driver
-* **ADC Preamp** - Turn on the preamplifier built into the ADC
-* **ADC Dither** - Enable ADC dither for receiving weak signals
-* **ADC Randomizer** - Enables ADC digital line encryption
-* **ADC Shutdown** - Turn off the ADC
+* **Volume step** - AF gain step by ENC2 (X1, Lite)
+* **Volume** - AF gain
+* **WFM Stereo** - select WFM stereo or mono decoder
 
 ### TX Settings
 
-* **RF Power** - Transmission power,%
-* **Power for each band** - Save power settings for each band individually
-* **Power for each mode** - Save power settings for each mode individually
-* **Repeater Mode"** -  Operation mode via repeater
-* **Two Signal tune** - Two-signal generator in TUNE mode (1.0 + 2.2kHz)
-* **Auto Input Switch** - Auto input switch (PTT - mix, CAT - USB)
-* **Input Type** - Select audio input (microphone, line in, USB)
-* **Repeater offset, kHz"** -  Transmission frequency offset in repeater mode
-* **TUNER Enabled** - Turning on the antenna tuner
+* **ATU Cap** - Tuner Capacitance Combination
 * **ATU Enabled** - Turning on the automatic antenna tuner
 * **ATU Ind** - Combination of tuner inductances
-* **ATU Cap** - Tuner Capacitance Combination
 * **ATU T** - Tuner capacitive arm position
+* **Auto Input Switch** - Auto input switch (PTT - mix, CAT - USB)
 * **CTCSS Frequency** - Transmit FM CTCSS sub-tone frequency
-* **SelfHear Volume** - Self Hearing (CW/DIGI) volume relative to the overall transceiver volume
-* **MIC Gain** - Microphone gain
+* **Input Type** - Select audio input (microphone, line in, USB)
 * **MIC Boost** - +20db hardware mic amplifier
 * **MIC EQ xxx** - Microphone equalizer levels
-* **MIC Reverber** - Microphone reverberator level
+* **MIC Gain** - Microphone gain
 * **MIC Noise Gate** - The level below which the microphone signal is muted, dbFS
-* **VOX** - TX Voice activation
-* **VOX Timeout, ms** - VOX transmission delay after silence, milliseconds
-* **VOX Threshold, dbFS** - VOX Threshold, dbFS
-* **TX CESSB** - Enable controlled-envelope single-sideband modulation
+* **MIC Reverber** - Microphone reverberator level
+* **Power for each band** - Save power settings for each band individually
+* **Power for each mode** - Save power settings for each mode individually
+* **RF Power** - Transmission power,%
+* **Repeater Mode"** -  Operation mode via repeater
+* **Repeater offset, kHz"** -  Transmission frequency offset in repeater mode
+* **SelfHear Volume** - Self Hearing (CW/DIGI) volume relative to the overall transceiver volume
+* **TUNER Enabled** - Turning on the antenna tuner
 * **TX CESSB Compress, dB** - Level of signal compression in CESSB
-* **TX Compressor Speed** - TX compressor response speed for transmission (more-faster)
+* **TX CESSB** - Enable controlled-envelope single-sideband modulation
 * **TX Compressor MaxGain** - Maximum comressor gain
+* **TX Compressor Speed** - TX compressor response speed for transmission (more-faster)
+* **Two Signal tune** - Two-signal generator in TUNE mode (1.0 + 2.2kHz)
+* **VOX Threshold, dbFS** - VOX Threshold, dbFS
+* **VOX Timeout, ms** - VOX transmission delay after silence, milliseconds
+* **VOX** - TX Voice activation
 
 ### CW Settings
 
-* **CW Key timeout** - Time before stopping the transmission mode after releasing the key
-* **CW Pitch** - Detuning the receive generator from the transmit frequency
-* **CW Self Hear** - Self-control CW (key press is heard)
-* **CW Keyer** - Automatic Key
-* **CW Keyer WPM** - Key Speed, WPM
-* **CW Gauss filter** - Gauss responce LPF filter
 * **CW DotToDash Rate** - Keyer dash to dot length rate
 * **CW Iambic Keyer** - Enable Iambic mode keyer
 * **CW Key Invert** - Invert dash/dot on key
+* **CW Key timeout** - Time before stopping the transmission mode after releasing the key
+* **CW Keyer WPM** - Key Speed, WPM
+* **CW Keyer** - Automatic Key
 * **CW PTT Type** - RX/TX switch type for CW: by key or external PTT (tangent, etc.)
+* **CW Pitch** - Detuning the receive generator from the transmit frequency
+* **CW Self Hear** - Self-control CW (key press is heard)
 
 ### SCREEN Settings
 
-* **FFT Zoom** - FFT spectrum zooming
-* **FFT Zoom CW** - FFT spectrum zooming for CW Mode
-* **LCD Brightness** - Set LCD brightness (not all lcd support)
-* **LCD Sleep Timeout** - Idle time before the screen brightness decreases, sec (0 - disabled)
 * **Color Theme** - Select colors theme (0 - black, 1 - white, 2 - black with colored frequency)
-* **Layout Theme** - Select interface theme (0 - default)
-* **FFT Speed** - FFT and waterfall speed
-* **FFT Automatic** - Automatic FFT scale
-* **FFT Sensitivity** - Top threshold of FFT sensitivity in automatic mode (30 - scale to strongest signal)
-* **FFT Manual Bottom, dBm** - Bottom FFT threshold in manual mode
-* **FFT Manual Top, dBm** - Top FFT threshold in manual mode
-* **FFT Height** - FFT and waterfall proportional height
-* **FFT Style** - FFT style: 1(gradient), 2(fill), 3(dots), 4(contour)
-* **FFT BW Style** - FFT bandwidth style: high opacity, low opacity, lines
-* **FFT Color** - FFT colors: 1(blue -> yellow -> red), 2(black -> yellow -> red), 3(black -> yellow -> green), 4(black -> red), 5(black -> green), 6(black -> blue), 7(black -> white)
-* **WTF Color** - Waterfall colors: 1(blue -> yellow -> red), 2(black -> yellow -> red), 3(black -> yellow -> green), 4(black -> red), 5(black -> green), 6(black -> blue), 7(black -> white)
-* **FFT Freq Grid** - FFT and waterfall grids: 1(no grid), 2(fft grid), 3(fft+wtf grids), 4(wtf grid)
-* **FFT dBm Grid** - FFT signal power grid
-* **FFT Background** - Gradient FFT background
-* **FFT Enabled** - Enable waterfall and FFT
-* **WTF Moving** - Mowe waterfall with frequency changing
-* **FFT Lens** - Enable FFT lens mode (magnify center of spectrum)
-* **FFT Hold Peaks** - Show peaks on FFT spectrum
-* **FFT 3D Mode** - Enable FFT 3D mode (0 - disabled, 1 - lines, 2 - pixels)
-* **FFT Compressor** - Enable FFT peak comressor
-* **FFT Averaging** - FFT burst averaging level
-* **FFT Window** - Select FFT window (1-Dolph–Chebyshev 2-Blackman-Harris 3-Nutall 4-Blackman-Nutall 5-Hann 6-Hamming 7-No window)
 * **DX Cluster Type** - Selecting a Data Source for a DX Cluster
-* **FFT DXCluster** - Show DXCluster info over FFT
+* **FFT 3D Mode** - Enable FFT 3D mode (0 - disabled, 1 - lines, 2 - pixels)
+* **FFT Automatic** - Automatic FFT scale
+* **FFT Averaging** - FFT burst averaging level
+* **FFT BW Style** - FFT bandwidth style: high opacity, low opacity, lines
+* **FFT Background** - Gradient FFT background
+* **FFT Color** - FFT colors: 1(blue -> yellow -> red), 2(black -> yellow -> red), 3(black -> yellow -> green), 4(black -> red), 5(black -> green), 6(black -> blue), 7(black -> white)
+* **FFT Compressor** - Enable FFT peak comressor
 * **FFT DXCluster Azimuth** - Add azimuth data to DX-cluster
 * **FFT DXCluster Timeout** - Timeout of DX-cluser spots in minutes
-* **Show Sec VFO** - Show secondary VFO position on spectre
+* **FFT DXCluster** - Show DXCluster info over FFT
+* **FFT Enabled** - Enable waterfall and FFT
+* **FFT Freq Grid** - FFT and waterfall grids: 1(no grid), 2(fft grid), 3(fft+wtf grids), 4(wtf grid)
+* **FFT Height** - FFT and waterfall proportional height
+* **FFT Hold Peaks** - Show peaks on FFT spectrum
+* **FFT Lens** - Enable FFT lens mode (magnify center of spectrum)
+* **FFT Manual Bottom, dBm** - Bottom FFT threshold in manual mode
+* **FFT Manual Top, dBm** - Top FFT threshold in manual mode
 * **FFT Scale Type** - Y-axis style on FFT between signal amplitude and dBm to fit more dynamic range on screen (Useful when manually adjusting FFT range).
+* **FFT Sensitivity** - Top threshold of FFT sensitivity in automatic mode (30 - scale to strongest signal)
+* **FFT Speed** - FFT and waterfall speed
+* **FFT Style** - FFT style: 1(gradient), 2(fill), 3(dots), 4(contour)
+* **FFT Window** - Select FFT window (1-Dolph–Chebyshev 2-Blackman-Harris 3-Nutall 4-Blackman-Nutall 5-Hann 6-Hamming 7-No window)
+* **FFT Zoom CW** - FFT spectrum zooming for CW Mode
+* **FFT Zoom** - FFT spectrum zooming
+* **FFT dBm Grid** - FFT signal power grid
+* **LCD Brightness** - Set LCD brightness (not all lcd support)
+* **LCD Sleep Timeout** - Idle time before the screen brightness decreases, sec (0 - disabled)
+* **Layout Theme** - Select interface theme (0 - default)
+* **Show Sec VFO** - Show secondary VFO position on spectre
+* **WTF Color** - Waterfall colors: 1(blue -> yellow -> red), 2(black -> yellow -> red), 3(black -> yellow -> green), 4(black -> red), 5(black -> green), 6(black -> blue), 7(black -> white)
+* **WTF Moving** - Mowe waterfall with frequency changing
 
 ### Decoders
 * **CW Decoder** - Software CW receive decoder
 * **CW Decoder Threshold** - CW receive decoder sensivity
 * **RDS Decoder** - Enable RDS Decoder for WFM mode
-* **RTTY Speed** - Speed of RTTY data
-* **RTTY Shift** - RTTY carrier shifts
 * **RTTY Freq** - Central frequency of RTTY decoding
-* **RTTY StopBits** - RTTY Stop bits
 * **RTTY InvertBits** - RTTY invert 0 and 1 bits
+* **RTTY Shift** - RTTY carrier shifts
+* **RTTY Speed** - Speed of RTTY data
+* **RTTY StopBits** - RTTY Stop bits
 
 ### WIFI Settings
 
@@ -301,59 +301,59 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 ### Calibration [appears by long pressing the MENU button in the settings menu]
 
-* **Encoder invert** - Invert the rotation of the main encoder
-* **Encoder2 invert** - Invert the rotation of the additional encoder
-* **Encoder debounce** - Time of debouncing contacts of the main encoder
-* **Encoder2 debounce** - Time of debouncing contacts of the additional encoder
-* **Encoder slow rate** - Deceleration rate of the main encoder
-* **Encoder on falling** - The encoder is triggered only when level A falls
-* **Encoder acceleration** - The encoder acceleration on faster rotation speeds
-* **RF-Unit Type** - RF-Unit Type (QRP / BIG)
-* **Tangent Type** - Select tangent type
-* **CICCOMP Shift** - Bit shift after CIC compensator
-* **TX CICCOMP Shift** - Bit shift after TX CIC compensator
-* **DAC Shift** - Bit shift of the output to the DAC
-* **DAC Driver Mode** - DAC Driver OPA2673 bias mode (2 = 100% bias, 1 = 75% bias, 0 = 50% bias)
-* **RF GAIN xxx** - Calibration of the maximum output power for each range. RF GAIN 0-100% - 50% driver bias, 101-200% - 75% driver bias, 201-300% - 100% driver bias.
-* **S METER** - S-meter calibration
-* **LPF END** - LPF filter parameters
-* **HPF START** - HPF filter parameters
+* **ALC Port Enabled** - Activation of transceiver power control by an external amplifier via the ALC line: up to 1 volt - ALC is disabled and the power set in the transceiver is used. from 1.0v to 3.0v - power adjustment from 0 to 100%
+* **AM Modulation Index** - Set TX AM Modulation Scale
+* **ATU Averaging** - The number of steps of averaging SWR values during measurements in the operation of an automatic tuner
 * **BPF x** - Bandpass filter parameters
-* **SWR FWD/BWD RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
-* **TCXO Frequency, khz** - Frequency adjustment of the reference oscillator
-* **MAX ChargePump, khz** - Maximum PWM frequency for ChargePump circuit
+* **CAT Type** - Type of CAT subsystem (FT-450 / TS-2000)
+* **CICCOMP Shift** - Bit shift after CIC compensator
+* **Calibrate reset** - Reset all calibrations to defaults
+* **DAC Driver Mode** - DAC Driver OPA2673 bias mode (2 = 100% bias, 1 = 75% bias, 0 = 50% bias)
+* **DAC Shift** - Bit shift of the output to the DAC
+* **ENABLE 60m/4m/AIR/Marine Band** - Enable hidden bands
+* **EXT xxx** - External port control by band (EXT3, EXT2, EXT1, EXT0) - open drain
+* **Encoder acceleration** - The encoder acceleration on faster rotation speeds
+* **Encoder debounce** - Time of debouncing contacts of the main encoder
+* **Encoder invert** - Invert the rotation of the main encoder
+* **Encoder on falling** - The encoder is triggered only when level A falls
+* **Encoder slow rate** - Deceleration rate of the main encoder
+* **Encoder2 debounce** - Time of debouncing contacts of the additional encoder
+* **Encoder2 invert** - Invert the rotation of the additional encoder
+* **FAN Full start** - Temperature of the PA for starting the fan at full speed
 * **FAN Medium start** - Temperature of the PA for starting the fan at medium speed
 * **FAN Medium stop** - Temperature of the PA for stopping the fan
-* **FAN Full start** - Temperature of the PA for starting the fan at full speed
-* **MAX RF Temp** - Maximum temperature of the PA before the protection operation
-* **MAX SWR** - Maximum VSWR before protection operation
-* **SSB Power addition** - Addition of RF power in SSB power, %
 * **FM Deviation Scale** - Set TX FM Deviation Scale
-* **AM Modulation Index** - Set TX AM Modulation Scale
+* **Flash GT911** - Starting the touchpad update procedure according to LCD screen resolution
+* **HPF START** - HPF filter parameters
+* **IF Gain MIN/MAX** - IF Gain adjusting limits
+* **LCD Rotate** - Rotate screen at 180 degrees
+* **LNA Compensation** - Compensates the S-meter value when the LNA is turned on, dBm
+* **LPF END** - LPF filter parameters
+* **Linear Pwr Control** - Sets a linear way to change the signal amplitude when adjusting the power (if disabled - logarithmic)
+* **MAX ChargePump, khz** - Maximum PWM frequency for ChargePump circuit
 * **MAX PWR on Meter** - Maximim RF power (for indication)
 * **MAX Power in TUNE** - Maximum RF power in Tune mode
+* **MAX RF Temp** - Maximum temperature of the PA before the protection operation
+* **MAX SWR** - Maximum VSWR before protection operation
+* **NOTX xxx** - Disable TX on selected bands
+* **OTA Update** - Enable OTA firmware update over WiFi
+* **RF GAIN xxx** - Calibration of the maximum output power for each range. RF GAIN 0-100% - 50% driver bias, 101-200% - 75% driver bias, 201-300% - 100% driver bias.
+* **RF-Unit Type** - RF-Unit Type (QRP / BIG)
 * **RTC COARSE CALIBR** - Very coarse clock crystal calibration
 * **RTC FINE CALIBR** - Clock crystal calibration, one division is 0.954 ppm
-* **EXT xxx** - External port control by band (EXT3, EXT2, EXT1, EXT0) - open drain
-* **NOTX xxx** - Disable TX on selected bands
-* **ENABLE 60m/4m/AIR/Marine Band** - Enable hidden bands
-* **Transverter Offset, mHz** - Offset frequency shown on the display (for custom transverters)
-* **Transverter xxx RF, mHz** - Setting the RF frequency of the transceiver to match the IF
-* **Transverter xxx IF, mHz** - Setting the IF frequency of the transverter
-* **OTA Update** - Enable OTA firmware update over WiFi
-* **TX Start Delay** - Delay before the RF signal is applied (ms), so that the relay has time to trigger
-* **LCD Rotate** - Rotate screen at 180 degrees
-* **TOUCHPAD horiz flip** - Flip touchpad operation horizontally
-* **ATU Averaging** - The number of steps of averaging SWR values during measurements in the operation of an automatic tuner
-* **CAT Type** - Type of CAT subsystem (FT-450 / TS-2000)
-* **LNA Compensation** - Compensates the S-meter value when the LNA is turned on, dBm
-* **TSignal Balance** - Sets the power balance between signals in Two signal tune mode
-* **Linear Pwr Control** - Sets a linear way to change the signal amplitude when adjusting the power (if disabled - logarithmic)
-* **ALC Port Enabled** - Activation of transceiver power control by an external amplifier via the ALC line: up to 1 volt - ALC is disabled and the power set in the transceiver is used. from 1.0v to 3.0v - power adjustment from 0 to 100%
-* **Flash GT911** - Starting the touchpad update procedure according to LCD screen resolution
-* **IF Gain MIN/MAX** - IF Gain adjusting limits
+* **S METER** - S-meter calibration
+* **SSB Power addition** - Addition of RF power in SSB power, %
+* **SWR FWD/BWD RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
 * **Settings reset** - Reset all settings to defaults
-* **Calibrate reset** - Reset all calibrations to defaults
+* **TCXO Frequency, khz** - Frequency adjustment of the reference oscillator
+* **TOUCHPAD horiz flip** - Flip touchpad operation horizontally
+* **TSignal Balance** - Sets the power balance between signals in Two signal tune mode
+* **TX CICCOMP Shift** - Bit shift after TX CIC compensator
+* **TX Start Delay** - Delay before the RF signal is applied (ms), so that the relay has time to trigger
+* **Tangent Type** - Select tangent type
+* **Transverter Offset, mHz** - Offset frequency shown on the display (for custom transverters)
+* **Transverter xxx IF, mHz** - Setting the IF frequency of the transverter
+* **Transverter xxx RF, mHz** - Setting the RF frequency of the transceiver to match the IF
 
 ### Set Clock Time
 
