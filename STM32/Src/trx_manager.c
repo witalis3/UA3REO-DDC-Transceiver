@@ -1711,13 +1711,13 @@ void BUTTONHANDLER_BW(uint32_t parameter) {
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			SYSMENU_AUDIO_BW_CW_HOTKEY();
+			SYSMENU_FILTER_BW_CW_HOTKEY();
 		} else if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM) {
-			SYSMENU_AUDIO_BW_FM_HOTKEY();
+			SYSMENU_FILTER_BW_FM_HOTKEY();
 		} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
-			SYSMENU_AUDIO_BW_AM_HOTKEY();
+			SYSMENU_FILTER_BW_AM_HOTKEY();
 		} else {
-			SYSMENU_AUDIO_BW_SSB_HOTKEY();
+			SYSMENU_FILTER_BW_SSB_HOTKEY();
 		}
 	} else {
 		SYSMENU_eventCloseAllSystemMenu();
@@ -1727,7 +1727,7 @@ void BUTTONHANDLER_BW(uint32_t parameter) {
 void BUTTONHANDLER_HPF(uint32_t parameter) {
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
-		SYSMENU_AUDIO_HPF_SSB_HOTKEY();
+		SYSMENU_FILTER_HPF_SSB_HOTKEY();
 	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
