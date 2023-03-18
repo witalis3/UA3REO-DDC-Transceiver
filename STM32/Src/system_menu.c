@@ -31,13 +31,8 @@
 
 static void SYSMENU_HANDL_TRX_BandMap(int8_t direction);
 static void SYSMENU_HANDL_TRX_ChannelMode(int8_t direction);
-static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction);
-static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction);
-static void SYSMENU_HANDL_TRX_Auto_Snap(int8_t direction);
 static void SYSMENU_HANDL_TRX_RIT_INTERVAL(int8_t direction);
 static void SYSMENU_HANDL_TRX_XIT_INTERVAL(int8_t direction);
-static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction);
-static void SYSMENU_HANDL_TRX_SAMPLERATE_FM(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction);
@@ -47,8 +42,6 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER(int8_t direction);
 static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction);
-static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction);
-static void SYSMENU_HANDL_TRX_ATT_DB(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetCallsign(int8_t direction);
 static void SYSMENU_HANDL_TRX_SetLocator(int8_t direction);
@@ -62,44 +55,57 @@ static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_QO100(int8_t direction);
 static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction);
 static void SYSMENU_HANDL_TRX_Split_Mode_Sync_Freq(int8_t direction);
-static void SYSMENU_HANDL_TRX_VGA_GAIN(int8_t direction);
 static void SYSMENU_HANDL_TRX_Full_Duplex(int8_t direction);
 
-static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_Volume_Step(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_DNR(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_AGC(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_DNR1_THRES(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_DNR2_THRES(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER_THRESHOLD(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P1(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P2(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P3(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P4(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P5(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P1_WFM(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P2_WFM(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P3_WFM(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P4_WFM(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P5_WFM(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_AGC_Max_gain(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_RX_AGC_Hold(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_FM_Stereo(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_AGC_Spectral(int8_t direction);
-static void SYSMENU_HANDL_AUDIO_VAD_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_CW_LPF_Stages(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_SSB_LPF_Stages(int8_t direction);
 static void SYSMENU_HANDL_AUDIO_AMFM_LPF_Stages(int8_t direction);
+
+static void SYSMENU_HANDL_RX_SAMPLERATE_MAIN(int8_t direction);
+static void SYSMENU_HANDL_RX_SAMPLERATE_FM(int8_t direction);
+static void SYSMENU_HANDL_RX_AutoGain(int8_t direction);
+static void SYSMENU_HANDL_RX_RFFilters(int8_t direction);
+static void SYSMENU_HANDL_RX_Auto_Snap(int8_t direction);
+static void SYSMENU_HANDL_RX_ATT_STEP(int8_t direction);
+static void SYSMENU_HANDL_RX_ATT_DB(int8_t direction);
+static void SYSMENU_HANDL_RX_VGA_GAIN(int8_t direction);
+static void SYSMENU_HANDL_RX_Volume(int8_t direction);
+static void SYSMENU_HANDL_RX_Volume_Step(int8_t direction);
+static void SYSMENU_HANDL_RX_IFGain(int8_t direction);
+static void SYSMENU_HANDL_RX_DNR(int8_t direction);
+static void SYSMENU_HANDL_RX_NOISE_BLANKER(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_GAIN_TARGET(int8_t direction);
+static void SYSMENU_HANDL_RX_DNR1_THRES(int8_t direction);
+static void SYSMENU_HANDL_RX_DNR2_THRES(int8_t direction);
+static void SYSMENU_HANDL_RX_DNR_AVERAGE(int8_t direction);
+static void SYSMENU_HANDL_RX_DNR_MINMAL(int8_t direction);
+static void SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD(int8_t direction);
+static void SYSMENU_HANDL_RX_EQ_P1(int8_t direction);
+static void SYSMENU_HANDL_RX_EQ_P2(int8_t direction);
+static void SYSMENU_HANDL_RX_EQ_P3(int8_t direction);
+static void SYSMENU_HANDL_RX_EQ_P4(int8_t direction);
+static void SYSMENU_HANDL_RX_EQ_P5(int8_t direction);
+static void SYSMENU_HANDL_RX_EQ_P1_WFM(int8_t direction);
+static void SYSMENU_HANDL_RX_EQ_P2_WFM(int8_t direction);
+static void SYSMENU_HANDL_RX_EQ_P3_WFM(int8_t direction);
+static void SYSMENU_HANDL_RX_EQ_P4_WFM(int8_t direction);
+static void SYSMENU_HANDL_RX_EQ_P5_WFM(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_SSB_Speed(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_CW_Speed(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_Max_gain(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_Hold(int8_t direction);
+static void SYSMENU_HANDL_RX_FMSquelch(int8_t direction);
+static void SYSMENU_HANDL_RX_Squelch(int8_t direction);
+static void SYSMENU_HANDL_RX_FM_Stereo(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_Spectral(int8_t direction);
+static void SYSMENU_HANDL_RX_VAD_THRESHOLD(int8_t direction);
+static void SYSMENU_HANDL_RX_ADC_PGA(int8_t direction);
+static void SYSMENU_HANDL_RX_ADC_RAND(int8_t direction);
+static void SYSMENU_HANDL_RX_ADC_SHDN(int8_t direction);
+static void SYSMENU_HANDL_RX_ADC_DITH(int8_t direction);
+static void SYSMENU_HANDL_RX_ADC_DRIVER(int8_t direction);
 
 static void SYSMENU_HANDL_TX_RFPower(int8_t direction);
 static void SYSMENU_HANDL_TX_RepeaterMode(int8_t direction);
@@ -151,11 +157,11 @@ static void SYSMENU_HANDL_CW_DotToDashRate(int8_t direction);
 static void SYSMENU_HANDL_CW_Iambic(int8_t direction);
 static void SYSMENU_HANDL_CW_Invert(int8_t direction);
 static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction);
-static void SYSMENU_HANDL_TRX_SetCWMacros1(int8_t direction);
-static void SYSMENU_HANDL_TRX_SetCWMacros2(int8_t direction);
-static void SYSMENU_HANDL_TRX_SetCWMacros3(int8_t direction);
-static void SYSMENU_HANDL_TRX_SetCWMacros4(int8_t direction);
-static void SYSMENU_HANDL_TRX_SetCWMacros5(int8_t direction);
+static void SYSMENU_HANDL_CW_SetCWMacros1(int8_t direction);
+static void SYSMENU_HANDL_CW_SetCWMacros2(int8_t direction);
+static void SYSMENU_HANDL_CW_SetCWMacros3(int8_t direction);
+static void SYSMENU_HANDL_CW_SetCWMacros4(int8_t direction);
+static void SYSMENU_HANDL_CW_SetCWMacros5(int8_t direction);
 
 static void SYSMENU_HANDL_SCREEN_FFT_Enabled(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction);
@@ -237,12 +243,6 @@ static void SYSMENU_HANDL_DECODERS_RTTY_Shift(int8_t direction);
 static void SYSMENU_HANDL_DECODERS_RTTY_Freq(int8_t direction);
 static void SYSMENU_HANDL_DECODERS_RTTY_StopBits(int8_t direction);
 static void SYSMENU_HANDL_DECODERS_RTTY_InvertBits(int8_t direction);
-
-static void SYSMENU_HANDL_ADC_PGA(int8_t direction);
-static void SYSMENU_HANDL_ADC_RAND(int8_t direction);
-static void SYSMENU_HANDL_ADC_SHDN(int8_t direction);
-static void SYSMENU_HANDL_ADC_DITH(int8_t direction);
-static void SYSMENU_HANDL_ADC_DRIVER(int8_t direction);
 
 #if HRDW_HAS_WIFI
 static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction);
@@ -452,7 +452,6 @@ static void SYSMENU_HANDL_TXMENU(int8_t direction);
 static void SYSMENU_HANDL_CWMENU(int8_t direction);
 static void SYSMENU_HANDL_LCDMENU(int8_t direction);
 static void SYSMENU_HANDL_DECODERSMENU(int8_t direction);
-static void SYSMENU_HANDL_ADCMENU(int8_t direction);
 static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
 
 #if HRDW_HAS_WIFI
@@ -523,7 +522,7 @@ const static struct sysmenu_item_handler sysmenu_handlers[] = {
     {"TRX Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_TRXMENU},   {"AUDIO Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_AUDIOMENU},
     {"RX Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_RXMENU},     {"TX Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_TXMENU},
     {"CW Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_CWMENU},     {"SCREEN Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_LCDMENU},
-    {"Decoders", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_DECODERSMENU},  {"ADC/DAC Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_ADCMENU},
+    {"Decoders", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_DECODERSMENU},
 #if HRDW_HAS_WIFI
     {"WIFI Settings", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_WIFIMENU},
 #endif
@@ -541,17 +540,11 @@ const static struct sysmenu_item_handler sysmenu_handlers[] = {
 const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Channel Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ChannelMode, SYSMENU_HANDL_TRX_ChannelMode},
     {"Band Map", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.BandMapEnabled, SYSMENU_HANDL_TRX_BandMap},
-    {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_TRX_AutoGain},
-#if !defined(FRONTPANEL_LITE)
-    {"RF_Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_TRX_RFFilters},
-#endif
     {"RIT Interval", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RIT_INTERVAL, SYSMENU_HANDL_TRX_RIT_INTERVAL},
     {"XIT Interval", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.XIT_INTERVAL, SYSMENU_HANDL_TRX_XIT_INTERVAL},
 #if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1) && !defined(FRONTPANEL_WOLF_2)
     {"Fine RIT Tune", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FineRITTune, SYSMENU_HANDL_TRX_FineRITTune},
 #endif
-    {"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_TRX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
-    {"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_TRX_SAMPLERATE_FM, {"48khz", "96khz", "192khz", "384khz"}},
 #ifdef LAY_320x240
     {"Fr Step", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
     {"Fr Step FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
@@ -573,18 +566,9 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
 #endif
     {"Split freq sync", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Split_Mode_Sync_Freq, SYSMENU_HANDL_TRX_Split_Mode_Sync_Freq},
     {"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
-    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
-    {"Att step, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_TRX_ATT_STEP},
-    {"Attenuation, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.ATT_DB, SYSMENU_HANDL_TRX_ATT_DB},
-#endif
-#if HRDW_HAS_VGA
-    {"VGA Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.VGA_GAIN, SYSMENU_HANDL_TRX_VGA_GAIN},
-#endif
 #if HRDW_HAS_USB_DEBUG
     {"DEBUG Console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH", "CAT"}},
 #endif
-    {"Auto Snap", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Snap, SYSMENU_HANDL_TRX_Auto_Snap},
     {"Callsign", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCallsign},
     {"Locator", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetLocator},
 #if HRDW_HAS_WIFI
@@ -605,23 +589,6 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
     {"Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.Volume, SYSMENU_HANDL_AUDIO_Volume},
     {"Volume Step", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.Volume_Step, SYSMENU_HANDL_AUDIO_Volume_Step},
 #endif
-    {"IF Gain, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_AUDIO_IFGain},
-    {"DNR", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DNR_shadow, SYSMENU_HANDL_AUDIO_DNR, {"OFF", "DNR1", "DNR2"}},
-    {"AGC", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_shadow, SYSMENU_HANDL_AUDIO_AGC},
-#ifdef LAY_320x240
-    {"AGC Gain tr, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET},
-#else
-    {"AGC Gain target, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET},
-#endif
-
-    {"DNR1 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR1_SNR_THRESHOLD, SYSMENU_HANDL_AUDIO_DNR1_THRES},
-#if !defined(FRONTPANEL_LITE)
-    {"DNR2 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR2_SNR_THRESHOLD, SYSMENU_HANDL_AUDIO_DNR2_THRES},
-#endif
-    {"DNR Average", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_HANDL_AUDIO_DNR_AVERAGE},
-    {"DNR Minimal", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_MINIMAL, SYSMENU_HANDL_AUDIO_DNR_MINMAL},
-    {"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_AUDIO_NOISE_BLANKER},
-    {"NB Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER_THRESHOLD, SYSMENU_HANDL_AUDIO_NOISE_BLANKER_THRESHOLD},
     {"SSB HPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_HPF_RX_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass},
     {"SSB HPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_HPF_TX_Filter, SYSMENU_HANDL_AUDIO_SSB_HPF_TX_pass},
     {"SSB LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_LPF_RX_Filter, SYSMENU_HANDL_AUDIO_SSB_LPF_RX_pass},
@@ -635,36 +602,74 @@ const static struct sysmenu_item_handler sysmenu_audio_handlers[] = {
     {"CW LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_LPF_Stages, SYSMENU_HANDL_AUDIO_CW_LPF_Stages},
     {"SSB LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SSB_LPF_Stages, SYSMENU_HANDL_AUDIO_SSB_LPF_Stages},
     {"AM/FM LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.AMFM_LPF_Stages, SYSMENU_HANDL_AUDIO_AMFM_LPF_Stages},
-    {"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SQL_shadow, SYSMENU_HANDL_AUDIO_Squelch},
-#ifdef LAY_320x240
-    {"FM Squelch level", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dbm_shadow, SYSMENU_HANDL_AUDIO_FMSquelch},
-#else
-    {"FM Squelch level, dbm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dbm_shadow, SYSMENU_HANDL_AUDIO_FMSquelch},
-#endif
     {"Beeper", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_AUDIO_Beeper},
-    {"RX EQ 0.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P1, SYSMENU_HANDL_AUDIO_RX_EQ_P1},
-    {"RX EQ 0.7k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P2, SYSMENU_HANDL_AUDIO_RX_EQ_P2},
-    {"RX EQ 1.2k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P3, SYSMENU_HANDL_AUDIO_RX_EQ_P3},
-    {"RX EQ 1.8k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4, SYSMENU_HANDL_AUDIO_RX_EQ_P4},
-    {"RX EQ 2.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5, SYSMENU_HANDL_AUDIO_RX_EQ_P5},
-    {"RX WFM EQ 50hz", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P1_WFM, SYSMENU_HANDL_AUDIO_RX_EQ_P1_WFM},
-    {"RX WFM EQ 0.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P2_WFM, SYSMENU_HANDL_AUDIO_RX_EQ_P2_WFM},
-    {"RX WFM EQ 1.5k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P3_WFM, SYSMENU_HANDL_AUDIO_RX_EQ_P3_WFM},
-    {"RX WFM EQ 5.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4_WFM, SYSMENU_HANDL_AUDIO_RX_EQ_P4_WFM},
-    {"RX WFM EQ 12.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5_WFM, SYSMENU_HANDL_AUDIO_RX_EQ_P5_WFM},
-    {"RX AGC SSB Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed},
-    {"RX AGC CW Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed},
-    {"RX AGC Max gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_Max_gain, SYSMENU_HANDL_AUDIO_RX_AGC_Max_gain},
-    {"RX AGC Hold time", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RX_AGC_Hold, SYSMENU_HANDL_AUDIO_RX_AGC_Hold},
-#if !defined(STM32F407xx)
-    {"WFM Stereo", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FM_Stereo, SYSMENU_HANDL_AUDIO_FM_Stereo},
-#endif
-    {"AGC Spectral", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Spectral, SYSMENU_HANDL_AUDIO_AGC_Spectral},
-    {"VAD Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_HANDL_AUDIO_VAD_THRESHOLD},
 };
 
 const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
-
+    {"IF Gain, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.IF_Gain, SYSMENU_HANDL_RX_IFGain},
+    {"ADC Driver", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_Driver, SYSMENU_HANDL_RX_ADC_DRIVER},
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || defined(FRONTPANEL_X1) || \
+    defined(FRONTPANEL_MINI)
+    {"ADC Dither", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_DITH, SYSMENU_HANDL_RX_ADC_DITH},
+    {"ADC Preamp", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_PGA, SYSMENU_HANDL_RX_ADC_PGA},
+    {"ADC Randomizer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_RAND, SYSMENU_HANDL_RX_ADC_RAND},
+#endif
+    {"ADC Shutdown", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_RX_ADC_SHDN},
+    {"AGC", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_shadow, SYSMENU_HANDL_RX_AGC},
+#ifdef LAY_320x240
+    {"AGC Gain tr, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_RX_AGC_GAIN_TARGET},
+#else
+    {"AGC Gain target, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_RX_AGC_GAIN_TARGET},
+#endif
+    {"AGC Spectral", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Spectral, SYSMENU_HANDL_RX_AGC_Spectral},
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
+    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
+    {"Att step, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_RX_ATT_STEP},
+    {"Attenuation, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.ATT_DB, SYSMENU_HANDL_RX_ATT_DB},
+#endif
+    {"Auto Snap", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Snap, SYSMENU_HANDL_RX_Auto_Snap},
+    {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_RX_AutoGain},
+    {"DNR", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DNR_shadow, SYSMENU_HANDL_RX_DNR, {"OFF", "DNR1", "DNR2"}},
+    {"DNR Average", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_HANDL_RX_DNR_AVERAGE},
+    {"DNR Minimal", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_MINIMAL, SYSMENU_HANDL_RX_DNR_MINMAL},
+    {"DNR1 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR1_SNR_THRESHOLD, SYSMENU_HANDL_RX_DNR1_THRES},
+#if !defined(FRONTPANEL_LITE)
+    {"DNR2 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR2_SNR_THRESHOLD, SYSMENU_HANDL_RX_DNR2_THRES},
+#endif
+    {"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SQL_shadow, SYSMENU_HANDL_RX_Squelch},
+#ifdef LAY_320x240
+    {"FM Squelch level", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dbm_shadow, SYSMENU_HANDL_RX_FMSquelch},
+#else
+    {"FM Squelch level, dbm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dbm_shadow, SYSMENU_HANDL_RX_FMSquelch},
+#endif
+    {"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_RX_NOISE_BLANKER},
+    {"NB Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD},
+#if !defined(FRONTPANEL_LITE)
+    {"RF_Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_RX_RFFilters},
+#endif
+    {"RX AGC CW Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_HANDL_RX_AGC_CW_Speed},
+    {"RX AGC SSB Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_HANDL_RX_AGC_SSB_Speed},
+    {"RX AGC Max gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_Max_gain, SYSMENU_HANDL_RX_AGC_Max_gain},
+    {"RX AGC Hold time", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RX_AGC_Hold, SYSMENU_HANDL_RX_AGC_Hold},
+    {"RX EQ 0.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P1, SYSMENU_HANDL_RX_EQ_P1},
+    {"RX EQ 0.7k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P2, SYSMENU_HANDL_RX_EQ_P2},
+    {"RX EQ 1.2k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P3, SYSMENU_HANDL_RX_EQ_P3},
+    {"RX EQ 1.8k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4, SYSMENU_HANDL_RX_EQ_P4},
+    {"RX EQ 2.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5, SYSMENU_HANDL_RX_EQ_P5},
+    {"RX WFM EQ 50hz", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P1_WFM, SYSMENU_HANDL_RX_EQ_P1_WFM},
+    {"RX WFM EQ 0.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P2_WFM, SYSMENU_HANDL_RX_EQ_P2_WFM},
+    {"RX WFM EQ 1.5k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P3_WFM, SYSMENU_HANDL_RX_EQ_P3_WFM},
+    {"RX WFM EQ 5.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4_WFM, SYSMENU_HANDL_RX_EQ_P4_WFM},
+    {"RX WFM EQ 12.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5_WFM, SYSMENU_HANDL_RX_EQ_P5_WFM},
+    {"VAD Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_HANDL_RX_VAD_THRESHOLD},
+    {"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_RX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
+    {"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_RX_SAMPLERATE_FM, {"48khz", "96khz", "192khz", "384khz"}},
+#if HRDW_HAS_VGA
+    {"VGA Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.VGA_GAIN, SYSMENU_HANDL_TRX_VGA_GAIN},
+#endif
+#if !defined(STM32F407xx)
+    {"WFM Stereo", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FM_Stereo, SYSMENU_HANDL_RX_FM_Stereo},
+#endif
 };
 
 const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
@@ -741,11 +746,11 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
     {"CW Self Hear", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CW_SelfHear},
     {"CW Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
 #if !defined(FRONTPANEL_SMALL_V1)
-    {"CW Macros 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros1},
-    {"CW Macros 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros2},
-    {"CW Macros 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros3},
-    {"CW Macros 4", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros4},
-    {"CW Macros 5", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCWMacros5},
+    {"CW Macros 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros1},
+    {"CW Macros 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros2},
+    {"CW Macros 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros3},
+    {"CW Macros 4", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros4},
+    {"CW Macros 5", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros5},
 #endif
 };
 
@@ -889,16 +894,6 @@ const static struct sysmenu_item_handler sysmenu_decoders_handlers[] = {
     {"RTTY Freq", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RTTY_Freq, SYSMENU_HANDL_DECODERS_RTTY_Freq},
     {"RTTY StopBits", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.RTTY_StopBits, SYSMENU_HANDL_DECODERS_RTTY_StopBits, {"1", "1.5", "2"}},
     {"RTTY InvertBits", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RTTY_InvertBits, SYSMENU_HANDL_DECODERS_RTTY_InvertBits},
-};
-
-const static struct sysmenu_item_handler sysmenu_adc_handlers[] = {
-    {"ADC Driver", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_Driver, SYSMENU_HANDL_ADC_DRIVER},
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || defined(FRONTPANEL_X1) || \
-    defined(FRONTPANEL_MINI)
-    {"ADC Preamp", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_PGA, SYSMENU_HANDL_ADC_PGA},       {"ADC Dither", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_DITH, SYSMENU_HANDL_ADC_DITH},
-    {"ADC Randomizer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_RAND, SYSMENU_HANDL_ADC_RAND},
-#endif
-    {"ADC Shutdown", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_ADC_SHDN},
 };
 
 #if HRDW_HAS_WIFI
@@ -1300,7 +1295,6 @@ static struct sysmenu_menu_wrapper sysmenu_wrappers[] = {
     {.menu_handler = sysmenu_cw_handlers, .currentIndex = 0},
     {.menu_handler = sysmenu_screen_handlers, .currentIndex = 0},
     {.menu_handler = sysmenu_decoders_handlers, .currentIndex = 0},
-    {.menu_handler = sysmenu_adc_handlers, .currentIndex = 0},
 #if HRDW_HAS_WIFI
     {.menu_handler = sysmenu_wifi_handlers, .currentIndex = 0},
 #endif
@@ -1425,25 +1419,6 @@ static void SYSMENU_HANDL_TRX_ChannelMode(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_TRX_AutoGain(int8_t direction) {
-	if (direction > 0) {
-		TRX.AutoGain = true;
-	}
-	if (direction < 0) {
-		TRX.AutoGain = false;
-	}
-	FPGA_NeedSendParams = true;
-}
-
-static void SYSMENU_HANDL_TRX_RFFilters(int8_t direction) {
-	if (direction > 0) {
-		TRX.RF_Filters = true;
-	}
-	if (direction < 0) {
-		TRX.RF_Filters = false;
-	}
-}
-
 static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction) {
 	if (direction > 0) {
 		TRX.FineRITTune = true;
@@ -1459,15 +1434,6 @@ static void SYSMENU_HANDL_TRX_Split_Mode_Sync_Freq(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.Split_Mode_Sync_Freq = false;
-	}
-}
-
-static void SYSMENU_HANDL_TRX_Auto_Snap(int8_t direction) {
-	if (direction > 0) {
-		TRX.Auto_Snap = true;
-	}
-	if (direction < 0) {
-		TRX.Auto_Snap = false;
 	}
 }
 
@@ -1487,45 +1453,6 @@ static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction) {
 	if (TRX.Debug_Type > 5) {
 		TRX.Debug_Type = 5;
 	}
-}
-
-static void SYSMENU_HANDL_TRX_SAMPLERATE_MAIN(int8_t direction) {
-	if (direction > 0 || TRX.SAMPLERATE_MAIN > 0) {
-		TRX.SAMPLERATE_MAIN += direction;
-	}
-	if (TRX.SAMPLERATE_MAIN > 3) {
-		TRX.SAMPLERATE_MAIN = 3;
-	}
-
-#ifdef STM32F407xx
-	if (TRX.SAMPLERATE_MAIN > 1) {
-		TRX.SAMPLERATE_MAIN = 1;
-	}
-#endif
-
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE = TRX.SAMPLERATE_MAIN;
-
-	FFT_Init();
-	NeedReinitAudioFilters = true;
-}
-
-static void SYSMENU_HANDL_TRX_SAMPLERATE_FM(int8_t direction) {
-	if (direction > 0 || TRX.SAMPLERATE_FM > 0) {
-		TRX.SAMPLERATE_FM += direction;
-	}
-	if (TRX.SAMPLERATE_FM > 3) {
-		TRX.SAMPLERATE_FM = 3;
-	}
-
-#ifdef STM32F407xx
-	if (TRX.SAMPLERATE_FM > 1) {
-		TRX.SAMPLERATE_FM = 1;
-	}
-#endif
-
-	FFT_Init();
-	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_TRX_RIT_INTERVAL(int8_t direction) {
@@ -1735,38 +1662,6 @@ static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_TRX_ATT_STEP(int8_t direction) {
-	TRX.ATT_STEP += direction;
-	if (TRX.ATT_STEP < 1) {
-		TRX.ATT_STEP = 1;
-	}
-	if (TRX.ATT_STEP > 15) {
-		TRX.ATT_STEP = 15;
-	}
-}
-
-static void SYSMENU_HANDL_TRX_ATT_DB(int8_t direction) {
-	TRX.ATT_DB += (float32_t)direction * 0.5f;
-	if (TRX.ATT_DB < 0.5f) {
-		TRX.ATT_DB = 0.5f;
-	}
-	if (TRX.ATT_DB > 31.5f) {
-		TRX.ATT_DB = 31.5f;
-	}
-}
-
-#if HRDW_HAS_VGA
-static void SYSMENU_HANDL_TRX_VGA_GAIN(int8_t direction) {
-	TRX.VGA_GAIN += (float32_t)direction * 1.5f;
-	if (TRX.VGA_GAIN < 10.5f) {
-		TRX.VGA_GAIN = 10.5f;
-	}
-	if (TRX.VGA_GAIN > 33.0f) {
-		TRX.VGA_GAIN = 33.0f;
-	}
-}
-#endif
-
 static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw) {
 	if (full_redraw) {
 		LCDDriver_Fill(BG_COLOR);
@@ -1919,13 +1814,6 @@ void SYSMENU_AUDIO_BW_SSB_HOTKEY(void) {
 	LCD_redraw(false);
 }
 
-void SYSMENU_AUDIO_IF_HOTKEY(void) {
-	SYSMENU_HANDL_AUDIOMENU(0);
-	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "IF Gain, dB");
-	setCurrentMenuIndex(index);
-	LCD_redraw(false);
-}
-
 void SYSMENU_AUDIO_BW_CW_HOTKEY(void) {
 	SYSMENU_HANDL_AUDIOMENU(0);
 	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "CW LPF Pass");
@@ -1950,34 +1838,6 @@ void SYSMENU_AUDIO_BW_FM_HOTKEY(void) {
 void SYSMENU_AUDIO_HPF_SSB_HOTKEY(void) {
 	SYSMENU_HANDL_AUDIOMENU(0);
 	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "SSB HPF RX Pass");
-	setCurrentMenuIndex(index);
-	LCD_redraw(false);
-}
-
-void SYSMENU_AUDIO_SQUELCH_HOTKEY(void) {
-	SYSMENU_HANDL_AUDIOMENU(0);
-	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "FM Squelch level, dbm");
-	setCurrentMenuIndex(index);
-	LCD_redraw(false);
-}
-
-void SYSMENU_AUDIO_DNR_HOTKEY(void) {
-	SYSMENU_HANDL_AUDIOMENU(0);
-	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "DNR1 Threshold");
-	setCurrentMenuIndex(index);
-	LCD_redraw(false);
-}
-
-void SYSMENU_AUDIO_AGC_HOTKEY(void) {
-	SYSMENU_HANDL_AUDIOMENU(0);
-	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "AGC");
-	setCurrentMenuIndex(index);
-	LCD_redraw(false);
-}
-
-void SYSMENU_AUDIO_NB_HOTKEY(void) {
-	SYSMENU_HANDL_AUDIOMENU(0);
-	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "NB Threshold");
 	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
@@ -2013,316 +1873,6 @@ void SYSMEUN_SD_HOTKEY(void) {
 	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 #endif
-}
-
-static void SYSMENU_HANDL_AUDIO_Volume(int8_t direction) {
-	if (direction > 0 || TRX.Volume > 0) {
-		TRX.Volume += direction;
-	}
-	if (TRX.Volume > 100) {
-		TRX.Volume = 100;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_Volume_Step(int8_t direction) {
-	if (direction > 0 || TRX.Volume_Step > 1) {
-		TRX.Volume_Step += direction;
-	}
-	if (TRX.Volume_Step > 25) {
-		TRX.Volume_Step = 25;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_DNR(int8_t direction) {
-	TRX_TemporaryMute();
-
-	if (direction > 0 || CurrentVFO->DNR_Type > 0) {
-		CurrentVFO->DNR_Type += direction;
-	}
-	if (CurrentVFO->DNR_Type > 2) {
-		CurrentVFO->DNR_Type = 2;
-	}
-
-	TRX.DNR_shadow = CurrentVFO->DNR_Type;
-
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band > 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].DNR_Type = CurrentVFO->DNR_Type;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_AGC(int8_t direction) {
-	if (direction > 0) {
-		CurrentVFO->AGC = true;
-	}
-	if (direction < 0) {
-		CurrentVFO->AGC = false;
-	}
-
-	TRX.AGC_shadow = CurrentVFO->AGC;
-
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band > 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].AGC = CurrentVFO->AGC;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER(int8_t direction) {
-	if (direction > 0) {
-		TRX.NOISE_BLANKER = true;
-	}
-	if (direction < 0) {
-		TRX.NOISE_BLANKER = false;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_IFGain(int8_t direction) {
-	TRX.IF_Gain += direction;
-	if (TRX.IF_Gain < CALIBRATE.IF_GAIN_MIN) {
-		TRX.IF_Gain = CALIBRATE.IF_GAIN_MIN;
-	}
-	if (TRX.IF_Gain > CALIBRATE.IF_GAIN_MAX) {
-		TRX.IF_Gain = CALIBRATE.IF_GAIN_MAX;
-	}
-
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band > 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].IF_Gain = TRX.IF_Gain;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_AGC_GAIN_TARGET(int8_t direction) {
-	TRX.AGC_GAIN_TARGET += direction;
-	if (TRX.AGC_GAIN_TARGET < -80) {
-		TRX.AGC_GAIN_TARGET = -80;
-	}
-	if (TRX.AGC_GAIN_TARGET > -10) {
-		TRX.AGC_GAIN_TARGET = -10;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_DNR1_THRES(int8_t direction) {
-	TRX.DNR1_SNR_THRESHOLD += direction;
-	if (TRX.DNR1_SNR_THRESHOLD < 1) {
-		TRX.DNR1_SNR_THRESHOLD = 1;
-	}
-	if (TRX.DNR1_SNR_THRESHOLD > 100) {
-		TRX.DNR1_SNR_THRESHOLD = 100;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_DNR2_THRES(int8_t direction) {
-	TRX.DNR2_SNR_THRESHOLD += direction;
-	if (TRX.DNR2_SNR_THRESHOLD < 1) {
-		TRX.DNR2_SNR_THRESHOLD = 1;
-	}
-	if (TRX.DNR2_SNR_THRESHOLD > 100) {
-		TRX.DNR2_SNR_THRESHOLD = 100;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_DNR_AVERAGE(int8_t direction) {
-	TRX.DNR_AVERAGE += direction;
-	if (TRX.DNR_AVERAGE < 1) {
-		TRX.DNR_AVERAGE = 1;
-	}
-	if (TRX.DNR_AVERAGE > 100) {
-		TRX.DNR_AVERAGE = 100;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_DNR_MINMAL(int8_t direction) {
-	TRX.DNR_MINIMAL += direction;
-	if (TRX.DNR_MINIMAL < 1) {
-		TRX.DNR_MINIMAL = 1;
-	}
-	if (TRX.DNR_MINIMAL > 100) {
-		TRX.DNR_MINIMAL = 100;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_NOISE_BLANKER_THRESHOLD(int8_t direction) {
-	TRX.NOISE_BLANKER_THRESHOLD += direction;
-	if (TRX.NOISE_BLANKER_THRESHOLD < 1) {
-		TRX.NOISE_BLANKER_THRESHOLD = 1;
-	}
-	if (TRX.NOISE_BLANKER_THRESHOLD > 20) {
-		TRX.NOISE_BLANKER_THRESHOLD = 20;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P1(int8_t direction) {
-	TRX.RX_EQ_P1 += direction;
-	if (TRX.RX_EQ_P1 < -50) {
-		TRX.RX_EQ_P1 = -50;
-	}
-	if (TRX.RX_EQ_P1 > 50) {
-		TRX.RX_EQ_P1 = 50;
-	}
-	NeedReinitAudioFilters = true;
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P2(int8_t direction) {
-	TRX.RX_EQ_P2 += direction;
-	if (TRX.RX_EQ_P2 < -50) {
-		TRX.RX_EQ_P2 = -50;
-	}
-	if (TRX.RX_EQ_P2 > 50) {
-		TRX.RX_EQ_P2 = 50;
-	}
-	NeedReinitAudioFilters = true;
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P3(int8_t direction) {
-	TRX.RX_EQ_P3 += direction;
-	if (TRX.RX_EQ_P3 < -50) {
-		TRX.RX_EQ_P3 = -50;
-	}
-	if (TRX.RX_EQ_P3 > 50) {
-		TRX.RX_EQ_P3 = 50;
-	}
-	NeedReinitAudioFilters = true;
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P4(int8_t direction) {
-	TRX.RX_EQ_P4 += direction;
-	if (TRX.RX_EQ_P4 < -50) {
-		TRX.RX_EQ_P4 = -50;
-	}
-	if (TRX.RX_EQ_P4 > 50) {
-		TRX.RX_EQ_P4 = 50;
-	}
-	NeedReinitAudioFilters = true;
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P5(int8_t direction) {
-	TRX.RX_EQ_P5 += direction;
-	if (TRX.RX_EQ_P5 < -50) {
-		TRX.RX_EQ_P5 = -50;
-	}
-	if (TRX.RX_EQ_P5 > 50) {
-		TRX.RX_EQ_P5 = 50;
-	}
-	NeedReinitAudioFilters = true;
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P1_WFM(int8_t direction) {
-	TRX.RX_EQ_P1_WFM += direction;
-	if (TRX.RX_EQ_P1_WFM < -50) {
-		TRX.RX_EQ_P1_WFM = -50;
-	}
-	if (TRX.RX_EQ_P1_WFM > 50) {
-		TRX.RX_EQ_P1_WFM = 50;
-	}
-	NeedReinitAudioFilters = true;
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P2_WFM(int8_t direction) {
-	TRX.RX_EQ_P2_WFM += direction;
-	if (TRX.RX_EQ_P2_WFM < -50) {
-		TRX.RX_EQ_P2_WFM = -50;
-	}
-	if (TRX.RX_EQ_P2_WFM > 50) {
-		TRX.RX_EQ_P2_WFM = 50;
-	}
-	NeedReinitAudioFilters = true;
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P3_WFM(int8_t direction) {
-	TRX.RX_EQ_P3_WFM += direction;
-	if (TRX.RX_EQ_P3_WFM < -50) {
-		TRX.RX_EQ_P3_WFM = -50;
-	}
-	if (TRX.RX_EQ_P3_WFM > 50) {
-		TRX.RX_EQ_P3_WFM = 50;
-	}
-	NeedReinitAudioFilters = true;
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P4_WFM(int8_t direction) {
-	TRX.RX_EQ_P4_WFM += direction;
-	if (TRX.RX_EQ_P4_WFM < -50) {
-		TRX.RX_EQ_P4_WFM = -50;
-	}
-	if (TRX.RX_EQ_P4_WFM > 50) {
-		TRX.RX_EQ_P4_WFM = 50;
-	}
-	NeedReinitAudioFilters = true;
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_EQ_P5_WFM(int8_t direction) {
-	TRX.RX_EQ_P5_WFM += direction;
-	if (TRX.RX_EQ_P5_WFM < -50) {
-		TRX.RX_EQ_P5_WFM = -50;
-	}
-	if (TRX.RX_EQ_P5_WFM > 50) {
-		TRX.RX_EQ_P5_WFM = 50;
-	}
-	NeedReinitAudioFilters = true;
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_AGC_SSB_Speed(int8_t direction) {
-	TRX.RX_AGC_SSB_speed += direction;
-	if (TRX.RX_AGC_SSB_speed < 1) {
-		TRX.RX_AGC_SSB_speed = 1;
-	}
-	if (TRX.RX_AGC_SSB_speed > 20) {
-		TRX.RX_AGC_SSB_speed = 20;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_AGC_CW_Speed(int8_t direction) {
-	TRX.RX_AGC_CW_speed += direction;
-	if (TRX.RX_AGC_CW_speed < 1) {
-		TRX.RX_AGC_CW_speed = 1;
-	}
-	if (TRX.RX_AGC_CW_speed > 20) {
-		TRX.RX_AGC_CW_speed = 20;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_AGC_Max_gain(int8_t direction) {
-	TRX.RX_AGC_Max_gain += direction;
-	if (TRX.RX_AGC_Max_gain < 1) {
-		TRX.RX_AGC_Max_gain = 1;
-	}
-	if (TRX.RX_AGC_Max_gain > 50) {
-		TRX.RX_AGC_Max_gain = 50;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_RX_AGC_Hold(int8_t direction) {
-	if (TRX.RX_AGC_Hold > 0 || direction > 0) {
-		TRX.RX_AGC_Hold += direction * 100;
-	}
-	if (TRX.RX_AGC_Hold > 5000) {
-		TRX.RX_AGC_Hold = 5000;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_FMSquelch(int8_t direction) {
-	CurrentVFO->FM_SQL_threshold_dbm += direction;
-	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
-
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
-	}
-}
-
-static void SYSMENU_HANDL_AUDIO_Squelch(int8_t direction) {
-	if (direction > 0) {
-		CurrentVFO->SQL = true;
-	}
-	if (direction < 0) {
-		CurrentVFO->SQL = false;
-	}
-	TRX.SQL_shadow = CurrentVFO->SQL;
-
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].SQL = CurrentVFO->SQL;
-	}
 }
 
 void SYSMENU_HANDL_AUDIO_SSB_HPF_RX_pass(int8_t direction) {
@@ -2498,7 +2048,460 @@ static void SYSMENU_HANDL_AUDIO_Beeper(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_AUDIO_FM_Stereo(int8_t direction) {
+// RX MENU
+
+static void SYSMENU_HANDL_RXMENU(int8_t direction) {
+	sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_rx_handlers[0];
+	sysmenu_item_count = sizeof(sysmenu_rx_handlers) / sizeof(sysmenu_rx_handlers[0]);
+	sysmenu_onroot = false;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_RX_AutoGain(int8_t direction) {
+	if (direction > 0) {
+		TRX.AutoGain = true;
+	}
+	if (direction < 0) {
+		TRX.AutoGain = false;
+	}
+	FPGA_NeedSendParams = true;
+}
+
+static void SYSMENU_HANDL_RX_RFFilters(int8_t direction) {
+	if (direction > 0) {
+		TRX.RF_Filters = true;
+	}
+	if (direction < 0) {
+		TRX.RF_Filters = false;
+	}
+}
+
+static void SYSMENU_HANDL_RX_Auto_Snap(int8_t direction) {
+	if (direction > 0) {
+		TRX.Auto_Snap = true;
+	}
+	if (direction < 0) {
+		TRX.Auto_Snap = false;
+	}
+}
+
+static void SYSMENU_HANDL_RX_SAMPLERATE_MAIN(int8_t direction) {
+	if (direction > 0 || TRX.SAMPLERATE_MAIN > 0) {
+		TRX.SAMPLERATE_MAIN += direction;
+	}
+	if (TRX.SAMPLERATE_MAIN > 3) {
+		TRX.SAMPLERATE_MAIN = 3;
+	}
+
+#ifdef STM32F407xx
+	if (TRX.SAMPLERATE_MAIN > 1) {
+		TRX.SAMPLERATE_MAIN = 1;
+	}
+#endif
+
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE = TRX.SAMPLERATE_MAIN;
+
+	FFT_Init();
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_SAMPLERATE_FM(int8_t direction) {
+	if (direction > 0 || TRX.SAMPLERATE_FM > 0) {
+		TRX.SAMPLERATE_FM += direction;
+	}
+	if (TRX.SAMPLERATE_FM > 3) {
+		TRX.SAMPLERATE_FM = 3;
+	}
+
+#ifdef STM32F407xx
+	if (TRX.SAMPLERATE_FM > 1) {
+		TRX.SAMPLERATE_FM = 1;
+	}
+#endif
+
+	FFT_Init();
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_ATT_STEP(int8_t direction) {
+	TRX.ATT_STEP += direction;
+	if (TRX.ATT_STEP < 1) {
+		TRX.ATT_STEP = 1;
+	}
+	if (TRX.ATT_STEP > 15) {
+		TRX.ATT_STEP = 15;
+	}
+}
+
+static void SYSMENU_HANDL_RX_ATT_DB(int8_t direction) {
+	TRX.ATT_DB += (float32_t)direction * 0.5f;
+	if (TRX.ATT_DB < 0.5f) {
+		TRX.ATT_DB = 0.5f;
+	}
+	if (TRX.ATT_DB > 31.5f) {
+		TRX.ATT_DB = 31.5f;
+	}
+}
+
+#if HRDW_HAS_VGA
+static void SYSMENU_HANDL_RX_VGA_GAIN(int8_t direction) {
+	TRX.VGA_GAIN += (float32_t)direction * 1.5f;
+	if (TRX.VGA_GAIN < 10.5f) {
+		TRX.VGA_GAIN = 10.5f;
+	}
+	if (TRX.VGA_GAIN > 33.0f) {
+		TRX.VGA_GAIN = 33.0f;
+	}
+}
+#endif
+
+void SYSMENU_RX_IF_HOTKEY(void) {
+	SYSMENU_HANDL_AUDIOMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "IF Gain, dB");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+}
+
+void SYSMENU_RX_SQUELCH_HOTKEY(void) {
+	SYSMENU_HANDL_RXMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "FM Squelch level, dbm");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+}
+
+void SYSMENU_RX_DNR_HOTKEY(void) {
+	SYSMENU_HANDL_RXMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "DNR1 Threshold");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+}
+
+void SYSMENU_RX_AGC_HOTKEY(void) {
+	SYSMENU_HANDL_RXMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "AGC");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+}
+
+void SYSMENU_RX_NB_HOTKEY(void) {
+	SYSMENU_HANDL_RXMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "NB Threshold");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+}
+
+static void SYSMENU_HANDL_RX_Volume(int8_t direction) {
+	if (direction > 0 || TRX.Volume > 0) {
+		TRX.Volume += direction;
+	}
+	if (TRX.Volume > 100) {
+		TRX.Volume = 100;
+	}
+}
+
+static void SYSMENU_HANDL_RX_Volume_Step(int8_t direction) {
+	if (direction > 0 || TRX.Volume_Step > 1) {
+		TRX.Volume_Step += direction;
+	}
+	if (TRX.Volume_Step > 25) {
+		TRX.Volume_Step = 25;
+	}
+}
+
+static void SYSMENU_HANDL_RX_DNR(int8_t direction) {
+	TRX_TemporaryMute();
+
+	if (direction > 0 || CurrentVFO->DNR_Type > 0) {
+		CurrentVFO->DNR_Type += direction;
+	}
+	if (CurrentVFO->DNR_Type > 2) {
+		CurrentVFO->DNR_Type = 2;
+	}
+
+	TRX.DNR_shadow = CurrentVFO->DNR_Type;
+
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band > 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].DNR_Type = CurrentVFO->DNR_Type;
+	}
+}
+
+static void SYSMENU_HANDL_RX_AGC(int8_t direction) {
+	if (direction > 0) {
+		CurrentVFO->AGC = true;
+	}
+	if (direction < 0) {
+		CurrentVFO->AGC = false;
+	}
+
+	TRX.AGC_shadow = CurrentVFO->AGC;
+
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band > 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].AGC = CurrentVFO->AGC;
+	}
+}
+
+static void SYSMENU_HANDL_RX_NOISE_BLANKER(int8_t direction) {
+	if (direction > 0) {
+		TRX.NOISE_BLANKER = true;
+	}
+	if (direction < 0) {
+		TRX.NOISE_BLANKER = false;
+	}
+}
+
+static void SYSMENU_HANDL_RX_IFGain(int8_t direction) {
+	TRX.IF_Gain += direction;
+	if (TRX.IF_Gain < CALIBRATE.IF_GAIN_MIN) {
+		TRX.IF_Gain = CALIBRATE.IF_GAIN_MIN;
+	}
+	if (TRX.IF_Gain > CALIBRATE.IF_GAIN_MAX) {
+		TRX.IF_Gain = CALIBRATE.IF_GAIN_MAX;
+	}
+
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band > 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].IF_Gain = TRX.IF_Gain;
+	}
+}
+
+static void SYSMENU_HANDL_RX_AGC_GAIN_TARGET(int8_t direction) {
+	TRX.AGC_GAIN_TARGET += direction;
+	if (TRX.AGC_GAIN_TARGET < -80) {
+		TRX.AGC_GAIN_TARGET = -80;
+	}
+	if (TRX.AGC_GAIN_TARGET > -10) {
+		TRX.AGC_GAIN_TARGET = -10;
+	}
+}
+
+static void SYSMENU_HANDL_RX_DNR1_THRES(int8_t direction) {
+	TRX.DNR1_SNR_THRESHOLD += direction;
+	if (TRX.DNR1_SNR_THRESHOLD < 1) {
+		TRX.DNR1_SNR_THRESHOLD = 1;
+	}
+	if (TRX.DNR1_SNR_THRESHOLD > 100) {
+		TRX.DNR1_SNR_THRESHOLD = 100;
+	}
+}
+
+static void SYSMENU_HANDL_RX_DNR2_THRES(int8_t direction) {
+	TRX.DNR2_SNR_THRESHOLD += direction;
+	if (TRX.DNR2_SNR_THRESHOLD < 1) {
+		TRX.DNR2_SNR_THRESHOLD = 1;
+	}
+	if (TRX.DNR2_SNR_THRESHOLD > 100) {
+		TRX.DNR2_SNR_THRESHOLD = 100;
+	}
+}
+
+static void SYSMENU_HANDL_RX_DNR_AVERAGE(int8_t direction) {
+	TRX.DNR_AVERAGE += direction;
+	if (TRX.DNR_AVERAGE < 1) {
+		TRX.DNR_AVERAGE = 1;
+	}
+	if (TRX.DNR_AVERAGE > 100) {
+		TRX.DNR_AVERAGE = 100;
+	}
+}
+
+static void SYSMENU_HANDL_RX_DNR_MINMAL(int8_t direction) {
+	TRX.DNR_MINIMAL += direction;
+	if (TRX.DNR_MINIMAL < 1) {
+		TRX.DNR_MINIMAL = 1;
+	}
+	if (TRX.DNR_MINIMAL > 100) {
+		TRX.DNR_MINIMAL = 100;
+	}
+}
+
+static void SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD(int8_t direction) {
+	TRX.NOISE_BLANKER_THRESHOLD += direction;
+	if (TRX.NOISE_BLANKER_THRESHOLD < 1) {
+		TRX.NOISE_BLANKER_THRESHOLD = 1;
+	}
+	if (TRX.NOISE_BLANKER_THRESHOLD > 20) {
+		TRX.NOISE_BLANKER_THRESHOLD = 20;
+	}
+}
+
+static void SYSMENU_HANDL_RX_EQ_P1(int8_t direction) {
+	TRX.RX_EQ_P1 += direction;
+	if (TRX.RX_EQ_P1 < -50) {
+		TRX.RX_EQ_P1 = -50;
+	}
+	if (TRX.RX_EQ_P1 > 50) {
+		TRX.RX_EQ_P1 = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_EQ_P2(int8_t direction) {
+	TRX.RX_EQ_P2 += direction;
+	if (TRX.RX_EQ_P2 < -50) {
+		TRX.RX_EQ_P2 = -50;
+	}
+	if (TRX.RX_EQ_P2 > 50) {
+		TRX.RX_EQ_P2 = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_EQ_P3(int8_t direction) {
+	TRX.RX_EQ_P3 += direction;
+	if (TRX.RX_EQ_P3 < -50) {
+		TRX.RX_EQ_P3 = -50;
+	}
+	if (TRX.RX_EQ_P3 > 50) {
+		TRX.RX_EQ_P3 = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_EQ_P4(int8_t direction) {
+	TRX.RX_EQ_P4 += direction;
+	if (TRX.RX_EQ_P4 < -50) {
+		TRX.RX_EQ_P4 = -50;
+	}
+	if (TRX.RX_EQ_P4 > 50) {
+		TRX.RX_EQ_P4 = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_EQ_P5(int8_t direction) {
+	TRX.RX_EQ_P5 += direction;
+	if (TRX.RX_EQ_P5 < -50) {
+		TRX.RX_EQ_P5 = -50;
+	}
+	if (TRX.RX_EQ_P5 > 50) {
+		TRX.RX_EQ_P5 = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_EQ_P1_WFM(int8_t direction) {
+	TRX.RX_EQ_P1_WFM += direction;
+	if (TRX.RX_EQ_P1_WFM < -50) {
+		TRX.RX_EQ_P1_WFM = -50;
+	}
+	if (TRX.RX_EQ_P1_WFM > 50) {
+		TRX.RX_EQ_P1_WFM = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_EQ_P2_WFM(int8_t direction) {
+	TRX.RX_EQ_P2_WFM += direction;
+	if (TRX.RX_EQ_P2_WFM < -50) {
+		TRX.RX_EQ_P2_WFM = -50;
+	}
+	if (TRX.RX_EQ_P2_WFM > 50) {
+		TRX.RX_EQ_P2_WFM = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_EQ_P3_WFM(int8_t direction) {
+	TRX.RX_EQ_P3_WFM += direction;
+	if (TRX.RX_EQ_P3_WFM < -50) {
+		TRX.RX_EQ_P3_WFM = -50;
+	}
+	if (TRX.RX_EQ_P3_WFM > 50) {
+		TRX.RX_EQ_P3_WFM = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_EQ_P4_WFM(int8_t direction) {
+	TRX.RX_EQ_P4_WFM += direction;
+	if (TRX.RX_EQ_P4_WFM < -50) {
+		TRX.RX_EQ_P4_WFM = -50;
+	}
+	if (TRX.RX_EQ_P4_WFM > 50) {
+		TRX.RX_EQ_P4_WFM = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_EQ_P5_WFM(int8_t direction) {
+	TRX.RX_EQ_P5_WFM += direction;
+	if (TRX.RX_EQ_P5_WFM < -50) {
+		TRX.RX_EQ_P5_WFM = -50;
+	}
+	if (TRX.RX_EQ_P5_WFM > 50) {
+		TRX.RX_EQ_P5_WFM = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_AGC_SSB_Speed(int8_t direction) {
+	TRX.RX_AGC_SSB_speed += direction;
+	if (TRX.RX_AGC_SSB_speed < 1) {
+		TRX.RX_AGC_SSB_speed = 1;
+	}
+	if (TRX.RX_AGC_SSB_speed > 20) {
+		TRX.RX_AGC_SSB_speed = 20;
+	}
+}
+
+static void SYSMENU_HANDL_RX_AGC_CW_Speed(int8_t direction) {
+	TRX.RX_AGC_CW_speed += direction;
+	if (TRX.RX_AGC_CW_speed < 1) {
+		TRX.RX_AGC_CW_speed = 1;
+	}
+	if (TRX.RX_AGC_CW_speed > 20) {
+		TRX.RX_AGC_CW_speed = 20;
+	}
+}
+
+static void SYSMENU_HANDL_RX_AGC_Max_gain(int8_t direction) {
+	TRX.RX_AGC_Max_gain += direction;
+	if (TRX.RX_AGC_Max_gain < 1) {
+		TRX.RX_AGC_Max_gain = 1;
+	}
+	if (TRX.RX_AGC_Max_gain > 50) {
+		TRX.RX_AGC_Max_gain = 50;
+	}
+}
+
+static void SYSMENU_HANDL_RX_AGC_Hold(int8_t direction) {
+	if (TRX.RX_AGC_Hold > 0 || direction > 0) {
+		TRX.RX_AGC_Hold += direction * 100;
+	}
+	if (TRX.RX_AGC_Hold > 5000) {
+		TRX.RX_AGC_Hold = 5000;
+	}
+}
+
+static void SYSMENU_HANDL_RX_FMSquelch(int8_t direction) {
+	CurrentVFO->FM_SQL_threshold_dbm += direction;
+	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
+
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
+	}
+}
+
+static void SYSMENU_HANDL_RX_Squelch(int8_t direction) {
+	if (direction > 0) {
+		CurrentVFO->SQL = true;
+	}
+	if (direction < 0) {
+		CurrentVFO->SQL = false;
+	}
+	TRX.SQL_shadow = CurrentVFO->SQL;
+
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].SQL = CurrentVFO->SQL;
+	}
+}
+
+static void SYSMENU_HANDL_RX_FM_Stereo(int8_t direction) {
 	if (direction > 0) {
 		TRX.FM_Stereo = true;
 	}
@@ -2507,7 +2510,7 @@ static void SYSMENU_HANDL_AUDIO_FM_Stereo(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_AUDIO_AGC_Spectral(int8_t direction) {
+static void SYSMENU_HANDL_RX_AGC_Spectral(int8_t direction) {
 	if (direction > 0) {
 		TRX.AGC_Spectral = true;
 	}
@@ -2516,7 +2519,7 @@ static void SYSMENU_HANDL_AUDIO_AGC_Spectral(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_AUDIO_VAD_THRESHOLD(int8_t direction) {
+static void SYSMENU_HANDL_RX_VAD_THRESHOLD(int8_t direction) {
 	TRX.VAD_THRESHOLD += direction;
 	if (TRX.VAD_THRESHOLD > 200) {
 		TRX.VAD_THRESHOLD = 200;
@@ -2526,13 +2529,62 @@ static void SYSMENU_HANDL_AUDIO_VAD_THRESHOLD(int8_t direction) {
 	}
 }
 
-// RX MENU
+static void SYSMENU_HANDL_RX_ADC_DRIVER(int8_t direction) {
+	if (direction > 0) {
+		TRX.ADC_Driver = true;
+	}
+	if (direction < 0) {
+		TRX.ADC_Driver = false;
+	}
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
+	}
+	FPGA_NeedSendParams = true;
+}
 
-static void SYSMENU_HANDL_RXMENU(int8_t direction) {
-	sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_rx_handlers[0];
-	sysmenu_item_count = sizeof(sysmenu_rx_handlers) / sizeof(sysmenu_rx_handlers[0]);
-	sysmenu_onroot = false;
-	LCD_UpdateQuery.SystemMenuRedraw = true;
+static void SYSMENU_HANDL_RX_ADC_PGA(int8_t direction) {
+	if (direction > 0) {
+		TRX.ADC_PGA = true;
+	}
+	if (direction < 0) {
+		TRX.ADC_PGA = false;
+	}
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
+	}
+	FPGA_NeedSendParams = true;
+}
+
+static void SYSMENU_HANDL_RX_ADC_RAND(int8_t direction) {
+	if (direction > 0) {
+		TRX.ADC_RAND = true;
+	}
+	if (direction < 0) {
+		TRX.ADC_RAND = false;
+	}
+	FPGA_NeedSendParams = true;
+}
+
+static void SYSMENU_HANDL_RX_ADC_SHDN(int8_t direction) {
+	if (direction > 0) {
+		TRX.ADC_SHDN = true;
+	}
+	if (direction < 0) {
+		TRX.ADC_SHDN = false;
+	}
+	FPGA_NeedSendParams = true;
+}
+
+static void SYSMENU_HANDL_RX_ADC_DITH(int8_t direction) {
+	if (direction > 0) {
+		TRX.ADC_DITH = true;
+	}
+	if (direction < 0) {
+		TRX.ADC_DITH = false;
+	}
+	FPGA_NeedSendParams = true;
 }
 
 // TX MENU
@@ -3123,35 +3175,35 @@ static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction) {
 	KEYER_symbol_status = 0;
 }
 
-static void SYSMENU_HANDL_TRX_SetCWMacros1(int8_t direction) {
+static void SYSMENU_HANDL_CW_SetCWMacros1(int8_t direction) {
 	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setCWMacros1_menu_opened = true;
 	SYSMENU_TRX_DrawCWMacros1Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
-static void SYSMENU_HANDL_TRX_SetCWMacros2(int8_t direction) {
+static void SYSMENU_HANDL_CW_SetCWMacros2(int8_t direction) {
 	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setCWMacros2_menu_opened = true;
 	SYSMENU_TRX_DrawCWMacros2Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
-static void SYSMENU_HANDL_TRX_SetCWMacros3(int8_t direction) {
+static void SYSMENU_HANDL_CW_SetCWMacros3(int8_t direction) {
 	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setCWMacros3_menu_opened = true;
 	SYSMENU_TRX_DrawCWMacros3Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
-static void SYSMENU_HANDL_TRX_SetCWMacros4(int8_t direction) {
+static void SYSMENU_HANDL_CW_SetCWMacros4(int8_t direction) {
 	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setCWMacros4_menu_opened = true;
 	SYSMENU_TRX_DrawCWMacros4Menu(true);
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
-static void SYSMENU_HANDL_TRX_SetCWMacros5(int8_t direction) {
+static void SYSMENU_HANDL_CW_SetCWMacros5(int8_t direction) {
 	sysmenu_selected_char_index = 0;
 	sysmenu_trx_setCWMacros5_menu_opened = true;
 	SYSMENU_TRX_DrawCWMacros5Menu(true);
@@ -4091,73 +4143,6 @@ static void SYSMENU_HANDL_DECODERS_RTTY_StopBits(int8_t direction) {
 	}
 
 	RTTYDecoder_Init();
-}
-
-// ADC/DAC MENU
-
-static void SYSMENU_HANDL_ADCMENU(int8_t direction) {
-	sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_adc_handlers[0];
-	sysmenu_item_count = sizeof(sysmenu_adc_handlers) / sizeof(sysmenu_adc_handlers[0]);
-	sysmenu_onroot = false;
-	LCD_UpdateQuery.SystemMenuRedraw = true;
-}
-
-static void SYSMENU_HANDL_ADC_DRIVER(int8_t direction) {
-	if (direction > 0) {
-		TRX.ADC_Driver = true;
-	}
-	if (direction < 0) {
-		TRX.ADC_Driver = false;
-	}
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver = TRX.ADC_Driver;
-	}
-	FPGA_NeedSendParams = true;
-}
-
-static void SYSMENU_HANDL_ADC_PGA(int8_t direction) {
-	if (direction > 0) {
-		TRX.ADC_PGA = true;
-	}
-	if (direction < 0) {
-		TRX.ADC_PGA = false;
-	}
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA = TRX.ADC_PGA;
-	}
-	FPGA_NeedSendParams = true;
-}
-
-static void SYSMENU_HANDL_ADC_RAND(int8_t direction) {
-	if (direction > 0) {
-		TRX.ADC_RAND = true;
-	}
-	if (direction < 0) {
-		TRX.ADC_RAND = false;
-	}
-	FPGA_NeedSendParams = true;
-}
-
-static void SYSMENU_HANDL_ADC_SHDN(int8_t direction) {
-	if (direction > 0) {
-		TRX.ADC_SHDN = true;
-	}
-	if (direction < 0) {
-		TRX.ADC_SHDN = false;
-	}
-	FPGA_NeedSendParams = true;
-}
-
-static void SYSMENU_HANDL_ADC_DITH(int8_t direction) {
-	if (direction > 0) {
-		TRX.ADC_DITH = true;
-	}
-	if (direction < 0) {
-		TRX.ADC_DITH = false;
-	}
-	FPGA_NeedSendParams = true;
 }
 
 // WIFI MENU

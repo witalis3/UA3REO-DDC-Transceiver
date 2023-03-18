@@ -132,13 +132,9 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 * **Channel Mode** - Channel frequency mode (for LPD/PMR and etc.)
 * **Band Map** - Band Map, automatically switches mode depending on the frequency
-* **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
-* **RF Filters** - Hardware filter management (LPF / HPF / BPF)
 * **RIT Interval** - Offset range RIT (+ -)
 * **XIT Interval** - Offset range XIT (+ -)
 * **Fine RIT Tune** - Fine or coarse tuning for RIT/XIT (encoder or resistor)
-* **TRX Samplerate** - Max FFT/samplerate on CW/SSB/NFM/DIGI/etc modes
-* **FM Samplerate** - Max FFT/samplerate on NFM/WFM mode
 * **Freq Step** - Frequency step by the main encoder
 * **Freq Step FAST** - Frequency step by the main encoder in FAST mode
 * **Freq Step ENC2** - Frequency tuning step by main add. encoder
@@ -147,10 +143,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **CW Freq Step divider** - Frequency step divider for CW mode
 * **Encoder Accelerate** - Accelerate encoder on fast rates
 * **Split freq sync** - Synchronous VFO frequency change in SPLIT mode
-* **Att step, dB** - Attenuator tuning step
-* **Attenuation, dB** - Current attenuation
 * **DEBUG Type** - Output of debug and service information to USB / UART ports
-* **Auto Snap** - Automaticly track and snap to near signal frequency (CW mode)
 * **Callsign** - User callsign
 * **Locator** - User QTH locator
 * **URSI Code** - Ionogramm URSI Code https://digisonde.com/index.html#stationmap-section
@@ -160,6 +153,23 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 ### AUDIO Settings
 
+* **SSB HPF Pass** - HPF cutoff frequency when operating in SSB
+* **SSB LPF Pass** - LPF cutoff frequency when operating in SSB
+* **CW LPF Pass** - LPF cutoff frequency when working in CW
+* **DIGI LPF Pass** - LPF cutoff frequency when working in DIGI
+* **FM LPF Pass** - LPF cutoff frequency when working in FM
+* **AM/FM/CW/SSB LPF Stages** - Adjusting the slopes of the LPF filters in defferent modes
+* **Beeper** - Beep on key press
+
+### RX Settings
+
+* **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
+* **RF Filters** - Hardware filter management (LPF / HPF / BPF)
+* **TRX Samplerate** - Max FFT/samplerate on CW/SSB/NFM/DIGI/etc modes
+* **FM Samplerate** - Max FFT/samplerate on NFM/WFM mode
+* **Att step, dB** - Attenuator tuning step
+* **Attenuation, dB** - Current attenuation
+* **Auto Snap** - Automaticly track and snap to near signal frequency (CW mode)
 * **Volume** - AF gain
 * **Volume step** - AF gain step by ENC2 (X1, Lite)
 * **IF Gain, dB** - IF gain
@@ -167,22 +177,20 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **DNR xxx** - Digital squelch adjustment
 * **Noise Blanker** - Activating the Surge Suppressor
 * **NB Threshold** - Threshold of Noise blanker
-* **SSB HPF Pass** - HPF cutoff frequency when operating in SSB
-* **SSB LPF Pass** - LPF cutoff frequency when operating in SSB
-* **CW LPF Pass** - LPF cutoff frequency when working in CW
-* **DIGI LPF Pass** - LPF cutoff frequency when working in DIGI
-* **FM LPF Pass** - LPF cutoff frequency when working in FM
-* **AM/FM/CW/SSB LPF Stages** - Adjusting the slopes of the LPF filters in defferent modes
 * **Squelch** - Enable SSB/AM/CW/FM Squelch
 * **FM Squelch level** - FM squelch level
 * **RX EQ xxx** - Receiver equalizer levels
 * **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
 * **RX AGC Max gain** - Limit of AGC gain, dB
 * **RX AGC Hold time** - Time of AGC gain holding on signal peaks, ms
-* **Beeper** - Beep on key press
 * **WFM Stereo** - select WFM stereo or mono decoder
 * **AGC Spectral** - Enable FFT-based AGC
 * **VAD Threshold** - VAD voice detector threshold (noise suppressor for SSB mode and SCAN mode)
+* **ADC Driver** - Turn on the preamplifier-ADC driver
+* **ADC Preamp** - Turn on the preamplifier built into the ADC
+* **ADC Dither** - Enable ADC dither for receiving weak signals
+* **ADC Randomizer** - Enables ADC digital line encryption
+* **ADC Shutdown** - Turn off the ADC
 
 ### TX Settings
 
@@ -272,14 +280,6 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **RTTY Freq** - Central frequency of RTTY decoding
 * **RTTY StopBits** - RTTY Stop bits
 * **RTTY InvertBits** - RTTY invert 0 and 1 bits
-
-### ADC / DAC Settings
-
-* **ADC Driver** - Turn on the preamplifier-ADC driver
-* **ADC Preamp** - Turn on the preamplifier built into the ADC
-* **ADC Dither** - Enable ADC dither for receiving weak signals
-* **ADC Randomizer** - Enables ADC digital line encryption
-* **ADC Shutdown** - Turn off the ADC
 
 ### WIFI Settings
 

@@ -1602,7 +1602,7 @@ void BUTTONHANDLER_AGC(uint32_t parameter) {
 void BUTTONHANDLER_AGC_SPEED(uint32_t parameter) {
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
-		SYSMENU_AUDIO_AGC_HOTKEY();
+		SYSMENU_RX_AGC_HOTKEY();
 	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
@@ -1623,7 +1623,7 @@ void BUTTONHANDLER_REPEATER_MODE(uint32_t parameter) {
 void BUTTONHANDLER_SQUELCH(uint32_t parameter) {
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
-		SYSMENU_AUDIO_SQUELCH_HOTKEY();
+		SYSMENU_RX_SQUELCH_HOTKEY();
 	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
@@ -1686,7 +1686,7 @@ void BUTTONHANDLER_DNR(uint32_t parameter) {
 void BUTTONHANDLER_DNR_HOLD(uint32_t parameter) {
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
-		SYSMENU_AUDIO_DNR_HOTKEY();
+		SYSMENU_RX_DNR_HOTKEY();
 	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
@@ -1701,7 +1701,7 @@ void BUTTONHANDLER_NB(uint32_t parameter) {
 void BUTTONHANDLER_NB_HOLD(uint32_t parameter) {
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
-		SYSMENU_AUDIO_NB_HOTKEY();
+		SYSMENU_RX_NB_HOTKEY();
 	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
@@ -2539,7 +2539,7 @@ void BUTTONHANDLER_FT8(uint32_t parameter) {
 void BUTTONHANDLER_IF(uint32_t parameter) {
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
-		SYSMENU_AUDIO_IF_HOTKEY();
+		SYSMENU_RX_IF_HOTKEY();
 	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
