@@ -3367,8 +3367,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction) {
 	if (direction > 0 || TRX.FFT_Color > 0) {
 		TRX.FFT_Color += direction;
 	}
-	if (TRX.FFT_Color > 10) {
-		TRX.FFT_Color = 10;
+	if (TRX.FFT_Color > 9) {
+		TRX.FFT_Color = 9;
 	}
 
 	FFT_Init();
@@ -3378,8 +3378,8 @@ static void SYSMENU_HANDL_SCREEN_WTF_Color(int8_t direction) {
 	if (direction > 0 || TRX.WTF_Color > 0) {
 		TRX.WTF_Color += direction;
 	}
-	if (TRX.WTF_Color > 10) {
-		TRX.WTF_Color = 10;
+	if (TRX.WTF_Color > 9) {
+		TRX.WTF_Color = 9;
 	}
 
 	FFT_Init();
