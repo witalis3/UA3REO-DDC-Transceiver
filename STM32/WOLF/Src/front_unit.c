@@ -1543,7 +1543,8 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 		IF_GAIN_mcp3008_averaged = IF_GAIN_mcp3008_averaged * 0.6f + mcp3008_value * 0.4f;
 
 		if ((!TRX.XIT_Enabled || !TRX_on_TX) && TRX.RIT_Enabled) {
-			float32_t TRX_RIT_new = (int_fast16_t)(((1023.0f - IF_GAIN_mcp3008_averaged) * TRX.RIT_INTERVAL * 2 / 1023.0f) - TRX.RIT_INTERVAL);
+			float32_t TRX_RIT_new = 512.0f - IF_GAIN_mcp3008_averaged;
+			TRX_RIT_new = ((TRX_RIT_new < 0 ? -1.0f : 1.0f) * TRX_RIT_new * TRX_RIT_new) / 261632.0f * TRX.RIT_INTERVAL; // =(1023/2)^2
 			TRX_RIT_new = roundf(roundf(TRX_RIT_new / 5.0f) * 5.0f);
 
 			if (!TRX.FineRITTune && TRX_RIT != TRX_RIT_new) {
@@ -1559,7 +1560,8 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 		}
 
 		if ((!TRX.RIT_Enabled || TRX_on_TX) && TRX.XIT_Enabled) {
-			float32_t TRX_XIT_new = (int_fast16_t)(((1023.0f - IF_GAIN_mcp3008_averaged) * TRX.XIT_INTERVAL * 2 / 1023.0f) - TRX.XIT_INTERVAL);
+			float32_t TRX_XIT_new = 512.0f - IF_GAIN_mcp3008_averaged;
+			TRX_XIT_new = ((TRX_XIT_new < 0 ? -1.0f : 1.0f) * TRX_XIT_new * TRX_XIT_new) / 261632.0f * TRX.XIT_INTERVAL; // =(1023/2)^2
 			TRX_XIT_new = roundf(roundf(TRX_XIT_new / 5.0f) * 5.0f);
 
 			if (!TRX.FineRITTune && TRX_XIT != TRX_XIT_new) {
@@ -1575,7 +1577,7 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 			}
 		}
 
-		if (!TRX.RIT_Enabled && TRX.XIT_Enabled && !TRX.FineRITTune) // Disable RIT/XIT + IF
+		if (!TRX.RIT_Enabled && !TRX.XIT_Enabled && !TRX.FineRITTune) // Disable RIT/XIT + IF
 		{
 			TRX.IF_Gain = (uint8_t)(CALIBRATE.IF_GAIN_MIN + ((1023.0f - IF_GAIN_mcp3008_averaged) * (float32_t)(CALIBRATE.IF_GAIN_MAX - CALIBRATE.IF_GAIN_MIN) / 1023.0f));
 		}
