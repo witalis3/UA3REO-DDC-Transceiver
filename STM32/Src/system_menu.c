@@ -8051,7 +8051,9 @@ bool SYSMENU_HANDL_CHECK_HAS_ATU(void) {
 #ifdef FRONTPANEL_WOLF_2
 	return true;
 #endif
-
+#ifdef FRONTPANEL_MINI
+	return true;
+#endif
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_QRP:
 		return false;

@@ -86,25 +86,11 @@
 #define ATU_MAXLENGTH 7
 #define ATU_0x0_MAXPOS B8(00000000)
 #define ATU_5x5_MAXPOS B8(00011111)
+#define ATU_6x6_MAXPOS B8(00111111)
 #define ATU_7x7_MAXPOS B8(01111111)
-static float32_t ATU_5x5_I_VALS[ATU_MAXLENGTH + 1] = {0.0, 0.1, 0.22, 0.45, 1.0, 2.2};
-static float32_t ATU_5x5_C_VALS[ATU_MAXLENGTH + 1] = {0.0, 10.0, 22.0, 47.0, 100.0, 220.0};
-static float32_t ATU_7x7_I_VALS[ATU_MAXLENGTH + 1] = {0.0, 0.05, 0.1, 0.22, 0.45, 1.0, 2.2, 4.4};
-static float32_t ATU_7x7_C_VALS[ATU_MAXLENGTH + 1] = {0.0, 10.0, 22.0, 47.0, 100.0, 220.0, 470.0, 1000.0};
-static float32_t ATU_0x0_I_VALS[ATU_MAXLENGTH + 1] = {0.0};
-static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
-#define ATU_MAXPOS                                                                    \
-	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) \
-	     ? ATU_5x5_MAXPOS                                                               \
-	     : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_WF_100D) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
-#define ATU_I_VALS                                                                    \
-	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) \
-	     ? ATU_5x5_I_VALS                                                               \
-	     : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_WF_100D) ? ATU_7x7_I_VALS : ATU_0x0_I_VALS))
-#define ATU_C_VALS                                                                    \
-	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) \
-	     ? ATU_5x5_C_VALS                                                               \
-	     : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_WF_100D) ? ATU_7x7_C_VALS : ATU_0x0_C_VALS))
+
+static float32_t ATU_I_VALS[ATU_MAXLENGTH + 1] = {0.0, 0.05, 0.1, 0.22, 0.45, 1.0, 2.2, 4.4};
+static float32_t ATU_C_VALS[ATU_MAXLENGTH + 1] = {0.0, 10.0, 22.0, 47.0, 100.0, 220.0, 470.0, 1000.0};
 
 // FRONT PANELS
 #ifdef FRONTPANEL_NONE
@@ -113,6 +99,7 @@ static float32_t ATU_0x0_C_VALS[ATU_MAXLENGTH + 1] = {0.0};
 #define FUNCBUTTONS_ON_PAGE 1
 #define FUNCBUTTONS_PAGES 1
 static char ota_config_frontpanel[] = "NONE";
+#define ATU_MAXPOS ATU_0x0_MAXPOS
 #endif
 
 #ifdef FRONTPANEL_SMALL_V1
@@ -124,6 +111,8 @@ static char ota_config_frontpanel[] = "NONE";
 #define FUNCBUTTONS_ON_PAGE 1
 #define FUNCBUTTONS_PAGES 1
 static char ota_config_frontpanel[] = "SMALL";
+#define ATU_MAXPOS \
+	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) ? ATU_5x5_MAXPOS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
 #endif
 
 #ifdef FRONTPANEL_LITE
@@ -144,6 +133,8 @@ static char ota_config_frontpanel[] = "LITE";
 #define FUNCBUTTONS_PAGES 5
 #define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 3)
 static char ota_config_frontpanel[] = "BIG";
+#define ATU_MAXPOS \
+	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) ? ATU_5x5_MAXPOS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
 #endif
 
 #ifdef FRONTPANEL_WF_100D
@@ -154,6 +145,7 @@ static char ota_config_frontpanel[] = "BIG";
 #define FUNCBUTTONS_PAGES 4
 #define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 4)
 static char ota_config_frontpanel[] = "WF_100D";
+#define ATU_MAXPOS ATU_7x7_MAXPOS
 #endif
 
 #ifdef FRONTPANEL_WOLF_2
@@ -164,6 +156,7 @@ static char ota_config_frontpanel[] = "WF_100D";
 #define FUNCBUTTONS_PAGES 4
 #define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 4)
 static char ota_config_frontpanel[] = "WOLF-2";
+#define ATU_MAXPOS ATU_7x7_MAXPOS
 #endif
 
 #ifdef FRONTPANEL_X1
@@ -174,6 +167,7 @@ static char ota_config_frontpanel[] = "WOLF-2";
 #define FUNCBUTTONS_PAGES 9
 #define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 0)
 static char ota_config_frontpanel[] = "X1";
+#define ATU_MAXPOS ATU_0x0_MAXPOS
 #endif
 
 #ifdef FRONTPANEL_MINI
@@ -183,6 +177,7 @@ static char ota_config_frontpanel[] = "X1";
 #define FUNCBUTTONS_PAGES 9
 #define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 0)
 static char ota_config_frontpanel[] = "Mini";
+#define ATU_MAXPOS ATU_6x6_MAXPOS
 #endif
 
 #ifdef FRONTPANEL_LITE_V2_MINI
@@ -192,6 +187,7 @@ static char ota_config_frontpanel[] = "Mini";
 #define FUNCBUTTONS_PAGES 8
 #define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 0)
 static char ota_config_frontpanel[] = "LiteV2-Mini";
+#define ATU_MAXPOS ATU_0x0_MAXPOS
 #endif
 
 // LCDs
