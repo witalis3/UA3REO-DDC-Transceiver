@@ -151,7 +151,7 @@ GenerateClassCluster=0
 DocumentUniqueId=JTCIORVO
 
 [Document7]
-DocumentPath=V_08.PcbDoc
+DocumentPath=PCB_FRONT.PcbDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0

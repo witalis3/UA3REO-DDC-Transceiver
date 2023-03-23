@@ -100,7 +100,7 @@ GenerateClassCluster=0
 DocumentUniqueId=SHKMBUPD
 
 [Document4]
-DocumentPath=RB_PCBv03.PcbDoc
+DocumentPath=PCB_R_Board.PcbDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
