@@ -568,7 +568,7 @@ void SELF_TEST_Draw(void) {
 		// redraw loop
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
-#if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
+#if defined(FRONTPANEL_MINI) || defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
 	// Pager
 	pos_y += margin_bottom;
 	LCDDriver_printText("Rotate ENC2", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);

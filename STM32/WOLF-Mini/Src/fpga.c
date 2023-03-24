@@ -80,6 +80,7 @@ void FPGA_Init(bool bus_test, bool firmware_test) {
 	FPGA_syncAndClockRiseFall();
 
 	// BUS TEST
+	LCD_busy = true;
 	for (uint16_t i = 0; i < 256; i++) {
 		FPGA_setBusOutput();
 		FPGA_writePacket(0);
@@ -99,9 +100,11 @@ void FPGA_Init(bool bus_test, bool firmware_test) {
 			sprintf(buff, "BUS Error: %d -> %d", i, ret);
 			FPGA_bus_test_result = false;
 			LCD_showError(buff, false);
+			LCD_busy = true;
 			HAL_Delay(300);
 		}
 	}
+	LCD_busy = false;
 
 	// GET FW VERSION
 	FPGA_setBusOutput();
@@ -302,7 +305,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 #endif
 	bitWrite(FPGA_fpgadata_out_tmp8, 2, (TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK)); // TX
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX.ADC_DITH);
-	bitWrite(FPGA_fpgadata_out_tmp8, 4, !TRX_on_RX || TRX.ADC_SHDN);
+	bitWrite(FPGA_fpgadata_out_tmp8, 4, !TRX_on_RX || TRX.ADC_SHDN); // shutdown ADC on TX
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX.ADC_RAND);
 	bitWrite(FPGA_fpgadata_out_tmp8, 6, TRX.ADC_PGA);
 	bitWrite(FPGA_fpgadata_out_tmp8, 7, TRX_on_RX && TRX.ADC_Driver);
@@ -462,7 +465,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	FPGA_clockFall();
 
 	// STAGE 20
-	// OUT DAC/DCDC SETTINGS
+	// OUT DAC/DCDC/SAMPLERATE SETTINGS
 	FPGA_fpgadata_out_tmp8 = 0;
 	bitWrite(FPGA_fpgadata_out_tmp8, 0, TRX_DAC_DIV0);
 	bitWrite(FPGA_fpgadata_out_tmp8, 1, TRX_DAC_DIV1);
@@ -695,7 +698,7 @@ static inline void FPGA_fpgadata_getiq(void) {
 		FPGA_Audio_RXBuffer_Index = 0;
 		if (FPGA_RX_buffer_ready) {
 			FPGA_Buffer_underrun = true;
-			// println("fpga overrun");
+			// println("fpga RX underrun");
 		} else {
 			FPGA_RX_buffer_ready = true;
 			FPGA_RX_Buffer_Current = !FPGA_RX_Buffer_Current;
@@ -772,7 +775,7 @@ static inline void FPGA_fpgadata_sendiq(bool clean) {
 	FPGA_samples++;
 
 	if (!clean) {
-		if (!TRX_TX_IQ_swap) {
+		if (TRX_TX_IQ_swap) {
 			FPGA_fpgadata_out_i_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_I[FPGA_Audio_TXBuffer_Index] * 8388607.0f); // float -> int24
 			FPGA_fpgadata_out_q_tmp32 = (int32_t)((float32_t)FPGA_Audio_SendBuffer_Q[FPGA_Audio_TXBuffer_Index] * 8388607.0f);
 		} else {
@@ -816,6 +819,7 @@ static inline void FPGA_fpgadata_sendiq(bool clean) {
 		if (Processor_NeedTXBuffer) {
 			FPGA_Buffer_underrun = true;
 			FPGA_Audio_TXBuffer_Index--;
+			// println("fpga TX underrun 1");
 		} else {
 			FPGA_Audio_TXBuffer_Index = 0;
 			FPGA_Audio_Buffer_State = true;
@@ -825,6 +829,7 @@ static inline void FPGA_fpgadata_sendiq(bool clean) {
 		if (Processor_NeedTXBuffer) {
 			FPGA_Buffer_underrun = true;
 			FPGA_Audio_TXBuffer_Index--;
+			// println("fpga TX underrun 2");
 		} else {
 			FPGA_Audio_Buffer_State = false;
 			Processor_NeedTXBuffer = true;
