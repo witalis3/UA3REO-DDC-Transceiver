@@ -20,7 +20,7 @@
 #define I2C_DELAY                                   \
 	for (uint32_t wait_i = 0; wait_i < 400; wait_i++) \
 		__asm("nop");
-#define I2C_OUTPUT_MODE GPIO_MODE_OUTPUT_OD
+#define I2C_OUTPUT_MODE GPIO_MODE_OUTPUT_PP
 #define I2C_INPUT_MODE GPIO_MODE_INPUT
 #define I2C_PULLS GPIO_PULLUP
 #define I2C_GPIO_SPEED GPIO_SPEED_FREQ_LOW
