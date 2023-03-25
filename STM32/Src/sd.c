@@ -2706,7 +2706,7 @@ static void SDCOMM_IMPORT_SETT_handler(void) {
 	LCD_showInfo("Importing...", false);
 	if (f_open(&File, "wolf.ini", FA_READ) == FR_OK) {
 		uint32_t bytesread = 1;
-		uint32_t file_offset = 1;
+		uint32_t file_offset = 0;
 		while (bytesread != 0) {
 			dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 			FRESULT res = f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesread);
