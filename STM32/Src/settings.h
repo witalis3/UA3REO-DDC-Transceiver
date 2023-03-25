@@ -123,6 +123,7 @@ static char ota_config_frontpanel[] = "SMALL";
 #define FUNCBUTTONS_PAGES 7
 #define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 0)
 static char ota_config_frontpanel[] = "LITE";
+#define ATU_MAXPOS ATU_0x0_MAXPOS
 #endif
 
 #ifdef FRONTPANEL_BIG_V1

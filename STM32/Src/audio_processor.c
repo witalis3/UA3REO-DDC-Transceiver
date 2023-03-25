@@ -1045,9 +1045,13 @@ void processTxAudio(void) {
 		// Send to Codec
 		if (!LISTEN_RX_AUDIO_ON_TX) {
 			float32_t volume_gain_tx = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);
+#if HRDW_HAS_SD
 			if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess) {
 				volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
 			}
+#else
+			volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+#endif
 
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 				float32_t sample = APROC_Audio_Buffer_TX_I[i] * volume_gain_tx;
