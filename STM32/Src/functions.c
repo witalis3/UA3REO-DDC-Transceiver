@@ -277,16 +277,16 @@ float32_t rate2dbP(float32_t i) // from times to decibels (for power)
 	return 10 * log10f_fast(i);
 }
 
-#define VOLUME_LOW_DB (-40.0f)
+#define VOLUME_LOW_DB (-60.0f)
 #define VOLUME_EPSILON powf(10.0f, (VOLUME_LOW_DB / 20.0f))
 float32_t volume2rate(float32_t i) // from the position of the volume knob to the gain
 {
-	float32_t mute_zone = 15.0f;
+	float32_t mute_zone = MAX_VOLUME_VALUE * 0.01f;
 	if (MAX_VOLUME_VALUE == 100.0f) {
 		mute_zone = 1.0f;
 	}
 
-	if (i == 0.0f) {
+	if (i <= 0.0f) {
 		return 0.0f;
 	}
 

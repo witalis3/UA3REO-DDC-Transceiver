@@ -807,10 +807,10 @@ void FRONTPANEL_Process(void) {
 void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value) {
 	// AF_GAIN
 	if (button->type == FUNIT_CTRL_AF_GAIN) {
-		TRX.Volume = (uint16_t)(MAX_VOLUME_VALUE - mcp3008_value);
-		if (TRX.Volume < 50) {
-			TRX.Volume = 0;
-		}
+		static float32_t AF_VOLUME_mcp3008_averaged = 0.0f;
+		AF_VOLUME_mcp3008_averaged = AF_VOLUME_mcp3008_averaged * 0.6f + mcp3008_value * 0.4f;
+
+		TRX.Volume = (uint16_t)(MAX_VOLUME_VALUE - AF_VOLUME_mcp3008_averaged);
 	}
 
 	// ENC2_SW
