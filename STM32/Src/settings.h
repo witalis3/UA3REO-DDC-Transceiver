@@ -252,12 +252,19 @@ static char ota_config_lcd[] = "ST7735S";
 #define FT8_SUPPORT false
 #endif
 #endif
+
 #if defined(LCD_RA8875)
+
 #ifdef FRONTPANEL_WF_100D
 static char ota_config_lcd[] = "WF-100D";
 #else
+#ifdef FRONTPANEL_WOLF_2
+static char ota_config_lcd[] = "WOLF-2";
+#else
 static char ota_config_lcd[] = "RA8875";
 #endif
+#endif
+
 #ifdef STM32H743xx
 #define FT8_SUPPORT true
 #endif
