@@ -4703,7 +4703,7 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 static void SYSMENU_HANDL_SUPPORT(int8_t direction) {
 	sysmenu_infowindow_opened = true;
 	LCDDriver_Fill(BG_COLOR);
-	LCDDriver_printText("https://ua3reo.ru/support/", 10, 10, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_printText("ua3reo.ru/support/", 10, 10, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 }
 
 // Back to prev menu
