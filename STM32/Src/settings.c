@@ -1002,7 +1002,7 @@ void SaveSettings(void) {
 }
 
 void SaveSettingsToEEPROM(void) {
-	if (EEPROM_Busy) {
+	if (EEPROM_Busy || HRDW_SPI_Locked) {
 		return;
 	}
 	EEPROM_PowerUp();
@@ -1043,7 +1043,7 @@ void SaveSettingsToEEPROM(void) {
 }
 
 void SaveCalibration(void) {
-	if (EEPROM_Busy) {
+	if (EEPROM_Busy || HRDW_SPI_Locked) {
 		return;
 	}
 	EEPROM_PowerUp();
@@ -1086,7 +1086,7 @@ void SaveCalibration(void) {
 }
 
 void SaveWiFiSettings(void) {
-	if (EEPROM_Busy) {
+	if (EEPROM_Busy || HRDW_SPI_Locked) {
 		return;
 	}
 	EEPROM_PowerUp();
