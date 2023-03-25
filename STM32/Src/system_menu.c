@@ -543,7 +543,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Callsign", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCallsign},
     {"Channel Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ChannelMode, SYSMENU_HANDL_TRX_ChannelMode},
 #if HRDW_HAS_USB_DEBUG
-    {"Debug console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH", "CAT"}},
+    {"Debug console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, {"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH", "CAT", "I2C"}},
 #endif
     {"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
 #ifdef LAY_320x240
@@ -1460,8 +1460,8 @@ static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction) {
 	if (direction > 0 || TRX.Debug_Type > 0) {
 		TRX.Debug_Type += direction;
 	}
-	if (TRX.Debug_Type > 5) {
-		TRX.Debug_Type = 5;
+	if (TRX.Debug_Type > 6) {
+		TRX.Debug_Type = 6;
 	}
 }
 

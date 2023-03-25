@@ -19,11 +19,15 @@ static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value) {
 		st = i2c_endTransmission(&I2C_CODEC);
 		if (st != 0) {
 			repeats++;
-			// println("I2C error, send to register: ", reg, " value: ", value, " err_code: ", st, " repeat: ", repeats);
+			if (TRX.Debug_Type == TRX_DEBUG_I2C) {
+				println("I2C codec error, send to register: ", reg, " value: ", value, " err_code: ", st, " repeat: ", repeats);
+			}
 		}
 		HAL_Delay(1);
 	}
-	// println("I2C end transmit, status: ", st);
+	if (TRX.Debug_Type == TRX_DEBUG_I2C) {
+		println("I2C codec end transmit, status: ", st);
+	}
 	return st;
 }
 

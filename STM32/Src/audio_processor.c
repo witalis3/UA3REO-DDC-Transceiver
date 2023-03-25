@@ -1048,7 +1048,7 @@ void processTxAudio(void) {
 			if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess) {
 				volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
 			}
-			
+
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 				float32_t sample = APROC_Audio_Buffer_TX_I[i] * volume_gain_tx;
 				arm_float_to_q31(&sample, &APROC_AudioBuffer_out[i * 2], 1);

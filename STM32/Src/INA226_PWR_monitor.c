@@ -16,12 +16,16 @@ uint16_t INA226_Read2Byte(uint8_t reg_addr) {
 	i2c_beginTransmission_u8(&I2C_TOUCHPAD, INA226_ADDR);
 	i2c_write_u8(&I2C_TOUCHPAD, reg_addr);
 	uint8_t res = i2c_endTransmission(&I2C_TOUCHPAD);
+
 	if (res == 0) {
 		if (i2c_beginReceive_u8(&I2C_TOUCHPAD, INA226_ADDR)) {
 			reg_data = i2c_Read_Word(&I2C_TOUCHPAD);
 			i2c_stop(&I2C_TOUCHPAD);
 		}
+	} else if (TRX.Debug_Type == TRX_DEBUG_I2C) {
+		println("I2C INA226 error: ", res);
 	}
+
 	return reg_data;
 #else
 	return 0;

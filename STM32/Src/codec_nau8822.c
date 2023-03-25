@@ -11,15 +11,21 @@
 static uint8_t Codec_on_board(uint8_t reg, uint8_t value) {
 	uint8_t st = 2;
 	uint8_t repeats = 0;
-	while (st != 0 && repeats < 3) {
+	while (st != 0 && repeats < 10) {
 		i2c_beginTransmission_u8(&I2C_CODEC, B8(0011010)); // I2C_ADDRESS_WM8731 00110100
 		i2c_write_u8(&I2C_CODEC, reg);                     // MSB
 		i2c_write_u8(&I2C_CODEC, value);                   // MSB
 		st = i2c_endTransmission(&I2C_CODEC);
 		if (st != 0) {
 			repeats++;
+			if (TRX.Debug_Type == TRX_DEBUG_I2C) {
+				println("I2C codec error, send to register: ", reg, " value: ", value, " err_code: ", st, " repeat: ", repeats);
+			}
 		}
 		HAL_Delay(1);
+	}
+	if (TRX.Debug_Type == TRX_DEBUG_I2C) {
+		println("I2C codec end transmit, status: ", st);
 	}
 	return st;
 }

@@ -25,7 +25,9 @@ uint8_t GT911_WR_Reg(uint16_t reg, uint8_t *buf, uint8_t len) {
 		i2c_write_u8(&I2C_TOUCHPAD, buf[i]);
 	}
 	ret = i2c_endTransmission(&I2C_TOUCHPAD);
-	// if(ret != SUCCESS) println("GT911 Write error: ", ret);
+	if (ret != SUCCESS && TRX.Debug_Type == TRX_DEBUG_I2C) {
+		println("I2C GT911 Write error: ", ret);
+	}
 	return ret;
 }
 
