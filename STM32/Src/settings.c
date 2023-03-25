@@ -268,7 +268,7 @@ void LoadSettings(bool clear) {
 		TRX.AMFM_LPF_Stages = 3;                                       // stages for NFM LPF filter
 		TRX.Beeper = true;                                             // Keyboard beeper
 		TRX.CTCSS_Freq = 0;                                            // CTCSS FM Frequency
-		TRX.SELFHEAR_Volume = 15;                                      // Selfhearing volume
+		TRX.SELFHEAR_Volume = 40;                                      // Selfhearing volume
 		TRX.FM_Stereo = false;                                         // Stereo FM Mode
 		TRX.VAD_THRESHOLD = 150;                                       // Threshold of SSB/SCAN squelch
 		TRX.VOX = false;                                               // TX by voice activation

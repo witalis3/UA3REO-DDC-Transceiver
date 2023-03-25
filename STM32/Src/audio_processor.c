@@ -1011,9 +1011,10 @@ void processTxAudio(void) {
 	}
 #endif
 
-// Loopback/DIGI mode self-hearing
+	// Loopback/DIGI mode self-hearing
+	bool has_self_hearing_data = false;
 #if HRDW_HAS_SD
-	if ((!SD_RecordInProcess && mode == TRX_MODE_LOOPBACK) || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY)
+	if ((!SD_RecordInProcess && mode == TRX_MODE_LOOPBACK) || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY || SD_PlayCQMessageInProcess || SD_PlayInProcess)
 #else
 	if (mode == TRX_MODE_LOOPBACK || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY)
 #endif
@@ -1043,7 +1044,11 @@ void processTxAudio(void) {
 
 		// Send to Codec
 		if (!LISTEN_RX_AUDIO_ON_TX) {
-			float32_t volume_gain_tx = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE) * volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+			float32_t volume_gain_tx = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);
+			if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess) {
+				volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+			}
+			
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 				float32_t sample = APROC_Audio_Buffer_TX_I[i] * volume_gain_tx;
 				arm_float_to_q31(&sample, &APROC_AudioBuffer_out[i * 2], 1);
@@ -1051,6 +1056,7 @@ void processTxAudio(void) {
 				APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];                    // right channel
 			}
 
+			has_self_hearing_data = true;
 			Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
 			if (start_CODEC_DMA_state) // compleate
 			{
@@ -1093,7 +1099,11 @@ void processTxAudio(void) {
 				}
 			}
 			Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
-		} else if (TRX.CW_SelfHear && mode != TRX_MODE_DIGI_L && mode != TRX_MODE_DIGI_U && mode != TRX_MODE_RTTY && mode != TRX_MODE_LOOPBACK) {
+			has_self_hearing_data = true;
+		}
+
+		// clean RX codec buffer
+		if (!has_self_hearing_data) {
 			dma_memset(CODEC_Audio_Buffer_RX, 0x00, sizeof CODEC_Audio_Buffer_RX);
 			Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
 		}
