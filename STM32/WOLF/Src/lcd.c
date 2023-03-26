@@ -1606,7 +1606,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 
 			// FWD
 			if (TRX_PWR_Forward_SMOOTHED >= 100.0f) {
-				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Forward_SMOOTHED);
+				sprintf(ctmp, "%dW  ", (uint16_t)TRX_PWR_Forward_SMOOTHED);
 			} else if (TRX_PWR_Forward_SMOOTHED >= 10.0f) {
 				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward_SMOOTHED);
 			} else {
@@ -1980,6 +1980,7 @@ bool LCD_doEvents(void) {
 		LCD_displayStatusInfoBar(false);
 	}
 	if (LCD_UpdateQuery.SystemMenuRedraw) {
+		TouchpadButton_handlers_count = 0;
 		SYSMENU_drawSystemMenu(true, false);
 	}
 	if (LCD_UpdateQuery.SystemMenu) {
@@ -2213,6 +2214,18 @@ void LCD_processTouch(uint16_t x, uint16_t y) {
 	}
 
 	if (!LCD_screenKeyboardOpened && LCD_systemMenuOpened) {
+		//try to find system menu buttons
+		for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++) {
+			if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y)) // touch height
+			{
+				if (TouchpadButton_handlers[i].clickHandler != NULL) {
+					TouchpadButton_handlers[i].clickHandler(TouchpadButton_handlers[i].parameter);
+					return;
+				}
+			}
+		}
+		
+		// not found, close all
 		SYSMENU_eventCloseAllSystemMenu();
 		LCD_redraw(false);
 		return;
@@ -2395,7 +2408,7 @@ void LCD_processTouch(uint16_t x, uint16_t y) {
 		}
 	}
 
-	// buttons
+	// buttons main zone
 	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++) {
 		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y)) // touch height
 		{

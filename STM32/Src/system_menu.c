@@ -7835,6 +7835,14 @@ void SYSMENU_redrawCurrentItem(bool redrawAsUnselected) {
 	drawSystemMenuElement(&sysmenu_handlers_selected[getCurrentMenuIndex()], true, redrawAsUnselected);
 }
 
+static void BUTTONHANDLER_CHOOSE_MENU_ELEMENT(uint32_t parameter) {
+	SYSMENU_redrawCurrentItem(true);
+	setCurrentMenuIndex(parameter);
+	sysmenu_item_selected_by_enc2 = false;
+	SYSMENU_redrawCurrentItem(false);
+	SYSMENU_eventSecEncoderClickSystemMenu(); // emulate enc2 click after touch
+}
+
 static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement, bool onlyVal, bool redrawAsUnselected) {
 	if (menuElement->checkVisibleHandler != NULL && !menuElement->checkVisibleHandler()) {
 		return;
@@ -7942,10 +7950,13 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 	uint8_t x = sysmenu_draw_index % sysmenu_button_in_line;
 	uint8_t y = sysmenu_draw_index / sysmenu_button_in_line;
 	bool selected = SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) == sysmenu_draw_index;
+	uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(getCurrentMenuIndex());
+	uint16_t elementIndex = current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE + sysmenu_draw_index;
 
 	printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN + x * (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN),
 	                      LAYOUT->SYSMENU_BUTTON_MARGIN + y * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN), LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT,
-	                      menuElement->title, ctmp, !redrawAsUnselected && selected, !redrawAsUnselected && sysmenu_item_selected_by_enc2, 0, NULL, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	                      menuElement->title, ctmp, !redrawAsUnselected && selected, !redrawAsUnselected && sysmenu_item_selected_by_enc2, elementIndex, BUTTONHANDLER_CHOOSE_MENU_ELEMENT,
+	                      BUTTONHANDLER_CHOOSE_MENU_ELEMENT, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 
 	sysmenu_draw_index++;
 #else // old style
