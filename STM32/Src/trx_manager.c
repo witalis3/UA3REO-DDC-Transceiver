@@ -2302,6 +2302,18 @@ void BUTTONHANDLER_LEFT_ARR(uint32_t parameter) {
 		TRX.FRONTPANEL_funcbuttons_page--;
 	}
 
+	// check page fully hidden
+	bool allButtonsHidden = true;
+	for (uint8_t i = 0; i < FUNCBUTTONS_ON_PAGE; i++) {
+		uint16_t menuPosition = TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i;
+		if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].clickHandler != NULL || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].holdHandler != NULL) {
+			allButtonsHidden = false;
+		}
+	}
+	if (allButtonsHidden) {
+		BUTTONHANDLER_LEFT_ARR(parameter);
+	}
+
 	LCD_UpdateQuery.BottomButtons = true;
 	LCD_UpdateQuery.TopButtons = true;
 }
@@ -2311,6 +2323,18 @@ void BUTTONHANDLER_RIGHT_ARR(uint32_t parameter) {
 		TRX.FRONTPANEL_funcbuttons_page = 0;
 	} else {
 		TRX.FRONTPANEL_funcbuttons_page++;
+	}
+
+	// check page fully hidden
+	bool allButtonsHidden = true;
+	for (uint8_t i = 0; i < FUNCBUTTONS_ON_PAGE; i++) {
+		uint16_t menuPosition = TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i;
+		if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].clickHandler != NULL || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].holdHandler != NULL) {
+			allButtonsHidden = false;
+		}
+	}
+	if (allButtonsHidden) {
+		BUTTONHANDLER_RIGHT_ARR(parameter);
 	}
 
 	LCD_UpdateQuery.BottomButtons = true;
