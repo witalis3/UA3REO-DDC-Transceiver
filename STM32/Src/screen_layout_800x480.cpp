@@ -202,7 +202,7 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] = {
         .SYSMENU_X2 = 400,
         .SYSMENU_W = 458,
         .SYSMENU_ITEM_HEIGHT = 18,
-        .SYSMENU_MAX_ITEMS_ON_PAGE = 24,
+        .SYSMENU_MAX_ITEMS_ON_PAGE = 22,
         // Touch system menu
         .SYSMENU_BUTTON_HEIGHT = 64,
         .SYSMENU_BUTTON_WIDTH = 184,

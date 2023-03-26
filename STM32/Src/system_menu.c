@@ -7954,13 +7954,19 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 
 #if SYSMENU_TOUCHPAD_STYLE
 	uint8_t sysmenu_button_in_line = LCD_WIDTH / (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN);
+	uint8_t sysmenu_button_lines = LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE / sysmenu_button_in_line;
 	uint8_t x = sysmenu_draw_index % sysmenu_button_in_line;
 	uint8_t y = sysmenu_draw_index / sysmenu_button_in_line;
 	bool selected = SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) == sysmenu_draw_index;
 	uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(getCurrentMenuIndex());
 	uint16_t elementIndex = current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE + sysmenu_draw_index;
 
-	printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN + x * (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN),
+	uint16_t additionalLeftMargin = 0;
+	if (y == sysmenu_button_lines) {
+		additionalLeftMargin += LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN;
+	}
+
+	printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN + x * (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN) + additionalLeftMargin,
 	                      LAYOUT->SYSMENU_BUTTON_MARGIN + y * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN), LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT,
 	                      menuElement->title, ctmp, !redrawAsUnselected && selected, !redrawAsUnselected && sysmenu_item_selected_by_enc2, elementIndex, BUTTONHANDLER_CHOOSE_MENU_ELEMENT,
 	                      BUTTONHANDLER_CHOOSE_MENU_ELEMENT, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
