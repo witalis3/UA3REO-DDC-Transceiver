@@ -1250,7 +1250,9 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		if (!res) {
 			EEPROM_Enabled = false;
 			println("[ERR] EEPROM not found...");
-			LCD_showError("EEPROM init error", true);
+			if (!TRX_Inited) {
+				LCD_showError("EEPROM init error", true);
+			}
 			HRDW_SPI_Locked = false;
 			return true;
 		}
@@ -1275,7 +1277,9 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		if (!res) {
 			EEPROM_Enabled = false;
 			println("[ERR] EEPROM not found...");
-			LCD_showError("EEPROM init error", true);
+			if (!TRX_Inited) {
+				LCD_showError("EEPROM init error", true);
+			}
 			HRDW_SPI_Locked = false;
 			return true;
 		}
