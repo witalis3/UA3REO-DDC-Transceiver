@@ -1664,6 +1664,9 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	case ENC_FUNC_SET_VOLUME:
 		strcat(buff, " VOL ");
 		break;
+	case ENC_FUNC_SET_MEM:
+		strcat(buff, " MEM ");
+		break;
 	case ENC_FUNC_SET_IF:
 		break;
 	}

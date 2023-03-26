@@ -848,6 +848,28 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 		LCD_UpdateQuery.StatusInfoBarRedraw = true;
 	}
+	
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) { // mem channels select
+		int8_t currentMemIndex = 0;
+		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
+			if (CurrentVFO->Freq == CALIBRATE.MEMORY_CHANNELS[i].Freq) {
+				currentMemIndex = i;
+			}
+		}
+		
+		currentMemIndex += direction * 1;
+		if (currentMemIndex < 0 ) currentMemIndex = MEMORY_CHANNELS_COUNT - 1;
+		if (currentMemIndex >= MEMORY_CHANNELS_COUNT ) currentMemIndex = 0;
+		
+		while (CALIBRATE.MEMORY_CHANNELS[currentMemIndex].Freq == 0 && currentMemIndex < MEMORY_CHANNELS_COUNT  && currentMemIndex > 0) {
+			currentMemIndex += direction * 1;
+		}
+		
+		if (currentMemIndex < 0 ) currentMemIndex = 0;
+		if (currentMemIndex >= MEMORY_CHANNELS_COUNT ) currentMemIndex = 0;
+		
+		BUTTONHANDLER_SelectMemoryChannels(currentMemIndex);
+	}
 }
 
 static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
@@ -877,8 +899,25 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && ((CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM) || !CurrentVFO->SQL)) { // nothing to SQL tune
 			TRX.ENC2_func_mode++;
 		}
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_VOLUME) { // af adjust disabled
+			TRX.ENC2_func_mode++;
+		}
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_IF) { // if adjust disabled
+			TRX.ENC2_func_mode++;
+		}
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) { // mem channels adjust
+			bool has_mem_channels = false;
+			for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
+				if (CALIBRATE.MEMORY_CHANNELS[i].Freq > 0) {
+					has_mem_channels = true;
+				}
+			}
+			if (!has_mem_channels) {
+				TRX.ENC2_func_mode++;
+			}
+		}
 
-		if (TRX.ENC2_func_mode >= ENC_FUNC_SET_VOLUME) {
+		if (TRX.ENC2_func_mode > ENC_FUNC_SET_MEM) {
 			TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 		}
 
@@ -902,6 +941,9 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL) {
 			LCD_showTooltip("SET SQL");
+		}
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
+			LCD_showTooltip("MEM CHANNELS");
 		}
 	} else {
 		if (LCD_systemMenuOpened) {
@@ -1083,6 +1125,17 @@ void FRONTPANEL_ENC2SW_validate() {
 	}
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL && ((CurrentVFO->Mode != TRX_MODE_NFM && CurrentVFO->Mode != TRX_MODE_WFM) || !CurrentVFO->SQL)) { // nothing to SQL tune
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+	}
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) { // mem channels adjust
+		bool has_mem_channels = false;
+		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
+			if (CALIBRATE.MEMORY_CHANNELS[i].Freq > 0) {
+				has_mem_channels = true;
+			}
+		}
+		if (!has_mem_channels) {
+			TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+		}
 	}
 }
 
