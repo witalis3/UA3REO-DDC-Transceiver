@@ -64,7 +64,9 @@ extern void LCD_showRFPowerWindow(void);
 extern void LCD_showManualFreqWindow(bool secondary_vfo);
 extern void LCD_printKeyboard(void (*keyboardHandler)(char *string, uint32_t max_size, char entered), char *string, uint32_t max_size, bool lowcase);
 extern void LCD_hideKeyboard(void);
+#if HAS_TOUCHPAD
 extern void LCD_cleanTouchpadButtons(void);
+#endif
 
 #if (defined(LAY_800x480))
 void printSystemMenuButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, char *value, bool selected, bool active, uint32_t parameter,

@@ -1460,7 +1460,7 @@ bool LCD_doEvents(void) {
 		SYSMENU_drawSystemMenu(true, false);
 	}
 	if (LCD_UpdateQuery.SystemMenuCurrent) {
-		SYSMENU_redrawCurrentItem();
+		SYSMENU_redrawCurrentItem(false);
 		LCD_UpdateQuery.SystemMenuCurrent = false;
 	}
 	if (LCD_UpdateQuery.TextBar) {

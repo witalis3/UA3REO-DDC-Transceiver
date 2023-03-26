@@ -4645,7 +4645,9 @@ static void SYSMENU_HANDL_OTA_Update(int8_t direction) {
 // SYSTEM INFO
 
 static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
+#if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
+#endif
 	sysmenu_infowindow_opened = true;
 	sysmenu_sysinfo_opened = true;
 	if (direction != 0) {
@@ -4689,7 +4691,9 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 // Support project
 
 static void SYSMENU_HANDL_SUPPORT(int8_t direction) {
+#if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
+#endif
 	sysmenu_infowindow_opened = true;
 	LCDDriver_Fill(BG_COLOR);
 	LCDDriver_printText("ua3reo.ru/support/", 10, 10, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
@@ -6898,7 +6902,9 @@ static void SYSMENU_HANDL_WSPR_BAND2(int8_t direction) {
 #if HRDW_HAS_WIFI
 // RDA STATS
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction) {
+#if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
+#endif
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getRDA();
@@ -6906,7 +6912,9 @@ static void SYSMENU_HANDL_RDA_STATS(int8_t direction) {
 
 // DX_CLUSTER
 static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction) {
+#if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
+#endif
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getDXCluster();
@@ -6914,7 +6922,9 @@ static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction) {
 
 // PROPAGINATION
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction) {
+#if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
+#endif
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getPropagination();
@@ -6922,7 +6932,9 @@ static void SYSMENU_HANDL_PROPAGINATION(int8_t direction) {
 
 // DAY/NIGHT MAP
 static void SYSMENU_HANDL_DAYNIGHT_MAP(int8_t direction) {
+#if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
+#endif
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getDayNightMap();
@@ -6930,7 +6942,9 @@ static void SYSMENU_HANDL_DAYNIGHT_MAP(int8_t direction) {
 
 // IONOGRAM
 static void SYSMENU_HANDL_IONOGRAM(int8_t direction) {
+#if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
+#endif
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getIonogram();
@@ -6938,7 +6952,9 @@ static void SYSMENU_HANDL_IONOGRAM(int8_t direction) {
 
 // RECORD CQ MESSAGE
 static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction) {
+#if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
+#endif
 	sysmenu_filemanager_opened = true;
 	FILEMANAGER_StartRecCQWav();
 }
@@ -6946,7 +6962,9 @@ static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction) {
 
 // LOCATOR INFO
 static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction) {
+#if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
+#endif
 	SYSMENU_locator_info_opened = true;
 	LOCINFO_Start();
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -6954,7 +6972,9 @@ static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction) {
 
 // CALLSIGN INFO
 static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction) {
+#if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
+#endif
 	SYSMENU_callsign_info_opened = true;
 	CALLSIGN_INFO_Start();
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -6962,7 +6982,9 @@ static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction) {
 
 // SELF TEST
 static void SYSMENU_HANDL_SELF_TEST(int8_t direction) {
+#if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
+#endif
 	SYSMENU_selftest_opened = true;
 	SELF_TEST_Start();
 	LCD_UpdateQuery.SystemMenuRedraw = true;
