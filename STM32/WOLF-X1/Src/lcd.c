@@ -121,15 +121,22 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 
 	uint16_t curr_x = 0;
 	for (uint8_t i = 0; i < 4; i++) {
+		uint16_t menuPosition = TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i;
+
 		bool enabled = false;
 
-		if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].checkBool != NULL) {
-			if ((uint8_t)*PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].checkBool == 1) {
+		if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].checkBool != NULL) {
+			if ((uint8_t)*PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].checkBool == 1) {
 				enabled = true;
 			}
 		}
 
-		if (strcmp((char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name, "DNR") == 0) {
+		bool dummyButton = false;
+		if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].clickHandler == NULL && PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].holdHandler == NULL) {
+			dummyButton = true;
+		}
+
+		if (strcmp((char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].name, "DNR") == 0) {
 			if (CurrentVFO->DNR_Type == 0) {
 				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
 				          false, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
@@ -143,9 +150,13 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 				          true, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
 			}
 		} else {
-			printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT,
-			          (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name, COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
-			          COLOR->BUTTON_INACTIVE_TEXT, enabled, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+			if (!dummyButton) {
+				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].name,
+				          COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, enabled, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+			} else {
+				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, " ", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+				          false, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+			}
 		}
 		curr_x += LAYOUT->TOPBUTTONS_WIDTH + LAYOUT->TOPBUTTONS_LR_MARGIN;
 	}

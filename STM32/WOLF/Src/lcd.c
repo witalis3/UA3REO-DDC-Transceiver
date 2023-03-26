@@ -307,12 +307,18 @@ static void LCD_displayBottomButtons(bool redraw) {
 	}
 
 	for (uint8_t i = 0; i < FUNCBUTTONS_ON_PAGE; i++) {
-		bool enabled = false;
+		uint16_t menuPosition = TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i;
 
-		if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].checkBool != NULL) {
-			if ((uint8_t)*PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].checkBool == 1) {
+		bool enabled = false;
+		if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].checkBool != NULL) {
+			if ((uint8_t)*PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].checkBool == 1) {
 				enabled = true;
 			}
+		}
+
+		bool dummyButton = false;
+		if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].clickHandler == NULL && PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].holdHandler == NULL) {
+			dummyButton = true;
 		}
 
 		uint16_t width = LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH;
@@ -323,11 +329,15 @@ static void LCD_displayBottomButtons(bool redraw) {
 			width += 1;
 		}
 
-		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, width, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT,
-		            (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].name, enabled, false, false,
-		            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].parameter,
-		            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].clickHandler,
-		            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].holdHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		if (!dummyButton) {
+			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, width, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].name,
+			            enabled, false, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].parameter,
+			            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].holdHandler,
+			            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		} else {
+			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, width, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, " ", false, false, false, 0, NULL, NULL, COLOR->BUTTON_TEXT,
+			            COLOR->BUTTON_INACTIVE_TEXT);
+		}
 		curr_x += width;
 	}
 
