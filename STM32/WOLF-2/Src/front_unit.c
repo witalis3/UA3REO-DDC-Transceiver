@@ -848,7 +848,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 		LCD_UpdateQuery.StatusInfoBarRedraw = true;
 	}
-	
+
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) { // mem channels select
 		int8_t currentMemIndex = 0;
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
@@ -856,18 +856,26 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				currentMemIndex = i;
 			}
 		}
-		
+
 		currentMemIndex += direction * 1;
-		if (currentMemIndex < 0 ) currentMemIndex = MEMORY_CHANNELS_COUNT - 1;
-		if (currentMemIndex >= MEMORY_CHANNELS_COUNT ) currentMemIndex = 0;
-		
-		while (CALIBRATE.MEMORY_CHANNELS[currentMemIndex].Freq == 0 && currentMemIndex < MEMORY_CHANNELS_COUNT  && currentMemIndex > 0) {
+		if (currentMemIndex < 0) {
+			currentMemIndex = MEMORY_CHANNELS_COUNT - 1;
+		}
+		if (currentMemIndex >= MEMORY_CHANNELS_COUNT) {
+			currentMemIndex = 0;
+		}
+
+		while (CALIBRATE.MEMORY_CHANNELS[currentMemIndex].Freq == 0 && currentMemIndex < MEMORY_CHANNELS_COUNT && currentMemIndex > 0) {
 			currentMemIndex += direction * 1;
 		}
-		
-		if (currentMemIndex < 0 ) currentMemIndex = 0;
-		if (currentMemIndex >= MEMORY_CHANNELS_COUNT ) currentMemIndex = 0;
-		
+
+		if (currentMemIndex < 0) {
+			currentMemIndex = 0;
+		}
+		if (currentMemIndex >= MEMORY_CHANNELS_COUNT) {
+			currentMemIndex = 0;
+		}
+
 		BUTTONHANDLER_SelectMemoryChannels(currentMemIndex);
 	}
 }
