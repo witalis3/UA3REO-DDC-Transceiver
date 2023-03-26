@@ -68,10 +68,10 @@ extern void SYSMENU_eventCloseSystemMenu(void);
 extern void SYSMENU_eventCloseAllSystemMenu(void);
 extern bool SYSMENU_spectrum_opened;
 extern bool SYSMENU_hiddenmenu_enabled;
+
 extern void SYSMENU_TRX_STEP_HOTKEY(void);
 extern void SYSMENU_CW_WPM_HOTKEY(void);
 extern void SYSMENU_CW_KEYER_HOTKEY(void);
-;
 extern void SYSMENU_FILTER_BW_SSB_HOTKEY(void);
 extern void SYSMENU_FILTER_BW_CW_HOTKEY(void);
 extern void SYSMENU_FILTER_BW_AM_HOTKEY(void);
@@ -90,6 +90,8 @@ extern void SYSMEUN_WIFI_HOTKEY(void);
 extern void SYSMENU_SERVICE_FT8_HOTKEY(void);
 extern void SYSMEUN_SD_HOTKEY(void);
 extern void SYSMENU_SD_FILEMANAGER_HOTKEY(void);
+
+extern void SYSMENU_HANDL_Back(int8_t direction);
 extern void SYSMENU_HANDL_SERVICESMENU(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_SSB_HPF_RX_pass(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_SSB_HPF_TX_pass(int8_t direction);

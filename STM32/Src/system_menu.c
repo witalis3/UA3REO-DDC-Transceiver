@@ -278,7 +278,6 @@ static void SYSMENU_HANDL_OTA_Update(int8_t direction);
 #endif
 static void SYSMENU_HANDL_SYSINFO(int8_t direction);
 static void SYSMENU_HANDL_SUPPORT(int8_t direction);
-static void SYSMENU_HANDL_Back(int8_t direction);
 
 static void SYSMENU_HANDL_CALIB_ALC_Port_Enabled(int8_t direction);
 static void SYSMENU_HANDL_CALIB_AM_MODULATION_INDEX(int8_t direction);
@@ -622,7 +621,7 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 #ifdef LAY_320x240
     {"AGC Gain tr, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_RX_AGC_GAIN_TARGET},
 #else
-    {"AGC Gain target, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_RX_AGC_GAIN_TARGET},
+    {"AGC Gain targ, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_RX_AGC_GAIN_TARGET},
 #endif
     {"AGC Spectral", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Spectral, SYSMENU_HANDL_RX_AGC_Spectral},
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
@@ -703,22 +702,11 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"Pwr for each mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_HANDL_TX_RF_Gain_For_Each_Mode},
     {"SelfHear Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SELFHEAR_Volume, SYSMENU_HANDL_TX_SELFHEAR_Volume},
     {"TX CESSB", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TX_CESSB, SYSMENU_HANDL_TX_CESSB},
-#ifdef LAY_320x240
     {"TX CESSB Compress", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.TX_CESSB_COMPRESS_DB, SYSMENU_HANDL_TX_CESSB_COMPRESS_DB},
-#else
-    {"TX CESSB Compress, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.TX_CESSB_COMPRESS_DB, SYSMENU_HANDL_TX_CESSB_COMPRESS_DB},
-#endif
-#ifdef LAY_320x240
     {"TX Compr MxGa AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_HANDL_TX_CompressorMaxGain_AMFM},
     {"TX Compr Speed AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_HANDL_TX_CompressorSpeed_AMFM},
     {"TX Compr MxGa SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_HANDL_TX_CompressorMaxGain_SSB},
     {"TX Compr Speed SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_SSB, SYSMENU_HANDL_TX_CompressorSpeed_SSB},
-#else
-    {"TX Compr MaxGain AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_HANDL_TX_CompressorMaxGain_AMFM},
-    {"TX Compr Speed AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_HANDL_TX_CompressorSpeed_AMFM},
-    {"TX Compr MaxGain SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_HANDL_TX_CompressorMaxGain_SSB},
-    {"TX Compr Speed SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_SSB, SYSMENU_HANDL_TX_CompressorSpeed_SSB},
-#endif
     {"Two Signal TUNE", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TX_TWO_SIGNAL_TUNE},
     {"VOX", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.VOX, SYSMENU_HANDL_TX_VOX},
     {"VOX Timeout, ms", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.VOX_TIMEOUT, SYSMENU_HANDL_TX_VOX_TIMEOUT},
@@ -796,13 +784,8 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
 #if HRDW_HAS_WIFI
     {"DX Cluster type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DXCluster_Type, SYSMENU_HANDL_SCREEN_DXCluster_Type, {"RBN", "SUMMIT"}},
     {"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
-#ifdef LAY_320x240
     {"FFT DXClus Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
     {"FFT DXClus Timeout", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_DXCluster_Timeout, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout},
-#else
-    {"FFT DXCluster Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
-    {"FFT DXCluster Timeout", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_DXCluster_Timeout, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout},
-#endif
 #endif
     {"FFT Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_SCREEN_FFT_Enabled},
     {"FFT Freq Grid", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_FreqGrid, SYSMENU_HANDL_SCREEN_FFT_FreqGrid, {"NO", "Top", "All", "Bott"}},
@@ -811,13 +794,8 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"FFT Hold Peaks", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_HoldPeaks, SYSMENU_HANDL_SCREEN_FFT_HoldPeaks},
     {"FFT Lens", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Lens, SYSMENU_HANDL_SCREEN_FFT_Lens},
 #endif
-#ifdef LAY_320x240
     {"FFT Manual Bottom", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FFT_ManualBottom, SYSMENU_HANDL_SCREEN_FFT_ManualBottom},
     {"FFT Manual Top", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FFT_ManualTop, SYSMENU_HANDL_SCREEN_FFT_ManualTop},
-#else
-    {"FFT Manual Bottom, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FFT_ManualBottom, SYSMENU_HANDL_SCREEN_FFT_ManualBottom},
-    {"FFT Manual Top, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FFT_ManualTop, SYSMENU_HANDL_SCREEN_FFT_ManualTop},
-#endif
     {"FFT Scale Type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_Scale_Type, SYSMENU_HANDL_SCREEN_FFT_Scale_Type, {"Ampl", "Squared", "dBm"}},
     {"FFT Sensitivity", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Sensitivity, SYSMENU_HANDL_SCREEN_FFT_Sensitivity},
     {"FFT Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
@@ -926,14 +904,12 @@ const static struct sysmenu_item_handler sysmenu_wifi_handlers[] = {
     {"WIFI Network 3 Pass", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP3password},
     {"WIFI Timezone", SYSMENU_INT8, NULL, (uint32_t *)&WIFI.Timezone, SYSMENU_HANDL_WIFI_Timezone},
     {"WIFI CAT Server", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.CAT_Server, SYSMENU_HANDL_WIFI_CAT_Server},
-    {"WIFI Update ESP firmware", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_UpdateFW},
+    {"WIFI Update ESP", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_UpdateFW},
     {"ALLQSO.RU Token", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetALLQSO_TOKEN},
     {"ALLQSO.RU LogId", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetALLQSO_LOGID},
 #endif
-    {"", SYSMENU_INFOLINE, 0, 0},
     {"NET:", SYSMENU_INFOLINE, 0, 0},
     {WIFI_AP, SYSMENU_INFOLINE, 0, 0},
-    {"", SYSMENU_INFOLINE, 0, 0},
     {"IP:", SYSMENU_INFOLINE, 0, 0},
     {WIFI_IP, SYSMENU_INFOLINE, 0, 0},
 };
@@ -1075,8 +1051,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"IF Gain MIN", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_HANDL_CALIB_IF_GAIN_MIN},
     {"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
-    {"INA226_PWR_MON", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_INA226_PWR_MON},                // Tisho
-    {"INA226_Cur_Calc(mA/Bit)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_INA226_CUR_CALL}, // Tisho
+    {"INA226 Pwr Mon", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_INA226_PWR_MON},        // Tisho
+    {"INA226 Cur Calc", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_INA226_CUR_CALL}, // Tisho
 #endif
     {"LCD Rotate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LCD_Rotate, SYSMENU_HANDL_CALIB_LCD_Rotate},
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || defined(FRONTPANEL_X1) || \
@@ -1201,30 +1177,28 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"Trans. QO100 RX IF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
     {"Trans. QO100 TX IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
 #else
-    {"Transverter Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
-    {"Transverter 70cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
-    {"Transverter 70cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
-    {"Transverter 23cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_23cm},
-    {"Transverter 23cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_23cm},
-    {"Transverter 13cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_13cm},
-    {"Transverter 13cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_13cm},
-    {"Transverter 6cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_6cm},
-    {"Transverter 6cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
-    {"Transverter 3cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
-    {"Transverter 3cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
-    {"Transv. QO100 RF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_HANDL_CALIB_TRANSV_RF_QO100},
-    {"Transv. QO100 RX IF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
-    {"Transv. QO100 TX IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
+    {"Transv. Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
+    {"Transv. 70cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
+    {"Transv. 70cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
+    {"Transv. 23cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_23cm},
+    {"Transv. 23cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_23cm},
+    {"Transv. 13cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_13cm},
+    {"Transv. 13cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_13cm},
+    {"Transv. 6cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_6cm},
+    {"Transv. 6cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
+    {"Transv. 3cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
+    {"Transv. 3cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
+    {"Tr. QO100 RF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_HANDL_CALIB_TRANSV_RF_QO100},
+    {"Tr. QO100 RX IF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
+    {"Tr. QO100 TX IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
 #endif
 #endif
     {"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
     {"Calibrate reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_CALIBRATION_RESET},
+#if HRDW_HAS_WIFI
 #ifdef LAY_320x240
-#if HRDW_HAS_WIFI
     {"WiFi set. reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_WIFI_RESET},
-#endif
 #else
-#if HRDW_HAS_WIFI
     {"WiFi settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_WIFI_RESET},
 #endif
 #endif
@@ -4671,6 +4645,7 @@ static void SYSMENU_HANDL_OTA_Update(int8_t direction) {
 // SYSTEM INFO
 
 static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
+	LCD_cleanTouchpadButtons();
 	sysmenu_infowindow_opened = true;
 	sysmenu_sysinfo_opened = true;
 	if (direction != 0) {
@@ -4714,6 +4689,7 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 // Support project
 
 static void SYSMENU_HANDL_SUPPORT(int8_t direction) {
+	LCD_cleanTouchpadButtons();
 	sysmenu_infowindow_opened = true;
 	LCDDriver_Fill(BG_COLOR);
 	LCDDriver_printText("ua3reo.ru/support/", 10, 10, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
@@ -4721,7 +4697,7 @@ static void SYSMENU_HANDL_SUPPORT(int8_t direction) {
 
 // Back to prev menu
 
-static void SYSMENU_HANDL_Back(int8_t direction) {
+void SYSMENU_HANDL_Back(int8_t direction) {
 	SYSMENU_eventCloseSystemMenu();
 	LCD_redraw(false);
 }
@@ -6922,6 +6898,7 @@ static void SYSMENU_HANDL_WSPR_BAND2(int8_t direction) {
 #if HRDW_HAS_WIFI
 // RDA STATS
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction) {
+	LCD_cleanTouchpadButtons();
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getRDA();
@@ -6929,6 +6906,7 @@ static void SYSMENU_HANDL_RDA_STATS(int8_t direction) {
 
 // DX_CLUSTER
 static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction) {
+	LCD_cleanTouchpadButtons();
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getDXCluster();
@@ -6936,6 +6914,7 @@ static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction) {
 
 // PROPAGINATION
 static void SYSMENU_HANDL_PROPAGINATION(int8_t direction) {
+	LCD_cleanTouchpadButtons();
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getPropagination();
@@ -6943,6 +6922,7 @@ static void SYSMENU_HANDL_PROPAGINATION(int8_t direction) {
 
 // DAY/NIGHT MAP
 static void SYSMENU_HANDL_DAYNIGHT_MAP(int8_t direction) {
+	LCD_cleanTouchpadButtons();
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getDayNightMap();
@@ -6950,6 +6930,7 @@ static void SYSMENU_HANDL_DAYNIGHT_MAP(int8_t direction) {
 
 // IONOGRAM
 static void SYSMENU_HANDL_IONOGRAM(int8_t direction) {
+	LCD_cleanTouchpadButtons();
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
 	WIFI_getIonogram();
@@ -6957,6 +6938,7 @@ static void SYSMENU_HANDL_IONOGRAM(int8_t direction) {
 
 // RECORD CQ MESSAGE
 static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction) {
+	LCD_cleanTouchpadButtons();
 	sysmenu_filemanager_opened = true;
 	FILEMANAGER_StartRecCQWav();
 }
@@ -6964,6 +6946,7 @@ static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction) {
 
 // LOCATOR INFO
 static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction) {
+	LCD_cleanTouchpadButtons();
 	SYSMENU_locator_info_opened = true;
 	LOCINFO_Start();
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -6971,6 +6954,7 @@ static void SYSMENU_HANDL_LOCATOR_INFO(int8_t direction) {
 
 // CALLSIGN INFO
 static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction) {
+	LCD_cleanTouchpadButtons();
 	SYSMENU_callsign_info_opened = true;
 	CALLSIGN_INFO_Start();
 	LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -6978,6 +6962,7 @@ static void SYSMENU_HANDL_CALLSIGN_INFO(int8_t direction) {
 
 // SELF TEST
 static void SYSMENU_HANDL_SELF_TEST(int8_t direction) {
+	LCD_cleanTouchpadButtons();
 	SYSMENU_selftest_opened = true;
 	SELF_TEST_Start();
 	LCD_UpdateQuery.SystemMenuRedraw = true;

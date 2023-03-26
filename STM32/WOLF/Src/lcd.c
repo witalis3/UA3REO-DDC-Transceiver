@@ -1911,6 +1911,8 @@ static void LCD_displayTextBar(void) {
 	LCD_busy = false;
 }
 
+void LCD_cleanTouchpadButtons(void) { TouchpadButton_handlers_count = 0; }
+
 void LCD_redraw(bool do_now) {
 	TouchpadButton_handlers_count = 0;
 	LCD_UpdateQuery.Background = true;
@@ -2214,7 +2216,7 @@ void LCD_processTouch(uint16_t x, uint16_t y) {
 	}
 
 	if (!LCD_screenKeyboardOpened && LCD_systemMenuOpened) {
-		//try to find system menu buttons
+		// try to find system menu buttons
 		for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++) {
 			if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y)) // touch height
 			{
@@ -2224,10 +2226,9 @@ void LCD_processTouch(uint16_t x, uint16_t y) {
 				}
 			}
 		}
-		
-		// not found, close all
-		SYSMENU_eventCloseAllSystemMenu();
-		LCD_redraw(false);
+
+		// not found, close menu
+		SYSMENU_HANDL_Back(0);
 		return;
 	}
 
