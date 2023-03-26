@@ -253,6 +253,10 @@ typedef const struct {
 	const uint16_t SYSMENU_W;
 	const uint16_t SYSMENU_ITEM_HEIGHT;
 	const uint16_t SYSMENU_MAX_ITEMS_ON_PAGE;
+	// Touch system menu
+	const uint16_t SYSMENU_BUTTON_HEIGHT;
+	const uint16_t SYSMENU_BUTTON_WIDTH;
+	const uint16_t SYSMENU_BUTTON_MARGIN;
 	// Stuff
 	const uint16_t GREETINGS_X;
 	const uint16_t GREETINGS_Y;

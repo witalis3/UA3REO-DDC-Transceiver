@@ -14,6 +14,8 @@
 #define ENUM_MAX_LENGTH 8
 #endif
 
+#define SYSMENU_TOUCHPAD_STYLE (LCD_WIDTH > 700 && HAS_TOUCHPAD)
+
 typedef enum {
 	SYSMENU_BOOLEAN,
 	SYSMENU_RUN,
@@ -58,7 +60,7 @@ extern bool sysmenu_wifi_selectap2_menu_opened;
 extern bool sysmenu_wifi_selectap3_menu_opened;
 
 extern void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines);
-extern void SYSMENU_redrawCurrentItem(void);
+extern void SYSMENU_redrawCurrentItem(bool redrawAsUnselected);
 extern void SYSMENU_eventRotateSystemMenu(int8_t direction);
 extern void SYSMENU_eventSecEncoderClickSystemMenu(void);
 extern void SYSMENU_eventSecRotateSystemMenu(int8_t direction);

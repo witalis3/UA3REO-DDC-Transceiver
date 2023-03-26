@@ -65,6 +65,11 @@ extern void LCD_showManualFreqWindow(bool secondary_vfo);
 extern void LCD_printKeyboard(void (*keyboardHandler)(char *string, uint32_t max_size, char entered), char *string, uint32_t max_size, bool lowcase);
 extern void LCD_hideKeyboard(void);
 
+#if (defined(LAY_800x480))
+void printSystemMenuButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, char *value, bool selected, bool active, uint32_t parameter,
+                           void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter), uint16_t active_color, uint16_t inactive_color);
+#endif
+
 volatile extern DEF_LCD_UpdateQuery LCD_UpdateQuery;
 volatile extern bool LCD_busy;
 volatile extern bool LCD_systemMenuOpened;

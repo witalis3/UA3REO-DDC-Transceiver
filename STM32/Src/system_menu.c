@@ -1327,7 +1327,7 @@ static struct sysmenu_menu_wrapper sysmenu_wrappers[] = {
 };
 
 // COMMON MENU
-static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement, bool onlyVal);
+static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement, bool onlyVal, bool redrawAsUnselected);
 #if HRDW_HAS_WIFI
 static void SYSMENU_WIFI_DrawSelectAP1Menu(bool full_redraw);
 static void SYSMENU_WIFI_SelectAP1MenuMove(int8_t dir);
@@ -1357,8 +1357,8 @@ static uint16_t getIndexByName(const struct sysmenu_item_handler *menu, uint16_t
 
 static const struct sysmenu_item_handler *sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_handlers[0];
 static uint8_t sysmenu_item_count = sizeof(sysmenu_handlers) / sizeof(sysmenu_handlers[0]);
-static uint16_t sysmenu_y = 5;
-static uint8_t sysmenu_i = 0;
+static uint16_t sysmenu_draw_y = 5;
+static uint8_t sysmenu_draw_index = 0;
 static bool sysmenu_onroot = true;
 bool SYSMENU_hiddenmenu_enabled = false;
 static bool sysmenu_services_opened = false;
@@ -7171,8 +7171,8 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 	} else {
 		LCD_busy = true;
 
-		sysmenu_i = 0;
-		sysmenu_y = 5;
+		sysmenu_draw_index = 0;
+		sysmenu_draw_y = 5;
 
 		if (draw_background) {
 			LCDDriver_Fill(BG_COLOR);
@@ -7189,15 +7189,15 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 			if (sysmenu_handlers_selected[m].checkVisibleHandler == NULL || sysmenu_handlers_selected[m].checkVisibleHandler()) {
 				if (!only_infolines) {
 					if (current_selected_page == current_page) {
-						drawSystemMenuElement(&sysmenu_handlers_selected[m], false);
+						drawSystemMenuElement(&sysmenu_handlers_selected[m], false, false);
 					}
 				} else {
 					if (current_selected_page == current_page) {
 						if (sysmenu_handlers_selected[m].type == SYSMENU_INFOLINE) {
-							drawSystemMenuElement(&sysmenu_handlers_selected[m], false);
+							drawSystemMenuElement(&sysmenu_handlers_selected[m], false, false);
 						} else { // dummy pass
-							sysmenu_i++;
-							sysmenu_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
+							sysmenu_draw_index++;
+							sysmenu_draw_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
 						}
 					}
 				}
@@ -7772,11 +7772,15 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 
 	// clear selection line
 	LCD_busy = true;
-	sysmenu_y = 5 + SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) * LAYOUT->SYSMENU_ITEM_HEIGHT;
-#if defined LAY_320x240
-	LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 3, LAYOUT->SYSMENU_W, BG_COLOR);
+	sysmenu_draw_y = 5 + SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) * LAYOUT->SYSMENU_ITEM_HEIGHT;
+#if SYSMENU_TOUCHPAD_STYLE
+	SYSMENU_redrawCurrentItem(true);
 #else
-	LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, BG_COLOR);
+#if defined LAY_320x240
+	LCDDriver_drawFastHLine(0, sysmenu_draw_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 3, LAYOUT->SYSMENU_W, BG_COLOR);
+#else
+	LCDDriver_drawFastHLine(0, sysmenu_draw_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, BG_COLOR);
+#endif
 #endif
 	LCD_busy = false;
 	// current page
@@ -7825,13 +7829,13 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 	}
 }
 
-void SYSMENU_redrawCurrentItem(void) {
-	sysmenu_i = SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex());
-	sysmenu_y = 5 + SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) * LAYOUT->SYSMENU_ITEM_HEIGHT;
-	drawSystemMenuElement(&sysmenu_handlers_selected[getCurrentMenuIndex()], true);
+void SYSMENU_redrawCurrentItem(bool redrawAsUnselected) {
+	sysmenu_draw_index = SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex());
+	sysmenu_draw_y = 5 + SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) * LAYOUT->SYSMENU_ITEM_HEIGHT;
+	drawSystemMenuElement(&sysmenu_handlers_selected[getCurrentMenuIndex()], true, redrawAsUnselected);
 }
 
-static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement, bool onlyVal) {
+static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement, bool onlyVal, bool redrawAsUnselected) {
 	if (menuElement->checkVisibleHandler != NULL && !menuElement->checkVisibleHandler()) {
 		return;
 	}
@@ -7841,10 +7845,13 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 	float32_t *atu_c = ATU_C_VALS;
 	float32_t float_tmp_val = 0;
 
+#if !SYSMENU_TOUCHPAD_STYLE
+	// old style
 	if (!onlyVal) {
-		LCDDriver_Fill_RectXY(0, sysmenu_y, LAYOUT->SYSMENU_W, sysmenu_y + 17, BG_COLOR);
-		LCDDriver_printText(menuElement->title, LAYOUT->SYSMENU_X1, sysmenu_y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		LCDDriver_Fill_RectXY(0, sysmenu_draw_y, LAYOUT->SYSMENU_W, sysmenu_draw_y + 17, BG_COLOR);
+		LCDDriver_printText(menuElement->title, LAYOUT->SYSMENU_X1, sysmenu_draw_y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
+#endif
 
 	uint16_t x_pos = LAYOUT->SYSMENU_X2 - RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE * ENUM_MAX_LENGTH;
 	float32_t tmp_float = 0;
@@ -7930,28 +7937,41 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 		break;
 	}
 
+#if SYSMENU_TOUCHPAD_STYLE
+	uint8_t sysmenu_button_in_line = LCD_WIDTH / (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN);
+	uint8_t x = sysmenu_draw_index % sysmenu_button_in_line;
+	uint8_t y = sysmenu_draw_index / sysmenu_button_in_line;
+	bool selected = SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) == sysmenu_draw_index;
+
+	printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN + x * (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN),
+	                      LAYOUT->SYSMENU_BUTTON_MARGIN + y * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN), LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT,
+	                      menuElement->title, ctmp, !redrawAsUnselected && selected, !redrawAsUnselected && sysmenu_item_selected_by_enc2, 0, NULL, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+
+	sysmenu_draw_index++;
+#else // old style
 	if (menuElement->type != SYSMENU_INFOLINE) {
 		addSymbols(ctmp, ctmp, ENUM_MAX_LENGTH, " ", false);
-		LCDDriver_printText(ctmp, x_pos, sysmenu_y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		LCDDriver_printText(ctmp, x_pos, sysmenu_draw_y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 
-	if (SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) == sysmenu_i) {
+	if (SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) == sysmenu_draw_index) {
 #if defined LAY_320x240
 		if (sysmenu_item_selected_by_enc2) {
-			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 3, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
+			LCDDriver_drawFastHLine(0, sysmenu_draw_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 3, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
 		} else {
-			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 3, LAYOUT->SYSMENU_W, FG_COLOR);
+			LCDDriver_drawFastHLine(0, sysmenu_draw_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 3, LAYOUT->SYSMENU_W, FG_COLOR);
 		}
 #else
 		if (sysmenu_item_selected_by_enc2) {
-			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
+			LCDDriver_drawFastHLine(0, sysmenu_draw_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, COLOR->BUTTON_TEXT);
 		} else {
-			LCDDriver_drawFastHLine(0, sysmenu_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, FG_COLOR);
+			LCDDriver_drawFastHLine(0, sysmenu_draw_y + LAYOUT->SYSMENU_ITEM_HEIGHT - 1, LAYOUT->SYSMENU_W, FG_COLOR);
 		}
 #endif
 	}
-	sysmenu_i++;
-	sysmenu_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
+	sysmenu_draw_index++;
+	sysmenu_draw_y += LAYOUT->SYSMENU_ITEM_HEIGHT;
+#endif
 }
 
 static uint8_t SYSTMENU_getVisibleIdFromReal(uint8_t realIndex) {
