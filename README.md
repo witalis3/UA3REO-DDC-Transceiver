@@ -237,7 +237,9 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 ### SCREEN Settings
 
+* **Bottom navi buttons** - Show bottm menu navigation buttons (for 7 inch displays)
 * **Color Theme** - Select colors theme (0 - black, 1 - white, 2 - black with colored frequency)
+* **Layout Theme** - Select interface theme (0 - default)
 * **DX Cluster Type** - Selecting a Data Source for a DX Cluster
 * **FFT 3D Mode** - Enable FFT 3D mode (0 - disabled, 1 - lines, 2 - pixels)
 * **FFT Automatic** - Automatic FFT scale
@@ -266,8 +268,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **FFT dBm Grid** - FFT signal power grid
 * **LCD Brightness** - Set LCD brightness (not all lcd support)
 * **LCD Sleep Timeout** - Idle time before the screen brightness decreases, sec (0 - disabled)
-* **Layout Theme** - Select interface theme (0 - default)
-* **Show Sec VFO** - Show secondary VFO position on spectre
+* **Show Sec VFO** - Show secondary VFO position on spectrum
 * **WTF Color** - Waterfall colors: 1(blue -> yellow -> red), 2(black -> yellow -> red), 3(black -> yellow -> green), 4(black -> red), 5(black -> green), 6(black -> blue), 7(black -> white)
 * **WTF Moving** - Mowe waterfall with frequency changing
 

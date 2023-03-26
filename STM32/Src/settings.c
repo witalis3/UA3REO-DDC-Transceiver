@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "7.3.0";
+const char version_string[19] = "7.4.0-dev";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
@@ -346,18 +346,19 @@ void LoadSettings(bool clear) {
 		TRX.FFT_FreqGrid = 1;             // FFT freq grid style
 		TRX.FFT_Height = 2;               // FFT display height
 #endif
-		TRX.FFT_dBmGrid = false;           // FFT power grid
-		TRX.FFT_Lens = false;              // FFT lens effect
-		TRX.FFT_HoldPeaks = false;         // Show FFT Peaks
-		TRX.FFT_3D = 0;                    // FFT 3D mode
-		TRX.FFT_ManualBottom = -130;       // Minimal threshold for manual FFT scale
-		TRX.FFT_ManualTop = -90;           // Maximum threshold for manual FFT scale
-		TRX.FFT_DXCluster = true;          // Show DX cluster over FFT
-		TRX.FFT_DXCluster_Azimuth = false; // Add azimut to callsign
-		TRX.FFT_DXCluster_Timeout = 5;     // DXCluser timeout in minutes
-		TRX.Show_Sec_VFO = false;          // Show secondary VFO on FFT
-		TRX.FFT_Scale_Type = 0;            // Scale type (0 - amplitude, 1 - squared, 2 - dbm)
-		TRX.AnalogMeterShowPWR = false;    // false - SWR, true - PWR
+		TRX.FFT_dBmGrid = false;                   // FFT power grid
+		TRX.FFT_Lens = false;                      // FFT lens effect
+		TRX.FFT_HoldPeaks = false;                 // Show FFT Peaks
+		TRX.FFT_3D = 0;                            // FFT 3D mode
+		TRX.FFT_ManualBottom = -130;               // Minimal threshold for manual FFT scale
+		TRX.FFT_ManualTop = -90;                   // Maximum threshold for manual FFT scale
+		TRX.FFT_DXCluster = true;                  // Show DX cluster over FFT
+		TRX.FFT_DXCluster_Azimuth = false;         // Add azimut to callsign
+		TRX.FFT_DXCluster_Timeout = 5;             // DXCluser timeout in minutes
+		TRX.Show_Sec_VFO = false;                  // Show secondary VFO on FFT
+		TRX.FFT_Scale_Type = 0;                    // Scale type (0 - amplitude, 1 - squared, 2 - dbm)
+		TRX.AnalogMeterShowPWR = false;            // false - SWR, true - PWR
+		TRX.EnableBottomNavigationButtons = true;  // enable bottom menu navigation buttons
 		for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++) {
 			TRX.FuncButtons[i] = i;
 		}

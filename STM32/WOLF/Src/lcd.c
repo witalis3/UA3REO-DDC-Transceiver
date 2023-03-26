@@ -297,7 +297,15 @@ static void LCD_displayBottomButtons(bool redraw) {
 		LCDDriver_Fill_RectWH(0, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LCD_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, BG_COLOR);
 	}
 
+	const uint16_t bottomNavigationButtonsWidth = 48;
 	uint16_t curr_x = 0;
+
+	if (TRX.EnableBottomNavigationButtons) {
+		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<", false, false, false, 0, BUTTONHANDLER_LEFT_ARR,
+		            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		curr_x += bottomNavigationButtonsWidth;
+	}
+
 	for (uint8_t i = 0; i < FUNCBUTTONS_ON_PAGE; i++) {
 		bool enabled = false;
 
@@ -309,7 +317,9 @@ static void LCD_displayBottomButtons(bool redraw) {
 
 		uint16_t width = LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH;
 
-		if (FUNCBUTTONS_ON_PAGE == 9 && i < 8) {
+		if (TRX.EnableBottomNavigationButtons) {
+			width = floorf((float32_t)(LCD_WIDTH - bottomNavigationButtonsWidth * 2) / FUNCBUTTONS_ON_PAGE);
+		} else if (FUNCBUTTONS_ON_PAGE == 9 && i < 8) {
 			width += 1;
 		}
 
@@ -319,6 +329,12 @@ static void LCD_displayBottomButtons(bool redraw) {
 		            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].clickHandler,
 		            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i]].holdHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 		curr_x += width;
+	}
+
+	if (TRX.EnableBottomNavigationButtons) {
+		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, ">", false, false, false, 0, BUTTONHANDLER_RIGHT_ARR,
+		            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		curr_x += bottomNavigationButtonsWidth;
 	}
 #endif
 

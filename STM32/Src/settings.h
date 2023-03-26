@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 90         // Settings config version
+#define SETT_VERSION 91         // Settings config version
 #define CALIB_VERSION 63        // Calibration config version
 #define WIFI_SETTINGS_VERSION 2 // WiFi config version
 
@@ -632,6 +632,7 @@ extern struct TRX_SETTINGS {
 	bool FFT_DXCluster_Azimuth;
 	bool Show_Sec_VFO;
 	bool AnalogMeterShowPWR;
+	bool EnableBottomNavigationButtons;
 	// DECODERS
 	uint16_t RTTY_Speed;
 	uint16_t RTTY_Shift;
