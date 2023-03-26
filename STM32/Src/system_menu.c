@@ -676,6 +676,12 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"RF Power", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RF_Gain, SYSMENU_HANDL_TX_RFPower},
+    {"CESSB", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TX_CESSB, SYSMENU_HANDL_TX_CESSB},
+    {"CESSB Compress", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.TX_CESSB_COMPRESS_DB, SYSMENU_HANDL_TX_CESSB_COMPRESS_DB},
+    {"Compr. MxGa AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_HANDL_TX_CompressorMaxGain_AMFM},
+    {"Compr. Speed AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_HANDL_TX_CompressorSpeed_AMFM},
+    {"Compr. MxGa SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_HANDL_TX_CompressorMaxGain_SSB},
+    {"Compr. Speed SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_SSB, SYSMENU_HANDL_TX_CompressorSpeed_SSB},
     {"CTCSS Frequency", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CTCSS_Freq, SYSMENU_HANDL_TX_CTCSS_Freq},
     {"Repeater Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RepeaterMode_shadow, SYSMENU_HANDL_TX_RepeaterMode},
     {"Repeater offset, kHz", SYSMENU_INT16, NULL, (uint32_t *)&TRX.REPEATER_Offset, SYSMENU_HANDL_TX_REPEATER_Offset},
@@ -701,12 +707,6 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"Pwr for each band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_HANDL_TX_RF_Gain_For_Each_Band},
     {"Pwr for each mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_HANDL_TX_RF_Gain_For_Each_Mode},
     {"SelfHear Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SELFHEAR_Volume, SYSMENU_HANDL_TX_SELFHEAR_Volume},
-    {"TX CESSB", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TX_CESSB, SYSMENU_HANDL_TX_CESSB},
-    {"TX CESSB Compress", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.TX_CESSB_COMPRESS_DB, SYSMENU_HANDL_TX_CESSB_COMPRESS_DB},
-    {"TX Compr MxGa AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_HANDL_TX_CompressorMaxGain_AMFM},
-    {"TX Compr Speed AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_HANDL_TX_CompressorSpeed_AMFM},
-    {"TX Compr MxGa SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_HANDL_TX_CompressorMaxGain_SSB},
-    {"TX Compr Speed SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_SSB, SYSMENU_HANDL_TX_CompressorSpeed_SSB},
     {"Two Signal TUNE", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TX_TWO_SIGNAL_TUNE},
     {"VOX", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.VOX, SYSMENU_HANDL_TX_VOX},
     {"VOX Timeout, ms", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.VOX_TIMEOUT, SYSMENU_HANDL_TX_VOX_TIMEOUT},
@@ -869,7 +869,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
 const static struct sysmenu_item_handler sysmenu_decoders_handlers[] = {
 #if !defined(FRONTPANEL_LITE)
     {"CW Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Decoder, SYSMENU_HANDL_DECODERS_CW_Decoder},
-    {"CW Decoder Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_Decoder_Threshold, SYSMENU_HANDL_DECODERS_CW_Decoder_Threshold},
+    {"CW Decod. Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_Decoder_Threshold, SYSMENU_HANDL_DECODERS_CW_Decoder_Threshold},
     {"RDS Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RDS_Decoder, SYSMENU_HANDL_DECODERS_RDS_Decoder},
 #endif
     {"RTTY Speed", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RTTY_Speed, SYSMENU_HANDL_DECODERS_RTTY_Speed},
@@ -922,7 +922,7 @@ const static struct sysmenu_item_handler sysmenu_sd_handlers[] = {
     {"Export to SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettingsDialog}, {"Import from SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettingsDialog},
 #else
 		{"Export Settings to SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettingsDialog},
-    {"Import Settings from SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettingsDialog},
+    {"Import Settings frm SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettingsDialog},
 #endif
     {"Format SD card", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_FormatDialog},
 };
@@ -1061,15 +1061,15 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
     {"Linear Pwr Control", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_HANDL_CALIB_LinearPowerControl},
 #if !defined(FRONTPANEL_LITE)
-    {"MAX ChargePump, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq},
+    {"Max ChargePump, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq},
 #endif
-    {"MAX PWR on Meter", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.MAX_RF_POWER_ON_METER, SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER},
-    {"MAX Power in TUNE", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_HANDL_CALIB_TUNE_MAX_POWER},
+    {"Max PWR on Meter", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.MAX_RF_POWER_ON_METER, SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER},
+    {"Max Power in TUNE", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_HANDL_CALIB_TUNE_MAX_POWER},
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || defined(FRONTPANEL_X1) || \
     defined(FRONTPANEL_MINI)
-    {"MAX RF Temp", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TRX_MAX_RF_TEMP, SYSMENU_HANDL_CALIB_TRX_MAX_RF_TEMP},
+    {"Max RF Temp", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TRX_MAX_RF_TEMP, SYSMENU_HANDL_CALIB_TRX_MAX_RF_TEMP},
 #endif
-    {"MAX SWR", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TRX_MAX_SWR, SYSMENU_HANDL_CALIB_TRX_MAX_SWR},
+    {"Max SWR", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TRX_MAX_SWR, SYSMENU_HANDL_CALIB_TRX_MAX_SWR},
     {"NOTX NOT HAM", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_NOTHAM, SYSMENU_HANDL_CALIB_NOTX_NOTHAM},
     {"NOTX 2200m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_2200m, SYSMENU_HANDL_CALIB_NOTX_2200m},
     {"NOTX 160m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.NOTX_160m, SYSMENU_HANDL_CALIB_NOTX_160m},
@@ -1126,8 +1126,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
     {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "SPLIT", "RU4PN", "WF-100D"}},
 #endif
-    {"RTC COARSE CALIBR", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.RTC_Coarse_Calibration, SYSMENU_HANDL_CALIB_RTC_COARSE_CALIBRATION},
-    {"RTC FINE CALIBR", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.RTC_Calibration, SYSMENU_HANDL_CALIB_RTC_CALIBRATION},
+    {"RTC Coarse Calibr", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.RTC_Coarse_Calibration, SYSMENU_HANDL_CALIB_RTC_COARSE_CALIBRATION},
+    {"RTC Fine Calibr", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.RTC_Calibration, SYSMENU_HANDL_CALIB_RTC_CALIBRATION},
     {"S METER HF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_hf, SYSMENU_HANDL_CALIB_S_METER_HF},
     {"S METER VHF", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.smeter_calibration_vhf, SYSMENU_HANDL_CALIB_S_METER_VHF},
     {"SSB Power addition", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.SSB_POWER_ADDITION, SYSMENU_HANDL_CALIB_SSB_POWER_ADDITION},
@@ -1323,6 +1323,7 @@ static void SYSMENU_TRX_DrawCWMacros4Menu(bool full_redraw);
 static void SYSMENU_TRX_DrawCWMacros5Menu(bool full_redraw);
 static uint8_t SYSTMENU_getVisibleIdFromReal(uint8_t realIndex);
 static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex);
+static uint8_t SYSTMENU_getRealIdFromVisible(uint8_t visibleIndex);
 static void SYSMENU_RotateChar(char *string, int8_t dir);
 static void SYSMENU_KeyboardHandler(char *string, uint32_t max_size, char entered);
 static void setCurrentMenuIndex(uint8_t index);
@@ -4706,6 +4707,11 @@ void SYSMENU_HANDL_Back(int8_t direction) {
 	LCD_redraw(false);
 }
 
+void SYSMENU_HANDL_BackTouch(uint32_t parameter) {
+	SYSMENU_eventCloseSystemMenu();
+	LCD_redraw(false);
+}
+
 // CALIBRATION MENU
 
 static void SYSMENU_HANDL_CALIB_ENCODER_INVERT(int8_t direction) {
@@ -7217,6 +7223,34 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 			}
 		}
 
+#if SYSMENU_TOUCHPAD_STYLE
+		uint8_t sysmenu_button_in_line = LCD_WIDTH / (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN);
+		uint8_t sysmenu_button_lines = LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE / sysmenu_button_in_line;
+
+		// close button
+		if (current_selected_page == 0) {
+			printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN, LAYOUT->SYSMENU_BUTTON_MARGIN + sysmenu_button_lines * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN),
+			                      LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT, "Close", "x", false, true, 0, SYSMENU_HANDL_BackTouch, SYSMENU_HANDL_BackTouch, COLOR->FREQ_MHZ,
+			                      COLOR->FREQ_MHZ);
+		}
+
+		// prev button
+		if (current_selected_page > 0) {
+			printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN, LAYOUT->SYSMENU_BUTTON_MARGIN + sysmenu_button_lines * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN),
+			                      LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT, "Prev page", "<-", false, true, 0, SYSMENU_HANDL_PrevPageTouch, SYSMENU_HANDL_PrevPageTouch,
+			                      COLOR->FREQ_MHZ, COLOR->FREQ_MHZ);
+		}
+
+		// next button
+		if (current_selected_page < current_page) {
+			printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN + 3 * (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN),
+			                      LAYOUT->SYSMENU_BUTTON_MARGIN + sysmenu_button_lines * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN), LAYOUT->SYSMENU_BUTTON_WIDTH,
+			                      LAYOUT->SYSMENU_BUTTON_HEIGHT, "Next page", "->", false, true, 0, SYSMENU_HANDL_NextPageTouch, SYSMENU_HANDL_NextPageTouch, COLOR->FREQ_MHZ, COLOR->FREQ_MHZ);
+		}
+
+		sysmenu_draw_index++;
+#endif
+
 		LCD_UpdateQuery.SystemMenuInfolines = false;
 		LCD_busy = false;
 	}
@@ -7225,6 +7259,39 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 	if (draw_background) {
 		LCD_UpdateQuery.SystemMenuRedraw = false;
 	}
+}
+
+void SYSMENU_HANDL_PrevPageTouch(uint32_t parameter) {
+	uint8_t current_menu_index = getCurrentMenuIndex();
+	uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(current_menu_index);
+	if (current_selected_page == 0) {
+		return;
+	}
+
+	uint8_t new_selected_page = current_selected_page;
+	while (current_menu_index > 0 && new_selected_page == current_selected_page) {
+		current_menu_index--;
+		new_selected_page = SYSTMENU_getPageFromRealIndex(current_menu_index);
+	}
+
+	setCurrentMenuIndex(current_menu_index);
+	sysmenu_item_selected_by_enc2 = false;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+void SYSMENU_HANDL_NextPageTouch(uint32_t parameter) {
+	uint8_t current_menu_index = getCurrentMenuIndex();
+	uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(current_menu_index);
+
+	uint8_t new_selected_page = current_selected_page;
+	while (current_menu_index < sysmenu_item_count && new_selected_page == current_selected_page) {
+		current_menu_index++;
+		new_selected_page = SYSTMENU_getPageFromRealIndex(current_menu_index);
+	}
+
+	setCurrentMenuIndex(current_menu_index);
+	sysmenu_item_selected_by_enc2 = false;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 void SYSMENU_eventRotateSystemMenu(int8_t direction) {
@@ -7842,7 +7909,7 @@ void SYSMENU_redrawCurrentItem(bool redrawAsUnselected) {
 	drawSystemMenuElement(&sysmenu_handlers_selected[getCurrentMenuIndex()], true, redrawAsUnselected);
 }
 
-static void BUTTONHANDLER_CHOOSE_MENU_ELEMENT(uint32_t parameter) {
+void BUTTONHANDLER_CHOOSE_MENU_ELEMENT(uint32_t parameter) {
 	SYSMENU_redrawCurrentItem(true);
 	setCurrentMenuIndex(parameter);
 	sysmenu_item_selected_by_enc2 = false;
@@ -7959,7 +8026,8 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 	uint8_t y = sysmenu_draw_index / sysmenu_button_in_line;
 	bool selected = SYSTMENU_getVisibleIdFromReal(getCurrentMenuIndex()) == sysmenu_draw_index;
 	uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(getCurrentMenuIndex());
-	uint16_t elementIndex = current_selected_page * LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE + sysmenu_draw_index;
+	bool isInfoline = menuElement->type == SYSMENU_INFOLINE;
+	uint16_t elementIndex = SYSTMENU_getRealIdFromVisible(sysmenu_draw_index);
 
 	uint16_t additionalLeftMargin = 0;
 	if (y == sysmenu_button_lines) {
@@ -7968,8 +8036,8 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 
 	printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN + x * (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN) + additionalLeftMargin,
 	                      LAYOUT->SYSMENU_BUTTON_MARGIN + y * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN), LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT,
-	                      menuElement->title, ctmp, !redrawAsUnselected && selected, !redrawAsUnselected && sysmenu_item_selected_by_enc2, elementIndex, BUTTONHANDLER_CHOOSE_MENU_ELEMENT,
-	                      BUTTONHANDLER_CHOOSE_MENU_ELEMENT, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	                      menuElement->title, ctmp, !isInfoline && !redrawAsUnselected && selected, !isInfoline && !redrawAsUnselected && sysmenu_item_selected_by_enc2, elementIndex,
+	                      BUTTONHANDLER_CHOOSE_MENU_ELEMENT, BUTTONHANDLER_CHOOSE_MENU_ELEMENT, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 
 	sysmenu_draw_index++;
 #else // old style
@@ -8011,10 +8079,38 @@ static uint8_t SYSTMENU_getVisibleIdFromReal(uint8_t realIndex) {
 	return visible;
 }
 
+static uint8_t SYSTMENU_getRealIdFromVisible(uint8_t visibleIndex) {
+	uint8_t current_selected_page = SYSTMENU_getPageFromRealIndex(getCurrentMenuIndex());
+
+	uint16_t visible = 0;
+	uint16_t page = 0;
+	uint16_t realIndexCounter = 0;
+
+	if (page == current_selected_page && visible >= sysmenu_draw_index) {
+		return sysmenu_draw_index;
+	}
+
+	for (uint8_t i = 0; i < sysmenu_item_count; i++) {
+		realIndexCounter++;
+		if (sysmenu_handlers_selected[i].checkVisibleHandler == NULL || sysmenu_handlers_selected[i].checkVisibleHandler()) {
+			visible++;
+		}
+		if (visible > LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE) {
+			page++;
+			visible = 1;
+		}
+		if (page == current_selected_page && visible >= (sysmenu_draw_index + 1)) {
+			break;
+		}
+	}
+
+	return realIndexCounter - 1;
+}
+
 static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex) {
 	uint8_t visible = 0;
 	uint8_t page = 0;
-	for (uint8_t i = 0; i < getCurrentMenuIndex(); i++) {
+	for (uint8_t i = 0; i < realIndex; i++) {
 		if (sysmenu_handlers_selected[i].checkVisibleHandler == NULL || sysmenu_handlers_selected[i].checkVisibleHandler()) {
 			visible++;
 			if (visible >= LAYOUT->SYSMENU_MAX_ITEMS_ON_PAGE) {

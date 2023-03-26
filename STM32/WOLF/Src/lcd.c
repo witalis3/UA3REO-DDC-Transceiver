@@ -1982,7 +1982,9 @@ bool LCD_doEvents(void) {
 		LCD_displayStatusInfoBar(false);
 	}
 	if (LCD_UpdateQuery.SystemMenuRedraw) {
-		TouchpadButton_handlers_count = 0;
+		if (LCD_systemMenuOpened) {
+			TouchpadButton_handlers_count = 0;
+		}
 		SYSMENU_drawSystemMenu(true, false);
 	}
 	if (LCD_UpdateQuery.SystemMenu) {

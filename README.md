@@ -200,6 +200,10 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **ATU Ind** - Combination of tuner inductances
 * **ATU T** - Tuner capacitive arm position
 * **Auto Input Switch** - Auto input switch (PTT - mix, CAT - USB)
+* **CESSB** - Enable controlled-envelope single-sideband modulation
+* **CESSB Compress, dB** - Level of signal compression in CESSB
+* **Compressor MaxGain** - Maximum comressor gain
+* **Compressor Speed** - TX compressor response speed for transmission (more-faster)
 * **CTCSS Frequency** - Transmit FM CTCSS sub-tone frequency
 * **Input Type** - Select audio input (microphone, line in, USB)
 * **MIC Boost** - +20db hardware mic amplifier
@@ -214,10 +218,6 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Repeater offset, kHz"** -  Transmission frequency offset in repeater mode
 * **SelfHear Volume** - Self Hearing (CW/DIGI) volume relative to the overall transceiver volume
 * **TUNER Enabled** - Turning on the antenna tuner
-* **TX CESSB Compress, dB** - Level of signal compression in CESSB
-* **TX CESSB** - Enable controlled-envelope single-sideband modulation
-* **TX Compressor MaxGain** - Maximum comressor gain
-* **TX Compressor Speed** - TX compressor response speed for transmission (more-faster)
 * **Two Signal tune** - Two-signal generator in TUNE mode (1.0 + 2.2kHz)
 * **VOX Threshold, dbFS** - VOX Threshold, dbFS
 * **VOX Timeout, ms** - VOX transmission delay after silence, milliseconds

@@ -92,6 +92,9 @@ extern void SYSMEUN_SD_HOTKEY(void);
 extern void SYSMENU_SD_FILEMANAGER_HOTKEY(void);
 
 extern void SYSMENU_HANDL_Back(int8_t direction);
+extern void SYSMENU_HANDL_BackTouch(uint32_t parameter);
+extern void SYSMENU_HANDL_PrevPageTouch(uint32_t parameter);
+extern void SYSMENU_HANDL_NextPageTouch(uint32_t parameter);
 extern void SYSMENU_HANDL_SERVICESMENU(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_SSB_HPF_RX_pass(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_SSB_HPF_TX_pass(int8_t direction);
@@ -103,6 +106,8 @@ extern void SYSMENU_HANDL_FILTER_AM_LPF_RX_pass(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_AM_LPF_TX_pass(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_FM_LPF_RX_pass(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_FM_LPF_TX_pass(int8_t direction);
+
+extern void BUTTONHANDLER_CHOOSE_MENU_ELEMENT(uint32_t parameter);
 
 extern bool SYSMENU_HANDL_CHECK_HAS_ATU(void);
 
