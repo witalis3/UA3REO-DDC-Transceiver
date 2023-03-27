@@ -7235,17 +7235,20 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 		}
 
 		// prev button
+		char ctmp[68] = {0};
 		if (current_selected_page > 0) {
+			sprintf(ctmp, "%d / %d", current_selected_page, current_page + 1);
 			printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN, LAYOUT->SYSMENU_BUTTON_MARGIN + sysmenu_button_lines * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN),
-			                      LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT, "Prev page", "<-", false, true, 0, SYSMENU_HANDL_PrevPageTouch, SYSMENU_HANDL_PrevPageTouch,
+			                      LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT, "Prev page", ctmp, false, true, 0, SYSMENU_HANDL_PrevPageTouch, SYSMENU_HANDL_PrevPageTouch,
 			                      COLOR->FREQ_MHZ, COLOR->FREQ_MHZ);
 		}
 
 		// next button
 		if (current_selected_page < current_page) {
+			sprintf(ctmp, "%d / %d", current_selected_page + 2, current_page + 1);
 			printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN + 3 * (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN),
 			                      LAYOUT->SYSMENU_BUTTON_MARGIN + sysmenu_button_lines * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN), LAYOUT->SYSMENU_BUTTON_WIDTH,
-			                      LAYOUT->SYSMENU_BUTTON_HEIGHT, "Next page", "->", false, true, 0, SYSMENU_HANDL_NextPageTouch, SYSMENU_HANDL_NextPageTouch, COLOR->FREQ_MHZ, COLOR->FREQ_MHZ);
+			                      LAYOUT->SYSMENU_BUTTON_HEIGHT, "Next page", ctmp, false, true, 0, SYSMENU_HANDL_NextPageTouch, SYSMENU_HANDL_NextPageTouch, COLOR->FREQ_MHZ, COLOR->FREQ_MHZ);
 		}
 
 		sysmenu_draw_index++;
