@@ -359,7 +359,7 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Scale_Type = 0;                   // Scale type (0 - amplitude, 1 - squared, 2 - dbm)
 		TRX.AnalogMeterShowPWR = false;           // false - SWR, true - PWR
 		TRX.EnableBottomNavigationButtons = true; // enable bottom menu navigation buttons
-		for (uint8_t i = 0; i < FUNCBUTTONS_COUNT; i++) {
+		for (uint8_t i = 0; i < (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE); i++) {
 			TRX.FuncButtons[i] = i;
 		}
 		// DECODERS
