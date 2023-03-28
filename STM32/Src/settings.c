@@ -138,11 +138,11 @@ void LoadSettings(bool clear) {
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
 #endif
 #ifdef LAY_480x320
-		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K96; // Samplerate for ssb/cw/digi/nfm/etc modes
+		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; // Samplerate for ssb/cw/digi/nfm/etc modes
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
 #endif
 #ifdef LAY_320x240
-		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K96; // Samplerate for ssb/cw/digi/nfm/etc modes
+		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; // Samplerate for ssb/cw/digi/nfm/etc modes
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
 #endif
 #ifdef LAY_800x480
@@ -299,15 +299,15 @@ void LoadSettings(bool clear) {
 #endif
 		TRX.FFT_Enabled = true; // use FFT spectrum
 #ifdef LAY_160x128
-		TRX.FFT_Zoom = 2;   // approximation of the FFT spectrum
+		TRX.FFT_Zoom = 1;   // approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif
 #ifdef LAY_480x320
-		TRX.FFT_Zoom = 2;   // approximation of the FFT spectrum
+		TRX.FFT_Zoom = 1;   // approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif
 #ifdef LAY_320x240
-		TRX.FFT_Zoom = 2;   // approximation of the FFT spectrum
+		TRX.FFT_Zoom = 1;   // approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif
 #ifdef LAY_800x480
