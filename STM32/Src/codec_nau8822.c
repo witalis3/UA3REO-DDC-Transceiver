@@ -73,10 +73,14 @@ void CODEC_TXRX_mode(void) // loopback
 	{
 		NAU8822_SendI2CCommand(15, 0x000);
 		NAU8822_SendI2CCommand(16, 0x1ff);
-		NAU8822_SendI2CCommand(45, 0x03f); // PGA
-		NAU8822_SendI2CCommand(46, 0x13f); // PGA
+		NAU8822_SendI2CCommand(45, 0x000); // PGA 0x03f
+		NAU8822_SendI2CCommand(46, 0x010); // PGA 0x13f
 		NAU8822_SendI2CCommand(47, 0x000);
-		NAU8822_SendI2CCommand(48, 0x1ff);
+		if (TRX.MIC_Boost) {
+			NAU8822_SendI2CCommand(48, 0x104); // 0x1ff
+		} else {
+			NAU8822_SendI2CCommand(48, 0x7); // 0x1ff
+		}
 		NAU8822_SendI2CCommand(44, 0x030);
 	}
 	if (getInputType() == TRX_INPUT_USB) {
@@ -120,16 +124,11 @@ void CODEC_Init(void) {
 
 	NAU8822_SendI2CCommand(43, 0x020); // Speaker out 0x010, Mute 0x020
 
-	// NAU8822_SendI2CCommand(49, 0x01E);
-
 	NAU8822_SendI2CCommand(1, 0x11D); // 0x01D
 	NAU8822_SendI2CCommand(2, 0x1BF);
 	NAU8822_SendI2CCommand(3, 0x06F);
 
 	HAL_Delay(250);
-
-	// NAU8822_SendI2CCommand(9,  0x050); //Detect Jack
-	// NAU8822_SendI2CCommand(13,  0x033); //Detect Jack
 
 	NAU8822_SendI2CCommand(4, 0x078); /* Audio Interface, i2s, 32bit 0x070-i2s 0x078-mic work*/
 	NAU8822_SendI2CCommand(5, 0x000); /*  */
@@ -141,8 +140,6 @@ void CODEC_Init(void) {
 
 	NAU8822_SendI2CCommand(11, 0x0FF);
 	NAU8822_SendI2CCommand(12, 0x1FF);
-	// NAU8822_SendI2CCommand(15, 0x1FF);
-	// I2C_WriteWAU8822(16, 0x1ff);
 
 	NAU8822_SendI2CCommand(43, 0x010); // Speaker out 0x010, Mute 0x020
 
@@ -155,49 +152,6 @@ void CODEC_Init(void) {
 
 	NAU8822_SendI2CCommand(45, 0x03f); // PGA
 	NAU8822_SendI2CCommand(46, 0x03f); // PGA
-
-	if (getInputType() == TRX_INPUT_MIC) // mic
-	{
-		NAU8822_SendI2CCommand(15, 0x000);
-		NAU8822_SendI2CCommand(16, 0x1ff);
-		NAU8822_SendI2CCommand(45, 0x03f); // PGA
-		NAU8822_SendI2CCommand(46, 0x13f); // PGA
-		NAU8822_SendI2CCommand(47, 0x000);
-		NAU8822_SendI2CCommand(48, 0x1ff);
-		NAU8822_SendI2CCommand(44, 0x030);
-	}
-
-	//		NAU8822_SendI2CCommand(58, 0x000); //Power Management 4 Master bias current power reduction options
-
-	//		NAU8822_SendI2CCommand(1,  0x01F);
-	//		NAU8822_SendI2CCommand(1,  0x01D);
-	//    NAU8822_SendI2CCommand(2,  0x1BF);  // 0x1BF  /* Enable L/R Headphone, ADC Mix/Boost, ADC */
-	//		NAU8822_SendI2CCommand(2,  0x1B3);   /* Enable L/R Headphone, ADC Mix/Boost, ADC */
-	//		NAU8822_SendI2CCommand(3,  0x06F);   /* Enable L/R main mixer, DAC */
-	//
-	//    NAU8822_SendI2CCommand(4,  0x070);   /* 32-bit word length, I2S format, Stereo */
-	//    NAU8822_SendI2CCommand(5,  0x000);   /* Companding control and loop back mode (all disable) */
-	//    NAU8822_SendI2CCommand(6,  0x000);   //0x040
-	//    NAU8822_SendI2CCommand(7,  0x000);   /* 16K for internal filter coefficients */
-	//
-	//    NAU8822_SendI2CCommand(10, 0x000);   // 0x008  /* DAC soft mute is disabled, DAC oversampling rate is 128x */
-	//		NAU8822_SendI2CCommand(11, 0x1FF);   /* DAC left digital volume control */
-	//    NAU8822_SendI2CCommand(12, 0x1FF);   /* DAC right digital volume control */
-
-	//    NAU8822_SendI2CCommand(14, 0x100);   //0x108 /* ADC HP filter is disabled, ADC oversampling rate is 128x */
-	//    NAU8822_SendI2CCommand(15, 0x1EF);   /* ADC left digital volume control */
-	//    NAU8822_SendI2CCommand(16, 0x1EF);   /* ADC right digital volume control */
-	//    NAU8822_SendI2CCommand(44, 0x033);   /* LMICN/LMICP is connected to PGA */
-	//    NAU8822_SendI2CCommand(50, 0x001);   /* Left DAC connected to LMIX */
-	//    NAU8822_SendI2CCommand(51, 0x001);   /* Right DAC connected to RMIX */
-	//
-	//		NAU8822_SendI2CCommand(52, 0x039);
-	//		NAU8822_SendI2CCommand(53, 0x039);
-	//		NAU8822_SendI2CCommand(54, 0x13f);
-	//		NAU8822_SendI2CCommand(55, 0x13f);
-	//		NAU8822_SendI2CCommand(60, 0x020);
-	//		NAU8822_SendI2CCommand(43, 0x000);
-	//		NAU8822_SendI2CCommand(49, 0x006);
 
 	NAU8822_SendI2CCommand(65, 0x000);
 
