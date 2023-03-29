@@ -442,6 +442,11 @@ void LoadSettings(bool clear) {
 			}
 		}
 
+#if defined(FRONTPANEL_MINI)
+		TRX.FFT_Background = false;
+		TRX.FFT_BW_Style = 3;
+#endif
+
 		// Shadow variables
 		TRX.SQL_shadow = TRX.VFO_A.SQL;
 		TRX.AGC_shadow = TRX.VFO_A.AGC;
@@ -505,14 +510,11 @@ void LoadCalibration(bool clear) {
 		println("[ERR] CALIBRATE Flash check CODE:", CALIBRATE.flash_id);
 		CALIBRATE.flash_id = CALIB_VERSION; // code for checking the firmware in the eeprom, if it does not match, we use the default
 
-		CALIBRATE.ENCODER_INVERT = false;  // invert left-right rotation of the main encoder
-		CALIBRATE.ENCODER2_INVERT = false; // invert left-right rotation of the optional encoder
-		CALIBRATE.ENCODER_DEBOUNCE = 0;    // time to eliminate contact bounce at the main encoder, ms
-		CALIBRATE.ENCODER2_DEBOUNCE = 10;  // time to eliminate contact bounce at the additional encoder, ms
-		CALIBRATE.ENCODER_SLOW_RATE = 25;  // slow down the encoder for high resolutions
-#if defined(FRONTPANEL_LITE)
-		CALIBRATE.ENCODER_SLOW_RATE = 10;
-#endif
+		CALIBRATE.ENCODER_INVERT = false;      // invert left-right rotation of the main encoder
+		CALIBRATE.ENCODER2_INVERT = false;     // invert left-right rotation of the optional encoder
+		CALIBRATE.ENCODER_DEBOUNCE = 0;        // time to eliminate contact bounce at the main encoder, ms
+		CALIBRATE.ENCODER2_DEBOUNCE = 10;      // time to eliminate contact bounce at the additional encoder, ms
+		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ON_FALLING = true;   // encoder only triggers when level A falls
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
@@ -556,6 +558,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 3.6f; // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 2;             // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 7;      // Max TRX Power for indication
+		CALIBRATE.PWR_VLT_Calibration = 1000.0f;  // VLT meter calibration
 #if defined(FRONTPANEL_X1)
 		CALIBRATE.ENCODER_INVERT = true;        // invert left-right rotation of the main encoder
 		CALIBRATE.ENCODER_ON_FALLING = true;    // encoder only triggers when level A falls
@@ -761,10 +764,12 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.TUNE_MAX_POWER = 15;             // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;     // Max TRX Power for indication
 #elif defined(FRONTPANEL_LITE)
+		CALIBRATE.ENCODER_SLOW_RATE = 10;
 		CALIBRATE.smeter_calibration_hf = 15;
 		CALIBRATE.TUNE_MAX_POWER = 5;         // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 15; // Max TRX Power for indication
 #elif defined(FRONTPANEL_MINI)
+		CALIBRATE.ENCODER_SLOW_RATE = 15;
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF
 		CALIBRATE.RFU_BPF_0_START = 138 * 1000 * 1000; // 2m
@@ -785,8 +790,12 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_7_END = 0;                   // disabled
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled
-		CALIBRATE.TUNE_MAX_POWER = 5;                  // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER_ON_METER = 15;          // Max TRX Power for indication
+		CALIBRATE.smeter_calibration_hf = 11;
+		CALIBRATE.TUNE_MAX_POWER = 5;             // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER_ON_METER = 15;     // Max TRX Power for indication
+		CALIBRATE.SWR_FWD_Calibration_HF = 21.0f; // SWR Transormator rate forward
+		CALIBRATE.SWR_BWD_Calibration_HF = 21.0f; // SWR Transormator rate return
+		CALIBRATE.PWR_VLT_Calibration = 1150.0f;  // VLT meter calibration
 #else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF U14-RF1
@@ -905,7 +914,6 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.TOUCHPAD_horizontal_flip = false; // Touchpad harozontal flip
 		CALIBRATE.INA226_EN = false;                // INA226 is not used				//Tisho
 		CALIBRATE.INA226_CurCalc = 0.4f;            // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
-		CALIBRATE.PWR_VLT_Calibration = 1000.0f;    // VLT meter calibration
 		CALIBRATE.PWR_CUR_Calibration = 2.5f;       // CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;                // Tuner averaging stages
 		CALIBRATE.CAT_Type = CAT_TS2000;

@@ -1042,8 +1042,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"Encoder slow rate", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
     {"Encoder2 debounce", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER2_DEBOUNCE, SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE},
     {"Encoder2 invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER2_INVERT, SYSMENU_HANDL_CALIB_ENCODER2_INVERT},
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || defined(FRONTPANEL_X1) || \
-    defined(FRONTPANEL_MINI)
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || defined(FRONTPANEL_X1)
     {"FAN Full start", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.FAN_FULL_START, SYSMENU_HANDL_CALIB_FAN_FULL_START},
     {"FAN Medium start", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.FAN_MEDIUM_START, SYSMENU_HANDL_CALIB_FAN_MEDIUM_START},
     {"FAN Medium stop", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.FAN_MEDIUM_STOP, SYSMENU_HANDL_CALIB_FAN_MEDIUM_STOP},
@@ -1058,14 +1057,20 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"INA226 Pwr Mon", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_INA226_PWR_MON},        // Tisho
     {"INA226 Cur Calc", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_INA226_CUR_CALL}, // Tisho
 #endif
+#ifndef FRONTPANEL_MINI
     {"LCD Rotate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LCD_Rotate, SYSMENU_HANDL_CALIB_LCD_Rotate},
+#endif
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || defined(FRONTPANEL_X1) || \
     defined(FRONTPANEL_MINI)
     {"LNA Compensation", SYSMENU_INT8, NULL, (uint32_t *)&CALIBRATE.LNA_compensation, SYSMENU_HANDL_CALIB_LNA_compensation},
 #endif
     {"Linear Pwr Control", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_HANDL_CALIB_LinearPowerControl},
 #if !defined(FRONTPANEL_LITE)
+#ifdef LAY_320x240
+    {"Max ChargePump", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq},
+#else
     {"Max ChargePump, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq},
+#endif
 #endif
     {"Max PWR on Meter", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.MAX_RF_POWER_ON_METER, SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER},
     {"Max Power in TUNE", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TUNE_MAX_POWER, SYSMENU_HANDL_CALIB_TUNE_MAX_POWER},

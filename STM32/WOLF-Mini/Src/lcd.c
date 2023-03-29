@@ -96,9 +96,6 @@ void LCD_Init(void) {
 	LCDDriver_setRotation(1);
 #endif
 
-#ifdef HAS_TOUCHPAD
-	TOUCHPAD_Init();
-#endif
 	LCDDriver_Fill(BG_COLOR);
 
 #ifdef HAS_BRIGHTNESS_CONTROL
@@ -997,7 +994,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		fft_zoom = TRX.FFT_ZoomCW;
 	}
 
-	sprintf(buff, "%dkHz x%d", FFT_current_spectrum_width_hz / 1000, fft_zoom);
+	sprintf(buff, "%dk x%d", FFT_current_spectrum_width_hz / 1000, fft_zoom);
 
 	static char prev_fftbw_buff[16] = "";
 	if (redraw || strcmp(prev_fftbw_buff, buff) != 0) {
@@ -1282,139 +1279,11 @@ void LCD_showInfo(char text[], bool autohide) {
 
 void LCD_processTouch(uint16_t x, uint16_t y) {}
 
-void LCD_processHoldTouch(uint16_t x, uint16_t y) {
-#if (defined(HAS_TOUCHPAD))
-	if (TRX.Locked) {
-		return;
-	}
+void LCD_processHoldTouch(uint16_t x, uint16_t y) {}
 
-	if (LCD_systemMenuOpened) {
-		SYSMENU_eventCloseAllSystemMenu();
-		LCD_redraw(false);
-		return;
-	}
+bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) { return false; }
 
-	// windows
-	// outline touch (window close)
-	if (LCD_window.opened && (y <= LCD_window.y || y >= (LCD_window.y + LCD_window.h) || x <= LCD_window.x || x >= (LCD_window.x + LCD_window.w))) {
-		LCD_closeWindow();
-		return;
-	}
-
-	// window buttons
-	for (uint8_t i = 0; i < LCD_window.buttons_count; i++) {
-		if ((LCD_window.buttons[i].x1 <= x) && (LCD_window.buttons[i].y1 <= y) && (LCD_window.buttons[i].x2 >= x) && (LCD_window.buttons[i].y2 >= y)) {
-			if (LCD_window.buttons[i].holdHandler != NULL) {
-				LCD_window.buttons[i].holdHandler(LCD_window.buttons[i].parameter);
-			}
-			return;
-		}
-	}
-
-	if (LCD_window.opened) {
-		return;
-	}
-
-	// bw hold click
-	if (y >= LAYOUT->BW_TRAPEZ_POS_Y && y <= LAYOUT->BW_TRAPEZ_POS_Y + LAYOUT->BW_TRAPEZ_HEIGHT && x >= LAYOUT->BW_TRAPEZ_POS_X && x <= LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH) {
-		FRONTPANEL_BUTTONHANDLER_BW(0);
-		return;
-	}
-
-	for (uint8_t i = 0; i < TouchpadButton_handlers_count; i++) {
-		if ((TouchpadButton_handlers[i].x1 <= x) && (TouchpadButton_handlers[i].y1 - 10 <= y) && (TouchpadButton_handlers[i].x2 >= x) && (TouchpadButton_handlers[i].y2 >= y)) {
-			if (TouchpadButton_handlers[i].holdHandler != NULL) {
-				TouchpadButton_handlers[i].holdHandler(TouchpadButton_handlers[i].parameter);
-			}
-			return;
-		}
-	}
-#endif
-}
-
-bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
-#if (defined(HAS_TOUCHPAD))
-	if (TRX.Locked) {
-		return false;
-	}
-	if (LCD_systemMenuOpened || LCD_window.opened) {
-		return false;
-	}
-
-	// fft/wtf swipe
-	if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) >= y)) {
-		const uint8_t slowler = 4;
-		float64_t step = TRX.FRQ_STEP;
-		if (TRX.Fast) {
-			step = TRX.FRQ_FAST_STEP;
-		}
-		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-		}
-		if (step < 1.0f) {
-			step = 1.0f;
-		}
-
-		uint32_t newfreq = getFreqOnFFTPosition(LAYOUT->FFT_PRINT_SIZE / 2 - dx / slowler);
-		if (dx < 0.0f) {
-			newfreq = ceill(newfreq / step) * step;
-		}
-		if (dx > 0.0f) {
-			newfreq = floorl(newfreq / step) * step;
-		}
-
-		TRX_setFrequency(newfreq, CurrentVFO);
-		LCD_UpdateQuery.FreqInfo = true;
-		return true;
-	}
-	// bottom buttons
-	if ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) < y) {
-		if (dx < -50) {
-			TRX.FRONTPANEL_funcbuttons_page++;
-			if (TRX.FRONTPANEL_funcbuttons_page >= FUNCBUTTONS_PAGES) {
-				TRX.FRONTPANEL_funcbuttons_page = 0;
-			}
-			LCD_UpdateQuery.BottomButtons = true;
-			LCD_UpdateQuery.TopButtons = true;
-			return true; // stop
-		}
-		if (dx > 50) {
-			if (TRX.FRONTPANEL_funcbuttons_page == 0) {
-				TRX.FRONTPANEL_funcbuttons_page = FUNCBUTTONS_PAGES - 1;
-			} else {
-				TRX.FRONTPANEL_funcbuttons_page--;
-			}
-			LCD_UpdateQuery.BottomButtons = true;
-			LCD_UpdateQuery.TopButtons = true;
-			return true; // stop
-		}
-	}
-#endif
-	return false;
-}
-
-bool LCD_processSwipeTwoFingersTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
-#if (defined(HAS_TOUCHPAD))
-	if (TRX.Locked) {
-		return false;
-	}
-	if (LCD_systemMenuOpened || LCD_window.opened) {
-		return false;
-	}
-
-	// fft/wtf two finger swipe zoom
-	if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) >= y)) {
-		if (dx < -50) {
-			FRONTPANEL_BUTTONHANDLER_ZOOM_P(0);
-			return true;
-		} else if (dx > 50) {
-			FRONTPANEL_BUTTONHANDLER_ZOOM_N(0);
-			return true;
-		}
-	}
-#endif
-	return false;
-}
+bool LCD_processSwipeTwoFingersTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) { return false; }
 
 void LCD_showTooltip(char text[]) {
 	Tooltip_DiplayStartTime = HAL_GetTick();
@@ -1461,32 +1330,9 @@ static void LCD_printTooltip(void) {
 	}
 }
 
-void LCD_openWindow(uint16_t w, uint16_t h) {
-#if (defined(HAS_TOUCHPAD))
-	LCD_busy = true;
-	LCD_window.opened = true;
-	LCDDriver_fadeScreen(0.2f);
-	uint16_t x = LCD_WIDTH / 2 - w / 2;
-	uint16_t y = LCD_HEIGHT / 2 - h / 2;
-	LCD_window.y = y;
-	LCD_window.x = x;
-	LCD_window.w = w;
-	LCD_window.h = h;
-	LCDDriver_drawRoundedRectWH(x, y, w, h, COLOR->WINDOWS_BORDER, 5, false);
-	LCDDriver_drawRoundedRectWH(x + 1, y + 1, w - 2, h - 2, COLOR->WINDOWS_BG, 5, true);
-	LCD_busy = false;
+void LCD_openWindow(uint16_t w, uint16_t h) {}
 
-	LCD_window.buttons_count = 0;
-#endif
-}
-
-void LCD_closeWindow(void) {
-#if (defined(HAS_TOUCHPAD))
-	LCD_window.opened = false;
-	LCD_window.buttons_count = 0;
-	LCD_redraw(false);
-#endif
-}
+void LCD_closeWindow(void) {}
 
 static void LCD_showBandWindow(bool secondary_vfo) {}
 
