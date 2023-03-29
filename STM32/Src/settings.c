@@ -445,6 +445,8 @@ void LoadSettings(bool clear) {
 #if defined(FRONTPANEL_MINI)
 		TRX.FFT_Background = false;
 		TRX.FFT_BW_Style = 3;
+		TRX.FFT_Height = 4;
+		TRX.ColorThemeId = 2;
 #endif
 
 		// Shadow variables
