@@ -16,7 +16,7 @@
 #include <string.h>
 
 #define kLDPC_iterations 15      // original 10
-#define kMax_candidates 150      // original 20
+#define kMax_candidates 120      // original 20
 #define kMax_decoded_messages 30 // original 6
 #define kMax_message_length 20
 #define kMin_score 60 // original 40 Minimum sync score threshold for candidates
