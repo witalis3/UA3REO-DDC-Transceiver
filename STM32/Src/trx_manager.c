@@ -19,6 +19,7 @@
 #include "pre_distortion.h"
 #include "rf_unit.h"
 #include "sd.h"
+#include "self_test.h"
 #include "settings.h"
 #include "snap.h"
 #include "swr_analyzer.h"
@@ -543,7 +544,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 
 	// services
-	if (SYSMENU_spectrum_opened || SYSMENU_swr_opened) {
+	if (SYSMENU_spectrum_opened || SYSMENU_swr_opened || SYSMENU_selftest_opened) {
 		return;
 	}
 

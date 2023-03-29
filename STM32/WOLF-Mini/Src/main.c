@@ -253,7 +253,7 @@ int main(void) {
 	FRONTPANEL_Init();
 
 	println("[OK] Settings loading");
-	if (PERIPH_FrontPanel_Buttons[0].state) // soft reset (MENU)
+	if (PERIPH_FrontPanel_Buttons[0].state) // soft reset (F1)
 	{
 		println("MENU Button pressed");
 		LoadSettings(true);
@@ -262,7 +262,7 @@ int main(void) {
 	}
 
 	// DFU bootloader
-	if (TRX.NeedGoToBootloader || PERIPH_FrontPanel_Buttons[5].state) {
+	if (TRX.NeedGoToBootloader || PERIPH_FrontPanel_Buttons[6].state) { // MENU
 		TRX.NeedGoToBootloader = false;
 		SaveSettings();
 		JumpToBootloader();
@@ -293,7 +293,7 @@ int main(void) {
 	InitProfiler();
 
 	println("[OK] Calibration loading");
-	if (PERIPH_FrontPanel_Buttons[2].state && PERIPH_FrontPanel_Buttons[0].state) { // Very hard reset (MENU+F4)
+	if (PERIPH_FrontPanel_Buttons[2].state && PERIPH_FrontPanel_Buttons[0].state) { // Very hard reset (F1+F4)
 		LoadCalibration(true);
 	} else {
 		LoadCalibration(false);

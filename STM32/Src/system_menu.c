@@ -513,7 +513,11 @@ static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void);
 static bool SYSMENU_HANDL_CHECK_HIDDEN_ENABLED(void);
 
 #ifdef LCD_SMALL_INTERFACE
+#ifdef LAY_320x240
+#define interactive_menu_top 54
+#else
 #define interactive_menu_top 46
+#endif
 #else
 #define interactive_menu_top 54
 #endif

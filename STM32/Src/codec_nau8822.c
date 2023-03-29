@@ -112,6 +112,7 @@ void CODEC_Init(void) {
 	{
 		println("[ERR] Audio codec not found");
 		LCD_showError("Audio codec init error", true);
+		CODEC_test_result = false;
 	}
 
 	NAU8822_SendI2CCommand(0, 0x000); /* Reset all registers */

@@ -109,11 +109,13 @@ void SELF_TEST_Draw(void) {
 			pass = false;
 		}
 #endif
+#ifdef HRDW_MCP3008_1
 		if (FPGA_bus_test_result) {
 			LCDDriver_printText("MCP3008", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			SELF_TEST_printResult(pass, pos_y);
 			pos_y += margin_bottom;
 		}
+#endif
 
 		// STM32 EEPROM test
 		if (FPGA_bus_test_result) {
