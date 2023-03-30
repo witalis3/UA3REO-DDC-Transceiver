@@ -60,6 +60,7 @@ void tune_Off_sequence(void) {
 void set_Xmit_Freq(uint32_t BandFreq, uint16_t Freq) {
 	uint32_t F_Long = BandFreq * 1000 + Freq; // BandFreq is in kHz and add the needed offset
 	TRX_setFrequency(F_Long, CurrentVFO);
+	BUTTONHANDLER_SETMODE(TRX_MODE_DIGI_U);
 }
 
 void set_FT8_Tone(char ft8_tone) {

@@ -7978,11 +7978,17 @@ void SYSMENU_redrawCurrentItem(bool redrawAsUnselected) {
 }
 
 void BUTTONHANDLER_CHOOSE_MENU_ELEMENT(uint32_t parameter) {
-	SYSMENU_redrawCurrentItem(true);
-	setCurrentMenuIndex(parameter);
-	sysmenu_item_selected_by_enc2 = false;
-	SYSMENU_redrawCurrentItem(false);
-	SYSMENU_eventSecEncoderClickSystemMenu(); // emulate enc2 click after touch
+	bool toggle = getCurrentMenuIndex() == parameter;
+	
+	if (toggle) {
+		SYSMENU_eventSecEncoderClickSystemMenu(); // emulate enc2 click after touch
+	} else {
+		SYSMENU_redrawCurrentItem(true);
+		setCurrentMenuIndex(parameter);
+		sysmenu_item_selected_by_enc2 = false;
+		SYSMENU_redrawCurrentItem(false);
+		SYSMENU_eventSecEncoderClickSystemMenu(); // emulate enc2 click after touch
+	}
 }
 
 static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement, bool onlyVal, bool redrawAsUnselected) {
