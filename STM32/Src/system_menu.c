@@ -235,6 +235,10 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON33(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON34(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON35(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON36(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON37(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON38(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON39(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON40(int8_t direction);
 
 static void SYSMENU_HANDL_DECODERS_CW_Decoder(int8_t direction);
 static void SYSMENU_HANDL_DECODERS_CW_Decoder_Threshold(int8_t direction);
@@ -861,6 +865,18 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"Func button 35", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[34], SYSMENU_HANDL_SCREEN_FUNC_BUTTON35},
 #if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 35
     {"Func button 36", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[35], SYSMENU_HANDL_SCREEN_FUNC_BUTTON36},
+#endif
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 36
+    {"Func button 37", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[36], SYSMENU_HANDL_SCREEN_FUNC_BUTTON37},
+#endif
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 37
+    {"Func button 38", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[37], SYSMENU_HANDL_SCREEN_FUNC_BUTTON38},
+#endif
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 38
+    {"Func button 39", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[38], SYSMENU_HANDL_SCREEN_FUNC_BUTTON39},
+#endif
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 39
+    {"Func button 40", SYSMENU_FUNCBUTTON, NULL, (uint32_t *)&TRX.FuncButtons[39], SYSMENU_HANDL_SCREEN_FUNC_BUTTON40},
 #endif
 #endif
 #endif
@@ -3999,6 +4015,46 @@ static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON36(int8_t direction) {
 		TRX.FuncButtons[35] = FUNCBUTTONS_COUNT - 1;
 	}
 }
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 36
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON37(int8_t direction) {
+	if (TRX.FuncButtons[36] > 0 || direction > 0) {
+		TRX.FuncButtons[36] += direction;
+	}
+	if (TRX.FuncButtons[36] >= FUNCBUTTONS_COUNT) {
+		TRX.FuncButtons[36] = FUNCBUTTONS_COUNT - 1;
+	}
+}
+#endif
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 37
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON38(int8_t direction) {
+	if (TRX.FuncButtons[37] > 0 || direction > 0) {
+		TRX.FuncButtons[37] += direction;
+	}
+	if (TRX.FuncButtons[37] >= FUNCBUTTONS_COUNT) {
+		TRX.FuncButtons[37] = FUNCBUTTONS_COUNT - 1;
+	}
+}
+#endif
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 38
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON39(int8_t direction) {
+	if (TRX.FuncButtons[38] > 0 || direction > 0) {
+		TRX.FuncButtons[38] += direction;
+	}
+	if (TRX.FuncButtons[38] >= FUNCBUTTONS_COUNT) {
+		TRX.FuncButtons[38] = FUNCBUTTONS_COUNT - 1;
+	}
+}
+#endif
+#if (FUNCBUTTONS_ON_PAGE * FUNCBUTTONS_PAGES) > 39
+static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON40(int8_t direction) {
+	if (TRX.FuncButtons[39] > 0 || direction > 0) {
+		TRX.FuncButtons[39] += direction;
+	}
+	if (TRX.FuncButtons[39] >= FUNCBUTTONS_COUNT) {
+		TRX.FuncButtons[39] = FUNCBUTTONS_COUNT - 1;
+	}
+}
+#endif
 #endif
 #endif
 #endif
