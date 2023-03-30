@@ -7979,7 +7979,7 @@ void SYSMENU_redrawCurrentItem(bool redrawAsUnselected) {
 
 void BUTTONHANDLER_CHOOSE_MENU_ELEMENT(uint32_t parameter) {
 	bool toggle = getCurrentMenuIndex() == parameter;
-	
+
 	if (toggle) {
 		SYSMENU_eventSecEncoderClickSystemMenu(); // emulate enc2 click after touch
 	} else {
@@ -8110,8 +8110,8 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 
 	printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN + x * (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN) + additionalLeftMargin,
 	                      LAYOUT->SYSMENU_BUTTON_MARGIN + y * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN), LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT,
-	                      menuElement->title, ctmp, !isInfoline && !redrawAsUnselected && selected, !isInfoline && !redrawAsUnselected && sysmenu_item_selected_by_enc2 && selected, elementIndex,
-	                      BUTTONHANDLER_CHOOSE_MENU_ELEMENT, BUTTONHANDLER_CHOOSE_MENU_ELEMENT, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	                      menuElement->title, ctmp, !isInfoline && !redrawAsUnselected && selected, !isInfoline && !redrawAsUnselected && sysmenu_item_selected_by_enc2 && selected,
+	                      elementIndex, BUTTONHANDLER_CHOOSE_MENU_ELEMENT, BUTTONHANDLER_CHOOSE_MENU_ELEMENT, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 
 	sysmenu_draw_index++;
 #else // old style
