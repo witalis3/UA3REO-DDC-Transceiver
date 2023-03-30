@@ -1148,7 +1148,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"RF GAIN QO100", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_QO100, SYSMENU_HANDL_CALIB_RF_GAIN_QO100},
 #endif
 #endif
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
+#if defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1)
     {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "SPLIT", "RU4PN", "WF-100D"}},
 #endif
     {"RTC Coarse Calibr", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.RTC_Coarse_Calibration, SYSMENU_HANDL_CALIB_RTC_COARSE_CALIBRATION},
@@ -8110,7 +8110,7 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 
 	printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN + x * (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN) + additionalLeftMargin,
 	                      LAYOUT->SYSMENU_BUTTON_MARGIN + y * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN), LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT,
-	                      menuElement->title, ctmp, !isInfoline && !redrawAsUnselected && selected, !isInfoline && !redrawAsUnselected && sysmenu_item_selected_by_enc2, elementIndex,
+	                      menuElement->title, ctmp, !isInfoline && !redrawAsUnselected && selected, !isInfoline && !redrawAsUnselected && sysmenu_item_selected_by_enc2 && selected, elementIndex,
 	                      BUTTONHANDLER_CHOOSE_MENU_ELEMENT, BUTTONHANDLER_CHOOSE_MENU_ELEMENT, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 
 	sysmenu_draw_index++;
