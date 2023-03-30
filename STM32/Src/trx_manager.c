@@ -1956,6 +1956,15 @@ void BUTTONHANDLER_CQ(uint32_t parameter) {
 #if HRDW_HAS_SD
 	if (SD_RecordInProcess) {
 		SD_NeedStopRecord = true;
+		return;
+	}
+	if (SD_PlayInProcess) {
+		SD_NeedStopPlay = true;
+		return;
+	}
+	if (SD_PlayCQMessageInProcess) {
+		SD_NeedStopPlay = true;
+		return;
 	}
 
 	// go tx
