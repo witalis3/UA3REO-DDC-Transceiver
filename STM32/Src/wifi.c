@@ -24,8 +24,8 @@ static SRAM char WIFI_AnswerBuffer[WIFI_ANSWER_BUFFER_SIZE] = {0};
 static SRAM char WIFI_readedLine[WIFI_LINE_BUFFER_SIZE] = {0};
 static SRAM char tmp[WIFI_LINE_BUFFER_SIZE] = {0};
 static SRAM int16_t WIFI_RLEStreamBuffer[WIFI_RLE_BUFFER_SIZE] = {0};
-static SRAM uint16_t WIFI_RLEStreamBuffer_index = 0;
-static SRAM uint16_t WIFI_RLEStreamBuffer_part = 0;
+static SRAM uint16_t WIFI_RLEStreamBuffer_index_full = 0;
+static SRAM uint16_t WIFI_RLEStreamBuffer_index_partial = 0;
 static uint32_t WIFI_Answer_ReadIndex = 0;
 static uint32_t commandStartTime = 0;
 static uint8_t WIFI_FoundedAP_Index = 0;
@@ -1005,16 +1005,18 @@ static void WIFI_getHTTPResponse(void) {
 								*istr2 = 0;
 								response_length = atoi(istr);
 								istr2++;
-								strncat(WIFI_HTTResponseHTML, istr2, response_length);
+								if ((strlen(WIFI_HTTResponseHTML) + response_length) < sizeof(WIFI_HTTResponseHTML)) {
+									strncat(WIFI_HTTResponseHTML, istr2, response_length);
 
-								// partial callback for image printing
-								readed_body_length += strlen(WIFI_HTTResponseHTML);
+									// partial callback for image printing
+									readed_body_length += response_length;
 
-								// update timeout start
-								start_time = HAL_GetTick();
+									// update timeout start
+									start_time = HAL_GetTick();
 
-								if (WIFI_ProcessingCommandCallback == WIFI_printImage_stream_callback) {
-									WIFI_printImage_stream_partial_callback();
+									if (WIFI_ProcessingCommandCallback == WIFI_printImage_stream_callback) {
+										WIFI_printImage_stream_partial_callback();
+									}
 								}
 							}
 						}
@@ -1187,26 +1189,38 @@ static void WIFI_printImage_stream_partial_callback(void) {
 	// parse hex output from server (convert to bin)
 	char *istr = WIFI_HTTResponseHTML;
 	char hex[5] = {0};
-	WIFI_RLEStreamBuffer_index = 0;
+	WIFI_RLEStreamBuffer_index_full = 0;
+	WIFI_RLEStreamBuffer_index_partial = 0;
 	int16_t val = 0;
 	uint32_t len = strlen(WIFI_HTTResponseHTML);
-	while (*istr != 0 && (len >= ((WIFI_RLEStreamBuffer_index * 4) + 4))) {
+
+	while (*istr != 0 && (len >= ((WIFI_RLEStreamBuffer_index_full * 4) + 4))) {
 		// Get hex
 		strncpy(hex, istr, 4);
 		val = (int16_t)(strtol(hex, NULL, 16));
 		istr += 4;
+		
 		// Save
-		WIFI_RLEStreamBuffer[WIFI_RLEStreamBuffer_index] = val;
-		WIFI_RLEStreamBuffer_index++;
+		WIFI_RLEStreamBuffer[WIFI_RLEStreamBuffer_index_partial] = val;
+		WIFI_RLEStreamBuffer_index_full++;
+		WIFI_RLEStreamBuffer_index_partial++;
+		
+		//buffer full, send to LCD RLE stream decoder
+		if (WIFI_RLEStreamBuffer_index_partial >= (WIFI_RLE_BUFFER_SIZE - 2)) {
+			LCDDriver_printImage_RLECompressed_ContinueStream(WIFI_RLEStreamBuffer, WIFI_RLEStreamBuffer_index_partial);
+			WIFI_RLEStreamBuffer_index_partial = 0;
+		}
 	}
 
 	// send to LCD RLE stream decoder
-	LCDDriver_printImage_RLECompressed_ContinueStream(WIFI_RLEStreamBuffer, WIFI_RLEStreamBuffer_index);
+	if (WIFI_RLEStreamBuffer_index_partial > 0) {
+		LCDDriver_printImage_RLECompressed_ContinueStream(WIFI_RLEStreamBuffer, WIFI_RLEStreamBuffer_index_partial);
+	}
 
 	// clean answer
-	if (strlen(WIFI_HTTResponseHTML) > (WIFI_RLEStreamBuffer_index * 4)) // part buffer preceed, move to begin
+	if (len > (WIFI_RLEStreamBuffer_index_full * 4)) // part buffer preceed, move to begin
 	{
-		istr = &WIFI_HTTResponseHTML[(WIFI_RLEStreamBuffer_index * 4)];
+		istr = &WIFI_HTTResponseHTML[WIFI_RLEStreamBuffer_index_full * 4];
 		strcpy(WIFI_HTTResponseHTML, istr);
 	} else {
 		dma_memset(WIFI_HTTResponseHTML, 0x00, sizeof(WIFI_HTTResponseHTML));
@@ -1235,7 +1249,6 @@ static void WIFI_printImage_Propagination_callback(void) {
 
 				if (filesize > 0 && width > 0 && height > 0) {
 					LCDDriver_printImage_RLECompressed_StartStream(LCD_WIDTH / 2 - width / 2, LCD_HEIGHT / 2 - height / 2, width, height);
-					WIFI_RLEStreamBuffer_part = 0;
 					char buff[64] = {0};
 					sprintf(buff, "/trx_services/propagination.php?part=0&width=%u&height=%u", LCD_WIDTH, LCD_HEIGHT);
 					WIFI_getHTTPpage("ua3reo.ru", buff, WIFI_printImage_stream_callback, false, false);
@@ -1268,7 +1281,6 @@ static void WIFI_printImage_DayNight_callback(void) {
 
 				if (filesize > 0 && width > 0 && height > 0) {
 					LCDDriver_printImage_RLECompressed_StartStream(LCD_WIDTH / 2 - width / 2, LCD_HEIGHT / 2 - height / 2, width, height);
-					WIFI_RLEStreamBuffer_part = 0;
 					WIFI_getHTTPpage("ua3reo.ru", "/trx_services/daynight.php?part=0", WIFI_printImage_stream_callback, false, false);
 				}
 			}
@@ -1296,7 +1308,6 @@ static void WIFI_printImage_Ionogram_callback(void) {
 
 				if (filesize > 0 && width > 0 && height > 0) {
 					LCDDriver_printImage_RLECompressed_StartStream(LCD_WIDTH / 2 - width / 2, LCD_HEIGHT / 2 - height / 2, width, height);
-					WIFI_RLEStreamBuffer_part = 0;
 					char buff[64] = {0};
 					sprintf(buff, "/trx_services/ionogram.php?part=0&ursiCode=%s", TRX.URSI_CODE);
 					WIFI_getHTTPpage("ua3reo.ru", buff, WIFI_printImage_stream_callback, false, false);
