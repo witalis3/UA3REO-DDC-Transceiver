@@ -1199,13 +1199,13 @@ static void WIFI_printImage_stream_partial_callback(void) {
 		strncpy(hex, istr, 4);
 		val = (int16_t)(strtol(hex, NULL, 16));
 		istr += 4;
-		
+
 		// Save
 		WIFI_RLEStreamBuffer[WIFI_RLEStreamBuffer_index_partial] = val;
 		WIFI_RLEStreamBuffer_index_full++;
 		WIFI_RLEStreamBuffer_index_partial++;
-		
-		//buffer full, send to LCD RLE stream decoder
+
+		// buffer full, send to LCD RLE stream decoder
 		if (WIFI_RLEStreamBuffer_index_partial >= (WIFI_RLE_BUFFER_SIZE - 2)) {
 			LCDDriver_printImage_RLECompressed_ContinueStream(WIFI_RLEStreamBuffer, WIFI_RLEStreamBuffer_index_partial);
 			WIFI_RLEStreamBuffer_index_partial = 0;
