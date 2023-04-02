@@ -544,7 +544,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 
 	// services
-	if (SYSMENU_spectrum_opened || SYSMENU_swr_opened || SYSMENU_selftest_opened) {
+	if (LCD_systemMenuOpened || SYSMENU_spectrum_opened || SYSMENU_swr_opened || SYSMENU_selftest_opened) {
 		return;
 	}
 
