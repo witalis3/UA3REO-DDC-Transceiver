@@ -1057,6 +1057,7 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	if (redraw) {
 		LCD_UpdateQuery.StatusInfoGUIRedraw = false;
 	}
+	LCD_UpdateQuery.StatusInfoBarRedraw = redraw;
 	LCD_busy = false;
 }
 
@@ -1290,6 +1291,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		return;
 	}
 	if (LCD_busy) {
+		LCD_UpdateQuery.StatusInfoBarRedraw = redraw;
 		LCD_UpdateQuery.StatusInfoBar = true;
 		return;
 	}
@@ -1880,9 +1882,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	old_TRX_on_TX = TRX_on_TX;
 
 	LCD_UpdateQuery.StatusInfoBar = false;
-	if (redraw) {
-		LCD_UpdateQuery.StatusInfoBarRedraw = false;
-	}
+	LCD_UpdateQuery.StatusInfoBarRedraw = false;
 	LCD_busy = false;
 }
 
