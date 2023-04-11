@@ -396,12 +396,9 @@ int main(void) {
 	println("UA3REO Transceiver started!\r\n");
 	TRX_Inited = true;
 
-// Tisho
-#if defined(FRONTPANEL_BIG_V1)
 	if (CALIBRATE.INA226_EN) { //	if INA226 is activated then initialise
 		INA226_Init();
 	}
-#endif // Tisho end of change
 
 	// while(true){HAL_Delay(3000); SCB->AIRCR = 0x05FA0004; } //debug restart
 	/* USER CODE END 2 */
