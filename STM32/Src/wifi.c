@@ -158,10 +158,8 @@ void WIFI_Init(void) {
 
 void WIFI_Process(void) {
 	static IRAM2 char com_t[128] = {0};
-	static IRAM2 char tz[2] = {0};
 	static IRAM2 char com[128] = {0};
 	dma_memset(com_t, 0x00, sizeof(com_t));
-	dma_memset(tz, 0x00, sizeof(tz));
 	dma_memset(com, 0x00, sizeof(com));
 
 	if (WIFI_State == WIFI_NOTFOUND) {
@@ -204,10 +202,7 @@ void WIFI_Process(void) {
 		WIFI_SendCommand("AT+CIPRECVMODE=0\r\n"); // TCP receive passive mode
 		WIFI_WaitForOk();
 
-		strcat(com_t, "AT+CIPSNTPCFG=1,");
-		sprintf(tz, "%d", WIFI.Timezone);
-		strcat(com_t, tz);
-		strcat(com_t, ",\"0.pool.ntp.org\",\"1.pool.ntp.org\"\r\n");
+		strcat(com_t, "AT+CIPSNTPCFG=1,0,\"0.pool.ntp.org\",\"1.pool.ntp.org\"\r\n");
 		WIFI_SendCommand(com_t); // configure SNMP
 		WIFI_WaitForOk();
 
@@ -604,7 +599,7 @@ void WIFI_Process(void) {
 
 												// reset SNTP
 												char com_t[64] = {0};
-												sprintf(com_t, "AT+CIPSNTPCFG=1,%d,\"0.pool.ntp.org\",\"1.pool.ntp.org\"\r\n", WIFI.Timezone);
+												sprintf(com_t, "AT+CIPSNTPCFG=1,0,\"0.pool.ntp.org\",\"1.pool.ntp.org\"\r\n");
 												WIFI_SendCommand(com_t); // configure SNMP
 												WIFI_WaitForOk();
 												WIFI_State = WIFI_READY;

@@ -144,10 +144,12 @@ void WSPR_DoEvents(void) {
 	const uint16_t y_step = 20;
 #endif
 
-	uint32_t Time = RTC->TR;
-	uint8_t Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
-	uint8_t Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
-	uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
+	RTC_TimeTypeDef sTime = {0};
+	RTC_DateTypeDef sDate = {0};
+	getLocalDateTime(&sDate, &sTime);
+	uint8_t Hours = sTime.Hours;
+	uint8_t Minutes = sTime.Minutes;
+	uint8_t Seconds = sTime.Seconds;
 	static uint8_t OLD_Seconds = 0;
 
 	// Start timeslot

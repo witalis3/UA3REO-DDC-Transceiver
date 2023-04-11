@@ -17,6 +17,7 @@
  */
 /* USER CODE END Header */
 #include "fatfs.h"
+#include "functions.h"
 #include "hardware.h"
 
 uint8_t retUSER;  /* Return value for USER */
@@ -43,8 +44,7 @@ DWORD get_fattime(void) {
 	/* USER CODE BEGIN get_fattime */
 	RTC_TimeTypeDef sTime = {0};
 	RTC_DateTypeDef sDate = {0};
-	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+	getLocalDateTime(&sDate, &sTime);
 
 	// get time
 	return ((DWORD)(2000 + sDate.Year - 1980) << 25) | ((DWORD)sDate.Month << 21) | ((DWORD)sDate.Date << 16) | ((DWORD)sTime.Hours << 11) | ((DWORD)sTime.Minutes << 5) |

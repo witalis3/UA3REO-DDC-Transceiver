@@ -868,8 +868,7 @@ void FILEMANAGER_SCREENSHOT_handler(void) {
 	char filename[64] = {0};
 	RTC_TimeTypeDef sTime = {0};
 	RTC_DateTypeDef sDate = {0};
-	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+	getLocalDateTime(&sDate, &sTime);
 	sprintf(filename, "screenshot-%02d.%02d.%02d-%02d.%02d.%02d.bmp", sDate.Date, sDate.Month, sDate.Year, sTime.Hours, sTime.Minutes, sTime.Seconds);
 	println(filename);
 

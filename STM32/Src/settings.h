@@ -8,9 +8,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 91         // Settings config version
+#define SETT_VERSION 93         // Settings config version
 #define CALIB_VERSION 63        // Calibration config version
-#define WIFI_SETTINGS_VERSION 2 // WiFi config version
+#define WIFI_SETTINGS_VERSION 4 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f // Maximum amplitude when transmitting to FPGA
@@ -843,7 +843,7 @@ extern struct TRX_CALIBRATE {
 	bool OTA_update;
 	bool LCD_Rotate;
 	bool TOUCHPAD_horizontal_flip;
-	bool INA226_EN; // Tisho
+	bool INA226_EN;
 	bool LinearPowerControl;
 	bool ALC_Port_Enabled;
 	CHANNEL_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
@@ -855,11 +855,7 @@ extern struct TRX_CALIBRATE {
 
 extern struct TRX_WIFI {
 	uint8_t flash_id; // version check
-
 	// WIFI
-	int8_t Timezone;
-	bool Enabled;
-	bool CAT_Server;
 	char AP_1[MAX_WIFIPASS_LENGTH];
 	char Password_1[MAX_WIFIPASS_LENGTH];
 	char AP_2[MAX_WIFIPASS_LENGTH];
@@ -868,6 +864,9 @@ extern struct TRX_WIFI {
 	char Password_3[MAX_WIFIPASS_LENGTH];
 	char ALLQSO_TOKEN[ALLQSO_TOKEN_SIZE + 1];
 	char ALLQSO_LOGID[ALLQSO_TOKEN_SIZE + 1];
+	float32_t Timezone;
+	bool Enabled;
+	bool CAT_Server;
 	uint8_t csum;   // check sum
 	uint8_t ENDBit; // end bit
 } WIFI;

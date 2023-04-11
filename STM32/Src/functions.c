@@ -1072,8 +1072,16 @@ void getUTCDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime) {
 	HAL_RTC_GetTime(&hrtc, sTime, RTC_FORMAT_BIN);
 	HAL_RTC_GetDate(&hrtc, sDate, RTC_FORMAT_BIN);
 
-	// println("Local Date: ", sDate->Year, "-", sDate->Month, "-", sDate->Date);
-	// println("Local Time: ", sTime->Hours, "-", sTime->Minutes, "-", sTime->Seconds);
+	// println("UTC Date: ", sDate->Year, "-", sDate->Month, "-", sDate->Date);
+	// println("UTC Time: ", sTime->Hours, "-", sTime->Minutes, "-", sTime->Seconds);
+}
+
+void getLocalDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime) {
+	HAL_RTC_GetTime(&hrtc, sTime, RTC_FORMAT_BIN);
+	HAL_RTC_GetDate(&hrtc, sDate, RTC_FORMAT_BIN);
+
+	// println("UTC Date: ", sDate->Year, "-", sDate->Month, "-", sDate->Date);
+	// println("UTC Time: ", sTime->Hours, "-", sTime->Minutes, "-", sTime->Seconds);
 
 	time_t timestamp;
 	struct tm currTime;
@@ -1088,7 +1096,7 @@ void getUTCDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime) {
 
 	timestamp = mktime(&currTime);
 
-	timestamp -= WIFI.Timezone * 60 * 60;
+	timestamp += (int32_t)(WIFI.Timezone * 60.0f * 60.0f);
 
 	currTime = *localtime(&timestamp);
 
@@ -1099,6 +1107,6 @@ void getUTCDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime) {
 	sTime->Minutes = currTime.tm_min;
 	sTime->Seconds = currTime.tm_sec;
 
-	// println("UTC Date: ", sDate->Year, "-", sDate->Month, "-", sDate->Date);
-	// println("UTC Time: ", sTime->Hours, "-", sTime->Minutes, "-", sTime->Seconds);
+	// println("Local Date: ", sDate->Year, "-", sDate->Month, "-", sDate->Date);
+	// println("Local Time: ", sTime->Hours, "-", sTime->Minutes, "-", sTime->Seconds);
 }

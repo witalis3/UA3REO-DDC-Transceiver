@@ -581,7 +581,6 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Fine RIT Tune", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FineRITTune, SYSMENU_HANDL_TRX_FineRITTune},
 #endif
     {"Split freq sync", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Split_Mode_Sync_Freq, SYSMENU_HANDL_TRX_Split_Mode_Sync_Freq},
-
     {"Transverter 70cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_70cm, SYSMENU_HANDL_TRX_TRANSV_70CM},
     {"Transverter 23cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_23cm, SYSMENU_HANDL_TRX_TRANSV_23CM},
     {"Transverter 13cm", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Transverter_13cm, SYSMENU_HANDL_TRX_TRANSV_13CM},
@@ -909,7 +908,7 @@ const static struct sysmenu_item_handler sysmenu_wifi_handlers[] = {
     {"WIFI Network 2 Pas", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP2password},
     {"WIFI Network 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP3},
     {"WIFI Network 3 Pas", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP3password},
-    {"WIFI Timezone", SYSMENU_INT8, NULL, (uint32_t *)&WIFI.Timezone, SYSMENU_HANDL_WIFI_Timezone},
+    {"WIFI Timezone", SYSMENU_TIMEZONE, NULL, (uint32_t *)&WIFI.Timezone, SYSMENU_HANDL_WIFI_Timezone},
     {"WIFI CAT Server", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.CAT_Server, SYSMENU_HANDL_WIFI_CAT_Server},
     {"WIFI Update ESP", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_UpdateFW},
     {"ALLQSO.RU Token", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetALLQSO_TOKEN},
@@ -922,7 +921,7 @@ const static struct sysmenu_item_handler sysmenu_wifi_handlers[] = {
     {"WIFI Network 2 Pass", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP2password},
     {"WIFI Network 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SelectAP3},
     {"WIFI Network 3 Pass", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetAP3password},
-    {"WIFI Timezone", SYSMENU_INT8, NULL, (uint32_t *)&WIFI.Timezone, SYSMENU_HANDL_WIFI_Timezone},
+    {"WIFI Timezone", SYSMENU_TIMEZONE, NULL, (uint32_t *)&WIFI.Timezone, SYSMENU_HANDL_WIFI_Timezone},
     {"WIFI CAT Server", SYSMENU_BOOLEAN, NULL, (uint32_t *)&WIFI.CAT_Server, SYSMENU_HANDL_WIFI_CAT_Server},
     {"WIFI Update ESP", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_UpdateFW},
     {"ALLQSO.RU Token", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetALLQSO_TOKEN},
@@ -4441,6 +4440,20 @@ static void SYSMENU_HANDL_WIFI_Enabled(int8_t direction) {
 	NeedSaveWiFi = true;
 }
 
+static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction) {
+	WIFI.Timezone += direction * 0.5f;
+
+	if (WIFI.Timezone < -12.0f) {
+		WIFI.Timezone = -12.0f;
+	}
+	if (WIFI.Timezone > 12.0f) {
+		WIFI.Timezone = 12.0f;
+	}
+	WIFI_State = WIFI_INITED;
+
+	NeedSaveWiFi = true;
+}
+
 static void SYSMENU_HANDL_WIFI_SelectAP1(int8_t direction) {
 	sysmenu_wifi_needupdate_ap = true;
 	sysmenu_wifi_selected_ap_index = 0;
@@ -4490,19 +4503,6 @@ static void SYSMENU_HANDL_WIFI_SetALLQSO_LOGID(int8_t direction) {
 	sysmenu_selected_char_index = 0;
 	sysmenu_wifi_setALLQSO_LOGID_menu_opened = true;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
-}
-
-static void SYSMENU_HANDL_WIFI_Timezone(int8_t direction) {
-	WIFI.Timezone += direction;
-	if (WIFI.Timezone < -12) {
-		WIFI.Timezone = -12;
-	}
-	if (WIFI.Timezone > 12) {
-		WIFI.Timezone = 12;
-	}
-	WIFI_State = WIFI_INITED;
-
-	NeedSaveWiFi = true;
 }
 
 static void SYSMENU_HANDL_WIFI_CAT_Server(int8_t direction) {
@@ -4611,30 +4611,36 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 	static uint8_t Seconds;
 	static uint32_t Time;
 	char ctmp[50];
-	Time = RTC->TR;
-	Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
-	Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
-	Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
+
+	RTC_TimeTypeDef sTime = {0};
+	RTC_DateTypeDef sDate = {0};
+
 	if (direction != 0) {
+		getUTCDateTime(&sDate, &sTime);
+		Hours = sTime.Hours;
+		Minutes = sTime.Minutes;
+		Seconds = sTime.Seconds;
+
 		if (TimeMenuSelection == 0) {
 			if (Hours == 0 && direction < 0) {
-				LCD_UpdateQuery.SystemMenuRedraw = true;
-				return;
+				Hours = 23;
+			} else {
+				Hours = (uint8_t)(Hours + direction);
 			}
-			Hours = (uint8_t)(Hours + direction);
 		}
 		if (TimeMenuSelection == 1) {
 			if (Minutes == 0 && direction < 0) {
-				LCD_UpdateQuery.SystemMenuRedraw = true;
-				return;
+				Hours = 59;
+			} else {
+				Minutes = (uint8_t)(Minutes + direction);
 			}
-			Minutes = (uint8_t)(Minutes + direction);
 		}
 		if (TimeMenuSelection == 2) {
 			if (Seconds == 0 && direction < 0) {
-				return;
+				Seconds = 59;
+			} else {
+				Seconds = (uint8_t)(Seconds + direction);
 			}
-			Seconds = (uint8_t)(Seconds + direction);
 		}
 		if (Hours >= 24) {
 			Hours = 0;
@@ -4663,6 +4669,11 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 			return;
 		}
 		LCD_busy = true;
+
+		getLocalDateTime(&sDate, &sTime);
+		Hours = sTime.Hours;
+		Minutes = sTime.Minutes;
+		Seconds = sTime.Seconds;
 
 		uint16_t font_size = LAYOUT->SYSMENU_FONT_SIZE;
 		if (LCD_WIDTH > 700) {
@@ -8091,6 +8102,15 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 			}
 		}
 		sprintf(ctmp, "%dpF", (uint32_t)float_tmp_val);
+		break;
+	case SYSMENU_TIMEZONE:
+		dma_memcpy(&tmp_float, menuElement->value, sizeof(float32_t));
+		float32_t cel = 0;
+		float32_t ost = modff(tmp_float, &cel);
+		char ost_str[3] = {0};
+		sprintf(ost_str, "%d", (int32_t)fabsf(ost * 60));
+		addSymbols(ost_str, ost_str, 2, "0", false);
+		sprintf(ctmp, "%s%d:%s", cel > 0 ? "+" : "", (int32_t)cel, ost_str);
 		break;
 	}
 

@@ -36,6 +36,7 @@ typedef enum {
 	SYSMENU_B4,
 	SYSMENU_ATU_I,
 	SYSMENU_ATU_C,
+	SYSMENU_TIMEZONE,
 } SystemMenuType;
 
 struct sysmenu_item_handler {

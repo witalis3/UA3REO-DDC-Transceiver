@@ -222,12 +222,14 @@ void process_data(void) {
 void update_synchronization(void) {
 	char ctmp[30] = {0};
 
-	uint32_t Time = RTC->TR;
 	static uint8_t Seconds_Old;
 
-	uint8_t Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
-	uint8_t Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
-	uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
+	RTC_TimeTypeDef sTime = {0};
+	RTC_DateTypeDef sDate = {0};
+	getLocalDateTime(&sDate, &sTime);
+	uint8_t Hours = sTime.Hours;
+	uint8_t Minutes = sTime.Minutes;
+	uint8_t Seconds = sTime.Seconds;
 
 	if (Seconds >= 60) {      // Fix the seconds
 		Seconds = Seconds - 60; // it is efect of the time correction

@@ -256,11 +256,12 @@ void Enc2Rotate_Menager(int8_t direction, uint8_t decoded_msg) {
 
 	if (sButtonData[2].state) // if "Time correction" button is pressed
 	{
-
-		uint32_t Time = RTC->TR; // get the current time
-		uint8_t Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
-		uint8_t Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
-		uint8_t Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
+		RTC_TimeTypeDef sTime = {0};
+		RTC_DateTypeDef sDate = {0};
+		getUTCDateTime(&sDate, &sTime);
+		uint8_t Hours = sTime.Hours;
+		uint8_t Minutes = sTime.Minutes;
+		uint8_t Seconds = sTime.Seconds;
 
 		if (Seconds == 0 && direction < 0) {
 			return;
@@ -271,7 +272,6 @@ void Enc2Rotate_Menager(int8_t direction, uint8_t decoded_msg) {
 			Seconds = Seconds - 60;
 			Minutes++;
 		}
-		RTC_TimeTypeDef sTime;
 		sTime.TimeFormat = RTC_HOURFORMAT12_PM;
 		sTime.SubSeconds = 0;
 		sTime.SecondFraction = 0;

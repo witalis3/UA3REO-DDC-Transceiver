@@ -278,8 +278,7 @@ static bool SDCOMM_CREATE_RECORD_FILE_handler(void) {
 	char filename[64] = {0};
 	RTC_TimeTypeDef sTime = {0};
 	RTC_DateTypeDef sDate = {0};
-	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+	getLocalDateTime(&sDate, &sTime);
 	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d-%llu.wav", sDate.Date, sDate.Month, sDate.Year, sTime.Hours, sTime.Minutes, sTime.Seconds, CurrentVFO->Freq);
 	println(filename);
 	return SDCOMM_CREATE_RECORD_FILE_main(filename, true);
@@ -290,8 +289,7 @@ static bool SDCOMM_CREATE_CQ_MESSAGE_FILE_handler(void) { return SDCOMM_CREATE_R
 static bool SDCOMM_CREATE_RECORD_FILE_main(char *filename, bool audio_rec) {
 	RTC_TimeTypeDef sTime = {0};
 	RTC_DateTypeDef sDate = {0};
-	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
-	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+	getLocalDateTime(&sDate, &sTime);
 	if (f_open(&File, filename, FA_CREATE_ALWAYS | FA_WRITE) == FR_OK) {
 		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		dma_memset(&wav_hdr, 0x00, sizeof(wav_hdr));
@@ -747,6 +745,7 @@ static bool SD_WRITE_SETT_LINE(char *name, uint64_t *value, SystemMenuType type)
 		sprintf(valbuff, "%d", (int32_t)*value);
 		break;
 	case SYSMENU_FLOAT32:
+	case SYSMENU_TIMEZONE:
 		dma_memcpy(&tmp_float, value, sizeof(float32_t));
 		sprintf(valbuff, "%.6f", (double)tmp_float);
 		break;
@@ -1016,8 +1015,8 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.ADC_DITH", (uint64_t *)&TRX.ADC_DITH, SYSMENU_BOOLEAN);
 			// WIFI
 			SD_WRITE_SETT_LINE("WIFI.Enabled", (uint64_t *)&WIFI.Enabled, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("WIFI.Timezone", (uint64_t *)&WIFI.Timezone, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("WIFI.CAT_Server", (uint64_t *)&WIFI.CAT_Server, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("WIFI.Timezone", (uint64_t *)&WIFI.Timezone, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_STRING("WIFI.AP_1", WIFI.AP_1);
 			SD_WRITE_SETT_STRING("WIFI.AP_2", WIFI.AP_2);
 			SD_WRITE_SETT_STRING("WIFI.AP_3", WIFI.AP_3);
@@ -1994,11 +1993,11 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	if (strcmp(name, "WIFI.Enabled") == 0) {
 		WIFI.Enabled = uintval;
 	}
-	if (strcmp(name, "WIFI.Timezone") == 0) {
-		WIFI.Timezone = (int8_t)intval;
-	}
 	if (strcmp(name, "WIFI.CAT_Server") == 0) {
 		WIFI.CAT_Server = uintval;
+	}
+	if (strcmp(name, "WIFI.Timezone") == 0) {
+		WIFI.Timezone = floatval;
 	}
 	if (strcmp(name, "WIFI.AP_1") == 0) {
 		dma_memset(WIFI.AP_1, 0x00, sizeof(WIFI.AP_1));

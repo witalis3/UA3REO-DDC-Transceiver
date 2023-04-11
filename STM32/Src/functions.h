@@ -188,5 +188,6 @@ extern void *alloc_to_wtf(uint32_t size, bool reset);
 extern float fast_sqrt(const float x);
 extern uint8_t getPowerFromALC();
 extern void getUTCDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime);
+extern void getLocalDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime);
 
 #endif

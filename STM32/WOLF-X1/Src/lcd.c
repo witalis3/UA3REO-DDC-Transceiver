@@ -920,10 +920,12 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		CLEAN_SPACE
 		LCDDriver_printText("SDF", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	} else {
-		Time = RTC->TR;
-		Hours = ((Time >> 20) & 0x03) * 10 + ((Time >> 16) & 0x0f);
-		Minutes = ((Time >> 12) & 0x07) * 10 + ((Time >> 8) & 0x0f);
-		Seconds = ((Time >> 4) & 0x07) * 10 + ((Time >> 0) & 0x0f);
+		RTC_TimeTypeDef sTime = {0};
+		RTC_DateTypeDef sDate = {0};
+		getLocalDateTime(&sDate, &sTime);
+		Hours = sTime.Hours;
+		Minutes = sTime.Minutes;
+		Seconds = sTime.Seconds;
 
 		// if (redraw || (Hours != Last_showed_Hours))
 		{
