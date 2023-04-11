@@ -633,7 +633,7 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	if (bw_trapez_bw_hpf_margin_width > bw_trapez_margin) {
 		bw_trapez_bw_hpf_margin_width_offset = bw_trapez_bw_hpf_margin_width - bw_trapez_margin;
 	}
-	if (bw_trapez_left_width > 0) // left wing
+	if (bw_trapez_bw_left_width > 0) // left wing
 	{
 		LCDDriver_Fill_RectWH(LAYOUT->BW_TRAPEZ_POS_X + LAYOUT->BW_TRAPEZ_WIDTH / 2 - bw_trapez_left_width, LAYOUT->BW_TRAPEZ_POS_Y + 1, bw_trapez_left_width - bw_trapez_bw_hpf_margin_width,
 		                      LAYOUT->BW_TRAPEZ_HEIGHT - 2, COLOR->BW_TRAPEZ_FILL);
