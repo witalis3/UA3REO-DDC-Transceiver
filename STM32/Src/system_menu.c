@@ -4630,7 +4630,7 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		}
 		if (TimeMenuSelection == 1) {
 			if (Minutes == 0 && direction < 0) {
-				Hours = 59;
+				Minutes = 59;
 			} else {
 				Minutes = (uint8_t)(Minutes + direction);
 			}
@@ -4676,7 +4676,7 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		Seconds = sTime.Seconds;
 
 		uint16_t font_size = LAYOUT->SYSMENU_FONT_SIZE;
-		if (LCD_WIDTH > 700) {
+		if (LCD_WIDTH > 400) {
 			font_size *= 2;
 		}
 		uint16_t x_pos_clk = LCD_WIDTH / 2 - 4 * RASTR_FONT_W * font_size;
