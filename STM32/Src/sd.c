@@ -1200,6 +1200,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.TwoSignalTune_Balance", (uint64_t *)&CALIBRATE.TwoSignalTune_Balance, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.LinearPowerControl", (uint64_t *)&CALIBRATE.LinearPowerControl, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ALC_Port_Enabled", (uint64_t *)&CALIBRATE.ALC_Port_Enabled, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.ALC_Inverted_Logic", (uint64_t *)&CALIBRATE.ALC_Inverted_Logic, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.IF_GAIN_MIN", (uint64_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.IF_GAIN_MAX", (uint64_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_UINT8);
 
@@ -2584,6 +2585,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "CALIBRATE.ALC_Port_Enabled") == 0) {
 		CALIBRATE.ALC_Port_Enabled = bval;
+	}
+	if (strcmp(name, "CALIBRATE.ALC_Inverted_Logic") == 0) {
+		CALIBRATE.ALC_Inverted_Logic = bval;
 	}
 	if (strcmp(name, "CALIBRATE.IF_GAIN_MIN") == 0) {
 		CALIBRATE.IF_GAIN_MIN = (uint8_t)uintval;

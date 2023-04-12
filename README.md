@@ -305,6 +305,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 ### Calibration [appears by long pressing the MENU button in the settings menu]
 
 * **ALC Port Enabled** - Activation of transceiver power control by an external amplifier via the ALC line: up to 1 volt - ALC is disabled and the power set in the transceiver is used. from 1.0v to 3.0v - power adjustment from 0 to 100%
+* **ALC Inverted** - Invert ALC logic (3.0v - 0%, 1.0v - 100%)
 * **AM Modulation Index** - Set TX AM Modulation Scale
 * **ATU Averaging** - The number of steps of averaging SWR values during measurements in the operation of an automatic tuner
 * **BPF x** - Bandpass filter parameters

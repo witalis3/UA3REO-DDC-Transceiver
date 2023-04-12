@@ -286,6 +286,7 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction);
 static void SYSMENU_HANDL_SUPPORT(int8_t direction);
 
 static void SYSMENU_HANDL_CALIB_ALC_Port_Enabled(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ALC_Inverted_Logic(int8_t direction);
 static void SYSMENU_HANDL_CALIB_AM_MODULATION_INDEX(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ATU_AVERAGING(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_0_END(int8_t direction);
@@ -641,7 +642,7 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 #endif
     {"Auto Snap", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Snap, SYSMENU_HANDL_RX_Auto_Snap},
     {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_RX_AutoGain},
-		{"CODEC Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CODEC_Out_Volume, SYSMENU_HANDL_RX_CODEC_Out_Volume},
+    {"CODEC Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CODEC_Out_Volume, SYSMENU_HANDL_RX_CODEC_Out_Volume},
     {"DNR", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DNR_shadow, SYSMENU_HANDL_RX_DNR, {"OFF", "DNR1", "DNR2"}},
     {"DNR Average", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_HANDL_RX_DNR_AVERAGE},
     {"DNR Minimal", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_MINIMAL, SYSMENU_HANDL_RX_DNR_MINMAL},
@@ -699,7 +700,7 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"Auto Input Switch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Input_Switch, SYSMENU_HANDL_TX_Auto_Input_Switch},
     {"Input Type MAIN", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_MAIN, SYSMENU_HANDL_TX_INPUT_TYPE_MAIN, {"MIC", "LINE", "USB"}},
     {"Input Type DIGI", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_DIGI, SYSMENU_HANDL_TX_INPUT_TYPE_DIGI, {"MIC", "LINE", "USB"}},
-		{"LINE Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LINE_Volume, SYSMENU_HANDL_TX_LINE_Volume},
+    {"LINE Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LINE_Volume, SYSMENU_HANDL_TX_LINE_Volume},
     {"MIC Boost", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.MIC_Boost, SYSMENU_HANDL_TX_MIC_Boost},
     {"MIC Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_GAIN_DB, SYSMENU_HANDL_TX_MIC_Gain},
     {"MIC Noise Gate", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_NOISE_GATE, SYSMENU_HANDL_TX_MIC_NOISE_GATE},
@@ -983,6 +984,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "SPLIT", "RU4PN", "WF-100D"}},
 #endif
     {"ALC Port Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Port_Enabled, SYSMENU_HANDL_CALIB_ALC_Port_Enabled},
+    {"ALC Inverted", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Inverted_Logic, SYSMENU_HANDL_CALIB_ALC_Inverted_Logic},
 #ifdef LAY_320x240
     {"AM Mod Index", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.AM_MODULATION_INDEX, SYSMENU_HANDL_CALIB_AM_MODULATION_INDEX},
 #else
@@ -2638,7 +2640,7 @@ static void SYSMENU_HANDL_RX_CODEC_Out_Volume(int8_t direction) {
 	if (TRX.CODEC_Out_Volume > 127) {
 		TRX.CODEC_Out_Volume = 127;
 	}
-	
+
 	// reinit codec
 	CODEC_TXRX_mode();
 }
@@ -3118,7 +3120,7 @@ static void SYSMENU_HANDL_TX_LINE_Volume(int8_t direction) {
 	if (TRX.LINE_Volume > 31) {
 		TRX.LINE_Volume = 31;
 	}
-	
+
 	// reinit codec
 	CODEC_TXRX_mode();
 }
@@ -6624,6 +6626,15 @@ static void SYSMENU_HANDL_CALIB_ALC_Port_Enabled(int8_t direction) {
 	}
 	if (direction < 0) {
 		CALIBRATE.ALC_Port_Enabled = false;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_ALC_Inverted_Logic(int8_t direction) {
+	if (direction > 0) {
+		CALIBRATE.ALC_Inverted_Logic = true;
+	}
+	if (direction < 0) {
+		CALIBRATE.ALC_Inverted_Logic = false;
 	}
 }
 
