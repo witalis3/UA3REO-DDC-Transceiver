@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 93         // Settings config version
+#define SETT_VERSION 94         // Settings config version
 #define CALIB_VERSION 63        // Calibration config version
 #define WIFI_SETTINGS_VERSION 4 // WiFi config version
 
@@ -531,6 +531,7 @@ extern struct TRX_SETTINGS {
 	uint16_t AM_LPF_TX_Filter;
 	uint16_t FM_LPF_RX_Filter;
 	uint16_t FM_LPF_TX_Filter;
+	uint16_t FM_HPF_RX_Filter;
 	uint16_t VOX_TIMEOUT;
 	uint8_t CW_LPF_Stages;
 	uint8_t SSB_LPF_Stages;

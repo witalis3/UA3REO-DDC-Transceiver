@@ -639,6 +639,9 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
 				SYSMENU_HANDL_FILTER_SSB_HPF_RX_pass(direction);
 			}
+			if (CurrentVFO->Mode == TRX_MODE_NFM) {
+				SYSMENU_HANDL_FILTER_FM_HPF_RX_pass(direction);
+			}
 		} else {
 			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
 				SYSMENU_HANDL_FILTER_SSB_HPF_TX_pass(direction);

@@ -263,6 +263,7 @@ void LoadSettings(bool clear) {
 		TRX.AM_LPF_TX_Filter = 8000;                                   // default value of AM filter width
 		TRX.FM_LPF_RX_Filter = 8000;                                   // default value of the FM filter width
 		TRX.FM_LPF_TX_Filter = 8000;                                   // default value of the FM filter width
+		TRX.FM_HPF_RX_Filter = 0;                                      // default value of the FM filter width
 		TRX.CW_LPF_Stages = IIR_LPF_STAGES < 10 ? IIR_LPF_STAGES : 10; // stages for CW LPF filter
 		TRX.SSB_LPF_Stages = IIR_LPF_STAGES;                           // stages for SSB LPF filter
 		TRX.AMFM_LPF_Stages = 3;                                       // stages for NFM LPF filter

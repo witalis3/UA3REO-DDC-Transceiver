@@ -601,6 +601,7 @@ const static struct sysmenu_item_handler sysmenu_filter_handlers[] = {
     {"CW LPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_LPF_Filter, SYSMENU_HANDL_FILTER_CW_LPF_pass},
     {"CW LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_LPF_Stages, SYSMENU_HANDL_FILTER_CW_LPF_Stages},
     {"DIGI LPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.DIGI_LPF_Filter, SYSMENU_HANDL_FILTER_DIGI_LPF_pass},
+    {"FM HPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_HPF_RX_Filter, SYSMENU_HANDL_FILTER_FM_HPF_RX_pass},
     {"FM LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_RX_Filter, SYSMENU_HANDL_FILTER_FM_LPF_RX_pass},
     {"FM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_HANDL_FILTER_FM_LPF_TX_pass},
     {"SSB HPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_HPF_RX_Filter, SYSMENU_HANDL_FILTER_SSB_HPF_RX_pass},
@@ -2007,6 +2008,22 @@ void SYSMENU_HANDL_FILTER_FM_LPF_RX_pass(int8_t direction) {
 	}
 	if (TRX.FM_LPF_RX_Filter > MAX_LPF_WIDTH_NFM) {
 		TRX.FM_LPF_RX_Filter = MAX_LPF_WIDTH_NFM;
+	}
+
+	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
+}
+
+void SYSMENU_HANDL_FILTER_FM_HPF_RX_pass(int8_t direction) {
+	if (TRX.FM_HPF_RX_Filter > 0 || direction > 0) {
+		TRX.FM_HPF_RX_Filter += direction * 50;
+	}
+	if (TRX.FM_HPF_RX_Filter > MAX_HPF_WIDTH) {
+		TRX.FM_HPF_RX_Filter = MAX_HPF_WIDTH;
+	}
+
+	if (TRX.FM_HPF_RX_Filter > TRX.FM_LPF_RX_Filter) {
+		TRX.FM_HPF_RX_Filter = TRX.FM_LPF_RX_Filter;
 	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);

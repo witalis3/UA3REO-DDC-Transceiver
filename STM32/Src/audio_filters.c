@@ -35,6 +35,7 @@ static float32_t IIR_TX_LPF_CESSB_I_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_TX_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
 static float32_t IIR_RX1_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
 static float32_t IIR_RX1_HPF_I_State[IIR_RX_HPF_Taps_STATE_SIZE] = {0};
+static float32_t IIR_RX1_HPF_Q_State[IIR_RX_HPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_TX_HPF_I_State[IIR_RX_HPF_Taps_STATE_SIZE] = {0};
 static float32_t NOTCH_RX1_Coeffs[BIQUAD_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
 static float32_t NOTCH_RX1_State[2 * NOTCH_STAGES] = {0};
@@ -95,6 +96,7 @@ static float32_t IIR_RX2_GAUSS_I_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_GAUSS_Q_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
 static float32_t IIR_RX2_HPF_I_State[IIR_RX_HPF_Taps_STATE_SIZE] = {0};
+static float32_t IIR_RX2_HPF_Q_State[IIR_RX_HPF_Taps_STATE_SIZE] = {0};
 static float32_t NOTCH_RX2_Coeffs[BIQUAD_COEFF_IN_STAGE * NOTCH_STAGES] = {0};
 static float32_t NOTCH_RX2_State[2 * NOTCH_STAGES] = {0};
 static float32_t AGC_RX2_KW_HSHELF_FILTER_State[2 * EQ_STAGES] = {0};
@@ -329,6 +331,7 @@ arm_biquad_cascade_df2T_instance_f32 IIR_TX_LPF_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_TX_LPF_CESSB_I;
 // arm_biquad_cascade_df2T_instance_f32 IIR_TX_LPF_CESSB_Q;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX1_HPF_I;
+arm_biquad_cascade_df2T_instance_f32 IIR_RX1_HPF_Q;
 arm_biquad_cascade_df2T_instance_f32 IIR_TX_HPF_I;
 arm_biquad_cascade_df2T_instance_f32 NOTCH_RX1_FILTER = {NOTCH_STAGES, NOTCH_RX1_State, NOTCH_RX1_Coeffs}; // manual notch filter
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_I_P1_FILTER = {EQ_STAGES, EQ_RX_I_P1_FILTER_State, EQ_RX_P1_FILTER_Coeffs};
@@ -366,6 +369,7 @@ arm_biquad_cascade_df2T_instance_f32 IIR_RX2_LPF2_Q;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX2_GAUSS_I;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX2_GAUSS_Q;
 arm_biquad_cascade_df2T_instance_f32 IIR_RX2_HPF_I;
+arm_biquad_cascade_df2T_instance_f32 IIR_RX2_HPF_Q;
 arm_biquad_cascade_df2T_instance_f32 NOTCH_RX2_FILTER = {NOTCH_STAGES, NOTCH_RX2_State, NOTCH_RX2_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 AGC_RX2_KW_HSHELF_FILTER = {EQ_STAGES, AGC_RX2_KW_HSHELF_FILTER_State, AGC_RX_KW_HSHELF_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 AGC_RX2_KW_HPASS_FILTER = {EQ_STAGES, AGC_RX2_KW_HPASS_FILTER_State, AGC_RX_KW_HPASS_FILTER_Coeffs};
@@ -553,6 +557,7 @@ void ReinitAudioFilters(void) {
 	biquad_init_highpass(filter, TRX_SAMPLERATE, hpf_rx1_width);
 	fill_biquad_coeffs(filter, IIR_RX1_HPF_Coeffs, hpf_rx1_filter_stages);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_HPF_I, hpf_rx1_filter_stages, IIR_RX1_HPF_Coeffs, (float32_t *)&IIR_RX1_HPF_I_State[0]);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_HPF_Q, hpf_rx1_filter_stages, IIR_RX1_HPF_Coeffs, (float32_t *)&IIR_RX1_HPF_Q_State[0]);
 
 #if HRDW_HAS_DUAL_RX
 	// HPF RX2
@@ -560,6 +565,7 @@ void ReinitAudioFilters(void) {
 	biquad_init_highpass(filter, TRX_SAMPLERATE, hpf_rx2_width);
 	fill_biquad_coeffs(filter, IIR_RX2_HPF_Coeffs, hpf_rx2_filter_stages);
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_HPF_I, hpf_rx2_filter_stages, IIR_RX2_HPF_Coeffs, (float32_t *)&IIR_RX2_HPF_I_State[0]);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_HPF_Q, hpf_rx2_filter_stages, IIR_RX2_HPF_Coeffs, (float32_t *)&IIR_RX2_HPF_Q_State[0]);
 #endif
 
 	// HPF TX

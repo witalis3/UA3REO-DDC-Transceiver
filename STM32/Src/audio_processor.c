@@ -78,6 +78,7 @@ static void doRX_LPF2_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size);               
 static void doRX_LPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);                                   // LPF filter for I
 static void doRX_GAUSS_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size);                                // Gauss filter for I
 static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size);                                   // HPF filter for I
+static void doRX_HPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size);                                  // HPF filter for I and Q
 static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode, bool stereo);     // Digital Noise Reduction
 static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode, bool stereo);     // automatic gain control
 static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size);                                   // notch filter
@@ -354,6 +355,7 @@ void processRxAudio(void) {
 		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 		DemodulateFM(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, false, TRX_RX1_dBm); // 48khz iq
 		doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		doRX_HPF_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_LPF2_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_IFGain(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_NOTCH(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -478,6 +480,7 @@ void processRxAudio(void) {
 			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 			DemodulateFM(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, false, TRX_RX2_dBm);
 			doRX_NoiseBlanker(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			doRX_HPF_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_LPF2_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_IFGain(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_NOTCH(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -1523,6 +1526,22 @@ static void doRX_HPF_I(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 	else {
 		if (SecondaryVFO->HPF_RX_Filter_Width > 0) {
 			arm_biquad_cascade_df2T_f32_single(&IIR_RX2_HPF_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_I, size);
+		}
+	}
+#endif
+}
+
+// HPF filter for I and Q
+static void doRX_HPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
+	if (rx_id == AUDIO_RX1) {
+		if (CurrentVFO->HPF_RX_Filter_Width > 0) {
+			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX1_HPF_I, &IIR_RX1_HPF_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+		}
+	}
+#if HRDW_HAS_DUAL_RX
+	else {
+		if (SecondaryVFO->HPF_RX_Filter_Width > 0) {
+			arm_biquad_cascade_df2T_f32_IQ(&IIR_RX2_HPF_I, &IIR_RX2_HPF_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size);
 		}
 	}
 #endif

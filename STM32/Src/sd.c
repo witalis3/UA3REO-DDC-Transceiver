@@ -934,6 +934,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.AM_LPF_TX_Filter", (uint64_t *)&TRX.AM_LPF_TX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.FM_LPF_RX_Filter", (uint64_t *)&TRX.FM_LPF_RX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.FM_LPF_TX_Filter", (uint64_t *)&TRX.FM_LPF_TX_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.FM_HPF_RX_Filter", (uint64_t *)&TRX.FM_HPF_RX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_LPF_Stages", (uint64_t *)&TRX.CW_LPF_Stages, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.SSB_LPF_Stages", (uint64_t *)&TRX.SSB_LPF_Stages, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AMFM_LPF_Stages", (uint64_t *)&TRX.AMFM_LPF_Stages, SYSMENU_UINT8);
@@ -1734,6 +1735,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.FM_LPF_TX_Filter") == 0) {
 		TRX.FM_LPF_TX_Filter = (uint16_t)uintval;
+	}
+	if (strcmp(name, "TRX.FM_HPF_RX_Filter") == 0) {
+		TRX.FM_HPF_RX_Filter = (uint16_t)uintval;
 	}
 	if (strcmp(name, "TRX.CW_LPF_Stages") == 0) {
 		TRX.CW_LPF_Stages = uintval;
