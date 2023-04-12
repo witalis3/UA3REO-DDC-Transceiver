@@ -107,6 +107,7 @@ static void SYSMENU_HANDL_RX_VAD_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_RX_VGA_GAIN(int8_t direction);
 static void SYSMENU_HANDL_RX_Volume(int8_t direction);
 static void SYSMENU_HANDL_RX_Volume_Step(int8_t direction);
+static void SYSMENU_HANDL_RX_CODEC_Out_Volume(int8_t direction);
 
 static void SYSMENU_HANDL_TX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TX_ATU_Enabled(int8_t direction);
@@ -123,6 +124,7 @@ static void SYSMENU_HANDL_TX_CompressorSpeed_SSB(int8_t direction);
 static void SYSMENU_HANDL_TX_INPUT_TYPE_DIGI(int8_t direction);
 static void SYSMENU_HANDL_TX_INPUT_TYPE_MAIN(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_Boost(int8_t direction);
+static void SYSMENU_HANDL_TX_LINE_Volume(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_EQ_P1_AMFM(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_EQ_P1_SSB(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_EQ_P2_AMFM(int8_t direction);
@@ -639,6 +641,7 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 #endif
     {"Auto Snap", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Snap, SYSMENU_HANDL_RX_Auto_Snap},
     {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_RX_AutoGain},
+		{"CODEC Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CODEC_Out_Volume, SYSMENU_HANDL_RX_CODEC_Out_Volume},
     {"DNR", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DNR_shadow, SYSMENU_HANDL_RX_DNR, {"OFF", "DNR1", "DNR2"}},
     {"DNR Average", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_HANDL_RX_DNR_AVERAGE},
     {"DNR Minimal", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_MINIMAL, SYSMENU_HANDL_RX_DNR_MINMAL},
@@ -696,6 +699,7 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"Auto Input Switch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Input_Switch, SYSMENU_HANDL_TX_Auto_Input_Switch},
     {"Input Type MAIN", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_MAIN, SYSMENU_HANDL_TX_INPUT_TYPE_MAIN, {"MIC", "LINE", "USB"}},
     {"Input Type DIGI", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_DIGI, SYSMENU_HANDL_TX_INPUT_TYPE_DIGI, {"MIC", "LINE", "USB"}},
+		{"LINE Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LINE_Volume, SYSMENU_HANDL_TX_LINE_Volume},
     {"MIC Boost", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.MIC_Boost, SYSMENU_HANDL_TX_MIC_Boost},
     {"MIC Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_GAIN_DB, SYSMENU_HANDL_TX_MIC_Gain},
     {"MIC Noise Gate", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_NOISE_GATE, SYSMENU_HANDL_TX_MIC_NOISE_GATE},
@@ -2627,6 +2631,18 @@ static void SYSMENU_HANDL_RX_ADC_DITH(int8_t direction) {
 	FPGA_NeedSendParams = true;
 }
 
+static void SYSMENU_HANDL_RX_CODEC_Out_Volume(int8_t direction) {
+	if (direction > 0 || TRX.CODEC_Out_Volume > 0) {
+		TRX.CODEC_Out_Volume += direction;
+	}
+	if (TRX.CODEC_Out_Volume > 127) {
+		TRX.CODEC_Out_Volume = 127;
+	}
+	
+	// reinit codec
+	CODEC_TXRX_mode();
+}
+
 // TX MENU
 
 static void SYSMENU_HANDL_TXMENU(int8_t direction) {
@@ -3091,6 +3107,18 @@ static void SYSMENU_HANDL_TX_MIC_Boost(int8_t direction) {
 		TRX.MIC_Boost = true;
 	}
 
+	// reinit codec
+	CODEC_TXRX_mode();
+}
+
+static void SYSMENU_HANDL_TX_LINE_Volume(int8_t direction) {
+	if (direction > 0 || TRX.LINE_Volume > 0) {
+		TRX.LINE_Volume += direction;
+	}
+	if (TRX.LINE_Volume > 31) {
+		TRX.LINE_Volume = 31;
+	}
+	
 	// reinit codec
 	CODEC_TXRX_mode();
 }

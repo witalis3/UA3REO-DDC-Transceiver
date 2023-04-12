@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 94         // Settings config version
+#define SETT_VERSION 95         // Settings config version
 #define CALIB_VERSION 63        // Calibration config version
 #define WIFI_SETTINGS_VERSION 4 // WiFi config version
 
@@ -553,6 +553,8 @@ extern struct TRX_SETTINGS {
 	uint8_t TX_Compressor_speed_AMFM;
 	uint8_t TX_Compressor_maxgain_AMFM;
 	uint8_t SELFHEAR_Volume;
+	uint8_t LINE_Volume;
+	uint8_t CODEC_Out_Volume;
 	int8_t MIC_NOISE_GATE;
 	int8_t RX_EQ_P1;
 	int8_t RX_EQ_P2;

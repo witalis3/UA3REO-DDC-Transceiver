@@ -175,6 +175,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Attenuation, dB** - Current attenuation
 * **Auto Snap** - Automaticly track and snap to near signal frequency (CW mode)
 * **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
+* **CODEC Gain** - Adjusting AF gain in audio codec
 * **DNR xxx** - Digital squelch adjustment
 * **FM Samplerate** - Max FFT/samplerate on NFM/WFM mode
 * **FM Squelch level** - FM squelch level
@@ -206,6 +207,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Compressor Speed** - TX compressor response speed for transmission (more-faster)
 * **CTCSS Frequency** - Transmit FM CTCSS sub-tone frequency
 * **Input Type** - Select audio input (microphone, line in, USB)
+* **LINE Gain** - Line input codec gain
 * **MIC Boost** - +20db hardware mic amplifier
 * **MIC EQ xxx** - Microphone equalizer levels
 * **MIC Gain** - Microphone gain

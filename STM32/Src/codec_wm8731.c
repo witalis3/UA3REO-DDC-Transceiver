@@ -34,22 +34,22 @@ static uint8_t WM8731_SendI2CCommand(uint8_t reg, uint8_t value) {
 // switch to mixed RX-TX mode (for LOOP)
 void CODEC_TXRX_mode(void) // loopback
 {
-	WM8731_SendI2CCommand(B8(00000100), B8(01111110)); // R2 Left Headphone Out
-	WM8731_SendI2CCommand(B8(00000110), B8(01111110)); // R3 Right Headphone Out
+	WM8731_SendI2CCommand(B8(00000100), B8(00000000) | TRX.CODEC_Out_Volume); // R2 Left Headphone Out
+	WM8731_SendI2CCommand(B8(00000110), B8(00000000) | TRX.CODEC_Out_Volume); // R3 Right Headphone Out
 	WM8731_SendI2CCommand(B8(00001010), B8(00010110)); // R5 Digital Audio Path Control De-emphasis
 
 	if (getInputType() == TRX_INPUT_LINE) // line
 	{
-		WM8731_SendI2CCommand(B8(00000000), B8(00010111)); // R0 Left Line In
-		WM8731_SendI2CCommand(B8(00000010), B8(00010111)); // R1 Right Line In
+		WM8731_SendI2CCommand(B8(00000000), B8(00000000) | TRX.LINE_Volume); // R0 Left Line In enabled
+		WM8731_SendI2CCommand(B8(00000010), B8(00000000) | TRX.LINE_Volume); // R1 Right Line In enabled
 		WM8731_SendI2CCommand(B8(00001000), B8(00010010)); // R4 Analogue Audio Path Control
 		WM8731_SendI2CCommand(B8(00001100), B8(01100010)); // R6 Power Down Control, internal crystal
 	}
 
 	if (getInputType() == TRX_INPUT_MIC) // mic
 	{
-		WM8731_SendI2CCommand(B8(00000001), B8(10010111)); // R0 Left Line In
-		WM8731_SendI2CCommand(B8(00000011), B8(10010111)); // R1 Right Line In
+		WM8731_SendI2CCommand(B8(00000001), B8(10000000) | TRX.LINE_Volume); // R0 Left Line In disabled
+		WM8731_SendI2CCommand(B8(00000011), B8(10000000) | TRX.LINE_Volume); // R1 Right Line In disabled
 		if (TRX.MIC_Boost) {
 			WM8731_SendI2CCommand(B8(00001000), B8(00010101)); // R4 Analogue Audio Path Control
 		} else {

@@ -888,6 +888,8 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.AGC_GAIN_TARGET2", (uint64_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_GAIN_DB", (uint64_t *)&TRX.MIC_GAIN_DB, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.MIC_Boost", (uint64_t *)&TRX.MIC_Boost, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.LINE_Volume", (uint64_t *)&TRX.LINE_Volume, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.CODEC_Out_Volume", (uint64_t *)&TRX.CODEC_Out_Volume, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_NOISE_GATE", (uint64_t *)&TRX.MIC_NOISE_GATE, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.RX_EQ_P1", (uint64_t *)&TRX.RX_EQ_P1, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.RX_EQ_P2", (uint64_t *)&TRX.RX_EQ_P2, SYSMENU_INT8);
@@ -1597,6 +1599,12 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.MIC_Boost") == 0) {
 		TRX.MIC_Boost = bval;
+	}
+	if (strcmp(name, "TRX.LINE_Volume") == 0) {
+		TRX.LINE_Volume = (uint8_t)uintval;
+	}
+	if (strcmp(name, "TRX.CODEC_Out_Volume") == 0) {
+		TRX.CODEC_Out_Volume = (uint8_t)uintval;
 	}
 	if (strcmp(name, "TRX.MIC_NOISE_GATE") == 0) {
 		TRX.MIC_NOISE_GATE = (int8_t)intval;
