@@ -25,7 +25,7 @@ static float32_t IIR_RX1_LPF_I_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX1_LPF_Q_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX1_LPF2_I_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX1_LPF2_Q_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
-static float32_t IIR_RX1_GAUSS_Coeffs[BIQUAD_COEFF_IN_STAGE * GAUSS_STAGES] = {0};
+static float32_t IIR_RX_GAUSS_Coeffs[BIQUAD_COEFF_IN_STAGE * GAUSS_STAGES] = {0};
 static float32_t IIR_RX1_GAUSS_I_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX1_GAUSS_Q_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
 static float32_t IIR_TX_LPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_LPF_STAGES] = {0};
@@ -91,7 +91,6 @@ static float32_t IIR_RX2_LPF_I_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_LPF_Q_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_LPF2_I_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_LPF2_Q_State[IIR_RX_LPF_Taps_STATE_SIZE] = {0};
-static float32_t IIR_RX2_GAUSS_Coeffs[BIQUAD_COEFF_IN_STAGE * GAUSS_STAGES] = {0};
 static float32_t IIR_RX2_GAUSS_I_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_GAUSS_Q_State[IIR_RX_GAUSS_Taps_STATE_SIZE] = {0};
 static float32_t IIR_RX2_HPF_Coeffs[BIQUAD_COEFF_IN_STAGE * IIR_HPF_STAGES] = {0};
@@ -382,7 +381,7 @@ volatile bool NeedReinitAudioFilters = false;      // need to re-initialize Audi
 volatile bool NeedReinitAudioFiltersClean = false; // also clean state
 
 // Prototypes
-static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain,
+static void calcBiquad(BIQUAD_TYPE type, float32_t Fc, float32_t Fs, float32_t Q, float32_t peakGain,
                        float32_t *outCoeffs); // automatic calculation of the Biquad filter for Notch
 static void arm_biquad_cascade_df2T_initNoClean_f32(arm_biquad_cascade_df2T_instance_f32 *S, uint8_t numStages, const float32_t *pCoeffs,
                                                     float32_t *pState); // init without state-clean version
@@ -575,18 +574,14 @@ void ReinitAudioFilters(void) {
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_TX_HPF_I, hpf_rx1_filter_stages, IIR_TX_HPF_Coeffs, (float32_t *)&IIR_TX_HPF_I_State[0]);
 
 	// RX1 GAUSS
-	filter = biquad_create(GAUSS_STAGES);
-	biquad_init_lowpass(filter, TRX_SAMPLERATE, GAUSS_WIDTH / 2);
-	fill_biquad_coeffs(filter, IIR_RX1_GAUSS_Coeffs, GAUSS_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_GAUSS_I, GAUSS_STAGES, IIR_RX1_GAUSS_Coeffs, (float32_t *)&IIR_RX1_GAUSS_I_State[0]);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_GAUSS_Q, GAUSS_STAGES, IIR_RX1_GAUSS_Coeffs, (float32_t *)&IIR_RX1_GAUSS_Q_State[0]);
+	calcBiquad(BIQUAD_bandpass, TRX.CW_Pitch, TRX_SAMPLERATE, 9.0f, 0, IIR_RX_GAUSS_Coeffs);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_GAUSS_I, GAUSS_STAGES, IIR_RX_GAUSS_Coeffs, (float32_t *)&IIR_RX1_GAUSS_I_State[0]);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX1_GAUSS_Q, GAUSS_STAGES, IIR_RX_GAUSS_Coeffs, (float32_t *)&IIR_RX1_GAUSS_Q_State[0]);
 
 #if HRDW_HAS_DUAL_RX
 	// RX2 GAUSS
-	biquad_init_lowpass(filter, TRX_SAMPLERATE, GAUSS_WIDTH / 2);
-	fill_biquad_coeffs(filter, IIR_RX2_GAUSS_Coeffs, GAUSS_STAGES);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_GAUSS_I, GAUSS_STAGES, IIR_RX2_GAUSS_Coeffs, (float32_t *)&IIR_RX2_GAUSS_I_State[0]);
-	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_GAUSS_Q, GAUSS_STAGES, IIR_RX2_GAUSS_Coeffs, (float32_t *)&IIR_RX2_GAUSS_Q_State[0]);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_GAUSS_I, GAUSS_STAGES, IIR_RX_GAUSS_Coeffs, (float32_t *)&IIR_RX2_GAUSS_I_State[0]);
+	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_GAUSS_Q, GAUSS_STAGES, IIR_RX_GAUSS_Coeffs, (float32_t *)&IIR_RX2_GAUSS_Q_State[0]);
 #endif
 
 	// RX Equalizer
@@ -711,7 +706,7 @@ void dc_filter(float32_t *Buffer, int16_t blockSize, DC_FILTER_STATE stateNum) /
 }
 
 // automatic calculation of the Biquad filter
-static void calcBiquad(BIQUAD_TYPE type, uint32_t Fc, uint32_t Fs, float32_t Q, float32_t peakGain, float32_t *outCoeffs) {
+static void calcBiquad(BIQUAD_TYPE type, float32_t Fc, float32_t Fs, float32_t Q, float32_t peakGain, float32_t *outCoeffs) {
 	float32_t a0, a1, a2, b1, b2, norm;
 
 	float32_t V = powf(10.0f, fabsf(peakGain) / 20.0f);

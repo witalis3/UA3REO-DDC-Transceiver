@@ -3156,6 +3156,8 @@ static void SYSMENU_HANDL_CW_Pitch(int8_t direction) {
 	if (TRX.CW_Pitch > 10000) {
 		TRX.CW_Pitch = 10000;
 	}
+	
+	NeedReinitAudioFilters = true;
 }
 
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction) {

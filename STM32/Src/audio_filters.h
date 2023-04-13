@@ -24,7 +24,6 @@
 #define NOTCH_STAGES 3          // order of manual Notch filter
 #define EQ_STAGES 1             // order of the biquad of the equalizer filter
 #define GAUSS_STAGES 1          // order of the gauss CW filter
-#define GAUSS_WIDTH 20          // passband of gauss CW filter
 #define BIQUAD_COEFF_IN_STAGE 5 // coefficients in manual Notch filter order
 #define SFM_FILTER_STAGES 3
 #define FIR_RX_HILBERT_STATE_SIZE (IQ_HILBERT_TAPS_RX + AUDIO_BUFFER_HALF_SIZE - 1) // size of state buffers
