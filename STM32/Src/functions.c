@@ -1054,11 +1054,11 @@ uint8_t getPowerFromALC() {
 		return 0;
 	}
 
-	float32_t volt = TRX_ALC_IN - 1.0f;     // 0.0 - 1.0v - ALC disabled
+	float32_t volt = TRX_ALC_IN - 1.0f; // 0.0 - 1.0v - ALC disabled
 	if (volt < 0.0f) {
 		return 0;
 	}
-	
+
 	float32_t power = volt * 100.0f / 2.0f; // 1.0v - 3.0v - power 0-100%
 
 	if (power < 0.0f) {
@@ -1068,7 +1068,7 @@ uint8_t getPowerFromALC() {
 	if (power > 100.0f) {
 		power = 100.0f;
 	}
-	
+
 	if (CALIBRATE.ALC_Inverted_Logic) {
 		power = 100.0f - power; // 1.0v - 3.0v - power 100-0%
 	}

@@ -283,7 +283,7 @@ void LoadSettings(bool clear) {
 		TRX.CW_SelfHear = true;                                         // self-control CW
 		TRX.CW_KEYER = true;                                            // Automatic key
 		TRX.CW_KEYER_WPM = 30;                                          // Automatic key speed
-		TRX.CW_GaussFilter = false;                                     // Gauss responce LPF filter
+		TRX.CW_GaussFilter = true;                                      // Gauss responce LPF filter
 		TRX.CW_DotToDashRate = 3.0f;                                    // Dot To Dash length rate
 		TRX.CW_Iambic = false;                                          // CW Iambic Keyer
 		TRX.CW_Invert = false;                                          // CW dash/dot inversion
