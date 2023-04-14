@@ -4655,10 +4655,8 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 	}
 	sysmenu_timeMenuOpened = true;
 
-	static uint8_t Hours;
-	static uint8_t Minutes;
-	static uint8_t Seconds;
-	static uint32_t Time;
+	static uint8_t Hours, Minutes, Seconds, Day, Month;
+	static uint16_t Year;
 	char ctmp[50];
 
 	RTC_TimeTypeDef sTime = {0};
@@ -4669,6 +4667,9 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		Hours = sTime.Hours;
 		Minutes = sTime.Minutes;
 		Seconds = sTime.Seconds;
+		Year = 2000 + sDate.Year;
+		Month = sDate.Month;
+		Day = sDate.Date;
 
 		if (TimeMenuSelection == 0) {
 			if (Hours == 0 && direction < 0) {
@@ -4691,6 +4692,28 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 				Seconds = (uint8_t)(Seconds + direction);
 			}
 		}
+		if (TimeMenuSelection == 3) {
+			if (Day == 1 && direction < 0) {
+				Day = 31;
+			} else {
+				Day = (uint8_t)(Day + direction);
+			}
+		}
+		if (TimeMenuSelection == 4) {
+			if (Month == 1 && direction < 0) {
+				Month = 12;
+			} else {
+				Month = (uint8_t)(Month + direction);
+			}
+		}
+		if (TimeMenuSelection == 5) {
+			if (Year <= 2023 && direction < 0) {
+				Year = 2023;
+			} else {
+				Year = (uint16_t)(Year + direction);
+			}
+		}
+		
 		if (Hours >= 24) {
 			Hours = 0;
 		}
@@ -4700,7 +4723,25 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		if (Seconds >= 60) {
 			Seconds = 0;
 		}
-		RTC_TimeTypeDef sTime;
+		if (Day > 31) {
+			Day = 1;
+		}
+		if (Day > 28 && Month == 2 && (Year % 4) > 0) {
+			Day = 1;
+		}
+		if (Day > 29 && Month == 2 && (Year % 4) == 0) {
+			Day = 1;
+		}
+		if (Day > 30 && (Month == 4 || Month == 6 || Month == 9 || Month == 11)) {
+			Day = 1;
+		}
+		if (Month > 12) {
+			Month = 1;
+		}
+		if (Year > 2099) {
+			Year = 2099;
+		}
+		
 		sTime.TimeFormat = RTC_HOURFORMAT12_PM;
 		sTime.SubSeconds = 0;
 		sTime.SecondFraction = 0;
@@ -4709,8 +4750,19 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		sTime.Hours = Hours;
 		sTime.Minutes = Minutes;
 		sTime.Seconds = Seconds;
+		
+		uint16_t d = Day;
+		uint16_t y = Year;
+		uint16_t weekday = (d += Month < 3 ? y-- : y - 2, 23 * Month / 9 + d + 4 + y / 4 - y / 100 + y / 400) % 7;
+		sDate.Date = Day;
+		sDate.Month = Month;
+		sDate.Year = Year - 2000;
+		sDate.WeekDay = weekday;
+		
 		BKPSRAM_Enable();
 		HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+		HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+		
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	if (direction == 0) {
@@ -4720,28 +4772,40 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		LCD_busy = true;
 
 		getLocalDateTime(&sDate, &sTime);
-		Hours = sTime.Hours;
-		Minutes = sTime.Minutes;
-		Seconds = sTime.Seconds;
 
 		uint16_t font_size = LAYOUT->SYSMENU_FONT_SIZE;
 		if (LCD_WIDTH > 400) {
 			font_size *= 2;
 		}
 		uint16_t x_pos_clk = LCD_WIDTH / 2 - 4 * RASTR_FONT_W * font_size;
-		uint16_t y_pos_clk = LCD_HEIGHT / 2 - RASTR_FONT_H * font_size / 2;
+		uint16_t y_pos_clk = LCD_HEIGHT / 2 - (RASTR_FONT_H * font_size * 3) / 2;
 
-		sprintf(ctmp, "%d", Hours);
+		sprintf(ctmp, "%d", sTime.Hours);
 		addSymbols(ctmp, ctmp, 2, "0", false);
 		LCDDriver_printText(ctmp, x_pos_clk, y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 0 ? FG_COLOR : BG_COLOR, font_size);
 		LCDDriver_printText(":", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, font_size);
-		sprintf(ctmp, "%d", Minutes);
+		sprintf(ctmp, "%d", sTime.Minutes);
 		addSymbols(ctmp, ctmp, 2, "0", false);
 		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 1 ? FG_COLOR : BG_COLOR, font_size);
 		LCDDriver_printText(":", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, font_size);
-		sprintf(ctmp, "%d", Seconds);
+		sprintf(ctmp, "%d", sTime.Seconds);
 		addSymbols(ctmp, ctmp, 2, "0", false);
 		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 2 ? FG_COLOR : BG_COLOR, font_size);
+		
+		y_pos_clk += RASTR_FONT_H * font_size * 2;
+		x_pos_clk = LCD_WIDTH / 2 - 5 * RASTR_FONT_W * font_size;
+		
+		sprintf(ctmp, "%d", sDate.Date);
+		addSymbols(ctmp, ctmp, 2, "0", false);
+		LCDDriver_printText(ctmp, x_pos_clk, y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 3 ? FG_COLOR : BG_COLOR, font_size);
+		LCDDriver_printText(".", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, font_size);
+		sprintf(ctmp, "%d", sDate.Month);
+		addSymbols(ctmp, ctmp, 2, "0", false);
+		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 4 ? FG_COLOR : BG_COLOR, font_size);
+		LCDDriver_printText(".", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, font_size);
+		sprintf(ctmp, "20%d", sDate.Year);
+		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 5 ? FG_COLOR : BG_COLOR, font_size);
+		
 		LCD_busy = false;
 	}
 }
@@ -7958,12 +8022,12 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 	if (sysmenu_timeMenuOpened) {
 		if (direction < 0) {
 			TimeMenuSelection--;
-			if (TimeMenuSelection > 2) {
-				TimeMenuSelection = 2;
+			if (TimeMenuSelection > 5) {
+				TimeMenuSelection = 5;
 			}
 		} else {
 			TimeMenuSelection++;
-			if (TimeMenuSelection == 3) {
+			if (TimeMenuSelection >= 6) {
 				TimeMenuSelection = 0;
 			}
 		}
