@@ -1049,28 +1049,43 @@ float fast_sqrt(const float x) {
 	return x * u.x * (1.5f - xhalf * u.x * u.x); // Newton step, repeating increases accuracy
 }
 
-uint8_t getPowerFromALC() {
+int8_t getPowerFromALC() {
 	if (!CALIBRATE.ALC_Port_Enabled) {
-		return 0;
+		return -1;
 	}
 
 	float32_t volt = TRX_ALC_IN - 1.0f; // 0.0 - 1.0v - ALC disabled
 	if (volt < 0.0f) {
-		return 0;
+		return -1;
 	}
 
-	float32_t power = volt * 100.0f / 2.0f; // 1.0v - 3.0v - power 0-100%
+	float32_t power = 0;
+	float32_t max_power_selected = (float32_t)TRX.RF_Gain;
+	
+	if (!CALIBRATE.ALC_Inverted_Logic) {
+		power = volt * max_power_selected / 2.0f; // 1.0v - 3.0v - power 0-100%
 
-	if (power < 0.0f) {
-		power = 0.0f;
+		if (power < 0.0f) {
+			power = 0.0f;
+		}
+
+		if (power > max_power_selected) {
+			power = max_power_selected;
+		}
 	}
-
-	if (power > 100.0f) {
-		power = 100.0f;
-	}
-
+	
 	if (CALIBRATE.ALC_Inverted_Logic) {
-		power = 100.0f - power; // 1.0v - 3.0v - power 100-0%
+		power = volt * max_power_selected / 2.0f; // 1.0v - 3.0v - power 0-100%
+
+		if (power < 0.0f) {
+			power = 0.0f;
+		}
+
+		if (power > max_power_selected) {
+			power = max_power_selected;
+		}
+		
+		power = max_power_selected - power; // 1.0v - 3.0v - power 100-0%
 	}
 
 	return power;
