@@ -255,8 +255,8 @@ static void SDCOMM_LIST_DIRECTORY_handler(void) {
 		}
 		f_closedir(&dir);
 		println("read complete");
-		
-		qsort(FILEMANAGER_LISTING, FILEMANAGER_files_added, FILEMANAGER_LISTING_MAX_FILELEN + 1, (int (*)(const void *,const  void *)) strcmp);
+
+		qsort(FILEMANAGER_LISTING, FILEMANAGER_files_added, FILEMANAGER_LISTING_MAX_FILELEN + 1, (int (*)(const void *, const void *))strcmp);
 	} else {
 		LCD_showInfo("SD error", true);
 		SYSMENU_eventCloseAllSystemMenu();

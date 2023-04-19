@@ -4713,7 +4713,7 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 				Year = (uint16_t)(Year + direction);
 			}
 		}
-		
+
 		if (Hours >= 24) {
 			Hours = 0;
 		}
@@ -4741,7 +4741,7 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		if (Year > 2099) {
 			Year = 2099;
 		}
-		
+
 		sTime.TimeFormat = RTC_HOURFORMAT12_PM;
 		sTime.SubSeconds = 0;
 		sTime.SecondFraction = 0;
@@ -4750,7 +4750,7 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		sTime.Hours = Hours;
 		sTime.Minutes = Minutes;
 		sTime.Seconds = Seconds;
-		
+
 		uint16_t d = Day;
 		uint16_t y = Year;
 		uint16_t weekday = (d += Month < 3 ? y-- : y - 2, 23 * Month / 9 + d + 4 + y / 4 - y / 100 + y / 400) % 7;
@@ -4758,11 +4758,11 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		sDate.Month = Month;
 		sDate.Year = Year - 2000;
 		sDate.WeekDay = weekday;
-		
+
 		BKPSRAM_Enable();
 		HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
 		HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
-		
+
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 	if (direction == 0) {
@@ -4791,10 +4791,10 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		sprintf(ctmp, "%d", sTime.Seconds);
 		addSymbols(ctmp, ctmp, 2, "0", false);
 		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 2 ? FG_COLOR : BG_COLOR, font_size);
-		
+
 		y_pos_clk += RASTR_FONT_H * font_size * 2;
 		x_pos_clk = LCD_WIDTH / 2 - 5 * RASTR_FONT_W * font_size;
-		
+
 		sprintf(ctmp, "%d", sDate.Date);
 		addSymbols(ctmp, ctmp, 2, "0", false);
 		LCDDriver_printText(ctmp, x_pos_clk, y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 3 ? FG_COLOR : BG_COLOR, font_size);
@@ -4805,7 +4805,7 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		LCDDriver_printText(".", LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, BG_COLOR, font_size);
 		sprintf(ctmp, "20%d", sDate.Year);
 		LCDDriver_printText(ctmp, LCDDriver_GetCurrentXOffset(), y_pos_clk, COLOR->BUTTON_TEXT, TimeMenuSelection == 5 ? FG_COLOR : BG_COLOR, font_size);
-		
+
 		LCD_busy = false;
 	}
 }
@@ -7428,8 +7428,8 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 		// close button
 		if (current_selected_page == 0) {
 			printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN, LAYOUT->SYSMENU_BUTTON_MARGIN + sysmenu_button_lines * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN),
-			                      LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT, "Close", "x", false, true, 0, SYSMENU_HANDL_BackTouch, SYSMENU_HANDL_BackTouch, COLOR_WHITE,
-			                      COLOR_WHITE, COLOR_WHITE, rgb888torgb565(0xED, 0x1C, 0x24));
+			                      LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT, "Close", "x", false, true, 0, SYSMENU_HANDL_BackTouch, SYSMENU_HANDL_BackTouch,
+			                      COLOR->DENY_BUTTON_TEXT, COLOR->DENY_BUTTON_TEXT, COLOR->DENY_BUTTON_TEXT, COLOR->DENY_BUTTON_BACKGROUND);
 		}
 
 		// prev button
@@ -7438,7 +7438,7 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 			sprintf(ctmp, "%d / %d", current_selected_page, current_page + 1);
 			printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN, LAYOUT->SYSMENU_BUTTON_MARGIN + sysmenu_button_lines * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN),
 			                      LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT, "Prev page", ctmp, false, true, 0, SYSMENU_HANDL_PrevPageTouch, SYSMENU_HANDL_PrevPageTouch,
-			                      COLOR_WHITE, COLOR_WHITE, rgb888torgb565(0xED, 0x1C, 0x24), rgb888torgb565(0x00, 0xA2, 0xE8));
+			                      COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_BACKGROUND);
 		}
 
 		// next button
@@ -7446,8 +7446,8 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 			sprintf(ctmp, "%d / %d", current_selected_page + 2, current_page + 1);
 			printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN + 3 * (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN),
 			                      LAYOUT->SYSMENU_BUTTON_MARGIN + sysmenu_button_lines * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN), LAYOUT->SYSMENU_BUTTON_WIDTH,
-			                      LAYOUT->SYSMENU_BUTTON_HEIGHT, "Next page", ctmp, false, true, 0, SYSMENU_HANDL_NextPageTouch, SYSMENU_HANDL_NextPageTouch, COLOR_WHITE, COLOR_WHITE,
-			                      rgb888torgb565(0xED, 0x1C, 0x24), rgb888torgb565(0x00, 0xA2, 0xE8));
+			                      LAYOUT->SYSMENU_BUTTON_HEIGHT, "Next page", ctmp, false, true, 0, SYSMENU_HANDL_NextPageTouch, SYSMENU_HANDL_NextPageTouch, COLOR->NORMAL_BUTTON_TEXT,
+			                      COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_BACKGROUND);
 		}
 
 		sysmenu_draw_index++;

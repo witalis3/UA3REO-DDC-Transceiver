@@ -1061,7 +1061,7 @@ int8_t getPowerFromALC() {
 
 	float32_t power = 0;
 	float32_t max_power_selected = (float32_t)TRX.RF_Gain;
-	
+
 	if (!CALIBRATE.ALC_Inverted_Logic) {
 		power = volt * max_power_selected / 2.0f; // 1.0v - 3.0v - power 0-100%
 
@@ -1073,7 +1073,7 @@ int8_t getPowerFromALC() {
 			power = max_power_selected;
 		}
 	}
-	
+
 	if (CALIBRATE.ALC_Inverted_Logic) {
 		power = volt * max_power_selected / 2.0f; // 1.0v - 3.0v - power 0-100%
 
@@ -1084,7 +1084,7 @@ int8_t getPowerFromALC() {
 		if (power > max_power_selected) {
 			power = max_power_selected;
 		}
-		
+
 		power = max_power_selected - power; // 1.0v - 3.0v - power 100-0%
 	}
 
