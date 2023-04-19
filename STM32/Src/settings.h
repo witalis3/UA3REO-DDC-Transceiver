@@ -8,9 +8,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 95         // Settings config version
-#define CALIB_VERSION 64        // Calibration config version
-#define WIFI_SETTINGS_VERSION 4 // WiFi config version
+#define SETT_VERSION 96         // Settings config version
+#define CALIB_VERSION 65        // Calibration config version
+#define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
 #define MAX_TX_AMPLITUDE_MULT 0.85f // Maximum amplitude when transmitting to FPGA
@@ -512,9 +512,9 @@ extern struct TRX_SETTINGS {
 	bool Full_Duplex;
 	bool Digital_Pre_Distortion;
 	bool Split_Mode_Sync_Freq;
-	char CALLSIGN[MAX_CALLSIGN_LENGTH];
-	char LOCATOR[MAX_CALLSIGN_LENGTH];
-	char URSI_CODE[MAX_CALLSIGN_LENGTH];
+	char CALLSIGN[MAX_CALLSIGN_LENGTH + 1];
+	char LOCATOR[MAX_CALLSIGN_LENGTH + 1];
+	char URSI_CODE[MAX_CALLSIGN_LENGTH + 1];
 	// AUDIO
 	float32_t CTCSS_Freq;
 	float32_t MIC_GAIN_DB;
@@ -596,11 +596,11 @@ extern struct TRX_SETTINGS {
 	bool CW_GaussFilter;
 	bool CW_Iambic;
 	bool CW_Invert;
-	char CW_Macros_1[MAX_CW_MACROS_LENGTH];
-	char CW_Macros_2[MAX_CW_MACROS_LENGTH];
-	char CW_Macros_3[MAX_CW_MACROS_LENGTH];
-	char CW_Macros_4[MAX_CW_MACROS_LENGTH];
-	char CW_Macros_5[MAX_CW_MACROS_LENGTH];
+	char CW_Macros_1[MAX_CW_MACROS_LENGTH + 1];
+	char CW_Macros_2[MAX_CW_MACROS_LENGTH + 1];
+	char CW_Macros_3[MAX_CW_MACROS_LENGTH + 1];
+	char CW_Macros_4[MAX_CW_MACROS_LENGTH + 1];
+	char CW_Macros_5[MAX_CW_MACROS_LENGTH + 1];
 	// SCREEN
 	int16_t FFT_ManualBottom;
 	int16_t FFT_ManualTop;
@@ -860,12 +860,12 @@ extern struct TRX_CALIBRATE {
 extern struct TRX_WIFI {
 	uint8_t flash_id; // version check
 	// WIFI
-	char AP_1[MAX_WIFIPASS_LENGTH];
-	char Password_1[MAX_WIFIPASS_LENGTH];
-	char AP_2[MAX_WIFIPASS_LENGTH];
-	char Password_2[MAX_WIFIPASS_LENGTH];
-	char AP_3[MAX_WIFIPASS_LENGTH];
-	char Password_3[MAX_WIFIPASS_LENGTH];
+	char AP_1[MAX_WIFIPASS_LENGTH + 1];
+	char Password_1[MAX_WIFIPASS_LENGTH + 1];
+	char AP_2[MAX_WIFIPASS_LENGTH + 1];
+	char Password_2[MAX_WIFIPASS_LENGTH + 1];
+	char AP_3[MAX_WIFIPASS_LENGTH + 1];
+	char Password_3[MAX_WIFIPASS_LENGTH + 1];
 	char ALLQSO_TOKEN[ALLQSO_TOKEN_SIZE + 1];
 	char ALLQSO_LOGID[ALLQSO_TOKEN_SIZE + 1];
 	float32_t Timezone;
