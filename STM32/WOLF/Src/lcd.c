@@ -579,6 +579,10 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	LCD_UpdateQuery.FreqInfo = false;
 	if (redraw) {
 		LCD_UpdateQuery.FreqInfoRedraw = false;
+		
+		Last_showed_Hours = 255;
+		Last_showed_Minutes = 255;
+		Last_showed_Seconds = 255;
 	}
 
 	LCD_busy = false;
@@ -1291,7 +1295,9 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		return;
 	}
 	if (LCD_busy) {
-		LCD_UpdateQuery.StatusInfoBarRedraw = redraw;
+		if (redraw) {
+			LCD_UpdateQuery.StatusInfoBarRedraw = true;
+		}
 		LCD_UpdateQuery.StatusInfoBar = true;
 		return;
 	}
