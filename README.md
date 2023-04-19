@@ -183,7 +183,10 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **NB Threshold** - Threshold of Noise blanker
 * **Noise Blanker** - Activating the Surge Suppressor
 * **RF Filters** - Hardware filter management (LPF / HPF / BPF)
-* **RX AGC Hold time** - Time of AGC gain holding on signal peaks, ms
+* **RX AGC Hold time** - Time before release of AGC gain in signal peaks, ms
+* **RX AGC Hold limit** - Burst limit for AGC delay time
+* **RX AGC Hold step up** - AGC Delay Time Step on Peaks
+* **RX AGC Hold step down** - AGC Delay Falloff Step at Peaks
 * **RX AGC Max gain** - Limit of AGC gain, dB
 * **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
 * **RX EQ xxx** - Receiver equalizer levels

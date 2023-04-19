@@ -923,7 +923,10 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.RX_AGC_SSB_speed", (uint64_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.RX_AGC_CW_speed", (uint64_t *)&TRX.RX_AGC_CW_speed, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.RX_AGC_Max_gain", (uint64_t *)&TRX.RX_AGC_Max_gain, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.RX_AGC_Hold", (uint64_t *)&TRX.RX_AGC_Hold, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.RX_AGC_Hold_Time", (uint64_t *)&TRX.RX_AGC_Hold_Time, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.RX_AGC_Hold_Limiter", (uint64_t *)&TRX.RX_AGC_Hold_Limiter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.RX_AGC_Hold_Step_Up", (uint64_t *)&TRX.RX_AGC_Hold_Step_Up, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.RX_AGC_Hold_Step_Down", (uint64_t *)&TRX.RX_AGC_Hold_Step_Down, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.TX_Compressor_speed_SSB", (uint64_t *)&TRX.TX_Compressor_speed_SSB, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.TX_Compressor_maxgain_SSB", (uint64_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.TX_Compressor_speed_AMFM", (uint64_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_UINT8);
@@ -1702,8 +1705,17 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	if (strcmp(name, "TRX.RX_AGC_Max_gain") == 0) {
 		TRX.RX_AGC_Max_gain = (uint8_t)uintval;
 	}
-	if (strcmp(name, "TRX.RX_AGC_Hold") == 0) {
-		TRX.RX_AGC_Hold = (uint16_t)uintval;
+	if (strcmp(name, "TRX.RX_AGC_Hold_Time") == 0) {
+		TRX.RX_AGC_Hold_Time = (uint16_t)uintval;
+	}
+	if (strcmp(name, "TRX.RX_AGC_Hold_Limiter") == 0) {
+		TRX.RX_AGC_Hold_Limiter = (uint16_t)uintval;
+	}
+	if (strcmp(name, "TRX.RX_AGC_Hold_Step_Up") == 0) {
+		TRX.RX_AGC_Hold_Step_Up = (uint16_t)uintval;
+	}
+	if (strcmp(name, "TRX.RX_AGC_Hold_Step_Down") == 0) {
+		TRX.RX_AGC_Hold_Step_Down = (uint16_t)uintval;
 	}
 	if (strcmp(name, "TRX.TX_Compressor_speed_SSB") == 0) {
 		TRX.TX_Compressor_speed_SSB = (uint8_t)uintval;

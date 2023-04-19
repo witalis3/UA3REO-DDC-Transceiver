@@ -8,20 +8,16 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 96         // Settings config version
+#define SETT_VERSION 98         // Settings config version
 #define CALIB_VERSION 65        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
-#define TRX_SAMPLERATE 48000        // audio stream sampling rate during processing and TX (NOT RX!)
-#define MAX_TX_AMPLITUDE_MULT 0.85f // Maximum amplitude when transmitting to FPGA
-#define AGC_CLIPPING 6.0f           // Limit over target in AGC, dB
-#define TOUCHPAD_DELAY 200          // Anti-bounce time for pressing the touchpad
-#define AUTOGAIN_TARGET_AMPLITUDE \
-	20000.0f // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the
-	         // gain
-#define AUTOGAIN_MAX_AMPLITUDE \
-	30000.0f                                    // maximum amplitude, upon reaching which the autocorrector of the input circuits terminates, and in case of overflow it reduces the
-	                                            // gain
+#define TRX_SAMPLERATE 48000                  // audio stream sampling rate during processing and TX (NOT RX!)
+#define MAX_TX_AMPLITUDE_MULT 0.85f           // Maximum amplitude when transmitting to FPGA
+#define AGC_CLIPPING 6.0f                     // Limit over target in AGC, dB
+#define TOUCHPAD_DELAY 200                    // Anti-bounce time for pressing the touchpad
+#define AUTOGAIN_TARGET_AMPLITUDE 20000.0f    // target autocorrector amplitude
+#define AUTOGAIN_MAX_AMPLITUDE 30000.0f       // maximum autocorrector amplitude
 #define AUTOGAIN_CORRECTOR_WAITSTEP 5         // waiting for the averaging of the results when the auto-corrector of the input circuits is running
 #define KEY_HOLD_TIME 500                     // time of long pressing of the keyboard button for triggering, ms
 #define SHOW_LOGO true                        // Show logo on boot (from images.h)
@@ -520,7 +516,10 @@ extern struct TRX_SETTINGS {
 	float32_t MIC_GAIN_DB;
 	float32_t TX_CESSB_COMPRESS_DB;
 	uint16_t Volume;
-	uint16_t RX_AGC_Hold;
+	uint16_t RX_AGC_Hold_Time;
+	uint16_t RX_AGC_Hold_Limiter;
+	uint16_t RX_AGC_Hold_Step_Up;
+	uint16_t RX_AGC_Hold_Step_Down;
 	uint16_t CW_LPF_Filter;
 	uint16_t DIGI_LPF_Filter;
 	uint16_t SSB_LPF_RX_Filter;

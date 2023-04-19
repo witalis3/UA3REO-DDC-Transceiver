@@ -210,11 +210,12 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				}
 				float32_t diff = (gain_target - (AGC_RX_dbFS + instance->need_gain_db));
 
-// hold time limiter
-#define AGC_HOLDTIME_LIMITER_DB 10.0f
-#define AGC_HOLDTIME_STEP 5
-				if (fabsf(diff) < AGC_HOLDTIME_LIMITER_DB && instance->hold_time < TRX.RX_AGC_Hold) {
-					instance->hold_time += AGC_HOLDTIME_STEP;
+				// hold time limiter
+				if (fabsf(diff) < (float32_t)TRX.RX_AGC_Hold_Limiter && instance->hold_time < TRX.RX_AGC_Hold_Time) {
+					instance->hold_time += TRX.RX_AGC_Hold_Step_Up;
+					if (instance->hold_time > TRX.RX_AGC_Hold_Time) {
+						instance->hold_time = TRX.RX_AGC_Hold_Time;
+					}
 				}
 
 				// move
@@ -222,8 +223,12 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					if ((HAL_GetTick() - instance->last_agc_peak_time) > instance->hold_time) {
 						instance->need_gain_db += diff / RX_AGC_STEPSIZE_UP;
 
-						if (diff > AGC_HOLDTIME_LIMITER_DB && instance->hold_time > 0) {
-							instance->hold_time -= AGC_HOLDTIME_STEP;
+						if (diff > (float32_t)TRX.RX_AGC_Hold_Limiter && instance->hold_time > 0) {
+							if (instance->hold_time >= TRX.RX_AGC_Hold_Step_Down) {
+								instance->hold_time -= TRX.RX_AGC_Hold_Step_Down * 3;
+							} else {
+								instance->hold_time = 0;
+							}
 						}
 					}
 				} else {
@@ -240,6 +245,8 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					instance->need_gain_db = gain_target - AGC_RX_dbFS;
 					// instance->need_gain_db -= 20.0f;
 				}
+
+				// println("HOLD: ", instance->hold_time, " GAIN: ", instance->need_gain_db, " DIFF: ", diff);
 
 				// appy gain
 				float32_t rateV = db2rateV(instance->need_gain_db);

@@ -5,8 +5,6 @@
 #include <stdbool.h>
 
 #define AGC_RINGBUFFER_TAPS_SIZE 3
-#define AGC_HOLDTIME_STEP 5
-#define AGC_HOLDTIME_LIMITER_DB 10.0f
 
 typedef struct {
 	float32_t need_gain_db;

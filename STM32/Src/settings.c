@@ -250,7 +250,10 @@ void LoadSettings(bool clear) {
 		TRX.RX_AGC_SSB_speed = 10;                                     // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;                                       // AGC receive rate on CW
 		TRX.RX_AGC_Max_gain = 30;                                      // Maximum AGC gain
-		TRX.RX_AGC_Hold = 700;                                         // AGC Hold time on peaks
+		TRX.RX_AGC_Hold_Time = 700;                                    // AGC Hold time on peaks
+		TRX.RX_AGC_Hold_Limiter = 5;                                   // AGC Hold time limiter for skip peaks
+		TRX.RX_AGC_Hold_Step_Up = 5;                                   // AGC Hold step for increase holding
+		TRX.RX_AGC_Hold_Step_Down = 30;                                // AGC Hold step for decrease holding
 		TRX.TX_Compressor_speed_SSB = 3;                               // TX compressor speed SSB
 		TRX.TX_Compressor_maxgain_SSB = 10;                            // TX compressor max gain SSB
 		TRX.TX_Compressor_speed_AMFM = 3;                              // TX compressor speed AM/FM

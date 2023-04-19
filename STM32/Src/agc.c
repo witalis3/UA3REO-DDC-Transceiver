@@ -93,8 +93,11 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		float32_t diff = (gain_target - (AGC_RX_dbFS + AGC->need_gain_db));
 
 		// hold time limiter
-		if (fabsf(diff) < AGC_HOLDTIME_LIMITER_DB && AGC->hold_time < TRX.RX_AGC_Hold) {
-			AGC->hold_time += AGC_HOLDTIME_STEP;
+		if (fabsf(diff) < (float32_t)TRX.RX_AGC_Hold_Limiter && AGC->hold_time < TRX.RX_AGC_Hold_Time) {
+			AGC->hold_time += TRX.RX_AGC_Hold_Step_Up;
+			if (AGC->hold_time > TRX.RX_AGC_Hold_Time) {
+				AGC->hold_time = TRX.RX_AGC_Hold_Time;
+			}
 		}
 
 		// move
@@ -102,8 +105,12 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 			if ((HAL_GetTick() - AGC->last_agc_peak_time) > AGC->hold_time) {
 				AGC->need_gain_db += diff / RX_AGC_STEPSIZE_UP;
 
-				if (diff > AGC_HOLDTIME_LIMITER_DB && AGC->hold_time > 0) {
-					AGC->hold_time -= AGC_HOLDTIME_STEP;
+				if (diff > (float32_t)TRX.RX_AGC_Hold_Limiter && AGC->hold_time > 0) {
+					if (AGC->hold_time >= TRX.RX_AGC_Hold_Step_Down) {
+						AGC->hold_time -= TRX.RX_AGC_Hold_Step_Down;
+					} else {
+						AGC->hold_time = 0;
+					}
 				}
 			}
 		} else {
@@ -114,10 +121,10 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		// overload (clipping), sharply reduce the gain
 		if ((AGC_RX_dbFS + AGC->need_gain_db) > (gain_target + AGC_CLIPPING)) {
 			AGC->need_gain_db = gain_target - AGC_RX_dbFS;
-			// println("AGC overload ", diff);
+			println("AGC overload ", diff);
 		}
 
-		// println("AGC HoldTime ", AGC->need_gain_db, " ", diff, " ", AGC->hold_time);
+		// println("HOLD: ", AGC->hold_time, " GAIN: ", AGC->need_gain_db, " DIFF: ", diff);
 	}
 
 	// AGC off, not adjustable

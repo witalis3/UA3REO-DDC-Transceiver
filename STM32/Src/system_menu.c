@@ -71,7 +71,10 @@ static void SYSMENU_HANDL_RX_ADC_SHDN(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_CW_Speed(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_GAIN_TARGET(int8_t direction);
-static void SYSMENU_HANDL_RX_AGC_Hold(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_Hold_Time(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_Hold_Limiter(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_Hold_Step_Up(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_Hold_Step_Down(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_Max_gain(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_SSB_Speed(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_Spectral(int8_t direction);
@@ -664,7 +667,10 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"RX AGC CW Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_HANDL_RX_AGC_CW_Speed},
     {"RX AGC SSB Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_HANDL_RX_AGC_SSB_Speed},
     {"RX AGC Max gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_Max_gain, SYSMENU_HANDL_RX_AGC_Max_gain},
-    {"RX AGC Hold time", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RX_AGC_Hold, SYSMENU_HANDL_RX_AGC_Hold},
+    {"RX AGC Hold time", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RX_AGC_Hold_Time, SYSMENU_HANDL_RX_AGC_Hold_Time},
+    {"RX AGC Hold limit", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RX_AGC_Hold_Limiter, SYSMENU_HANDL_RX_AGC_Hold_Limiter},
+    {"RX AGC Hold st up", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RX_AGC_Hold_Step_Up, SYSMENU_HANDL_RX_AGC_Hold_Step_Up},
+    {"RX AGC Hold st dw", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RX_AGC_Hold_Step_Down, SYSMENU_HANDL_RX_AGC_Hold_Step_Down},
     {"RX EQ 0.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P1, SYSMENU_HANDL_RX_EQ_P1},
     {"RX EQ 0.7k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P2, SYSMENU_HANDL_RX_EQ_P2},
     {"RX EQ 1.2k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P3, SYSMENU_HANDL_RX_EQ_P3},
@@ -2513,12 +2519,39 @@ static void SYSMENU_HANDL_RX_AGC_Max_gain(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_RX_AGC_Hold(int8_t direction) {
-	if (TRX.RX_AGC_Hold > 0 || direction > 0) {
-		TRX.RX_AGC_Hold += direction * 100;
+static void SYSMENU_HANDL_RX_AGC_Hold_Time(int8_t direction) {
+	if (TRX.RX_AGC_Hold_Time > 0 || direction > 0) {
+		TRX.RX_AGC_Hold_Time += direction * 100;
 	}
-	if (TRX.RX_AGC_Hold > 5000) {
-		TRX.RX_AGC_Hold = 5000;
+	if (TRX.RX_AGC_Hold_Time > 5000) {
+		TRX.RX_AGC_Hold_Time = 5000;
+	}
+}
+
+static void SYSMENU_HANDL_RX_AGC_Hold_Limiter(int8_t direction) {
+	if (TRX.RX_AGC_Hold_Limiter > 0 || direction > 0) {
+		TRX.RX_AGC_Hold_Limiter += direction;
+	}
+	if (TRX.RX_AGC_Hold_Limiter > 100) {
+		TRX.RX_AGC_Hold_Limiter = 100;
+	}
+}
+
+static void SYSMENU_HANDL_RX_AGC_Hold_Step_Up(int8_t direction) {
+	if (TRX.RX_AGC_Hold_Step_Up > 0 || direction > 0) {
+		TRX.RX_AGC_Hold_Step_Up += direction;
+	}
+	if (TRX.RX_AGC_Hold_Step_Up > 100) {
+		TRX.RX_AGC_Hold_Step_Up = 100;
+	}
+}
+
+static void SYSMENU_HANDL_RX_AGC_Hold_Step_Down(int8_t direction) {
+	if (TRX.RX_AGC_Hold_Step_Down > 0 || direction > 0) {
+		TRX.RX_AGC_Hold_Step_Down += direction;
+	}
+	if (TRX.RX_AGC_Hold_Step_Down > 100) {
+		TRX.RX_AGC_Hold_Step_Down = 100;
 	}
 }
 
