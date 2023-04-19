@@ -225,7 +225,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 
 						if (diff > (float32_t)TRX.RX_AGC_Hold_Limiter && instance->hold_time > 0) {
 							if (instance->hold_time >= TRX.RX_AGC_Hold_Step_Down) {
-								instance->hold_time -= TRX.RX_AGC_Hold_Step_Down * 3;
+								instance->hold_time -= TRX.RX_AGC_Hold_Step_Down;
 							} else {
 								instance->hold_time = 0;
 							}
