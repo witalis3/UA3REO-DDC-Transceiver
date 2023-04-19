@@ -76,6 +76,13 @@ typedef const struct {
 	const uint16_t IFGAIN_BAR_FG;
 	const uint16_t AFGAIN_BAR_BG;
 	const uint16_t AFGAIN_BAR_FG;
+	// touch buttons
+	const uint16_t DENY_BUTTON_BACKGROUND;
+	const uint16_t DENY_BUTTON_TEXT;
+	const uint16_t NORMAL_BUTTON_BACKGROUND;
+	const uint16_t NORMAL_BUTTON_TEXT;
+	const uint16_t ACCEPT_BUTTON_BACKGROUND;
+	const uint16_t ACCEPT_BUTTON_TEXT;
 } STRUCT_COLOR_THEME;
 
 #define COLOR_THEMES_COUNT 6
@@ -156,6 +163,12 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .IFGAIN_BAR_FG = rgb888torgb565(255, 0, 0),
         .AFGAIN_BAR_BG = rgb888torgb565(20, 20, 20),
         .AFGAIN_BAR_FG = rgb888torgb565(0, 255, 0),
+        .DENY_BUTTON_BACKGROUND = rgb888torgb565(0xED, 0x1C, 0x24),
+        .DENY_BUTTON_TEXT = COLOR_WHITE,
+        .NORMAL_BUTTON_BACKGROUND = rgb888torgb565(0x00, 0xA2, 0xE8),
+        .NORMAL_BUTTON_TEXT = COLOR_WHITE,
+        .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
+        .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     },
     // 1 - white
     {
@@ -232,8 +245,13 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .IFGAIN_BAR_FG = rgb888torgb565(255, 0, 0),
         .AFGAIN_BAR_BG = rgb888torgb565(129, 135, 247),
         .AFGAIN_BAR_FG = rgb888torgb565(0, 255, 0),
+        .DENY_BUTTON_BACKGROUND = rgb888torgb565(0xED, 0x1C, 0x24),
+        .DENY_BUTTON_TEXT = COLOR_WHITE,
+        .NORMAL_BUTTON_BACKGROUND = rgb888torgb565(0x00, 0xA2, 0xE8),
+        .NORMAL_BUTTON_TEXT = COLOR_WHITE,
+        .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
+        .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     },
-
     {
         // 2 - black, 7-segments FREQ
         // 3'2 inch
@@ -242,11 +260,9 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BUTTON_TEXT = rgb888torgb565(32, 191, 17),
         .BUTTON_INACTIVE_TEXT = rgb888torgb565(130, 130, 130),
         .BUTTON_BACKGROUND = rgb888torgb565(50, 50, 50),
-
         .FREQ_MHZ = rgb888torgb565(0, 255, 212),
         .FREQ_KHZ = rgb888torgb565(0, 255, 212),
         .FREQ_HZ = rgb888torgb565(255, 195, 0),
-
         .STATUS_VFO = COLOR_BLACK,
         .STATUS_VFO_BG = COLOR_WHITE,
         .STATUS_BAR_LEFT = rgb888torgb565(100, 100, 255),
@@ -293,14 +309,11 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
         .ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
         // 7inch
-
         .FREQ_B_MHZ = rgb888torgb565(0, 255, 212),
         .FREQ_B_KHZ = rgb888torgb565(0, 255, 212),
         .FREQ_B_HZ = rgb888torgb565(255, 195, 0),
-
         .FREQ_A_INACTIVE = rgb888torgb565(100, 100, 100),
         .FREQ_B_INACTIVE = rgb888torgb565(100, 100, 100),
-
         .STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
         .STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
         .BUTTON_BACK = rgb888torgb565(10, 10, 10),
@@ -314,8 +327,13 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .IFGAIN_BAR_FG = rgb888torgb565(255, 0, 0),
         .AFGAIN_BAR_BG = rgb888torgb565(129, 135, 247),
         .AFGAIN_BAR_FG = rgb888torgb565(0, 255, 0),
+        .DENY_BUTTON_BACKGROUND = rgb888torgb565(0xED, 0x1C, 0x24),
+        .DENY_BUTTON_TEXT = COLOR_WHITE,
+        .NORMAL_BUTTON_BACKGROUND = rgb888torgb565(0x00, 0xA2, 0xE8),
+        .NORMAL_BUTTON_TEXT = COLOR_WHITE,
+        .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
+        .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     },
-
     {
         // CN
         // 2 - black, 7-segments FREQ
@@ -325,11 +343,9 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BUTTON_TEXT = COLOR_GREEN,
         .BUTTON_INACTIVE_TEXT = COLOR_WHITE,
         .BUTTON_BACKGROUND = rgb888torgb565(20, 20, 20),
-
         .FREQ_MHZ = rgb888torgb565(255, 50, 0),
         .FREQ_KHZ = rgb888torgb565(255, 50, 0),
         .FREQ_HZ = rgb888torgb565(255, 195, 0),
-
         .STATUS_VFO = COLOR_WHITE,
         .STATUS_VFO_BG = rgb888torgb565(255, 50, 0),
         .STATUS_BAR_LEFT = rgb888torgb565(100, 100, 255),
@@ -376,14 +392,11 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
         .ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
         // 7inch
-
         .FREQ_B_MHZ = rgb888torgb565(0, 255, 212),
         .FREQ_B_KHZ = rgb888torgb565(0, 255, 212),
         .FREQ_B_HZ = rgb888torgb565(255, 195, 0),
-
         .FREQ_A_INACTIVE = rgb888torgb565(100, 100, 100),
         .FREQ_B_INACTIVE = rgb888torgb565(100, 100, 100),
-
         .STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
         .STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
         .BUTTON_BACK = rgb888torgb565(60, 60, 60),
@@ -397,8 +410,13 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .IFGAIN_BAR_FG = rgb888torgb565(255, 0, 0),
         .AFGAIN_BAR_BG = rgb888torgb565(129, 135, 247),
         .AFGAIN_BAR_FG = rgb888torgb565(0, 255, 0),
+        .DENY_BUTTON_BACKGROUND = rgb888torgb565(0xED, 0x1C, 0x24),
+        .DENY_BUTTON_TEXT = COLOR_WHITE,
+        .NORMAL_BUTTON_BACKGROUND = rgb888torgb565(0x00, 0xA2, 0xE8),
+        .NORMAL_BUTTON_TEXT = COLOR_WHITE,
+        .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
+        .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     },
-
     {
         // CN+Green
         // 2 - black, 7-segments FREQ
@@ -408,11 +426,9 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BUTTON_TEXT = COLOR_GREEN,
         .BUTTON_INACTIVE_TEXT = COLOR_WHITE,
         .BUTTON_BACKGROUND = rgb888torgb565(10, 10, 30),
-
         .FREQ_MHZ = COLOR_GREEN,
         .FREQ_KHZ = COLOR_GREEN,
         .FREQ_HZ = COLOR_GREEN,
-
         .STATUS_VFO = COLOR_WHITE,
         .STATUS_VFO_BG = rgb888torgb565(255, 50, 0),
         .STATUS_BAR_LEFT = rgb888torgb565(100, 100, 255),
@@ -459,14 +475,11 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
         .ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
         // 7inch
-
         .FREQ_B_MHZ = COLOR_YELLOW,
         .FREQ_B_KHZ = COLOR_YELLOW,
         .FREQ_B_HZ = COLOR_YELLOW,
-
         .FREQ_A_INACTIVE = rgb888torgb565(100, 100, 100),
         .FREQ_B_INACTIVE = rgb888torgb565(100, 100, 100),
-
         .STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
         .STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
         .BUTTON_BACK = rgb888torgb565(10, 10, 40),
@@ -480,8 +493,13 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .IFGAIN_BAR_FG = rgb888torgb565(255, 0, 0),
         .AFGAIN_BAR_BG = rgb888torgb565(129, 135, 247),
         .AFGAIN_BAR_FG = rgb888torgb565(0, 255, 0),
+        .DENY_BUTTON_BACKGROUND = rgb888torgb565(0xED, 0x1C, 0x24),
+        .DENY_BUTTON_TEXT = COLOR_WHITE,
+        .NORMAL_BUTTON_BACKGROUND = rgb888torgb565(0x00, 0xA2, 0xE8),
+        .NORMAL_BUTTON_TEXT = COLOR_WHITE,
+        .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
+        .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     },
-
     {
         // CN+White
         // 2 - black, 7-segments FREQ
@@ -491,11 +509,9 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BUTTON_TEXT = COLOR_GREEN,
         .BUTTON_INACTIVE_TEXT = COLOR_WHITE,
         .BUTTON_BACKGROUND = rgb888torgb565(20, 20, 20),
-
         .FREQ_MHZ = COLOR_WHITE,
         .FREQ_KHZ = COLOR_WHITE,
         .FREQ_HZ = COLOR_WHITE,
-
         .STATUS_VFO = COLOR_WHITE,
         .STATUS_VFO_BG = rgb888torgb565(255, 50, 0),
         .STATUS_BAR_LEFT = rgb888torgb565(100, 100, 255),
@@ -542,14 +558,11 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
         .ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
         // 7inch
-
         .FREQ_B_MHZ = COLOR_WHITE,
         .FREQ_B_KHZ = COLOR_WHITE,
         .FREQ_B_HZ = COLOR_WHITE,
-
         .FREQ_A_INACTIVE = rgb888torgb565(90, 90, 90),
         .FREQ_B_INACTIVE = rgb888torgb565(90, 90, 90),
-
         .STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
         .STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
         .BUTTON_BACK = rgb888torgb565(60, 45, 60),
@@ -563,6 +576,12 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .IFGAIN_BAR_FG = rgb888torgb565(255, 0, 0),
         .AFGAIN_BAR_BG = rgb888torgb565(129, 135, 247),
         .AFGAIN_BAR_FG = rgb888torgb565(0, 255, 0),
+        .DENY_BUTTON_BACKGROUND = rgb888torgb565(0xED, 0x1C, 0x24),
+        .DENY_BUTTON_TEXT = COLOR_WHITE,
+        .NORMAL_BUTTON_BACKGROUND = rgb888torgb565(0x00, 0xA2, 0xE8),
+        .NORMAL_BUTTON_TEXT = COLOR_WHITE,
+        .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
+        .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     }};
 
 #define BG_COLOR COLOR->BACKGROUND

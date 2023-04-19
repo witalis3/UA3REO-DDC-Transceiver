@@ -94,7 +94,8 @@ static void LCD_ManualFreqButtonHandler(uint32_t parameter);
 static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter);
 #if (defined(LAY_800x480))
 static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, bool in_window, uint32_t parameter,
-                        void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter), uint16_t active_color, uint16_t inactive_color);
+                        void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter), uint16_t active_color, uint16_t inactive_color, uint16_t border_color,
+                        uint16_t background_color);
 #endif
 
 #define CN_Theme ((TRX.LayoutThemeId == 6) || (TRX.LayoutThemeId == 7))
@@ -170,10 +171,10 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 
 				if (!TRX.selected_vfo) {
 					printButton(xi * LAYOUT->TOPBUTTONS_WIDTH, 129, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, 0, bindx,
-					            BUTTONHANDLER_SET_VFOA_BAND, LCD_showManualFreqWindow2, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+					            BUTTONHANDLER_SET_VFOA_BAND, LCD_showManualFreqWindow2, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 				} else {
 					printButton(xi * LAYOUT->TOPBUTTONS_WIDTH, 129, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, 0, bindx,
-					            BUTTONHANDLER_SET_VFOB_BAND, LCD_showManualFreqWindow2, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+					            BUTTONHANDLER_SET_VFOB_BAND, LCD_showManualFreqWindow2, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 				}
 
 				xi++;
@@ -183,11 +184,11 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 			}
 			// memory bank
 			printButton(LCD_WIDTH - LAYOUT->TOPBUTTONS_WIDTH, 129, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "MEM", false, 0, false, 0, LCD_ShowMemoryChannelsButtonHandler,
-			            LCD_ShowMemoryChannelsButtonHandler, COLOR->BUTTON_TEXT, COLOR_YELLOW);
+			            LCD_ShowMemoryChannelsButtonHandler, COLOR->BUTTON_TEXT, COLOR_YELLOW, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 		}
 	}
 	printButton(LAYOUT->TOPBUTTONS_PRE_X, LAYOUT->TOPBUTTONS_PRE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "PRE", TRX.LNA, true, false, 0, BUTTONHANDLER_PRE, NULL,
-	            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	char buff[64] = {0};
 	if (TRX.ATT_DB >= 1.0f) {
 		sprintf(buff, "ATT%d", (uint8_t)TRX.ATT_DB);
@@ -195,43 +196,43 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 		sprintf(buff, "ATT");
 	}
 	printButton(LAYOUT->TOPBUTTONS_ATT_X, LAYOUT->TOPBUTTONS_ATT_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, buff, (TRX.ATT && TRX.ATT_DB >= 1.0f), true, false, 0,
-	            BUTTONHANDLER_ATT, LCD_showATTWindow, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            BUTTONHANDLER_ATT, LCD_showATTWindow, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->TOPBUTTONS_PGA_X, LAYOUT->TOPBUTTONS_PGA_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "PGA", TRX.ADC_PGA, true, false, 0, BUTTONHANDLER_PGA_ONLY, NULL,
-	            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->TOPBUTTONS_DRV_X, LAYOUT->TOPBUTTONS_DRV_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DRV", TRX.ADC_Driver, true, false, 0, BUTTONHANDLER_DRV_ONLY, NULL,
-	            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->TOPBUTTONS_FAST_X, LAYOUT->TOPBUTTONS_FAST_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "FAST", TRX.Fast, true, false, 0, BUTTONHANDLER_FAST, NULL,
-	            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->TOPBUTTONS_AGC_X, LAYOUT->TOPBUTTONS_AGC_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "AGC", CurrentVFO->AGC, true, false, 0, BUTTONHANDLER_AGC,
-	            BUTTONHANDLER_AGC_SPEED, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            BUTTONHANDLER_AGC_SPEED, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	if (CurrentVFO->DNR_Type == 1) {
 		printButton(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR1", true, true, false, 0, BUTTONHANDLER_DNR,
-		            BUTTONHANDLER_DNR_HOLD, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		            BUTTONHANDLER_DNR_HOLD, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	} else if (CurrentVFO->DNR_Type == 2) {
 		printButton(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR2", true, true, false, 0, BUTTONHANDLER_DNR,
-		            BUTTONHANDLER_DNR_HOLD, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		            BUTTONHANDLER_DNR_HOLD, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	} else {
 		printButton(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", false, true, false, 0, BUTTONHANDLER_DNR,
-		            BUTTONHANDLER_DNR_HOLD, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		            BUTTONHANDLER_DNR_HOLD, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	}
 	printButton(LAYOUT->TOPBUTTONS_NB_X, LAYOUT->TOPBUTTONS_NB_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "NB", TRX.NOISE_BLANKER, true, false, 0, BUTTONHANDLER_NB,
-	            BUTTONHANDLER_NB_HOLD, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            BUTTONHANDLER_NB_HOLD, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->TOPBUTTONS_NOTCH_X, LAYOUT->TOPBUTTONS_NOTCH_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "NOTCH",
 	            (CurrentVFO->AutoNotchFilter || CurrentVFO->ManualNotchFilter), true, false, 0, BUTTONHANDLER_NOTCH, BUTTONHANDLER_NOTCH_MANUAL, COLOR->BUTTON_TEXT,
-	            COLOR->BUTTON_INACTIVE_TEXT);
+	            COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->TOPBUTTONS_SQL_X, LAYOUT->TOPBUTTONS_SQL_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "SQL", CurrentVFO->SQL, true, false, 0, BUTTONHANDLER_SQL,
-	            BUTTONHANDLER_SQUELCH, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            BUTTONHANDLER_SQUELCH, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	if (TRX_AFAmp_Mute) {
 #if defined(FRONTPANEL_WOLF_2)
 		printButton(LAYOUT->TOPBUTTONS_MUTE_X, LAYOUT->TOPBUTTONS_MUTE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "BT", true, true, false, 0, BUTTONHANDLER_MUTE,
-		            BUTTONHANDLER_MUTE_AFAMP, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT);
+		            BUTTONHANDLER_MUTE_AFAMP, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 #else
 		printButton(LAYOUT->TOPBUTTONS_MUTE_X, LAYOUT->TOPBUTTONS_MUTE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "MAMP", true, true, false, 0, BUTTONHANDLER_MUTE,
-		            BUTTONHANDLER_MUTE_AFAMP, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT);
+		            BUTTONHANDLER_MUTE_AFAMP, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 #endif
 	} else {
 		printButton(LAYOUT->TOPBUTTONS_MUTE_X, LAYOUT->TOPBUTTONS_MUTE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "MUTE", TRX_Mute, true, false, 0, BUTTONHANDLER_MUTE,
-		            BUTTONHANDLER_MUTE_AFAMP, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT);
+		            BUTTONHANDLER_MUTE_AFAMP, COLOR_RED, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	}
 #else
 	printInfo(LAYOUT->TOPBUTTONS_PRE_X, LAYOUT->TOPBUTTONS_PRE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "PRE", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
@@ -302,7 +303,7 @@ static void LCD_displayBottomButtons(bool redraw) {
 
 	if (TRX.EnableBottomNavigationButtons) {
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<", false, false, false, 0, BUTTONHANDLER_LEFT_ARR,
-		            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 		curr_x += bottomNavigationButtonsWidth;
 	}
 
@@ -333,17 +334,17 @@ static void LCD_displayBottomButtons(bool redraw) {
 			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, width, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].name,
 			            enabled, false, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].parameter,
 			            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].holdHandler,
-			            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 		} else {
 			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, width, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, " ", false, false, false, 0, NULL, NULL, COLOR->BUTTON_TEXT,
-			            COLOR->BUTTON_INACTIVE_TEXT);
+			            COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 		}
 		curr_x += width;
 	}
 
 	if (TRX.EnableBottomNavigationButtons) {
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, ">", false, false, false, 0, BUTTONHANDLER_RIGHT_ARR,
-		            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 		curr_x += bottomNavigationButtonsWidth;
 	}
 #endif
@@ -579,7 +580,7 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	LCD_UpdateQuery.FreqInfo = false;
 	if (redraw) {
 		LCD_UpdateQuery.FreqInfoRedraw = false;
-		
+
 		Last_showed_Hours = 255;
 		Last_showed_Minutes = 255;
 		Last_showed_Seconds = 255;
@@ -2032,7 +2033,8 @@ static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, c
 
 #if (defined(LAY_800x480))
 static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, bool in_window, uint32_t parameter,
-                        void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter), uint16_t active_color, uint16_t inactive_color) {
+                        void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter), uint16_t active_color, uint16_t inactive_color, uint16_t border_color,
+                        uint16_t background_color) {
 	uint16_t x1_text, y1_text, w_text, h_text;
 	if (in_window) {
 		x += LCD_window.x;
@@ -2044,21 +2046,21 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 	uint16_t h_act = height - LAYOUT->BUTTON_PADDING * 2;
 
 	if (CN_Theme) {
-		LCDDriver_drawRoundedRectWH(x_act, y_act, w_act, h_act, COLOR->BUTTON_BORDER, 2, false);
-		LCDDriver_Fill_RectWH(x_act + 1, y_act + 1, w_act - 2, h_act - 2, COLOR->BUTTON_BACK);                            // button body
+		LCDDriver_drawRoundedRectWH(x_act, y_act, w_act, h_act, border_color, 2, false);
+		LCDDriver_Fill_RectWH(x_act + 1, y_act + 1, w_act - 2, h_act - 2, background_color);                              // button body
 		LCDDriver_getTextBoundsFont(text, x_act, y_act, &x1_text, &y1_text, &w_text, &h_text, (GFXfont *)&FreeSans7pt7b); // get text bounds
 	} else {
-		LCDDriver_Fill_RectWH(x_act, y_act, w_act, h_act, COLOR->BUTTON_BACK);                                            // button body
-		LCDDriver_drawRectXY(x_act, y_act, x_act + w_act, y_act + h_act, COLOR->BUTTON_BORDER);                           // border
+		LCDDriver_Fill_RectWH(x_act, y_act, w_act, h_act, background_color);                                              // button body
+		LCDDriver_drawRectXY(x_act, y_act, x_act + w_act, y_act + h_act, border_color);                                   // border
 		LCDDriver_getTextBoundsFont(text, x_act, y_act, &x1_text, &y1_text, &w_text, &h_text, (GFXfont *)&FreeSans9pt7b); // get text bounds
 	}
 
 	if (show_lighter && LAYOUT->BUTTON_LIGHTER_HEIGHT > 0) {
 		if (CN_Theme) {
-			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act * 2 / 5) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK,
+			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act * 2 / 5) + h_text / 2 - 1, active ? active_color : inactive_color, background_color,
 			                        &FreeSans7pt7b); // text
 		} else {
-			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act * 2 / 5) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK,
+			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act * 2 / 5) + h_text / 2 - 1, active ? active_color : inactive_color, background_color,
 			                        &FreeSans9pt7b); // text
 		}
 		uint16_t lighter_width = (uint16_t)((float32_t)w_act * LAYOUT->BUTTON_LIGHTER_WIDTH);
@@ -2066,9 +2068,9 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 		                      active ? COLOR->BUTTON_LIGHTER_ACTIVE : COLOR->BUTTON_LIGHTER_INACTIVE); // lighter
 	} else {
 		if (CN_Theme) {
-			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act / 2) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK, &FreeSans7pt7b); // text
+			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act / 2) + h_text / 2 - 1, active ? active_color : inactive_color, background_color, &FreeSans7pt7b); // text
 		} else {
-			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act / 2) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK, &FreeSans9pt7b); // text
+			LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act / 2) + h_text / 2 - 1, active ? active_color : inactive_color, background_color, &FreeSans9pt7b); // text
 		}
 	}
 	// add handler
@@ -2772,13 +2774,13 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 		if (!secondary_vfo) {
 			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 			            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT,
-			            (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, BUTTONHANDLER_SET_VFOA_BAND, BUTTONHANDLER_SET_VFOA_BAND, COLOR->BUTTON_TEXT,
-			            COLOR->BUTTON_INACTIVE_TEXT);
+			            (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, BUTTONHANDLER_SET_VFOA_BAND, BUTTONHANDLER_SET_VFOA_BAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+			            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 		} else {
 			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 			            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT,
-			            (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, BUTTONHANDLER_SET_VFOB_BAND, BUTTONHANDLER_SET_VFOB_BAND, COLOR->BUTTON_TEXT,
-			            COLOR->BUTTON_INACTIVE_TEXT);
+			            (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, BUTTONHANDLER_SET_VFOB_BAND, BUTTONHANDLER_SET_VFOB_BAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+			            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 		}
 
 		xi++;
@@ -2791,7 +2793,8 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 	// memory bank
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "MEM", false,
-	            true, true, 0, LCD_ShowMemoryChannelsButtonHandler, LCD_ShowMemoryChannelsButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            true, true, 0, LCD_ShowMemoryChannelsButtonHandler, LCD_ShowMemoryChannelsButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER,
+	            COLOR->BUTTON_BACK);
 	xi++;
 	if (xi >= buttons_in_line) {
 		yi++;
@@ -2816,12 +2819,12 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 			            LAYOUT->WINDOWS_BUTTON_MARGIN + divider_height + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
 			            LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, BUTTONHANDLER_SET_VFOA_BAND, BUTTONHANDLER_SET_VFOA_BAND,
-			            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 		} else {
 			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 			            LAYOUT->WINDOWS_BUTTON_MARGIN + divider_height + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
 			            LAYOUT->WINDOWS_BUTTON_HEIGHT, (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, BUTTONHANDLER_SET_VFOB_BAND, BUTTONHANDLER_SET_VFOB_BAND,
-			            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 		}
 
 		xi++;
@@ -2854,11 +2857,13 @@ static void LCD_showModeWindow(bool secondary_vfo) {
 				if (!secondary_vfo) {
 					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 					            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT,
-					            (char *)MODE_DESCR[index], (curmode == index), true, true, index, BUTTONHANDLER_SETMODE, BUTTONHANDLER_SETMODE, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+					            (char *)MODE_DESCR[index], (curmode == index), true, true, index, BUTTONHANDLER_SETMODE, BUTTONHANDLER_SETMODE, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+					            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 				} else {
 					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 					            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT,
-					            (char *)MODE_DESCR[index], (curmode == index), true, true, index, BUTTONHANDLER_SETSECMODE, BUTTONHANDLER_SETSECMODE, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+					            (char *)MODE_DESCR[index], (curmode == index), true, true, index, BUTTONHANDLER_SETSECMODE, BUTTONHANDLER_SETSECMODE, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+					            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 				}
 			}
 		}
@@ -2921,11 +2926,13 @@ static void LCD_showBWWindow(void) {
 				if (TRX_on_TX) {
 					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 					            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str,
-					            (width == cur_width), true, true, width, BUTTONHANDLER_SET_TX_BW, BUTTONHANDLER_SET_TX_BW, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+					            (width == cur_width), true, true, width, BUTTONHANDLER_SET_TX_BW, BUTTONHANDLER_SET_TX_BW, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER,
+					            COLOR->BUTTON_BACK);
 				} else {
 					printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 					            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str,
-					            (width == cur_width), true, true, width, BUTTONHANDLER_SET_RX_BW, BUTTONHANDLER_SET_RX_BW, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+					            (width == cur_width), true, true, width, BUTTONHANDLER_SET_RX_BW, BUTTONHANDLER_SET_RX_BW, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER,
+					            COLOR->BUTTON_BACK);
 				}
 			}
 		}
@@ -2955,7 +2962,8 @@ void LCD_showRFPowerWindow(void) {
 			sprintf(str, "%d%%", index);
 			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 			            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str,
-			            (TRX.RF_Gain == index), true, true, index, BUTTONHANDLER_SETRF_POWER, BUTTONHANDLER_SETRF_POWER, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			            (TRX.RF_Gain == index), true, true, index, BUTTONHANDLER_SETRF_POWER, BUTTONHANDLER_SETRF_POWER, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER,
+			            COLOR->BUTTON_BACK);
 		}
 	}
 	LCD_busy = false;
@@ -2977,50 +2985,63 @@ void LCD_showManualFreqWindow(bool secondary_vfo) {
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "1", false, 0, true, 1, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "1", false, 0, true, 1, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "2", false, 0, true, 2, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "2", false, 0, true, 2, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "3", false, 0, true, 3, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "3", false, 0, true, 3, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "4", false, 0, true, 4, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "4", false, 0, true, 4, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "5", false, 0, true, 5, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "5", false, 0, true, 5, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "6", false, 0, true, 6, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "6", false, 0, true, 6, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "7", false, 0, true, 7, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "7", false, 0, true, 7, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "8", false, 0, true, 8, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "8", false, 0, true, 8, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "9", false, 0, true, 9, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "9", false, 0, true, 9, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 3 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "0", false, 0, true, 0, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "0", false, 0, true, 0, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + LAYOUT->WINDOWS_BUTTON_WIDTH * 2 + LAYOUT->WINDOWS_BUTTON_MARGIN * 2, 30, LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "<-",
-	            false, 0, true, 11, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            false, 0, true, 11, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 4 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "Hz", false, 0, true, 14, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "Hz", false, 0, true, 14, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 4 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "KHz", false, 0, true, 13, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "KHz", false, 0, true, 13, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 4 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "MHz", false, 0, true, 12, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "MHz", false, 0, true, 12, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 
 	LCD_ManualFreqButtonHandler(0);
 	LCD_busy = false;
@@ -3042,50 +3063,63 @@ void LCD_showManualFreqWindow2() {
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "1", false, 0, true, 1, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "1", false, 0, true, 1, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "2", false, 0, true, 2, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "2", false, 0, true, 2, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "3", false, 0, true, 3, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "3", false, 0, true, 3, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "4", false, 0, true, 4, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "4", false, 0, true, 4, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "5", false, 0, true, 5, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "5", false, 0, true, 5, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "6", false, 0, true, 6, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "6", false, 0, true, 6, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "7", false, 0, true, 7, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "7", false, 0, true, 7, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "8", false, 0, true, 8, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "8", false, 0, true, 8, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "9", false, 0, true, 9, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "9", false, 0, true, 9, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 3 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "0", false, 0, true, 0, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "0", false, 0, true, 0, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + LAYOUT->WINDOWS_BUTTON_WIDTH * 2 + LAYOUT->WINDOWS_BUTTON_MARGIN * 2, 30, LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "<-",
-	            false, 0, true, 11, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            false, 0, true, 11, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 4 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "Hz", false, 0, true, 14, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "Hz", false, 0, true, 14, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 1 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 4 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "KHz", false, 0, true, 13, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "KHz", false, 0, true, 13, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 4 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "MHz", false, 0, true, 12, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "MHz", false, 0, true, 12, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 
 	LCD_ManualFreqButtonHandler(0);
 	LCD_busy = false;
@@ -3154,7 +3188,7 @@ void LCD_ManualFreqButtonHandler(uint32_t parameter) {
 
 	sprintf(buff, "%llu", manualFreqEnter);
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN, 30, LAYOUT->WINDOWS_BUTTON_WIDTH * 2 + LAYOUT->WINDOWS_BUTTON_MARGIN, LAYOUT->WINDOWS_BUTTON_HEIGHT, buff, false, false, true, 0, NULL, NULL,
-	            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 #endif
 }
 
@@ -3190,7 +3224,7 @@ static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter) {
 			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + x * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 			            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
 			            LAYOUT->WINDOWS_BUTTON_HEIGHT, tmp, (CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq == CurrentVFO->Freq), true, true, (channel_num - 1),
-			            BUTTONHANDLER_SelectMemoryChannels, BUTTONHANDLER_SaveMemoryChannels, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			            BUTTONHANDLER_SelectMemoryChannels, BUTTONHANDLER_SaveMemoryChannels, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 			channel_num++;
 		}
 	}
@@ -3223,27 +3257,36 @@ void LCD_printKeyboard(void (*keyboardHandler)(char *string, uint32_t max_size, 
 	const uint16_t button_width = (LCD_HEIGHT / 2 - LAYOUT->WINDOWS_BUTTON_MARGIN * 2) / 5;
 	const uint16_t button_height = button_width;
 	const uint16_t buttons_top_offset = LCD_HEIGHT / 2 + LAYOUT->WINDOWS_BUTTON_MARGIN;
-	uint16_t buttons_left_offset = button_width * 2.5;
+	uint16_t buttons_left_offset = button_width / 2 - 4;
 	uint16_t x = 0;
 	uint16_t y = 0;
 
 	LCD_keyboards_current_lowcase_status = lowcase;
 	//
-	char line1[] = "1234567890<";
+	char line1[] = "~1234567890_+<";
+	if (lowcase) {
+		char line1[] = "`1234567890-=<";
+	}
 	for (uint8_t i = 0; i < strlen(line1); i++) {
 		char text[2] = {0};
 		text[0] = line1[i];
 		x = i;
-		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN),
-		            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0],
-		            LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		if (i == strlen(line1) - 1) { // backspace
+			printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN),
+			            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0],
+			            LCD_keyboardHandler, LCD_keyboardHandler, COLOR->DENY_BUTTON_TEXT, COLOR->DENY_BUTTON_TEXT, COLOR->BUTTON_BORDER, COLOR->DENY_BUTTON_BACKGROUND);
+		} else {
+			printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN),
+			            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0],
+			            LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
+		}
 	}
 	y++;
-	buttons_left_offset -= button_width / 2;
+	// buttons_left_offset -= button_width;
 	//
-	char line2[] = "QWERTYUIOP[]";
+	char line2[] = "QWERTYUIOP{}|&";
 	if (lowcase) {
-		strcpy(line2, "qwertyuiop[]");
+		strcpy(line2, "qwertyuiop[]\\*");
 	}
 	for (uint8_t i = 0; i < strlen(line2); i++) {
 		char text[2] = {0};
@@ -3251,14 +3294,14 @@ void LCD_printKeyboard(void (*keyboardHandler)(char *string, uint32_t max_size, 
 		x = i;
 		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN),
 		            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0],
-		            LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		            LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	}
 	y++;
 	// buttons_left_offset += button_width / 2;
 	//
-	char line3[] = "ASDFGHJKL;'";
+	char line3[] = "ASDFGHJKL:\"$@";
 	if (lowcase) {
-		strcpy(line3, "asdfghjkl;'");
+		strcpy(line3, "asdfghjkl;'%^");
 	}
 	for (uint8_t i = 0; i < strlen(line3); i++) {
 		char text[2] = {0};
@@ -3266,19 +3309,19 @@ void LCD_printKeyboard(void (*keyboardHandler)(char *string, uint32_t max_size, 
 		x = i;
 		printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN),
 		            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0],
-		            LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+		            LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 	}
 	// enter
 	x = strlen(line3);
 	printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, "<=", true, false, false, NULL,
-	            BUTTONHANDLER_MENU, BUTTONHANDLER_MENU, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+	            BUTTONHANDLER_MENU, BUTTONHANDLER_MENU, COLOR->ACCEPT_BUTTON_TEXT, COLOR->ACCEPT_BUTTON_TEXT, COLOR->BUTTON_BORDER, COLOR->ACCEPT_BUTTON_BACKGROUND);
 	//
 	y++;
 	//
-	char line4[] = "^ZXCVBNM,./ ";
+	char line4[] = "^ZXCVBNM()?! ";
 	if (lowcase) {
-		strcpy(line4, "^zxcvbnm,./ ");
+		strcpy(line4, "^zxcvbnm,./# ");
 	}
 	for (uint8_t i = 0; i < strlen(line4); i++) {
 		char text[2] = {0};
@@ -3288,11 +3331,15 @@ void LCD_printKeyboard(void (*keyboardHandler)(char *string, uint32_t max_size, 
 		if (i == 0) { // shift
 			printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN),
 			            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0],
-			            LCD_printKeyboardShiftHandler, LCD_printKeyboardShiftHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			            LCD_printKeyboardShiftHandler, LCD_printKeyboardShiftHandler, COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_TEXT, COLOR->BUTTON_BORDER, COLOR->NORMAL_BUTTON_BACKGROUND);
+		} else if (i == strlen(line4) - 1) { // space
+			printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN),
+			            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width * 2 + LAYOUT->WINDOWS_BUTTON_MARGIN, button_height,
+			            text, true, false, false, text[0], LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 		} else {
 			printButton(buttons_left_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + x * (button_width + LAYOUT->WINDOWS_BUTTON_MARGIN),
 			            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (button_height + LAYOUT->WINDOWS_BUTTON_MARGIN), button_width, button_height, text, true, false, false, text[0],
-			            LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			            LCD_keyboardHandler, LCD_keyboardHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
 		}
 	}
 #endif
@@ -3321,7 +3368,8 @@ void LCD_showATTWindow(uint32_t parameter) {
 			sprintf(str, "%d dB", db);
 			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 			            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str,
-			            (TRX.ATT_DB == db), true, true, db, BUTTONHANDLER_SET_ATT_DB, BUTTONHANDLER_SET_ATT_DB, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			            (TRX.ATT_DB == db), true, true, db, BUTTONHANDLER_SET_ATT_DB, BUTTONHANDLER_SET_ATT_DB, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER,
+			            COLOR->BUTTON_BACK);
 			db += 3;
 			if (db > 31) {
 				db = 31;
