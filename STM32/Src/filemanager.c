@@ -109,11 +109,11 @@ void FILEMANAGER_EventRotate(int8_t direction) {
 			FILEMANAGER_Refresh();
 		}
 	} else {
-		char *istr = strstr(FILEMANAGER_LISTING[current_index - 1], "[DIR] ");
-		if (istr != NULL && ((strlen(istr + 6) + 1) < sizeof(FILEMANAGER_CurrentPath))) // is directory
+		char *istr = strstr(FILEMANAGER_LISTING[current_index - 1], " [DIR] ");
+		if (istr != NULL && ((strlen(istr + 7) + 1) < sizeof(FILEMANAGER_CurrentPath))) // is directory
 		{
 			strcat(FILEMANAGER_CurrentPath, "/");
-			strcat(FILEMANAGER_CurrentPath, istr + 6);
+			strcat(FILEMANAGER_CurrentPath, istr + 7);
 			FILEMANAGER_files_startindex = 0;
 			current_index = 0;
 			FILEMANAGER_Refresh();

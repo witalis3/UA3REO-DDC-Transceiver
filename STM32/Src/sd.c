@@ -233,8 +233,8 @@ static void SDCOMM_LIST_DIRECTORY_handler(void) {
 				println("[DIR] ", fileInfo.fname);
 
 				if (FILEMANAGER_files_startindex <= FILEMANAGER_files_count && FILEMANAGER_files_added < FILEMANAGER_LISTING_MAX_FILES) {
-					strcat(FILEMANAGER_LISTING[FILEMANAGER_files_added], "[DIR] ");
-					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_added], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 6));
+					strcat(FILEMANAGER_LISTING[FILEMANAGER_files_added], " [DIR] ");
+					strncat(FILEMANAGER_LISTING[FILEMANAGER_files_added], fileInfo.fname, (FILEMANAGER_LISTING_MAX_FILELEN - 7));
 					FILEMANAGER_files_added++;
 				}
 				FILEMANAGER_files_count++;
@@ -255,6 +255,8 @@ static void SDCOMM_LIST_DIRECTORY_handler(void) {
 		}
 		f_closedir(&dir);
 		println("read complete");
+		
+		qsort(FILEMANAGER_LISTING, FILEMANAGER_files_added, FILEMANAGER_LISTING_MAX_FILELEN + 1, (int (*)(const void *,const  void *)) strcmp);
 	} else {
 		LCD_showInfo("SD error", true);
 		SYSMENU_eventCloseAllSystemMenu();
