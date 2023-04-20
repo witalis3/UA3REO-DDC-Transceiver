@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <deploy
- date="2022.09.27.22:14:59"
+ date="2023.04.20.22:20:32"
  outputDirectory="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/tx_nco/">
  <perimeter>
   <parameter
@@ -78,13 +78,13 @@
  </perimeter>
  <entity
    path=""
-   parameterizationKey="tx_nco:1.0:AUTO_CLK_CLOCK_DOMAIN=-1,AUTO_CLK_CLOCK_RATE=-1,AUTO_CLK_RESET_DOMAIN=-1,AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1664302497,AUTO_UNIQUE_ID=(altera_nco_ii:18.1:apr=32,aprf=32,apri=22,aprp=16,arch=trig,cordic_arch=parallel,cycles_per_output=1,design_env=NATIVE,dpri=4,fmod_pipe=1,freq_out=7.1,fsamp=110.4,hyper_opt=false,hyper_opt_select=false,mpr=14,numba=1,numch=1,phi_inc=276216194,pmod_pipe=1,real_freq_out=7.1,selected_device_family=Cyclone IV E,trig_cycles_per_output=1,use_dedicated_multipliers=true,want_dither=false,want_freq_mod=false,want_phase_mod=false,want_sin_and_cos=dual_output)"
+   parameterizationKey="tx_nco:1.0:AUTO_CLK_CLOCK_DOMAIN=-1,AUTO_CLK_CLOCK_RATE=-1,AUTO_CLK_RESET_DOMAIN=-1,AUTO_DEVICE=EP4CE22E22C8,AUTO_DEVICE_FAMILY=Cyclone IV E,AUTO_DEVICE_SPEEDGRADE=8,AUTO_GENERATION_ID=1682018426,AUTO_UNIQUE_ID=(altera_nco_ii:22.1:apr=32,aprf=32,apri=22,aprp=16,arch=trig,cordic_arch=parallel,cycles_per_output=1,design_env=NATIVE,dpri=7,fmod_pipe=1,freq_out=7.0,fsamp=110.4,hyper_opt=false,hyper_opt_select=false,mpr=14,numba=1,numch=1,phi_inc=272325825,pmod_pipe=1,real_freq_out=7.0,selected_device_family=Cyclone IV E,trig_cycles_per_output=1,use_dedicated_multipliers=true,want_dither=true,want_freq_mod=false,want_phase_mod=false,want_sin_and_cos=dual_output)"
    instancePathKey="tx_nco"
    kind="tx_nco"
    version="1.0"
    name="tx_nco">
   <parameter name="AUTO_CLK_CLOCK_RATE" value="-1" />
-  <parameter name="AUTO_GENERATION_ID" value="1664302497" />
+  <parameter name="AUTO_GENERATION_ID" value="1682018426" />
   <parameter name="AUTO_DEVICE" value="EP4CE22E22C8" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone IV E" />
   <parameter name="AUTO_CLK_RESET_DOMAIN" value="-1" />
@@ -110,7 +110,19 @@
        type="VERILOG"
        attributes="" />
    <file
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/tx_nco/synthesis/submodules/asj_nco_apr_dxx.v"
+       type="VERILOG"
+       attributes="" />
+   <file
        path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/tx_nco/synthesis/submodules/asj_nco_mob_w.v"
+       type="VERILOG"
+       attributes="" />
+   <file
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/tx_nco/synthesis/submodules/asj_dxx_g.v"
+       type="VERILOG"
+       attributes="" />
+   <file
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/tx_nco/synthesis/submodules/asj_dxx.v"
        type="VERILOG"
        attributes="" />
    <file
@@ -171,10 +183,9 @@
   </sourceFiles>
   <childSourceFiles>
    <file
-       path="C:/intelfpga/18.1/ip/altera/dsp/altera_nco_ii/altera_nco_ii_hw.tcl" />
-   <file path="C:/intelFPGA/18.1/ip/altera/dsp/altera_nco_ii/nco_helper.jar" />
+       path="C:/intelfpga/22.1std/ip/altera/dsp/altera_nco_ii/altera_nco_ii_hw.tcl" />
    <file
-       path="C:/intelFPGA/18.1/quartus/sopc_builder/model/lib/com.altera.entityinterfaces.jar" />
+       path="C:/intelFPGA/22.1std/ip/altera/dsp/altera_nco_ii/nco_helper.jar" />
   </childSourceFiles>
   <messages>
    <message level="Debug" culprit="tx_nco">queue size: 0 starting:tx_nco "tx_nco"</message>
@@ -197,10 +208,10 @@
  </entity>
  <entity
    path="submodules/"
-   parameterizationKey="altera_nco_ii:18.1:apr=32,aprf=32,apri=22,aprp=16,arch=trig,cordic_arch=parallel,cycles_per_output=1,design_env=NATIVE,dpri=4,fmod_pipe=1,freq_out=7.1,fsamp=110.4,hyper_opt=false,hyper_opt_select=false,mpr=14,numba=1,numch=1,phi_inc=276216194,pmod_pipe=1,real_freq_out=7.1,selected_device_family=Cyclone IV E,trig_cycles_per_output=1,use_dedicated_multipliers=true,want_dither=false,want_freq_mod=false,want_phase_mod=false,want_sin_and_cos=dual_output"
+   parameterizationKey="altera_nco_ii:22.1:apr=32,aprf=32,apri=22,aprp=16,arch=trig,cordic_arch=parallel,cycles_per_output=1,design_env=NATIVE,dpri=7,fmod_pipe=1,freq_out=7.0,fsamp=110.4,hyper_opt=false,hyper_opt_select=false,mpr=14,numba=1,numch=1,phi_inc=272325825,pmod_pipe=1,real_freq_out=7.0,selected_device_family=Cyclone IV E,trig_cycles_per_output=1,use_dedicated_multipliers=true,want_dither=true,want_freq_mod=false,want_phase_mod=false,want_sin_and_cos=dual_output"
    instancePathKey="tx_nco:.:nco_ii_0"
    kind="altera_nco_ii"
-   version="18.1"
+   version="22.1"
    name="tx_nco_nco_ii_0">
   <parameter name="aprp" value="16" />
   <parameter name="numba" value="1" />
@@ -211,24 +222,24 @@
   <parameter name="selected_device_family" value="Cyclone IV E" />
   <parameter name="apri" value="22" />
   <parameter name="aprf" value="32" />
-  <parameter name="want_dither" value="false" />
+  <parameter name="want_dither" value="true" />
   <parameter name="hyper_opt_select" value="false" />
   <parameter name="want_phase_mod" value="false" />
   <parameter name="apr" value="32" />
   <parameter name="hyper_opt" value="false" />
   <parameter name="trig_cycles_per_output" value="1" />
-  <parameter name="dpri" value="4" />
+  <parameter name="dpri" value="7" />
   <parameter name="mpr" value="14" />
   <parameter name="design_env" value="NATIVE" />
   <parameter name="numch" value="1" />
   <parameter name="want_freq_mod" value="false" />
   <parameter name="use_dedicated_multipliers" value="true" />
   <parameter name="want_sin_and_cos" value="dual_output" />
-  <parameter name="phi_inc" value="276216194" />
+  <parameter name="phi_inc" value="272325825" />
   <parameter name="fmod_pipe" value="1" />
   <parameter name="arch" value="trig" />
-  <parameter name="freq_out" value="7.1" />
-  <parameter name="real_freq_out" value="7.1" />
+  <parameter name="freq_out" value="7.0" />
+  <parameter name="real_freq_out" value="7.0" />
   <generatedFiles>
    <file
        path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/tx_nco/synthesis/submodules/asj_nco_madx_cen.v"
@@ -243,7 +254,19 @@
        type="VERILOG"
        attributes="" />
    <file
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/tx_nco/synthesis/submodules/asj_nco_apr_dxx.v"
+       type="VERILOG"
+       attributes="" />
+   <file
        path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/tx_nco/synthesis/submodules/asj_nco_mob_w.v"
+       type="VERILOG"
+       attributes="" />
+   <file
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/tx_nco/synthesis/submodules/asj_dxx_g.v"
+       type="VERILOG"
+       attributes="" />
+   <file
+       path="C:/Dropbox/Develop/Projects/WOLF/FPGA/FPGA-Wolf/tx_nco/synthesis/submodules/asj_dxx.v"
        type="VERILOG"
        attributes="" />
    <file
@@ -302,10 +325,9 @@
   <childGeneratedFiles/>
   <sourceFiles>
    <file
-       path="C:/intelfpga/18.1/ip/altera/dsp/altera_nco_ii/altera_nco_ii_hw.tcl" />
-   <file path="C:/intelFPGA/18.1/ip/altera/dsp/altera_nco_ii/nco_helper.jar" />
+       path="C:/intelfpga/22.1std/ip/altera/dsp/altera_nco_ii/altera_nco_ii_hw.tcl" />
    <file
-       path="C:/intelFPGA/18.1/quartus/sopc_builder/model/lib/com.altera.entityinterfaces.jar" />
+       path="C:/intelFPGA/22.1std/ip/altera/dsp/altera_nco_ii/nco_helper.jar" />
   </sourceFiles>
   <childSourceFiles/>
   <instantiator instantiator="tx_nco" as="nco_ii_0" />

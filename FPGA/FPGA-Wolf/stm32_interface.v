@@ -123,6 +123,9 @@ reg signed [23:0] READ_RX2_I;
 reg signed [23:0] READ_RX2_Q;
 reg signed [23:0] READ_TX_I;
 reg signed [23:0] READ_TX_Q;
+reg signed [31:0] READ_NCO1_freq;
+reg signed [31:0] READ_NCO2_freq;
+reg signed [31:0] READ_TX_NCO_freq;
 reg ADC_MINMAX_RESET;
 reg sync_reset_rx_n = 0;
 reg sync_reset_tx_n = 0;
@@ -216,42 +219,44 @@ begin
 	end
 	else if (k == 101)
 	begin
-		NCO1_freq[31:24] = DATA_BUS[7:0];
+		READ_NCO1_freq[31:24] = DATA_BUS[7:0];
 		k = 102;
 	end
 	else if (k == 102)
 	begin
-		NCO1_freq[23:16] = DATA_BUS[7:0];
+		READ_NCO1_freq[23:16] = DATA_BUS[7:0];
 		k = 103;
 	end
 	else if (k == 103)
 	begin
-		NCO1_freq[15:8] = DATA_BUS[7:0];
+		READ_NCO1_freq[15:8] = DATA_BUS[7:0];
 		k = 104;
 	end
 	else if (k == 104)
 	begin
-		NCO1_freq[7:0] = DATA_BUS[7:0];
+		READ_NCO1_freq[7:0] = DATA_BUS[7:0];
+		NCO1_freq[31:0] = READ_NCO1_freq[31:0];
 		k = 105;
 	end
 	else if (k == 105)
 	begin
-		NCO2_freq[31:24] = DATA_BUS[7:0];
+		READ_NCO2_freq[31:24] = DATA_BUS[7:0];
 		k = 106;
 	end
 	else if (k == 106)
 	begin
-		NCO2_freq[23:16] = DATA_BUS[7:0];
+		READ_NCO2_freq[23:16] = DATA_BUS[7:0];
 		k = 107;
 	end
 	else if (k == 107)
 	begin
-		NCO2_freq[15:8] = DATA_BUS[7:0];
+		READ_NCO2_freq[15:8] = DATA_BUS[7:0];
 		k = 108;
 	end
 	else if (k == 108)
 	begin
-		NCO2_freq[7:0] = DATA_BUS[7:0];
+		READ_NCO2_freq[7:0] = DATA_BUS[7:0];
+		NCO2_freq[31:0] = READ_NCO2_freq[31:0];
 		k = 109;
 	end
 	else if (k == 109)
@@ -321,22 +326,23 @@ begin
 	end
 	else if (k == 119)
 	begin
-		TX_NCO_freq[31:24] = DATA_BUS[7:0];
+		READ_TX_NCO_freq[31:24] = DATA_BUS[7:0];
 		k = 120;
 	end
 	else if (k == 120)
 	begin
-		TX_NCO_freq[23:16] = DATA_BUS[7:0];
+		READ_TX_NCO_freq[23:16] = DATA_BUS[7:0];
 		k = 121;
 	end
 	else if (k == 121)
 	begin
-		TX_NCO_freq[15:8] = DATA_BUS[7:0];
+		READ_TX_NCO_freq[15:8] = DATA_BUS[7:0];
 		k = 122;
 	end
 	else if (k == 122)
 	begin
-		TX_NCO_freq[7:0] = DATA_BUS[7:0];
+		READ_TX_NCO_freq[7:0] = DATA_BUS[7:0];
+		TX_NCO_freq[31:0] = READ_TX_NCO_freq[31:0];
 		k = 123;
 	end
 	else if (k == 123)
@@ -531,12 +537,12 @@ begin
 	
 	else if (k == 800) //GET INFO
 	begin
-		DATA_BUS_OUT[7:0] = 'd6; //flash id 1
+		DATA_BUS_OUT[7:0] = 'd7; //flash id 1
 		k = 801;
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd8; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd6; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)

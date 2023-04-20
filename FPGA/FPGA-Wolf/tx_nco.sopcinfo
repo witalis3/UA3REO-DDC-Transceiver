@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="tx_nco" kind="tx_nco" version="1.0" fabric="QSYS">
  <!-- Format version 22.1 915 (Future versions may contain additional information.) -->
- <!-- 2023.01.30.20:15:03 -->
+ <!-- 2023.04.20.23:52:35 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1675098903</value>
+  <value>1682023955</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -206,7 +206,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="want_dither">
    <type>boolean</type>
-   <value>false</value>
+   <value>true</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -214,9 +214,9 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="dpri">
    <type>int</type>
-   <value>4</value>
+   <value>7</value>
    <derived>false</derived>
-   <enabled>false</enabled>
+   <enabled>true</enabled>
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
@@ -230,7 +230,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="freq_out">
    <type>double</type>
-   <value>7.1</value>
+   <value>7.0</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -238,7 +238,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="phi_inc">
    <type>long</type>
-   <value>276216194</value>
+   <value>272325825</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -246,7 +246,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="real_freq_out">
    <type>double</type>
-   <value>7.1</value>
+   <value>7.0</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>true</visible>

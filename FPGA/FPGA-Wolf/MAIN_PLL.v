@@ -102,7 +102,7 @@ module MAIN_PLL (
 				.vcooverrange (),
 				.vcounderrange ());
 	defparam
-		altpll_component.bandwidth_type = "AUTO",
+		altpll_component.bandwidth_type = "LOW",
 		altpll_component.clk0_divide_by = 10,
 		altpll_component.clk0_duty_cycle = 50,
 		altpll_component.clk0_multiply_by = 1,
@@ -124,7 +124,7 @@ module MAIN_PLL (
 		altpll_component.intended_device_family = "Cyclone IV E",
 		altpll_component.lpm_hint = "CBX_MODULE_PREFIX=MAIN_PLL",
 		altpll_component.lpm_type = "altpll",
-		altpll_component.operation_mode = "NORMAL",
+		altpll_component.operation_mode = "SOURCE_SYNCHRONOUS",
 		altpll_component.pll_type = "AUTO",
 		altpll_component.port_activeclock = "PORT_UNUSED",
 		altpll_component.port_areset = "PORT_UNUSED",
@@ -180,8 +180,8 @@ endmodule
 // Retrieval info: PRIVATE: BANDWIDTH_FEATURE_ENABLED STRING "1"
 // Retrieval info: PRIVATE: BANDWIDTH_FREQ_UNIT STRING "MHz"
 // Retrieval info: PRIVATE: BANDWIDTH_PRESET STRING "Low"
-// Retrieval info: PRIVATE: BANDWIDTH_USE_AUTO STRING "1"
-// Retrieval info: PRIVATE: BANDWIDTH_USE_PRESET STRING "0"
+// Retrieval info: PRIVATE: BANDWIDTH_USE_AUTO STRING "0"
+// Retrieval info: PRIVATE: BANDWIDTH_USE_PRESET STRING "1"
 // Retrieval info: PRIVATE: CLKBAD_SWITCHOVER_CHECK STRING "0"
 // Retrieval info: PRIVATE: CLKLOSS_CHECK STRING "0"
 // Retrieval info: PRIVATE: CLKSWITCH_CHECK STRING "0"
@@ -235,7 +235,7 @@ endmodule
 // Retrieval info: PRIVATE: MULT_FACTOR1 NUMERIC "1"
 // Retrieval info: PRIVATE: MULT_FACTOR2 NUMERIC "1"
 // Retrieval info: PRIVATE: MULT_FACTOR3 NUMERIC "1"
-// Retrieval info: PRIVATE: NORMAL_MODE_RADIO STRING "1"
+// Retrieval info: PRIVATE: NORMAL_MODE_RADIO STRING "0"
 // Retrieval info: PRIVATE: OUTPUT_FREQ0 STRING "0.09500000"
 // Retrieval info: PRIVATE: OUTPUT_FREQ1 STRING "12.50000000"
 // Retrieval info: PRIVATE: OUTPUT_FREQ2 STRING "100.00000000"
@@ -279,7 +279,7 @@ endmodule
 // Retrieval info: PRIVATE: SPREAD_FREQ_UNIT STRING "KHz"
 // Retrieval info: PRIVATE: SPREAD_PERCENT STRING "0.500"
 // Retrieval info: PRIVATE: SPREAD_USE STRING "0"
-// Retrieval info: PRIVATE: SRC_SYNCH_COMP_RADIO STRING "0"
+// Retrieval info: PRIVATE: SRC_SYNCH_COMP_RADIO STRING "1"
 // Retrieval info: PRIVATE: STICKY_CLK0 STRING "1"
 // Retrieval info: PRIVATE: STICKY_CLK1 STRING "1"
 // Retrieval info: PRIVATE: STICKY_CLK2 STRING "1"
@@ -298,7 +298,7 @@ endmodule
 // Retrieval info: PRIVATE: USE_MIL_SPEED_GRADE NUMERIC "0"
 // Retrieval info: PRIVATE: ZERO_DELAY_RADIO STRING "0"
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
-// Retrieval info: CONSTANT: BANDWIDTH_TYPE STRING "AUTO"
+// Retrieval info: CONSTANT: BANDWIDTH_TYPE STRING "LOW"
 // Retrieval info: CONSTANT: CLK0_DIVIDE_BY NUMERIC "10"
 // Retrieval info: CONSTANT: CLK0_DUTY_CYCLE NUMERIC "50"
 // Retrieval info: CONSTANT: CLK0_MULTIPLY_BY NUMERIC "1"
@@ -319,7 +319,7 @@ endmodule
 // Retrieval info: CONSTANT: INCLK0_INPUT_FREQUENCY NUMERIC "8138"
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone IV E"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "altpll"
-// Retrieval info: CONSTANT: OPERATION_MODE STRING "NORMAL"
+// Retrieval info: CONSTANT: OPERATION_MODE STRING "SOURCE_SYNCHRONOUS"
 // Retrieval info: CONSTANT: PLL_TYPE STRING "AUTO"
 // Retrieval info: CONSTANT: PORT_ACTIVECLOCK STRING "PORT_UNUSED"
 // Retrieval info: CONSTANT: PORT_ARESET STRING "PORT_UNUSED"
