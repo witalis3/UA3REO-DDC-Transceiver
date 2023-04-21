@@ -46,7 +46,6 @@ inline uint16_t LCDDriver_readReg(uint16_t reg) {
 // Initialise function
 void LCDDriver_Init(void) {
 	// Wait LCD on
-	// HAL_Delay(250); //for stability
 	// PLL Init
 	LCDDriver_writeReg(LCD_RA8875_PLLC1, LCD_RA8875_PLLC1_PLLDIV1 + 11); // divider + multiplier
 	HAL_Delay(1);
@@ -61,6 +60,18 @@ void LCDDriver_Init(void) {
 	LCDDriver_writeReg(LCD_RA8875_PWRR, LCD_RA8875_PWRR_NORMAL);
 	HAL_Delay(1);
 
+	// bus speed
+	FMC_NORSRAM_TimingTypeDef Timing = {0};
+	Timing.AddressSetupTime = 5;
+	Timing.DataSetupTime = 5;
+	Timing.AddressHoldTime = 1;
+	Timing.BusTurnAroundDuration = 1;
+	Timing.CLKDivision = 1;
+	Timing.DataLatency = 1;
+	Timing.AccessMode = FMC_ACCESS_MODE_A;
+	HAL_SRAM_Init(&HRDW_FSMC_LCD, &Timing, NULL);
+	HAL_SetFMCMemorySwappingConfig(FMC_SWAPBMAP_SDRAM_SRAM);
+	
 	// select color and bus mode
 	LCDDriver_writeReg(LCD_RA8875_SYSR, LCD_RA8875_SYSR_16BPP | LCD_RA8875_SYSR_MCU16);
 
@@ -104,18 +115,7 @@ void LCDDriver_Init(void) {
 
 	// display ON
 	LCDDriver_writeReg(LCD_RA8875_PWRR, LCD_RA8875_PWRR_NORMAL | LCD_RA8875_PWRR_DISPON);
-	HAL_Delay(100);
-
-	FMC_NORSRAM_TimingTypeDef Timing = {0};
-	Timing.AddressSetupTime = 5;
-	Timing.DataSetupTime = 5;
-	Timing.AddressHoldTime = 1;
-	Timing.BusTurnAroundDuration = 1;
-	Timing.CLKDivision = 1;
-	Timing.DataLatency = 1;
-	Timing.AccessMode = FMC_ACCESS_MODE_A;
-	HAL_SRAM_Init(&HRDW_FSMC_LCD, &Timing, NULL);
-	HAL_SetFMCMemorySwappingConfig(FMC_SWAPBMAP_SDRAM_SRAM);
+	HAL_Delay(10);
 }
 
 // Set diplay brightness

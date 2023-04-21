@@ -2788,6 +2788,7 @@ static void SDCOMM_IMPORT_SETT_handler(void) {
 		COLOR = &COLOR_THEMES[TRX.ColorThemeId];
 		LAYOUT = &LAYOUT_THEMES[TRX.LayoutThemeId];
 		FFT_Init();
+		LCD_Init();
 		NeedReinitAudioFiltersClean = true;
 		TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
