@@ -11,6 +11,9 @@ static IRAM2 AGC_RX_Instance AGC_RX2 = {0};
 #endif
 static IRAM2 AGC_TX_Instance AGC_TX = {0};
 
+float32_t AGC_SCREEN_maxGain = 1.0f;
+float32_t AGC_SCREEN_currentGain = 0.0f;
+
 // Run AGC on data block
 void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id, uint_fast8_t mode, bool stereo) {
 	// RX1 or RX2
@@ -123,8 +126,6 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 			AGC->need_gain_db = gain_target - AGC_RX_dbFS;
 			println("AGC overload ", diff);
 		}
-
-		// println("HOLD: ", AGC->hold_time, " GAIN: ", AGC->need_gain_db, " DIFF: ", diff);
 	}
 
 	// AGC off, not adjustable
@@ -142,6 +143,10 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	if (AGC->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain) {
 		AGC->need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
 	}
+
+	// println("HOLD: ", AGC->hold_time, " GAIN: ", AGC->need_gain_db, " DIFF: ", diff);
+	AGC_SCREEN_maxGain = (float32_t)TRX.RX_AGC_Max_gain;
+	AGC_SCREEN_currentGain = AGC->need_gain_db;
 
 	float32_t current_need_gain = AGC->need_gain_db;
 

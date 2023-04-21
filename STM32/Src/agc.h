@@ -23,6 +23,9 @@ typedef struct {
 	float32_t need_gain_db_old;
 } AGC_TX_Instance;
 
+extern float32_t AGC_SCREEN_maxGain;
+extern float32_t AGC_SCREEN_currentGain;
+
 // Public methods
 extern void DoRxAGC(float32_t *agcbuffer_i, float32_t *agcbuffer_q, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id, uint_fast8_t mode,
                     bool stereo);                                                                          // start RX AGC on a data block

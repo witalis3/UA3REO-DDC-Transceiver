@@ -1,4 +1,5 @@
 #include "fft.h"
+#include "agc.h"
 #include "arm_const_structs.h"
 #include "audio_filters.h"
 #include "cw_decoder.h"
@@ -1678,6 +1679,23 @@ bool FFT_printFFT(void) {
 			}
 			sprintf(tmp, "%d", dbm);
 			LCDDriver_printTextInMemory(tmp, 0, y - 4, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+		}
+	}
+
+	// Print AGC level
+	if (CurrentVFO->AGC) {
+		float32_t agc_level = AGC_SCREEN_currentGain / AGC_SCREEN_maxGain;
+		uint32_t agc_height = fftHeight / 2 - 1;
+		uint32_t agc_level_height = (float32_t)agc_height * agc_level;
+		uint32_t agc_black_height = agc_height - agc_level_height;
+
+		for (uint32_t fft_y = 0; fft_y < fftHeight / 2 - 5; fft_y++) {
+			uint16_t color = COLOR_BLACK;
+			if (fft_y > agc_black_height) {
+				uint16_t red = fft_y * 255 / agc_height;
+				color = rgb888torgb565(red, 255 - red, 0);
+			}
+			print_output_buffer[fft_y + 5][LAYOUT->FFT_PRINT_SIZE - 5] = color;
 		}
 	}
 

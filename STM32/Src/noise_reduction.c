@@ -1,4 +1,5 @@
 #include "noise_reduction.h"
+#include "agc.h"
 #include "arm_const_structs.h"
 #include "audio_filters.h"
 #include "audio_processor.h"
@@ -247,6 +248,8 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				}
 
 				// println("HOLD: ", instance->hold_time, " GAIN: ", instance->need_gain_db, " DIFF: ", diff);
+				AGC_SCREEN_maxGain = (float32_t)TRX.RX_AGC_Max_gain;
+				AGC_SCREEN_currentGain = instance->need_gain_db;
 
 				// appy gain
 				float32_t rateV = db2rateV(instance->need_gain_db);
