@@ -291,22 +291,22 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			if (registerNumber == 43 && (bpf == 5 || bpf == 6 || bpf == 7 || bpf == 8)) {
 				SET_DATA_PIN;
 			}
-			// U17-D3 Net_PGA2
-			if (registerNumber == 44 && !VGA_2) {
+			// U17-D3 unused
+			// if (registerNumber == 44 && ) {
+			//	SET_DATA_PIN;
+			//}
+			// U17-D2 Net_connect bluetooth
+			if (registerNumber == 45 && TRX.BluetoothAudio_Enabled) {
 				SET_DATA_PIN;
 			}
-			// U17-D2 Net_PGA3
-			if (registerNumber == 45 && !VGA_3) {
-				SET_DATA_PIN;
-			}
-			// U17-D1 Net_PGA0
-			if (registerNumber == 46 && !VGA_0) {
-				SET_DATA_PIN;
-			}
-			// U17-D0 Net_PGA1
-			if (registerNumber == 47 && !VGA_1) {
-				SET_DATA_PIN;
-			}
+			// U17-D1 unused
+			// if (registerNumber == 46 && ) {
+			//	SET_DATA_PIN;
+			//}
+			// U17-D0 unused
+			// if (registerNumber == 47 && ) {
+			//	SET_DATA_PIN;
+			//}
 		}
 		MINI_DELAY
 		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_SET);

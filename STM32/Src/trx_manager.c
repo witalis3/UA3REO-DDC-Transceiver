@@ -1886,6 +1886,13 @@ void BUTTONHANDLER_MUTE_AFAMP(uint32_t parameter) {
 	NeedSaveSettings = true;
 }
 
+void BUTTONHANDLER_BLUETOOTH_AUDIO_ENABLED(uint32_t parameter) {
+	TRX.BluetoothAudio_Enabled = !TRX.BluetoothAudio_Enabled;
+	CODEC_TXRX_mode();
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}
+
 void BUTTONHANDLER_BANDMAP(uint32_t parameter) {
 	TRX.BandMapEnabled = !TRX.BandMapEnabled;
 

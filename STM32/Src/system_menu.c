@@ -111,6 +111,7 @@ static void SYSMENU_HANDL_RX_VGA_GAIN(int8_t direction);
 static void SYSMENU_HANDL_RX_Volume(int8_t direction);
 static void SYSMENU_HANDL_RX_Volume_Step(int8_t direction);
 static void SYSMENU_HANDL_RX_CODEC_Out_Volume(int8_t direction);
+static void SYSMENU_HANDL_RX_BluetoothAudio_Enabled(int8_t direction);
 
 static void SYSMENU_HANDL_TX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TX_ATU_Enabled(int8_t direction);
@@ -645,6 +646,9 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 #endif
     {"Auto Snap", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Snap, SYSMENU_HANDL_RX_Auto_Snap},
     {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_RX_AutoGain},
+#if HRDW_HAS_BLUETOOTH_AUDIO
+    {"Bluetooth Audio", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.BluetoothAudio_Enabled, SYSMENU_HANDL_RX_BluetoothAudio_Enabled},
+#endif
     {"CODEC Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CODEC_Out_Volume, SYSMENU_HANDL_RX_CODEC_Out_Volume},
     {"DNR", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DNR_shadow, SYSMENU_HANDL_RX_DNR, {"OFF", "DNR1", "DNR2"}},
     {"DNR Average", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.DNR_AVERAGE, SYSMENU_HANDL_RX_DNR_AVERAGE},
@@ -2676,6 +2680,15 @@ static void SYSMENU_HANDL_RX_CODEC_Out_Volume(int8_t direction) {
 
 	// reinit codec
 	CODEC_TXRX_mode();
+}
+
+static void SYSMENU_HANDL_RX_BluetoothAudio_Enabled(int8_t direction) {
+	if (direction > 0) {
+		TRX.BluetoothAudio_Enabled = true;
+	}
+	if (direction < 0) {
+		TRX.BluetoothAudio_Enabled = false;
+	}
 }
 
 // TX MENU

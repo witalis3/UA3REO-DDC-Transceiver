@@ -277,7 +277,7 @@ int main(void) {
 	LCD_Init();
 	if (SHOW_LOGO) {
 		LCDDriver_Fill(rgb888torgb565(243, 243, 243));
-		LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo160.width) / 2), ((LCD_HEIGHT - IMAGES_logo160.height) / 2), &IMAGES_logo160, BG_COLOR, BG_COLOR);
+		LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logoLite2.width) / 2), ((LCD_HEIGHT - IMAGES_logoLite2.height) / 2), &IMAGES_logoLite2, BG_COLOR, BG_COLOR);
 		strcpy(greetings_buff, "ver. ");
 		strcat(greetings_buff, version_string);
 		LCDDriver_printText(greetings_buff, 4, (LCD_HEIGHT - 10), COLOR_RED, rgb888torgb565(243, 243, 243), 1);

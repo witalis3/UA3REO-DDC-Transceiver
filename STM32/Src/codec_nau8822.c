@@ -64,10 +64,21 @@ void CODEC_TXRX_mode(void) // loopback
 {
 	NAU8822_SendI2CCommand(11, 0x0FF); /* DAC left digital volume control */
 	NAU8822_SendI2CCommand(12, 0x1FF); /* DAC right digital volume control */
-	NAU8822_SendI2CCommand(52, 0x03F);
-	NAU8822_SendI2CCommand(53, 0x13F);
 	NAU8822_SendI2CCommand(54, 0x03F);
 	NAU8822_SendI2CCommand(55, 0x13F);
+
+	// NAU8822_SendI2CCommand(52, 0x03F);
+	// NAU8822_SendI2CCommand(53, 0x13F);
+
+	if (TRX.BluetoothAudio_Enabled) {
+		NAU8822_SendI2CCommand(52, 0x7F); //  OFF / LHP
+		NAU8822_SendI2CCommand(53, 0x7F); //  OFF / RHP
+		NAU8822_SendI2CCommand(3, 0x1EF); // AUX1 AUX2 ON
+	} else {
+		NAU8822_SendI2CCommand(52, 0x03F); //  ON / LHP
+		NAU8822_SendI2CCommand(53, 0x13F); //  ON / RHP
+		NAU8822_SendI2CCommand(3, 0xF);    // AUX1 AUX2 OF
+	}
 
 	if (getInputType() == TRX_INPUT_MIC || getInputType() == TRX_INPUT_LINE) // mic
 	{
@@ -125,9 +136,10 @@ void CODEC_Init(void) {
 
 	NAU8822_SendI2CCommand(43, 0x020); // Speaker out 0x010, Mute 0x020
 
-	NAU8822_SendI2CCommand(1, 0x11D); // 0x01D
+	NAU8822_SendI2CCommand(1, 0xFD); // 0x01D
 	NAU8822_SendI2CCommand(2, 0x1BF);
-	NAU8822_SendI2CCommand(3, 0x06F);
+	NAU8822_SendI2CCommand(3, 0x1EF);
+	NAU8822_SendI2CCommand(56, B8(00000111)); // AUX
 
 	HAL_Delay(250);
 
