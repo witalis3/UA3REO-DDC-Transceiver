@@ -71,7 +71,7 @@ void LCDDriver_Init(void) {
 	Timing.AccessMode = FMC_ACCESS_MODE_A;
 	HAL_SRAM_Init(&HRDW_FSMC_LCD, &Timing, NULL);
 	HAL_SetFMCMemorySwappingConfig(FMC_SWAPBMAP_SDRAM_SRAM);
-	
+
 	// select color and bus mode
 	LCDDriver_writeReg(LCD_RA8875_SYSR, LCD_RA8875_SYSR_16BPP | LCD_RA8875_SYSR_MCU16);
 
