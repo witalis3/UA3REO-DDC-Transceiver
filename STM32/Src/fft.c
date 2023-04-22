@@ -1641,6 +1641,33 @@ bool FFT_printFFT(void) {
 			}
 			prev_pos = pos;
 		}
+
+		// Time beacons
+		for (uint16_t i = 0; i < TIME_BEACONS_COUNT; i++) {
+			int32_t pos = getFreqPositionOnFFT(TIME_BEACONS[i].frequency, true);
+			if (pos >= -50 && pos < LAYOUT->FFT_PRINT_SIZE) {
+				uint16_t y = 5;
+				if ((pos - prev_pos) < prev_w) {
+					y = prev_y + 10;
+				}
+				if (y < (fftHeight - 10)) {
+					prev_y = y;
+					prev_w = strlen(TIME_BEACONS[i].name) * 6 + 4;
+
+					char str[64] = {0};
+					strcat(str, TIME_BEACONS[i].name);
+
+					LCDDriver_printTextInMemory(str, pos + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+					// vertical line
+					if (pos >= 0) {
+						for (uint8_t y_line = 0; y_line < 8; y_line++) {
+							print_output_buffer[y + y_line][pos] = COLOR_RED;
+						}
+					}
+				}
+			}
+			prev_pos = pos;
+		}
 	}
 #endif
 

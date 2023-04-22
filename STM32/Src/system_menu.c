@@ -516,6 +516,22 @@ static void SYSMENU_HANDL_WSPR_BAND2(int8_t direction);
 static void SYSMENU_HANDL_AUTO_CALIBRATION_SWR(int8_t direction);
 static void SYSMENU_HANDL_AUTO_CALIBRATION_POWER(int8_t direction);
 
+static void SYSMENU_HANDL_TIME_BEACON(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_40KHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_50KHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_60KHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_66_66KHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_75KHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_77_5KHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_2_5MHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_4_996MHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_5MHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_9_996MHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_10MHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_14_996MHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_15MHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_20MHZ(int8_t direction);
+
 static bool SYSMENU_HANDL_CHECK_HAS_LPF(void);
 static bool SYSMENU_HANDL_CHECK_HAS_HPF(void);
 static bool SYSMENU_HANDL_CHECK_HAS_BPF_8(void);
@@ -1283,6 +1299,17 @@ const static struct sysmenu_item_handler sysmenu_auto_calibration_handlers[] = {
     {"Calibrate Power", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_AUTO_CALIBRATION_POWER},
 };
 
+const static struct sysmenu_item_handler sysmenu_time_beacons_handlers[] = {
+    {"JJY 40kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_40KHZ},   {"RTZ 50kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_50KHZ},
+    {"JJY 60kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_60KHZ},   {"MSF 60kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_60KHZ},
+    {"WWVB 60kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_60KHZ},  {"RBU 66.66kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_66_66KHZ},
+    {"HBG 75kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_75KHZ},   {"DCF77 77.5kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_77_5KHZ},
+    {"WWV 2.5MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_2_5MHZ}, {"RWM 4.996MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_4_996MHZ},
+    {"WWV 5MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_5MHZ},     {"RWM 9.996MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_9_996MHZ},
+    {"WWV 10MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_10MHZ},   {"RWM 14.996MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_14_996MHZ},
+    {"WWV 15MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_15MHZ},   {"WWV 20MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_20MHZ},
+};
+
 const static struct sysmenu_item_handler sysmenu_services_handlers[] = {
 #if HRDW_HAS_WIFI && !defined(FRONTPANEL_X1)
     {"DX Cluster", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DX_CLUSTER},
@@ -1311,6 +1338,7 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] = {
     {"Locator info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_LOCATOR_INFO},
     {"Callsign info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CALLSIGN_INFO},
 #endif
+    {"Time Beacons", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_TIME_BEACON},
     {"Self Test", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SELF_TEST},
     {"Auto Calibration", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_AUTO_CALIBRATION},
 };
@@ -1339,6 +1367,7 @@ static struct sysmenu_menu_wrapper sysmenu_wrappers[] = {
     {.menu_handler = sysmenu_wspr_handlers, .currentIndex = 0},
     {.menu_handler = sysmenu_services_handlers, .currentIndex = 0},
     {.menu_handler = sysmenu_auto_calibration_handlers, .currentIndex = 0},
+    {.menu_handler = sysmenu_time_beacons_handlers, .currentIndex = 0},
 };
 
 // COMMON MENU
@@ -7020,6 +7049,85 @@ static void SYSMENU_HANDL_AUTO_CALIBRATION_POWER(int8_t direction) {
 	SYSMENU_auto_calibration_opened = true;
 	AUTO_CALIBRATION_Start_POWER();
 	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+// Time Beacons
+static void SYSMENU_HANDL_TIME_BEACON(int8_t direction) {
+	sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_time_beacons_handlers[0];
+	sysmenu_item_count = sizeof(sysmenu_time_beacons_handlers) / sizeof(sysmenu_time_beacons_handlers[0]);
+	sysmenu_onroot = false;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_TIME_BEACON_40KHZ(int8_t direction) {
+	TRX_setFrequency(40000, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_50KHZ(int8_t direction) {
+	TRX_setFrequency(50000, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_60KHZ(int8_t direction) {
+	TRX_setFrequency(60000, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_66_66KHZ(int8_t direction) {
+	TRX_setFrequency(66660, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_75KHZ(int8_t direction) {
+	TRX_setFrequency(75000, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_77_5KHZ(int8_t direction) {
+	TRX_setFrequency(77500, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_2_5MHZ(int8_t direction) {
+	TRX_setFrequency(2500000, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_4_996MHZ(int8_t direction) {
+	TRX_setFrequency(4996000, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_5MHZ(int8_t direction) {
+	TRX_setFrequency(5000000, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_9_996MHZ(int8_t direction) {
+	TRX_setFrequency(9996000, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_10MHZ(int8_t direction) {
+	TRX_setFrequency(10000000, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_14_996MHZ(int8_t direction) {
+	TRX_setFrequency(14996000, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_15MHZ(int8_t direction) {
+	TRX_setFrequency(15000000, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
+}
+static void SYSMENU_HANDL_TIME_BEACON_20MHZ(int8_t direction) {
+	TRX_setFrequency(20000000, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	SYSMENU_eventCloseAllSystemMenu();
 }
 
 // WSPR Beacon

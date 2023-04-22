@@ -5,7 +5,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-#define BANDS_COUNT 40 // number of bands in the collection
+#define BANDS_COUNT 40        // number of bands in the collection
+#define TIME_BEACONS_COUNT 16 // number of beacons in the collection
 
 #define BANDID_2200m 0
 #define BANDID_160m 3
@@ -60,9 +61,16 @@ typedef struct // description of the band
 	const uint_fast8_t channelsCount;
 } BAND_MAP;
 
+typedef struct // description of the band
+{
+	const char *name;
+	const uint64_t frequency;
+} BEACON_FREQUENCY;
+
 // Public variables
 extern const BAND_MAP BANDS[BANDS_COUNT];
 extern bool BAND_SELECTABLE[BANDS_COUNT];
+extern const BEACON_FREQUENCY TIME_BEACONS[TIME_BEACONS_COUNT];
 
 // Public methods
 extern uint_fast8_t getModeFromFreq(uint64_t freq);          // mod from frequency

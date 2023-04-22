@@ -920,6 +920,73 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     //
 };
 
+const BEACON_FREQUENCY TIME_BEACONS[TIME_BEACONS_COUNT] = {
+    {
+        .name = "JJY",
+        .frequency = 40000,
+    },
+    {
+        .name = "RTZ",
+        .frequency = 50000,
+    },
+    {
+        .name = "JJY",
+        .frequency = 60000,
+    },
+    {
+        .name = "MSF",
+        .frequency = 60000,
+    },
+    {
+        .name = "WWVB",
+        .frequency = 60000,
+    },
+    {
+        .name = "RBU",
+        .frequency = 66660,
+    },
+    {
+        .name = "HBG",
+        .frequency = 75000,
+    },
+    {
+        .name = "DCF77",
+        .frequency = 77500,
+    },
+    {
+        .name = "WWV",
+        .frequency = 2500000,
+    },
+    {
+        .name = "RWM",
+        .frequency = 4996000,
+    },
+    {
+        .name = "WWV",
+        .frequency = 5000000,
+    },
+    {
+        .name = "RWM",
+        .frequency = 9996000,
+    },
+    {
+        .name = "WWV",
+        .frequency = 10000000,
+    },
+    {
+        .name = "RWM",
+        .frequency = 14996000,
+    },
+    {
+        .name = "WWV",
+        .frequency = 15000000,
+    },
+    {
+        .name = "WWV",
+        .frequency = 20000000,
+    },
+};
+
 // band number from frequency
 int8_t getBandFromFreq(uint64_t freq, bool nearest) {
 	for (int8_t b = 0; b < BANDS_COUNT; b++) {

@@ -434,6 +434,10 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 * Show callsign data
 
+### Time Beacons
+
+* List of beacons of the exact time (for adjusting the frequency of reception by carrier)
+
 ### Self Test
 
 * Run hardware self diagnostic
