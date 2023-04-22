@@ -232,6 +232,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 * **CW DotToDash Rate** - Keyer dash to dot length rate
 * **CW Iambic Keyer** - Enable Iambic mode keyer
+* **CW Iambic Type** - Type of Iambic keyer (A/B)
 * **CW Key Invert** - Invert dash/dot on key
 * **CW Key timeout** - Time before stopping the transmission mode after releasing the key
 * **CW Keyer WPM** - Key Speed, WPM

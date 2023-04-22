@@ -286,10 +286,11 @@ void LoadSettings(bool clear) {
 		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key
 		TRX.CW_SelfHear = true;                                         // self-control CW
 		TRX.CW_KEYER = true;                                            // Automatic key
-		TRX.CW_KEYER_WPM = 30;                                          // Automatic key speed
+		TRX.CW_KEYER_WPM = 25;                                          // Automatic key speed
 		TRX.CW_GaussFilter = true;                                      // Gauss responce LPF filter
 		TRX.CW_DotToDashRate = 3.0f;                                    // Dot To Dash length rate
 		TRX.CW_Iambic = false;                                          // CW Iambic Keyer
+		TRX.CW_Iambic_Type = 1;                                         // CW Iambic Keyer type 0 - A, 1 - B
 		TRX.CW_Invert = false;                                          // CW dash/dot inversion
 		TRX.CW_PTT_Type = KEY_AND_EXT_PTT;                              // CW PTT type (Key / External tangent ptt)
 		strcpy(TRX.CW_Macros_1, "CQ CQ CQ");                            // CW Macros 1

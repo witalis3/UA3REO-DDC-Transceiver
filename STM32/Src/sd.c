@@ -966,6 +966,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.CW_GaussFilter", (uint64_t *)&TRX.CW_GaussFilter, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_DotToDashRate", (uint64_t *)&TRX.CW_DotToDashRate, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.CW_Iambic", (uint64_t *)&TRX.CW_Iambic, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.CW_Iambic_Type", (uint64_t *)&TRX.CW_Iambic_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.CW_Invert", (uint64_t *)&TRX.CW_Invert, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_PTT_Type", (uint64_t *)&TRX.CW_PTT_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_STRING("TRX.CW_Macros_1", TRX.CW_Macros_1);
@@ -1832,6 +1833,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.CW_Iambic") == 0) {
 		TRX.CW_Iambic = bval;
+	}
+	if (strcmp(name, "TRX.CW_Iambic_Type") == 0) {
+		TRX.CW_Iambic_Type = uintval;
 	}
 	if (strcmp(name, "TRX.CW_Invert") == 0) {
 		TRX.CW_Invert = bval;

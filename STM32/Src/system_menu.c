@@ -156,6 +156,7 @@ static void SYSMENU_HANDL_TX_VOX_TIMEOUT(int8_t direction);
 
 static void SYSMENU_HANDL_CW_DotToDashRate(int8_t direction);
 static void SYSMENU_HANDL_CW_Iambic(int8_t direction);
+static void SYSMENU_HANDL_CW_Iambic_Type(int8_t direction);
 static void SYSMENU_HANDL_CW_Invert(int8_t direction);
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
@@ -774,6 +775,7 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
     {"CW Pitch", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_Pitch, SYSMENU_HANDL_CW_Pitch},
     {"CW Self Hear", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CW_SelfHear},
     {"CW Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
+    {"CW Iambic Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_Iambic_Type, SYSMENU_HANDL_CW_Iambic_Type, {"A", "B"}},
 #if !defined(FRONTPANEL_SMALL_V1)
     {"CW Macros 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros1},
     {"CW Macros 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros2},
@@ -3289,6 +3291,15 @@ static void SYSMENU_HANDL_CW_Iambic(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.CW_Iambic = false;
+	}
+}
+
+static void SYSMENU_HANDL_CW_Iambic_Type(int8_t direction) {
+	if (direction > 0) {
+		TRX.CW_Iambic_Type = 1;
+	}
+	if (direction < 0) {
+		TRX.CW_Iambic_Type = 0;
 	}
 }
 

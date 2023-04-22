@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 99         // Settings config version
+#define SETT_VERSION 100        // Settings config version
 #define CALIB_VERSION 65        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -595,6 +595,7 @@ extern struct TRX_SETTINGS {
 	bool CW_KEYER;
 	bool CW_GaussFilter;
 	bool CW_Iambic;
+	uint8_t CW_Iambic_Type;
 	bool CW_Invert;
 	char CW_Macros_1[MAX_CW_MACROS_LENGTH + 1];
 	char CW_Macros_2[MAX_CW_MACROS_LENGTH + 1];

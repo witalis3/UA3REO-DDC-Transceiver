@@ -160,14 +160,16 @@ float32_t CW_GenerateSignal(float32_t power) {
 	uint32_t curTime = HAL_GetTick();
 
 	// Iambic keyer start mode
-	if (CW_key_dot_hard && !CW_key_dash_hard) {
-		iambic_first_button_pressed = false;
-	}
-	if (!CW_key_dot_hard && CW_key_dash_hard) {
-		iambic_first_button_pressed = true;
-	}
-	if (CW_key_dot_hard && CW_key_dash_hard) {
-		iambic_sequence_started = true;
+	if (!iambic_sequence_started) {
+		if (CW_key_dot_hard && !CW_key_dash_hard) {
+			iambic_first_button_pressed = false;
+		}
+		if (!CW_key_dot_hard && CW_key_dash_hard) {
+			iambic_first_button_pressed = true;
+		}
+		if (CW_key_dot_hard && CW_key_dash_hard) {
+			iambic_sequence_started = true;
+		}
 	}
 
 	// DOT .
@@ -210,6 +212,11 @@ float32_t CW_GenerateSignal(float32_t power) {
 			KEYER_symbol_status = 0;
 		} else // iambic keyer
 		{
+			// stop sequence on mode A
+			if (TRX.CW_Iambic_Type == 0 && (!CW_key_dot_hard || !CW_key_dash_hard)) {
+				KEYER_symbol_status = 0;
+				iambic_sequence_started = false;
+			}
 			// start iambic sequence
 			if (iambic_sequence_started) {
 				if (!iambic_last_symbol) // iambic dot . , next dash -
