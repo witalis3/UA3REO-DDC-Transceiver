@@ -50,6 +50,7 @@ bool NeedReinitReverber = false;
 bool APROC_IFGain_Overflow = false;
 float32_t APROC_TX_clip_gain = 1.0f;
 float32_t APROC_TX_tune_power = 0.0f;
+float32_t SAM_Carrier_offset = 0.0f;
 
 #if FT8_SUPPORT
 static q15_t APROC_AudioBuffer_FT8_out[AUDIO_BUFFER_SIZE / 2] = {0};
@@ -2316,7 +2317,7 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 	{
 		float32_t carrier = 0.1 * (sam_data->omega2 * (float32_t)TRX_SAMPLERATE) / (2.0 * PI);
 		carrier = carrier + 0.9 * sam_data->lowpass;
-		println("SAM Carrier offset: ", carrier);
+		SAM_Carrier_offset = carrier;
 		sam_data->count = 0;
 		sam_data->lowpass = carrier;
 	}

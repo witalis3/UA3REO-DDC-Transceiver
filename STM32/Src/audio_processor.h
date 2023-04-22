@@ -101,6 +101,7 @@ extern float32_t APROC_TX_clip_gain;
 extern float32_t APROC_TX_tune_power;
 extern demod_fm_instance DFM_RX1;
 extern demod_fm_instance DFM_RX1;
+extern float32_t SAM_Carrier_offset;
 
 // Public methods
 extern void processRxAudio(void);     // start audio processor for RX

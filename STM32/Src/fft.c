@@ -1726,6 +1726,13 @@ bool FFT_printFFT(void) {
 		}
 	}
 
+	// Print SAM Carrier offset
+	if (CurrentVFO->Mode == TRX_MODE_SAM) {
+		char tmp[32] = {0};
+		sprintf(tmp, "%.2fhz", SAM_Carrier_offset);
+		LCDDriver_printTextInMemory(tmp, 5, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+	}
+
 	// Init print 2D FFT+WTF
 	Aligned_CleanDCache_by_Addr(print_output_buffer, sizeof(print_output_buffer));
 	uint32_t fft_2d_print_height = fftHeight + wtf_printed_lines;
