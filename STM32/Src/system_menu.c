@@ -160,6 +160,7 @@ static void SYSMENU_HANDL_CW_Iambic_Type(int8_t direction);
 static void SYSMENU_HANDL_CW_Invert(int8_t direction);
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
+static void SYSMENU_HANDL_CW_OneSymbolMemory(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
 static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction);
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction);
@@ -766,22 +767,23 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
 };
 
 const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
-    {"CW DotToDash Rate", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CW_DotToDashRate, SYSMENU_HANDL_CW_DotToDashRate},
-    {"CW Key Invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Invert, SYSMENU_HANDL_CW_Invert},
-    {"CW Key timeout", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_HANDL_CW_Key_timeout},
-    {"CW Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_KEYER, SYSMENU_HANDL_CW_Keyer},
-    {"CW Keyer WPM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_HANDL_CW_Keyer_WPM},
-    {"CW PTT Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_PTT_Type, SYSMENU_HANDL_CW_PTT_Type, {"Key", "PTT", "KEY+PTT"}},
-    {"CW Pitch", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_Pitch, SYSMENU_HANDL_CW_Pitch},
-    {"CW Self Hear", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CW_SelfHear},
-    {"CW Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
-    {"CW Iambic Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_Iambic_Type, SYSMENU_HANDL_CW_Iambic_Type, {"A", "B"}},
+    {"DotToDash Rate", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CW_DotToDashRate, SYSMENU_HANDL_CW_DotToDashRate},
+    {"Key Invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Invert, SYSMENU_HANDL_CW_Invert},
+    {"Key timeout", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_HANDL_CW_Key_timeout},
+    {"Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_KEYER, SYSMENU_HANDL_CW_Keyer},
+    {"Keyer WPM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_KEYER_WPM, SYSMENU_HANDL_CW_Keyer_WPM},
+    {"One symbol memory", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_OneSymbolMemory, SYSMENU_HANDL_CW_OneSymbolMemory},
+    {"PTT Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_PTT_Type, SYSMENU_HANDL_CW_PTT_Type, {"Key", "PTT", "KEY+PTT"}},
+    {"Pitch", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_Pitch, SYSMENU_HANDL_CW_Pitch},
+    {"Self Hear", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CW_SelfHear},
+    {"Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
+    {"Iambic Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_Iambic_Type, SYSMENU_HANDL_CW_Iambic_Type, {"A", "B"}},
 #if !defined(FRONTPANEL_SMALL_V1)
-    {"CW Macros 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros1},
-    {"CW Macros 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros2},
-    {"CW Macros 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros3},
-    {"CW Macros 4", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros4},
-    {"CW Macros 5", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros5},
+    {"Macros 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros1},
+    {"Macros 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros2},
+    {"Macros 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros3},
+    {"Macros 4", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros4},
+    {"Macros 5", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros5},
 #endif
 };
 
@@ -3253,6 +3255,15 @@ static void SYSMENU_HANDL_CW_Keyer(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.CW_KEYER = false;
+	}
+}
+
+static void SYSMENU_HANDL_CW_OneSymbolMemory(int8_t direction) {
+	if (direction > 0) {
+		TRX.CW_OneSymbolMemory = true;
+	}
+	if (direction < 0) {
+		TRX.CW_OneSymbolMemory = false;
 	}
 }
 

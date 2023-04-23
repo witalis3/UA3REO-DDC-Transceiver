@@ -230,16 +230,17 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 ### CW Settings
 
-* **CW DotToDash Rate** - Keyer dash to dot length rate
-* **CW Iambic Keyer** - Enable Iambic mode keyer
-* **CW Iambic Type** - Type of Iambic keyer (A/B)
-* **CW Key Invert** - Invert dash/dot on key
-* **CW Key timeout** - Time before stopping the transmission mode after releasing the key
-* **CW Keyer WPM** - Key Speed, WPM
-* **CW Keyer** - Automatic Key
-* **CW PTT Type** - RX/TX switch type for CW: by key or external PTT (tangent, etc.)
-* **CW Pitch** - Detuning the receive generator from the transmit frequency
-* **CW Self Hear** - Self-control CW (key press is heard)
+* **DotToDash Rate** - Keyer dash to dot length rate
+* **Iambic Keyer** - Enable Iambic mode keyer
+* **Iambic Type** - Type of Iambic keyer (A/B)
+* **Key Invert** - Invert dash/dot on key
+* **Key timeout** - Time before stopping the transmission mode after releasing the key
+* **Keyer WPM** - Key Speed, WPM
+* **Keyer** - Automatic Key
+* **One symbol memory** - Keyer memory for one symbol for transmit
+* **PTT Type** - RX/TX switch type for CW: by key or external PTT (tangent, etc.)
+* **Pitch** - Detuning the receive generator from the transmit frequency
+* **Self Hear** - Self-control CW (key press is heard)
 
 ### SCREEN Settings
 

@@ -286,6 +286,7 @@ void LoadSettings(bool clear) {
 		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key
 		TRX.CW_SelfHear = true;                                         // self-control CW
 		TRX.CW_KEYER = true;                                            // Automatic key
+		TRX.CW_OneSymbolMemory = true;                                  // One symbol memory for automatic key
 		TRX.CW_KEYER_WPM = 25;                                          // Automatic key speed
 		TRX.CW_GaussFilter = true;                                      // Gauss responce LPF filter
 		TRX.CW_DotToDashRate = 3.0f;                                    // Dot To Dash length rate

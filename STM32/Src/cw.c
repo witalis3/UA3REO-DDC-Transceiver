@@ -37,6 +37,8 @@ static uint32_t CW_current_symbol_index = 0;
 static uint64_t CW_wait_until = 0;
 static uint8_t CW_EncodeStatus = 0; // 0 - wait symbol, 1 - transmit symbol, 2 - wait after char, 3 - wait after word
 
+static uint8_t CW_SymbolMemory = 0; // 0 - no char, 1 - dot, 2 - dash
+
 static char *CW_CharToDots(char chr);
 static void CW_do_Process_Macros(void);
 
@@ -172,6 +174,27 @@ float32_t CW_GenerateSignal(float32_t power) {
 		}
 	}
 
+	// Symbol memory
+	static bool cw_memory_prev_dot_status = false;
+	static bool cw_memory_prev_dash_status = false;
+
+	if (TRX.CW_OneSymbolMemory && KEYER_symbol_status != 0) {
+		if (CW_key_dot_hard != cw_memory_prev_dot_status) {
+			if (CW_SymbolMemory == 0 && CW_key_dot_hard) { // add dot to memory
+				CW_SymbolMemory = 1;
+			}
+		}
+
+		if (CW_key_dash_hard != cw_memory_prev_dash_status) {
+			if (CW_SymbolMemory == 0 && CW_key_dash_hard) { // add dash to memory
+				CW_SymbolMemory = 2;
+			}
+		}
+	}
+
+	cw_memory_prev_dot_status = CW_key_dot_hard;
+	cw_memory_prev_dash_status = CW_key_dash_hard;
+
 	// DOT .
 	if (KEYER_symbol_status == 0 && CW_key_dot_hard) {
 		KEYER_symbol_start_time = curTime;
@@ -209,14 +232,23 @@ float32_t CW_GenerateSignal(float32_t power) {
 	}
 	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) < curTime) {
 		if (!TRX.CW_Iambic) { // classic keyer
-			KEYER_symbol_status = 0;
-		} else // iambic keyer
-		{
+
+			if (TRX.CW_OneSymbolMemory && CW_SymbolMemory != 0) { // memory symbol sequence
+				KEYER_symbol_start_time = curTime;
+				KEYER_symbol_status = CW_SymbolMemory;
+				CW_SymbolMemory = 0;
+			} else { // no symbol in memory, classic mode
+				KEYER_symbol_status = 0;
+			}
+
+		} else { // iambic keyer
+
 			// stop sequence on mode A
 			if (TRX.CW_Iambic_Type == 0 && (!CW_key_dot_hard || !CW_key_dash_hard)) {
 				KEYER_symbol_status = 0;
 				iambic_sequence_started = false;
 			}
+
 			// start iambic sequence
 			if (iambic_sequence_started) {
 				if (!iambic_last_symbol) // iambic dot . , next dash -
@@ -225,7 +257,6 @@ float32_t CW_GenerateSignal(float32_t power) {
 					KEYER_symbol_status = 2;
 					if (iambic_first_button_pressed && (!CW_key_dot_hard || !CW_key_dash_hard)) // iambic dash-dot sequence compleated
 					{
-						// println("-.e");
 						iambic_sequence_started = false;
 						KEYER_symbol_status = 0;
 					}
@@ -235,12 +266,11 @@ float32_t CW_GenerateSignal(float32_t power) {
 					KEYER_symbol_status = 1;
 					if (!iambic_first_button_pressed && (!CW_key_dot_hard || !CW_key_dash_hard)) // iambic dot-dash sequence compleated
 					{
-						// println(".-e");
 						KEYER_symbol_status = 0;
 						iambic_sequence_started = false;
 					}
 				}
-			} else { // no sequence, classic mode
+			} else { // no sequence, return to classic mode
 				KEYER_symbol_status = 0;
 			}
 		}
