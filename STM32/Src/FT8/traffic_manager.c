@@ -282,84 +282,84 @@ void LogQSO(void) {
 	              // ctmp[Len+3] = 0;
 	char cBND[5]; // for the strng containing the current band
 
+	switch (FT8_BND_Freq) {
+	case FT8_Freq_160M:
+		strcpy(cBND, "160m");
+		break;
+	case FT8_Freq_80M:
+		strcpy(cBND, "80m");
+		break;
+	case FT8_Freq_60M:
+		strcpy(cBND, "60m");
+		break;
+	case FT8_Freq_40M:
+		strcpy(cBND, "40m");
+		break;
+	case FT8_Freq_30M:
+		strcpy(cBND, "30m");
+		break;
+	case FT8_Freq_20M:
+		strcpy(cBND, "20m");
+		break;
+	case FT8_Freq_17M:
+		strcpy(cBND, "17m");
+		break;
+	case FT8_Freq_15M:
+		strcpy(cBND, "15m");
+		break;
+	case FT8_Freq_12M:
+		strcpy(cBND, "12m");
+		break;
+	case FT8_Freq_10M:
+		strcpy(cBND, "10m");
+		break;
+	case FT8_Freq_6M:
+		strcpy(cBND, "6m");
+		break;
+	case FT8_Freq_2M:
+		strcpy(cBND, "2m");
+		break;
+	case FT8_Freq_70CM:
+		strcpy(cBND, "70cm");
+		break;
+	}
+
+	float QSO_Freq = ((float)FT8_BND_Freq + (float)cursor_freq / 1000) / 1000; // Calculate the QSO Frequency in MHz (for example 7.075500)
+
+	GetQSODate();  // Get the date to be able to put it in the Log later
+	GetQSOTime(0); // End Time
+
+	// example message
+	//<call:5>M0JJF <gridsquare:4>IO91 <mode:3>FT8 <rst_sent:3>-21 <rst_rcvd:3>-18 <qso_date:8>20210403 <time_on:6>090500
+	//<qso_date_off:8>20210403 <time_off:6>090821 <band:3>40m <freq:8>7.075500 <station_callsign:5>DB5AT <my_gridsquare:6>JN48ov <eor>
+
+	char RapRcv_RSL_filtered[5] = {0};
+	if (RapRcv_RSL[0] == 'R') {
+		strcpy(RapRcv_RSL_filtered, RapRcv_RSL + 1);
+	} else {
+		strcpy(RapRcv_RSL_filtered, RapRcv_RSL);
+	}
+
+	sprintf(StrToLog,
+	        " <call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s "
+	        "<time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>",
+	        strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, QSO_Freq, TRX.CALLSIGN,
+	        TRX.LOCATOR);
+	StrToLog[0] = CR;
+
+	Len = strlen(StrToLog);
+
 	if (SD_Present) {
-		switch (FT8_BND_Freq) {
-		case FT8_Freq_160M:
-			strcpy(cBND, "160m");
-			break;
-		case FT8_Freq_80M:
-			strcpy(cBND, "80m");
-			break;
-		case FT8_Freq_60M:
-			strcpy(cBND, "60m");
-			break;
-		case FT8_Freq_40M:
-			strcpy(cBND, "40m");
-			break;
-		case FT8_Freq_30M:
-			strcpy(cBND, "30m");
-			break;
-		case FT8_Freq_20M:
-			strcpy(cBND, "20m");
-			break;
-		case FT8_Freq_17M:
-			strcpy(cBND, "17m");
-			break;
-		case FT8_Freq_15M:
-			strcpy(cBND, "15m");
-			break;
-		case FT8_Freq_12M:
-			strcpy(cBND, "12m");
-			break;
-		case FT8_Freq_10M:
-			strcpy(cBND, "10m");
-			break;
-		case FT8_Freq_6M:
-			strcpy(cBND, "6m");
-			break;
-		case FT8_Freq_2M:
-			strcpy(cBND, "2m");
-			break;
-		case FT8_Freq_70CM:
-			strcpy(cBND, "70cm");
-			break;
-		}
-
-		float QSO_Freq = ((float)FT8_BND_Freq + (float)cursor_freq / 1000) / 1000; // Calculate the QSO Frequency in MHz (for example 7.075500)
-
-		GetQSODate();  // Get the date to be able to put it in the Log later
-		GetQSOTime(0); // End Time
-
-		// example message
-		//<call:5>M0JJF <gridsquare:4>IO91 <mode:3>FT8 <rst_sent:3>-21 <rst_rcvd:3>-18 <qso_date:8>20210403 <time_on:6>090500
-		//<qso_date_off:8>20210403 <time_off:6>090821 <band:3>40m <freq:8>7.075500 <station_callsign:5>DB5AT <my_gridsquare:6>JN48ov <eor>
-
-		char RapRcv_RSL_filtered[5] = {0};
-		if (RapRcv_RSL[0] == 'R') {
-			strcpy(RapRcv_RSL_filtered, RapRcv_RSL + 1);
-		} else {
-			strcpy(RapRcv_RSL_filtered, RapRcv_RSL);
-		}
-
-		sprintf(StrToLog,
-		        " <call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s "
-		        "<time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>",
-		        strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, QSO_Freq,
-		        TRX.CALLSIGN, TRX.LOCATOR);
-		StrToLog[0] = CR;
-
-		Len = strlen(StrToLog);
-
 		strcpy((char *)SD_workbuffer_A, "FT8_QSO_Log.txt"); // File name
 		strcpy((char *)SD_workbuffer_B, (char *)StrToLog);  // Data to write
 		SDCOMM_WRITE_TO_FILE_partsize = Len;
 
 		SD_doCommand(SDCOMM_WRITE_TO_FILE, false);
-
-		static char cNote[32] = {0};
-		sprintf(cNote, "%1.6f Loc: %s", QSO_Freq, Target_Grid);
-		static char cTarget_RSL[16] = {0};
-		sprintf(cTarget_RSL, "%3i", Target_RSL);
-		WIFI_postQSOtoAllQSO(Target_Call, cNote, QSODate, QSOOffTime, cTarget_RSL, RapRcv_RSL_filtered, "FT8", cBND, "", "");
 	}
+
+	static char cNote[32] = {0};
+	sprintf(cNote, "%1.6f Loc: %s", QSO_Freq, Target_Grid);
+	static char cTarget_RSL[16] = {0};
+	sprintf(cTarget_RSL, "%3i", Target_RSL);
+	WIFI_postQSOtoAllQSO(Target_Call, cNote, QSODate, QSOOffTime, cTarget_RSL, RapRcv_RSL_filtered, "FT8", cBND, "", "");
 }
