@@ -1,6 +1,7 @@
 #include "hardware.h"
 #if HRDW_HAS_SD
 
+#include "INA226_PWR_monitor.h"
 #include "audio_filters.h"
 #include "fatfs.h"
 #include "filemanager.h"

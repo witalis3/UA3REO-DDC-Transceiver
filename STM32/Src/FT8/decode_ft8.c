@@ -187,7 +187,13 @@ void SetNew_TargetCall(int index) {
 	strcpy(Target_Call, new_decoded[index].field2); // take the target (partner) callsign
 	Target_RSL = new_decoded[index].snr;
 
-	strcpy(Target_Grid, new_decoded[index].field3); // take the target (partner) gridsqare
+	char firstLocatiorChar = new_decoded[index].field3[0];
+	if ((firstLocatiorChar > 64 && firstLocatiorChar < 91) || (firstLocatiorChar > 96 && firstLocatiorChar < 123)) {
+		strcpy(Target_Grid, new_decoded[index].field3); // take the target (partner) gridsqare
+	} else {
+		strcpy(Target_Grid, "    "); // no locator in message, look RSL in message
+		CheckRecievedRaportRSL(1, true);
+	}
 
 	sprintf(selected_station, "%7s %3i", Target_Call, Target_RSL);
 }
@@ -197,6 +203,10 @@ void SetNew_TargetCall(int index) {
 //"index" is the message index
 //"CQ_Answer" showing if we check the answer when we call the "CQ" or we answer a "CQ"
 int CheckRecievedRaportRSL(int index, char CQ_Answer) {
+	if (strcmp(new_decoded[index].field3, "RR73") == 0 || strcmp(new_decoded[index].field3, "RRR") == 0) { // bad sequence without locator (skip first tx)
+		return 0;
+	}
+
 	strcpy(RapRcv_RSL, new_decoded[index].field3);
 
 	if (CQ_Answer) {

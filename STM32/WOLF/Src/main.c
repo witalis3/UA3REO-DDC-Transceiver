@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "INA226_PWR_monitor.h" //Tisho
+#include "INA226_PWR_monitor.h"
 #include "audio_processor.h"
 #include "bootloader.h"
 #include "codec.h"
