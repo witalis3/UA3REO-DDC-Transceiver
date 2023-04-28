@@ -1226,7 +1226,7 @@ static void WIFI_printImage_stream_callback(void) {
 	// image print stream done
 }
 
-static void WIFI_printImage_Propagination_callback(void) {
+static void WIFI_printImage_Propagation_callback(void) {
 	LCDDriver_Fill(BG_COLOR);
 	if (WIFI_HTTP_Response_Status == 200) {
 		char *istr1 = strchr(WIFI_HTTResponseHTML, ',');
@@ -1457,7 +1457,7 @@ void WIFI_getDXCluster(void) {
 	WIFI_getHTTPpage("ua3reo.ru", url, WIFI_printText_callback, false, false);
 }
 
-void WIFI_getPropagination(void) {
+void WIFI_getPropagation(void) {
 	LCDDriver_Fill(BG_COLOR);
 	if (WIFI_connected && WIFI_State == WIFI_READY) {
 #ifdef LCD_SMALL_INTERFACE
@@ -1476,7 +1476,7 @@ void WIFI_getPropagination(void) {
 	}
 	char buff[64] = {0};
 	sprintf(buff, "/trx_services/propagination.php?width=%u&height=%u", LCD_WIDTH, LCD_HEIGHT);
-	WIFI_getHTTPpage("ua3reo.ru", buff, WIFI_printImage_Propagination_callback, false, false);
+	WIFI_getHTTPpage("ua3reo.ru", buff, WIFI_printImage_Propagation_callback, false, false);
 }
 
 void WIFI_getDayNightMap(void) {

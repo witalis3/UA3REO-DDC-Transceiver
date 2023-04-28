@@ -471,7 +471,7 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction);
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
-static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
+static void SYSMENU_HANDL_PROPAGATION(int8_t direction);
 static void SYSMENU_HANDL_DAYNIGHT_MAP(int8_t direction);
 static void SYSMENU_HANDL_IONOGRAM(int8_t direction);
 #endif
@@ -1317,7 +1317,7 @@ const static struct sysmenu_item_handler sysmenu_time_beacons_handlers[] = {
 const static struct sysmenu_item_handler sysmenu_services_handlers[] = {
 #if HRDW_HAS_WIFI && !defined(FRONTPANEL_X1)
     {"DX Cluster", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DX_CLUSTER},
-    {"Propagination", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_PROPAGINATION},
+    {"Propagation", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_PROPAGATION},
 #if LCD_WIDTH >= 800
     {"DayNight Map", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DAYNIGHT_MAP},
     {"Ionogram", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_IONOGRAM},
@@ -7300,14 +7300,14 @@ static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction) {
 	WIFI_getDXCluster();
 }
 
-// PROPAGINATION
-static void SYSMENU_HANDL_PROPAGINATION(int8_t direction) {
+// PROPAGATION
+static void SYSMENU_HANDL_PROPAGATION(int8_t direction) {
 #if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
 #endif
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
-	WIFI_getPropagination();
+	WIFI_getPropagation();
 }
 
 // DAY/NIGHT MAP

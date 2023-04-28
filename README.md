@@ -400,9 +400,9 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 * Show DX Cluster info by current band (from internet)
 
-### Propagination 
+### Propagation 
 
-* Show propagination statistics (from internet)
+* Show propagation statistics (from internet)
 
 ### DayNight Map 
 
