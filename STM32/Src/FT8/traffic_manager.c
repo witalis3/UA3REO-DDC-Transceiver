@@ -350,7 +350,7 @@ void LogQSO(void) {
 	Len = strlen(StrToLog);
 
 	if (SD_Present) {
-		strcpy((char *)SD_workbuffer_A, "FT8_QSO_Log.txt"); // File name
+		strcpy((char *)SD_workbuffer_A, "FT8_QSO_Log.adi"); // File name
 		strcpy((char *)SD_workbuffer_B, (char *)StrToLog);  // Data to write
 		SDCOMM_WRITE_TO_FILE_partsize = Len;
 
