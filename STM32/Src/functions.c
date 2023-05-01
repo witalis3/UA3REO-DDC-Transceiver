@@ -392,6 +392,19 @@ float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate
 	return ret;
 }
 
+float32_t generateSinWithZeroCrossing(float32_t amplitude, float32_t *index, float32_t *prev_freq, float32_t samplerate, float32_t freq) {
+	float32_t ret = amplitude * arm_sin_f32(*index * F_2PI);
+
+	*index += *prev_freq / samplerate;
+
+	while (*index >= 1.0f) {
+		*index -= 1.0f;
+		*prev_freq = freq;
+	}
+
+	return ret;
+}
+
 inline int32_t convertToSPIBigEndian(int32_t in) { return (int32_t)(0xFFFF0000 & (uint32_t)(in << 16)) | (int32_t)(0x0000FFFF & (uint32_t)(in >> 16)); }
 
 inline uint8_t rev8(uint8_t data) {

@@ -266,7 +266,7 @@ static void update_synchronization(void) {
 		LCDDriver_printText(ctmp, 200, 280, FG_COLOR, BG_COLOR, 2);
 #endif
 
-		sprintf(ctmp, "TEMP: % 2d, QSO: %d  ", (int16_t)TRX_RF_Temperature, FT8_QSO_Count);
+		sprintf(ctmp, "TEMP:% 2d, QSO: %d  ", (int16_t)TRX_RF_Temperature, FT8_QSO_Count);
 #if (defined(LAY_800x480))
 		LCDDriver_printText(ctmp, 235, 420, FG_COLOR, BG_COLOR, 2);
 #elif (defined(LAY_320x240))

@@ -51,6 +51,7 @@ bool APROC_IFGain_Overflow = false;
 float32_t APROC_TX_clip_gain = 1.0f;
 float32_t APROC_TX_tune_power = 0.0f;
 float32_t SAM_Carrier_offset = 0.0f;
+float32_t APROC_TUNE_DigiTone_Freq = 1000.0f;
 
 #if FT8_SUPPORT
 static q15_t APROC_AudioBuffer_FT8_out[AUDIO_BUFFER_SIZE / 2] = {0};
@@ -801,6 +802,32 @@ void processTxAudio(void) {
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 			APROC_Audio_Buffer_TX_I[i] = 1.0f;
 			APROC_Audio_Buffer_TX_Q[i] = 0.0f;
+		}
+	}
+
+	// FT8 signal generator
+	if (TRX_Tune && (CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_DIGI_L)) {
+		if (APROC_TUNE_DigiTone_Freq == 0) { // default tune
+			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
+				APROC_Audio_Buffer_TX_I[i] = 1.0f;
+				APROC_Audio_Buffer_TX_Q[i] = 0.0f;
+			}
+		} else {
+			static float32_t ft8_signal_gen_index = 0;
+			static float32_t ft8_signal_gen_prev_freq = 1000.0f;
+			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
+
+				float32_t point = generateSinWithZeroCrossing(1.0f, &ft8_signal_gen_index, &ft8_signal_gen_prev_freq, TRX_SAMPLERATE, APROC_TUNE_DigiTone_Freq);
+				APROC_Audio_Buffer_TX_I[i] = point;
+				APROC_Audio_Buffer_TX_Q[i] = point;
+			}
+
+			// hilbert fir
+			if (mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L) {
+				doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
+			} else if (mode == TRX_MODE_DIGI_U) {
+				doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
+			}
 		}
 	}
 

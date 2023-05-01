@@ -2,6 +2,7 @@
 #include "FT8_GUI.h"
 #include "FT8_main.h"
 #include "atu.h"
+#include "audio_processor.h"
 #include "decode_ft8.h"
 #include "gen_ft8.h"
 #include "lcd.h"
@@ -16,7 +17,7 @@ uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly f
 uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
 int xmit_flag, ft8_xmit_counter;
 
-#define FT8_TONE_SPACING 6.25
+#define FT8_TONE_SPACING 6.25f
 
 extern uint16_t cursor_line;
 
@@ -57,18 +58,20 @@ void tune_Off_sequence(void) {
 	BUTTONHANDLER_TUNE(255);
 }
 
-void set_Xmit_Freq(uint32_t BandFreq, uint16_t Freq) {
-	uint32_t F_Long = BandFreq * 1000 + Freq; // BandFreq is in kHz and add the needed offset
-	TRX_setFrequency(F_Long, CurrentVFO);
+void set_Xmit_Freq(uint32_t BandFreq, float32_t Freq) {
+	uint32_t F_Long = BandFreq * 1000; // BandFreq is in kHz
+	APROC_TUNE_DigiTone_Freq = Freq;
+	if (CurrentVFO->Freq != F_Long) {
+		TRX_setFrequency(F_Long, CurrentVFO);
+	}
 	if (CurrentVFO->Mode != TRX_MODE_DIGI_U) {
 		TRX_setMode(TRX_MODE_DIGI_U, CurrentVFO);
 	}
 }
 
 void set_FT8_Tone(char ft8_tone) {
-	uint32_t F_FT8;
-	F_FT8 = ft8_tone * FT8_TONE_SPACING;
-	set_Xmit_Freq(FT8_BND_Freq, cursor_freq + F_FT8);
+	float32_t F_FT8 = ft8_tone * FT8_TONE_SPACING;
+	set_Xmit_Freq(FT8_BND_Freq, (float32_t)cursor_freq + F_FT8);
 }
 
 void setup_to_transmit_on_next_DSP_Flag(void) {
