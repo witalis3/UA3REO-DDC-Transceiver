@@ -84,13 +84,13 @@ static int32_t bw_rx1_line_end = 0;   // BW bar params RX1
 static int32_t bw_rx2_line_start = 0; // BW bar params RX2
 static int32_t bw_rx2_line_center = 0;
 static int32_t rx2_notch_line_pos = 0;
-static int32_t bw_rx2_line_end = 0;                         // BW bar params RX2
-static float32_t window_multipliers[FFT_SIZE] = {0};        // coefficients of the selected window function
-static float32_t hz_in_pixel = 1.0f;                        // current FFT density value
-static uint16_t bandmap_line_tmp[MAX_FFT_PRINT_SIZE] = {0}; // temporary buffer to move the waterfall
-static uint32_t print_fft_dma_estimated_size = 0;           // block size for dma
-static uint32_t print_fft_dma_position = 0;                 // positior for dma fft print
-static uint8_t needredraw_wtf_counter = 3;                  // redraw cycles after event
+static int32_t bw_rx2_line_end = 0;                        // BW bar params RX2
+static float32_t window_multipliers[FFT_SIZE] = {0};       // coefficients of the selected window function
+static float32_t hz_in_pixel = 1.0f;                       // current FFT density value
+static uint8_t bandmap_line_tmp[MAX_FFT_PRINT_SIZE] = {0}; // temporary buffer for bandmap draw
+static uint32_t print_fft_dma_estimated_size = 0;          // block size for dma
+static uint32_t print_fft_dma_position = 0;                // positior for dma fft print
+static uint8_t needredraw_wtf_counter = 3;                 // redraw cycles after event
 static bool fft_charge_ready = false;
 static bool fft_charge_copying = false;
 static uint8_t FFT_meanBuffer_index = 0;
@@ -2155,15 +2155,15 @@ void FFT_afterPrintFFT(void) {
 		for (uint16_t band = band_left; band <= band_right; band++) {
 			// regions
 			for (uint16_t region = 0; region < BANDS[band].regionsCount; region++) {
-				uint16_t region_color = COLOR->BANDMAP_SSB;
+				uint8_t region_color = 1;
 				if (BANDS[band].regions[region].mode == TRX_MODE_CW) {
-					region_color = COLOR->BANDMAP_CW;
+					region_color = 2;
 				} else if (BANDS[band].regions[region].mode == TRX_MODE_DIGI_L || BANDS[band].regions[region].mode == TRX_MODE_DIGI_U || BANDS[band].regions[region].mode == TRX_MODE_RTTY) {
-					region_color = COLOR->BANDMAP_DIGI;
+					region_color = 3;
 				} else if (BANDS[band].regions[region].mode == TRX_MODE_NFM || BANDS[band].regions[region].mode == TRX_MODE_WFM) {
-					region_color = COLOR->BANDMAP_FM;
+					region_color = 4;
 				} else if (BANDS[band].regions[region].mode == TRX_MODE_AM || BANDS[band].regions[region].mode == TRX_MODE_SAM) {
-					region_color = COLOR->BANDMAP_AM;
+					region_color = 5;
 				}
 
 				fft_freq_position_start = getFreqPositionOnFFT(BANDS[band].regions[region].startFreq, false);
@@ -2192,7 +2192,28 @@ void FFT_afterPrintFFT(void) {
 	LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y - LAYOUT->FFT_FREQLABELS_HEIGHT - 4, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y - 3);
 	for (uint8_t r = 0; r < 2; r++) {
 		for (uint32_t pixel_counter = 0; pixel_counter < LAYOUT->FFT_PRINT_SIZE; pixel_counter++) {
-			LCDDriver_SendData16(bandmap_line_tmp[pixel_counter]);
+			uint16_t bandmap_color;
+			switch (bandmap_line_tmp[pixel_counter]) {
+			case 1:
+				bandmap_color = COLOR->BANDMAP_SSB;
+				break;
+			case 2:
+				bandmap_color = COLOR->BANDMAP_CW;
+				break;
+			case 3:
+				bandmap_color = COLOR->BANDMAP_DIGI;
+				break;
+			case 4:
+				bandmap_color = COLOR->BANDMAP_FM;
+				break;
+			case 5:
+				bandmap_color = COLOR->BANDMAP_AM;
+				break;
+			default:
+				bandmap_color = 0;
+				break;
+			}
+			LCDDriver_SendData16(bandmap_color);
 		}
 	}
 
