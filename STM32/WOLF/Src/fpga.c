@@ -149,7 +149,7 @@ void FPGA_Init(bool bus_test, bool firmware_test) {
 					HAL_Delay(1000);
 				}
 			}
-			LCD_showError("Check compleate!", false);
+			LCD_showError("Check complete!", false);
 		}
 	}
 
