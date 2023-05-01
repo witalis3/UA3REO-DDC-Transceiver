@@ -325,9 +325,6 @@ void FT8_Enc2Click(void) {
 	}
 	LCD_busy = true;
 
-	cursor_line -= 1; // Bug fix (pressing the encoder causes one + 1 step of the main encoder)
-	//	FT8_EncRotate(-1);					//Bug fix (pressing the encoder causes one + 1 step of the main encoder)
-
 	FT8_Menu_Pos_Toggle();
 
 	LCD_busy = false;
