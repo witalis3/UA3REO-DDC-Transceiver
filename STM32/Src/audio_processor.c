@@ -72,6 +72,11 @@ static uint32_t audio_buffer_in_index = 0;
 IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
 #endif
 
+static demod_sam_data_t sam_data_rx1;
+#if HRDW_HAS_DUAL_RX
+SRAM static demod_sam_data_t sam_data_rx2;
+#endif
+
 // Prototypes
 static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size);                                 // Hilbert filter for phase shift of signals
 static void doRX_LPF_IQ(AUDIO_PROC_RX_NUM rx_id, uint16_t size);                                  // Low-pass filter for I and Q
@@ -2177,8 +2182,6 @@ static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_
 
 static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize) {
 	// part of UHSDR project https://github.com/df8oe/UHSDR/blob/active-devel/mchf-eclipse/drivers/audio/audio_driver.c
-	static demod_sam_data_t sam_data_rx1;
-	static demod_sam_data_t sam_data_rx2;
 	demod_sam_data_t *sam_data = &sam_data_rx1;
 #if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2) {

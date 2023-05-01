@@ -2802,9 +2802,11 @@ static void SDCOMM_IMPORT_SETT_handler(void) {
 		LAYOUT = &LAYOUT_THEMES[TRX.LayoutThemeId];
 		FFT_Init();
 		LCD_Init();
+#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
 		if (CALIBRATE.INA226_EN) {
 			INA226_Init();
 		}
+#endif
 		NeedReinitAudioFiltersClean = true;
 		TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);

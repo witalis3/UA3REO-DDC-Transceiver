@@ -128,7 +128,7 @@ static char ota_config_frontpanel[] = "LITE";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 8
 #define FUNCBUTTONS_PAGES 5
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 4) // 40+4
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5)
 static char ota_config_frontpanel[] = "BIG";
 #define ATU_MAXPOS \
 	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) ? ATU_5x5_MAXPOS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
@@ -140,7 +140,7 @@ static char ota_config_frontpanel[] = "BIG";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 9
 #define FUNCBUTTONS_PAGES 4
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5) // 36+4
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 6)
 static char ota_config_frontpanel[] = "WF_100D";
 #define ATU_MAXPOS ATU_7x7_MAXPOS
 #endif
@@ -151,7 +151,7 @@ static char ota_config_frontpanel[] = "WF_100D";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 9
 #define FUNCBUTTONS_PAGES 4
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 6)
 static char ota_config_frontpanel[] = "WOLF-2";
 #define ATU_MAXPOS ATU_7x7_MAXPOS
 #endif
@@ -162,7 +162,7 @@ static char ota_config_frontpanel[] = "WOLF-2";
 #define MAX_VOLUME_VALUE 100.0f
 #define FUNCBUTTONS_ON_PAGE 4
 #define FUNCBUTTONS_PAGES 9
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 1)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 2)
 static char ota_config_frontpanel[] = "X1";
 #define ATU_MAXPOS ATU_0x0_MAXPOS
 #endif
@@ -172,7 +172,7 @@ static char ota_config_frontpanel[] = "X1";
 #define MAX_VOLUME_VALUE 100.0f
 #define FUNCBUTTONS_ON_PAGE 4
 #define FUNCBUTTONS_PAGES 9
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 1)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 2)
 static char ota_config_frontpanel[] = "Mini";
 #define ATU_MAXPOS ATU_6x6_MAXPOS
 #endif
@@ -182,7 +182,7 @@ static char ota_config_frontpanel[] = "Mini";
 #define MAX_VOLUME_VALUE 100.0f
 #define FUNCBUTTONS_ON_PAGE 4
 #define FUNCBUTTONS_PAGES 8
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 1)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 2)
 static char ota_config_frontpanel[] = "LiteV2-Mini";
 #define ATU_MAXPOS ATU_0x0_MAXPOS
 #endif
