@@ -863,6 +863,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.AutoGain", (uint64_t *)&TRX.AutoGain, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.SPLIT_Enabled", (uint64_t *)&TRX.SPLIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Split_Mode_Sync_Freq", (uint64_t *)&TRX.Split_Mode_Sync_Freq, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.FT8_Auto_CQ", (uint64_t *)&TRX.FT8_Auto_CQ, SYSMENU_BOOLEAN);
 #if HRDW_HAS_DUAL_RX
 			SD_WRITE_SETT_LINE("TRX.Dual_RX", (uint64_t *)&TRX.Dual_RX, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Dual_RX_Type", (uint64_t *)&TRX.Dual_RX_Type, SYSMENU_UINT8);
@@ -1516,6 +1517,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.Split_Mode_Sync_Freq") == 0) {
 		TRX.Split_Mode_Sync_Freq = bval;
+	}
+	if (strcmp(name, "TRX.FT8_Auto_CQ") == 0) {
+		TRX.FT8_Auto_CQ = bval;
 	}
 #if HRDW_HAS_DUAL_RX
 	if (strcmp(name, "TRX.Dual_RX") == 0) {

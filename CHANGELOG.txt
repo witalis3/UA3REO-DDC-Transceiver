@@ -1,6 +1,7 @@
 ----Version 7.6.1----
 +STM32: Эксперименты с Digital-Pre-Distortion
 +STM32: Оптимизации кода
++STM32: Добавлено управление "FT8 Auto CQ" через настройки, Tnx SP7DQR
 +STM32: Файл лога FT8 переименован в FT8_QSO_Log.adi, Tnx SP7DQR
 +STM32: Устранение ошибок, Tnx K4BAC, RU4PN, SP7DQR
 

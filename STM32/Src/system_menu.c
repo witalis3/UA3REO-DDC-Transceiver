@@ -153,6 +153,7 @@ static void SYSMENU_HANDL_TX_TWO_SIGNAL_TUNE(int8_t direction);
 static void SYSMENU_HANDL_TX_VOX(int8_t direction);
 static void SYSMENU_HANDL_TX_VOX_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_TX_VOX_TIMEOUT(int8_t direction);
+static void SYSMENU_HANDL_TX_FT8_Auto_CQ(int8_t direction);
 
 static void SYSMENU_HANDL_CW_DotToDashRate(int8_t direction);
 static void SYSMENU_HANDL_CW_Iambic(int8_t direction);
@@ -723,9 +724,8 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"Compr. MxGa SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_HANDL_TX_CompressorMaxGain_SSB},
     {"Compr. Speed SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_SSB, SYSMENU_HANDL_TX_CompressorSpeed_SSB},
     {"CTCSS Frequency", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CTCSS_Freq, SYSMENU_HANDL_TX_CTCSS_Freq},
-    {"Repeater Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RepeaterMode_shadow, SYSMENU_HANDL_TX_RepeaterMode},
-    {"Repeater offset, kHz", SYSMENU_INT16, NULL, (uint32_t *)&TRX.REPEATER_Offset, SYSMENU_HANDL_TX_REPEATER_Offset},
     {"Auto Input Switch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Input_Switch, SYSMENU_HANDL_TX_Auto_Input_Switch},
+    {"FT8 Auto CQ", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FT8_Auto_CQ, SYSMENU_HANDL_TX_FT8_Auto_CQ},
     {"Input Type MAIN", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_MAIN, SYSMENU_HANDL_TX_INPUT_TYPE_MAIN, {"MIC", "LINE", "USB"}},
     {"Input Type DIGI", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_DIGI, SYSMENU_HANDL_TX_INPUT_TYPE_DIGI, {"MIC", "LINE", "USB"}},
     {"LINE Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LINE_Volume, SYSMENU_HANDL_TX_LINE_Volume},
@@ -747,6 +747,8 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
 #endif
     {"Pwr for each band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_HANDL_TX_RF_Gain_For_Each_Band},
     {"Pwr for each mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_HANDL_TX_RF_Gain_For_Each_Mode},
+    {"Repeater Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RepeaterMode_shadow, SYSMENU_HANDL_TX_RepeaterMode},
+    {"Repeater offset, kHz", SYSMENU_INT16, NULL, (uint32_t *)&TRX.REPEATER_Offset, SYSMENU_HANDL_TX_REPEATER_Offset},
     {"SelfHear Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SELFHEAR_Volume, SYSMENU_HANDL_TX_SELFHEAR_Volume},
     {"Two Signal TUNE", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TX_TWO_SIGNAL_TUNE},
     {"VOX", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.VOX, SYSMENU_HANDL_TX_VOX},
@@ -2920,6 +2922,15 @@ static void SYSMENU_HANDL_TX_RF_Gain_For_Each_Mode(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.RF_Gain_For_Each_Mode = false;
+	}
+}
+
+static void SYSMENU_HANDL_TX_FT8_Auto_CQ(int8_t direction) {
+	if (direction > 0) {
+		TRX.FT8_Auto_CQ = true;
+	}
+	if (direction < 0) {
+		TRX.FT8_Auto_CQ = false;
 	}
 }
 

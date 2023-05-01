@@ -192,7 +192,7 @@ void SetNew_TargetCall(int index) {
 		strcpy(Target_Grid, new_decoded[index].field3); // take the target (partner) gridsqare
 	} else {
 		strcpy(Target_Grid, "    "); // no locator in message, look RSL in message
-		CheckRecievedRaportRSL(1, true);
+		CheckRecievedRaportRSL(index, true);
 	}
 
 	sprintf(selected_station, "%7s %3i", Target_Call, Target_RSL);

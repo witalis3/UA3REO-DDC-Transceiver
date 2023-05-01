@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 101        // Settings config version
+#define SETT_VERSION 102        // Settings config version
 #define CALIB_VERSION 65        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -508,6 +508,7 @@ extern struct TRX_SETTINGS {
 	bool Full_Duplex;
 	bool Digital_Pre_Distortion;
 	bool Split_Mode_Sync_Freq;
+	bool FT8_Auto_CQ;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH + 1];
 	char LOCATOR[MAX_CALLSIGN_LENGTH + 1];
 	char URSI_CODE[MAX_CALLSIGN_LENGTH + 1];

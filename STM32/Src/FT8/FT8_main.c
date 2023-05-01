@@ -155,9 +155,12 @@ void MenagerFT8(void) {
 
 				if (Beacon_State == 8) // if we are on the end of answering a "CQ" (we just send "73")
 				{
-					Beacon_State = 0;
-					// FT8_Menu_Idx = 0;      // index of the "CQ" button
-					// FT8_Menu_Pos_Toggle(); // deactivate the "CQ" button -> set green
+					if (TRX.FT8_Auto_CQ) {
+						Beacon_State = 0;
+					} else {
+						FT8_Menu_Idx = 0;      // index of the "CQ" button
+						FT8_Menu_Pos_Toggle(); // deactivate the "CQ" button -> set green
+					}
 				}
 			}
 			__enable_irq(); // Re-enable all interrupts

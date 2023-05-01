@@ -200,6 +200,7 @@ void LoadSettings(bool clear) {
 		TRX.Full_Duplex = false;                   // Full Duplex TX+RX Mode
 		TRX.Digital_Pre_Distortion = false;        // enable digital pre-distortion
 		TRX.Split_Mode_Sync_Freq = false;          // enable VFO freq syncronization in SPLIT mode
+		TRX.FT8_Auto_CQ = false;                   // Auto-CQ mode for FT8
 		TRX.DXCluster_Type = DX_CLUSTER_DX_SUMMIT; // DX cluster type
 		TRX.REPEATER_Offset = 600;                 // repeater mode custom offset
 		// AUDIO

@@ -107,8 +107,14 @@ void service_CQ(void) {
 			} else // We tried enough without answer => go back to "CQ" call
 			{
 				FT8_Clear_TargetCall(); // Clear the place on the display for the "TargetCall"
-				Beacon_State = 1;       // Set Call - "CQ"
 				Attempt_Count = 0;
+
+				if (TRX.FT8_Auto_CQ) {
+					Beacon_State = 1; // Set Call - "CQ"
+				} else {
+					FT8_Menu_Idx = 0;      // index of the "CQ" button
+					FT8_Menu_Pos_Toggle(); // deactivate the "CQ" button -> set green
+				}
 			}
 		} else {            // The conversation was not initiated => then we just call CQ
 			Beacon_State = 1; // Set Call - "CQ"
@@ -145,9 +151,15 @@ void service_CQ(void) {
 				Attempt_Count = 0;                     // zero the attempt counter
 				if (CheckRecieved73(receive_index, 0)) // check if the oposite side answered corespondingly
 				{
-					Beacon_State = 1; // if yes then we are done and can go further (call next "CQ")
 					LogQSO();
 					FT8_Clear_TargetCall(); // Clear the place on the display for the "TargetCall"
+
+					if (TRX.FT8_Auto_CQ) {
+						Beacon_State = 1; // if yes then we are done and can go further (call next "CQ")
+					} else {
+						FT8_Menu_Idx = 0;      // index of the "CQ" button
+						FT8_Menu_Pos_Toggle(); // deactivate the "CQ" button -> set green
+					}
 				}
 			} else { // The answer we got it was not from the station we were talking till now
 				Beacon_State = 30;
