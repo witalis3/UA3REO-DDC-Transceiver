@@ -244,11 +244,11 @@ typedef struct __JPEG_MCU_RGB_ConvertorTypeDef {
 static JPEG_MCU_RGB_ConvertorTypeDef JPEG_ConvertorParams;
 
 #if (USE_JPEG_DECODER == 1)
-static int32_t CR_RED_LUT[256];   /* Cr to Red color conversion Look Up Table  */
-static int32_t CB_BLUE_LUT[256];  /* Cb to Blue color conversion Look Up Table */
-static int32_t CR_GREEN_LUT[256]; /* Cr to Green color conversion Look Up Table*/
-static int32_t CB_GREEN_LUT[256]; /* Cb to Green color conversion Look Up Table*/
-#endif                            /* USE_JPEG_DECODER == 1 */
+// static int32_t CR_RED_LUT[256];   /* Cr to Red color conversion Look Up Table  */
+// static int32_t CB_BLUE_LUT[256];  /* Cb to Blue color conversion Look Up Table */
+// static int32_t CR_GREEN_LUT[256]; /* Cr to Green color conversion Look Up Table*/
+// static int32_t CB_GREEN_LUT[256]; /* Cb to Green color conversion Look Up Table*/
+#endif /* USE_JPEG_DECODER == 1 */
 
 #if (USE_JPEG_ENCODER == 1)
 static int32_t RED_Y_LUT[256];          /* Red to Y color conversion Look Up Table  */
@@ -1749,12 +1749,22 @@ static uint32_t JPEG_MCU_YCbCr420_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 				for (k = 0; k < 2; k++) {
 					for (j = 0; j < 8; j += 2) {
 						cbcomp = (int32_t)(*(pChrom));
-						c_blue = (int32_t)(*(CB_BLUE_LUT + cbcomp));
+						int32_t index = (cbcomp * 2) - 256;
+
+						int32_t CR_RED_LU = ((((int32_t)((1.40200 / 2) * (1L << 16))) * index) + ((int32_t)1 << (16 - 1))) >> 16;
+						int32_t CB_BLUE_LU = ((((int32_t)((1.77200 / 2) * (1L << 16))) * index) + ((int32_t)1 << (16 - 1))) >> 16;
+						int32_t CR_GREEN_LU = (-((int32_t)((0.71414 / 2) * (1L << 16)))) * index;
+						int32_t CB_GREEN_LU = (-((int32_t)((0.34414 / 2) * (1L << 16)))) * index;
+
+						// c_blue = (int32_t)(*(CB_BLUE_LUT + cbcomp));
+						c_blue = CB_BLUE_LU;
 
 						crcomp = (int32_t)(*(pChrom + 64));
-						c_red = (int32_t)(*(CR_RED_LUT + crcomp));
+						// c_red = (int32_t)(*(CR_RED_LUT + crcomp));
+						c_red = CR_RED_LU;
 
-						c_green = ((int32_t)(*(CR_GREEN_LUT + crcomp)) + (int32_t)(*(CB_GREEN_LUT + cbcomp))) >> 16;
+						// c_green = ((int32_t)(*(CR_GREEN_LUT + crcomp)) + (int32_t)(*(CB_GREEN_LUT + cbcomp))) >> 16;
+						c_green = (CR_GREEN_LU + CB_GREEN_LU) >> 16;
 
 #if (JPEG_RGB_FORMAT == JPEG_ARGB8888)
 
@@ -1915,12 +1925,22 @@ static uint32_t JPEG_MCU_YCbCr422_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 				for (k = 0; k < 2; k++) {
 					for (j = 0; j < 8; j += 2) {
 						cbcomp = (int32_t)(*(pChrom));
-						c_blue = (int32_t)(*(CB_BLUE_LUT + cbcomp));
+						int32_t index = (cbcomp * 2) - 256;
+
+						int32_t CR_RED_LU = ((((int32_t)((1.40200 / 2) * (1L << 16))) * index) + ((int32_t)1 << (16 - 1))) >> 16;
+						int32_t CB_BLUE_LU = ((((int32_t)((1.77200 / 2) * (1L << 16))) * index) + ((int32_t)1 << (16 - 1))) >> 16;
+						int32_t CR_GREEN_LU = (-((int32_t)((0.71414 / 2) * (1L << 16)))) * index;
+						int32_t CB_GREEN_LU = (-((int32_t)((0.34414 / 2) * (1L << 16)))) * index;
+
+						// c_blue = (int32_t)(*(CB_BLUE_LUT + cbcomp));
+						c_blue = CB_BLUE_LU;
 
 						crcomp = (int32_t)(*(pChrom + 64));
-						c_red = (int32_t)(*(CR_RED_LUT + crcomp));
+						// c_red = (int32_t)(*(CR_RED_LUT + crcomp));
+						c_red = CR_RED_LU;
 
-						c_green = ((int32_t)(*(CR_GREEN_LUT + crcomp)) + (int32_t)(*(CB_GREEN_LUT + cbcomp))) >> 16;
+						// c_green = ((int32_t)(*(CR_GREEN_LUT + crcomp)) + (int32_t)(*(CB_GREEN_LUT + cbcomp))) >> 16;
+						c_green = (CR_GREEN_LU + CB_GREEN_LU) >> 16;
 
 #if (JPEG_RGB_FORMAT == JPEG_ARGB8888)
 
@@ -2022,13 +2042,23 @@ static uint32_t JPEG_MCU_YCbCr444_ARGB_ConvertBlocks(uint8_t *pInBuffer, uint8_t
 				pOutAddr = pOutBuffer + refline;
 
 				for (j = 0; j < 8; j++) {
-					cbcomp = (int32_t)(*pChrom);
-					c_blue = (int32_t)(*(CB_BLUE_LUT + cbcomp));
+					cbcomp = (int32_t)(*(pChrom));
+					int32_t index = (cbcomp * 2) - 256;
+
+					int32_t CR_RED_LU = ((((int32_t)((1.40200 / 2) * (1L << 16))) * index) + ((int32_t)1 << (16 - 1))) >> 16;
+					int32_t CB_BLUE_LU = ((((int32_t)((1.77200 / 2) * (1L << 16))) * index) + ((int32_t)1 << (16 - 1))) >> 16;
+					int32_t CR_GREEN_LU = (-((int32_t)((0.71414 / 2) * (1L << 16)))) * index;
+					int32_t CB_GREEN_LU = (-((int32_t)((0.34414 / 2) * (1L << 16)))) * index;
+
+					// c_blue = (int32_t)(*(CB_BLUE_LUT + cbcomp));
+					c_blue = CB_BLUE_LU;
 
 					crcomp = (int32_t)(*(pChrom + 64));
-					c_red = (int32_t)(*(CR_RED_LUT + crcomp));
+					// c_red = (int32_t)(*(CR_RED_LUT + crcomp));
+					c_red = CR_RED_LU;
 
-					c_green = ((int32_t)(*(CR_GREEN_LUT + crcomp)) + (int32_t)(*(CB_GREEN_LUT + cbcomp))) >> 16;
+					// c_green = ((int32_t)(*(CR_GREEN_LUT + crcomp)) + (int32_t)(*(CB_GREEN_LUT + cbcomp))) >> 16;
+					c_green = (CR_GREEN_LU + CB_GREEN_LU) >> 16;
 
 #if (JPEG_RGB_FORMAT == JPEG_ARGB8888)
 
@@ -2312,17 +2342,15 @@ HAL_StatusTypeDef JPEG_GetDecodeColorConvertFunc(JPEG_ConfTypeDef *pJpegInfo, JP
  * @retval None
  */
 void JPEG_InitPostProcColorTables(void) {
-	int32_t index, i;
+	// int32_t index, i;
 
-	for (i = 0; i <= 255; i++) {
-		index = (i * 2) - 256;
-		CR_RED_LUT[i] = ((((int32_t)((1.40200 / 2) * (1L << 16))) * index) + ((int32_t)1 << (16 - 1))) >> 16;
-
-		CB_BLUE_LUT[i] = ((((int32_t)((1.77200 / 2) * (1L << 16))) * index) + ((int32_t)1 << (16 - 1))) >> 16;
-
-		CR_GREEN_LUT[i] = (-((int32_t)((0.71414 / 2) * (1L << 16)))) * index;
-		CB_GREEN_LUT[i] = (-((int32_t)((0.34414 / 2) * (1L << 16)))) * index;
-	}
+	// for (i = 0; i <= 255; i++) {
+	// index = (i * 2) - 256;
+	// CR_RED_LUT[i] = ((((int32_t)((1.40200 / 2) * (1L << 16))) * index) + ((int32_t)1 << (16 - 1))) >> 16;
+	// CB_BLUE_LUT[i] = ((((int32_t)((1.77200 / 2) * (1L << 16))) * index) + ((int32_t)1 << (16 - 1))) >> 16;
+	// CR_GREEN_LUT[i] = (-((int32_t)((0.71414 / 2) * (1L << 16)))) * index;
+	// CB_GREEN_LUT[i] = (-((int32_t)((0.34414 / 2) * (1L << 16)))) * index;
+	//}
 }
 #endif /* USE_JPEG_DECODER == 1 */
 
