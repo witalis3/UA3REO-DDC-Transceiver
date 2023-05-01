@@ -66,6 +66,7 @@ typedef enum {
 	SDCOMM_FLASH_BIN,
 	SDCOMM_FLASH_JIC,
 	SDCOMM_WRITE_TO_FILE,
+	SDCOMM_GET_LINES_COUNT,
 } SD_COMMAND;
 
 extern FIL File;
@@ -93,6 +94,7 @@ extern bool SD_Play_Buffer_Ready;
 extern uint32_t SD_Play_Buffer_Size;
 extern uint32_t SDCOMM_WRITE_TO_FILE_partsize;
 extern void (*SDCOMM_WRITE_TO_FILE_callback)(void);
+extern void (*SDCOMM_GET_LINES_COUNT_callback)(uint32_t count);
 
 //--------------------------------------------------
 extern void SD_PowerOn(void);

@@ -11,12 +11,11 @@ extern bool FT8_DecodeActiveFlg; // Flag indicating if the FT8 decode is activat
 extern bool FT8_ColectDataFlg;   // Flag indicating the FT8 data colection
 extern int DSP_Flag;
 
-void InitFT8_Decoder(void);
-void MenagerFT8(void);
-
-// For FT8 GUI
-void FT8_EncRotate(int8_t direction);
-void FT8_Enc2Rotate(int8_t direction);
-void FT8_Enc2Click(void);
+extern void InitFT8_Decoder(void);
+extern void MenagerFT8(void);
+extern void FT8_EncRotate(int8_t direction);
+extern void FT8_Enc2Rotate(int8_t direction);
+extern void FT8_Enc2Click(void);
+extern bool FT8_QSO_Count_needUpdate;
 
 #endif /* FT_MAIN_H_ */

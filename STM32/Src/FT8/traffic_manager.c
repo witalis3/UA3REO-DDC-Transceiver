@@ -112,6 +112,7 @@ void service_CQ(void) {
 				if (TRX.FT8_Auto_CQ) {
 					Beacon_State = 1; // Set Call - "CQ"
 				} else {
+					Beacon_State = 0;
 					FT8_Menu_Idx = 0;      // index of the "CQ" button
 					FT8_Menu_Pos_Toggle(); // deactivate the "CQ" button -> set green
 				}
@@ -157,6 +158,7 @@ void service_CQ(void) {
 					if (TRX.FT8_Auto_CQ) {
 						Beacon_State = 1; // if yes then we are done and can go further (call next "CQ")
 					} else {
+						Beacon_State = 0;
 						FT8_Menu_Idx = 0;      // index of the "CQ" button
 						FT8_Menu_Pos_Toggle(); // deactivate the "CQ" button -> set green
 					}
@@ -289,7 +291,6 @@ void GetQSOTime(uint8_t QSO_Start) {
 
 void LogQSO(void) {
 	static char StrToLog[260];
-	uint8_t Len;  //=strlen(ctmp);
 	int CR = 0xD; // CR -  ascii code
 	              // ctmp[Len+3] = 0;
 	char cBND[5]; // for the strng containing the current band
@@ -352,21 +353,19 @@ void LogQSO(void) {
 		strcpy(RapRcv_RSL_filtered, RapRcv_RSL);
 	}
 
-	sprintf(StrToLog,
-	        " <call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s "
-	        "<time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>",
-	        strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, QSO_Freq, TRX.CALLSIGN,
-	        TRX.LOCATOR);
-	StrToLog[0] = CR;
-
-	Len = strlen(StrToLog);
-
 	if (SD_Present) {
+		sprintf(StrToLog,
+		        "<call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s "
+		        "<time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>\r\n",
+		        strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, QSO_Freq,
+		        TRX.CALLSIGN, TRX.LOCATOR);
+
 		strcpy((char *)SD_workbuffer_A, "FT8_QSO_Log.adi"); // File name
 		strcpy((char *)SD_workbuffer_B, (char *)StrToLog);  // Data to write
-		SDCOMM_WRITE_TO_FILE_partsize = Len;
+		SDCOMM_WRITE_TO_FILE_partsize = strlen(StrToLog);
 
 		SD_doCommand(SDCOMM_WRITE_TO_FILE, false);
+		FT8_QSO_Count_needUpdate = true;
 	}
 
 	static char cNote[32] = {0};

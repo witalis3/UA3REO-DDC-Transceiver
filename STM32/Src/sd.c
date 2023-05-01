@@ -41,6 +41,7 @@ bool SD_Mounted = false;
 static SD_COMMAND SD_currentCommand = SDCOMM_IDLE;
 uint32_t SDCOMM_WRITE_TO_FILE_partsize = 0;
 void (*SDCOMM_WRITE_TO_FILE_callback)(void);
+void (*SDCOMM_GET_LINES_COUNT_callback)(uint32_t count);
 
 SRAM FIL File = {0};
 SRAM static FILINFO fileInfo = {0};
@@ -65,6 +66,7 @@ static void SDCOMM_LIST_DIRECTORY_handler(void);
 static void SDCOMM_DELETE_FILE_handler(void);
 static void SDCOMM_READ_PLAY_FILE_handler(void);
 static void SDCOMM_WRITE_TO_FILE_handler(void);
+static void SDCOMM_GET_LINES_COUNT_handler(void);
 static bool SDCOMM_CREATE_RECORD_FILE_main(char *filename, bool audio_rec);
 static bool SDCOMM_CREATE_CQ_MESSAGE_FILE_handler(void);
 
@@ -186,9 +188,38 @@ void SD_Process(void) {
 		case SDCOMM_WRITE_TO_FILE:
 			SDCOMM_WRITE_TO_FILE_handler();
 			break;
+		case SDCOMM_GET_LINES_COUNT:
+			SDCOMM_GET_LINES_COUNT_handler();
+			break;
 		}
 		SD_CommandInProcess = false;
 		SD_currentCommand = SDCOMM_IDLE;
+	}
+}
+
+static void SDCOMM_GET_LINES_COUNT_handler(void) {
+	if (f_open(&File, (TCHAR *)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK) {
+
+		uint32_t bytesreaded;
+		uint32_t linesCount = 0;
+		FRESULT res;
+		do {
+			f_read(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&bytesreaded);
+			for (uint32_t i = 0; i < bytesreaded; i++) {
+				if (SD_workbuffer_B[i] == '\n') {
+					linesCount++;
+				}
+			}
+		} while (bytesreaded > 0 && res == FR_OK);
+
+		f_close(&File);
+		SDCOMM_GET_LINES_COUNT_callback(linesCount);
+	} else {
+		LCD_showTooltip("SD error");
+		SD_PlayInProcess = false;
+		SD_Present = false;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 }
 

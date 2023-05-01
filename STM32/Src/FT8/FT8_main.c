@@ -7,6 +7,7 @@
 #include "lcd.h"
 #include "lcd_driver.h"
 #include "locator_ft8.h"
+#include "sd.h"
 #include "traffic_manager.h"
 #include <stdbool.h>
 
@@ -19,10 +20,13 @@ uint16_t cursor_line = 100;
 uint16_t FT8_DatBlockNum;
 bool FT8_DecodeActiveFlg;
 bool FT8_ColectDataFlg;
+bool FT8_QSO_Count_needUpdate = true;
+uint32_t FT8_QSO_Count = 0;
 
 // Function prototypes
-void process_data(void);
-void update_synchronization(void);
+static void process_data(void);
+static void update_synchronization(void);
+static void FT8_getQSOCount(void);
 
 void InitFT8_Decoder(void) {
 	if (LCD_busy) {
@@ -41,6 +45,7 @@ void InitFT8_Decoder(void) {
 	FT8_DatBlockNum = 0;
 	FT8_DecodeActiveFlg = true;
 
+	FT8_QSO_Count_needUpdate = true;
 	update_synchronization();
 	set_Station_Coordinates(TRX.LOCATOR);
 
@@ -203,7 +208,7 @@ void MenagerFT8(void) {
 	LCD_busy = false; //
 }
 
-void process_data(void) {
+static void process_data(void) {
 	if (FT8_DatBlockNum >= num_que_blocks) {
 		//    for (int i = 0; i<block_size*(FT8_DatBlockNum/8); i++) {
 		//			input_gulp[i] = AudioBuffer_for_FT8[i];		//coppy to FFT buffer
@@ -222,7 +227,7 @@ void process_data(void) {
 }
 
 // update the syncronisation and show the time
-void update_synchronization(void) {
+static void update_synchronization(void) {
 	char ctmp[30] = {0};
 
 	static uint8_t Seconds_Old;
@@ -255,21 +260,17 @@ void update_synchronization(void) {
 		sprintf(ctmp, "SWR: %.1f, PWR: %.1fW    ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward));
 #if (defined(LAY_800x480))
 		LCDDriver_printText(ctmp, 235, 400, FG_COLOR, BG_COLOR, 2);
-
 #elif (defined(LAY_320x240))
 		LCDDriver_printText(ctmp, 180, 215, FG_COLOR, BG_COLOR, 1);
-
 #else
 		LCDDriver_printText(ctmp, 200, 280, FG_COLOR, BG_COLOR, 2);
 #endif
 
-		sprintf(ctmp, "TEMP: % 2d    ", (int16_t)TRX_RF_Temperature);
+		sprintf(ctmp, "TEMP: % 2d, QSO: %d  ", (int16_t)TRX_RF_Temperature, FT8_QSO_Count);
 #if (defined(LAY_800x480))
 		LCDDriver_printText(ctmp, 235, 420, FG_COLOR, BG_COLOR, 2);
-
 #elif (defined(LAY_320x240))
 		// LCDDriver_printText(ctmp, 180, 225, FG_COLOR, BG_COLOR, 1);
-
 #else
 		LCDDriver_printText(ctmp, 200, 300, FG_COLOR, BG_COLOR, 2);
 #endif
@@ -280,6 +281,10 @@ void update_synchronization(void) {
 	if ((ft8_flag == 0 && Seconds % 15 <= 1) && (decode_flag == 0)) // 15s marker
 	{
 		Set_Data_Colection(1); // Set new data colection
+	}
+
+	if (FT8_QSO_Count_needUpdate) {
+		FT8_getQSOCount();
 	}
 }
 
@@ -331,4 +336,16 @@ void FT8_Enc2Click(void) {
 	FT8_Menu_Pos_Toggle();
 
 	LCD_busy = false;
+}
+
+void FT8_getQSOCount_callback(uint32_t count) { FT8_QSO_Count = count; }
+
+static void FT8_getQSOCount(void) {
+	if (SD_Present && !SD_CommandInProcess) {
+		strcpy((char *)SD_workbuffer_A, "FT8_QSO_Log.adi"); // File name
+		SDCOMM_GET_LINES_COUNT_callback = FT8_getQSOCount_callback;
+
+		SD_doCommand(SDCOMM_GET_LINES_COUNT, false);
+		FT8_QSO_Count_needUpdate = false;
+	}
 }
