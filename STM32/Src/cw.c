@@ -485,6 +485,9 @@ static char *CW_CharToDots(char chr) {
 	if (chr == ':') {
 		return "---...";
 	}
+	if (chr == ';') {
+		return "-.-.-.";
+	}
 	if (chr == '-') {
 		return "-....-";
 	}
@@ -500,14 +503,23 @@ static char *CW_CharToDots(char chr) {
 	if (chr == '$') {
 		return "...-..-";
 	}
-	if (chr == '>') {
-		return "...-.-";
-	}
-	if (chr == '<') {
+	if (chr == '+') {
 		return ".-.-.";
 	}
 	if (chr == '~') {
 		return "...-.";
+	}
+	if (chr == '\'') {
+		return ".----.";
+	}
+	if (chr == '"') {
+		return ".-..-.";
+	}
+	if (chr == '&') {
+		return ".-...";
+	}
+	if (chr == '=') {
+		return "-...-";
 	}
 
 	return " ";

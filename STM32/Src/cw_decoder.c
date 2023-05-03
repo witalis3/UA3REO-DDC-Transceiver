@@ -360,38 +360,48 @@ static void CWDecoder_Decode(void) {
 		CWDecoder_PrintChar("0");
 	}
 
-	else if (strcmp(code, "..--..") == 0) {
+	else if (strcmp(code, "..--..") == 0) { // ?
 		CWDecoder_PrintChar("?");
-	} else if (strcmp(code, ".-.-.-") == 0) {
+	} else if (strcmp(code, ".-.-.-") == 0) { // .
 		CWDecoder_PrintChar(".");
-	} else if (strcmp(code, "--..--") == 0) {
+	} else if (strcmp(code, "......") == 0) { // .
+		CWDecoder_PrintChar(".");
+	} else if (strcmp(code, "--..--") == 0) { // ,
 		CWDecoder_PrintChar(",");
-	} else if (strcmp(code, "-.-.--") == 0) {
+	} else if (strcmp(code, "-.-.--") == 0) { // !
 		CWDecoder_PrintChar("!");
-	} else if (strcmp(code, ".--.-.") == 0) {
+	} else if (strcmp(code, ".--.-.") == 0) { // @
 		CWDecoder_PrintChar("@");
-	} else if (strcmp(code, "---...") == 0) {
+	} else if (strcmp(code, "---...") == 0) { // :
 		CWDecoder_PrintChar(":");
-	} else if (strcmp(code, "-....-") == 0) {
+	} else if (strcmp(code, "-.-.-.") == 0) { // ;
+		CWDecoder_PrintChar(";");
+	} else if (strcmp(code, "-....-") == 0) { // -
 		CWDecoder_PrintChar("-");
-	} else if (strcmp(code, "-..-.") == 0) {
+	} else if (strcmp(code, "-..-.") == 0) { // /
 		CWDecoder_PrintChar("/");
-	}
-
-	else if (strcmp(code, "-.--.") == 0) {
+	} else if (strcmp(code, "-.--.") == 0) { // (
 		CWDecoder_PrintChar("(");
-	} else if (strcmp(code, "-.--.-") == 0) {
+	} else if (strcmp(code, "-.--.-") == 0) { // )
 		CWDecoder_PrintChar(")");
-	} else if (strcmp(code, ".-...") == 0) {
-		CWDecoder_PrintChar("_");
-	} else if (strcmp(code, "...-..-") == 0) {
+	} else if (strcmp(code, ".-...") == 0) { // &
+		CWDecoder_PrintChar("&");
+	} else if (strcmp(code, "...-..-") == 0) { // $
 		CWDecoder_PrintChar("$");
-	} else if (strcmp(code, "...-.-") == 0) {
+	} else if (strcmp(code, "...-.-") == 0) { // > END OF WORK
 		CWDecoder_PrintChar(">");
-	} else if (strcmp(code, ".-.-.") == 0) {
-		CWDecoder_PrintChar("<");
-	} else if (strcmp(code, "...-.") == 0) {
+	} else if (strcmp(code, ".-.-.") == 0) { // +
+		CWDecoder_PrintChar("+");
+	} else if (strcmp(code, "...-.") == 0) { // ~
 		CWDecoder_PrintChar("~");
+	} else if (strcmp(code, ".----.") == 0) { // '
+		CWDecoder_PrintChar("'");
+	} else if (strcmp(code, ".-..-.") == 0) { // "
+		CWDecoder_PrintChar("\"");
+	} else if (strcmp(code, "..--.-") == 0) { // _
+		CWDecoder_PrintChar("_");
+	} else if (strcmp(code, "-...-") == 0) { // =
+		CWDecoder_PrintChar("=");
 	}
 
 	else if (strcmp(code, "---.") == 0) // Ч
