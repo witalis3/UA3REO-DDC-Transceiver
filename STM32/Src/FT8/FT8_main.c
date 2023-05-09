@@ -124,7 +124,7 @@ void MenagerFT8(void) {
 		}
 
 		if (xmit_flag == 1) {
-			__disable_irq(); // Disable all interrupts
+			//__disable_irq(); // Disable all interrupts
 			int offset_index = 5;
 			// 79
 			if (ft8_xmit_counter >= offset_index && ft8_xmit_counter < 79 + offset_index) {
@@ -168,7 +168,7 @@ void MenagerFT8(void) {
 					}
 				}
 			}
-			__enable_irq(); // Re-enable all interrupts
+			//__enable_irq(); // Re-enable all interrupts
 		}
 
 		DSP_Flag = 0;

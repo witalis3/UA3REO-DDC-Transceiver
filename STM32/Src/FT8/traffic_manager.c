@@ -58,8 +58,8 @@ void tune_Off_sequence(void) {
 	BUTTONHANDLER_TUNE(255);
 }
 
-void set_Xmit_Freq(uint32_t BandFreq, float32_t Freq) {
-	uint32_t F_Long = BandFreq * 1000; // BandFreq is in kHz
+void set_Xmit_Freq(uint64_t BandFreq, float32_t Freq) {
+	uint64_t F_Long = BandFreq * 1000; // BandFreq is in kHz
 	APROC_TUNE_DigiTone_Freq = Freq;
 	if (CurrentVFO->Freq != F_Long) {
 		TRX_setFrequency(F_Long, CurrentVFO);

@@ -817,7 +817,7 @@ void processTxAudio(void) {
 			static float32_t ft8_signal_gen_prev_freq = 1000.0f;
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 
-				float32_t point = generateSinWithZeroCrossing(1.0f, &ft8_signal_gen_index, &ft8_signal_gen_prev_freq, TRX_SAMPLERATE, APROC_TUNE_DigiTone_Freq);
+				float32_t point = generateSinWithZeroCrossing(1.0f, &ft8_signal_gen_index, TRX_SAMPLERATE, &ft8_signal_gen_prev_freq, APROC_TUNE_DigiTone_Freq);
 				APROC_Audio_Buffer_TX_I[i] = point;
 				APROC_Audio_Buffer_TX_Q[i] = point;
 			}

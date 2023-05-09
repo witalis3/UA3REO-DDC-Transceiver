@@ -25,7 +25,7 @@ extern int Beacon_State; //
 
 void transmit_sequence(void);
 void receive_sequence(void);
-void set_Xmit_Freq(uint32_t BandFreq, float32_t Freq);
+void set_Xmit_Freq(uint64_t BandFreq, float32_t Freq);
 void set_FT8_Tone(char ft8_tone);
 void setup_to_transmit_on_next_DSP_Flag(void);
 void tune_On_sequence(void);
