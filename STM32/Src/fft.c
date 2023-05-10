@@ -467,6 +467,12 @@ void FFT_Init(void) {
 	if (CurrentVFO->Mode == TRX_MODE_CW) {
 		fft_zoom = TRX.FFT_ZoomCW;
 	}
+	if ((TRX_on_TX && !SHOW_RX_FFT_ON_TX) && CurrentVFO->Mode != TRX_MODE_LOOPBACK) {
+		fft_zoom /= TRX_GetRXSampleRate / TRX_SAMPLERATE;
+		if (fft_zoom < 1) {
+			fft_zoom = 1;
+		}
+	}
 	if (fft_zoom > 1) {
 		arm_biquad_cascade_df2T_init_f32(&IIR_biquad_Zoom_FFT_I, ZOOMFFT_DECIM_STAGES_IIR, mag_coeffs[fft_zoom], IIR_biquad_Zoom_FFT_I.pState);
 		arm_biquad_cascade_df2T_init_f32(&IIR_biquad_Zoom_FFT_Q, ZOOMFFT_DECIM_STAGES_IIR, mag_coeffs[fft_zoom], IIR_biquad_Zoom_FFT_Q.pState);
