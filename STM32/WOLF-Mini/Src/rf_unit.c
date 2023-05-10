@@ -411,20 +411,24 @@ void RF_UNIT_ProcessSensors(void) {
 		}
 	}
 
-#define smooth_stick_time 500
+#define smooth_stick_time 100
+#define smooth_up_coeff 0.3f
+#define smooth_down_coeff 0.03f
 	static uint32_t forw_smooth_time = 0;
-	if (HAL_GetTick() - forw_smooth_time > smooth_stick_time) {
-		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * 0.99f + TRX_PWR_Forward * 0.01f;
+	if ((HAL_GetTick() - forw_smooth_time) > smooth_stick_time) {
+		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * (1.0f - smooth_down_coeff) + TRX_PWR_Forward * smooth_down_coeff;
+		TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * (1.0f - smooth_down_coeff) + TRX_PWR_Backward * smooth_down_coeff;
 	}
+
 	if (TRX_PWR_Forward > TRX_PWR_Forward_SMOOTHED) {
-		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward;
+		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * (1.0f - smooth_up_coeff) + TRX_PWR_Forward * smooth_up_coeff;
+		TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * (1.0f - smooth_up_coeff) + TRX_PWR_Backward * smooth_up_coeff;
 		forw_smooth_time = HAL_GetTick();
 	}
-	TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * 0.99f + TRX_PWR_Backward * 0.01f;
-	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * 0.98f + TRX_SWR * 0.02f;
 
-	// println("FWD: ", forward, " (", TRX_PWR_Forward, " / ", TRX_PWR_Forward_SMOOTHED, ") BKW: ", backward, " (", TRX_PWR_Backward, " / ",
-	// TRX_PWR_Backward_SMOOTHED, ") SWR: ", TRX_SWR, " (", TRX_SWR_SMOOTHED, ")");
+	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * (1.0f - smooth_down_coeff) + TRX_SWR * smooth_down_coeff;
+
+	sprintf(TRX_SWR_SMOOTHED_STR, "%.1f", (double)TRX_SWR_SMOOTHED);
 
 	// TANGENT
 	float32_t SW1_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_1) * TRX_STM32_VREF / B16_RANGE * 1000.0f;
