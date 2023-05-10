@@ -375,5 +375,5 @@ void LogQSO(void) {
 	sprintf(cNote, "%1.6f Loc: %s", QSO_Freq, Target_Grid);
 	static char cTarget_RSL[16] = {0};
 	sprintf(cTarget_RSL, "%3i", Target_RSL);
-	WIFI_postQSOtoAllQSO(Target_Call, cNote, QSODate, QSOOffTime, cTarget_RSL, RapRcv_RSL_filtered, "FT8", cBND, "", "");
+	WIFI_postQSOtoAllQSO(Target_Call, cNote, QSODate, QSOOffTime, cTarget_RSL, RapRcv_RSL_filtered, "FT8", cBND, "", TRX.LOCATOR);
 }
