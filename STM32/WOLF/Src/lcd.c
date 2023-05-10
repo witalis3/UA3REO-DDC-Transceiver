@@ -303,7 +303,7 @@ static void LCD_displayBottomButtons(bool redraw) {
 
 	if (TRX.EnableBottomNavigationButtons) {
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<", false, false, false, 0, BUTTONHANDLER_LEFT_ARR,
-		            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
+		            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_PAGER, COLOR->BUTTON_PAGER, COLOR->BUTTON_PAGER, COLOR->BUTTON_BACK);
 		curr_x += bottomNavigationButtonsWidth;
 	}
 
@@ -344,7 +344,7 @@ static void LCD_displayBottomButtons(bool redraw) {
 
 	if (TRX.EnableBottomNavigationButtons) {
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, ">", false, false, false, 0, BUTTONHANDLER_RIGHT_ARR,
-		            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
+		            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_PAGER, COLOR->BUTTON_PAGER, COLOR->BUTTON_PAGER, COLOR->BUTTON_BACK);
 		curr_x += bottomNavigationButtonsWidth;
 	}
 #endif
