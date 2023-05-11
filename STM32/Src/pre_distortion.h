@@ -3,7 +3,7 @@
 
 #include "hardware.h"
 
-#define DPD_POINTS 9
+#define DPD_POINTS_COUNT 9
 #define DPD_MAX_ERRORS 5
 #define DPD_CORRECTION_GAIN_STEP (DPD_calibration_stage == 6 ? 0.001f : 0.005f)
 

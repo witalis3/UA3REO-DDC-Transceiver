@@ -5,16 +5,16 @@
 #include "rf_unit.h"
 #include "trx_manager.h"
 
-static float32_t DPD_distortion_gain_points[DPD_POINTS] = {0};
-static float32_t DPD_distortion_gain_points_best[DPD_POINTS] = {0};
-static float32_t DPD_distortion_gain_points_locked[DPD_POINTS] = {0};
+static float32_t DPD_distortion_gain_points[DPD_POINTS_COUNT] = {0};
+static float32_t DPD_distortion_gain_points_best[DPD_POINTS_COUNT] = {0};
+static float32_t DPD_distortion_gain_points_locked[DPD_POINTS_COUNT] = {0};
 
-static const float32_t DPD_distortion_gain_points_lock_stage0[DPD_POINTS] = {1, 0, 0, 0, 1, 0, 0, 0, 1}; // 0 - skip, 1 - in progress, 2 - finished
-static const float32_t DPD_distortion_gain_points_lock_stage1[DPD_POINTS] = {2, 0, 0, 0, 1, 0, 0, 0, 2};
-static const float32_t DPD_distortion_gain_points_lock_stage2[DPD_POINTS] = {2, 0, 1, 0, 2, 0, 1, 0, 2};
-static const float32_t DPD_distortion_gain_points_lock_stage3[DPD_POINTS] = {2, 1, 2, 1, 2, 0, 2, 0, 2};
-static const float32_t DPD_distortion_gain_points_lock_stage4[DPD_POINTS] = {2, 2, 2, 2, 2, 1, 2, 1, 2};
-static const float32_t DPD_distortion_gain_points_lock_stage5[DPD_POINTS] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
+static const float32_t DPD_distortion_gain_points_lock_stage0[DPD_POINTS_COUNT] = {1, 0, 0, 0, 1, 0, 0, 0, 1}; // 0 - skip, 1 - in progress, 2 - finished
+static const float32_t DPD_distortion_gain_points_lock_stage1[DPD_POINTS_COUNT] = {2, 0, 0, 0, 1, 0, 0, 0, 2};
+static const float32_t DPD_distortion_gain_points_lock_stage2[DPD_POINTS_COUNT] = {2, 0, 1, 0, 2, 0, 1, 0, 2};
+static const float32_t DPD_distortion_gain_points_lock_stage3[DPD_POINTS_COUNT] = {2, 1, 2, 1, 2, 0, 2, 0, 2};
+static const float32_t DPD_distortion_gain_points_lock_stage4[DPD_POINTS_COUNT] = {2, 2, 2, 2, 2, 1, 2, 1, 2};
+static const float32_t DPD_distortion_gain_points_lock_stage5[DPD_POINTS_COUNT] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
 
 static float32_t DPD_best_imd_sum = 0;
 static float32_t DPD_max_rms = 0;
@@ -30,10 +30,10 @@ static bool DPD_OLD_TWO_SIGNAL_TUNE = false;
 static bool DPD_OLD_Full_Duplex = false;
 static uint8_t DPD_OLD_TUNE_MAX_POWER = false;
 
-static float32_t DPD_SPLINE_Xbuff[DPD_POINTS];
-static float32_t DPD_SPLINE_Ybuff[DPD_POINTS];
-static float32_t DPD_SPLINE_tempbuf[2 * DPD_POINTS - 1];
-static float32_t DPD_SPLINE_coef[3 * (DPD_POINTS - 1)];
+static float32_t DPD_SPLINE_Xbuff[DPD_POINTS_COUNT];
+static float32_t DPD_SPLINE_Ybuff[DPD_POINTS_COUNT];
+static float32_t DPD_SPLINE_tempbuf[2 * DPD_POINTS_COUNT - 1];
+static float32_t DPD_SPLINE_coef[3 * (DPD_POINTS_COUNT - 1)];
 static arm_spline_instance_f32 DPD_SPLINE_Instance;
 static bool DPD_SPLINE_NeedReinit = true;
 
@@ -46,7 +46,7 @@ void DPD_Init() {
 	DPD_current_point = 0;
 	DPD_current_direction = true;
 
-	for (uint32_t index = 0; index < DPD_POINTS; index++) {
+	for (uint32_t index = 0; index < DPD_POINTS_COUNT; index++) {
 		DPD_distortion_gain_points[index] = 1.0f + index * 0.0000001f;
 		DPD_distortion_gain_points_best[index] = DPD_distortion_gain_points[index];
 		memcpy(DPD_distortion_gain_points_locked, DPD_distortion_gain_points_lock_stage0, sizeof(DPD_distortion_gain_points_locked));
@@ -161,11 +161,11 @@ void DPD_ProcessCalibration() {
 		DPD_current_point++;
 		error_count = 0;
 
-		while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS) {
+		while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS_COUNT) {
 			DPD_current_point++;
 		}
 
-		if (DPD_current_point >= DPD_POINTS) { // end of points
+		if (DPD_current_point >= DPD_POINTS_COUNT) { // end of points
 			DPD_current_point = 0;
 			DPD_checkCurrentPointAvailable();
 			DPD_current_direction = !DPD_current_direction;
@@ -231,7 +231,7 @@ void DPD_ProcessCalibration() {
 
 					LCD_showTooltip("DPD Calibr complete");
 
-					for (uint32_t index = 0; index < DPD_POINTS; index++) {
+					for (uint32_t index = 0; index < DPD_POINTS_COUNT; index++) {
 						DPD_distortion_gain_points[index] = DPD_distortion_gain_points_best[index];
 						DPD_SPLINE_NeedReinit = true;
 						println(index, ": ", DPD_distortion_gain_points[index]);
@@ -247,7 +247,7 @@ void DPD_ProcessCalibration() {
 	}
 
 	DPD_checkCurrentPointAvailable();
-	if (DPD_current_point == DPD_POINTS - 1) { // only plus direction for last point
+	if (DPD_current_point == DPD_POINTS_COUNT - 1) { // only plus direction for last point
 		DPD_distortion_gain_points[DPD_current_point] += 1.0f * DPD_CORRECTION_GAIN_STEP;
 	} else {
 		DPD_distortion_gain_points[DPD_current_point] += (DPD_current_direction ? 1.0f : -1.0f) * DPD_CORRECTION_GAIN_STEP;
@@ -263,13 +263,13 @@ void DPD_ProcessCalibration() {
 }
 
 static void DPD_checkCurrentPointAvailable() {
-	while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS) {
+	while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS_COUNT) {
 		DPD_current_point++;
 	}
-	if (DPD_current_point >= DPD_POINTS) {
+	if (DPD_current_point >= DPD_POINTS_COUNT) {
 		DPD_current_point = 0;
 
-		while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS) {
+		while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS_COUNT) {
 			DPD_current_point++;
 		}
 	}
@@ -289,7 +289,7 @@ static void DPD_getDistortionForSample(float32_t *i, float32_t *q) {
 	}
 
 	if (rms > DPD_max_rms) { // overflow over table
-		float32_t gain_correction = DPD_distortion_gain_points[DPD_POINTS - 1];
+		float32_t gain_correction = DPD_distortion_gain_points[DPD_POINTS_COUNT - 1];
 		*i = *i * gain_correction;
 		*q = *q * gain_correction;
 		return;
@@ -299,7 +299,7 @@ static void DPD_getDistortionForSample(float32_t *i, float32_t *q) {
 	if (DPD_SPLINE_NeedReinit) {
 		uint8_t point_count = 0;
 
-		for (uint8_t i = 0; i < DPD_POINTS; i++) {
+		for (uint8_t i = 0; i < DPD_POINTS_COUNT; i++) {
 			if (DPD_distortion_gain_points_locked[i] == 0) {
 				continue;
 			}
@@ -310,7 +310,7 @@ static void DPD_getDistortionForSample(float32_t *i, float32_t *q) {
 				continue;
 			}
 
-			DPD_SPLINE_Xbuff[point_count] = (float32_t)i * DPD_max_rms / (float32_t)(DPD_POINTS - 1) + 0.0001f;
+			DPD_SPLINE_Xbuff[point_count] = (float32_t)i * DPD_max_rms / (float32_t)(DPD_POINTS_COUNT - 1) + 0.0001f;
 			DPD_SPLINE_Ybuff[point_count] = y;
 			point_count++;
 		}
