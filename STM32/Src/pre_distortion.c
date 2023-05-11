@@ -56,6 +56,10 @@ void DPD_Init() {
 }
 
 void DPD_ProcessPredistortion(float32_t *buffer_i, float32_t *buffer_q, uint32_t size) {
+	if (DPD_need_calibration && !TRX.Digital_Pre_Distortion) {
+		TRX.Digital_Pre_Distortion = true;
+	}
+	
 	if (!TRX.Digital_Pre_Distortion) {
 		return;
 	}
@@ -125,7 +129,8 @@ void DPD_ProcessCalibration() {
 	static float32_t prev_imd_sum = 0;
 	static int32_t error_count = 0;
 
-	float32_t current_imd_sum = FFT_Current_TX_IMD3 + FFT_Current_TX_IMD5 / 2.0f + FFT_Current_TX_IMD7 / 4.0f + FFT_Current_TX_IMD9 / 8.0f;
+	// float32_t current_imd_sum = FFT_Current_TX_IMD3 + FFT_Current_TX_IMD5 / 2.0f + FFT_Current_TX_IMD7 / 4.0f + FFT_Current_TX_IMD9 / 8.0f;
+	float32_t current_imd_sum = FFT_Current_TX_IMD3 + FFT_Current_TX_IMD5 + FFT_Current_TX_IMD7 + FFT_Current_TX_IMD9;
 
 	if (!DPD_start_imd_printed) {
 		DPD_start_imd_printed = true;
