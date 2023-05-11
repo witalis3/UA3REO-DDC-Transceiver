@@ -1950,12 +1950,11 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 			static float32_t prev_sfm_pilot_sample = 0.0f;
 			arm_atan2_f32(DFM->stereo_fm_pilot_out[i], prev_sfm_pilot_sample, &angle); // double freq
 			angle *= 2.0f;
-
 			prev_sfm_pilot_sample = DFM->stereo_fm_pilot_out[i];
 
 			// get stereo sample from decoded wfm
 			float32_t stereo_sample = DFM->stereo_fm_audio_out[i] * arm_sin_f32(angle) * 2.0f; // 2 - stereo depth
-			if (isnanf(stereo_sample)) {
+			if (isnanf(stereo_sample) || isinf(stereo_sample)) {
 				continue;
 			}
 
