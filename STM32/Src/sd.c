@@ -1228,6 +1228,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_QO100_RF_Khz", (uint64_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_QO100_IF_RX_Khz", (uint64_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_QO100_IF_TX_Mhz", (uint64_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.KTY81_Calibration", (uint64_t *)&CALIBRATE.KTY81_Calibration, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.OTA_update", (uint64_t *)&CALIBRATE.OTA_update, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.TX_StartDelay", (uint64_t *)&CALIBRATE.TX_StartDelay, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.LCD_Rotate", (uint64_t *)&CALIBRATE.LCD_Rotate, SYSMENU_BOOLEAN);
@@ -2608,6 +2609,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "CALIBRATE.Transverter_QO100_IF_TX_Mhz") == 0) {
 		CALIBRATE.Transverter_QO100_IF_TX_Mhz = uintval;
+	}
+	if (strcmp(name, "CALIBRATE.KTY81_Calibration") == 0) {
+		CALIBRATE.KTY81_Calibration = uintval;
 	}
 	if (strcmp(name, "CALIBRATE.OTA_update") == 0) {
 		CALIBRATE.OTA_update = bval;

@@ -432,7 +432,7 @@ void RF_UNIT_ProcessSensors(void) {
 	// THERMAL
 	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B16_RANGE;
 
-	float32_t therm_resistance = -2000.0f * rf_thermal / (-3.3f + rf_thermal);
+	float32_t therm_resistance = (-(float32_t)CALIBRATE.KTY81_Calibration) * rf_thermal / (-3.3f + rf_thermal);
 	uint_fast8_t point_left = 0;
 	uint_fast8_t point_right = SENS_TABLE_COUNT - 1;
 	for (uint_fast8_t i = 0; i < SENS_TABLE_COUNT; i++) {

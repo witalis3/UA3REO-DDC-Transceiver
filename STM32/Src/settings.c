@@ -910,6 +910,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.Transverter_QO100_RF_Khz = 10489500;
 		CALIBRATE.Transverter_QO100_IF_RX_Khz = 739500;
 		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 144;
+		CALIBRATE.KTY81_Calibration = 2000;
 #ifdef FRONTPANEL_LITE
 		CALIBRATE.Transverter_70cm_IF_Mhz = 28;
 		CALIBRATE.Transverter_23cm_IF_Mhz = 28;

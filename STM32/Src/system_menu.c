@@ -456,8 +456,9 @@ static void SYSMENU_HANDL_CALIB_TangentType(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TwoSignalTune_Balance(int8_t direction);
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction);
 static void SYSMENU_HANDL_CALIB_WIFI_RESET(int8_t direction);
-static void SYSMENU_HANDL_INA226_CUR_CALL(int8_t direction);
-static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction); // Tisho
+static void SYSMENU_HANDL_CALIB_INA226_CUR_CALL(int8_t direction);
+static void SYSMENU_HANDL_CALIB_INA226_PWR_MON(int8_t direction);
+static void SYSMENU_HANDL_CALIB_KTY81_Calibration(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_FILTERMENU(int8_t direction);
@@ -1111,8 +1112,12 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"IF Gain MIN", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_HANDL_CALIB_IF_GAIN_MIN},
     {"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
-    {"INA226 Pwr Mon", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_INA226_PWR_MON},        // Tisho
-    {"INA226 Cur Calc", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_INA226_CUR_CALL}, // Tisho
+    {"INA226 Pwr Mon", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_CALIB_INA226_PWR_MON},
+    {"INA226 Cur Calc", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_CALIB_INA226_CUR_CALL},
+#endif
+#if !defined(FRONTPANEL_MINI) && !defined(FRONTPANEL_X1) && !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_LITE_V2_MINI) && !defined(FRONTPANEL_LITE_V2_BIG) && \
+    !defined(FRONTPANEL_LITE_V2_MICRO)
+    {"KTY81 Calibration", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.KTY81_Calibration, SYSMENU_HANDL_CALIB_KTY81_Calibration},
 #endif
 #ifndef FRONTPANEL_MINI
     {"LCD Rotate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LCD_Rotate, SYSMENU_HANDL_CALIB_LCD_Rotate},
@@ -6812,7 +6817,7 @@ static void SYSMENU_HANDL_CALIB_ALC_Inverted_Logic(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction) {
+static void SYSMENU_HANDL_CALIB_INA226_PWR_MON(int8_t direction) {
 	if (direction > 0) {
 		CALIBRATE.INA226_EN = true;
 		INA226_Init();
@@ -6822,13 +6827,23 @@ static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_INA226_CUR_CALL(int8_t direction) {
+static void SYSMENU_HANDL_CALIB_INA226_CUR_CALL(int8_t direction) {
 	CALIBRATE.INA226_CurCalc += (float32_t)direction * 0.01f;
 	if (CALIBRATE.INA226_CurCalc < 0.01f) {
 		CALIBRATE.INA226_CurCalc = 0.01f;
 	}
 	if (CALIBRATE.INA226_CurCalc > 10.0f) {
 		CALIBRATE.INA226_CurCalc = 10.0f;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_KTY81_Calibration(int8_t direction) {
+	CALIBRATE.KTY81_Calibration += direction;
+	if (CALIBRATE.KTY81_Calibration < 1) {
+		CALIBRATE.KTY81_Calibration = 1;
+	}
+	if (CALIBRATE.KTY81_Calibration > 4000) {
+		CALIBRATE.KTY81_Calibration = 4000;
 	}
 }
 
