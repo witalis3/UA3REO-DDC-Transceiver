@@ -60,6 +60,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Tangent support Yaesu MH-36 и MH-48
 * Hardware self-testing
 * Firmware update over USB, SD, WiFi
+* Digital pre-distortion
 * And other.. (see menu)
 
 ### Sensitivity
