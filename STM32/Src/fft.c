@@ -380,7 +380,7 @@ void FFT_PreInit(void) {
 		for (float32_t N = 0; N <= 1.0f; N += step) {
 			std_sum += (N - 0.5f) * (N - 0.5f);
 		}
-		float32_t std = sqrt(std_sum / (FFT_SIZE - 1));
+		float32_t std = sqrtf(std_sum / (FFT_SIZE - 1));
 		uint32_t index = 0;
 		for (float32_t N = 0; N <= 1.0f; N += step) {
 			float32_t x = (N - 0.5f) / std;
@@ -398,14 +398,14 @@ void FFT_PreInit(void) {
 		float64_t max = 0.0;
 		float64_t tg = pow(10.0, atten / 20.0);
 		float64_t x0 = cosh((1.0 / ((float64_t)FFT_SIZE - 1.0)) * acosh(tg));
-		float64_t M = (float32_t)(FFT_SIZE - 1) / 2.0f;
+		float32_t M = (float32_t)(FFT_SIZE - 1) / 2.0f;
 		// if ((FFT_SIZE % 2) == 0) M = M + 0.5; /* handle even length windows */
 		for (uint32_t nn = 0; nn < ((FFT_SIZE / 2) + 1); nn++) {
-			float64_t n = nn - M;
+			float32_t n = nn - M;
 			float64_t sum = 0.0;
 			for (uint32_t i = 1; i <= M; i++) {
 				float64_t cheby_poly = 0.0;
-				float64_t cp_x = x0 * arm_cos_f32(F_PI * i / (float64_t)FFT_SIZE);
+				float64_t cp_x = x0 * (float64_t)arm_cos_f32(D_PI * i / (float64_t)FFT_SIZE);
 				float64_t cp_n = FFT_SIZE - 1;
 				if (fabs(cp_x) <= 1) {
 					cheby_poly = cos(cp_n * acos(cp_x));
@@ -413,12 +413,12 @@ void FFT_PreInit(void) {
 					cheby_poly = cosh(cp_n * acosh(cp_x));
 				}
 
-				sum += cheby_poly * cos(2.0 * n * F_PI * (float64_t)i / (float64_t)FFT_SIZE);
+				sum += cheby_poly * cos(2.0 * (float64_t)n * D_PI * (float64_t)i / (float64_t)FFT_SIZE);
 			}
 			window_multipliers[nn] = tg + 2 * sum;
 			window_multipliers[FFT_SIZE - nn - 1] = window_multipliers[nn];
-			if (window_multipliers[nn] > max) {
-				max = window_multipliers[nn];
+			if ((float64_t)window_multipliers[nn] > max) {
+				max = (float64_t)window_multipliers[nn];
 			}
 		}
 		for (uint32_t nn = 0; nn < FFT_SIZE; nn++) {
@@ -437,7 +437,7 @@ void FFT_PreInit(void) {
 		else if (TRX.FFT_Window == 4) {
 			window_multipliers[i] = 0.355768f - 0.487396f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
 			                        0.144232f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) -
-			                        0.012604 * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
+			                        0.012604f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
 		}
 		// Blackman-Nutall
 		else if (TRX.FFT_Window == 5) {
@@ -776,7 +776,7 @@ void FFT_doFFT(void) {
 	dma_memset(FFTOutput_mean_count, 0x00, sizeof(FFTOutput_mean_count));
 
 	for (uint_fast16_t avg_idx = 0; avg_idx < max_mean; avg_idx++) {
-		int64_t freq_diff = roundl(((float64_t)((float64_t)fft_meanbuffer_freqs[avg_idx] - (float64_t)CurrentVFO->Freq) / hz_in_pixel) * (float64_t)fft_zoom);
+		int64_t freq_diff = roundl(((float64_t)((float64_t)fft_meanbuffer_freqs[avg_idx] - (float64_t)CurrentVFO->Freq) / (double)hz_in_pixel) * (float64_t)fft_zoom);
 
 		if (!TRX.WTF_Moving) {
 			freq_diff = 0;
@@ -1463,8 +1463,8 @@ bool FFT_printFFT(void) {
 	{
 		uint16_t wtf_y_index = (print_wtf_yindex - fftHeight) / line_repeats_need;
 		// calculate offset
-		float64_t freq_diff = (((float64_t)currentFFTFreq - (float64_t)wtf_buffer_freqs[wtf_y_index]) / hz_in_pixel) * (float64_t)fft_zoom;
-		float64_t freq_diff_part = fmodl(freq_diff, 1.0f);
+		float64_t freq_diff = (((float64_t)currentFFTFreq - (float64_t)wtf_buffer_freqs[wtf_y_index]) / (double)hz_in_pixel) * (float64_t)fft_zoom;
+		float64_t freq_diff_part = fmodl(freq_diff, 1.0);
 		int64_t margin_left = 0;
 		if (freq_diff < 0) {
 			margin_left = -floorf(freq_diff);
@@ -1735,7 +1735,7 @@ bool FFT_printFFT(void) {
 	// Print SAM Carrier offset
 	if (CurrentVFO->Mode == TRX_MODE_SAM) {
 		char tmp[32] = {0};
-		sprintf(tmp, "%.2fhz", SAM_Carrier_offset);
+		sprintf(tmp, "%.2fhz", (double)SAM_Carrier_offset);
 		LCDDriver_printTextInMemory(tmp, 5, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 	}
 
@@ -1835,7 +1835,7 @@ void FFT_ShortBufferPrintFFT(void) {
 
 				// calculate offset
 				float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[wtf_y_index]) / hz_in_pixel) * (float32_t)fft_zoom;
-				float32_t freq_diff_part = fmodl(freq_diff, 1.0f);
+				float32_t freq_diff_part = fmodl((float64_t)freq_diff, 1.0);
 				int32_t margin_left = 0;
 				if (freq_diff < 0) {
 					margin_left = -floorf(freq_diff);
@@ -2241,7 +2241,7 @@ void FFT_afterPrintFFT(void) {
 					                      LAYOUT->FFT_FREQLABELS_HEIGHT - 1, BG_COLOR);
 				}
 				uint64_t freq = grid_lines_freq[grid_line_index] / 1000;
-				float64_t freq2 = (float32_t)freq / 1000.f;
+				float64_t freq2 = (float64_t)freq / 1000.0;
 				sprintf(str, "%.3f", freq2);
 				int32_t x = grid_lines_pos[grid_line_index] - (strlen(str) * 6 / 2);
 				LCDDriver_printText(str, x, LAYOUT->FFT_FFTWTF_POS_Y - LAYOUT->FFT_FREQLABELS_HEIGHT, FG_COLOR, BG_COLOR, 1);
@@ -2628,7 +2628,7 @@ static float32_t getMaxDbmFromFreq(uint64_t freq, uint8_t span) {
 }
 
 static inline int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos) {
-	int32_t pos = (int32_t)((float64_t)LAYOUT->FFT_PRINT_SIZE / 2.0f + (float64_t)((float64_t)freq - (float64_t)CurrentVFO->Freq) / hz_in_pixel * (float64_t)fft_zoom);
+	int32_t pos = (int32_t)((float64_t)LAYOUT->FFT_PRINT_SIZE / 2.0 + (float64_t)((float64_t)freq - (float64_t)CurrentVFO->Freq) / (float64_t)hz_in_pixel * (float64_t)fft_zoom);
 	if (!full_pos && (pos < 0 || pos >= LAYOUT->FFT_PRINT_SIZE)) {
 		return -1;
 	}
@@ -2639,8 +2639,8 @@ static inline int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos) {
 }
 
 uint64_t getFreqOnFFTPosition(uint16_t position) {
-	return (uint64_t)((int64_t)CurrentVFO->Freq +
-	                  (int64_t)(-((float64_t)LAYOUT->FFT_PRINT_SIZE * (hz_in_pixel / (float64_t)fft_zoom) / 2.0f) + (float64_t)position * (hz_in_pixel / (float64_t)fft_zoom)));
+	return (uint64_t)((int64_t)CurrentVFO->Freq + (int64_t)(-((float64_t)LAYOUT->FFT_PRINT_SIZE * ((float64_t)hz_in_pixel / (float64_t)fft_zoom) / 2.0) +
+	                                                        (float64_t)position * ((float64_t)hz_in_pixel / (float64_t)fft_zoom)));
 }
 
 static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center) {

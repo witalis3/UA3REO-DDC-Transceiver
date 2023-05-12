@@ -76,7 +76,7 @@ static void DPD_Load() {
 		DPD_distortion_gain_points_best[index] = DPD.distortion_gain_points[index];
 		memcpy(DPD_distortion_gain_points_locked, DPD_distortion_gain_points_lock_stage0, sizeof(DPD_distortion_gain_points_locked));
 	}
-	println("DPD Loaded ", DPD.distortion_gain_points[0], " ", DPD.distortion_gain_points[1], " ", DPD.distortion_gain_points[2]);
+	// println("DPD Loaded ", DPD.distortion_gain_points[0], " ", DPD.distortion_gain_points[1], " ", DPD.distortion_gain_points[2]);
 
 	if (DPD.version != DPD_VERSION) {
 		DPD.version = DPD_VERSION;
@@ -95,7 +95,7 @@ static void DPD_Clean() {
 		DPD_distortion_gain_points_best[index] = DPD.distortion_gain_points[index];
 		memcpy(DPD_distortion_gain_points_locked, DPD_distortion_gain_points_lock_stage0, sizeof(DPD_distortion_gain_points_locked));
 	}
-	println("DPD Cleaned ", DPD.distortion_gain_points[0], " ", DPD.distortion_gain_points[1], " ", DPD.distortion_gain_points[2]);
+	// println("DPD Cleaned ", DPD.distortion_gain_points[0], " ", DPD.distortion_gain_points[1], " ", DPD.distortion_gain_points[2]);
 
 	DPD.version = DPD_VERSION;
 	DPD_Save();
@@ -111,7 +111,7 @@ static void DPD_Save() {
 		SaveDPDSettings((uint8_t *)&DPD, sizeof(DPD), bandIndex);
 	}
 
-	println("DPD Saved ", DPD.distortion_gain_points[0], " ", DPD.distortion_gain_points[1], " ", DPD.distortion_gain_points[2]);
+	// println("DPD Saved ", (double)DPD.distortion_gain_points[0], " ", DPD.distortion_gain_points[1], " ", DPD.distortion_gain_points[2]);
 	DPD_loaded = true;
 }
 
@@ -301,7 +301,7 @@ void DPD_ProcessCalibration() {
 					for (uint32_t index = 0; index < DPD_POINTS_COUNT; index++) {
 						DPD.distortion_gain_points[index] = DPD_distortion_gain_points_best[index];
 						DPD_SPLINE_NeedReinit = true;
-						println(index, ": ", DPD.distortion_gain_points[index]);
+						println(index, ": ", (double)DPD.distortion_gain_points[index]);
 					}
 				}
 
@@ -326,7 +326,8 @@ void DPD_ProcessCalibration() {
 	}
 
 	print("DPD stage: ", DPD_calibration_stage, " point: ", DPD_current_point, " dir: ", (DPD_current_direction ? "+" : "-"), " err: ", error_count);
-	println(" gain: ", DPD.distortion_gain_points[DPD_current_point], " BEST: ", DPD_best_imd_sum, " PREV: ", DPD_prev_cycle_imd_sum_max, " CUR: ", DPD_curr_cycle_imd_sum_max);
+	println(" gain: ", (double)DPD.distortion_gain_points[DPD_current_point], " BEST: ", (double)DPD_best_imd_sum, " PREV: ", (double)DPD_prev_cycle_imd_sum_max,
+	        " CUR: ", (double)DPD_curr_cycle_imd_sum_max);
 }
 
 static void DPD_checkCurrentPointAvailable() {
@@ -344,7 +345,7 @@ static void DPD_checkCurrentPointAvailable() {
 
 static void DPD_printDbmStatus(float32_t imd3, float32_t imd5) {
 	char ctmp[32] = {0};
-	sprintf(ctmp, "IMD3: %.1f IMD5: %.1f", imd3, imd5);
+	sprintf(ctmp, "IMD3: %.1f IMD5: %.1f", (double)imd3, (double)imd5);
 	LCD_showTooltip(ctmp);
 }
 

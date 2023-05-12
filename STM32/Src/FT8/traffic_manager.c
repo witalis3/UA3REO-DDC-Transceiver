@@ -360,7 +360,7 @@ void LogQSO(void) {
 		sprintf(StrToLog,
 		        "<call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s "
 		        "<time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>\r\n",
-		        strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, QSO_Freq,
+		        strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, (float64_t)QSO_Freq,
 		        TRX.CALLSIGN, TRX.LOCATOR);
 
 		strcpy((char *)SD_workbuffer_A, "FT8_QSO_Log.adi"); // File name
@@ -372,7 +372,7 @@ void LogQSO(void) {
 	}
 
 	static char cNote[32] = {0};
-	sprintf(cNote, "%1.6f Loc: %s", QSO_Freq, Target_Grid);
+	sprintf(cNote, "%1.6f Loc: %s", (float64_t)QSO_Freq, Target_Grid);
 	static char cTarget_RSL[16] = {0};
 	sprintf(cTarget_RSL, "%3i", Target_RSL);
 	WIFI_postQSOtoAllQSO(Target_Call, cNote, QSODate, QSOOffTime, cTarget_RSL, RapRcv_RSL_filtered, "FT8", cBND, "", TRX.LOCATOR);

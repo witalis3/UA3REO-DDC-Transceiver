@@ -218,8 +218,8 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
 	// debug
 	static uint32_t prevPrint = 0;
 	if (debug && (HAL_GetTick() - prevPrint) > 100) {
-		print(" SMF1: ", SMFdb1, " SMF2: ", SMFdb2, " Res_E1: ", Res_E1, " Res_E2: ", Res_E2, " Res_MD1: ", Res_MD1, " Res_MD2: ", Res_MD2, " MD1_Idx: ", MD1_index, " MD2_Idx: ", MD2_index,
-		      " EQU: ", Res_Equation, " ");
+		print(" SMF1: ", (float64_t)SMFdb1, " SMF2: ", (float64_t)SMFdb2, " Res_E1: ", (float64_t)Res_E1, " Res_E2: ", (float64_t)Res_E2, " Res_MD1: ", (float64_t)Res_MD1,
+		      " Res_MD2: ", (float64_t)Res_MD2, " MD1_Idx: ", MD1_index, " MD2_Idx: ", MD2_index, " EQU: ", (float64_t)Res_Equation, " ");
 	}
 
 	// check thresholds

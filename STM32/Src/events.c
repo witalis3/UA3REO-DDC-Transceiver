@@ -447,7 +447,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 
 	// Detect FPGA IQ phase error
 	if (fabsf(TRX_IQ_phase_error) > 0.1f && TRX_on_RX && !TRX_phase_restarted && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM) {
-		println("[ERR] IQ phase error, restart disabled | ", TRX_IQ_phase_error);
+		println("[ERR] IQ phase error, restart disabled | ", (float64_t)TRX_IQ_phase_error);
 		// FPGA_NeedRestart_RX = true;
 		TRX_phase_restarted = true;
 	}
@@ -529,14 +529,14 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		println("CPU Load: ", cpu_load);
 		print_flush();
 		println("RF/STM32 Temperature: ", (int16_t)TRX_RF_Temperature, " / ", (int16_t)TRX_STM32_TEMPERATURE);
-		println("STM32 Voltage: ", TRX_STM32_VREF);
+		println("STM32 Voltage: ", (double)TRX_STM32_VREF);
 		print_flush();
 		println("TIM6 delay: ", dbg_tim6_delay);
-		println("RX1 dBm: ", TRX_RX1_dBm_measurement);
+		println("RX1 dBm: ", (double)TRX_RX1_dBm_measurement);
 		println("FFT FPS: ", FFT_FPS);
 		print_flush();
-		println("First byte of RX-FPGA I/Q: ", dbg_FPGA_Audio_Buffer_I_tmp, " / ", dbg_FPGA_Audio_Buffer_Q_tmp); // first byte of IQ
-		println("IQ Phase error: ", TRX_IQ_phase_error);                                                         // first byte of Q
+		println("First byte of RX-FPGA I/Q: ", (double)dbg_FPGA_Audio_Buffer_I_tmp, " / ", (double)dbg_FPGA_Audio_Buffer_Q_tmp); // first byte of IQ
+		println("IQ Phase error: ", (double)TRX_IQ_phase_error);                                                                 // first byte of Q
 		print_flush();
 		println("USB Audio RX/TX samples: ", dbg_RX_USB_AUDIO_SAMPLES, " / ", dbg_TX_USB_AUDIO_SAMPLES); //~48000
 		println("ADC MIN/MAX Amplitude: ", TRX_ADC_MINAMPLITUDE, " / ", TRX_ADC_MAXAMPLITUDE);

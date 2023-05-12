@@ -19,8 +19,8 @@
 // SAM
 #define SAM_PLL_HILBERT_STAGES 7
 #define SAM_OUT_IDX (3 * SAM_PLL_HILBERT_STAGES)
-#define SAM_omegaN 300.0 // PLL bandwidth 50.0 - 1000.0
-#define SAM_zeta 0.7     // PLL step response: smaller, slower response 1.0 - 0.1
+#define SAM_omegaN 300.0f // PLL bandwidth 50.0 - 1000.0
+#define SAM_zeta 0.7f     // PLL step response: smaller, slower response 1.0 - 0.1
 
 // Stereo WFM
 #define SWFM_PILOT_TONE_FREQ 19000.0f

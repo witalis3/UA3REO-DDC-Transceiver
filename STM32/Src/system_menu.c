@@ -4973,19 +4973,19 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 	sprintf(out, "FPGA SAMPLES: %d     ", dbg_FPGA_samples);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
-	sprintf(out, "STM32 VOLTAGE: %f     ", TRX_STM32_VREF);
+	sprintf(out, "STM32 VOLTAGE: %f     ", (double)TRX_STM32_VREF);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
-	sprintf(out, "IQ PHASE: %f     ", TRX_IQ_phase_error);
+	sprintf(out, "IQ PHASE: %f     ", (double)TRX_IQ_phase_error);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "ADC MIN/MAX: %d/%d     ", TRX_ADC_MINAMPLITUDE, TRX_ADC_MAXAMPLITUDE);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
-	sprintf(out, "VBAT VOLT: %.2f     ", TRX_VBAT_Voltage);
+	sprintf(out, "VBAT VOLT: %.2f     ", (double)TRX_VBAT_Voltage);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
-	sprintf(out, "ALC: %.2fv (%d%%)    ", TRX_ALC_IN, getPowerFromALC());
+	sprintf(out, "ALC: %.2fv (%d%%)    ", (double)TRX_ALC_IN, getPowerFromALC());
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 
 	LCD_UpdateQuery.SystemMenu = true;

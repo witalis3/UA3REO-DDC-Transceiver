@@ -124,7 +124,7 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		// overload (clipping), sharply reduce the gain
 		if ((AGC_RX_dbFS + AGC->need_gain_db) > (gain_target + AGC_CLIPPING)) {
 			AGC->need_gain_db = gain_target - AGC_RX_dbFS;
-			println("AGC overload ", diff);
+			println("AGC overload ", (double)diff);
 		}
 	}
 

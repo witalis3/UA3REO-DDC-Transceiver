@@ -98,7 +98,7 @@ void InitFT8_Decoder(void) {
 	}
 
 	receive_sequence();
-	cursor_freq = (uint16_t)((float)(cursor_line + ft8_min_bin) * ft8_shift);
+	cursor_freq = (uint16_t)((float)(cursor_line + ft8_min_bin) * (float32_t)ft8_shift);
 	FT8_Print_Freq();
 
 	Set_Data_Colection(0); // Disable the data colection
@@ -304,7 +304,7 @@ void FT8_EncRotate(int8_t direction) {
 		cursor_line = ft8_buffer - 50;
 	}
 
-	cursor_freq = (uint16_t)((float)(cursor_line + ft8_min_bin) * ft8_shift);
+	cursor_freq = (uint16_t)((float)(cursor_line + ft8_min_bin) * (float32_t)ft8_shift);
 
 	if (TRX_Tune) {
 		set_Xmit_Freq(FT8_BND_Freq, cursor_freq);

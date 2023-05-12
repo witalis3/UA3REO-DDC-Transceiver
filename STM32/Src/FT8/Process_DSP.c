@@ -111,7 +111,7 @@ static void extract_power(int offset) {
 
 		for (int j = 0; j < FFT_SIZE_FT8 / 2; j++) {
 			FFT_Mag_10[j] = 10 * (int32_t)FFT_Magnitude[j];
-			mag_db[j] = 5.0 * log((float)FFT_Mag_10[j] + 0.1);
+			mag_db[j] = 5.0 * log((float64_t)FFT_Mag_10[j] + 0.1);
 		}
 
 		// Loop over two possible frequency bin offsets (for averaging)

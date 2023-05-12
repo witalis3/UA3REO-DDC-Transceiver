@@ -790,7 +790,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			sprintf(buff, "%dhz", (uint32_t)lpf_width);
 		} else {
 			lpf_width /= 1000;
-			sprintf(buff, "%.1fkHz", lpf_width);
+			sprintf(buff, "%.1fkHz", (float64_t)lpf_width);
 		}
 	}
 
@@ -825,9 +825,9 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	// VOLTS / CURRENTS
 	if (!TRX_on_TX) {
 		if (!TRX_X1_VLT_CUR_Mode) {
-			sprintf(buff, "%.1fV", TRX_PWR_Voltage);
+			sprintf(buff, "%.1fV", (float64_t)TRX_PWR_Voltage);
 		} else {
-			sprintf(buff, "%.1fA", TRX_PWR_Current);
+			sprintf(buff, "%.1fA", (float64_t)TRX_PWR_Current);
 		}
 		addSymbols(buff, buff, 5, " ", true);
 		LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_THERM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_THERM_Y_OFFSET, COLOR->STATUS_LABEL_THERM, BG_COLOR,
@@ -861,12 +861,12 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_NOTCH_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_NOTCH_Y_OFFSET, color, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 	} else // on TX -> VLT+CUR
 	{
-		sprintf(buff, "%.1fV", TRX_PWR_Voltage);
+		sprintf(buff, "%.1fV", (float64_t)TRX_PWR_Voltage);
 		addSymbols(buff, buff, 5, " ", true);
 		LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_THERM_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_THERM_Y_OFFSET, COLOR->STATUS_LABEL_THERM, BG_COLOR,
 		                    LAYOUT->STATUS_LABELS_FONT_SIZE);
 
-		sprintf(buff, "%.1fA", TRX_PWR_Current);
+		sprintf(buff, "%.1fA", (float64_t)TRX_PWR_Current);
 		addSymbols(buff, buff, 5, " ", true);
 		LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_NOTCH_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_NOTCH_Y_OFFSET, COLOR->STATUS_LABEL_THERM, BG_COLOR,
 		                    LAYOUT->STATUS_LABELS_FONT_SIZE);

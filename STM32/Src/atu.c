@@ -92,7 +92,7 @@ void ATU_Process(void) {
 	if (TRX_PWR >= 0.0f) { // if (TRX_PWR >= 5.0f) {
 		if ((!ATU_BestValsProbed && TRX_SWR_val <= NORMAL_SWR_SAVED) || (ATU_BestValsProbed && TRX_SWR_val <= NORMAL_SWR_TUNE)) {
 			println("Normal SWR, stop!");
-			sprintf(buff, "Best SWR: %.1f", TRX_SWR_val);
+			sprintf(buff, "Best SWR: %.1f", (double)TRX_SWR_val);
 			LCD_showTooltip(buff);
 			ATU_Finished = true;
 			delay_stages_count = 0;
@@ -176,7 +176,7 @@ void ATU_Process(void) {
 		if (wrong_way) {
 			print("Wr Way ");
 		}
-		println("Stage: ", ATU_Stage, " I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", TRX_SWR_val, " PWR: ", TRX_PWR);
+		println("Stage: ", ATU_Stage, " I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", (double)TRX_SWR_val, " PWR: ", (double)TRX_PWR);
 		// iteration block
 
 		if (ATU_Stage == 0) // iterate inds
@@ -263,8 +263,8 @@ void ATU_Process(void) {
 			TRX.ATU_I = ATU_MinSWR_I;
 			TRX.ATU_C = ATU_MinSWR_C;
 			TRX.ATU_T = ATU_MinSWR_T;
-			println("ATU best I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", ATU_MinSWR, " PWR: ", TRX_PWR);
-			sprintf(buff, "Best SWR: %.1f", ATU_MinSWR);
+			println("ATU best I: ", TRX.ATU_I, " C: ", TRX.ATU_C, " T: ", (uint8_t)TRX.ATU_T, " SWR: ", (double)ATU_MinSWR, " PWR: ", (double)TRX_PWR);
+			sprintf(buff, "Best SWR: %.1f", (double)ATU_MinSWR);
 			LCD_showTooltip(buff);
 			delay_stages_count = 0;
 

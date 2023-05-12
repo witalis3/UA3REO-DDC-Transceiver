@@ -451,7 +451,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				CurrentVFO->NotchFC += step;
 			}
 
-			CurrentVFO->NotchFC = roundf((float64_t)CurrentVFO->NotchFC / step) * step;
+			CurrentVFO->NotchFC = round((float64_t)CurrentVFO->NotchFC / step) * step;
 
 			if (CurrentVFO->NotchFC < step) {
 				CurrentVFO->NotchFC = step;

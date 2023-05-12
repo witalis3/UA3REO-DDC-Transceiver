@@ -1265,7 +1265,7 @@ void processTxAudio(void) {
 			}
 			// clip
 			float32_t ALC_need_gain_target = (RFpower_amplitude * 0.99f) / Processor_TX_MAX_amplitude_IN;
-			println("ALC_CLIP ", Processor_TX_MAX_amplitude_IN / RFpower_amplitude, " NEED ", RFpower_amplitude, " CG ", APROC_TX_clip_gain);
+			println("ALC_CLIP ", (double)(Processor_TX_MAX_amplitude_IN / RFpower_amplitude), " NEED ", (double)RFpower_amplitude, " CG ", (double)APROC_TX_clip_gain);
 			TRX_DAC_OTR = true;
 			// apply gain
 			arm_scale_f32(APROC_Audio_Buffer_TX_I, ALC_need_gain_target, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
@@ -1978,7 +1978,7 @@ static void ModulateFM(uint16_t size, float32_t amplitude) {
 	}
 
 	// CTCSS
-	if (TRX.CTCSS_Freq > 0.0) {
+	if (TRX.CTCSS_Freq > 0.0f) {
 		static float32_t CTCSS_gen_index = 0;
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 			float32_t point = generateSin(0.25f, &CTCSS_gen_index, TRX_SAMPLERATE, TRX.CTCSS_Freq);
@@ -2244,17 +2244,17 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 	if (!sam_data->inited) {
 		sam_data->inited = true;
 		// pll
-		sam_data->adb_sam_omega_min = -(2.0 * F_PI * SAM_omegaN / TRX_SAMPLERATE);
-		sam_data->adb_sam_omega_max = (2.0 * F_PI * SAM_omegaN / TRX_SAMPLERATE);
-		sam_data->adb_sam_g1 = (1.0 - expf(-2.0 * SAM_omegaN * SAM_zeta / TRX_SAMPLERATE));
-		sam_data->adb_sam_g2 = (-sam_data->adb_sam_g1 + 2.0 * (1 - expf(-SAM_omegaN * SAM_zeta / TRX_SAMPLERATE) * cosf(SAM_omegaN / TRX_SAMPLERATE * sqrtf(1.0 - SAM_zeta * SAM_zeta))));
+		sam_data->adb_sam_omega_min = -(2.0f * F_PI * SAM_omegaN / TRX_SAMPLERATE);
+		sam_data->adb_sam_omega_max = (2.0f * F_PI * SAM_omegaN / TRX_SAMPLERATE);
+		sam_data->adb_sam_g1 = (1.0f - expf(-2.0f * SAM_omegaN * SAM_zeta / TRX_SAMPLERATE));
+		sam_data->adb_sam_g2 = (-sam_data->adb_sam_g1 + 2.0f * (1 - expf(-SAM_omegaN * SAM_zeta / TRX_SAMPLERATE) * cosf(SAM_omegaN / TRX_SAMPLERATE * sqrtf(1.0f - SAM_zeta * SAM_zeta))));
 		// fade leveler
-		float32_t tauR = 0.02; // value emperically determined
-		float32_t tauI = 1.4;  // value emperically determined
-		sam_data->adb_sam_mtauR = (expf(-1 / ((float32_t)TRX_SAMPLERATE * tauR)));
-		sam_data->adb_sam_onem_mtauR = (1.0 - sam_data->adb_sam_mtauR);
-		sam_data->adb_sam_mtauI = (expf(-1 / ((float32_t)TRX_SAMPLERATE * tauI)));
-		sam_data->adb_sam_onem_mtauI = (1.0 - sam_data->adb_sam_mtauI);
+		float32_t tauR = 0.02f; // value emperically determined
+		float32_t tauI = 1.4f;  // value emperically determined
+		sam_data->adb_sam_mtauR = (expf(-1.0f / ((float32_t)TRX_SAMPLERATE * tauR)));
+		sam_data->adb_sam_onem_mtauR = (1.0f - sam_data->adb_sam_mtauR);
+		sam_data->adb_sam_mtauI = (expf(-1.0f / ((float32_t)TRX_SAMPLERATE * tauI)));
+		sam_data->adb_sam_onem_mtauI = (1.0f - sam_data->adb_sam_mtauI);
 	}
 	// Wheatley 2011 cuteSDR & Warren Pratts WDSP, 2016
 	for (int i = 0; i < blockSize; i++) {
@@ -2333,19 +2333,19 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 		sam_data->phs = sam_data->phs + del_out;
 
 		// wrap round 2PI, modulus
-		while (sam_data->phs >= 2.0 * F_PI) {
-			sam_data->phs -= (2.0 * F_PI);
+		while (sam_data->phs >= 2.0f * F_PI) {
+			sam_data->phs -= (2.0f * F_PI);
 		}
-		while (sam_data->phs < 0.0) {
-			sam_data->phs += (2.0 * F_PI);
+		while (sam_data->phs < 0.0f) {
+			sam_data->phs += (2.0f * F_PI);
 		}
 	}
 
 	sam_data->count++;
 	if (sam_data->count > 100) // to display the exact carrier frequency that the PLL is tuned to
 	{
-		float32_t carrier = 0.1 * (sam_data->omega2 * (float32_t)TRX_SAMPLERATE) / (2.0 * PI);
-		carrier = carrier + 0.9 * sam_data->lowpass;
+		float32_t carrier = 0.1f * (sam_data->omega2 * (float32_t)TRX_SAMPLERATE) / (2.0f * F_PI);
+		carrier = carrier + 0.9f * sam_data->lowpass;
 		SAM_Carrier_offset = carrier;
 		sam_data->count = 0;
 		sam_data->lowpass = carrier;

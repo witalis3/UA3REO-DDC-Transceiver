@@ -793,7 +793,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 					}
 				}
 
-				sprintf(ctmp, "I=%.2fuH", i_val);
+				sprintf(ctmp, "I=%.2fuH", (float64_t)i_val);
 				addSymbols(ctmp, ctmp, 8, " ", true);
 				LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_I_X, LAYOUT->STATUS_ATU_I_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
@@ -956,7 +956,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	//}
 
 	// VOLTAGE
-	sprintf(buff, "%0.1fV", TRX_PWR_Voltage);
+	sprintf(buff, "%0.1fV", (float64_t)TRX_PWR_Voltage);
 	static char prev_vlt_buff[16] = "";
 	if (redraw || strcmp(prev_vlt_buff, buff) != 0) {
 		strcpy(prev_vlt_buff, buff);

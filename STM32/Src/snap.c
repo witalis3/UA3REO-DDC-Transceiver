@@ -73,7 +73,7 @@ static void SNAP_Process() {
 	}
 	uint32_t bandwidth_bin_count = bandwidth_bin_end - bandwidth_bin_start;
 
-	uint64_t fft_freq_start = (float64_t)CurrentVFO->Freq - (float64_t)FFT_current_spectrum_width_hz / 2.0f;
+	uint64_t fft_freq_start = (float64_t)CurrentVFO->Freq - (float64_t)FFT_current_spectrum_width_hz / 2.0;
 	float32_t maxAmplValue;
 	uint32_t maxAmplIndex;
 	float32_t signal_snr = 0;
@@ -174,7 +174,7 @@ static void SNAP_Process() {
 		LCD_UpdateQuery.FreqInfo = true;
 	}
 
-	println("NOISE: ", noise_level, " MAX: ", maxAmplValue, " SNR: ", signal_snr);
-	println("INDEX: ", maxAmplIndex, " HZ/BIN: ", hz_in_bin, " TARGET: ", target_freq, " OK: ", (uint8_t)result_ok);
+	println("NOISE: ", (double)noise_level, " MAX: ", (double)maxAmplValue, " SNR: ", (double)signal_snr);
+	println("INDEX: ", maxAmplIndex, " HZ/BIN: ", (double)hz_in_bin, " TARGET: ", target_freq, " OK: ", (uint8_t)result_ok);
 	println("");
 }
