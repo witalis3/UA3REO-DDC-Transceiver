@@ -8,6 +8,7 @@
 #include "lcd.h"
 #include "main.h"
 #include "trx_manager.h"
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -29,6 +30,9 @@ struct TRX_WIFI WIFI = {0};
 bool EEPROM_Enabled = true;
 
 #define MAX_CLONE_SIZE sizeof(CALIBRATE) > sizeof(TRX) ? sizeof(CALIBRATE) : sizeof(TRX)
+
+static_assert(sizeof(TRX) < W25Q16_SECTOR_SIZE, "TRX Data structure doesn't match page size");
+static_assert(sizeof(CALIBRATE) < W25Q16_SECTOR_SIZE, "CALIBRATE Data structure doesn't match page size");
 
 IRAM2 static uint8_t write_clone[MAX_CLONE_SIZE] = {0};
 IRAM2 static uint8_t read_clone[MAX_CLONE_SIZE] = {0};
@@ -1039,7 +1043,7 @@ void SaveSettingsToEEPROM(void) {
 	if (tryes >= EEPROM_REPEAT_TRYES) {
 		println("[ERR] Erase EEPROM Settings multiple errors");
 		print_flush();
-		LCD_showError("EEPROM Error", true);
+		// LCD_showError("EEPROM Error", true);
 		EEPROM_Busy = false;
 		return;
 	}
@@ -1053,7 +1057,7 @@ void SaveSettingsToEEPROM(void) {
 	if (tryes >= EEPROM_REPEAT_TRYES) {
 		println("[ERR] Write EEPROM Settings multiple errors");
 		print_flush();
-		LCD_showError("EEPROM Error", true);
+		// LCD_showError("EEPROM Error", true);
 		EEPROM_Busy = false;
 		return;
 	}
@@ -1081,7 +1085,7 @@ void SaveCalibration(void) {
 	if (tryes >= EEPROM_REPEAT_TRYES) {
 		println("[ERR] Erase EEPROM calibrate multiple errors");
 		print_flush();
-		LCD_showError("EEPROM Error", true);
+		// LCD_showError("EEPROM Error", true);
 		EEPROM_Busy = false;
 		return;
 	}
@@ -1095,7 +1099,7 @@ void SaveCalibration(void) {
 	if (tryes >= EEPROM_REPEAT_TRYES) {
 		println("[ERR] Write EEPROM calibrate multiple errors");
 		print_flush();
-		LCD_showError("EEPROM Error", true);
+		// LCD_showError("EEPROM Error", true);
 		EEPROM_Busy = false;
 		return;
 	}
@@ -1124,7 +1128,7 @@ void SaveWiFiSettings(void) {
 	if (tryes >= EEPROM_REPEAT_TRYES) {
 		println("[ERR] Erase EEPROM WIFI multiple errors");
 		print_flush();
-		LCD_showError("EEPROM Error", true);
+		// LCD_showError("EEPROM Error", true);
 		EEPROM_Busy = false;
 		return;
 	}
@@ -1138,7 +1142,7 @@ void SaveWiFiSettings(void) {
 	if (tryes >= EEPROM_REPEAT_TRYES) {
 		println("[ERR] Write EEPROM WIFI multiple errors");
 		print_flush();
-		LCD_showError("EEPROM Error", true);
+		// LCD_showError("EEPROM Error", true);
 		EEPROM_Busy = false;
 		return;
 	}
@@ -1148,6 +1152,46 @@ void SaveWiFiSettings(void) {
 	println("[OK] EEPROM WIFI Settings Saved");
 	print_flush();
 	NeedSaveWiFi = false;
+}
+
+bool LoadDPDSettings(uint8_t *out, uint32_t size, uint32_t sector_offset) {
+	EEPROM_PowerUp();
+
+	uint8_t tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data(out, size, EEPROM_SECTOR_DPD + sector_offset, true, false)) {
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES) {
+		println("[ERR] Load EEPROM DPD multiple errors");
+		return false;
+	}
+
+	EEPROM_PowerDown();
+	return true;
+}
+
+bool SaveDPDSettings(uint8_t *in, uint32_t size, uint32_t sector_offset) {
+	EEPROM_PowerUp();
+
+	uint8_t tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(EEPROM_SECTOR_DPD + sector_offset, false)) {
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES) {
+		println("[ERR] Erase EEPROM DPD multiple errors");
+		return false;
+	}
+
+	tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data(in, size, EEPROM_SECTOR_DPD + sector_offset, true, false)) {
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES) {
+		println("[ERR] Write EEPROM DPD multiple errors");
+		return false;
+	}
+	EEPROM_PowerDown();
+	return true;
 }
 
 static bool EEPROM_Sector_Erase(uint8_t sector, bool force) {
@@ -1191,20 +1235,19 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 	memcpy(write_clone, Buffer, size);
 	Aligned_CleanDCache_by_Addr((uint32_t *)write_clone, sizeof(write_clone));
 
-	const uint16_t page_size = 256;
-	for (uint16_t page = 0; page <= (size / page_size); page++) {
-		uint32_t BigAddress = page * page_size + (sector * W25Q16_SECTOR_SIZE);
+	for (uint16_t page = 0; page <= (size / W25Q16_PAGE_SIZE); page++) {
+		uint32_t BigAddress = (page * W25Q16_PAGE_SIZE) + (sector * W25Q16_SECTOR_SIZE);
 		Address[2] = (BigAddress >> 16) & 0xFF;
 		Address[1] = (BigAddress >> 8) & 0xFF;
 		Address[0] = BigAddress & 0xFF;
-		uint16_t bsize = size - page_size * page;
-		if (bsize > page_size) {
-			bsize = page_size;
+		uint16_t bsize = size - W25Q16_PAGE_SIZE * page;
+		if (bsize > W25Q16_PAGE_SIZE) {
+			bsize = W25Q16_PAGE_SIZE;
 		}
-		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false);                                   // Write Enable Command
-		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);                                    // Write Command
-		HRDW_EEPROM_SPI(Address, NULL, 3, true);                                          // Write Address ( The first address of flash module is 0x00000000 )
-		HRDW_EEPROM_SPI((uint8_t *)(write_clone + page_size * page), NULL, bsize, false); // Write Data
+		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false);                                          // Write Enable Command
+		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);                                           // Write Command
+		HRDW_EEPROM_SPI(Address, NULL, 3, true);                                                 // Write Address ( The first address of flash module is 0x00000000 )
+		HRDW_EEPROM_SPI((uint8_t *)(write_clone + W25Q16_PAGE_SIZE * page), NULL, bsize, false); // Write Data
 		EEPROM_WaitWrite();
 	}
 

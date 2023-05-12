@@ -70,10 +70,13 @@
 #define W25Q16_COMMAND_Power_Up 0xAB
 #define W25Q16_COMMAND_GetStatus 0x05
 #define W25Q16_COMMAND_WriteStatus 0x01
+#define W25Q16_PAGE_SIZE 256
 #define W25Q16_SECTOR_SIZE 4096
+
 #define EEPROM_SECTOR_CALIBRATION 0
 #define EEPROM_SECTOR_SETTINGS 4
 #define EEPROM_SECTOR_WIFI 8
+#define EEPROM_SECTOR_DPD 12
 #define EEPROM_REPEAT_TRYES 10 // command tryes
 
 #define MEMORY_CHANNELS_COUNT 35
@@ -898,5 +901,7 @@ extern void SaveSettingsToEEPROM(void);
 extern void BKPSRAM_Enable(void);
 extern void BKPSRAM_Disable(void);
 extern void RTC_Calibration(void);
+extern bool LoadDPDSettings(uint8_t *out, uint32_t size, uint32_t sector_offset);
+extern bool SaveDPDSettings(uint8_t *in, uint32_t size, uint32_t sector_offset);
 
 #endif

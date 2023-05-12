@@ -806,7 +806,7 @@ void processTxAudio(void) {
 	}
 
 	// FT8 signal generator
-	if (TRX_Tune && (CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_DIGI_L)) {
+	if (TRX_Tune && !TRX.TWO_SIGNAL_TUNE && (CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_DIGI_L)) {
 		if (APROC_TUNE_DigiTone_Freq == 0) { // default tune
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 				APROC_Audio_Buffer_TX_I[i] = 1.0f;
