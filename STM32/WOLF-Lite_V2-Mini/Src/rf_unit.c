@@ -179,7 +179,7 @@ void RF_UNIT_ProcessSensors(void) {
 #define B14_RANGE 16383.0f
 
 	HAL_ADCEx_InjectedPollForConversion(&hadc1, 100); // wait if prev conversion not ended
-	
+
 	// PWR Voltage
 	float32_t PWR_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_3) * TRX_STM32_VREF / B16_RANGE;
 	PWR_Voltage = PWR_Voltage * (CALIBRATE.PWR_VLT_Calibration) / 100.0f;
@@ -309,6 +309,6 @@ void RF_UNIT_ProcessSensors(void) {
 			FRONTPANEL_CheckButton(&PERIPH_FrontPanel_TANGENT_MH48[tb], SW2_Voltage);
 		}
 	}
-	
+
 	HAL_ADCEx_InjectedStart(&hadc1); // start next manual conversion
 }

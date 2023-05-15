@@ -59,7 +59,7 @@ void RF_UNIT_ProcessSensors(void) {
 #define B12_RANGE 4096.0f
 
 	HAL_ADCEx_InjectedPollForConversion(&hadc3, 100); // wait if prev conversion not ended
-	
+
 	// THERMAL
 	TRX_RF_Temperature = 0;
 
@@ -187,6 +187,6 @@ void RF_UNIT_ProcessSensors(void) {
 			FRONTPANEL_CheckButton(&PERIPH_FrontPanel_TANGENT_MH48[tb], SW2_Voltage);
 		}
 	}
-	
+
 	HAL_ADCEx_InjectedStart(&hadc3); // start next manual conversion
 }
