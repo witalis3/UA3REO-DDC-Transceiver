@@ -89,7 +89,7 @@ set_global_assignment -name OCP_HW_EVAL DISABLE
 
 
 set_global_assignment -name TIMING_ANALYZER_REPORT_SCRIPT_INCLUDE_DEFAULT_ANALYSIS OFF
-set_global_assignment -name OPTIMIZATION_MODE BALANCED
+set_global_assignment -name OPTIMIZATION_MODE "AGGRESSIVE PERFORMANCE"
 set_global_assignment -name AUTO_RAM_TO_LCELL_CONVERSION ON
 
 
