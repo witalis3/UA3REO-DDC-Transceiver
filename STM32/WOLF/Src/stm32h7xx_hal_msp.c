@@ -86,6 +86,7 @@ void HAL_MspInit(void) {
  */
 void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc) {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
+	RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 	if (hadc->Instance == ADC1) {
 		/* USER CODE BEGIN ADC1_MspInit 0 */
 		RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
@@ -95,6 +96,15 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc) {
 			Error_Handler();
 		}
 		/* USER CODE END ADC1_MspInit 0 */
+
+		/** Initializes the peripherals clock
+		 */
+		PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+		PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_CLKP;
+		if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
+			Error_Handler();
+		}
+
 		/* Peripheral clock enable */
 		__HAL_RCC_ADC12_CLK_ENABLE();
 
@@ -123,6 +133,15 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc) {
 		/* USER CODE BEGIN ADC3_MspInit 0 */
 
 		/* USER CODE END ADC3_MspInit 0 */
+
+		/** Initializes the peripherals clock
+		 */
+		PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+		PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_CLKP;
+		if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
+			Error_Handler();
+		}
+
 		/* Peripheral clock enable */
 		__HAL_RCC_ADC3_CLK_ENABLE();
 		/* USER CODE BEGIN ADC3_MspInit 1 */
