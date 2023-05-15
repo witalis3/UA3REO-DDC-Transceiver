@@ -12,7 +12,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "8.0.0-dev";
+const char version_string[19] = "8.0.0";
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
