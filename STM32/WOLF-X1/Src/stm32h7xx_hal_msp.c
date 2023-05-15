@@ -96,6 +96,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc) {
 		/* USER CODE BEGIN ADC1_MspInit 0 */
 
 		/* USER CODE END ADC1_MspInit 0 */
+
 		/** Initializes the peripherals clock
 		 */
 		PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
@@ -312,6 +313,7 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef *hi2s) {
 		/* USER CODE BEGIN SPI3_MspInit 0 */
 
 		/* USER CODE END SPI3_MspInit 0 */
+
 		/** Initializes the peripherals clock
 		 */
 		PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI3;
@@ -431,6 +433,7 @@ void HAL_RTC_MspInit(RTC_HandleTypeDef *hrtc) {
 		/* USER CODE BEGIN RTC_MspInit 0 */
 
 		/* USER CODE END RTC_MspInit 0 */
+
 		/** Initializes the peripherals clock
 		 */
 		PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_RTC;
@@ -479,6 +482,7 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi) {
 		/* USER CODE BEGIN SPI2_MspInit 0 */
 
 		/* USER CODE END SPI2_MspInit 0 */
+
 		/** Initializes the peripherals clock
 		 */
 		PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI2;
@@ -904,6 +908,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart) {
 		/* USER CODE BEGIN USART6_MspInit 0 */
 
 		/* USER CODE END USART6_MspInit 0 */
+
 		/** Initializes the peripherals clock
 		 */
 		PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USART6;
@@ -998,6 +1003,7 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef *hpcd) {
 		/* USER CODE BEGIN USB_OTG_FS_MspInit 0 */
 
 		/* USER CODE END USB_OTG_FS_MspInit 0 */
+
 		/** Initializes the peripherals clock
 		 */
 		PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USB;
@@ -1012,6 +1018,7 @@ void HAL_PCD_MspInit(PCD_HandleTypeDef *hpcd) {
 		if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
 			Error_Handler();
 		}
+
 		/** Enable USB Voltage detector
 		 */
 		HAL_PWREx_EnableUSBVoltageDetector();

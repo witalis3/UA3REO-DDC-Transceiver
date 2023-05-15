@@ -376,19 +376,18 @@ void SystemClock_Config(void) {
 	/** Supply configuration update enable
 	 */
 	HAL_PWREx_ConfigSupply(PWR_LDO_SUPPLY);
+
 	/** Configure the main internal regulator output voltage
 	 */
-	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
 	while (!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {
 	}
+
 	/** Configure LSE Drive Capability
 	 */
 	HAL_PWR_EnableBkUpAccess();
 	__HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_HIGH);
-	/** Macro to configure the PLL clock source
-	 */
-	__HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSE);
+
 	/** Initializes the RCC Oscillators according to the specified parameters
 	 * in the RCC_OscInitTypeDef structure.
 	 */
@@ -411,6 +410,7 @@ void SystemClock_Config(void) {
 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
 		Error_Handler();
 	}
+
 	/** Initializes the CPU, AHB and APB buses clocks
 	 */
 	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2 | RCC_CLOCKTYPE_D3PCLK1 | RCC_CLOCKTYPE_D1PCLK1;
@@ -422,7 +422,7 @@ void SystemClock_Config(void) {
 	RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
 	RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
 
-	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK) {
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK) {
 		Error_Handler();
 	}
 }
@@ -460,6 +460,7 @@ static void MX_ADC1_Init(void) {
 	/* USER CODE BEGIN ADC1_Init 1 */
 
 	/* USER CODE END ADC1_Init 1 */
+
 	/** Common config
 	 */
 	hadc1.Instance = ADC1;
@@ -468,7 +469,7 @@ static void MX_ADC1_Init(void) {
 	hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
 	hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
 	hadc1.Init.LowPowerAutoWait = DISABLE;
-	hadc1.Init.ContinuousConvMode = ENABLE;
+	hadc1.Init.ContinuousConvMode = DISABLE;
 	hadc1.Init.NbrOfConversion = 1;
 	hadc1.Init.DiscontinuousConvMode = DISABLE;
 	hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DR;
@@ -478,23 +479,27 @@ static void MX_ADC1_Init(void) {
 	if (HAL_ADC_Init(&hadc1) != HAL_OK) {
 		Error_Handler();
 	}
+
 	/** Configure the ADC multi-mode
 	 */
 	multimode.Mode = ADC_MODE_INDEPENDENT;
 	if (HAL_ADCEx_MultiModeConfigChannel(&hadc1, &multimode) != HAL_OK) {
 		Error_Handler();
 	}
+
 	/** Disable Injected Queue
 	 */
 	HAL_ADCEx_DisableInjectedQueue(&hadc1);
+
 	/** Configure Injected Channel
 	 */
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_11;
 	sConfigInjected.InjectedRank = ADC_INJECTED_RANK_1;
-	sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+	sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_32CYCLES_5;
 	sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
 	sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
 	sConfigInjected.InjectedOffset = 0;
+	sConfigInjected.InjectedOffsetSignedSaturation = DISABLE;
 	sConfigInjected.InjectedNbrOfConversion = 3;
 	sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
 	sConfigInjected.AutoInjectedConv = DISABLE;
@@ -505,6 +510,7 @@ static void MX_ADC1_Init(void) {
 	if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK) {
 		Error_Handler();
 	}
+
 	/** Configure Injected Channel
 	 */
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_10;
@@ -512,11 +518,11 @@ static void MX_ADC1_Init(void) {
 	if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK) {
 		Error_Handler();
 	}
+
 	/** Configure Injected Channel
 	 */
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_4;
 	sConfigInjected.InjectedRank = ADC_INJECTED_RANK_3;
-	sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_32CYCLES_5;
 	if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK) {
 		Error_Handler();
 	}
@@ -541,6 +547,7 @@ static void MX_ADC2_Init(void) {
 	/* USER CODE BEGIN ADC2_Init 1 */
 
 	/* USER CODE END ADC2_Init 1 */
+
 	/** Common config
 	 */
 	hadc2.Instance = ADC2;
@@ -559,9 +566,11 @@ static void MX_ADC2_Init(void) {
 	if (HAL_ADC_Init(&hadc2) != HAL_OK) {
 		Error_Handler();
 	}
+
 	/** Disable Injected Queue
 	 */
 	HAL_ADCEx_DisableInjectedQueue(&hadc2);
+
 	/** Configure Injected Channel
 	 */
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_9;
@@ -570,18 +579,18 @@ static void MX_ADC2_Init(void) {
 	sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
 	sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
 	sConfigInjected.InjectedOffset = 0;
-	sConfigInjected.InjectedNbrOfConversion = 3;
+	sConfigInjected.InjectedOffsetSignedSaturation = DISABLE;
+	sConfigInjected.InjectedNbrOfConversion = 4;
 	sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
 	sConfigInjected.AutoInjectedConv = DISABLE;
 	sConfigInjected.QueueInjectedContext = DISABLE;
 	sConfigInjected.ExternalTrigInjecConv = ADC_EXTERNALTRIGINJEC_T4_TRGO;
 	sConfigInjected.ExternalTrigInjecConvEdge = ADC_EXTERNALTRIGINJECCONV_EDGE_RISING;
 	sConfigInjected.InjecOversamplingMode = DISABLE;
-	sConfigInjected.InjecOversampling.Ratio = 1;
-	sConfigInjected.InjecOversampling.RightBitShift = ADC_RIGHTBITSHIFT_NONE;
 	if (HAL_ADCEx_InjectedConfigChannel(&hadc2, &sConfigInjected) != HAL_OK) {
 		Error_Handler();
 	}
+
 	/** Configure Injected Channel
 	 */
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_5;
@@ -589,10 +598,20 @@ static void MX_ADC2_Init(void) {
 	if (HAL_ADCEx_InjectedConfigChannel(&hadc2, &sConfigInjected) != HAL_OK) {
 		Error_Handler();
 	}
+
 	/** Configure Injected Channel
 	 */
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_8;
 	sConfigInjected.InjectedRank = ADC_INJECTED_RANK_3;
+	if (HAL_ADCEx_InjectedConfigChannel(&hadc2, &sConfigInjected) != HAL_OK) {
+		Error_Handler();
+	}
+
+	/** Configure Injected Channel
+	 */
+	sConfigInjected.InjectedChannel = ADC_CHANNEL_5;
+	sConfigInjected.InjectedRank = ADC_INJECTED_RANK_4;
+	sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_1CYCLE_5;
 	if (HAL_ADCEx_InjectedConfigChannel(&hadc2, &sConfigInjected) != HAL_OK) {
 		Error_Handler();
 	}
@@ -617,6 +636,7 @@ static void MX_ADC3_Init(void) {
 	/* USER CODE BEGIN ADC3_Init 1 */
 
 	/* USER CODE END ADC3_Init 1 */
+
 	/** Common config
 	 */
 	hadc3.Instance = ADC3;
@@ -635,9 +655,11 @@ static void MX_ADC3_Init(void) {
 	if (HAL_ADC_Init(&hadc3) != HAL_OK) {
 		Error_Handler();
 	}
+
 	/** Disable Injected Queue
 	 */
 	HAL_ADCEx_DisableInjectedQueue(&hadc3);
+
 	/** Configure Injected Channel
 	 */
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_TEMPSENSOR;
@@ -646,6 +668,7 @@ static void MX_ADC3_Init(void) {
 	sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
 	sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
 	sConfigInjected.InjectedOffset = 0;
+	sConfigInjected.InjectedOffsetSignedSaturation = DISABLE;
 	sConfigInjected.InjectedNbrOfConversion = 3;
 	sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
 	sConfigInjected.AutoInjectedConv = DISABLE;
@@ -656,6 +679,7 @@ static void MX_ADC3_Init(void) {
 	if (HAL_ADCEx_InjectedConfigChannel(&hadc3, &sConfigInjected) != HAL_OK) {
 		Error_Handler();
 	}
+
 	/** Configure Injected Channel
 	 */
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_VREFINT;
@@ -663,6 +687,7 @@ static void MX_ADC3_Init(void) {
 	if (HAL_ADCEx_InjectedConfigChannel(&hadc3, &sConfigInjected) != HAL_OK) {
 		Error_Handler();
 	}
+
 	/** Configure Injected Channel
 	 */
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_VBAT;
@@ -780,6 +805,7 @@ static void MX_RTC_Init(void) {
 	/* USER CODE BEGIN RTC_Init 1 */
 
 	/* USER CODE END RTC_Init 1 */
+
 	/** Initialize RTC Only
 	 */
 	hrtc.Instance = RTC;
@@ -1442,6 +1468,8 @@ static void MX_MDMA_Init(void) {
  */
 static void MX_GPIO_Init(void) {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
+	/* USER CODE BEGIN MX_GPIO_Init_1 */
+	/* USER CODE END MX_GPIO_Init_1 */
 
 	/* GPIO Ports Clock Enable */
 	__HAL_RCC_GPIOE_CLK_ENABLE();
@@ -1533,7 +1561,7 @@ static void MX_GPIO_Init(void) {
 	GPIO_InitStruct.Pin = LCD_DC_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
 	HAL_GPIO_Init(LCD_DC_GPIO_Port, &GPIO_InitStruct);
 
 	/*Configure GPIO pin : AUDIO_48K_CLOCK_Pin */
@@ -1604,6 +1632,9 @@ static void MX_GPIO_Init(void) {
 
 	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 3, 0);
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
+	/* USER CODE BEGIN MX_GPIO_Init_2 */
+	/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -1641,6 +1672,7 @@ void MPU_Config(void) {
 
 	/* Disables the MPU */
 	HAL_MPU_Disable();
+
 	/** Initializes and configures the Region and the memory to be protected
 	 */
 	MPU_InitStruct.Enable = MPU_REGION_ENABLE;
@@ -1656,6 +1688,7 @@ void MPU_Config(void) {
 	MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
 
 	HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
 	/** Initializes and configures the Region and the memory to be protected
 	 */
 	MPU_InitStruct.Number = MPU_REGION_NUMBER2;

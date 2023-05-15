@@ -318,7 +318,7 @@ __weak void HAL_PCD_MspDeInit(PCD_HandleTypeDef *hpcd)
   *          @arg @ref HAL_PCD_SUSPEND_CB_ID USB PCD Suspend callback ID
   *          @arg @ref HAL_PCD_RESUME_CB_ID USB PCD Resume callback ID
   *          @arg @ref HAL_PCD_CONNECT_CB_ID USB PCD Connect callback ID
-  *          @arg @ref HAL_PCD_DISCONNECT_CB_ID OTG PCD Disconnect callback ID
+  *          @arg @ref HAL_PCD_DISCONNECT_CB_ID USB PCD Disconnect callback ID
   *          @arg @ref HAL_PCD_MSPINIT_CB_ID MspDeInit callback ID
   *          @arg @ref HAL_PCD_MSPDEINIT_CB_ID MspDeInit callback ID
   * @param  pCallback pointer to the Callback function
@@ -432,7 +432,7 @@ HAL_StatusTypeDef HAL_PCD_RegisterCallback(PCD_HandleTypeDef *hpcd,
   *          @arg @ref HAL_PCD_SUSPEND_CB_ID USB PCD Suspend callback ID
   *          @arg @ref HAL_PCD_RESUME_CB_ID USB PCD Resume callback ID
   *          @arg @ref HAL_PCD_CONNECT_CB_ID USB PCD Connect callback ID
-  *          @arg @ref HAL_PCD_DISCONNECT_CB_ID OTG PCD Disconnect callback ID
+  *          @arg @ref HAL_PCD_DISCONNECT_CB_ID USB PCD Disconnect callback ID
   *          @arg @ref HAL_PCD_MSPINIT_CB_ID MspDeInit callback ID
   *          @arg @ref HAL_PCD_MSPDEINIT_CB_ID MspDeInit callback ID
   * @retval HAL status
@@ -1004,8 +1004,8 @@ HAL_StatusTypeDef HAL_PCD_Start(PCD_HandleTypeDef *hpcd)
 
   __HAL_LOCK(hpcd);
 
-  if ((hpcd->Init.battery_charging_enable == 1U) &&
-      (hpcd->Init.phy_itface != USB_OTG_ULPI_PHY))
+  if (((USBx->CID & (0x1U << 8)) == 0U) &&
+      (hpcd->Init.battery_charging_enable == 1U))
   {
     /* Enable USB Transceiver */
     USBx->GCCFG |= USB_OTG_GCCFG_PWRDWN;
@@ -1033,8 +1033,8 @@ HAL_StatusTypeDef HAL_PCD_Stop(PCD_HandleTypeDef *hpcd)
 
   (void)USB_FlushTxFifo(hpcd->Instance, 0x10U);
 
-  if ((hpcd->Init.battery_charging_enable == 1U) &&
-      (hpcd->Init.phy_itface != USB_OTG_ULPI_PHY))
+  if (((USBx->CID & (0x1U << 8)) == 0U) &&
+      (hpcd->Init.battery_charging_enable == 1U))
   {
     /* Disable USB Transceiver */
     USBx->GCCFG &= ~(USB_OTG_GCCFG_PWRDWN);
@@ -1727,8 +1727,8 @@ HAL_StatusTypeDef HAL_PCD_DevConnect(PCD_HandleTypeDef *hpcd)
 
   __HAL_LOCK(hpcd);
 
-  if ((hpcd->Init.battery_charging_enable == 1U) &&
-      (hpcd->Init.phy_itface != USB_OTG_ULPI_PHY))
+  if (((USBx->CID & (0x1U << 8)) == 0U) &&
+      (hpcd->Init.battery_charging_enable == 1U))
   {
     /* Enable USB Transceiver */
     USBx->GCCFG |= USB_OTG_GCCFG_PWRDWN;
@@ -1751,8 +1751,8 @@ HAL_StatusTypeDef HAL_PCD_DevDisconnect(PCD_HandleTypeDef *hpcd)
   __HAL_LOCK(hpcd);
   (void)USB_DevDisconnect(hpcd->Instance);
 
-  if ((hpcd->Init.battery_charging_enable == 1U) &&
-      (hpcd->Init.phy_itface != USB_OTG_ULPI_PHY))
+  if (((USBx->CID & (0x1U << 8)) == 0U) &&
+      (hpcd->Init.battery_charging_enable == 1U))
   {
     /* Disable USB Transceiver */
     USBx->GCCFG &= ~(USB_OTG_GCCFG_PWRDWN);
@@ -1812,6 +1812,7 @@ HAL_StatusTypeDef HAL_PCD_EP_Open(PCD_HandleTypeDef *hpcd, uint8_t ep_addr,
     /* Assign a Tx FIFO */
     ep->tx_fifo_num = ep->num;
   }
+
   /* Set initial data PID. */
   if (ep_type == EP_TYPE_BULK)
   {
@@ -1845,7 +1846,7 @@ HAL_StatusTypeDef HAL_PCD_EP_Close(PCD_HandleTypeDef *hpcd, uint8_t ep_addr)
     ep = &hpcd->OUT_ep[ep_addr & EP_ADDR_MSK];
     ep->is_in = 0U;
   }
-  ep->num   = ep_addr & EP_ADDR_MSK;
+  ep->num = ep_addr & EP_ADDR_MSK;
 
   __HAL_LOCK(hpcd);
   (void)USB_DeactivateEndpoint(hpcd->Instance, ep);
@@ -1880,14 +1881,7 @@ HAL_StatusTypeDef HAL_PCD_EP_Receive(PCD_HandleTypeDef *hpcd, uint8_t ep_addr, u
     ep->dma_addr = (uint32_t)pBuf;
   }
 
-  if ((ep_addr & EP_ADDR_MSK) == 0U)
-  {
-    (void)USB_EP0StartXfer(hpcd->Instance, ep, (uint8_t)hpcd->Init.dma_enable);
-  }
-  else
-  {
-    (void)USB_EPStartXfer(hpcd->Instance, ep, (uint8_t)hpcd->Init.dma_enable);
-  }
+  (void)USB_EPStartXfer(hpcd->Instance, ep, (uint8_t)hpcd->Init.dma_enable);
 
   return HAL_OK;
 }
@@ -1928,14 +1922,7 @@ HAL_StatusTypeDef HAL_PCD_EP_Transmit(PCD_HandleTypeDef *hpcd, uint8_t ep_addr, 
     ep->dma_addr = (uint32_t)pBuf;
   }
 
-  if ((ep_addr & EP_ADDR_MSK) == 0U)
-  {
-    (void)USB_EP0StartXfer(hpcd->Instance, ep, (uint8_t)hpcd->Init.dma_enable);
-  }
-  else
-  {
-    (void)USB_EPStartXfer(hpcd->Instance, ep, (uint8_t)hpcd->Init.dma_enable);
-  }
+  (void)USB_EPStartXfer(hpcd->Instance, ep, (uint8_t)hpcd->Init.dma_enable);
 
   return HAL_OK;
 }
@@ -2118,6 +2105,7 @@ PCD_StateTypeDef HAL_PCD_GetState(PCD_HandleTypeDef *hpcd)
   return hpcd->State;
 }
 
+#if defined (USB_OTG_FS) || defined (USB_OTG_HS)
 /**
   * @brief  Set the USB Device high speed test mode.
   * @param  hpcd PCD handle
@@ -2145,6 +2133,7 @@ HAL_StatusTypeDef HAL_PCD_SetTestMode(PCD_HandleTypeDef *hpcd, uint8_t testmode)
 
   return HAL_OK;
 }
+#endif /* defined (USB_OTG_FS) || defined (USB_OTG_HS) */
 /**
   * @}
   */

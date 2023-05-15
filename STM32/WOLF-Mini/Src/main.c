@@ -480,7 +480,7 @@ static void MX_ADC1_Init(void) {
 	hadc1.Init.ScanConvMode = ADC_SCAN_ENABLE;
 	hadc1.Init.EOCSelection = ADC_EOC_SEQ_CONV;
 	hadc1.Init.LowPowerAutoWait = DISABLE;
-	hadc1.Init.ContinuousConvMode = ENABLE;
+	hadc1.Init.ContinuousConvMode = DISABLE;
 	hadc1.Init.NbrOfConversion = 1;
 	hadc1.Init.DiscontinuousConvMode = DISABLE;
 	hadc1.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DR;
@@ -506,7 +506,7 @@ static void MX_ADC1_Init(void) {
 	 */
 	sConfigInjected.InjectedChannel = ADC_CHANNEL_11;
 	sConfigInjected.InjectedRank = ADC_INJECTED_RANK_1;
-	sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_1CYCLE_5;
+	sConfigInjected.InjectedSamplingTime = ADC_SAMPLETIME_32CYCLES_5;
 	sConfigInjected.InjectedSingleDiff = ADC_SINGLE_ENDED;
 	sConfigInjected.InjectedOffsetNumber = ADC_OFFSET_NONE;
 	sConfigInjected.InjectedOffset = 0;
@@ -515,8 +515,8 @@ static void MX_ADC1_Init(void) {
 	sConfigInjected.InjectedDiscontinuousConvMode = DISABLE;
 	sConfigInjected.AutoInjectedConv = DISABLE;
 	sConfigInjected.QueueInjectedContext = DISABLE;
-	sConfigInjected.ExternalTrigInjecConv = ADC_EXTERNALTRIGINJEC_T4_TRGO;
-	sConfigInjected.ExternalTrigInjecConvEdge = ADC_EXTERNALTRIGINJECCONV_EDGE_RISING;
+	sConfigInjected.ExternalTrigInjecConv = ADC_INJECTED_SOFTWARE_START;
+	sConfigInjected.ExternalTrigInjecConvEdge = ADC_EXTERNALTRIGINJECCONV_EDGE_NONE;
 	sConfigInjected.InjecOversamplingMode = DISABLE;
 	if (HAL_ADCEx_InjectedConfigChannel(&hadc1, &sConfigInjected) != HAL_OK) {
 		Error_Handler();
@@ -1462,6 +1462,8 @@ static void MX_MDMA_Init(void) {
  */
 static void MX_GPIO_Init(void) {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
+	/* USER CODE BEGIN MX_GPIO_Init_1 */
+	/* USER CODE END MX_GPIO_Init_1 */
 
 	/* GPIO Ports Clock Enable */
 	__HAL_RCC_GPIOE_CLK_ENABLE();
@@ -1631,6 +1633,9 @@ static void MX_GPIO_Init(void) {
 
 	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 3, 0);
 	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
+	/* USER CODE BEGIN MX_GPIO_Init_2 */
+	/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */

@@ -10,7 +10,7 @@
 #define HRDW_HAS_MDMA true
 #define HRDW_HAS_SD true
 #define HRDW_HAS_DMA2D true
-#define HRDW_HAS_JPEG true
+#define HRDW_HAS_JPEG false
 #define HRDW_HAS_WIFI true
 #define HRDW_HAS_USB_DEBUG true
 #define HRDW_HAS_USB_CAT true

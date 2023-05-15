@@ -1232,26 +1232,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Src/JPEG</GroupName>
-          <Files>
-            <File>
-              <FileName>jpeg_utils.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\JPEG\jpeg_utils.c</FilePath>
-            </File>
-            <File>
-              <FileName>jpeg_utils.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\JPEG\jpeg_utils.h</FilePath>
-            </File>
-            <File>
-              <FileName>jpeg_utils_conf_template.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\JPEG\jpeg_utils_conf_template.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>Src/USBDevice</GroupName>
           <Files>
             <File>
@@ -2783,26 +2763,6 @@
               <FileName>WF_Table.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\FT8\WF_Table.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Src/JPEG</GroupName>
-          <Files>
-            <File>
-              <FileName>jpeg_utils.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\JPEG\jpeg_utils.c</FilePath>
-            </File>
-            <File>
-              <FileName>jpeg_utils.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\JPEG\jpeg_utils.h</FilePath>
-            </File>
-            <File>
-              <FileName>jpeg_utils_conf_template.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\JPEG\jpeg_utils_conf_template.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -1212,26 +1212,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>Src/JPEG</GroupName>
-          <Files>
-            <File>
-              <FileName>jpeg_utils.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\Src\JPEG\jpeg_utils.c</FilePath>
-            </File>
-            <File>
-              <FileName>jpeg_utils.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\JPEG\jpeg_utils.h</FilePath>
-            </File>
-            <File>
-              <FileName>jpeg_utils_conf_template.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\..\Src\JPEG\jpeg_utils_conf_template.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>Src/USBDevice</GroupName>
           <Files>
             <File>
@@ -1375,11 +1355,6 @@
               <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma_ex.c</FilePath>
             </File>
             <File>
-              <FileName>stm32h7xx_hal_dma2d.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_dma2d.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32h7xx_hal_exti.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_exti.c</FilePath>
@@ -1428,11 +1403,6 @@
               <FileName>stm32h7xx_hal_iwdg.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_iwdg.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32h7xx_hal_jpeg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_jpeg.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_mdma.c</FileName>
@@ -1490,11 +1460,6 @@
               <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi_ex.c</FilePath>
             </File>
             <File>
-              <FileName>stm32h7xx_hal_sram.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_sram.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32h7xx_hal_tim.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_tim.c</FilePath>
@@ -1513,11 +1478,6 @@
               <FileName>stm32h7xx_hal_uart_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_uart_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32h7xx_ll_fmc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Drivers\STM32H7xx_HAL_Driver\Src\stm32h7xx_ll_fmc.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_ll_usb.c</FileName>

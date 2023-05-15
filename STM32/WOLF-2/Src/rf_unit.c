@@ -447,6 +447,8 @@ void RF_UNIT_ProcessSensors(void) {
 #define B16_RANGE 65535.0f
 #define B14_RANGE 16383.0f
 
+	HAL_ADCEx_InjectedPollForConversion(&hadc1, 100); // wait if prev conversion not ended
+	
 	// THERMAL
 	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B16_RANGE;
 
@@ -587,6 +589,8 @@ void RF_UNIT_ProcessSensors(void) {
 	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * (1.0f - smooth_down_coeff) + TRX_SWR * smooth_down_coeff;
 
 	sprintf(TRX_SWR_SMOOTHED_STR, "%.1f", (double)TRX_SWR_SMOOTHED);
+	
+	HAL_ADCEx_InjectedStart(&hadc1); // start next manual conversion
 }
 
 // used to controll the calibration of the FW and BW power measurments
