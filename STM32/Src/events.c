@@ -237,15 +237,14 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 
 	if ((HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) && ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_TIMEOUT) &&
 	    ((!NeedSaveCalibration && !NeedSaveWiFi && !HRDW_SPI_Locked && !EEPROM_Busy && !LCD_busy) || ((HAL_GetTick() - powerdown_start_delay) > POWERDOWN_FORCE_TIMEOUT))) {
-		TRX_Inited = false;
 		LCD_busy = true;
-		HAL_Delay(10);
+		SaveSettings();
+		SaveSettingsToEEPROM();
+		TRX_Inited = false;
 		CODEC_Mute();
 		CODEC_CleanBuffer();
 		LCDDriver_Fill(COLOR_BLACK);
 		LCD_showInfo("GOOD BYE, 73", false);
-		SaveSettings();
-		SaveSettingsToEEPROM();
 		print_flush();
 		while (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_RESET) {
 		}
