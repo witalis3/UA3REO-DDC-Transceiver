@@ -60,6 +60,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Tangent support Yaesu MH-36 и MH-48
 * Hardware self-testing
 * Firmware update over USB, SD, WiFi
+* Digital pre-distortion
 * And other.. (see menu)
 
 ### Sensitivity
@@ -209,6 +210,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Compressor MaxGain** - Maximum comressor gain
 * **Compressor Speed** - TX compressor response speed for transmission (more-faster)
 * **CTCSS Frequency** - Transmit FM CTCSS sub-tone frequency
+* **FT8 Auto CQ** - Automatic transition to CQ mode after FT8 communication
 * **Input Type** - Select audio input (microphone, line in, USB)
 * **LINE Gain** - Line input codec gain
 * **MIC Boost** - +20db hardware mic amplifier
@@ -335,6 +337,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Flash GT911** - Starting the touchpad update procedure according to LCD screen resolution
 * **HPF START** - HPF filter parameters
 * **IF Gain MIN/MAX** - IF Gain adjusting limits
+* **KTY81 Calibration** - Calibration of the KTY81 sensor (setting the resistance of the divider arm)
 * **LCD Rotate** - Rotate screen at 180 degrees
 * **LNA Compensation** - Compensates the S-meter value when the LNA is turned on, dBm
 * **LPF END** - LPF filter parameters
@@ -400,9 +403,9 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 * Show DX Cluster info by current band (from internet)
 
-### Propagination 
+### Propagation 
 
-* Show propagination statistics (from internet)
+* Show propagation statistics (from internet)
 
 ### DayNight Map 
 

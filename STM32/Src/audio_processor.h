@@ -19,8 +19,8 @@
 // SAM
 #define SAM_PLL_HILBERT_STAGES 7
 #define SAM_OUT_IDX (3 * SAM_PLL_HILBERT_STAGES)
-#define SAM_omegaN 300.0 // PLL bandwidth 50.0 - 1000.0
-#define SAM_zeta 0.7     // PLL step response: smaller, slower response 1.0 - 0.1
+#define SAM_omegaN 300.0f // PLL bandwidth 50.0 - 1000.0
+#define SAM_zeta 0.7f     // PLL step response: smaller, slower response 1.0 - 0.1
 
 // Stereo WFM
 #define SWFM_PILOT_TONE_FREQ 19000.0f
@@ -102,6 +102,7 @@ extern float32_t APROC_TX_tune_power;
 extern demod_fm_instance DFM_RX1;
 extern demod_fm_instance DFM_RX1;
 extern float32_t SAM_Carrier_offset;
+extern float32_t APROC_TUNE_DigiTone_Freq;
 
 // Public methods
 extern void processRxAudio(void);     // start audio processor for RX

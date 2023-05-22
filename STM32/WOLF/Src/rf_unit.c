@@ -1228,10 +1228,12 @@ void RF_UNIT_ProcessSensors(void) {
 #define B16_RANGE 65535.0f
 #define B14_RANGE 16383.0f
 
+	HAL_ADCEx_InjectedPollForConversion(&hadc1, 100); // wait if prev conversion not ended
+
 	// THERMAL
 	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B16_RANGE;
 
-	float32_t therm_resistance = -2000.0f * rf_thermal / (-3.3f + rf_thermal);
+	float32_t therm_resistance = (-(float32_t)CALIBRATE.KTY81_Calibration) * rf_thermal / (-3.3f + rf_thermal);
 	uint_fast8_t point_left = 0;
 	uint_fast8_t point_right = SENS_TABLE_COUNT - 1;
 	for (uint_fast8_t i = 0; i < SENS_TABLE_COUNT; i++) {
@@ -1382,22 +1384,25 @@ void RF_UNIT_ProcessSensors(void) {
 #endif
 
 #define smooth_stick_time 100
+#define smooth_up_coeff 0.3f
+#define smooth_down_coeff 0.03f
 	static uint32_t forw_smooth_time = 0;
 	if ((HAL_GetTick() - forw_smooth_time) > smooth_stick_time) {
-		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * 0.99f + TRX_PWR_Forward * 0.01f;
-		// TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * 0.99f + TRX_PWR_Backward * 0.01f;
+		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * (1.0f - smooth_down_coeff) + TRX_PWR_Forward * smooth_down_coeff;
+		TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * (1.0f - smooth_down_coeff) + TRX_PWR_Backward * smooth_down_coeff;
 	}
 
 	if (TRX_PWR_Forward > TRX_PWR_Forward_SMOOTHED) {
-		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward;
-		// TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward;
+		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * (1.0f - smooth_up_coeff) + TRX_PWR_Forward * smooth_up_coeff;
+		TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * (1.0f - smooth_up_coeff) + TRX_PWR_Backward * smooth_up_coeff;
 		forw_smooth_time = HAL_GetTick();
 	}
 
-	TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * 0.99f + TRX_PWR_Backward * 0.01f;
-	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * 0.98f + TRX_SWR * 0.02f;
+	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * (1.0f - smooth_down_coeff) + TRX_SWR * smooth_down_coeff;
 
 	sprintf(TRX_SWR_SMOOTHED_STR, "%.1f", (double)TRX_SWR_SMOOTHED);
+
+	HAL_ADCEx_InjectedStart(&hadc1); // start next manual conversion
 }
 
 // Tisho

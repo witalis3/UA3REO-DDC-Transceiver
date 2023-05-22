@@ -5,16 +5,17 @@
 #include "rf_unit.h"
 #include "trx_manager.h"
 
-static float32_t DPD_distortion_gain_points[DPD_POINTS] = {0};
-static float32_t DPD_distortion_gain_points_best[DPD_POINTS] = {0};
-static float32_t DPD_distortion_gain_points_locked[DPD_POINTS] = {0};
+static DPD_Instance DPD = {0};
 
-static const float32_t DPD_distortion_gain_points_lock_stage0[DPD_POINTS] = {1, 0, 0, 0, 0, 0, 0, 0, 1}; // 0 - skip, 1 - in progress, 2 - finished
-static const float32_t DPD_distortion_gain_points_lock_stage1[DPD_POINTS] = {2, 0, 0, 0, 1, 0, 0, 0, 2};
-static const float32_t DPD_distortion_gain_points_lock_stage2[DPD_POINTS] = {2, 0, 1, 0, 2, 0, 1, 0, 2};
-static const float32_t DPD_distortion_gain_points_lock_stage3[DPD_POINTS] = {2, 1, 2, 1, 2, 0, 2, 0, 2};
-static const float32_t DPD_distortion_gain_points_lock_stage4[DPD_POINTS] = {2, 2, 2, 2, 2, 1, 2, 1, 2};
-static const float32_t DPD_distortion_gain_points_lock_stage5[DPD_POINTS] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
+static float32_t DPD_distortion_gain_points_best[DPD_POINTS_COUNT] = {0};
+static float32_t DPD_distortion_gain_points_locked[DPD_POINTS_COUNT] = {0};
+
+static const float32_t DPD_distortion_gain_points_lock_stage0[DPD_POINTS_COUNT] = {1, 0, 0, 0, 1, 0, 0, 0, 1}; // 0 - skip, 1 - in progress, 2 - finished
+static const float32_t DPD_distortion_gain_points_lock_stage1[DPD_POINTS_COUNT] = {2, 0, 0, 0, 1, 0, 0, 0, 2};
+static const float32_t DPD_distortion_gain_points_lock_stage2[DPD_POINTS_COUNT] = {2, 0, 1, 0, 2, 0, 1, 0, 2};
+static const float32_t DPD_distortion_gain_points_lock_stage3[DPD_POINTS_COUNT] = {2, 1, 2, 1, 2, 0, 2, 0, 2};
+static const float32_t DPD_distortion_gain_points_lock_stage4[DPD_POINTS_COUNT] = {2, 2, 2, 2, 2, 1, 2, 1, 2};
+static const float32_t DPD_distortion_gain_points_lock_stage5[DPD_POINTS_COUNT] = {1, 1, 1, 1, 1, 1, 1, 1, 1};
 
 static float32_t DPD_best_imd_sum = 0;
 static float32_t DPD_max_rms = 0;
@@ -25,30 +26,106 @@ static float32_t DPD_curr_cycle_imd_sum_max = 0;
 static uint8_t DPD_calibration_stage = 0;
 static uint32_t DPD_current_point = 0;
 static bool DPD_current_direction = true; // false - left, true - right
+static bool DPD_loaded = false;
 
 static bool DPD_OLD_TWO_SIGNAL_TUNE = false;
 static bool DPD_OLD_Full_Duplex = false;
 static uint8_t DPD_OLD_TUNE_MAX_POWER = false;
 
+static float32_t DPD_SPLINE_Xbuff[DPD_POINTS_COUNT];
+static float32_t DPD_SPLINE_Ybuff[DPD_POINTS_COUNT];
+static float32_t DPD_SPLINE_tempbuf[2 * DPD_POINTS_COUNT - 1];
+static float32_t DPD_SPLINE_coef[3 * (DPD_POINTS_COUNT - 1)];
+static arm_spline_instance_f32 DPD_SPLINE_Instance;
+static bool DPD_SPLINE_NeedReinit = true;
+
 static void DPD_checkCurrentPointAvailable();
 static void DPD_printDbmStatus(float32_t imd3, float32_t imd5);
 static void DPD_getDistortionForSample(float32_t *i, float32_t *q);
+static void DPD_Load();
+static void DPD_Clean();
+static void DPD_Save();
 
 void DPD_Init() {
 	DPD_calibration_stage = 0;
 	DPD_current_point = 0;
 	DPD_current_direction = true;
+	DPD_loaded = false;
 
-	for (uint32_t index = 0; index < DPD_POINTS; index++) {
-		DPD_distortion_gain_points[index] = 1.0f;
-		DPD_distortion_gain_points_best[index] = 1.0f;
+	if (TRX.Digital_Pre_Distortion) {
+		DPD_Load();
+	}
+
+	DPD_SPLINE_NeedReinit = true;
+}
+
+static void DPD_Load() {
+	dma_memset(&DPD, 0x00, sizeof(DPD));
+	int_fast8_t bandIndex = getBandFromFreq(CurrentVFO->Freq, false);
+	if (bandIndex >= 0) {
+		bool result = LoadDPDSettings((uint8_t *)&DPD, sizeof(DPD), bandIndex);
+		if (!result) {
+			return;
+		}
+	}
+
+	for (uint32_t index = 0; index < DPD_POINTS_COUNT; index++) {
+		if (DPD.version != DPD_VERSION) {
+			DPD.distortion_gain_points[index] = 1.0f + index * 0.0000001f;
+		}
+		DPD_distortion_gain_points_best[index] = DPD.distortion_gain_points[index];
 		memcpy(DPD_distortion_gain_points_locked, DPD_distortion_gain_points_lock_stage0, sizeof(DPD_distortion_gain_points_locked));
 	}
+	// println("DPD Loaded ", DPD.distortion_gain_points[0], " ", DPD.distortion_gain_points[1], " ", DPD.distortion_gain_points[2]);
+
+	if (DPD.version != DPD_VERSION) {
+		DPD.version = DPD_VERSION;
+		DPD_Save();
+	}
+	DPD_SPLINE_NeedReinit = true;
+
+	DPD_loaded = true;
+}
+
+static void DPD_Clean() {
+	dma_memset(&DPD, 0x00, sizeof(DPD));
+
+	for (uint32_t index = 0; index < DPD_POINTS_COUNT; index++) {
+		DPD.distortion_gain_points[index] = 1.0f + index * 0.0000001f;
+		DPD_distortion_gain_points_best[index] = DPD.distortion_gain_points[index];
+		memcpy(DPD_distortion_gain_points_locked, DPD_distortion_gain_points_lock_stage0, sizeof(DPD_distortion_gain_points_locked));
+	}
+	// println("DPD Cleaned ", DPD.distortion_gain_points[0], " ", DPD.distortion_gain_points[1], " ", DPD.distortion_gain_points[2]);
+
+	DPD.version = DPD_VERSION;
+	DPD_Save();
+
+	DPD_loaded = true;
+	DPD_SPLINE_NeedReinit = true;
+}
+
+static void DPD_Save() {
+	DPD.version = DPD_VERSION;
+	int_fast8_t bandIndex = getBandFromFreq(CurrentVFO->Freq, false);
+	if (bandIndex >= 0) {
+		SaveDPDSettings((uint8_t *)&DPD, sizeof(DPD), bandIndex);
+	}
+
+	// println("DPD Saved ", (double)DPD.distortion_gain_points[0], " ", DPD.distortion_gain_points[1], " ", DPD.distortion_gain_points[2]);
+	DPD_loaded = true;
 }
 
 void DPD_ProcessPredistortion(float32_t *buffer_i, float32_t *buffer_q, uint32_t size) {
+	if (DPD_need_calibration && !TRX.Digital_Pre_Distortion) {
+		TRX.Digital_Pre_Distortion = true;
+	}
+
 	if (!TRX.Digital_Pre_Distortion) {
 		return;
+	}
+
+	if (!DPD_loaded) {
+		DPD_Load();
 	}
 
 	for (uint32_t index = 0; index < size; index++) {
@@ -73,6 +150,7 @@ void DPD_StartCalibration() {
 		TRX.FFT_Averaging = FFT_MAX_MEANS;
 
 		DPD_Init();
+		DPD_Clean();
 
 		if (!TRX_Tune) {
 			BUTTONHANDLER_TUNE(0);
@@ -85,6 +163,7 @@ void DPD_StartCalibration() {
 		CALIBRATE.TUNE_MAX_POWER = DPD_OLD_TUNE_MAX_POWER;
 
 		DPD_Init();
+		DPD_Clean();
 
 		if (TRX_Tune) {
 			BUTTONHANDLER_TUNE(0);
@@ -116,6 +195,7 @@ void DPD_ProcessCalibration() {
 	static float32_t prev_imd_sum = 0;
 	static int32_t error_count = 0;
 
+	// float32_t current_imd_sum = FFT_Current_TX_IMD3 + FFT_Current_TX_IMD5 / 2.0f + FFT_Current_TX_IMD7 / 4.0f + FFT_Current_TX_IMD9 / 8.0f;
 	float32_t current_imd_sum = FFT_Current_TX_IMD3 + FFT_Current_TX_IMD5 + FFT_Current_TX_IMD7 + FFT_Current_TX_IMD9;
 
 	if (!DPD_start_imd_printed) {
@@ -128,29 +208,30 @@ void DPD_ProcessCalibration() {
 	if (prev_imd_sum > current_imd_sum) {
 		error_count++;
 	} else {
-		if (error_count > -5) {
+		if (error_count > -DPD_MAX_ERRORS) {
 			error_count--;
 		}
 
 		if (DPD_best_imd_sum < current_imd_sum) {
-			DPD_distortion_gain_points_best[DPD_current_point] = DPD_distortion_gain_points[DPD_current_point];
+			DPD_distortion_gain_points_best[DPD_current_point] = DPD.distortion_gain_points[DPD_current_point];
 			DPD_best_imd_sum = current_imd_sum;
 		}
 	}
 	prev_imd_sum = current_imd_sum;
 
 	// switch point on error, after cycle switch direction
-	if (error_count >= 5) {
-		DPD_distortion_gain_points[DPD_current_point] = DPD_distortion_gain_points_best[DPD_current_point]; // revert changes
+	if (error_count >= DPD_MAX_ERRORS) {
+		DPD.distortion_gain_points[DPD_current_point] = DPD_distortion_gain_points_best[DPD_current_point]; // revert changes
+		DPD_SPLINE_NeedReinit = true;
 
 		DPD_current_point++;
 		error_count = 0;
 
-		while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS) {
+		while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS_COUNT) {
 			DPD_current_point++;
 		}
 
-		if (DPD_current_point >= DPD_POINTS) { // end of points
+		if (DPD_current_point >= DPD_POINTS_COUNT) { // end of points
 			DPD_current_point = 0;
 			DPD_checkCurrentPointAvailable();
 			DPD_current_direction = !DPD_current_direction;
@@ -164,39 +245,44 @@ void DPD_ProcessCalibration() {
 
 				if (DPD_calibration_stage == 1) {
 					memcpy(DPD_distortion_gain_points_locked, DPD_distortion_gain_points_lock_stage1, sizeof(DPD_distortion_gain_points_locked));
-					DPD_distortion_gain_points_best[4] = (DPD_distortion_gain_points[0] + DPD_distortion_gain_points[8]) / 2.0f;
+					DPD_SPLINE_NeedReinit = true;
 				}
 
 				if (DPD_calibration_stage == 2) {
 					memcpy(DPD_distortion_gain_points_locked, DPD_distortion_gain_points_lock_stage2, sizeof(DPD_distortion_gain_points_locked));
+					DPD_SPLINE_NeedReinit = true;
 
-					DPD_distortion_gain_points_best[2] = (DPD_distortion_gain_points[0] + DPD_distortion_gain_points[4]) / 2.0f;
-					DPD_distortion_gain_points_best[6] = (DPD_distortion_gain_points[4] + DPD_distortion_gain_points[8]) / 2.0f;
+					DPD_distortion_gain_points_best[2] = (DPD.distortion_gain_points[0] + DPD.distortion_gain_points[4]) / 2.0f;
+					DPD_distortion_gain_points_best[6] = (DPD.distortion_gain_points[4] + DPD.distortion_gain_points[8]) / 2.0f;
 				}
 
 				if (DPD_calibration_stage == 3) {
 					memcpy(DPD_distortion_gain_points_locked, DPD_distortion_gain_points_lock_stage3, sizeof(DPD_distortion_gain_points_locked));
+					DPD_SPLINE_NeedReinit = true;
 
-					DPD_distortion_gain_points_best[1] = (DPD_distortion_gain_points[0] + DPD_distortion_gain_points[2]) / 2.0f;
-					DPD_distortion_gain_points_best[3] = (DPD_distortion_gain_points[2] + DPD_distortion_gain_points[4]) / 2.0f;
+					DPD_distortion_gain_points_best[1] = (DPD.distortion_gain_points[0] + DPD.distortion_gain_points[2]) / 2.0f;
+					DPD_distortion_gain_points_best[3] = (DPD.distortion_gain_points[2] + DPD.distortion_gain_points[4]) / 2.0f;
 				}
 
 				if (DPD_calibration_stage == 4) {
 					memcpy(DPD_distortion_gain_points_locked, DPD_distortion_gain_points_lock_stage4, sizeof(DPD_distortion_gain_points_locked));
+					DPD_SPLINE_NeedReinit = true;
 
-					DPD_distortion_gain_points_best[5] = (DPD_distortion_gain_points[4] + DPD_distortion_gain_points[6]) / 2.0f;
-					DPD_distortion_gain_points_best[7] = (DPD_distortion_gain_points[6] + DPD_distortion_gain_points[8]) / 2.0f;
+					DPD_distortion_gain_points_best[5] = (DPD.distortion_gain_points[4] + DPD.distortion_gain_points[6]) / 2.0f;
+					DPD_distortion_gain_points_best[7] = (DPD.distortion_gain_points[6] + DPD.distortion_gain_points[8]) / 2.0f;
 				}
 
 				if (DPD_calibration_stage == 5) {
 					memcpy(DPD_distortion_gain_points_locked, DPD_distortion_gain_points_lock_stage5, sizeof(DPD_distortion_gain_points_locked));
+					DPD_SPLINE_NeedReinit = true;
 				}
 
 				// stage 6 - fine repeat 5
 
 				DPD_current_point = 0;
 				DPD_checkCurrentPointAvailable();
-				memcpy(DPD_distortion_gain_points, DPD_distortion_gain_points_best, sizeof(DPD_distortion_gain_points));
+				memcpy(DPD.distortion_gain_points, DPD_distortion_gain_points_best, sizeof(DPD.distortion_gain_points));
+				DPD_SPLINE_NeedReinit = true;
 
 				if (DPD_calibration_stage == 7) {
 					DPD_need_calibration = false;
@@ -210,10 +296,12 @@ void DPD_ProcessCalibration() {
 					CALIBRATE.TUNE_MAX_POWER = DPD_OLD_TUNE_MAX_POWER;
 
 					LCD_showTooltip("DPD Calibr complete");
+					DPD_Save();
 
-					for (uint32_t index = 0; index < DPD_POINTS; index++) {
-						DPD_distortion_gain_points[index] = DPD_distortion_gain_points_best[index];
-						println(index, ": ", DPD_distortion_gain_points[index]);
+					for (uint32_t index = 0; index < DPD_POINTS_COUNT; index++) {
+						DPD.distortion_gain_points[index] = DPD_distortion_gain_points_best[index];
+						DPD_SPLINE_NeedReinit = true;
+						println(index, ": ", (double)DPD.distortion_gain_points[index]);
 					}
 				}
 
@@ -226,28 +314,30 @@ void DPD_ProcessCalibration() {
 	}
 
 	DPD_checkCurrentPointAvailable();
-	if (DPD_current_point == DPD_POINTS - 1) { // only plus direction for last point
-		DPD_distortion_gain_points[DPD_current_point] += 1.0f * DPD_CORRECTION_GAIN_STEP;
+	if (DPD_current_point == DPD_POINTS_COUNT - 1) { // only plus direction for last point
+		DPD.distortion_gain_points[DPD_current_point] += 1.0f * DPD_CORRECTION_GAIN_STEP;
 	} else {
-		DPD_distortion_gain_points[DPD_current_point] += (DPD_current_direction ? 1.0f : -1.0f) * DPD_CORRECTION_GAIN_STEP;
+		DPD.distortion_gain_points[DPD_current_point] += (DPD_current_direction ? 1.0f : -1.0f) * DPD_CORRECTION_GAIN_STEP;
 	}
+	DPD_SPLINE_NeedReinit = true;
 
 	if (DPD_curr_cycle_imd_sum_max < current_imd_sum) {
 		DPD_curr_cycle_imd_sum_max = current_imd_sum;
 	}
 
 	print("DPD stage: ", DPD_calibration_stage, " point: ", DPD_current_point, " dir: ", (DPD_current_direction ? "+" : "-"), " err: ", error_count);
-	println(" gain: ", DPD_distortion_gain_points[DPD_current_point], " BEST: ", DPD_best_imd_sum, " PREV: ", DPD_prev_cycle_imd_sum_max, " CUR: ", DPD_curr_cycle_imd_sum_max);
+	println(" gain: ", (double)DPD.distortion_gain_points[DPD_current_point], " BEST: ", (double)DPD_best_imd_sum, " PREV: ", (double)DPD_prev_cycle_imd_sum_max,
+	        " CUR: ", (double)DPD_curr_cycle_imd_sum_max);
 }
 
 static void DPD_checkCurrentPointAvailable() {
-	while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS) {
+	while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS_COUNT) {
 		DPD_current_point++;
 	}
-	if (DPD_current_point >= DPD_POINTS) {
+	if (DPD_current_point >= DPD_POINTS_COUNT) {
 		DPD_current_point = 0;
 
-		while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS) {
+		while (DPD_distortion_gain_points_locked[DPD_current_point] != 1 && DPD_current_point < DPD_POINTS_COUNT) {
 			DPD_current_point++;
 		}
 	}
@@ -255,7 +345,7 @@ static void DPD_checkCurrentPointAvailable() {
 
 static void DPD_printDbmStatus(float32_t imd3, float32_t imd5) {
 	char ctmp[32] = {0};
-	sprintf(ctmp, "IMD3: %.1f IMD5: %.1f", imd3, imd5);
+	sprintf(ctmp, "IMD3: %.1f IMD5: %.1f", (double)imd3, (double)imd5);
 	LCD_showTooltip(ctmp);
 }
 
@@ -263,58 +353,59 @@ static void DPD_getDistortionForSample(float32_t *i, float32_t *q) {
 	float32_t rms = sqrtf(*i * *i + *q * *q);
 	if (rms > DPD_max_rms && DPD_need_calibration) {
 		DPD_max_rms = rms;
+		DPD_SPLINE_NeedReinit = true;
 	}
 
 	if (rms > DPD_max_rms) { // overflow over table
-		float32_t gain_correction = DPD_distortion_gain_points[DPD_POINTS - 1];
+		float32_t gain_correction = DPD.distortion_gain_points[DPD_POINTS_COUNT - 1];
 		*i = *i * gain_correction;
 		*q = *q * gain_correction;
 		return;
 	}
 
-	float32_t max_rms_in_table = DPD_max_rms;
+	// Spline reinit
+	if (DPD_SPLINE_NeedReinit) {
+		uint8_t point_count = 0;
 
-	uint32_t point_left = 0;
-	uint32_t point_right = 1;
+		for (uint8_t i = 0; i < DPD_POINTS_COUNT; i++) {
+			if (DPD_distortion_gain_points_locked[i] == 0) {
+				continue;
+			}
 
-	// find nearest points
-	for (uint32_t index = 1; index < DPD_POINTS; index++) {
-		float32_t rms_on_point_prev = (index - 1) * max_rms_in_table / (float32_t)(DPD_POINTS - 1);
-		float32_t rms_on_point = index * max_rms_in_table / (float32_t)(DPD_POINTS - 1);
+			float32_t y = DPD.distortion_gain_points[i];
 
-		if (rms >= rms_on_point_prev && rms <= rms_on_point) {
-			point_right = index;
+			if (point_count > 0 && y == DPD_SPLINE_Ybuff[point_count - 1]) { // skip equal
+				continue;
+			}
+
+			DPD_SPLINE_Xbuff[point_count] = (float32_t)i * DPD_max_rms / (float32_t)(DPD_POINTS_COUNT - 1) + 0.0001f;
+			DPD_SPLINE_Ybuff[point_count] = y;
+			point_count++;
 		}
-	}
-	point_left = point_right - 1;
 
-	// skip uncalibrated points
-	while (DPD_distortion_gain_points_locked[point_right] == 0 && point_right < (DPD_POINTS - 1)) {
-		point_right++;
-	}
-	while (DPD_distortion_gain_points_locked[point_left] == 0 && point_left > 0) {
-		point_left--;
+		if (point_count > 2) { // minimal points count
+			// ARM_SPLINE_NATURAL / ARM_SPLINE_PARABOLIC_RUNOUT
+			arm_spline_init_f32(&DPD_SPLINE_Instance, ARM_SPLINE_NATURAL, DPD_SPLINE_Xbuff, DPD_SPLINE_Ybuff, point_count, DPD_SPLINE_coef, DPD_SPLINE_tempbuf);
+		}
+
+		DPD_SPLINE_NeedReinit = false;
 	}
 
-	// calculate point
-	float32_t rms_left = point_left * max_rms_in_table / (float32_t)(DPD_POINTS - 1);
-	float32_t rms_right = point_right * max_rms_in_table / (float32_t)(DPD_POINTS - 1);
-	float32_t rms_diff = rms_right - rms_left;
-	float32_t left_diff = rms - rms_left;
-	float32_t right_diff = rms_right - rms;
-	float32_t left_percent = right_diff / rms_diff;
-	float32_t right_percent = left_diff / rms_diff;
+	if (DPD_SPLINE_Instance.n_x < 3) { // no point for inperpolation
+		return;
+	}
 
-	// get gain correction
-	float32_t gain_correction = DPD_distortion_gain_points[point_left] * left_percent + DPD_distortion_gain_points[point_right] * right_percent;
+	// get cubic spline data
+	float32_t gain_correction;
+	arm_spline_f32(&DPD_SPLINE_Instance, &rms, &gain_correction, 1);
 
 	// debug each 1000 sample
-	/*static uint32_t debug_counter = 0;
+	/* static uint32_t debug_counter = 0;
 	debug_counter++;
 	if(debug_counter > 1000) {
 	  debug_counter = 0;
-	  println("RMS: ", rms, " PL: ", point_left, " PR: ", point_right, " RL: ", rms_left, " RR: ", rms_right, " G: ", gain_correction);
-	}*/
+	  println("RMS: ", rms, " G: ", gain_correction);
+	} */
 
 	// apply distortion
 	*i = *i * gain_correction;

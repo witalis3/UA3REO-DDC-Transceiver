@@ -10,7 +10,7 @@
 #define HRDW_HAS_MDMA true
 #define HRDW_HAS_SD true
 #define HRDW_HAS_DMA2D true
-#define HRDW_HAS_JPEG true
+#define HRDW_HAS_JPEG false
 #define HRDW_HAS_WIFI true
 #define HRDW_HAS_USB_DEBUG true
 #define HRDW_HAS_USB_CAT true
@@ -24,7 +24,7 @@
 
 // settings
 #define ADC_CLOCK 122880000            // ADC generator frequency
-#define DAC_CLOCK 110400000            // DAC generator frequency
+#define DAC_CLOCK 109056000            // DAC generator frequency
 #define MAX_RX_FREQ_HZ 750000000       // Maximum receive frequency (from the ADC datasheet)
 #define MAX_TX_FREQ_HZ (DAC_CLOCK * 2) // Maximum transmission frequency
 #define ADC_FULL_SCALE 65536           // maximum signal amplitude in the ADC // powf (2, ADC_BITS)

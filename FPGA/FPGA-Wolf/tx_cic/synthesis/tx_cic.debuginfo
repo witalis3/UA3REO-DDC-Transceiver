@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="tx_cic" kind="system" version="22.1" fabric="QSYS">
  <!-- Format version 22.1 915 (Future versions may contain additional information.) -->
- <!-- 2023.01.29.14:17:09 -->
+ <!-- 2023.05.09.18:29:41 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1674991026</value>
+  <value>1683646179</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -202,7 +202,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="RCF_FIX">
    <type>int</type>
-   <value>2300</value>
+   <value>2272</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -226,7 +226,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="RCF_MIN">
    <type>int</type>
-   <value>2300</value>
+   <value>2272</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -234,7 +234,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="RCF_MAX">
    <type>int</type>
-   <value>2300</value>
+   <value>2272</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -929,5 +929,5 @@ parameters are a RESULT of the module parameters. -->
   <version>22.1</version>
  </plugin>
  <reportVersion>22.1 915</reportVersion>
- <uniqueIdentifier>283926066FD000000185FD3EC979</uniqueIdentifier>
+ <uniqueIdentifier>283926066FD0000001880121EF7F</uniqueIdentifier>
 </EnsembleReport>

@@ -71,11 +71,11 @@ void LOCINFO_Draw(void) {
 	addSymbols(tmp, tmp, 15 + 8, " ", true);
 	LCDDriver_printText(tmp, 10, 50, FG_COLOR, BG_COLOR, 2);
 
-	sprintf(tmp, "LAT: %f", lat);
+	sprintf(tmp, "LAT: %f", (double)lat);
 	addSymbols(tmp, tmp, 15 + 8, " ", true);
 	LCDDriver_printText(tmp, 10, 70, FG_COLOR, BG_COLOR, 2);
 
-	sprintf(tmp, "LON: %f", lon);
+	sprintf(tmp, "LON: %f", (double)lon);
 	addSymbols(tmp, tmp, 15 + 8, " ", true);
 	LCDDriver_printText(tmp, 10, 90, FG_COLOR, BG_COLOR, 2);
 

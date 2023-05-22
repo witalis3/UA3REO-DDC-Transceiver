@@ -52,7 +52,7 @@ RX_CIC_RATE,
 IQ_RX_READ_REQ,
 IQ_RX_READ_CLK,
 DAC_DRV_A0,
-DAC_DRV_A1,
+DAC_DRV_A1
 );
 
 input clk_in;
@@ -537,12 +537,12 @@ begin
 	
 	else if (k == 800) //GET INFO
 	begin
-		DATA_BUS_OUT[7:0] = 'd7; //flash id 1
+		DATA_BUS_OUT[7:0] = 'd8; //flash id 1
 		k = 801;
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd6; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd0; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)

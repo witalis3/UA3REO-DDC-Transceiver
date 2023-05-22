@@ -485,6 +485,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "FT8", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FT8, .holdHandler = BUTTONHANDLER_FT8, .checkBool = NULL},
     {.name = "ANT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ANT, .holdHandler = BUTTONHANDLER_ANT, .checkBool = NULL},
     {.name = "REPIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_REPEATER_MODE, .holdHandler = BUTTONHANDLER_REPEATER_MODE, .checkBool = (uint32_t *)&TRX.RepeaterMode_shadow},
+    {.name = "DPD", .work_in_menu = true, .clickHandler = BUTTONHANDLER_DPD, .holdHandler = BUTTONHANDLER_DPD_CALIBRATE, .checkBool = (uint32_t *)&TRX.Digital_Pre_Distortion},
     {.name = "NONE", .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL, .checkBool = NULL},
 };
 #endif
@@ -796,7 +797,6 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "SNAP >", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SNAP_RIGHT, .holdHandler = BUTTONHANDLER_AUTO_SNAP, .checkBool = (uint32_t *)&TRX.Auto_Snap},
     {.name = "CQ", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CQ, .holdHandler = BUTTONHANDLER_FILEMANAGER, .checkBool = (uint32_t *)&SD_PlayInProcess},
     {.name = "WPM", .work_in_menu = true, .clickHandler = BUTTONHANDLER_WPM, .holdHandler = BUTTONHANDLER_WPM, .checkBool = NULL},
-    //{.name = "DPD", .work_in_menu = true, .clickHandler = BUTTONHANDLER_DPD, .holdHandler = BUTTONHANDLER_DPD_CALIBRATE, .checkBool = (uint32_t *)&TRX.Digital_Pre_Distortion},
     {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNE, .checkBool = (uint32_t *)&TRX_Tune},
 
     {.name = "SCAN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SCAN, .holdHandler = BUTTONHANDLER_SCAN, .checkBool = (uint32_t *)&TRX_ScanMode},
@@ -824,6 +824,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "SQL", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SQUELCH, .holdHandler = BUTTONHANDLER_SQUELCH, .checkBool = (uint32_t *)&TRX.SQL_shadow},
     {.name = "ANT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ANT, .holdHandler = BUTTONHANDLER_ANT, .checkBool = NULL},
     {.name = "REPIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_REPEATER_MODE, .holdHandler = BUTTONHANDLER_REPEATER_MODE, .checkBool = (uint32_t *)&TRX.RepeaterMode_shadow},
+    {.name = "DPD", .work_in_menu = true, .clickHandler = BUTTONHANDLER_DPD, .holdHandler = BUTTONHANDLER_DPD_CALIBRATE, .checkBool = (uint32_t *)&TRX.Digital_Pre_Distortion},
     {.name = "NONE", .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL, .checkBool = NULL},
 };
 #endif
@@ -1167,7 +1168,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				CurrentVFO->NotchFC += step;
 			}
 
-			CurrentVFO->NotchFC = roundf((float64_t)CurrentVFO->NotchFC / step) * step;
+			CurrentVFO->NotchFC = round((float64_t)CurrentVFO->NotchFC / step) * step;
 
 			if (CurrentVFO->NotchFC < step) {
 				CurrentVFO->NotchFC = step;
@@ -1459,6 +1460,7 @@ void FRONTPANEL_ENC2SW_validate() {
 
 void FRONTPANEL_Init(void) {
 	uint16_t test_value = 0;
+	HRDW_SPI_Locked = true;
 #ifdef HRDW_MCP3008_1
 	test_value = FRONTPANEL_ReadMCP3008_Value(0, 1, 1);
 	if (test_value == 65535) {
@@ -1483,6 +1485,7 @@ void FRONTPANEL_Init(void) {
 		LCD_showError("MCP3008 - 3 init error", true);
 	}
 #endif
+	HRDW_SPI_Locked = false;
 	FRONTPANEL_Process();
 }
 
@@ -1514,6 +1517,7 @@ void FRONTPANEL_Process(void) {
 		if (HRDW_SPI_Locked) {
 			continue;
 		}
+		HRDW_SPI_Locked = true;
 
 		PERIPH_FrontPanel_Button *button = &PERIPH_FrontPanel_Buttons[b];
 // check disabled ports
@@ -1549,7 +1553,11 @@ void FRONTPANEL_Process(void) {
 			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 3, 5);
 		} else
 #endif
+		{
+			HRDW_SPI_Locked = false;
 			continue;
+		}
+		HRDW_SPI_Locked = false;
 
 		if (TRX.Debug_Type == TRX_DEBUG_BUTTONS) {
 			static uint8_t fu_gebug_lastchannel = 255;
@@ -1726,11 +1734,12 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 }
 
 static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count) {
-	HRDW_SPI_Locked = true;
-
 	uint8_t outData[3] = {0};
 	uint8_t inData[3] = {0};
 	uint32_t mcp3008_value = 0;
+	uint32_t avg_mcp3008_value = 0;
+	uint32_t min_mcp3008_value = 65000;
+	uint32_t max_mcp3008_value = 0;
 
 	for (uint8_t i = 0; i < count; i++) {
 		outData[0] = 0x18 | channel;
@@ -1745,14 +1754,25 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, u
 			res = HRDW_FrontUnit3_SPI(outData, inData, 3, false);
 		}
 		if (res == false) {
-			HRDW_SPI_Locked = false;
 			return 65535;
 		}
-		mcp3008_value += (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
-	}
-	mcp3008_value /= count;
 
-	HRDW_SPI_Locked = false;
+		mcp3008_value = (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
+		avg_mcp3008_value += mcp3008_value;
+
+		if (min_mcp3008_value > mcp3008_value) {
+			min_mcp3008_value = mcp3008_value;
+		}
+		if (max_mcp3008_value < mcp3008_value) {
+			max_mcp3008_value = mcp3008_value;
+		}
+	}
+	avg_mcp3008_value /= count;
+
+	if ((max_mcp3008_value - min_mcp3008_value) > 100) {
+		// println("FRONT-UNIT channel big delta error! ", (max_mcp3008_value - min_mcp3008_value));
+		return 1023;
+	}
 
 	return mcp3008_value;
 }

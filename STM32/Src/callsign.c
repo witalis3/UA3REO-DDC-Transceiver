@@ -1620,7 +1620,7 @@ void CALLSIGN_INFO_Draw(void) {
 			addSymbols(tmp, tmp, 15 + 15, " ", true);
 			LCDDriver_printText(tmp, 10, 110, FG_COLOR, BG_COLOR, 2);
 
-			sprintf(tmp, "LAT: %.2f LON: %.2f", info->lat, info->lon);
+			sprintf(tmp, "LAT: %.2f LON: %.2f", (double)info->lat, (double)info->lon);
 			addSymbols(tmp, tmp, 15 + 15, " ", true);
 			LCDDriver_printText(tmp, 10, 130, FG_COLOR, BG_COLOR, 2);
 

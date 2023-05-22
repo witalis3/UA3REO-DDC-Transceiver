@@ -7,6 +7,7 @@
 #include "lcd.h"
 #include "lcd_driver.h"
 #include "locator_ft8.h"
+#include "sd.h"
 #include "traffic_manager.h"
 #include <stdbool.h>
 
@@ -19,10 +20,13 @@ uint16_t cursor_line = 100;
 uint16_t FT8_DatBlockNum;
 bool FT8_DecodeActiveFlg;
 bool FT8_ColectDataFlg;
+bool FT8_QSO_Count_needUpdate = true;
+uint32_t FT8_QSO_Count = 0;
 
 // Function prototypes
-void process_data(void);
-void update_synchronization(void);
+static void process_data(void);
+static void update_synchronization(void);
+static void FT8_getQSOCount(void);
 
 void InitFT8_Decoder(void) {
 	if (LCD_busy) {
@@ -41,6 +45,7 @@ void InitFT8_Decoder(void) {
 	FT8_DatBlockNum = 0;
 	FT8_DecodeActiveFlg = true;
 
+	FT8_QSO_Count_needUpdate = true;
 	update_synchronization();
 	set_Station_Coordinates(TRX.LOCATOR);
 
@@ -93,7 +98,7 @@ void InitFT8_Decoder(void) {
 	}
 
 	receive_sequence();
-	cursor_freq = (uint16_t)((float)(cursor_line + ft8_min_bin) * ft8_shift);
+	cursor_freq = (uint16_t)((float)(cursor_line + ft8_min_bin) * (float32_t)ft8_shift);
 	FT8_Print_Freq();
 
 	Set_Data_Colection(0); // Disable the data colection
@@ -119,7 +124,7 @@ void MenagerFT8(void) {
 		}
 
 		if (xmit_flag == 1) {
-			__disable_irq(); // Disable all interrupts
+			//__disable_irq(); // Disable all interrupts
 			int offset_index = 5;
 			// 79
 			if (ft8_xmit_counter >= offset_index && ft8_xmit_counter < 79 + offset_index) {
@@ -155,12 +160,15 @@ void MenagerFT8(void) {
 
 				if (Beacon_State == 8) // if we are on the end of answering a "CQ" (we just send "73")
 				{
-					Beacon_State = 0;
-					// FT8_Menu_Idx = 0;      // index of the "CQ" button
-					// FT8_Menu_Pos_Toggle(); // deactivate the "CQ" button -> set green
+					if (TRX.FT8_Auto_CQ) {
+						Beacon_State = 0;
+					} else {
+						FT8_Menu_Idx = 0;      // index of the "CQ" button
+						FT8_Menu_Pos_Toggle(); // deactivate the "CQ" button -> set green
+					}
 				}
 			}
-			__enable_irq(); // Re-enable all interrupts
+			//__enable_irq(); // Re-enable all interrupts
 		}
 
 		DSP_Flag = 0;
@@ -200,7 +208,7 @@ void MenagerFT8(void) {
 	LCD_busy = false; //
 }
 
-void process_data(void) {
+static void process_data(void) {
 	if (FT8_DatBlockNum >= num_que_blocks) {
 		//    for (int i = 0; i<block_size*(FT8_DatBlockNum/8); i++) {
 		//			input_gulp[i] = AudioBuffer_for_FT8[i];		//coppy to FFT buffer
@@ -219,7 +227,7 @@ void process_data(void) {
 }
 
 // update the syncronisation and show the time
-void update_synchronization(void) {
+static void update_synchronization(void) {
 	char ctmp[30] = {0};
 
 	static uint8_t Seconds_Old;
@@ -252,21 +260,17 @@ void update_synchronization(void) {
 		sprintf(ctmp, "SWR: %.1f, PWR: %.1fW    ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward));
 #if (defined(LAY_800x480))
 		LCDDriver_printText(ctmp, 235, 400, FG_COLOR, BG_COLOR, 2);
-
 #elif (defined(LAY_320x240))
 		LCDDriver_printText(ctmp, 180, 215, FG_COLOR, BG_COLOR, 1);
-
 #else
 		LCDDriver_printText(ctmp, 200, 280, FG_COLOR, BG_COLOR, 2);
 #endif
 
-		sprintf(ctmp, "TEMP: % 2d    ", (int16_t)TRX_RF_Temperature);
+		sprintf(ctmp, "TEMP:% 2d, QSO: %d  ", (int16_t)TRX_RF_Temperature, FT8_QSO_Count);
 #if (defined(LAY_800x480))
 		LCDDriver_printText(ctmp, 235, 420, FG_COLOR, BG_COLOR, 2);
-
 #elif (defined(LAY_320x240))
 		// LCDDriver_printText(ctmp, 180, 225, FG_COLOR, BG_COLOR, 1);
-
 #else
 		LCDDriver_printText(ctmp, 200, 300, FG_COLOR, BG_COLOR, 2);
 #endif
@@ -277,6 +281,10 @@ void update_synchronization(void) {
 	if ((ft8_flag == 0 && Seconds % 15 <= 1) && (decode_flag == 0)) // 15s marker
 	{
 		Set_Data_Colection(1); // Set new data colection
+	}
+
+	if (FT8_QSO_Count_needUpdate) {
+		FT8_getQSOCount();
 	}
 }
 
@@ -296,7 +304,7 @@ void FT8_EncRotate(int8_t direction) {
 		cursor_line = ft8_buffer - 50;
 	}
 
-	cursor_freq = (uint16_t)((float)(cursor_line + ft8_min_bin) * ft8_shift);
+	cursor_freq = (uint16_t)((float)(cursor_line + ft8_min_bin) * (float32_t)ft8_shift);
 
 	if (TRX_Tune) {
 		set_Xmit_Freq(FT8_BND_Freq, cursor_freq);
@@ -325,10 +333,19 @@ void FT8_Enc2Click(void) {
 	}
 	LCD_busy = true;
 
-	cursor_line -= 1; // Bug fix (pressing the encoder causes one + 1 step of the main encoder)
-	//	FT8_EncRotate(-1);					//Bug fix (pressing the encoder causes one + 1 step of the main encoder)
-
 	FT8_Menu_Pos_Toggle();
 
 	LCD_busy = false;
+}
+
+void FT8_getQSOCount_callback(uint32_t count) { FT8_QSO_Count = count; }
+
+static void FT8_getQSOCount(void) {
+	if (SD_Present && !SD_CommandInProcess) {
+		strcpy((char *)SD_workbuffer_A, "FT8_QSO_Log.adi"); // File name
+		SDCOMM_GET_LINES_COUNT_callback = FT8_getQSOCount_callback;
+
+		SD_doCommand(SDCOMM_GET_LINES_COUNT, false);
+		FT8_QSO_Count_needUpdate = false;
+	}
 }

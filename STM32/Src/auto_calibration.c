@@ -144,21 +144,21 @@ void AUTO_CALIBRATION_Draw(void) {
 			LCDDriver_printText("Rotate to adjust FORWARD", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.1f W Forward", TRX_PWR_Forward_SMOOTHED);
+			sprintf(str, "%.1f W Forward", (double)TRX_PWR_Forward_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.1f W Backward", TRX_PWR_Backward_SMOOTHED);
+			sprintf(str, "%.1f W Backward", (double)TRX_PWR_Backward_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.2f W FWD Calibrate", CALIBRATE.SWR_FWD_Calibration_HF);
+			sprintf(str, "%.2f W FWD Calibrate", (double)CALIBRATE.SWR_FWD_Calibration_HF);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.2f W BWD Calibrate", CALIBRATE.SWR_BWD_Calibration_HF);
+			sprintf(str, "%.2f W BWD Calibrate", (double)CALIBRATE.SWR_BWD_Calibration_HF);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -179,21 +179,21 @@ void AUTO_CALIBRATION_Draw(void) {
 			LCDDriver_printText("Rotate to adjust BACKWARD", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.1f W Forward", TRX_PWR_Forward_SMOOTHED);
+			sprintf(str, "%.1f W Forward", (double)TRX_PWR_Forward_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.1f W Backward", TRX_PWR_Backward_SMOOTHED);
+			sprintf(str, "%.1f W Backward", (double)TRX_PWR_Backward_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.2f W FWD Calibrate", CALIBRATE.SWR_FWD_Calibration_HF);
+			sprintf(str, "%.2f W FWD Calibrate", (double)CALIBRATE.SWR_FWD_Calibration_HF);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.2f W BWD Calibrate", CALIBRATE.SWR_BWD_Calibration_HF);
+			sprintf(str, "%.2f W BWD Calibrate", (double)CALIBRATE.SWR_BWD_Calibration_HF);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -231,21 +231,21 @@ void AUTO_CALIBRATION_Draw(void) {
 			LCDDriver_printText("Rotate to adjust FORWARD", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.1f W Forward", TRX_PWR_Forward_SMOOTHED);
+			sprintf(str, "%.1f W Forward", (double)TRX_PWR_Forward_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.1f W Backward", TRX_PWR_Backward_SMOOTHED);
+			sprintf(str, "%.1f W Backward", (double)TRX_PWR_Backward_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.2f W FWD Calibrate", CALIBRATE.SWR_FWD_Calibration_6M);
+			sprintf(str, "%.2f W FWD Calibrate", (double)CALIBRATE.SWR_FWD_Calibration_6M);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.2f W BWD Calibrate", CALIBRATE.SWR_BWD_Calibration_6M);
+			sprintf(str, "%.2f W BWD Calibrate", (double)CALIBRATE.SWR_BWD_Calibration_6M);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -266,21 +266,21 @@ void AUTO_CALIBRATION_Draw(void) {
 			LCDDriver_printText("Rotate to adjust BACKWARD", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.1f W Forward", TRX_PWR_Forward_SMOOTHED);
+			sprintf(str, "%.1f W Forward", (double)TRX_PWR_Forward_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.1f W Backward", TRX_PWR_Backward_SMOOTHED);
+			sprintf(str, "%.1f W Backward", (double)TRX_PWR_Backward_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.2f W FWD Calibrate", CALIBRATE.SWR_FWD_Calibration_6M);
+			sprintf(str, "%.2f W FWD Calibrate", (double)CALIBRATE.SWR_FWD_Calibration_6M);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.2f W BWD Calibrate", CALIBRATE.SWR_BWD_Calibration_6M);
+			sprintf(str, "%.2f W BWD Calibrate", (double)CALIBRATE.SWR_BWD_Calibration_6M);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -318,21 +318,21 @@ void AUTO_CALIBRATION_Draw(void) {
 			LCDDriver_printText("Rotate to adjust FORWARD", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.1f W Forward", TRX_PWR_Forward_SMOOTHED);
+			sprintf(str, "%.1f W Forward", (double)TRX_PWR_Forward_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.1f W Backward", TRX_PWR_Backward_SMOOTHED);
+			sprintf(str, "%.1f W Backward", (double)TRX_PWR_Backward_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.2f W FWD Calibrate", CALIBRATE.SWR_FWD_Calibration_VHF);
+			sprintf(str, "%.2f W FWD Calibrate", (double)CALIBRATE.SWR_FWD_Calibration_VHF);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.2f W BWD Calibrate", CALIBRATE.SWR_BWD_Calibration_VHF);
+			sprintf(str, "%.2f W BWD Calibrate", (double)CALIBRATE.SWR_BWD_Calibration_VHF);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -353,21 +353,21 @@ void AUTO_CALIBRATION_Draw(void) {
 			LCDDriver_printText("Rotate to adjust BACKWARD", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.1f W Forward", TRX_PWR_Forward_SMOOTHED);
+			sprintf(str, "%.1f W Forward", (double)TRX_PWR_Forward_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.1f W Backward", TRX_PWR_Backward_SMOOTHED);
+			sprintf(str, "%.1f W Backward", (double)TRX_PWR_Backward_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.2f W FWD Calibrate", CALIBRATE.SWR_FWD_Calibration_VHF);
+			sprintf(str, "%.2f W FWD Calibrate", (double)CALIBRATE.SWR_FWD_Calibration_VHF);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-			sprintf(str, "%.2f W BWD Calibrate", CALIBRATE.SWR_BWD_Calibration_VHF);
+			sprintf(str, "%.2f W BWD Calibrate", (double)CALIBRATE.SWR_BWD_Calibration_VHF);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -459,10 +459,10 @@ void AUTO_CALIBRATION_Draw(void) {
 		}
 
 		if (AUTO_CALIBRATION_current_page > 0 && AUTO_CALIBRATION_current_page < 14) {
-			sprintf(str, "%.1f SWR", TRX_SWR_SMOOTHED);
+			sprintf(str, "%.1f SWR", (double)TRX_SWR_SMOOTHED);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
-			sprintf(str, "%.1f W Out", AUTO_CALIBRATION_prev_power);
+			sprintf(str, "%.1f W Out", (double)AUTO_CALIBRATION_prev_power);
 			LCDDriver_printText(str, margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -652,7 +652,7 @@ static bool AUTO_CALIBRATION_ProcessPowerCalibration(uint8_t *rf_calibration) {
 	float32_t power_diff = TRX_PWR_Forward_SMOOTHED - AUTO_CALIBRATION_prev_power;
 	AUTO_CALIBRATION_prev_power = TRX_PWR_Forward_SMOOTHED;
 
-	println("[AutoCal] PWR: ", TRX_PWR_Forward_SMOOTHED, " CAL: ", *rf_calibration, " PWR DIFF: ", power_diff, " SWR: ", TRX_SWR_SMOOTHED);
+	println("[AutoCal] PWR: ", (double)TRX_PWR_Forward_SMOOTHED, " CAL: ", *rf_calibration, " PWR DIFF: ", (double)power_diff, " SWR: ", (double)TRX_SWR_SMOOTHED);
 
 	if (*rf_calibration >= 10 && power_diff <= 0.1f && TRX_PWR_Forward_SMOOTHED > 1.0f) { // no gain enough, stop
 		AUTO_CALIBRATION_current_power_low_diff++;

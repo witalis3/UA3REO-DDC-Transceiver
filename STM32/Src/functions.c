@@ -188,22 +188,22 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 
 	TRX_DAC_X4 = true;
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
-	if (nyquist == 0) // <55,2mhz (good 0mhz - 44,16mhz) 0-0.4 dac freq
+	if (nyquist == 0) // 0-0.5 dac freq
 	{
 		TRX_DAC_HP1 = false; // HP1 low-pass
 		TRX_DAC_HP2 = false; // HP2 low-pass
 	}
-	if (nyquist == 1) // 55,2-110,4mhz (good 66,24mhz - 88,32mhz) dac freq - (0.6-0.9 dac freq)
+	if (nyquist == 1) // 0.5-1.0 dac freq
 	{
 		TRX_DAC_HP1 = true;  // HP1 high-pass
 		TRX_DAC_HP2 = false; // HP2 low-pass
 	}
-	if (nyquist == 2) // 110,4-165,6mhz (good 132,48mhz - 154,56mhz) dac freq - (1.2-1.4 dac freq)
+	if (nyquist == 2) // 1.0-1.5 dac freq
 	{
 		TRX_DAC_HP1 = true; // HP1 high-pass
 		TRX_DAC_HP2 = true; // HP2 high-pass
 	}
-	if (nyquist == 3) // 165,6-220,8mhz (good 176,64mhz - 200,0mhz) dac freq - (1.6-1.9 dac freq)
+	if (nyquist == 3) // 1.5-2.0 dac freq
 	{
 		TRX_DAC_HP1 = false; // HP1 low-pass
 		TRX_DAC_HP2 = true;  // HP2 high-pass
@@ -383,12 +383,25 @@ float32_t getMaxTXAmplitudeOnFreq(uint64_t freq) {
 	return (float32_t)calibrate_level / 100.0f;
 }
 
-float32_t generateSin(float32_t amplitude, float32_t *index, uint32_t samplerate, uint32_t freq) {
+float32_t generateSin(float32_t amplitude, float32_t *index, float32_t samplerate, float32_t freq) {
 	float32_t ret = amplitude * arm_sin_f32(*index * F_2PI);
-	*index += ((float32_t)freq / (float32_t)samplerate);
+	*index += freq / samplerate;
 	while (*index >= 1.0f) {
 		*index -= 1.0f;
 	}
+	return ret;
+}
+
+float32_t generateSinWithZeroCrossing(float32_t amplitude, float32_t *index, float32_t samplerate, float32_t *prev_freq, float32_t freq) {
+	float32_t ret = amplitude * arm_sin_f32(*index * F_2PI);
+
+	*index += *prev_freq / samplerate;
+
+	while (*index >= 1.0f) {
+		*index -= 1.0f;
+		*prev_freq = freq;
+	}
+
 	return ret;
 }
 

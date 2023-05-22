@@ -8,8 +8,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 101        // Settings config version
-#define CALIB_VERSION 65        // Calibration config version
+#define SETT_VERSION 102        // Settings config version
+#define CALIB_VERSION 66        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                  // audio stream sampling rate during processing and TX (NOT RX!)
@@ -70,10 +70,13 @@
 #define W25Q16_COMMAND_Power_Up 0xAB
 #define W25Q16_COMMAND_GetStatus 0x05
 #define W25Q16_COMMAND_WriteStatus 0x01
+#define W25Q16_PAGE_SIZE 256
 #define W25Q16_SECTOR_SIZE 4096
+
 #define EEPROM_SECTOR_CALIBRATION 0
 #define EEPROM_SECTOR_SETTINGS 4
 #define EEPROM_SECTOR_WIFI 8
+#define EEPROM_SECTOR_DPD 12
 #define EEPROM_REPEAT_TRYES 10 // command tryes
 
 #define MEMORY_CHANNELS_COUNT 35
@@ -128,7 +131,7 @@ static char ota_config_frontpanel[] = "LITE";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 8
 #define FUNCBUTTONS_PAGES 5
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 4) // 40+4
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5)
 static char ota_config_frontpanel[] = "BIG";
 #define ATU_MAXPOS \
 	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) ? ATU_5x5_MAXPOS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
@@ -140,7 +143,7 @@ static char ota_config_frontpanel[] = "BIG";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 9
 #define FUNCBUTTONS_PAGES 4
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5) // 36+4
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 6)
 static char ota_config_frontpanel[] = "WF_100D";
 #define ATU_MAXPOS ATU_7x7_MAXPOS
 #endif
@@ -151,7 +154,7 @@ static char ota_config_frontpanel[] = "WF_100D";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 9
 #define FUNCBUTTONS_PAGES 4
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 6)
 static char ota_config_frontpanel[] = "WOLF-2";
 #define ATU_MAXPOS ATU_7x7_MAXPOS
 #endif
@@ -162,7 +165,7 @@ static char ota_config_frontpanel[] = "WOLF-2";
 #define MAX_VOLUME_VALUE 100.0f
 #define FUNCBUTTONS_ON_PAGE 4
 #define FUNCBUTTONS_PAGES 9
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 1)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 2)
 static char ota_config_frontpanel[] = "X1";
 #define ATU_MAXPOS ATU_0x0_MAXPOS
 #endif
@@ -172,7 +175,7 @@ static char ota_config_frontpanel[] = "X1";
 #define MAX_VOLUME_VALUE 100.0f
 #define FUNCBUTTONS_ON_PAGE 4
 #define FUNCBUTTONS_PAGES 9
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 1)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 2)
 static char ota_config_frontpanel[] = "Mini";
 #define ATU_MAXPOS ATU_6x6_MAXPOS
 #endif
@@ -182,7 +185,7 @@ static char ota_config_frontpanel[] = "Mini";
 #define MAX_VOLUME_VALUE 100.0f
 #define FUNCBUTTONS_ON_PAGE 4
 #define FUNCBUTTONS_PAGES 8
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 1)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 2)
 static char ota_config_frontpanel[] = "LiteV2-Mini";
 #define ATU_MAXPOS ATU_0x0_MAXPOS
 #endif
@@ -508,6 +511,7 @@ extern struct TRX_SETTINGS {
 	bool Full_Duplex;
 	bool Digital_Pre_Distortion;
 	bool Split_Mode_Sync_Freq;
+	bool FT8_Auto_CQ;
 	char CALLSIGN[MAX_CALLSIGN_LENGTH + 1];
 	char LOCATOR[MAX_CALLSIGN_LENGTH + 1];
 	char URSI_CODE[MAX_CALLSIGN_LENGTH + 1];
@@ -746,6 +750,7 @@ extern struct TRX_CALIBRATE {
 	uint32_t Transverter_QO100_RF_Khz;
 	uint32_t Transverter_QO100_IF_RX_Khz;
 	uint16_t Transverter_QO100_IF_TX_Mhz;
+	uint16_t KTY81_Calibration;
 	uint8_t DAC_driver_mode;
 	uint8_t rf_out_power_2200m;
 	uint8_t rf_out_power_160m;
@@ -896,5 +901,7 @@ extern void SaveSettingsToEEPROM(void);
 extern void BKPSRAM_Enable(void);
 extern void BKPSRAM_Disable(void);
 extern void RTC_Calibration(void);
+extern bool LoadDPDSettings(uint8_t *out, uint32_t size, uint32_t sector_offset);
+extern bool SaveDPDSettings(uint8_t *in, uint32_t size, uint32_t sector_offset);
 
 #endif

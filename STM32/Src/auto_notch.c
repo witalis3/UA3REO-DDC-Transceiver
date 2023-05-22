@@ -47,7 +47,7 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 	arm_max_no_idx_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &maxValOut);
 	if (isnanf(minValOut) || isinff(minValOut) || isnanf(maxValOut) || isinff(maxValOut)) {
 		if (AUTO_NOTCH_DEBUG) {
-			println("auto notch err ", minValOut, " ", maxValOut);
+			println("auto notch err ", (double)minValOut, " ", (double)maxValOut);
 		}
 		InitAutoNotchReduction();
 		dma_memset(buffer, 0x00, sizeof(float32_t) * AUTO_NOTCH_BLOCK_SIZE);
@@ -56,7 +56,7 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 	arm_max_no_idx_f32(instance->lms2_Norm_instance.pCoeffs, AUTO_NOTCH_TAPS, &maxValOut);
 	if (maxValOut > 1.0f) {
 		if (AUTO_NOTCH_DEBUG) {
-			println("auto notch reset", maxValOut);
+			println("auto notch reset", (double)maxValOut);
 		}
 		InitAutoNotchReduction();
 		temporary_stop = 500;

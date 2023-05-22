@@ -263,7 +263,7 @@ void SELF_TEST_Draw(void) {
 			pos_y += margin_bottom;
 
 			LCDDriver_printText("ADC Driver gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %.2f dB          ", ADC_Driver_db);
+			sprintf(str, " %.2f dB          ", (double)ADC_Driver_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_Driver_db > 17.0f && ADC_Driver_db < 30.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -296,7 +296,7 @@ void SELF_TEST_Draw(void) {
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
     defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
 			LCDDriver_printText("ADC PGA gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %.2f dB          ", ADC_PGA_db);
+			sprintf(str, " %.2f dB          ", (double)ADC_PGA_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_PGA_db > 2.0f && ADC_PGA_db < 7.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 #endif
 			pos_y += margin_bottom;
@@ -330,7 +330,7 @@ void SELF_TEST_Draw(void) {
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
     defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
 			LCDDriver_printText("LNA gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %.2f dB          ", ADC_LNA_db);
+			sprintf(str, " %.2f dB          ", (double)ADC_LNA_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_db > 23.0f && ADC_LNA_db < 30.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 #endif
 			pos_y += margin_bottom;
@@ -396,7 +396,7 @@ void SELF_TEST_Draw(void) {
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
 			LCDDriver_printText("ATT ON", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
+			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, (double)ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -2.0f && ATT_db < 1.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -421,7 +421,7 @@ void SELF_TEST_Draw(void) {
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
 			LCDDriver_printText("ATT 0.5", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
+			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, (double)ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -2.0f && ATT_db < 1.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -443,7 +443,7 @@ void SELF_TEST_Draw(void) {
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
 			LCDDriver_printText("ATT 1.0", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
+			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, (double)ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -2.0f && ATT_db < 1.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -465,7 +465,7 @@ void SELF_TEST_Draw(void) {
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
 			LCDDriver_printText("ATT 2.0", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
+			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, (double)ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -3.0f && ATT_db < -1.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -487,7 +487,7 @@ void SELF_TEST_Draw(void) {
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
 			LCDDriver_printText("ATT 4.0", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
+			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, (double)ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -6.0f && ATT_db < -2.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -509,7 +509,7 @@ void SELF_TEST_Draw(void) {
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
 			LCDDriver_printText("ATT 8.0", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
+			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, (double)ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -10.0f && ATT_db < -4.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -531,7 +531,7 @@ void SELF_TEST_Draw(void) {
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
 			LCDDriver_printText("ATT 16.0", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
+			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, (double)ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -20.0f && ATT_db < -8.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
@@ -553,7 +553,7 @@ void SELF_TEST_Draw(void) {
 			float32_t ATT_db = rate2dbV(ATT_signal / base_signal);
 
 			LCDDriver_printText("ATT 32.0", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, ATT_db);
+			sprintf(str, " %d / %.2f dB         ", (uint16_t)ATT_signal, (double)ATT_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -33.0f && ATT_db < -16.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 

@@ -156,12 +156,6 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	if (TRX_Tune && CurrentVFO->RealRXFreq <= 70000000) {
 		ATU_Process();
 	}
-	bool tune_c0 = bitRead(TRX.ATU_C, 0) || bitRead(TRX.ATU_C, 2) || bitRead(TRX.ATU_C, 4) || bitRead(TRX.ATU_C, 6);
-	bool tune_c1 = bitRead(TRX.ATU_C, 0) || bitRead(TRX.ATU_C, 1) || bitRead(TRX.ATU_C, 4) || bitRead(TRX.ATU_C, 5);
-	bool tune_c2 = bitRead(TRX.ATU_C, 0) || bitRead(TRX.ATU_C, 1) || bitRead(TRX.ATU_C, 2) || bitRead(TRX.ATU_C, 3);
-	bool tune_i0 = bitRead(TRX.ATU_I, 0) || bitRead(TRX.ATU_I, 2) || bitRead(TRX.ATU_I, 4) || bitRead(TRX.ATU_I, 6);
-	bool tune_i1 = bitRead(TRX.ATU_I, 0) || bitRead(TRX.ATU_I, 1) || bitRead(TRX.ATU_I, 4) || bitRead(TRX.ATU_I, 5);
-	bool tune_i2 = bitRead(TRX.ATU_I, 0) || bitRead(TRX.ATU_I, 1) || bitRead(TRX.ATU_I, 2) || bitRead(TRX.ATU_I, 3);
 
 	// TX LPF
 	// bool turn_on_tx_lpf = true;
@@ -294,64 +288,88 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		BPF2_A0 = false;
 	}
 
+	// VHF_RX
+	bool wideband = CurrentVFO->RealRXFreq > 60000000 && band != BANDID_FM && band != BANDID_2m && band != BANDID_70cm && band != BANDID_23cm;
+	bool VHF_RXA = band == BANDID_70cm || band == BANDID_23cm || band == BANDID_FM;
+	bool VHF_RXB = band == BANDID_2m || band == BANDID_23cm;
+	bool VHF_RXC = band == BANDID_FM || wideband;
+
 	// Shift array
-#define SHIFT_ARRAY_SIZE 48
+#define SHIFT_ARRAY_SIZE 64
 	bool shift_array[SHIFT_ARRAY_SIZE];
 	static bool shift_array_old[SHIFT_ARRAY_SIZE];
 
-	shift_array[47] = false;                                                                                    // U19 STPIC6C595TTR	Reserved
-	shift_array[46] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq >= 60000000; // U19	VHF_TX
-	shift_array[45] = band == BANDID_FM;                                                                        // U19	FM BAND
-	shift_array[44] = !TRX_on_TX && TRX.LNA;                                                                    // U19	LNA
-	shift_array[43] = band == BANDID_13cm;                                                                      // U19	2.4G BAND
-	shift_array[42] = band == BANDID_23cm;                                                                      // U19	1.2G BAND
-	shift_array[41] = band == BANDID_70cm;                                                                      // U19	430 BAND
-	shift_array[40] = band == BANDID_2m;                                                                        // U19	144 BAND
+	shift_array[63] = TRX.ATT && att_val_4;             // U19 STPIC6C595TTR	VHF_ATT4
+	shift_array[62] = TRX_on_TX && band == BANDID_23cm; // U19	VHF_TX_1.2G
+	shift_array[61] = VHF_RXC;                          // U19	VHF_RXC
+	shift_array[60] = !TRX_on_TX && TRX.LNA;            // U19	LNA
+	shift_array[59] = TRX_on_TX && band == BANDID_2m;   // U19	VHF_TX_144
+	shift_array[58] = TRX_on_TX && band == BANDID_70cm; // U19	VHF_TX_430
+	shift_array[57] = VHF_RXA;                          // U19	VHF_RXA
+	shift_array[56] = VHF_RXB;                          // U19	VHF_RXB
 
-	shift_array[39] = !tx_lpf_0;                                                                               // U20 STPIC6C595TTR	HFAMP_B0 !!!
-	shift_array[38] = !tx_lpf_1;                                                                               // U20	HFAMP_B1 !!!
-	shift_array[37] = !tx_lpf_2;                                                                               // U20	HFAMP_B2 !!!
-	shift_array[36] = !tx_lpf_3;                                                                               // U20	HFAMP_B3 !!!
-	shift_array[35] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq < 60000000; // U20	HF TX
-	shift_array[34] = false;                                                                                   // U20	Reserved
-	shift_array[33] = false;                                                                                   // U20	Reserved
-	shift_array[32] = false;                                                                                   // U20	FAN (code in bottom)
+	shift_array[55] = !tx_lpf_0;                                                                               // U20 STPIC6C595TTR	HFAMP_B0 !!!
+	shift_array[54] = !tx_lpf_1;                                                                               // U20	HFAMP_B1 !!!
+	shift_array[53] = !tx_lpf_2;                                                                               // U20	HFAMP_B2 !!!
+	shift_array[52] = !tx_lpf_3;                                                                               // U20	HFAMP_B3 !!!
+	shift_array[51] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq < 60000000; // U20	HF TX
+	shift_array[50] = TRX.ATT && att_val_8;                                                                    // U20	VHF_ATT8
+	shift_array[49] = TRX.ATT && att_val_16;                                                                   // U20	VHF_ATT16
+	shift_array[48] = false;                                                                                   // U20	FAN (code in bottom)
 
-	shift_array[31] = TRX.ANT_selected;               // U21 STPIC6C595TTR	ANT
-	shift_array[30] = TRX.TUNER_Enabled && TRX.ATU_T; // U21	TUNE T
-	shift_array[29] = TRX.TUNER_Enabled && tune_c1;   // U21	TUNE C1
-	shift_array[28] = TRX.TUNER_Enabled && tune_c2;   // U21	TUNE C2
-	shift_array[27] = TRX.TUNER_Enabled && tune_i0;   // U21	TUNE L0
-	shift_array[26] = TRX.TUNER_Enabled && tune_i1;   // U21	TUNE L1
-	shift_array[25] = TRX.TUNER_Enabled && tune_i2;   // U21	TUNE L2
-	shift_array[24] = TRX.TUNER_Enabled && tune_c0;   // U21	TUNE C0
+	shift_array[47] = TRX.ANT_selected;               // U21 STPIC6C595TTR	ANT
+	shift_array[46] = TRX.TUNER_Enabled && TRX.ATU_T; // U21	TUNE T
+	shift_array[45] = false;                          // U21	Reserved
+	shift_array[44] = false;                          // U21	Reserved
+	shift_array[43] = false;                          // U21	Reserved
+	shift_array[42] = false;                          // U21	Reserved
+	shift_array[41] = false;                          // U21	Reserved
+	shift_array[40] = false;                          // U21	Reserved
 
-	shift_array[23] = false;                                              // U23 74HC595	Reserved
-	shift_array[22] = bitRead(band_out, 0);                               // U23	EXT BAND0
-	shift_array[21] = bitRead(band_out, 1);                               // U23	EXT BAND1
-	shift_array[20] = bitRead(band_out, 2);                               // U23	EXT BAND2
-	shift_array[19] = bitRead(band_out, 3);                               // U23	EXT BAND3
-	shift_array[18] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U23	EXT TX
-	shift_array[17] = TRX_Tune;                                           // U23	EXT TUNE
-	shift_array[16] = false;                                              // U23	EXT Reserved
+	shift_array[39] = false;                                              // U23 74HC595	Reserved
+	shift_array[38] = bitRead(band_out, 0);                               // U23	EXT BAND0
+	shift_array[37] = bitRead(band_out, 1);                               // U23	EXT BAND1
+	shift_array[36] = bitRead(band_out, 2);                               // U23	EXT BAND2
+	shift_array[35] = bitRead(band_out, 3);                               // U23	EXT BAND3
+	shift_array[34] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U23	EXT TX
+	shift_array[33] = TRX_Tune;                                           // U23	EXT TUNE
+	shift_array[32] = false;                                              // U23	EXT Reserved
 
-	shift_array[15] = false;                              // U24 74HC595	Reserved
-	shift_array[14] = CurrentVFO->RealRXFreq >= 60000000; // U24	HF/VHF
-	shift_array[13] = false;                              // U24	Reserved
-	shift_array[12] = false;                              // U24	Reserved
-	shift_array[11] = TRX.ATT && att_val_16;              // U24	ATT 16
-	shift_array[10] = TRX.ATT && att_val_05;              // U24	ATT 0.5
-	shift_array[9] = TRX.ATT && att_val_1;                // U24	ATT 1
-	shift_array[8] = TRX.ATT && att_val_2;                // U24	ATT 2
+	shift_array[31] = false;                              // U24 74HC595	Reserved
+	shift_array[30] = CurrentVFO->RealRXFreq >= 60000000; // U24	HF/VHF
+	shift_array[29] = false;                              // U24	Reserved
+	shift_array[28] = false;                              // U24	Reserved
+	shift_array[27] = TRX.ATT && att_val_16;              // U24	ATT 16
+	shift_array[26] = TRX.ATT && att_val_05;              // U24	ATT 0.5
+	shift_array[25] = TRX.ATT && att_val_1;               // U24	ATT 1
+	shift_array[24] = TRX.ATT && att_val_2;               // U24	ATT 2
 
-	shift_array[7] = TRX.ATT && att_val_4; // U22 74HC595	ATT 4
-	shift_array[6] = TRX.ATT && att_val_8; // U22	ATT 8
-	shift_array[5] = BPF2_EN;              // U22	BPF2_EN
-	shift_array[4] = BPF2_A1;              // U22	BPF2_A1
-	shift_array[3] = BPF2_A0;              // U22	BPF2_A0
-	shift_array[2] = BPF1_EN;              // U22	BPF1_EN
-	shift_array[1] = BPF1_A1;              // U22	BPF1_A1
-	shift_array[0] = BPF1_A0;              // U22	BPF1_A0
+	shift_array[23] = TRX.ATT && att_val_4; // U22 74HC595	ATT 4
+	shift_array[22] = TRX.ATT && att_val_8; // U22	ATT 8
+	shift_array[21] = BPF2_EN;              // U22	BPF2_EN
+	shift_array[20] = BPF2_A1;              // U22	BPF2_A1
+	shift_array[19] = BPF2_A0;              // U22	BPF2_A0
+	shift_array[18] = BPF1_EN;              // U22	BPF1_EN
+	shift_array[17] = BPF1_A1;              // U22	BPF1_A1
+	shift_array[16] = BPF1_A0;              // U22	BPF1_A0
+
+	shift_array[15] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3); // Tuner_U1 TUN_L4
+	shift_array[14] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4); // Tuner_U1	TUN_L5
+	shift_array[13] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 5); // Tuner_U1	TUN_L6
+	shift_array[12] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 6); // Tuner_U1	TUN_L7
+	shift_array[11] = false;                                      // Tuner_U1	Reserved
+	shift_array[10] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 2); // Tuner_U1	TUN_L3
+	shift_array[9] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 1);  // Tuner_U1	TUN_L2
+	shift_array[8] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0);  // Tuner_U1	TUN_L1
+
+	shift_array[7] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3); // Tuner_U2 TUN_С4
+	shift_array[6] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2); // Tuner_U2	TUN_С3
+	shift_array[5] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1); // Tuner_U2	TUN_С2
+	shift_array[4] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0); // Tuner_U2	TUN_С1
+	shift_array[3] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4); // Tuner_U2	TUN_С5
+	shift_array[2] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 5); // Tuner_U2	TUN_С6
+	shift_array[1] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 6); // Tuner_U2	TUN_С7
+	shift_array[0] = false;                                      // Tuner_U2	Reserved
 
 	static bool fan_pwm = false;
 	if (FAN_Active && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) { // Temperature at which the fan stops
@@ -429,10 +447,12 @@ void RF_UNIT_ProcessSensors(void) {
 #define B16_RANGE 65535.0f
 #define B14_RANGE 16383.0f
 
+	HAL_ADCEx_InjectedPollForConversion(&hadc1, 100); // wait if prev conversion not ended
+
 	// THERMAL
 	float32_t rf_thermal = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_3)) * TRX_STM32_VREF / B16_RANGE;
 
-	float32_t therm_resistance = -2000.0f * rf_thermal / (-3.3f + rf_thermal);
+	float32_t therm_resistance = (-(float32_t)CALIBRATE.KTY81_Calibration) * rf_thermal / (-3.3f + rf_thermal);
 	uint_fast8_t point_left = 0;
 	uint_fast8_t point_right = SENS_TABLE_COUNT - 1;
 	for (uint_fast8_t i = 0; i < SENS_TABLE_COUNT; i++) {
@@ -552,20 +572,25 @@ void RF_UNIT_ProcessSensors(void) {
 	}
 
 #define smooth_stick_time 100
+#define smooth_up_coeff 0.3f
+#define smooth_down_coeff 0.03f
 	static uint32_t forw_smooth_time = 0;
 	if ((HAL_GetTick() - forw_smooth_time) > smooth_stick_time) {
-		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * 0.99f + TRX_PWR_Forward * 0.01f;
+		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * (1.0f - smooth_down_coeff) + TRX_PWR_Forward * smooth_down_coeff;
+		TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * (1.0f - smooth_down_coeff) + TRX_PWR_Backward * smooth_down_coeff;
 	}
 
 	if (TRX_PWR_Forward > TRX_PWR_Forward_SMOOTHED) {
-		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward;
+		TRX_PWR_Forward_SMOOTHED = TRX_PWR_Forward_SMOOTHED * (1.0f - smooth_up_coeff) + TRX_PWR_Forward * smooth_up_coeff;
+		TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * (1.0f - smooth_up_coeff) + TRX_PWR_Backward * smooth_up_coeff;
 		forw_smooth_time = HAL_GetTick();
 	}
 
-	TRX_PWR_Backward_SMOOTHED = TRX_PWR_Backward_SMOOTHED * 0.99f + TRX_PWR_Backward * 0.01f;
-	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * 0.98f + TRX_SWR * 0.02f;
+	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * (1.0f - smooth_down_coeff) + TRX_SWR * smooth_down_coeff;
 
 	sprintf(TRX_SWR_SMOOTHED_STR, "%.1f", (double)TRX_SWR_SMOOTHED);
+
+	HAL_ADCEx_InjectedStart(&hadc1); // start next manual conversion
 }
 
 // used to controll the calibration of the FW and BW power measurments

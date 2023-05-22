@@ -1,6 +1,7 @@
 #include "hardware.h"
 #if HRDW_HAS_SD
 
+#include "INA226_PWR_monitor.h"
 #include "audio_filters.h"
 #include "fatfs.h"
 #include "filemanager.h"
@@ -40,6 +41,7 @@ bool SD_Mounted = false;
 static SD_COMMAND SD_currentCommand = SDCOMM_IDLE;
 uint32_t SDCOMM_WRITE_TO_FILE_partsize = 0;
 void (*SDCOMM_WRITE_TO_FILE_callback)(void);
+void (*SDCOMM_GET_LINES_COUNT_callback)(uint32_t count);
 
 SRAM FIL File = {0};
 SRAM static FILINFO fileInfo = {0};
@@ -64,6 +66,7 @@ static void SDCOMM_LIST_DIRECTORY_handler(void);
 static void SDCOMM_DELETE_FILE_handler(void);
 static void SDCOMM_READ_PLAY_FILE_handler(void);
 static void SDCOMM_WRITE_TO_FILE_handler(void);
+static void SDCOMM_GET_LINES_COUNT_handler(void);
 static bool SDCOMM_CREATE_RECORD_FILE_main(char *filename, bool audio_rec);
 static bool SDCOMM_CREATE_CQ_MESSAGE_FILE_handler(void);
 
@@ -185,9 +188,38 @@ void SD_Process(void) {
 		case SDCOMM_WRITE_TO_FILE:
 			SDCOMM_WRITE_TO_FILE_handler();
 			break;
+		case SDCOMM_GET_LINES_COUNT:
+			SDCOMM_GET_LINES_COUNT_handler();
+			break;
 		}
 		SD_CommandInProcess = false;
 		SD_currentCommand = SDCOMM_IDLE;
+	}
+}
+
+static void SDCOMM_GET_LINES_COUNT_handler(void) {
+	if (f_open(&File, (TCHAR *)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK) {
+
+		uint32_t bytesreaded;
+		uint32_t linesCount = 0;
+		FRESULT res;
+		do {
+			f_read(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&bytesreaded);
+			for (uint32_t i = 0; i < bytesreaded; i++) {
+				if (SD_workbuffer_B[i] == '\n') {
+					linesCount++;
+				}
+			}
+		} while (bytesreaded > 0 && res == FR_OK);
+
+		f_close(&File);
+		SDCOMM_GET_LINES_COUNT_callback(linesCount);
+	} else {
+		LCD_showTooltip("SD error");
+		SD_PlayInProcess = false;
+		SD_Present = false;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 }
 
@@ -862,6 +894,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.AutoGain", (uint64_t *)&TRX.AutoGain, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.SPLIT_Enabled", (uint64_t *)&TRX.SPLIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Split_Mode_Sync_Freq", (uint64_t *)&TRX.Split_Mode_Sync_Freq, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.FT8_Auto_CQ", (uint64_t *)&TRX.FT8_Auto_CQ, SYSMENU_BOOLEAN);
 #if HRDW_HAS_DUAL_RX
 			SD_WRITE_SETT_LINE("TRX.Dual_RX", (uint64_t *)&TRX.Dual_RX, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Dual_RX_Type", (uint64_t *)&TRX.Dual_RX_Type, SYSMENU_UINT8);
@@ -1195,6 +1228,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_QO100_RF_Khz", (uint64_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_QO100_IF_RX_Khz", (uint64_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_QO100_IF_TX_Mhz", (uint64_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.KTY81_Calibration", (uint64_t *)&CALIBRATE.KTY81_Calibration, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.OTA_update", (uint64_t *)&CALIBRATE.OTA_update, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.TX_StartDelay", (uint64_t *)&CALIBRATE.TX_StartDelay, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.LCD_Rotate", (uint64_t *)&CALIBRATE.LCD_Rotate, SYSMENU_BOOLEAN);
@@ -1515,6 +1549,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.Split_Mode_Sync_Freq") == 0) {
 		TRX.Split_Mode_Sync_Freq = bval;
+	}
+	if (strcmp(name, "TRX.FT8_Auto_CQ") == 0) {
+		TRX.FT8_Auto_CQ = bval;
 	}
 #if HRDW_HAS_DUAL_RX
 	if (strcmp(name, "TRX.Dual_RX") == 0) {
@@ -2573,6 +2610,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	if (strcmp(name, "CALIBRATE.Transverter_QO100_IF_TX_Mhz") == 0) {
 		CALIBRATE.Transverter_QO100_IF_TX_Mhz = uintval;
 	}
+	if (strcmp(name, "CALIBRATE.KTY81_Calibration") == 0) {
+		CALIBRATE.KTY81_Calibration = uintval;
+	}
 	if (strcmp(name, "CALIBRATE.OTA_update") == 0) {
 		CALIBRATE.OTA_update = bval;
 	}
@@ -2801,6 +2841,11 @@ static void SDCOMM_IMPORT_SETT_handler(void) {
 		LAYOUT = &LAYOUT_THEMES[TRX.LayoutThemeId];
 		FFT_Init();
 		LCD_Init();
+#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
+		if (CALIBRATE.INA226_EN) {
+			INA226_Init();
+		}
+#endif
 		NeedReinitAudioFiltersClean = true;
 		TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 		TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);

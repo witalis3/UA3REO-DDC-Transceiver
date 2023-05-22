@@ -8,6 +8,7 @@ typedef const struct {
 	const uint16_t FOREGROUND;
 	const uint16_t BUTTON_TEXT;
 	const uint16_t BUTTON_INACTIVE_TEXT;
+	const uint16_t BUTTON_PAGER;
 	const uint16_t BUTTON_BACKGROUND;
 	const uint16_t FREQ_MHZ;
 	const uint16_t FREQ_KHZ;
@@ -95,6 +96,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .FOREGROUND = COLOR_WHITE,
         .BUTTON_TEXT = rgb888torgb565(32, 191, 17),
         .BUTTON_INACTIVE_TEXT = rgb888torgb565(130, 130, 130),
+        .BUTTON_PAGER = rgb888torgb565(60, 60, 60),
         .BUTTON_BACKGROUND = rgb888torgb565(50, 50, 50),
         .FREQ_MHZ = COLOR_WHITE,
         .FREQ_KHZ = COLOR_WHITE,
@@ -177,6 +179,7 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .FOREGROUND = COLOR_BLACK,
         .BUTTON_TEXT = rgb888torgb565(150, 130, 50),
         .BUTTON_INACTIVE_TEXT = rgb888torgb565(220, 220, 220),
+        .BUTTON_PAGER = rgb888torgb565(150, 150, 150),
         .BUTTON_BACKGROUND = rgb888torgb565(240, 240, 240),
         .FREQ_MHZ = COLOR_BLACK,
         .FREQ_KHZ = COLOR_BLACK,
@@ -252,13 +255,14 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
         .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     },
+    // 2 - colored
     {
-        // 2 - black, 7-segments FREQ
         // 3'2 inch
         .BACKGROUND = COLOR_BLACK,
         .FOREGROUND = COLOR_WHITE,
         .BUTTON_TEXT = rgb888torgb565(32, 191, 17),
         .BUTTON_INACTIVE_TEXT = rgb888torgb565(130, 130, 130),
+        .BUTTON_PAGER = rgb888torgb565(60, 60, 60),
         .BUTTON_BACKGROUND = rgb888torgb565(50, 50, 50),
         .FREQ_MHZ = rgb888torgb565(0, 255, 212),
         .FREQ_KHZ = rgb888torgb565(0, 255, 212),
@@ -334,14 +338,15 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
         .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     },
+    // CN
     {
-        // CN
         // 2 - black, 7-segments FREQ
         // 3'2 inch
         .BACKGROUND = COLOR_BLACK,
         .FOREGROUND = COLOR_WHITE,
         .BUTTON_TEXT = COLOR_GREEN,
         .BUTTON_INACTIVE_TEXT = COLOR_WHITE,
+        .BUTTON_PAGER = rgb888torgb565(110, 110, 110),
         .BUTTON_BACKGROUND = rgb888torgb565(20, 20, 20),
         .FREQ_MHZ = rgb888torgb565(255, 50, 0),
         .FREQ_KHZ = rgb888torgb565(255, 50, 0),
@@ -417,14 +422,15 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
         .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     },
+    // CN+Green
     {
-        // CN+Green
         // 2 - black, 7-segments FREQ
         // 3'2 inch
         .BACKGROUND = COLOR_BLACK,
         .FOREGROUND = COLOR_WHITE,
         .BUTTON_TEXT = COLOR_GREEN,
         .BUTTON_INACTIVE_TEXT = COLOR_WHITE,
+        .BUTTON_PAGER = rgb888torgb565(110, 110, 110),
         .BUTTON_BACKGROUND = rgb888torgb565(10, 10, 30),
         .FREQ_MHZ = COLOR_GREEN,
         .FREQ_KHZ = COLOR_GREEN,
@@ -500,14 +506,15 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
         .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     },
+    // CN+White
     {
-        // CN+White
         // 2 - black, 7-segments FREQ
         // 3'2 inch
         .BACKGROUND = COLOR_BLACK,
         .FOREGROUND = COLOR_WHITE,
         .BUTTON_TEXT = COLOR_GREEN,
         .BUTTON_INACTIVE_TEXT = COLOR_WHITE,
+        .BUTTON_PAGER = rgb888torgb565(110, 110, 110),
         .BUTTON_BACKGROUND = rgb888torgb565(20, 20, 20),
         .FREQ_MHZ = COLOR_WHITE,
         .FREQ_KHZ = COLOR_WHITE,

@@ -96,6 +96,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc) {
 		/* USER CODE BEGIN ADC1_MspInit 0 */
 
 		/* USER CODE END ADC1_MspInit 0 */
+
 		/** Initializes the peripherals clock
 		 */
 		PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
@@ -136,6 +137,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc) {
 		/* USER CODE BEGIN ADC2_MspInit 0 */
 
 		/* USER CODE END ADC2_MspInit 0 */
+
 		/** Initializes the peripherals clock
 		 */
 		PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
@@ -175,6 +177,7 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc) {
 		/* USER CODE BEGIN ADC3_MspInit 0 */
 
 		/* USER CODE END ADC3_MspInit 0 */
+
 		/** Initializes the peripherals clock
 		 */
 		PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;

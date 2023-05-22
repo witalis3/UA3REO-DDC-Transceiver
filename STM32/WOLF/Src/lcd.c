@@ -303,7 +303,7 @@ static void LCD_displayBottomButtons(bool redraw) {
 
 	if (TRX.EnableBottomNavigationButtons) {
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<", false, false, false, 0, BUTTONHANDLER_LEFT_ARR,
-		            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
+		            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_PAGER, COLOR->BUTTON_PAGER, COLOR->BUTTON_PAGER, COLOR->BUTTON_BACK);
 		curr_x += bottomNavigationButtonsWidth;
 	}
 
@@ -344,7 +344,7 @@ static void LCD_displayBottomButtons(bool redraw) {
 
 	if (TRX.EnableBottomNavigationButtons) {
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, ">", false, false, false, 0, BUTTONHANDLER_RIGHT_ARR,
-		            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_BACK);
+		            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_PAGER, COLOR->BUTTON_PAGER, COLOR->BUTTON_PAGER, COLOR->BUTTON_BACK);
 		curr_x += bottomNavigationButtonsWidth;
 	}
 #endif
@@ -1158,32 +1158,32 @@ static float32_t LCD_GetAnalowPowerValPosition(float32_t _pwr) {
 	// ugly corrections :/
 
 	if (pwr > 0) { // 0-10w
-		pos += fmin(10, pwr) * 4.0f;
+		pos += fminf(10, pwr) * 4.0f;
 		pwr -= 10.0f;
 	}
 
 	if (pwr > 0) { // 10-20w
-		pos += fmin(10, pwr) * 2.1f;
+		pos += fminf(10, pwr) * 2.1f;
 		pwr -= 10.0f;
 	}
 
 	if (pwr > 0) { // 20-30w
-		pos += fmin(10, pwr) * 1.0f;
+		pos += fminf(10, pwr) * 1.0f;
 		pwr -= 10.0f;
 	}
 
 	if (pwr > 0) { // 30-40w
-		pos += fmin(10, pwr) * 1.5f;
+		pos += fminf(10, pwr) * 1.5f;
 		pwr -= 10.0f;
 	}
 
 	if (pwr > 0) { // 40-50w
-		pos += fmin(10, pwr) * 1.3f;
+		pos += fminf(10, pwr) * 1.3f;
 		pwr -= 10.0f;
 	}
 
 	if (pwr > 0) { // 50-90w
-		pos += fmin(40, pwr) * 1.0f;
+		pos += fminf(40, pwr) * 1.0f;
 		pwr -= 40.0f;
 	}
 
@@ -1509,7 +1509,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 					}
 				}
 
-				sprintf(ctmp, "I=%.2fuH", i_val);
+				sprintf(ctmp, "I=%.2fuH", (double)i_val);
 				addSymbols(ctmp, ctmp, 8, " ", true);
 				LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_I_X, LAYOUT->STATUS_ATU_I_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
@@ -1539,7 +1539,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			                      LAYOUT->STATUS_TX_LABELS_VAL_HEIGHT, BG_COLOR);
 			if (TRX_PWR_Forward_SMOOTHED >= 100.0f) {
 				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Forward_SMOOTHED);
-			} else if (TRX_PWR_Forward_SMOOTHED >= 9.5f) {
+			} else if (TRX_PWR_Forward_SMOOTHED >= 10.0f) {
 				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Forward_SMOOTHED);
 			} else {
 				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward_SMOOTHED);
@@ -1552,7 +1552,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			                      LAYOUT->STATUS_TX_LABELS_VAL_HEIGHT, BG_COLOR);
 			if (TRX_PWR_Backward_SMOOTHED >= 100.0f) {
 				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Backward_SMOOTHED);
-			} else if (TRX_PWR_Backward_SMOOTHED >= 9.5f) {
+			} else if (TRX_PWR_Backward_SMOOTHED >= 10.0f) {
 				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Backward_SMOOTHED);
 			} else {
 				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Backward_SMOOTHED);
@@ -1615,7 +1615,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 
 			// FWD
 			if (TRX_PWR_Forward_SMOOTHED >= 100.0f) {
-				sprintf(ctmp, "%dW  ", (uint16_t)TRX_PWR_Forward_SMOOTHED);
+				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Forward_SMOOTHED);
 			} else if (TRX_PWR_Forward_SMOOTHED >= 10.0f) {
 				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward_SMOOTHED);
 			} else {
@@ -1715,7 +1715,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	if (CALIBRATE.INA226_EN && !TRX.SPLIT_Enabled && !TRX.RIT_Enabled && !TRX.XIT_Enabled) ////INA226 current voltage indication  Is the INA226 used (installed)
 	{
 		Read_INA226_Data();
-		sprintf(buff, "%2.1fV/%2.1fA ", Get_INA226_Voltage(), Get_INA226_Current());
+		sprintf(buff, "%2.1fV/%2.1fA ", (double)Get_INA226_Voltage(), (double)Get_INA226_Current());
 	} else {
 		// RIT
 		if (TRX.SPLIT_Enabled) {
@@ -2587,8 +2587,8 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
 			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
 		}
-		if (step < 1.0f) {
-			step = 1.0f;
+		if (step < 1.0) {
+			step = 1.0;
 		}
 
 		uint64_t newfreq = getFreqOnFFTPosition(LAYOUT->FFT_PRINT_SIZE / 2 - dx / slowler);
@@ -2750,8 +2750,8 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 	}
 	selectable_bands_count++; // memory bank
 
-	const uint8_t buttons_lines_selectable = ceil((float32_t)selectable_bands_count / (float32_t)buttons_in_line);
-	const uint8_t buttons_lines_broadcast = ceil((float32_t)bradcast_bands_count / (float32_t)buttons_in_line);
+	const uint8_t buttons_lines_selectable = ceilf((float32_t)selectable_bands_count / (float32_t)buttons_in_line);
+	const uint8_t buttons_lines_broadcast = ceilf((float32_t)bradcast_bands_count / (float32_t)buttons_in_line);
 	const uint8_t divider_height = 30;
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * (buttons_lines_selectable + buttons_lines_broadcast) + divider_height +
@@ -2841,7 +2841,7 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 static void LCD_showModeWindow(bool secondary_vfo) {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	const uint8_t buttons_in_line = 4;
-	const uint8_t buttons_lines = ceil((float32_t)TRX_MODE_COUNT / (float32_t)buttons_in_line);
+	const uint8_t buttons_lines = ceilf((float32_t)TRX_MODE_COUNT / (float32_t)buttons_in_line);
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
 	LCD_openWindow(window_width, window_height);
@@ -2898,7 +2898,7 @@ static void LCD_showBWWindow(void) {
 	}
 
 	const uint8_t buttons_in_line = 6;
-	const uint8_t buttons_lines = ceil((float32_t)filters_count / (float32_t)buttons_in_line);
+	const uint8_t buttons_lines = ceilf((float32_t)filters_count / (float32_t)buttons_in_line);
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
 	LCD_openWindow(window_width, window_height);
@@ -2977,7 +2977,7 @@ void LCD_showManualFreqWindow(bool secondary_vfo) {
 	const uint8_t buttons_top_offset = 100;
 #define buttons_count 14 // 1,2,3,4,5,6,7,8,9,0,mhz,khz,hz
 	char *buttons[buttons_count] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<-", "MHz", "KHz", "Hz"};
-	const uint8_t buttons_lines = ceil((float32_t)buttons_count / (float32_t)buttons_in_line);
+	const uint8_t buttons_lines = ceilf((float32_t)buttons_count / (float32_t)buttons_in_line);
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
 	LCD_openWindow(window_width, window_height);
@@ -3055,7 +3055,7 @@ void LCD_showManualFreqWindow2() {
 	const uint8_t buttons_top_offset = 100;
 #define buttons_count 14 // 1,2,3,4,5,6,7,8,9,0,mhz,khz,hz
 	char *buttons[buttons_count] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<-", "MHz", "KHz", "Hz"};
-	const uint8_t buttons_lines = ceil((float32_t)buttons_count / (float32_t)buttons_in_line);
+	const uint8_t buttons_lines = ceilf((float32_t)buttons_count / (float32_t)buttons_in_line);
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
 	LCD_openWindow(window_width, window_height);
@@ -3211,11 +3211,11 @@ static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter) {
 			} else {
 				uint64_t freq = CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq;
 				if (freq < 1000000) {                             // < 1mhz
-					sprintf(tmp, "%.2f", freq / 1000.0f);           // 3k.2h
+					sprintf(tmp, "%.2f", freq / 1000.0);            // 3k.2h
 				} else if (freq < 100000000) {                    // < 100mhz
-					sprintf(tmp, "%.3f", freq / 1000000.0f);        // 2m.3k
+					sprintf(tmp, "%.3f", freq / 1000000.0);         // 2m.3k
 				} else if (freq < 1000000000) {                   // < 1000mhz
-					sprintf(tmp, "%.2f", freq / 1000000.0f);        // 3m.2k
+					sprintf(tmp, "%.2f", freq / 1000000.0);         // 3m.2k
 				} else {                                          // >= 1000mhz
 					sprintf(tmp, "%u", (uint32_t)(freq / 1000000)); // 3m
 				}

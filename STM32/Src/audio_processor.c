@@ -51,6 +51,7 @@ bool APROC_IFGain_Overflow = false;
 float32_t APROC_TX_clip_gain = 1.0f;
 float32_t APROC_TX_tune_power = 0.0f;
 float32_t SAM_Carrier_offset = 0.0f;
+float32_t APROC_TUNE_DigiTone_Freq = 1000.0f;
 
 #if FT8_SUPPORT
 static q15_t APROC_AudioBuffer_FT8_out[AUDIO_BUFFER_SIZE / 2] = {0};
@@ -70,6 +71,11 @@ static uint32_t audio_buffer_in_index = 0;
 
 #ifndef STM32F407xx
 IRAM2 static float32_t Processor_Reverber_Buffer[AUDIO_BUFFER_HALF_SIZE * AUDIO_MAX_REVERBER_TAPS] = {0};
+#endif
+
+static demod_sam_data_t sam_data_rx1;
+#if HRDW_HAS_DUAL_RX
+SRAM static demod_sam_data_t sam_data_rx2;
 #endif
 
 // Prototypes
@@ -799,6 +805,32 @@ void processTxAudio(void) {
 		}
 	}
 
+	// FT8 signal generator
+	if (TRX_Tune && !TRX.TWO_SIGNAL_TUNE && (CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_DIGI_L)) {
+		if (APROC_TUNE_DigiTone_Freq == 0) { // default tune
+			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
+				APROC_Audio_Buffer_TX_I[i] = 1.0f;
+				APROC_Audio_Buffer_TX_Q[i] = 0.0f;
+			}
+		} else {
+			static float32_t ft8_signal_gen_index = 0;
+			static float32_t ft8_signal_gen_prev_freq = 1000.0f;
+			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
+
+				float32_t point = generateSinWithZeroCrossing(1.0f, &ft8_signal_gen_index, TRX_SAMPLERATE, &ft8_signal_gen_prev_freq, APROC_TUNE_DigiTone_Freq);
+				APROC_Audio_Buffer_TX_I[i] = point;
+				APROC_Audio_Buffer_TX_Q[i] = point;
+			}
+
+			// hilbert fir
+			if (mode == TRX_MODE_LSB || mode == TRX_MODE_DIGI_L) {
+				doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
+			} else if (mode == TRX_MODE_DIGI_U) {
+				doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
+			}
+		}
+	}
+
 	// Two-signal tune generator
 	if (TRX_Tune && TRX.TWO_SIGNAL_TUNE) {
 		static float32_t two_signal_gen_index1 = 0;
@@ -1233,7 +1265,7 @@ void processTxAudio(void) {
 			}
 			// clip
 			float32_t ALC_need_gain_target = (RFpower_amplitude * 0.99f) / Processor_TX_MAX_amplitude_IN;
-			println("ALC_CLIP ", Processor_TX_MAX_amplitude_IN / RFpower_amplitude, " NEED ", RFpower_amplitude, " CG ", APROC_TX_clip_gain);
+			println("ALC_CLIP ", (double)(Processor_TX_MAX_amplitude_IN / RFpower_amplitude), " NEED ", (double)RFpower_amplitude, " CG ", (double)APROC_TX_clip_gain);
 			TRX_DAC_OTR = true;
 			// apply gain
 			arm_scale_f32(APROC_Audio_Buffer_TX_I, ALC_need_gain_target, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
@@ -1918,12 +1950,11 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 			static float32_t prev_sfm_pilot_sample = 0.0f;
 			arm_atan2_f32(DFM->stereo_fm_pilot_out[i], prev_sfm_pilot_sample, &angle); // double freq
 			angle *= 2.0f;
-
 			prev_sfm_pilot_sample = DFM->stereo_fm_pilot_out[i];
 
 			// get stereo sample from decoded wfm
 			float32_t stereo_sample = DFM->stereo_fm_audio_out[i] * arm_sin_f32(angle) * 2.0f; // 2 - stereo depth
-			if (isnanf(stereo_sample)) {
+			if (isnanf(stereo_sample) || isinf(stereo_sample)) {
 				continue;
 			}
 
@@ -1947,7 +1978,7 @@ static void ModulateFM(uint16_t size, float32_t amplitude) {
 	}
 
 	// CTCSS
-	if (TRX.CTCSS_Freq > 0.0) {
+	if (TRX.CTCSS_Freq > 0.0f) {
 		static float32_t CTCSS_gen_index = 0;
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 			float32_t point = generateSin(0.25f, &CTCSS_gen_index, TRX_SAMPLERATE, TRX.CTCSS_Freq);
@@ -2177,8 +2208,6 @@ static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_
 
 static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize) {
 	// part of UHSDR project https://github.com/df8oe/UHSDR/blob/active-devel/mchf-eclipse/drivers/audio/audio_driver.c
-	static demod_sam_data_t sam_data_rx1;
-	static demod_sam_data_t sam_data_rx2;
 	demod_sam_data_t *sam_data = &sam_data_rx1;
 #if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2) {
@@ -2215,17 +2244,17 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 	if (!sam_data->inited) {
 		sam_data->inited = true;
 		// pll
-		sam_data->adb_sam_omega_min = -(2.0 * F_PI * SAM_omegaN / TRX_SAMPLERATE);
-		sam_data->adb_sam_omega_max = (2.0 * F_PI * SAM_omegaN / TRX_SAMPLERATE);
-		sam_data->adb_sam_g1 = (1.0 - expf(-2.0 * SAM_omegaN * SAM_zeta / TRX_SAMPLERATE));
-		sam_data->adb_sam_g2 = (-sam_data->adb_sam_g1 + 2.0 * (1 - expf(-SAM_omegaN * SAM_zeta / TRX_SAMPLERATE) * cosf(SAM_omegaN / TRX_SAMPLERATE * sqrtf(1.0 - SAM_zeta * SAM_zeta))));
+		sam_data->adb_sam_omega_min = -(2.0f * F_PI * SAM_omegaN / TRX_SAMPLERATE);
+		sam_data->adb_sam_omega_max = (2.0f * F_PI * SAM_omegaN / TRX_SAMPLERATE);
+		sam_data->adb_sam_g1 = (1.0f - expf(-2.0f * SAM_omegaN * SAM_zeta / TRX_SAMPLERATE));
+		sam_data->adb_sam_g2 = (-sam_data->adb_sam_g1 + 2.0f * (1 - expf(-SAM_omegaN * SAM_zeta / TRX_SAMPLERATE) * cosf(SAM_omegaN / TRX_SAMPLERATE * sqrtf(1.0f - SAM_zeta * SAM_zeta))));
 		// fade leveler
-		float32_t tauR = 0.02; // value emperically determined
-		float32_t tauI = 1.4;  // value emperically determined
-		sam_data->adb_sam_mtauR = (expf(-1 / ((float32_t)TRX_SAMPLERATE * tauR)));
-		sam_data->adb_sam_onem_mtauR = (1.0 - sam_data->adb_sam_mtauR);
-		sam_data->adb_sam_mtauI = (expf(-1 / ((float32_t)TRX_SAMPLERATE * tauI)));
-		sam_data->adb_sam_onem_mtauI = (1.0 - sam_data->adb_sam_mtauI);
+		float32_t tauR = 0.02f; // value emperically determined
+		float32_t tauI = 1.4f;  // value emperically determined
+		sam_data->adb_sam_mtauR = (expf(-1.0f / ((float32_t)TRX_SAMPLERATE * tauR)));
+		sam_data->adb_sam_onem_mtauR = (1.0f - sam_data->adb_sam_mtauR);
+		sam_data->adb_sam_mtauI = (expf(-1.0f / ((float32_t)TRX_SAMPLERATE * tauI)));
+		sam_data->adb_sam_onem_mtauI = (1.0f - sam_data->adb_sam_mtauI);
 	}
 	// Wheatley 2011 cuteSDR & Warren Pratts WDSP, 2016
 	for (int i = 0; i < blockSize; i++) {
@@ -2304,19 +2333,19 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 		sam_data->phs = sam_data->phs + del_out;
 
 		// wrap round 2PI, modulus
-		while (sam_data->phs >= 2.0 * F_PI) {
-			sam_data->phs -= (2.0 * F_PI);
+		while (sam_data->phs >= 2.0f * F_PI) {
+			sam_data->phs -= (2.0f * F_PI);
 		}
-		while (sam_data->phs < 0.0) {
-			sam_data->phs += (2.0 * F_PI);
+		while (sam_data->phs < 0.0f) {
+			sam_data->phs += (2.0f * F_PI);
 		}
 	}
 
 	sam_data->count++;
 	if (sam_data->count > 100) // to display the exact carrier frequency that the PLL is tuned to
 	{
-		float32_t carrier = 0.1 * (sam_data->omega2 * (float32_t)TRX_SAMPLERATE) / (2.0 * PI);
-		carrier = carrier + 0.9 * sam_data->lowpass;
+		float32_t carrier = 0.1f * (sam_data->omega2 * (float32_t)TRX_SAMPLERATE) / (2.0f * F_PI);
+		carrier = carrier + 0.9f * sam_data->lowpass;
 		SAM_Carrier_offset = carrier;
 		sam_data->count = 0;
 		sam_data->lowpass = carrier;

@@ -153,6 +153,7 @@ static void SYSMENU_HANDL_TX_TWO_SIGNAL_TUNE(int8_t direction);
 static void SYSMENU_HANDL_TX_VOX(int8_t direction);
 static void SYSMENU_HANDL_TX_VOX_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_TX_VOX_TIMEOUT(int8_t direction);
+static void SYSMENU_HANDL_TX_FT8_Auto_CQ(int8_t direction);
 
 static void SYSMENU_HANDL_CW_DotToDashRate(int8_t direction);
 static void SYSMENU_HANDL_CW_Iambic(int8_t direction);
@@ -455,8 +456,9 @@ static void SYSMENU_HANDL_CALIB_TangentType(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TwoSignalTune_Balance(int8_t direction);
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction);
 static void SYSMENU_HANDL_CALIB_WIFI_RESET(int8_t direction);
-static void SYSMENU_HANDL_INA226_CUR_CALL(int8_t direction);
-static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction); // Tisho
+static void SYSMENU_HANDL_CALIB_INA226_CUR_CALL(int8_t direction);
+static void SYSMENU_HANDL_CALIB_INA226_PWR_MON(int8_t direction);
+static void SYSMENU_HANDL_CALIB_KTY81_Calibration(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_FILTERMENU(int8_t direction);
@@ -471,7 +473,7 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction);
 static void SYSMENU_HANDL_WIFIMENU(int8_t direction);
 static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction);
 static void SYSMENU_HANDL_RDA_STATS(int8_t direction);
-static void SYSMENU_HANDL_PROPAGINATION(int8_t direction);
+static void SYSMENU_HANDL_PROPAGATION(int8_t direction);
 static void SYSMENU_HANDL_DAYNIGHT_MAP(int8_t direction);
 static void SYSMENU_HANDL_IONOGRAM(int8_t direction);
 #endif
@@ -723,9 +725,8 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"Compr. MxGa SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_HANDL_TX_CompressorMaxGain_SSB},
     {"Compr. Speed SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_SSB, SYSMENU_HANDL_TX_CompressorSpeed_SSB},
     {"CTCSS Frequency", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CTCSS_Freq, SYSMENU_HANDL_TX_CTCSS_Freq},
-    {"Repeater Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RepeaterMode_shadow, SYSMENU_HANDL_TX_RepeaterMode},
-    {"Repeater offset, kHz", SYSMENU_INT16, NULL, (uint32_t *)&TRX.REPEATER_Offset, SYSMENU_HANDL_TX_REPEATER_Offset},
     {"Auto Input Switch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Input_Switch, SYSMENU_HANDL_TX_Auto_Input_Switch},
+    {"FT8 Auto CQ", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FT8_Auto_CQ, SYSMENU_HANDL_TX_FT8_Auto_CQ},
     {"Input Type MAIN", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_MAIN, SYSMENU_HANDL_TX_INPUT_TYPE_MAIN, {"MIC", "LINE", "USB"}},
     {"Input Type DIGI", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_DIGI, SYSMENU_HANDL_TX_INPUT_TYPE_DIGI, {"MIC", "LINE", "USB"}},
     {"LINE Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LINE_Volume, SYSMENU_HANDL_TX_LINE_Volume},
@@ -747,6 +748,8 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
 #endif
     {"Pwr for each band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_HANDL_TX_RF_Gain_For_Each_Band},
     {"Pwr for each mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_HANDL_TX_RF_Gain_For_Each_Mode},
+    {"Repeater Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RepeaterMode_shadow, SYSMENU_HANDL_TX_RepeaterMode},
+    {"Repeater offset, kHz", SYSMENU_INT16, NULL, (uint32_t *)&TRX.REPEATER_Offset, SYSMENU_HANDL_TX_REPEATER_Offset},
     {"SelfHear Volume", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SELFHEAR_Volume, SYSMENU_HANDL_TX_SELFHEAR_Volume},
     {"Two Signal TUNE", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_HANDL_TX_TWO_SIGNAL_TUNE},
     {"VOX", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.VOX, SYSMENU_HANDL_TX_VOX},
@@ -1109,8 +1112,12 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"IF Gain MIN", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_HANDL_CALIB_IF_GAIN_MIN},
     {"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
-    {"INA226 Pwr Mon", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_INA226_PWR_MON},        // Tisho
-    {"INA226 Cur Calc", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_INA226_CUR_CALL}, // Tisho
+    {"INA226 Pwr Mon", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_CALIB_INA226_PWR_MON},
+    {"INA226 Cur Calc", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_CALIB_INA226_CUR_CALL},
+#endif
+#if !defined(FRONTPANEL_MINI) && !defined(FRONTPANEL_X1) && !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_LITE_V2_MINI) && !defined(FRONTPANEL_LITE_V2_BIG) && \
+    !defined(FRONTPANEL_LITE_V2_MICRO)
+    {"KTY81 Calibration", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.KTY81_Calibration, SYSMENU_HANDL_CALIB_KTY81_Calibration},
 #endif
 #ifndef FRONTPANEL_MINI
     {"LCD Rotate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LCD_Rotate, SYSMENU_HANDL_CALIB_LCD_Rotate},
@@ -1317,7 +1324,7 @@ const static struct sysmenu_item_handler sysmenu_time_beacons_handlers[] = {
 const static struct sysmenu_item_handler sysmenu_services_handlers[] = {
 #if HRDW_HAS_WIFI && !defined(FRONTPANEL_X1)
     {"DX Cluster", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DX_CLUSTER},
-    {"Propagination", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_PROPAGINATION},
+    {"Propagation", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_PROPAGATION},
 #if LCD_WIDTH >= 800
     {"DayNight Map", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DAYNIGHT_MAP},
     {"Ionogram", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_IONOGRAM},
@@ -2920,6 +2927,15 @@ static void SYSMENU_HANDL_TX_RF_Gain_For_Each_Mode(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.RF_Gain_For_Each_Mode = false;
+	}
+}
+
+static void SYSMENU_HANDL_TX_FT8_Auto_CQ(int8_t direction) {
+	if (direction > 0) {
+		TRX.FT8_Auto_CQ = true;
+	}
+	if (direction < 0) {
+		TRX.FT8_Auto_CQ = false;
 	}
 }
 
@@ -4957,19 +4973,19 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 	sprintf(out, "FPGA SAMPLES: %d     ", dbg_FPGA_samples);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
-	sprintf(out, "STM32 VOLTAGE: %f     ", TRX_STM32_VREF);
+	sprintf(out, "STM32 VOLTAGE: %f     ", (double)TRX_STM32_VREF);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
-	sprintf(out, "IQ PHASE: %f     ", TRX_IQ_phase_error);
+	sprintf(out, "IQ PHASE: %f     ", (double)TRX_IQ_phase_error);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "ADC MIN/MAX: %d/%d     ", TRX_ADC_MINAMPLITUDE, TRX_ADC_MAXAMPLITUDE);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
-	sprintf(out, "VBAT VOLT: %.2f     ", TRX_VBAT_Voltage);
+	sprintf(out, "VBAT VOLT: %.2f     ", (double)TRX_VBAT_Voltage);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
-	sprintf(out, "ALC: %.2fv (%d%%)    ", TRX_ALC_IN, getPowerFromALC());
+	sprintf(out, "ALC: %.2fv (%d%%)    ", (double)TRX_ALC_IN, getPowerFromALC());
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 
 	LCD_UpdateQuery.SystemMenu = true;
@@ -6801,7 +6817,7 @@ static void SYSMENU_HANDL_CALIB_ALC_Inverted_Logic(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction) {
+static void SYSMENU_HANDL_CALIB_INA226_PWR_MON(int8_t direction) {
 	if (direction > 0) {
 		CALIBRATE.INA226_EN = true;
 		INA226_Init();
@@ -6811,13 +6827,23 @@ static void SYSMENU_HANDL_INA226_PWR_MON(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_INA226_CUR_CALL(int8_t direction) {
+static void SYSMENU_HANDL_CALIB_INA226_CUR_CALL(int8_t direction) {
 	CALIBRATE.INA226_CurCalc += (float32_t)direction * 0.01f;
 	if (CALIBRATE.INA226_CurCalc < 0.01f) {
 		CALIBRATE.INA226_CurCalc = 0.01f;
 	}
 	if (CALIBRATE.INA226_CurCalc > 10.0f) {
 		CALIBRATE.INA226_CurCalc = 10.0f;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_KTY81_Calibration(int8_t direction) {
+	CALIBRATE.KTY81_Calibration += direction;
+	if (CALIBRATE.KTY81_Calibration < 1) {
+		CALIBRATE.KTY81_Calibration = 1;
+	}
+	if (CALIBRATE.KTY81_Calibration > 4000) {
+		CALIBRATE.KTY81_Calibration = 4000;
 	}
 }
 
@@ -7300,14 +7326,14 @@ static void SYSMENU_HANDL_DX_CLUSTER(int8_t direction) {
 	WIFI_getDXCluster();
 }
 
-// PROPAGINATION
-static void SYSMENU_HANDL_PROPAGINATION(int8_t direction) {
+// PROPAGATION
+static void SYSMENU_HANDL_PROPAGATION(int8_t direction) {
 #if HAS_TOUCHPAD
 	LCD_cleanTouchpadButtons();
 #endif
 	sysmenu_infowindow_opened = true;
 	SYSMENU_drawSystemMenu(true, false);
-	WIFI_getPropagination();
+	WIFI_getPropagation();
 }
 
 // DAY/NIGHT MAP

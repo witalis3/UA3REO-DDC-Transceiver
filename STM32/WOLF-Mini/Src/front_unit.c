@@ -155,6 +155,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "MACR3", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 3},
     {.name = "MACR4", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 4},
     // hidden entry for menu editor
+    {.name = "DPD", .work_in_menu = true, .clickHandler = BUTTONHANDLER_DPD, .holdHandler = BUTTONHANDLER_DPD_CALIBRATE, .checkBool = (uint32_t *)&TRX.Digital_Pre_Distortion},
     {.name = "NONE", .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL, .checkBool = NULL},
 };
 
@@ -433,7 +434,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 				CurrentVFO->NotchFC += step;
 			}
 
-			CurrentVFO->NotchFC = roundf((float64_t)CurrentVFO->NotchFC / step) * step;
+			CurrentVFO->NotchFC = round((float64_t)CurrentVFO->NotchFC / step) * step;
 
 			if (CurrentVFO->NotchFC < step) {
 				CurrentVFO->NotchFC = step;

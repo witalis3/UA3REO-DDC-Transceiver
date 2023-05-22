@@ -145,9 +145,9 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				static float32_t xt_coeff = 0.5f;
 				for (int bindx = 0; bindx < NOISE_REDUCTION_FFT_SIZE_HALF; bindx++) // 1. Step of NR - calculate the SNR's
 				{
-					instance->SNR_post[bindx] = fmax(fmin(instance->FFT_COMPLEX_MAG[bindx] / xt_coeff, 1000.0),
-					                                 snr_prio_min); // limited to +30 /-15 dB, might be still too much of reduction, let's try it?
-					instance->SNR_prio[bindx] = fmax(alpha * instance->GAIN_old[bindx] + (1.0 - alpha) * fmax(instance->SNR_post[bindx] - 1.0, 0.0), 0.0);
+					instance->SNR_post[bindx] = fmaxf(fminf(instance->FFT_COMPLEX_MAG[bindx] / xt_coeff, 1000.0f),
+					                                  snr_prio_min); // limited to +30 /-15 dB, might be still too much of reduction, let's try it?
+					instance->SNR_prio[bindx] = fmaxf(alpha * instance->GAIN_old[bindx] + (1.0f - alpha) * fmaxf(instance->SNR_post[bindx] - 1.0f, 0.0f), 0.0f);
 				}
 
 				// some automatic
@@ -175,7 +175,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 #else
 					arm_sqrt_f32((0.7212f * v + v * v), &v);
 #endif
-					instance->GAIN[bindx] = fmax(1.0f / post * v, 0.001f); // limit HK's to 0.001
+					instance->GAIN[bindx] = fmaxf(1.0f / post * v, 0.001f); // limit HK's to 0.001
 					instance->GAIN_old[bindx] = post * instance->GAIN[bindx] * instance->GAIN[bindx];
 				}
 			}
@@ -242,7 +242,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					instance->need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
 				}
 				if ((AGC_RX_dbFS + instance->need_gain_db) > (gain_target + AGC_CLIPPING)) {
-					println("AGC overload ", diff, " ", instance->need_gain_db - (gain_target - AGC_RX_dbFS));
+					println("AGC overload ", (double)diff, " ", (double)(instance->need_gain_db - (gain_target - AGC_RX_dbFS)));
 					instance->need_gain_db = gain_target - AGC_RX_dbFS;
 					// instance->need_gain_db -= 20.0f;
 				}

@@ -1,5 +1,6 @@
 #include "locator_ft8.h"
 #include "arm_math.h"
+#include "functions.h"
 #include <math.h>
 
 static const double EARTH_RAD = 6371; // radius in km
@@ -54,10 +55,10 @@ void process_locator(char locator[]) {
 	Latitude_3 = (11.0 / 24.0 + 1.0 / 48.0) - 90.0;
 	Latitude = Latitude_1 + Latitude_2 + Latitude_3;
 
-	Longitude_1 = (float)A1_value * 20.0;
-	Longitude_2 = (float)N1_value * 2.0;
+	Longitude_1 = (float)A1_value * 20.0f;
+	Longitude_2 = (float)N1_value * 2.0f;
 	Longitude_3 = 11.0 / 12.0 + 1.0 / 24.0;
-	Longitude = Longitude_1 + Longitude_2 + Longitude_3 - 180.0;
+	Longitude = Longitude_1 + Longitude_2 + Longitude_3 - 180.0f;
 }
 
 // distance (km) on earth's surface from point 1 to point 2
@@ -70,4 +71,4 @@ double distance(double lat1, double lon1, double lat2, double lon2) {
 }
 
 // convert degrees to radians
-double deg2rad(double deg) { return deg * (PI / 180.0); }
+double deg2rad(double deg) { return deg * (D_PI / 180.0); }

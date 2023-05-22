@@ -2,6 +2,7 @@
 #include "FT8_GUI.h"
 #include "FT8_main.h"
 #include "atu.h"
+#include "audio_processor.h"
 #include "decode_ft8.h"
 #include "gen_ft8.h"
 #include "lcd.h"
@@ -16,7 +17,7 @@ uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly f
 uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
 int xmit_flag, ft8_xmit_counter;
 
-#define FT8_TONE_SPACING 6.25
+#define FT8_TONE_SPACING 6.25f
 
 extern uint16_t cursor_line;
 
@@ -57,18 +58,20 @@ void tune_Off_sequence(void) {
 	BUTTONHANDLER_TUNE(255);
 }
 
-void set_Xmit_Freq(uint32_t BandFreq, uint16_t Freq) {
-	uint32_t F_Long = BandFreq * 1000 + Freq; // BandFreq is in kHz and add the needed offset
-	TRX_setFrequency(F_Long, CurrentVFO);
+void set_Xmit_Freq(uint64_t BandFreq, float32_t Freq) {
+	uint64_t F_Long = BandFreq * 1000; // BandFreq is in kHz
+	APROC_TUNE_DigiTone_Freq = Freq;
+	if (CurrentVFO->Freq != F_Long) {
+		TRX_setFrequency(F_Long, CurrentVFO);
+	}
 	if (CurrentVFO->Mode != TRX_MODE_DIGI_U) {
 		TRX_setMode(TRX_MODE_DIGI_U, CurrentVFO);
 	}
 }
 
 void set_FT8_Tone(char ft8_tone) {
-	uint32_t F_FT8;
-	F_FT8 = ft8_tone * FT8_TONE_SPACING;
-	set_Xmit_Freq(FT8_BND_Freq, cursor_freq + F_FT8);
+	float32_t F_FT8 = ft8_tone * FT8_TONE_SPACING;
+	set_Xmit_Freq(FT8_BND_Freq, (float32_t)cursor_freq + F_FT8);
 }
 
 void setup_to_transmit_on_next_DSP_Flag(void) {
@@ -107,8 +110,15 @@ void service_CQ(void) {
 			} else // We tried enough without answer => go back to "CQ" call
 			{
 				FT8_Clear_TargetCall(); // Clear the place on the display for the "TargetCall"
-				Beacon_State = 1;       // Set Call - "CQ"
 				Attempt_Count = 0;
+
+				if (TRX.FT8_Auto_CQ) {
+					Beacon_State = 1; // Set Call - "CQ"
+				} else {
+					Beacon_State = 0;
+					FT8_Menu_Idx = 0;      // index of the "CQ" button
+					FT8_Menu_Pos_Toggle(); // deactivate the "CQ" button -> set green
+				}
 			}
 		} else {            // The conversation was not initiated => then we just call CQ
 			Beacon_State = 1; // Set Call - "CQ"
@@ -145,9 +155,16 @@ void service_CQ(void) {
 				Attempt_Count = 0;                     // zero the attempt counter
 				if (CheckRecieved73(receive_index, 0)) // check if the oposite side answered corespondingly
 				{
-					Beacon_State = 1; // if yes then we are done and can go further (call next "CQ")
 					LogQSO();
 					FT8_Clear_TargetCall(); // Clear the place on the display for the "TargetCall"
+
+					if (TRX.FT8_Auto_CQ) {
+						Beacon_State = 1; // if yes then we are done and can go further (call next "CQ")
+					} else {
+						Beacon_State = 0;
+						FT8_Menu_Idx = 0;      // index of the "CQ" button
+						FT8_Menu_Pos_Toggle(); // deactivate the "CQ" button -> set green
+					}
 				}
 			} else { // The answer we got it was not from the station we were talking till now
 				Beacon_State = 30;
@@ -277,7 +294,6 @@ void GetQSOTime(uint8_t QSO_Start) {
 
 void LogQSO(void) {
 	static char StrToLog[260];
-	uint8_t Len;  //=strlen(ctmp);
 	int CR = 0xD; // CR -  ascii code
 	              // ctmp[Len+3] = 0;
 	char cBND[5]; // for the strng containing the current band
@@ -340,26 +356,24 @@ void LogQSO(void) {
 		strcpy(RapRcv_RSL_filtered, RapRcv_RSL);
 	}
 
-	sprintf(StrToLog,
-	        " <call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s "
-	        "<time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>",
-	        strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, QSO_Freq, TRX.CALLSIGN,
-	        TRX.LOCATOR);
-	StrToLog[0] = CR;
-
-	Len = strlen(StrToLog);
-
 	if (SD_Present) {
-		strcpy((char *)SD_workbuffer_A, "FT8_QSO_Log.txt"); // File name
+		sprintf(StrToLog,
+		        "<call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s "
+		        "<time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>\r\n",
+		        strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, (float64_t)QSO_Freq,
+		        TRX.CALLSIGN, TRX.LOCATOR);
+
+		strcpy((char *)SD_workbuffer_A, "FT8_QSO_Log.adi"); // File name
 		strcpy((char *)SD_workbuffer_B, (char *)StrToLog);  // Data to write
-		SDCOMM_WRITE_TO_FILE_partsize = Len;
+		SDCOMM_WRITE_TO_FILE_partsize = strlen(StrToLog);
 
 		SD_doCommand(SDCOMM_WRITE_TO_FILE, false);
+		FT8_QSO_Count_needUpdate = true;
 	}
 
 	static char cNote[32] = {0};
-	sprintf(cNote, "%1.6f Loc: %s", QSO_Freq, Target_Grid);
+	sprintf(cNote, "%1.6f Loc: %s", (float64_t)QSO_Freq, Target_Grid);
 	static char cTarget_RSL[16] = {0};
 	sprintf(cTarget_RSL, "%3i", Target_RSL);
-	WIFI_postQSOtoAllQSO(Target_Call, cNote, QSODate, QSOOffTime, cTarget_RSL, RapRcv_RSL_filtered, "FT8", cBND, "", "");
+	WIFI_postQSOtoAllQSO(Target_Call, cNote, QSODate, QSOOffTime, cTarget_RSL, RapRcv_RSL_filtered, "FT8", cBND, "", TRX.LOCATOR);
 }
