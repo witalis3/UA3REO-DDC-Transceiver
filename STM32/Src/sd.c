@@ -446,7 +446,7 @@ void SDCOMM_FLASH_BIN_handler(void) {
 	if (f_open(&File, (TCHAR *)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK) {
 		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		println("[FLASH] File Opened");
-		TRX_Mute = true;
+		TRX.Mute = true;
 		CODEC_CleanBuffer();
 
 		// SCB_DisableICache();
@@ -605,7 +605,7 @@ void SDCOMM_FLASH_JIC_handler(bool restart) {
 	if (f_open(&File, (TCHAR *)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK) {
 		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
 		println("[FLASH] File Opened");
-		TRX_Mute = true;
+		TRX.Mute = true;
 		CODEC_CleanBuffer();
 
 		FPGA_bus_stop = true;

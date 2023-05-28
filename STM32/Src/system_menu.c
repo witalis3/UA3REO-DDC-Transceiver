@@ -4731,13 +4731,13 @@ static void SYSMENU_HANDL_SD_FormatDialog(int8_t direction) {
 
 static void SYSMENU_HANDL_SD_USB(int8_t direction) {
 	if (direction > 0 && SD_isIdle() && !LCD_busy) {
-		TRX_Mute = true;
+		TRX.Mute = true;
 		SD_USBCardReader = true;
 		USBD_Restart();
 	} else {
 		SD_USBCardReader = false;
 		USBD_Restart();
-		TRX_Mute = false;
+		TRX.Mute = false;
 	}
 }
 
@@ -7955,7 +7955,7 @@ void SYSMENU_eventCloseSystemMenu(void) {
 	if (SD_USBCardReader) {
 		SD_USBCardReader = false;
 		USBD_Restart();
-		TRX_Mute = false;
+		TRX.Mute = false;
 	}
 #endif
 }

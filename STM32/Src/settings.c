@@ -210,6 +210,8 @@ void LoadSettings(bool clear) {
 		// AUDIO
 		TRX.Volume = 25;                    // AF Volume
 		TRX.Volume_Step = 5;                // AF Volume step by sec encoder
+		TRX.Mute = false;                   // AF Mute
+		TRX.AFAmp_Mute = false;             // AF Amp Mute
 		TRX.IF_Gain = 20;                   // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;          // Maximum (target) AGC gain
 		TRX.MIC_GAIN_DB = 9.0f;             // Microphone gain, dB

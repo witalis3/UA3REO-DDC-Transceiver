@@ -527,7 +527,7 @@ void processRxAudio(void) {
 	}
 
 	// muting
-	if (TRX_Mute) {
+	if (TRX.Mute) {
 		arm_scale_f32(APROC_Audio_Buffer_RX1_I, 0.0f, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		arm_scale_f32(APROC_Audio_Buffer_RX1_Q, 0.0f, APROC_Audio_Buffer_RX1_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 	}

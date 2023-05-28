@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 102        // Settings config version
+#define SETT_VERSION 103        // Settings config version
 #define CALIB_VERSION 66        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -581,6 +581,8 @@ extern struct TRX_SETTINGS {
 	int8_t MIC_EQ_P5_AMFM;
 	int8_t AGC_GAIN_TARGET;
 	int8_t VOX_THRESHOLD;
+	bool Mute;
+	bool AFAmp_Mute;
 	bool MIC_Boost;
 	bool BluetoothAudio_Enabled;
 	bool NOISE_BLANKER;

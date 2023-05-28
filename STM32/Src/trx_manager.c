@@ -72,8 +72,6 @@ volatile float32_t TRX_STM32_VREF = 3.3f;         // voltage on STM32
 volatile float32_t TRX_STM32_TEMPERATURE = 30.0f; // STM32 temperature
 volatile float32_t TRX_IQ_phase_error = 0.0f;
 volatile bool TRX_Temporary_Stop_BandMap = false;
-volatile bool TRX_Mute = false;
-volatile bool TRX_AFAmp_Mute = false;
 volatile uint32_t TRX_Temporary_Mute_StartTime = 0;
 uint32_t TRX_freq_phrase = 0;
 uint32_t TRX_freq_phrase2 = 0;
@@ -601,7 +599,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		TRX.RepeaterMode_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].RepeaterMode;
 		TRX_Temporary_Stop_BandMap = false;
 		TRX_DXCluster_UpdateTime = 0;
-		
+
 		LCD_UpdateQuery.TopButtons = true;
 	}
 
@@ -1866,9 +1864,9 @@ void BUTTONHANDLER_MENUHOLD(uint32_t parameter) {
 }
 
 void BUTTONHANDLER_MUTE(uint32_t parameter) {
-	TRX_Mute = !TRX_Mute;
-	if (!TRX_Mute) {
-		TRX_AFAmp_Mute = false;
+	TRX.Mute = !TRX.Mute;
+	if (!TRX.Mute) {
+		TRX.AFAmp_Mute = false;
 		CODEC_UnMute_AF_AMP();
 	}
 	LCD_UpdateQuery.TopButtons = true;
@@ -1876,13 +1874,13 @@ void BUTTONHANDLER_MUTE(uint32_t parameter) {
 }
 
 void BUTTONHANDLER_MUTE_AFAMP(uint32_t parameter) {
-	TRX_AFAmp_Mute = !TRX_AFAmp_Mute;
-	if (TRX_AFAmp_Mute) {
+	TRX.AFAmp_Mute = !TRX.AFAmp_Mute;
+	if (TRX.AFAmp_Mute) {
 		CODEC_Mute_AF_AMP();
 	} else {
 		CODEC_UnMute_AF_AMP();
 	}
-	TRX_Mute = false;
+	TRX.Mute = false;
 
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;

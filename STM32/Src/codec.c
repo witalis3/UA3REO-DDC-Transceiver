@@ -57,7 +57,7 @@ void CODEC_Mute(void) {
 
 void CODEC_UnMute(void) {
 	CODEC_Muting = false;
-	if (!TRX_AFAmp_Mute) {
+	if (!TRX.AFAmp_Mute) {
 		CODEC_UnMute_AF_AMP();
 	}
 }

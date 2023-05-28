@@ -513,7 +513,7 @@ static void FILEMANAGER_DialogAction(void) {
 	if (current_dialog_action == FILMAN_ACT_FLASHBIN) // flash stm32 bin firmware
 	{
 		println("[FLASH] BIN flashing started");
-		TRX_Mute = true;
+		TRX.Mute = true;
 		dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
 		if (strlen(FILEMANAGER_CurrentPath) > 0) {
 			strcat((char *)SD_workbuffer_A, FILEMANAGER_CurrentPath);
@@ -526,7 +526,7 @@ static void FILEMANAGER_DialogAction(void) {
 	if (current_dialog_action == FILMAN_ACT_FLASHJIC) // flash fpga jic firmware
 	{
 		println("[FLASH] JIC flashing started");
-		TRX_Mute = true;
+		TRX.Mute = true;
 		dma_memset(SD_workbuffer_A, 0, sizeof(SD_workbuffer_A));
 		if (strlen(FILEMANAGER_CurrentPath) > 0) {
 			strcat((char *)SD_workbuffer_A, FILEMANAGER_CurrentPath);
@@ -820,17 +820,17 @@ void FILEMANAGER_OTAUpdate_handler(void) {
 	if (sysmenu_ota_opened_state == 15) {
 		LCD_showInfo("Flashing", true);
 		if (WIFI_NewFW_FPGA && WIFI_NewFW_STM32) {
-			TRX_Mute = true;
+			TRX.Mute = true;
 			strcpy((char *)SD_workbuffer_A, "firmware_fpga.jic");
 			SDCOMM_FLASH_JIC_handler(false);
 			strcpy((char *)SD_workbuffer_A, "firmware_stm32.bin");
 			SDCOMM_FLASH_BIN_handler();
 		} else if (WIFI_NewFW_FPGA) {
-			TRX_Mute = true;
+			TRX.Mute = true;
 			strcpy((char *)SD_workbuffer_A, "firmware_fpga.jic");
 			SDCOMM_FLASH_JIC_handler(true);
 		} else if (WIFI_NewFW_STM32) {
-			TRX_Mute = true;
+			TRX.Mute = true;
 			strcpy((char *)SD_workbuffer_A, "firmware_stm32.bin");
 			SDCOMM_FLASH_BIN_handler();
 		}
