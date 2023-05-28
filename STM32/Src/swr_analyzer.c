@@ -236,7 +236,7 @@ void SWR_Draw(void) {
 
 	LCD_busy = true;
 	// Read the signal SWR
-	RF_UNIT_ProcessSensors();
+	// RF_UNIT_ProcessSensors();
 
 	// Draw
 	if (graph_sweep_x < graph_width) {

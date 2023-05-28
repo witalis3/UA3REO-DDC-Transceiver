@@ -8194,6 +8194,9 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 		return;
 	}
 	if (SYSMENU_swr_opened) {
+		SWR_Stop();
+		SYSMENU_swr_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
 	if (SYSMENU_locator_info_opened) {

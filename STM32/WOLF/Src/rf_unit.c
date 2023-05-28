@@ -1356,8 +1356,6 @@ void RF_UNIT_ProcessSensors(void) {
 		TRX_VLT_backward = TRX_VLT_backward + (backward - TRX_VLT_backward) / 2;
 		if ((TRX_VLT_forward - TRX_VLT_backward) > 0.0f) {
 			TRX_SWR = (TRX_VLT_forward + TRX_VLT_backward) / (TRX_VLT_forward - TRX_VLT_backward);
-		} else {
-			TRX_SWR = 1.0f;
 		}
 
 		if (TRX_VLT_backward > TRX_VLT_forward) {
