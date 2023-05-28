@@ -601,6 +601,8 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		TRX.RepeaterMode_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].RepeaterMode;
 		TRX_Temporary_Stop_BandMap = false;
 		TRX_DXCluster_UpdateTime = 0;
+		
+		LCD_UpdateQuery.TopButtons = true;
 	}
 
 	// SPLIT freq secondary VFO sync
