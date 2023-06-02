@@ -33,3 +33,4 @@ Design Rule Check*
 *.rpt
 *.sof
 *.uvguix.*
+/Debug/

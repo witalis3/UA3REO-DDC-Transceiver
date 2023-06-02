@@ -171,8 +171,17 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	if (band < BANDID_40m) { // 60m
 		band_out = CALIBRATE.EXT_60m;
 	}
-	if (band < BANDID_60m) { // 80m
-		band_out = CALIBRATE.EXT_80m;
+	if (band < BANDID_60m)
+	{ // 80m
+		//band_out = CALIBRATE.EXT_80m;
+		if (CurrentVFO->Freq > 3650000)
+		{
+			band_out = 0b00001101;	// SSB
+		}
+		else
+		{
+			band_out = 0b00000011;	// CW
+		}
 	}
 	if (band < BANDID_80m) { // 160m
 		band_out = CALIBRATE.EXT_160m;
