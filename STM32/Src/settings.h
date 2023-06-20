@@ -328,6 +328,7 @@ typedef enum {
 typedef enum {
 	CAT_FT450,
 	CAT_TS2000,
+	CAT_FT817,
 } CAT_TYPE;
 
 // trx input
