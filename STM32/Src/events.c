@@ -491,6 +491,18 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		}
 	}
 
+	// Check FPGA version
+	static bool fpga_ver_checked = false;
+	if (!fpga_ver_checked && TRX_Inited && !LCD_busy) {
+		fpga_ver_checked = true;
+
+		char out[10];
+		sprintf(out, "%d.%d.%d", FPGA_FW_Version[2], FPGA_FW_Version[1], FPGA_FW_Version[0]);
+		if (strcmp(out, FPGA_VERSION_STR) != NULL) {
+			LCD_showError("FPGA version error", true);
+		}
+	}
+
 	// Auto Snap
 	if (TRX.Auto_Snap) {
 		SNAP_DoSnap(true, 0);

@@ -508,8 +508,7 @@ void processRxAudio(void) {
 	}
 #endif
 
-	// Prepare data to DMA
-
+	// Prepare Dual RX data to DMA
 #if HRDW_HAS_DUAL_RX
 	// addition of signals in double receive mode
 	if (TRX.Dual_RX && TRX.Dual_RX_Type == VFO_A_PLUS_B) {
@@ -521,13 +520,28 @@ void processRxAudio(void) {
 	}
 #endif
 
+	// Recording to SD card
+#if HRDW_HAS_SD
+	if (SD_RecordInProcess) {
+		// FPGA_RX_IQ_BUFFER_HALF_SIZE - 192
+		for (uint_fast16_t i = 0; i < FPGA_RX_IQ_BUFFER_HALF_SIZE; i++) {
+			arm_float_to_q15(&APROC_Audio_Buffer_RX1_I[i], &VOCODER_Buffer[VOCODER_Buffer_Index], 1); // left channel
+			VOCODER_Buffer_Index++;
+			if (VOCODER_Buffer_Index == SIZE_ADPCM_BLOCK) {
+				VOCODER_Buffer_Index = 0;
+				VOCODER_Process();
+			}
+		}
+	}
+#endif
+
 	// receiver equalizer
 	if (CurrentVFO->Mode != TRX_MODE_DIGI_L && CurrentVFO->Mode != TRX_MODE_DIGI_U && CurrentVFO->Mode != TRX_MODE_RTTY && CurrentVFO->Mode != TRX_MODE_IQ) {
 		doRX_EQ(FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode);
 	}
 
 	// muting
-	if (TRX_Mute) {
+	if (TRX.Mute) {
 		arm_scale_f32(APROC_Audio_Buffer_RX1_I, 0.0f, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		arm_scale_f32(APROC_Audio_Buffer_RX1_Q, 0.0f, APROC_Audio_Buffer_RX1_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 	}
@@ -607,25 +621,6 @@ void processRxAudio(void) {
 	  }
 	}*/
 
-	// OUT Volume
-	float32_t volume_gain_new = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);
-	volume_gain = 0.9f * volume_gain + 0.1f * volume_gain_new;
-
-// SD card send
-#if HRDW_HAS_SD
-	if (SD_RecordInProcess) {
-		// FPGA_RX_IQ_BUFFER_HALF_SIZE - 192
-		for (uint_fast16_t i = 0; i < FPGA_RX_IQ_BUFFER_HALF_SIZE; i++) {
-			arm_float_to_q15(&APROC_Audio_Buffer_RX1_I[i], &VOCODER_Buffer[VOCODER_Buffer_Index], 1); // left channel
-			VOCODER_Buffer_Index++;
-			if (VOCODER_Buffer_Index == SIZE_ADPCM_BLOCK) {
-				VOCODER_Buffer_Index = 0;
-				VOCODER_Process();
-			}
-		}
-	}
-#endif
-
 	// Tisho
 	/*FT-8 decoding (fill the FT8 Buffer)
 	 *
@@ -647,11 +642,13 @@ void processRxAudio(void) {
 			}
 			FT8_DatBlockNum++;
 		}
-		//		if(!FT8_Bussy)		//MenagerFT8() is now called in TIM5_IRQHandler -> stm32h7xx_it.c
-		//			MenagerFT8();
 	}
 #endif
+
 	// Volume Gain and SPI convert
+	float32_t volume_gain_new = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);
+	volume_gain = 0.9f * volume_gain + 0.1f * volume_gain_new;
+
 	for (uint_fast16_t i = 0; i < (FPGA_RX_IQ_BUFFER_HALF_SIZE * 2); i++) {
 		// Gain
 		APROC_AudioBuffer_out[i] = (int32_t)((float32_t)APROC_AudioBuffer_out[i] * volume_gain);
@@ -905,20 +902,26 @@ void processTxAudio(void) {
 		}
 #endif
 
-		if (getInputType() == TRX_INPUT_MIC) {
-			// Mic Gain
-			float32_t mic_gain = rate2dbP(TRX.MIC_GAIN_DB);
-			arm_scale_f32(APROC_Audio_Buffer_TX_I, mic_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-			arm_scale_f32(APROC_Audio_Buffer_TX_Q, mic_gain, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
-			// Mic Equalizer
-			if (mode != TRX_MODE_DIGI_L && mode != TRX_MODE_DIGI_U && mode != TRX_MODE_RTTY && mode != TRX_MODE_IQ) {
-				doMIC_EQ(AUDIO_BUFFER_HALF_SIZE, mode);
+#if HRDW_HAS_SD
+		if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess)
+#endif
+		{
+			if (getInputType() == TRX_INPUT_MIC) {
+				// Mic Gain
+				float32_t mic_gain = rate2dbP(TRX.MIC_GAIN_DB);
+				arm_scale_f32(APROC_Audio_Buffer_TX_I, mic_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+				arm_scale_f32(APROC_Audio_Buffer_TX_Q, mic_gain, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+				// Mic Equalizer
+				if (mode != TRX_MODE_DIGI_L && mode != TRX_MODE_DIGI_U && mode != TRX_MODE_RTTY && mode != TRX_MODE_IQ) {
+					doMIC_EQ(AUDIO_BUFFER_HALF_SIZE, mode);
+				}
 			}
-		}
-		// USB Gain (24bit)
-		if (getInputType() == TRX_INPUT_USB) {
-			arm_scale_f32(APROC_Audio_Buffer_TX_I, 1.1f, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-			arm_scale_f32(APROC_Audio_Buffer_TX_Q, 1.1f, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+
+			// USB Gain (24bit)
+			if (getInputType() == TRX_INPUT_USB) {
+				arm_scale_f32(APROC_Audio_Buffer_TX_I, 1.1f, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+				arm_scale_f32(APROC_Audio_Buffer_TX_Q, 1.1f, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
+			}
 		}
 
 		// Process DC corrector filter
@@ -1178,6 +1181,9 @@ void processTxAudio(void) {
 	if ((mode == TRX_MODE_AM || mode == TRX_MODE_SAM) && !TRX_Tune) {
 		RFpower_amplitude = RFpower_amplitude * 0.7f;
 	}
+	if (RFpower_amplitude > 1.0f) {
+		RFpower_amplitude = 1.0f;
+	}
 
 	// Tune power regulator
 	if (TRX_Tune) {
@@ -1187,7 +1193,7 @@ void processTxAudio(void) {
 			ATU_TunePowerStabilized = true;
 		}
 #endif
-		if (SYSMENU_auto_calibration_opened) { // for auto calibration do not clip power
+		if (SYSMENU_auto_calibration_opened || TRX.TWO_SIGNAL_TUNE) { // do not clip power for auto calibration or two signal generator
 			APROC_TX_tune_power = RFpower_amplitude;
 			ATU_TunePowerStabilized = true;
 		}
@@ -1199,7 +1205,8 @@ void processTxAudio(void) {
 			{
 				// println("Process Tune Stabilizer ", APROC_TX_tune_power);
 				float32_t coeff_a = 0.993f;
-				if (CALIBRATE.RF_unit_type == RF_UNIT_WF_100D || CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) {
+				if (CALIBRATE.RF_unit_type == RF_UNIT_WF_100D || CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_KT_100S ||
+				    CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) {
 					coeff_a = 0.996f;
 				}
 				float32_t coeff_b = 1.0f - coeff_a;

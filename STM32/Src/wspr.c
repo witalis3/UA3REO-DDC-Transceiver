@@ -72,10 +72,10 @@ void WSPR_Start(void) {
 	LastXIT = TRX.XIT_Enabled;
 	LastSPLIT = TRX.SPLIT_Enabled;
 	LastNB = TRX.NOISE_BLANKER;
-	LastMute = TRX_Mute;
+	LastMute = TRX.Mute;
 
 	// prepare trx
-	TRX_Mute = true;
+	TRX.Mute = true;
 	TRX.TWO_SIGNAL_TUNE = false;
 	TRX.BandMapEnabled = false;
 	TRX_setMode(TRX_MODE_CW, CurrentVFO);
@@ -124,7 +124,7 @@ void WSPR_Stop(void) {
 	TRX.XIT_Enabled = LastXIT;
 	TRX.SPLIT_Enabled = LastSPLIT;
 	TRX.NOISE_BLANKER = LastNB;
-	TRX_Mute = LastMute;
+	TRX.Mute = LastMute;
 	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 }
 

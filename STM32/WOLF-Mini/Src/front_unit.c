@@ -117,7 +117,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 
     {.name = "MODE-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
     {.name = "MODE+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
-    {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNE, .checkBool = (uint32_t *)&TRX_Tune},
+    {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_ATU, .checkBool = (uint32_t *)&TRX.ATU_Enabled},
     {.name = "POWER", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER, .checkBool = NULL},
     //
     {.name = "NOTCH", .work_in_menu = false, .clickHandler = BUTTONHANDLER_NOTCH, .holdHandler = BUTTONHANDLER_NOTCH, .checkBool = (uint32_t *)&TRX.Notch_on_shadow},
@@ -148,7 +148,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "SNAP<", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SNAP_LEFT, .holdHandler = BUTTONHANDLER_SNAP_LEFT, .checkBool = (uint32_t *)&TRX.Auto_Snap},
     {.name = "SNAP>", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SNAP_RIGHT, .holdHandler = BUTTONHANDLER_SNAP_RIGHT, .checkBool = (uint32_t *)&TRX.Auto_Snap},
     {.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
-    {.name = "MUTE", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MUTE, .holdHandler = BUTTONHANDLER_BLUETOOTH_AUDIO_ENABLED, .checkBool = (uint32_t *)&TRX_Mute},
+    {.name = "MUTE", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MUTE, .holdHandler = BUTTONHANDLER_BLUETOOTH_AUDIO_ENABLED, .checkBool = (uint32_t *)&TRX.Mute},
     //
     {.name = "MACR1", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 1},
     {.name = "MACR2", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 2},
@@ -192,7 +192,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_TANGENT_MH48[6] = {
      .work_in_menu = false,
      .parameter = 0,
      .clickHandler = BUTTONHANDLER_TUNE,
-     .holdHandler = BUTTONHANDLER_TUNE}, // PTT_SW2 - P1
+     .holdHandler = BUTTONHANDLER_ATU}, // PTT_SW2 - P1
     {.port = 1,
      .channel = 2,
      .type = FUNIT_CTRL_BUTTON,

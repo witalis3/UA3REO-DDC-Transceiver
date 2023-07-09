@@ -12,8 +12,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "8.0.0";
-
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
 IRAM2 static uint8_t Sector_Erase = W25Q16_COMMAND_Sector_Erase;
@@ -210,6 +208,8 @@ void LoadSettings(bool clear) {
 		// AUDIO
 		TRX.Volume = 25;                    // AF Volume
 		TRX.Volume_Step = 5;                // AF Volume step by sec encoder
+		TRX.Mute = false;                   // AF Mute
+		TRX.AFAmp_Mute = false;             // AF Amp Mute
 		TRX.IF_Gain = 20;                   // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;          // Maximum (target) AGC gain
 		TRX.MIC_GAIN_DB = 9.0f;             // Microphone gain, dB
@@ -576,8 +576,9 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.MAX_RF_POWER_ON_METER = 7;      // Max TRX Power for indication
 		CALIBRATE.PWR_VLT_Calibration = 1000.0f;  // VLT meter calibration
 #if defined(FRONTPANEL_X1)
-		CALIBRATE.ENCODER_INVERT = true;        // invert left-right rotation of the main encoder
-		CALIBRATE.ENCODER_ON_FALLING = true;    // encoder only triggers when level A falls
+		CALIBRATE.ENCODER_INVERT = true;
+		CALIBRATE.ENCODER_ON_FALLING = true;
+		CALIBRATE.ENCODER_SLOW_RATE = 10;
 		CALIBRATE.RFU_HPF_START = 32000 * 1000; // HPF
 		CALIBRATE.RFU_BPF_0_START = 1500 * 1000;
 		CALIBRATE.RFU_BPF_0_END = 2500 * 1000;
