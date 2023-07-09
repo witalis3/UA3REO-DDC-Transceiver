@@ -1187,7 +1187,7 @@ void processTxAudio(void) {
 			ATU_TunePowerStabilized = true;
 		}
 #endif
-		if (SYSMENU_auto_calibration_opened) { // for auto calibration do not clip power
+		if (SYSMENU_auto_calibration_opened || TRX.TWO_SIGNAL_TUNE) { // do not clip power for auto calibration or two signal generator
 			APROC_TX_tune_power = RFpower_amplitude;
 			ATU_TunePowerStabilized = true;
 		}
