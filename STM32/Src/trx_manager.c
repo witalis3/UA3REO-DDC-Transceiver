@@ -1245,6 +1245,19 @@ void BUTTONHANDLER_TUNE(uint32_t parameter) {
 	TRX_Restart_Mode();
 }
 
+void BUTTONHANDLER_ATU(uint32_t parameter) {
+	TRX.ATU_Enabled = !TRX.ATU_Enabled;
+
+	if (TRX.ATU_Enabled) {
+		LCD_showTooltip("ATU ON");
+	} else {
+		LCD_showTooltip("ATU OFF");
+	}
+
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}
+
 void BUTTONHANDLER_PRE(uint32_t parameter) {
 	TRX.LNA = !TRX.LNA;
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);

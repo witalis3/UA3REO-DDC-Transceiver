@@ -82,6 +82,7 @@ extern void BUTTONHANDLER_BLUETOOTH_AUDIO_ENABLED(uint32_t parameter);
 extern void BUTTONHANDLER_AsB(uint32_t parameter);
 extern void BUTTONHANDLER_ArB(uint32_t parameter);
 extern void BUTTONHANDLER_TUNE(uint32_t parameter);
+extern void BUTTONHANDLER_ATU(uint32_t parameter);
 extern void BUTTONHANDLER_RF_POWER(uint32_t parameter);
 extern void BUTTONHANDLER_ANT(uint32_t parameter);
 extern void BUTTONHANDLER_BW(uint32_t parameter);
