@@ -110,8 +110,10 @@ static char ota_config_frontpanel[] = "NONE";
 #define FUNCBUTTONS_ON_PAGE 1
 #define FUNCBUTTONS_PAGES 1
 static char ota_config_frontpanel[] = "SMALL";
-#define ATU_MAXPOS \
-	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) ? ATU_5x5_MAXPOS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
+#define ATU_MAXPOS                                                                                                                 \
+	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_KT_100S) \
+	     ? ATU_5x5_MAXPOS                                                                                                            \
+	     : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
 #endif
 
 #ifdef FRONTPANEL_LITE
@@ -133,8 +135,10 @@ static char ota_config_frontpanel[] = "LITE";
 #define FUNCBUTTONS_PAGES 5
 #define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5)
 static char ota_config_frontpanel[] = "BIG";
-#define ATU_MAXPOS \
-	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) ? ATU_5x5_MAXPOS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
+#define ATU_MAXPOS                                                                                                                 \
+	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_KT_100S) \
+	     ? ATU_5x5_MAXPOS                                                                                                            \
+	     : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
 #endif
 
 #ifdef FRONTPANEL_WF_100D
@@ -362,6 +366,7 @@ typedef enum {
 	RF_UNIT_BIG,
 	RF_UNIT_SPLIT,
 	RF_UNIT_RU4PN,
+	RF_UNIT_KT_100S,
 	RF_UNIT_WF_100D,
 } TRX_RF_UNIT_TYPE;
 

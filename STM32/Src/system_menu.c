@@ -1014,7 +1014,7 @@ const static struct sysmenu_item_handler sysmenu_sd_format_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #if defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1)
-    {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "SPLIT", "RU4PN", "WF-100D"}},
+    {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "SPLIT", "RU4PN", "KT-100S", "WF-100D"}},
 #endif
     {"ALC Port Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Port_Enabled, SYSMENU_HANDL_CALIB_ALC_Port_Enabled},
     {"ALC Inverted", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Inverted_Logic, SYSMENU_HANDL_CALIB_ALC_Inverted_Logic},
@@ -5085,8 +5085,8 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 	if (CALIBRATE.RF_unit_type > 0 || direction > 0) {
 		CALIBRATE.RF_unit_type += direction;
 	}
-	if (CALIBRATE.RF_unit_type > 3) {
-		CALIBRATE.RF_unit_type = 3;
+	if (CALIBRATE.RF_unit_type > 4) {
+		CALIBRATE.RF_unit_type = 4;
 	}
 
 	if (CALIBRATE.RF_unit_type == RF_UNIT_QRP) {
@@ -5140,7 +5140,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.TUNE_MAX_POWER = 2;                  // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 7;           // Max TRX Power for indication
 	}
-	if (CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) {
+	if (CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_KT_100S) {
 		CALIBRATE.rf_out_power_2200m = 40;         // 2200m
 		CALIBRATE.rf_out_power_160m = 40;          // 160m
 		CALIBRATE.rf_out_power_80m = 40;           // 80m
@@ -5191,7 +5191,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.TUNE_MAX_POWER = 10;             // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;     // Max TRX Power for indication
 	}
-	if (CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) {
+	if (CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_KT_100S) {
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF
 		CALIBRATE.RFU_BPF_0_START = 138 * 1000 * 1000; // 2m U14-RF3
@@ -8551,6 +8551,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_LPF(void) {
 		return true;
 	case RF_UNIT_RU4PN:
 		return true;
+	case RF_UNIT_KT_100S:
+		return true;
 	case RF_UNIT_WF_100D:
 		return true;
 	case RF_UNIT_BIG:
@@ -8571,6 +8573,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_HPF(void) {
 	case RF_UNIT_QRP:
 		return true;
 	case RF_UNIT_RU4PN:
+		return true;
+	case RF_UNIT_KT_100S:
 		return true;
 	case RF_UNIT_WF_100D:
 		return true;
@@ -8593,6 +8597,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_BPF_8(void) {
 		return false;
 	case RF_UNIT_RU4PN:
 		return false;
+	case RF_UNIT_KT_100S:
+		return false;
 	case RF_UNIT_WF_100D:
 		return true;
 	case RF_UNIT_BIG:
@@ -8613,6 +8619,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_BPF_9(void) {
 	case RF_UNIT_QRP:
 		return false;
 	case RF_UNIT_RU4PN:
+		return false;
+	case RF_UNIT_KT_100S:
 		return false;
 	case RF_UNIT_WF_100D:
 		return false;
@@ -8637,6 +8645,8 @@ bool SYSMENU_HANDL_CHECK_HAS_ATU(void) {
 		return false;
 	case RF_UNIT_RU4PN:
 		return true;
+	case RF_UNIT_KT_100S:
+		return true;
 	case RF_UNIT_WF_100D:
 		return true;
 	case RF_UNIT_BIG:
@@ -8657,6 +8667,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void) {
 	case RF_UNIT_QRP:
 		return true;
 	case RF_UNIT_RU4PN:
+		return true;
+	case RF_UNIT_KT_100S:
 		return true;
 	case RF_UNIT_WF_100D:
 		return true;

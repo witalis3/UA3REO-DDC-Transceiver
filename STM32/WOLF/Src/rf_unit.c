@@ -1106,6 +1106,107 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 	// KT-100S RF Unit ///////////////////////////////////////////////////////////////////////
 	if (CALIBRATE.RF_unit_type == RF_UNIT_KT_100S) {
+		if (TRX_Tune && CurrentVFO->RealRXFreq <= 70000000) {
+			ATU_Process();
+		}
+
+		bool shift_array[56];
+		static bool shift_array_old[56];
+
+		shift_array[0] = false;                                                   // 7-7 UNUSED
+		shift_array[1] = false;                                                   // 7-6 UNUSED
+		shift_array[2] = false;                                                   // 7-5 UNUSED
+		shift_array[3] = false;                                                   // 7-4 UNUSED
+		shift_array[4] = CurrentVFO->RealRXFreq >= 70000000 && !TRX.ANT_selected; // 7-3 ANT4
+		shift_array[5] = CurrentVFO->RealRXFreq >= 70000000 && TRX.ANT_selected;  // 7-2 ANT3
+		shift_array[6] = CurrentVFO->RealRXFreq < 70000000 && !TRX.ANT_selected;  // 7-1 ANT2
+		shift_array[7] = CurrentVFO->RealRXFreq < 70000000 && TRX.ANT_selected;   // 7-0 ANT1
+
+		shift_array[8] = false;                                       // 6-7 UNUSED
+		shift_array[9] = false;                                       // 6-6 UNUSED
+		shift_array[10] = false;                                      // 6-5 UNUSED
+		shift_array[11] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0); // 6-4 TunC1
+		shift_array[12] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1); // 6-3 TunC2
+		shift_array[13] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2); // 6-2 TunC3
+		shift_array[14] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3); // 6-1 TunC4
+		shift_array[15] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4); // 6-0 TunC5
+
+		shift_array[16] = CurrentVFO->RealRXFreq >= 70000000;                 // 5-7 HF-VHF-SELECT
+		shift_array[17] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4);         // 5-6 TunL5
+		shift_array[18] = TRX.TUNER_Enabled && TRX.ATU_T;                     // 5-5 TunT1
+		shift_array[19] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // 5-4 RX-TX
+		shift_array[20] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3);         // 5-3 TunL4
+		shift_array[21] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 2);         // 5-2 TunL3
+		shift_array[22] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 1);         // 5-1 TunL2
+		shift_array[23] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0);         // 5-0 TunL1
+
+		shift_array[24] = (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->RealRXFreq > 31000000 && CurrentVFO->RealRXFreq <= 60000000; // 4-7 LPF 6M
+		shift_array[25] = (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->RealRXFreq > 22000000 && CurrentVFO->RealRXFreq <= 31000000; // 4-6 LPF 10M
+		shift_array[26] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq < 70000000;                  // 4-5 HF BIAS
+		shift_array[27] = (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->RealRXFreq <= 2500000;                                       // 4-4 LPF 160M
+		shift_array[28] = (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->RealRXFreq > 2500000 && CurrentVFO->RealRXFreq <= 4500000;   // 4-3 LPF 80M
+		shift_array[29] = (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->RealRXFreq > 4500000 && CurrentVFO->RealRXFreq <= 7500000;   // 4-2 LPF 40M
+		shift_array[30] = (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->RealRXFreq > 7500000 && CurrentVFO->RealRXFreq <= 15000000;  // 4-1 LPF 20M
+		shift_array[31] = (turn_on_tx_lpf || TRX_on_TX) && CurrentVFO->RealRXFreq > 15000000 && CurrentVFO->RealRXFreq <= 22000000; // 4-0 LPF 15M
+
+		shift_array[32] = false;                                              // 3-7 UNUSED
+		shift_array[33] = false;                                              // 3-6 UNUSED
+		shift_array[34] = bitRead(band_out, 3);                               // 3-5 EXT BAND OUT 3
+		shift_array[35] = bitRead(band_out, 1);                               // 3-4 EXT BAND OUT 1
+		shift_array[36] = TRX_Tune;                                           // 3-3 EXT TUNE OUT
+		shift_array[37] = bitRead(band_out, 2);                               // 3-2 EXT BAND OUT 2
+		shift_array[38] = bitRead(band_out, 0);                               // 3-1 EXT BAND OUT 0
+		shift_array[39] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // 3-0 EXT TX PTT OUT
+
+		shift_array[40] = CurrentVFO->RealRXFreq >= 70000000;                                      // 2-7 HF-VHF-SELECT
+		shift_array[41] = false;                                                                   // 2-6 UNUSED
+		shift_array[42] = false;                                                                   // 2-5 UNUSED
+		shift_array[43] = false;                                                                   // 2-4 UNUSED
+		shift_array[44] = false;                                                                   // 2-3 UNUSED
+		shift_array[45] = !(TRX.ATT && TRX.ATT_DB > 6);                                            // 2-2 ATT_ON_12
+		shift_array[46] = !(TRX.ATT && ((TRX.ATT_DB > 0 && TRX.ATT_DB <= 6) || TRX.ATT_DB >= 18)); // 2-1 ATT_ON_6
+		shift_array[47] = !(!TRX_on_TX && TRX.LNA);                                                // 2-0 LNA_ON
+
+		shift_array[48] = CurrentVFO->RealRXFreq >= 70000000;                                                         // 1-7 HF-VHF-SELECT
+		shift_array[49] = TRX.RF_Filters && CurrentVFO->RealRXFreq >= 23000000 && CurrentVFO->RealRXFreq <= 60000000; // 1-6 BPF - 21-60 MHz
+		shift_array[50] = TRX.RF_Filters && CurrentVFO->RealRXFreq >= 13000000 && CurrentVFO->RealRXFreq < 23000000;  // 1-5 BPF - 11-25 MHz
+		shift_array[51] = TRX.RF_Filters && CurrentVFO->RealRXFreq >= 8000000 && CurrentVFO->RealRXFreq < 13000000;   // 1-4 BPF - 6,5-15 MHz
+		shift_array[52] = TRX.RF_Filters && CurrentVFO->RealRXFreq >= 5000000 && CurrentVFO->RealRXFreq < 8000000;    // 1-3 BPF - 4,2-9,0 MHz
+		shift_array[53] = TRX.RF_Filters && CurrentVFO->RealRXFreq >= 2500000 && CurrentVFO->RealRXFreq < 5000000;    // 1-2 BPF - 2,3-5,2 MHz
+		shift_array[54] = TRX.RF_Filters && CurrentVFO->RealRXFreq >= 1500000 && CurrentVFO->RealRXFreq < 2500000;    // 1-1 BPF - 1,4-2,8 MHz
+		shift_array[55] = TRX.RF_Filters && CurrentVFO->RealRXFreq < 1500000;                                         // 1-0 BPF - 0,0-2,2 MHz
+
+		bool array_equal = true;
+		for (uint8_t i = 0; i < 56; i++) {
+			if (shift_array[i] != shift_array_old[i]) {
+				shift_array_old[i] = shift_array[i];
+				array_equal = false;
+			}
+		}
+		if (array_equal && !clean) {
+			return;
+		}
+
+		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); // latch
+		MINI_DELAY
+		for (uint8_t registerNumber = 0; registerNumber < 56; registerNumber++) {
+			HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET); // data block
+			MINI_DELAY
+			HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET); // data
+			MINI_DELAY
+			if (!clean) {
+				if (shift_array[registerNumber]) {
+					SET_DATA_PIN;
+				}
+			}
+			MINI_DELAY
+			HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_SET);
+		}
+		MINI_DELAY
+		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET);
+		MINI_DELAY
+		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(RFUNIT_OE_GPIO_Port, RFUNIT_OE_Pin, GPIO_PIN_RESET);
 	}
 }
 
