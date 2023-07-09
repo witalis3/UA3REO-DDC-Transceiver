@@ -920,7 +920,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); // latch
 		MINI_DELAY
-		for (uint8_t registerNumber = 0; registerNumber < 56; registerNumber++) {
+		for (uint8_t registerNumber = 0; registerNumber < 48; registerNumber++) {
 			HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET); // data block
 			MINI_DELAY
 			HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET); // data
