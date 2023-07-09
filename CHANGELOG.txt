@@ -1,4 +1,5 @@
 ----Version 8.0.1----
++HARDW: Обновлены версии плат Wolf-2, Tnx RU4PN
 +STM32: Устранение ошибок, Tnx R9FDL, Виталий, UT8EU
 
 ----Version 8.0.0----
