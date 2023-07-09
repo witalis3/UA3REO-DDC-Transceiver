@@ -1181,6 +1181,9 @@ void processTxAudio(void) {
 	if ((mode == TRX_MODE_AM || mode == TRX_MODE_SAM) && !TRX_Tune) {
 		RFpower_amplitude = RFpower_amplitude * 0.7f;
 	}
+	if (RFpower_amplitude > 1.0f) {
+		RFpower_amplitude = 1.0f;
+	}
 
 	// Tune power regulator
 	if (TRX_Tune) {
