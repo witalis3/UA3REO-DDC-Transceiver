@@ -576,8 +576,9 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.MAX_RF_POWER_ON_METER = 7;      // Max TRX Power for indication
 		CALIBRATE.PWR_VLT_Calibration = 1000.0f;  // VLT meter calibration
 #if defined(FRONTPANEL_X1)
-		CALIBRATE.ENCODER_INVERT = true;        // invert left-right rotation of the main encoder
-		CALIBRATE.ENCODER_ON_FALLING = true;    // encoder only triggers when level A falls
+		CALIBRATE.ENCODER_INVERT = true;
+		CALIBRATE.ENCODER_ON_FALLING = true;
+		CALIBRATE.ENCODER_SLOW_RATE = 10;
 		CALIBRATE.RFU_HPF_START = 32000 * 1000; // HPF
 		CALIBRATE.RFU_BPF_0_START = 1500 * 1000;
 		CALIBRATE.RFU_BPF_0_END = 2500 * 1000;
