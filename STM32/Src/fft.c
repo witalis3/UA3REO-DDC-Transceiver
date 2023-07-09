@@ -1395,7 +1395,7 @@ bool FFT_printFFT(void) {
 			fft_y_prev = fft_y;
 		}
 	}
-	
+
 	if (TRX.FFT_Style == 5) // gradient + contour
 	{
 		uint32_t fft_y_prev = 0;
@@ -1410,7 +1410,7 @@ bool FFT_printFFT(void) {
 					print_output_buffer[fft_y][fft_x] = palette_fft[fft_y];
 				}
 			}
-			
+
 			uint32_t fft_y = fftHeight - fft_header[fft_x];
 			int32_t y_diff = (int32_t)fft_y - (int32_t)fft_y_prev;
 			if (fft_x == 0 || (y_diff <= 1 && y_diff >= -1)) {
