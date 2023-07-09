@@ -164,6 +164,10 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 	if (redraw) {
 		LCD_UpdateQuery.TopButtonsRedraw = false;
 	}
+	
+	// redraw bottom after top
+	LCD_UpdateQuery.BottomButtons = true;
+	
 	LCD_busy = false;
 }
 
