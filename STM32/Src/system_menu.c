@@ -3600,11 +3600,11 @@ static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction) {
 	if (TRX.FFT_Style > 5) {
 		TRX.FFT_Style = 5;
 	}
-	#if !HRDW_HAS_FULL_FFT_BUFFER
+#if !HRDW_HAS_FULL_FFT_BUFFER
 	if (TRX.FFT_Style > 3) {
 		TRX.FFT_Style = 3;
 	}
-	#endif
+#endif
 
 	FFT_Init();
 }
