@@ -845,7 +845,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"FFT Scale Type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_Scale_Type, SYSMENU_HANDL_SCREEN_FFT_Scale_Type, {"Ampl", "Squared", "dBm"}},
     {"FFT Sensitivity", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Sensitivity, SYSMENU_HANDL_SCREEN_FFT_Sensitivity},
     {"FFT Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
-    {"FFT Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style, {"", "Gradien", "Fill", "Dots", "Contour"}},
+    {"FFT Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style, {"", "Gradien", "Fill", "Dots", "Contour", "Gr+Cont"}},
     {"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "GNuttal", "Dolph", "Blckman", "Nuttall", "BlNuttl", "Hann", "Hamming", "No"}},
     {"FFT Zoom", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
     {"FFT Zoom CW", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_ZoomCW, SYSMENU_HANDL_SCREEN_FFT_ZoomCW},
@@ -3597,9 +3597,14 @@ static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction) {
 	if (TRX.FFT_Style < 1) {
 		TRX.FFT_Style = 1;
 	}
-	if (TRX.FFT_Style > 4) {
-		TRX.FFT_Style = 4;
+	if (TRX.FFT_Style > 5) {
+		TRX.FFT_Style = 5;
 	}
+	#if !HRDW_HAS_FULL_FFT_BUFFER
+	if (TRX.FFT_Style > 3) {
+		TRX.FFT_Style = 3;
+	}
+	#endif
 
 	FFT_Init();
 }
