@@ -300,8 +300,7 @@ static void FILEMANAGER_OpenDialog(void) {
 		} else {
 #ifdef LCD_SMALL_INTERFACE
 			LCDDriver_getTextBounds("TXing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
-			LCDDriver_printText("TXing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
-			                    button_active ? FG_COLOR : BG_COLOR, 1);
+			LCDDriver_printText("TXing...", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
 #else
 			LCDDriver_getTextBoundsFont("TXing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 			LCDDriver_printTextFont("TXing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
@@ -322,8 +321,7 @@ static void FILEMANAGER_OpenDialog(void) {
 		if (!SD_RecordInProcess) {
 #ifdef LCD_SMALL_INTERFACE
 			LCDDriver_getTextBounds("Record CQ message", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
-			LCDDriver_printText("Record CQ message", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
-			                    button_active ? FG_COLOR : BG_COLOR, 1);
+			LCDDriver_printText("Record CQ message", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
 #else
 			LCDDriver_getTextBoundsFont("Record CQ message", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 			LCDDriver_printTextFont("Record CQ message", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
@@ -332,8 +330,7 @@ static void FILEMANAGER_OpenDialog(void) {
 		} else {
 #ifdef LCD_SMALL_INTERFACE
 			LCDDriver_getTextBounds("Recording...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
-			LCDDriver_printText("Recording...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
-			                    button_active ? FG_COLOR : BG_COLOR, 1);
+			LCDDriver_printText("Recording...", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
 #else
 			LCDDriver_getTextBoundsFont("Recording...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 			LCDDriver_printTextFont("Recording...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
@@ -353,8 +350,7 @@ static void FILEMANAGER_OpenDialog(void) {
 		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
 #ifdef LCD_SMALL_INTERFACE
 		LCDDriver_getTextBounds("Flash STM32 firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
-		LCDDriver_printText("Flash STM32 firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
-		                    button_active ? FG_COLOR : BG_COLOR, 1);
+		LCDDriver_printText("Flash STM32 firmware", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
 #else
 		LCDDriver_getTextBoundsFont("Flash STM32 firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 		LCDDriver_printTextFont("Flash STM32 firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
@@ -374,8 +370,7 @@ static void FILEMANAGER_OpenDialog(void) {
 		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
 #ifdef LCD_SMALL_INTERFACE
 		LCDDriver_getTextBounds("Flash FPGA firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
-		LCDDriver_printText("Flash FPGA firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
-		                    button_active ? FG_COLOR : BG_COLOR, 1);
+		LCDDriver_printText("Flash FPGA firmware", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
 #else
 		LCDDriver_getTextBoundsFont("Flash FPGA firmware", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 		LCDDriver_printTextFont("Flash FPGA firmware", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
@@ -394,7 +389,7 @@ static void FILEMANAGER_OpenDialog(void) {
 	LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
 #ifdef LCD_SMALL_INTERFACE
 	LCDDriver_getTextBounds("Delete", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
-	LCDDriver_printText("Delete", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+	LCDDriver_printText("Delete", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
 #else
 	LCDDriver_getTextBoundsFont("Delete", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
 	LCDDriver_printTextFont("Delete", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR,

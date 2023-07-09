@@ -360,7 +360,12 @@ static bool SDCOMM_CREATE_RECORD_FILE_main(char *filename, bool audio_rec) {
 			SD_RecordInProcess = true;
 			LCD_UpdateQuery.StatusInfoBar = true;
 			LCD_UpdateQuery.TopButtons = true;
+
+#ifdef LCD_SMALL_INTERFACE
+			LCD_showTooltip("Start record");
+#else
 			LCD_showTooltip("Start recording");
+#endif
 		} else {
 			LCD_UpdateQuery.SystemMenuRedraw = true;
 		}
