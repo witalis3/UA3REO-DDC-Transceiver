@@ -12,8 +12,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-const char version_string[19] = "8.1.0-dev";
-
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
 IRAM2 static uint8_t Sector_Erase = W25Q16_COMMAND_Sector_Erase;

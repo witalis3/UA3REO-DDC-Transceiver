@@ -4959,7 +4959,7 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 #define y_offs (LAYOUT->SYSMENU_FONT_SIZE * RASTR_FONT_H + LAYOUT->SYSMENU_FONT_SIZE * 2)
 	uint16_t y = 10;
 	char out[80];
-	sprintf(out, "STM32 FW ver: %s", version_string);
+	sprintf(out, "STM32 FW ver: %s", STM32_VERSION_STR);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "FPGA FW ver: %d.%d.%d", FPGA_FW_Version[2], FPGA_FW_Version[1], FPGA_FW_Version[0]);

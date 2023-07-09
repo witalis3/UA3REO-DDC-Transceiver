@@ -8,6 +8,14 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#define STM32_VERSION_STR "8.1.0-dev" // current STM32 version
+
+#if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_MINI)
+#define FPGA_VERSION_STR "6.8.0" // needed FPGA version
+#else
+#define FPGA_VERSION_STR "8.0.0" // needed FPGA version
+#endif
+
 #define SETT_VERSION 103        // Settings config version
 #define CALIB_VERSION 66        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
@@ -889,7 +897,6 @@ extern struct TRX_WIFI {
 	uint8_t ENDBit; // end bit
 } WIFI;
 
-extern const char version_string[19]; // 1.2.3
 extern volatile bool NeedSaveSettings;
 extern volatile bool NeedSaveCalibration;
 extern volatile bool NeedSaveWiFi;

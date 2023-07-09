@@ -216,7 +216,7 @@ int main(void) {
 	LCD_Init();
 	if (SHOW_LOGO) {
 		strcpy(greetings_buff, "ver. ");
-		strcat(greetings_buff, version_string);
+		strcat(greetings_buff, STM32_VERSION_STR);
 
 		LCDDriver_Fill(rgb888torgb565(243, 243, 243));
 		LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logoLite.width) / 2), ((LCD_HEIGHT - IMAGES_logoLite.height) / 2), &IMAGES_logoLite, BG_COLOR, BG_COLOR);

@@ -902,7 +902,10 @@ void processTxAudio(void) {
 		}
 #endif
 
-		if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess) {
+#if HRDW_HAS_SD
+		if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess)
+#endif
+		{
 			if (getInputType() == TRX_INPUT_MIC) {
 				// Mic Gain
 				float32_t mic_gain = rate2dbP(TRX.MIC_GAIN_DB);

@@ -306,7 +306,7 @@ int main(void) {
 	JPEG_InitColorTables();
 	if (SHOW_LOGO) {
 		strcpy(greetings_buff, "ver. ");
-		strcat(greetings_buff, version_string);
+		strcat(greetings_buff, STM32_VERSION_STR);
 
 		LCDDriver_Fill(rgb888torgb565(255, 255, 255));
 		LCDDriver_printImage_JPEGCompressed(0, 0, IMAGES_logo800_jpeg, sizeof(IMAGES_logo800_jpeg));
