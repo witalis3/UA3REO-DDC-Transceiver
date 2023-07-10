@@ -933,7 +933,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.INA226_CurCalc = 0.4f;            // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
 		CALIBRATE.PWR_CUR_Calibration = 2.5f;       // CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;                // Tuner averaging stages
-		CALIBRATE.CAT_Type = CAT_FT817;
+		CALIBRATE.CAT_Type = CAT_TS2000;
 		CALIBRATE.LNA_compensation = 0;       // Compensation for LNA, db
 		CALIBRATE.TwoSignalTune_Balance = 50; // balance of signals on twosignal-tune
 		CALIBRATE.LinearPowerControl = false; // linear or logrithmic power control
