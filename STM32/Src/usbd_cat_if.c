@@ -219,19 +219,11 @@ static int8_t CAT_Receive_FS(uint8_t *Buf, uint32_t *Len)
 		if (CALIBRATE.CAT_Type == CAT_FT817)
 		{
 			CAT_processingWiFiCommand = false;
-			if (strlen(command_to_parse1) == 0)
-			{
-				dma_memset(command_to_parse1, 0, sizeof(command_to_parse1));
-				dma_memcpy(command_to_parse1, cat_buffer, cat_buffer_head);
-			}
-			else if (strlen(command_to_parse2) == 0)
-			{
-				dma_memset(command_to_parse2, 0, sizeof(command_to_parse2));
-				dma_memcpy(command_to_parse2, cat_buffer, cat_buffer_head);
-			}
 			println("cat_buffer_head FT817: |", cat_buffer_head, "|");
-			cat_buffer_head = 0;
-			dma_memset(cat_buffer, 0, CAT_BUFFER_SIZE);
+			println("cat_buffer size: |", sizeof(cat_buffer), "|");
+			println("cat_buffer FS: |", cat_buffer, "|");
+			//cat_buffer_head = 0;
+			//dma_memset(cat_buffer, 0, CAT_BUFFER_SIZE);
 		}
 	}
 	return (USBD_OK);
@@ -288,34 +280,38 @@ void CAT_SetWIFICommand(char *data, uint32_t length, uint32_t link_id) {
 void ua3reo_dev_cat_parseCommand(void)
 {
 	USBD_CAT_ReceivePacket(&hUsbDeviceFS); // prepare next command
+	char _command_buffer[CAT_BUFFER_SIZE] = {0};
+	char *_command = _command_buffer;
 	if (CALIBRATE.CAT_Type != CAT_FT817)	// ToDo ??
 	{
 		if (command_to_parse1[0] == 0 && command_to_parse2[0] == 0)
 		{
 			return;
 		}
-	}
 
-	char _command_buffer[CAT_BUFFER_SIZE] = {0};
-	char *_command = _command_buffer;
-	if (strlen(command_to_parse1) > 0) {
-		dma_memcpy(_command, command_to_parse1, CAT_BUFFER_SIZE);
-		dma_memset(command_to_parse1, 0, CAT_BUFFER_SIZE);
-	} else if (strlen(command_to_parse2) > 0) {
-		dma_memcpy(_command, command_to_parse2, CAT_BUFFER_SIZE);
-		dma_memset(command_to_parse2, 0, CAT_BUFFER_SIZE);
+		if (strlen(command_to_parse1) > 0) {
+			dma_memcpy(_command, command_to_parse1, CAT_BUFFER_SIZE);
+			dma_memset(command_to_parse1, 0, CAT_BUFFER_SIZE);
+		} else if (strlen(command_to_parse2) > 0) {
+			dma_memcpy(_command, command_to_parse2, CAT_BUFFER_SIZE);
+			dma_memset(command_to_parse2, 0, CAT_BUFFER_SIZE);
+		}
 	}
 
 
 	if (CALIBRATE.CAT_Type == CAT_FT817)
 	{
-		if (strlen(_command) < 5)
+		if (cat_buffer_head < 5)
 		{
 			return;
 		}
 		else
 		{
-			println("strlen(_command): |", strlen(_command), "|");
+			cat_buffer_head = 0;
+			//char *_command = cat_buffer;
+			dma_memcpy(_command, cat_buffer, CAT_BUFFER_SIZE);
+			dma_memset(cat_buffer, 0, CAT_BUFFER_SIZE);
+			println("cat_buffer: |", cat_buffer, "|");
 		}
 	}
 	else

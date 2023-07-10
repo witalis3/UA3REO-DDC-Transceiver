@@ -174,17 +174,17 @@ void LoadSettings(bool clear) {
 #elif defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
 		TRX.AutoGain = false;                          // auto-control preamp and attenuator
 #else
-		TRX.AutoGain = true;              // auto-control preamp and attenuator
+		TRX.AutoGain = false;              // auto-control preamp and attenuator
 #endif
 		TRX.Locked = false;        // Lock control
 		TRX.SPLIT_Enabled = false; // Split frequency mode (receive one VFO, transmit another)
 #if HRDW_HAS_DUAL_RX
 		TRX.Dual_RX = false;             // Dual RX feature
-		TRX.Dual_RX_Type = VFO_A_PLUS_B; // dual receiver mode
+		TRX.Dual_RX_Type = VFO_A_AND_B; // dual receiver mode
 #endif
 		TRX.Encoder_Accelerate = true;             // Accelerate Encoder on fast rate
-		strcpy(TRX.CALLSIGN, "HamRad");            // Callsign
-		strcpy(TRX.LOCATOR, "LO02RR");             // Locator
+		strcpy(TRX.CALLSIGN, "SP3JDZ");            // Callsign
+		strcpy(TRX.LOCATOR, "JO92DF");             // Locator
 		strcpy(TRX.URSI_CODE, "SO148");            // URSI Ionogramm location CODE https://digisonde.com/index.html#stationmap-section
 		TRX.Custom_Transverter_Enabled = false;    // Enable transverter mode
 		TRX.ATU_I = 0;                             // ATU default state
@@ -212,8 +212,8 @@ void LoadSettings(bool clear) {
 		TRX.Volume_Step = 5;                // AF Volume step by sec encoder
 		TRX.IF_Gain = 20;                   // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;          // Maximum (target) AGC gain
-		TRX.MIC_GAIN_DB = 9.0f;             // Microphone gain, dB
-		TRX.MIC_Boost = false;              // +20dB mic amplifier
+		TRX.MIC_GAIN_DB = 20.0f;             // Microphone gain, dB
+		TRX.MIC_Boost = true;              // +20dB mic amplifier
 		TRX.LINE_Volume = 23;               // Line input level
 		TRX.CODEC_Out_Volume = 121;         // Codec headphone level
 		TRX.BluetoothAudio_Enabled = false; // Bluetooth audio on/off
@@ -265,7 +265,7 @@ void LoadSettings(bool clear) {
 		TRX.TX_Compressor_speed_AMFM = 3;                              // TX compressor speed AM/FM
 		TRX.TX_Compressor_maxgain_AMFM = 10;                           // TX compressor max gain AM/FM
 		TRX.CW_LPF_Filter = 600;                                       // default value of CW filter width
-		TRX.DIGI_LPF_Filter = 3000;                                    // default value of DIGI filter width
+		TRX.DIGI_LPF_Filter = 3300;                                    // default value of DIGI filter width
 		TRX.SSB_LPF_RX_Filter = 2700;                                  // default value of SSB filter width
 		TRX.SSB_LPF_TX_Filter = 2700;                                  // default value of SSB filter width
 		TRX.SSB_HPF_RX_Filter = 200;                                   // default value of SSB filter width
@@ -278,7 +278,7 @@ void LoadSettings(bool clear) {
 		TRX.CW_LPF_Stages = IIR_LPF_STAGES < 10 ? IIR_LPF_STAGES : 10; // stages for CW LPF filter
 		TRX.SSB_LPF_Stages = IIR_LPF_STAGES;                           // stages for SSB LPF filter
 		TRX.AMFM_LPF_Stages = 3;                                       // stages for NFM LPF filter
-		TRX.Beeper = true;                                             // Keyboard beeper
+		TRX.Beeper = false;                                             // Keyboard beeper
 		TRX.CTCSS_Freq = 0;                                            // CTCSS FM Frequency
 		TRX.SELFHEAR_Volume = 40;                                      // Selfhearing volume
 		TRX.FM_Stereo = false;                                         // Stereo FM Mode
@@ -288,11 +288,11 @@ void LoadSettings(bool clear) {
 		TRX.VOX_THRESHOLD = -27;                                       // VOX threshold in dbFS
 		// CW
 		TRX.CW_Pitch = 600;                                             // LO offset in CW mode
-		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key
+		TRX.CW_Key_timeout = 300;                                       // time of releasing transmission after the last character on the key
 		TRX.CW_SelfHear = true;                                         // self-control CW
 		TRX.CW_KEYER = true;                                            // Automatic key
 		TRX.CW_OneSymbolMemory = true;                                  // One symbol memory for automatic key
-		TRX.CW_KEYER_WPM = 25;                                          // Automatic key speed
+		TRX.CW_KEYER_WPM = 22;                                          // Automatic key speed
 		TRX.CW_GaussFilter = true;                                      // Gauss responce LPF filter
 		TRX.CW_DotToDashRate = 3.0f;                                    // Dot To Dash length rate
 		TRX.CW_Iambic = false;                                          // CW Iambic Keyer
@@ -530,9 +530,9 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER2_INVERT = false;     // invert left-right rotation of the optional encoder
 		CALIBRATE.ENCODER_DEBOUNCE = 0;        // time to eliminate contact bounce at the main encoder, ms
 		CALIBRATE.ENCODER2_DEBOUNCE = 10;      // time to eliminate contact bounce at the additional encoder, ms
-		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
+		CALIBRATE.ENCODER_SLOW_RATE = 5;      // slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ON_FALLING = true;   // encoder only triggers when level A falls
-		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
+		CALIBRATE.ENCODER_ACCELERATION = 200;   // acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
 		CALIBRATE.RF_unit_type = RF_UNIT_QRP;  // RF-unit type
 		CALIBRATE.CICFIR_GAINER_48K_val = 7;   // Offset from the output of the CIC compensator
@@ -564,7 +564,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6cm = 100;         // 6cm
 		CALIBRATE.rf_out_power_3cm = 100;         // 3cm
 		CALIBRATE.rf_out_power_QO100 = 100;       // QO-100
-		CALIBRATE.smeter_calibration_hf = 0;      // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
+		CALIBRATE.smeter_calibration_hf = 17;      // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 0;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f; // SWR Transormator rate forward
 		CALIBRATE.SWR_BWD_Calibration_HF = 11.0f; // SWR Transormator rate return
@@ -572,8 +572,8 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_6M = 10.0f; // SWR Transormator rate return
 		CALIBRATE.SWR_FWD_Calibration_VHF = 3.6f; // SWR Transormator rate forward
 		CALIBRATE.SWR_BWD_Calibration_VHF = 3.6f; // SWR Transormator rate return
-		CALIBRATE.TUNE_MAX_POWER = 2;             // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER_ON_METER = 7;      // Max TRX Power for indication
+		CALIBRATE.TUNE_MAX_POWER = 5;             // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER_ON_METER = 5;      // Max TRX Power for indication
 		CALIBRATE.PWR_VLT_Calibration = 1000.0f;  // VLT meter calibration
 #if defined(FRONTPANEL_X1)
 		CALIBRATE.ENCODER_INVERT = true;        // invert left-right rotation of the main encoder
@@ -896,7 +896,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.NOTX_4m = false;
 		CALIBRATE.NOTX_2m = false;
 		CALIBRATE.NOTX_70cm = false;
-		CALIBRATE.ENABLE_60m_band = false; // enable hidden bands
+		CALIBRATE.ENABLE_60m_band = true; // enable hidden bands
 		CALIBRATE.ENABLE_4m_band = false;
 		CALIBRATE.ENABLE_AIR_band = false;
 		CALIBRATE.ENABLE_marine_band = false;
@@ -924,7 +924,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.Transverter_QO100_IF_RX_Khz = 28500;
 		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 28;
 #endif
-		CALIBRATE.OTA_update = true;                // enable OTA FW update over WiFi
+		CALIBRATE.OTA_update = false;                // enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;                // Relay switch delay before RF signal ON, ms
 		CALIBRATE.LCD_Rotate = false;               // LCD 180 degree rotation
 		CALIBRATE.TOUCHPAD_horizontal_flip = false; // Touchpad harozontal flip
