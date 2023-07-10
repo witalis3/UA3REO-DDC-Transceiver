@@ -63,7 +63,7 @@ void SPEC_Start(void) {
 	LastXIT = TRX.XIT_Enabled;
 	LastSPLIT = TRX.SPLIT_Enabled;
 	LastNB = TRX.NOISE_BLANKER;
-	LastMute = TRX_Mute;
+	LastMute = TRX.Mute;
 
 	// draw the GUI
 	LCDDriver_Fill(COLOR_BLACK);
@@ -100,7 +100,7 @@ void SPEC_Start(void) {
 	CurrentVFO->ManualNotchFilter = false;
 	CurrentVFO->AutoNotchFilter = false;
 	CurrentVFO->DNR_Type = false;
-	TRX_Mute = true;
+	TRX.Mute = true;
 	FPGA_NeedSendParams = true;
 	now_freq = TRX.SPEC_Begin * SPEC_Resolution;
 	freq_step = (TRX.SPEC_End * SPEC_Resolution - TRX.SPEC_Begin * SPEC_Resolution) / graph_width;
@@ -124,7 +124,7 @@ void SPEC_Stop(void) {
 	TRX.XIT_Enabled = LastXIT;
 	TRX.SPLIT_Enabled = LastSPLIT;
 	TRX.NOISE_BLANKER = LastNB;
-	TRX_Mute = LastMute;
+	TRX.Mute = LastMute;
 }
 
 // draw the spectrum analyzer

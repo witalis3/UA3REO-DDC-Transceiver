@@ -413,10 +413,40 @@ void ua3reo_dev_cat_parseCommand(void) {
 					strcat(answer, "0");
 				}
 				sprintf(ctmp, "%llu", CurrentVFO->Freq);
-				strcat(answer, ctmp);    // freq
-				strcat(answer, "+0000"); // clirifier offset
-				strcat(answer, "0");     // RX clar off
-				strcat(answer, "0");     // TX clar off
+				strcat(answer, ctmp); // freq
+
+				if (TRX.XIT_Enabled) { // clirifier offset
+					sprintf(ctmp, "%u", abs(TRX_XIT));
+					addSymbols(ctmp, ctmp, 4, "0", false);
+					if (TRX_XIT < 0) {
+						strcat(answer, "-");
+					} else {
+						strcat(answer, "+");
+					}
+					strcat(answer, ctmp);
+				} else if (TRX.RIT_Enabled) {
+					sprintf(ctmp, "%u", abs(TRX_RIT));
+					addSymbols(ctmp, ctmp, 4, "0", false);
+					if (TRX_RIT < 0) {
+						strcat(answer, "-");
+					} else {
+						strcat(answer, "+");
+					}
+					strcat(answer, ctmp);
+				} else {
+					strcat(answer, "+0000");
+				}
+
+				if (TRX.RIT_Enabled) { // RX clar
+					strcat(answer, "1");
+				} else {
+					strcat(answer, "0");
+				}
+				if (TRX.XIT_Enabled) { // TX clar
+					strcat(answer, "1");
+				} else {
+					strcat(answer, "0");
+				}
 				char mode[3] = {0};
 				getFT450Mode((uint8_t)CurrentVFO->Mode, mode);
 				strcat(answer, mode); // mode
@@ -430,14 +460,44 @@ void ua3reo_dev_cat_parseCommand(void) {
 				strcat(answer, "IF"); // TRX status
 				sprintf(ctmp, "%llu", CurrentVFO->Freq);
 				addSymbols(ctmp, ctmp, 11, "0", false);
-				strcat(answer, ctmp);     // freq
-				strcat(answer, "0000");   // Frequency step size
-				strcat(answer, "000000"); // RIT/ XIT frequency ±9990 in Hz
-				strcat(answer, "0");      // 0: RIT OFF, 1: RIT ON
-				strcat(answer, "0");      // 0: XIT OFF, 1: XIT ON
-				strcat(answer, "0");      // 0: Always 0 for the TS-480 (Memory channel bank number).
-				strcat(answer, "00");     // Memory channel number (00 ~ 99).
-				if (TRX_on_TX) {          // 0: RX, 1: TX
+				strcat(answer, ctmp);   // freq
+				strcat(answer, "0000"); // Frequency step size
+
+				if (TRX.XIT_Enabled) { // RIT/ XIT frequency ±99999 in Hz
+					sprintf(ctmp, "%u", abs(TRX_XIT));
+					addSymbols(ctmp, ctmp, 5, "0", false);
+					if (TRX_XIT < 0) {
+						strcat(answer, "-");
+					} else {
+						strcat(answer, "+");
+					}
+					strcat(answer, ctmp);
+				} else if (TRX.RIT_Enabled) {
+					sprintf(ctmp, "%u", abs(TRX_RIT));
+					addSymbols(ctmp, ctmp, 5, "0", false);
+					if (TRX_RIT < 0) {
+						strcat(answer, "-");
+					} else {
+						strcat(answer, "+");
+					}
+					strcat(answer, ctmp);
+				} else {
+					strcat(answer, "000000");
+				}
+
+				if (TRX.RIT_Enabled) { // 0: RIT OFF, 1: RIT ON
+					strcat(answer, "1");
+				} else {
+					strcat(answer, "0");
+				}
+				if (TRX.XIT_Enabled) { // 0: XIT OFF, 1: XIT ON
+					strcat(answer, "1");
+				} else {
+					strcat(answer, "0");
+				}
+				strcat(answer, "0");  // 0: Always 0 for the TS-480 (Memory channel bank number).
+				strcat(answer, "00"); // Memory channel number (00 ~ 99).
+				if (TRX_on_TX) {      // 0: RX, 1: TX
 					strcat(answer, "1");
 				} else {
 					strcat(answer, "0");

@@ -291,18 +291,18 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			if (registerNumber == 43 && (bpf == 5 || bpf == 6 || bpf == 7 || bpf == 8)) {
 				SET_DATA_PIN;
 			}
-			// U17-D3 unused
-			// if (registerNumber == 44 && ) {
-			//	SET_DATA_PIN;
-			//}
+			// U17-D3 ATT_ON_05
+			if (registerNumber == 44 && !att_val_05) {
+				SET_DATA_PIN;
+			}
 			// U17-D2 Net_connect bluetooth
-			if (registerNumber == 45 && TRX.BluetoothAudio_Enabled) {
+			if (registerNumber == 45 && TRX.LNA) {
 				SET_DATA_PIN;
 			}
 			// U17-D1 unused
-			// if (registerNumber == 46 && ) {
-			//	SET_DATA_PIN;
-			//}
+			if (registerNumber == 46 && TRX.BluetoothAudio_Enabled) {
+				SET_DATA_PIN;
+			}
 			// U17-D0 unused
 			// if (registerNumber == 47 && ) {
 			//	SET_DATA_PIN;
@@ -387,8 +387,6 @@ void RF_UNIT_ProcessSensors(void) {
 		TRX_VLT_backward = TRX_VLT_backward + (backward - TRX_VLT_backward) / 2;
 		if ((TRX_VLT_forward - TRX_VLT_backward) > 0.0f) {
 			TRX_SWR = (TRX_VLT_forward + TRX_VLT_backward) / (TRX_VLT_forward - TRX_VLT_backward);
-		} else {
-			TRX_SWR = 1.0f;
 		}
 
 		if (TRX_VLT_backward > TRX_VLT_forward) {

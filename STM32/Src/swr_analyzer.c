@@ -163,7 +163,7 @@ void SWR_Start(uint32_t start, uint32_t end) {
 
 	// save settings
 	Lastfreq = CurrentVFO->Freq;
-	LastMute = TRX_Mute;
+	LastMute = TRX.Mute;
 
 	// draw the GUI
 	LCDDriver_Fill(COLOR_BLACK);
@@ -190,7 +190,7 @@ void SWR_Start(uint32_t start, uint32_t end) {
 
 	// start scanning
 	TRX_setFrequency(startFreq, CurrentVFO);
-	TRX_Mute = true;
+	TRX.Mute = true;
 	TRX_Tune = true;
 	TRX_ptt_hard = TRX_Tune;
 	TRX_Restart_Mode();
@@ -208,7 +208,7 @@ void SWR_Start(uint32_t start, uint32_t end) {
 
 void SWR_Stop(void) {
 	TRX_setFrequency(Lastfreq, CurrentVFO);
-	TRX_Mute = LastMute;
+	TRX.Mute = LastMute;
 	TRX_Tune = false;
 	TRX_ptt_hard = false;
 	TRX_ptt_soft = false;
@@ -236,7 +236,7 @@ void SWR_Draw(void) {
 
 	LCD_busy = true;
 	// Read the signal SWR
-	RF_UNIT_ProcessSensors();
+	// RF_UNIT_ProcessSensors();
 
 	// Draw
 	if (graph_sweep_x < graph_width) {

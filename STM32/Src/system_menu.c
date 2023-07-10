@@ -845,7 +845,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"FFT Scale Type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_Scale_Type, SYSMENU_HANDL_SCREEN_FFT_Scale_Type, {"Ampl", "Squared", "dBm"}},
     {"FFT Sensitivity", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Sensitivity, SYSMENU_HANDL_SCREEN_FFT_Sensitivity},
     {"FFT Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Speed, SYSMENU_HANDL_SCREEN_FFT_Speed},
-    {"FFT Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style, {"", "Gradien", "Fill", "Dots", "Contour"}},
+    {"FFT Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Style, SYSMENU_HANDL_SCREEN_FFT_Style, {"", "Gradien", "Fill", "Dots", "Contour", "Gr+Cont"}},
     {"FFT Window", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Window, SYSMENU_HANDL_SCREEN_FFT_Window, {"", "GNuttal", "Dolph", "Blckman", "Nuttall", "BlNuttl", "Hann", "Hamming", "No"}},
     {"FFT Zoom", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Zoom, SYSMENU_HANDL_SCREEN_FFT_Zoom},
     {"FFT Zoom CW", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_ZoomCW, SYSMENU_HANDL_SCREEN_FFT_ZoomCW},
@@ -1014,7 +1014,7 @@ const static struct sysmenu_item_handler sysmenu_sd_format_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #if defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1)
-    {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "SPLIT", "RU4PN", "WF-100D"}},
+    {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "SPLIT", "RU4PN", "KT-100S", "WF-100D"}},
 #endif
     {"ALC Port Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Port_Enabled, SYSMENU_HANDL_CALIB_ALC_Port_Enabled},
     {"ALC Inverted", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Inverted_Logic, SYSMENU_HANDL_CALIB_ALC_Inverted_Logic},
@@ -3597,9 +3597,14 @@ static void SYSMENU_HANDL_SCREEN_FFT_Style(int8_t direction) {
 	if (TRX.FFT_Style < 1) {
 		TRX.FFT_Style = 1;
 	}
-	if (TRX.FFT_Style > 4) {
-		TRX.FFT_Style = 4;
+	if (TRX.FFT_Style > 5) {
+		TRX.FFT_Style = 5;
 	}
+#if !HRDW_HAS_FULL_FFT_BUFFER
+	if (TRX.FFT_Style > 3) {
+		TRX.FFT_Style = 3;
+	}
+#endif
 
 	FFT_Init();
 }
@@ -4731,13 +4736,13 @@ static void SYSMENU_HANDL_SD_FormatDialog(int8_t direction) {
 
 static void SYSMENU_HANDL_SD_USB(int8_t direction) {
 	if (direction > 0 && SD_isIdle() && !LCD_busy) {
-		TRX_Mute = true;
+		TRX.Mute = true;
 		SD_USBCardReader = true;
 		USBD_Restart();
 	} else {
 		SD_USBCardReader = false;
 		USBD_Restart();
-		TRX_Mute = false;
+		TRX.Mute = false;
 	}
 }
 
@@ -4959,7 +4964,7 @@ static void SYSMENU_HANDL_SYSINFO(int8_t direction) {
 #define y_offs (LAYOUT->SYSMENU_FONT_SIZE * RASTR_FONT_H + LAYOUT->SYSMENU_FONT_SIZE * 2)
 	uint16_t y = 10;
 	char out[80];
-	sprintf(out, "STM32 FW ver: %s", version_string);
+	sprintf(out, "STM32 FW ver: %s", STM32_VERSION_STR);
 	LCDDriver_printText(out, 5, y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	y += y_offs;
 	sprintf(out, "FPGA FW ver: %d.%d.%d", FPGA_FW_Version[2], FPGA_FW_Version[1], FPGA_FW_Version[0]);
@@ -5085,8 +5090,8 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 	if (CALIBRATE.RF_unit_type > 0 || direction > 0) {
 		CALIBRATE.RF_unit_type += direction;
 	}
-	if (CALIBRATE.RF_unit_type > 3) {
-		CALIBRATE.RF_unit_type = 3;
+	if (CALIBRATE.RF_unit_type > 4) {
+		CALIBRATE.RF_unit_type = 4;
 	}
 
 	if (CALIBRATE.RF_unit_type == RF_UNIT_QRP) {
@@ -5140,7 +5145,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.TUNE_MAX_POWER = 2;                  // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 7;           // Max TRX Power for indication
 	}
-	if (CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) {
+	if (CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_SPLIT || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_KT_100S) {
 		CALIBRATE.rf_out_power_2200m = 40;         // 2200m
 		CALIBRATE.rf_out_power_160m = 40;          // 160m
 		CALIBRATE.rf_out_power_80m = 40;           // 80m
@@ -5191,7 +5196,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.TUNE_MAX_POWER = 10;             // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;     // Max TRX Power for indication
 	}
-	if (CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) {
+	if (CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_KT_100S) {
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF
 		CALIBRATE.RFU_BPF_0_START = 138 * 1000 * 1000; // 2m U14-RF3
@@ -7955,7 +7960,7 @@ void SYSMENU_eventCloseSystemMenu(void) {
 	if (SD_USBCardReader) {
 		SD_USBCardReader = false;
 		USBD_Restart();
-		TRX_Mute = false;
+		TRX.Mute = false;
 	}
 #endif
 }
@@ -8194,6 +8199,9 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 		return;
 	}
 	if (SYSMENU_swr_opened) {
+		SWR_Stop();
+		SYSMENU_swr_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 		return;
 	}
 	if (SYSMENU_locator_info_opened) {
@@ -8548,6 +8556,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_LPF(void) {
 		return true;
 	case RF_UNIT_RU4PN:
 		return true;
+	case RF_UNIT_KT_100S:
+		return true;
 	case RF_UNIT_WF_100D:
 		return true;
 	case RF_UNIT_BIG:
@@ -8568,6 +8578,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_HPF(void) {
 	case RF_UNIT_QRP:
 		return true;
 	case RF_UNIT_RU4PN:
+		return true;
+	case RF_UNIT_KT_100S:
 		return true;
 	case RF_UNIT_WF_100D:
 		return true;
@@ -8590,6 +8602,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_BPF_8(void) {
 		return false;
 	case RF_UNIT_RU4PN:
 		return false;
+	case RF_UNIT_KT_100S:
+		return false;
 	case RF_UNIT_WF_100D:
 		return true;
 	case RF_UNIT_BIG:
@@ -8610,6 +8624,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_BPF_9(void) {
 	case RF_UNIT_QRP:
 		return false;
 	case RF_UNIT_RU4PN:
+		return false;
+	case RF_UNIT_KT_100S:
 		return false;
 	case RF_UNIT_WF_100D:
 		return false;
@@ -8634,6 +8650,8 @@ bool SYSMENU_HANDL_CHECK_HAS_ATU(void) {
 		return false;
 	case RF_UNIT_RU4PN:
 		return true;
+	case RF_UNIT_KT_100S:
+		return true;
 	case RF_UNIT_WF_100D:
 		return true;
 	case RF_UNIT_BIG:
@@ -8654,6 +8672,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void) {
 	case RF_UNIT_QRP:
 		return true;
 	case RF_UNIT_RU4PN:
+		return true;
+	case RF_UNIT_KT_100S:
 		return true;
 	case RF_UNIT_WF_100D:
 		return true;

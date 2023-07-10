@@ -270,7 +270,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **FFT Scale Type** - Y-axis style on FFT between signal amplitude and dBm to fit more dynamic range on screen (Useful when manually adjusting FFT range).
 * **FFT Sensitivity** - Top threshold of FFT sensitivity in automatic mode (30 - scale to strongest signal)
 * **FFT Speed** - FFT and waterfall speed
-* **FFT Style** - FFT style: 1(gradient), 2(fill), 3(dots), 4(contour)
+* **FFT Style** - FFT style: 1(gradient), 2(fill), 3(dots), 4(contour), 5(gradient + contour)
 * **FFT Window** - Select FFT window (1-Dolph–Chebyshev 2-Blackman-Harris 3-Nutall 4-Blackman-Nutall 5-Hann 6-Hamming 7-No window)
 * **FFT Zoom CW** - FFT spectrum zooming for CW Mode
 * **FFT Zoom** - FFT spectrum zooming

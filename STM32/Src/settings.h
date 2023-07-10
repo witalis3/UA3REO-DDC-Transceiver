@@ -8,7 +8,15 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define SETT_VERSION 102        // Settings config version
+#define STM32_VERSION_STR "8.1.0" // current STM32 version
+
+#if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_MINI)
+#define FPGA_VERSION_STR "6.8.0" // needed FPGA version
+#else
+#define FPGA_VERSION_STR "8.0.0" // needed FPGA version
+#endif
+
+#define SETT_VERSION 103        // Settings config version
 #define CALIB_VERSION 66        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -55,7 +63,7 @@
 
 #define MAX_WIFIPASS_LENGTH 32
 #define MAX_CALLSIGN_LENGTH 16
-#define MAX_CW_MACROS_LENGTH 48
+#define MAX_CW_MACROS_LENGTH 61
 #define ALLQSO_TOKEN_SIZE 16
 
 #define W25Q16_COMMAND_Write_Disable 0x04
@@ -110,8 +118,10 @@ static char ota_config_frontpanel[] = "NONE";
 #define FUNCBUTTONS_ON_PAGE 1
 #define FUNCBUTTONS_PAGES 1
 static char ota_config_frontpanel[] = "SMALL";
-#define ATU_MAXPOS \
-	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) ? ATU_5x5_MAXPOS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
+#define ATU_MAXPOS                                                                                                                 \
+	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_KT_100S) \
+	     ? ATU_5x5_MAXPOS                                                                                                            \
+	     : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
 #endif
 
 #ifdef FRONTPANEL_LITE
@@ -133,8 +143,10 @@ static char ota_config_frontpanel[] = "LITE";
 #define FUNCBUTTONS_PAGES 5
 #define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5)
 static char ota_config_frontpanel[] = "BIG";
-#define ATU_MAXPOS \
-	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN) ? ATU_5x5_MAXPOS : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
+#define ATU_MAXPOS                                                                                                                 \
+	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_KT_100S) \
+	     ? ATU_5x5_MAXPOS                                                                                                            \
+	     : ((CALIBRATE.RF_unit_type == RF_UNIT_SPLIT) ? ATU_7x7_MAXPOS : ATU_0x0_MAXPOS))
 #endif
 
 #ifdef FRONTPANEL_WF_100D
@@ -362,6 +374,7 @@ typedef enum {
 	RF_UNIT_BIG,
 	RF_UNIT_SPLIT,
 	RF_UNIT_RU4PN,
+	RF_UNIT_KT_100S,
 	RF_UNIT_WF_100D,
 } TRX_RF_UNIT_TYPE;
 
@@ -581,6 +594,8 @@ extern struct TRX_SETTINGS {
 	int8_t MIC_EQ_P5_AMFM;
 	int8_t AGC_GAIN_TARGET;
 	int8_t VOX_THRESHOLD;
+	bool Mute;
+	bool AFAmp_Mute;
 	bool MIC_Boost;
 	bool BluetoothAudio_Enabled;
 	bool NOISE_BLANKER;
@@ -882,7 +897,6 @@ extern struct TRX_WIFI {
 	uint8_t ENDBit; // end bit
 } WIFI;
 
-extern const char version_string[19]; // 1.2.3
 extern volatile bool NeedSaveSettings;
 extern volatile bool NeedSaveCalibration;
 extern volatile bool NeedSaveWiFi;

@@ -5,7 +5,7 @@
 #include "main.h"
 #include "stdbool.h"
 
-#define SWR_StepDelay 1 // scan delay, msec
+#define SWR_StepDelay 3 // scan delay, msec
 #define SWR_VParts 6    // vertical signatures
 #define SWR_TopSWR 10.0f
 

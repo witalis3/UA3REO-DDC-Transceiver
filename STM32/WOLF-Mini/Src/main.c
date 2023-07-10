@@ -279,7 +279,7 @@ int main(void) {
 		LCDDriver_Fill(rgb888torgb565(243, 243, 243));
 		LCDDriver_printImage_RLECompressed(((LCD_WIDTH - IMAGES_logo320.width) / 2), ((LCD_HEIGHT - IMAGES_logo320.height) / 2), &IMAGES_logo320, BG_COLOR, BG_COLOR);
 		strcpy(greetings_buff, "ver. ");
-		strcat(greetings_buff, version_string);
+		strcat(greetings_buff, STM32_VERSION_STR);
 		LCDDriver_printText(greetings_buff, 4, (LCD_HEIGHT - 10), COLOR_RED, rgb888torgb565(243, 243, 243), 1);
 		// show callsign greetings
 		uint16_t x1, y1, w, h;
