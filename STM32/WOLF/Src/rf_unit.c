@@ -907,7 +907,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		shift_array[46] = !(!TRX.RF_Filters || dualrx_bpf_disabled || (bpf != 0 && bpf != 5 && bpf != 6 && bpf != 7)); // U21-1 BPF_1_!EN 5,6,7,0 - bpf1
 		shift_array[47] = !(TRX.RF_Filters && !dualrx_bpf_disabled && bpf != 255);                                     // U21-0 BPF_ON
 
-		bool array_equal = true;
+		bool array_equal = false; // DISABLED
 		for (uint8_t i = 0; i < 48; i++) {
 			if (shift_array[i] != shift_array_old[i]) {
 				shift_array_old[i] = shift_array[i];

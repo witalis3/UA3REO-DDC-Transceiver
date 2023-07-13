@@ -441,7 +441,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "SPLIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SPLIT, .holdHandler = BUTTONHANDLER_SPLIT, .checkBool = (uint32_t *)&TRX.SPLIT_Enabled},
     {.name = "XIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_XIT, .holdHandler = BUTTONHANDLER_XIT, .checkBool = (uint32_t *)&TRX.XIT_Enabled},
     {.name = "RIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_RIT, .holdHandler = BUTTONHANDLER_RIT, .checkBool = (uint32_t *)&TRX.RIT_Enabled},
-    {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_ATU, .checkBool = (uint32_t *)&TRX.ATU_Enabled},
+    {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNER, .checkBool = (uint32_t *)&TRX.TUNER_Enabled},
     {.name = "SERVICE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SERVICES, .holdHandler = BUTTONHANDLER_SCREENSHOT, .checkBool = NULL},
     {.name = "MENU", .work_in_menu = true, .clickHandler = BUTTONHANDLER_MENU, .holdHandler = BUTTONHANDLER_MENU, .checkBool = NULL},
 
@@ -607,7 +607,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .work_in_menu = true,
      .parameter = 0,
      .clickHandler = BUTTONHANDLER_TUNE,
-     .holdHandler = BUTTONHANDLER_ATU}, // SB13 TUNE ATU
+     .holdHandler = BUTTONHANDLER_TUNER}, // SB13 TUNE ATU
     {.port = 1,
      .channel = 4,
      .type = FUNIT_CTRL_BUTTON,
@@ -797,7 +797,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "SNAP >", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SNAP_RIGHT, .holdHandler = BUTTONHANDLER_AUTO_SNAP, .checkBool = (uint32_t *)&TRX.Auto_Snap},
     {.name = "CQ", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CQ, .holdHandler = BUTTONHANDLER_FILEMANAGER, .checkBool = (uint32_t *)&SD_PlayInProcess},
     {.name = "WPM", .work_in_menu = true, .clickHandler = BUTTONHANDLER_WPM, .holdHandler = BUTTONHANDLER_WPM, .checkBool = NULL},
-    {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_ATU, .checkBool = (uint32_t *)&TRX.ATU_Enabled},
+    {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNER, .checkBool = (uint32_t *)&TRX.TUNER_Enabled},
 
     {.name = "SCAN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SCAN, .holdHandler = BUTTONHANDLER_SCAN, .checkBool = (uint32_t *)&TRX_ScanMode},
     {.name = "HPF", .work_in_menu = true, .clickHandler = BUTTONHANDLER_HPF, .holdHandler = BUTTONHANDLER_HPF, .checkBool = NULL},
