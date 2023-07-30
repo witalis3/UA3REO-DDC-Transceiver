@@ -47,6 +47,13 @@ void CW_key_change(void) {
 	if (TRX_Tune) {
 		return;
 	}
+	
+	bool notx = TRX_TX_Disabled(CurrentVFO->Freq);
+	if (notx) {
+		TRX_ptt_soft = false;
+		TRX_ptt_hard = false;
+		return;
+	}
 
 	bool TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
 	if (TRX.CW_Invert) {
