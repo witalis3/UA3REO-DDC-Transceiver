@@ -1,5 +1,5 @@
 ----Version 8.1.2----
-+STM32: Устранение ошибок, Tnx SP5TAA, R7KBI, DJ0AK, Виталий
++STM32: Устранение ошибок, Tnx SP5TAA, R7KBI, DJ0AK, Виталий, SP3JDZ
 
 ----Version 8.1.0----
 +HARDW: Обновлены версии плат Wolf-2, Tnx RU4PN
