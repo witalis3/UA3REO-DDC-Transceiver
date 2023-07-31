@@ -1,3 +1,4 @@
+Debug/*
 FPGA/*/db/*
 FPGA/*/output_files/*
 FPGA/*/greybox_tmp/*

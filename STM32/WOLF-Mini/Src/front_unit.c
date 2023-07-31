@@ -117,7 +117,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 
     {.name = "MODE-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
     {.name = "MODE+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
-    {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_ATU, .checkBool = (uint32_t *)&TRX.ATU_Enabled},
+    {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNER, .checkBool = (uint32_t *)&TRX.TUNER_Enabled},
     {.name = "POWER", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER, .checkBool = NULL},
     //
     {.name = "NOTCH", .work_in_menu = false, .clickHandler = BUTTONHANDLER_NOTCH, .holdHandler = BUTTONHANDLER_NOTCH, .checkBool = (uint32_t *)&TRX.Notch_on_shadow},
@@ -192,7 +192,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_TANGENT_MH48[6] = {
      .work_in_menu = false,
      .parameter = 0,
      .clickHandler = BUTTONHANDLER_TUNE,
-     .holdHandler = BUTTONHANDLER_ATU}, // PTT_SW2 - P1
+     .holdHandler = BUTTONHANDLER_TUNER}, // PTT_SW2 - P1
     {.port = 1,
      .channel = 2,
      .type = FUNIT_CTRL_BUTTON,

@@ -1245,13 +1245,13 @@ void BUTTONHANDLER_TUNE(uint32_t parameter) {
 	TRX_Restart_Mode();
 }
 
-void BUTTONHANDLER_ATU(uint32_t parameter) {
-	TRX.ATU_Enabled = !TRX.ATU_Enabled;
+void BUTTONHANDLER_TUNER(uint32_t parameter) {
+	TRX.TUNER_Enabled = !TRX.TUNER_Enabled;
 
-	if (TRX.ATU_Enabled) {
-		LCD_showTooltip("ATU ON");
+	if (TRX.TUNER_Enabled) {
+		LCD_showTooltip("Tuner ON");
 	} else {
-		LCD_showTooltip("ATU OFF");
+		LCD_showTooltip("Tuner OFF");
 	}
 
 	LCD_UpdateQuery.TopButtons = true;

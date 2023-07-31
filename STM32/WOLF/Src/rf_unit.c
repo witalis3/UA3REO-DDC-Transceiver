@@ -872,7 +872,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				static uint8_t pwm_ticks = 0;
 				pwm_ticks++;
 				if (pwm_status) {
-					shift_array[1] = true;
+					shift_array[17] = true;
 				}
 				if ((pwm_status && pwm_ticks == on_ticks) || (!pwm_status && pwm_ticks == off_ticks)) {
 					pwm_status = !pwm_status;
