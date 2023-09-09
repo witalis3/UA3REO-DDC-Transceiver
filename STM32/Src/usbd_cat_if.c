@@ -1027,7 +1027,7 @@ void ua3reo_dev_cat_parseCommand(void) {
 		}
 		return;
 	}
-	
+
 	if (strcmp(command, "SA") == 0) // Sets or reads the Satellite mode status.
 	{
 		CAT_Transmit("SA0;");

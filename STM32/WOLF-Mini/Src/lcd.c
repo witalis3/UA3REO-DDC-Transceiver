@@ -190,6 +190,13 @@ static void LCD_displayBottomButtons(bool redraw) {
 	for (uint8_t i = 0; i < FUNCBUTTONS_ON_PAGE; i++) {
 		uint16_t menuPosition = TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i;
 
+		bool enabled = true;
+		if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].checkBool != NULL) {
+			if ((uint8_t)*PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].checkBool == 0) {
+				enabled = false;
+			}
+		}
+
 		bool dummyButton = false;
 		if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].clickHandler == NULL && PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].holdHandler == NULL) {
 			dummyButton = true;
@@ -197,9 +204,9 @@ static void LCD_displayBottomButtons(bool redraw) {
 
 		if (!dummyButton) {
 			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT,
-			            (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].name, true, false, false, 0,
-			            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].clickHandler, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].holdHandler,
-			            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
+			            (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].name, enabled, false, false,
+			            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].parameter, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].clickHandler,
+			            PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].holdHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);
 		} else {
 			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, LAYOUT->BOTTOM_BUTTONS_ONE_WIDTH, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, " ", false, false, false, 0, NULL, NULL,
 			            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT);

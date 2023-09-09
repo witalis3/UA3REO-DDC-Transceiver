@@ -350,10 +350,10 @@ static void DPD_printDbmStatus(float32_t imd3, float32_t imd5) {
 }
 
 static void DPD_getDistortionForSample(float32_t *i, float32_t *q) {
-	#ifdef STM32F407xx
+#ifdef STM32F407xx
 	return;
-	#endif
-	
+#endif
+
 	float32_t rms = sqrtf(*i * *i + *q * *q);
 	if (rms > DPD_max_rms && DPD_need_calibration) {
 		DPD_max_rms = rms;
