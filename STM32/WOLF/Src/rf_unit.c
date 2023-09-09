@@ -1264,7 +1264,7 @@ void RF_UNIT_ProcessSensors(void) {
 	float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B16_RANGE;
 	float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / B16_RANGE;
 
-	// println("ALC: ", TRX_ALC_IN, "FWD: ", forward, " BKW: ", backward);
+	// println("ALC: ", (double)TRX_ALC_IN, "FWD: ", (double)forward, " BKW: ", (double)backward, " THERM: ", (double)rf_thermal, " RESIST: ", (double)therm_resistance);
 	if (ALC_IN > 3.2f || forward > 3.2f || backward > 3.2f) {
 		TRX_PWR_ALC_SWR_OVERFLOW = true;
 	}
