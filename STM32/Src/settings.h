@@ -17,7 +17,7 @@
 #endif
 
 #define SETT_VERSION 103        // Settings config version
-#define CALIB_VERSION 66        // Calibration config version
+#define CALIB_VERSION 67        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                  // audio stream sampling rate during processing and TX (NOT RX!)
@@ -455,9 +455,6 @@ extern struct TRX_SETTINGS {
 	bool NeedGoToBootloader;
 	// TRX
 	float32_t ATT_DB;
-#if HRDW_HAS_VGA
-	float32_t VGA_GAIN;
-#endif
 	uint32_t FRQ_STEP;
 	uint32_t FRQ_FAST_STEP;
 	uint32_t FRQ_ENC_STEP;

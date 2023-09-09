@@ -787,7 +787,7 @@ void LoadCalibration(bool clear) {
 #elif defined(FRONTPANEL_MINI)
 		CALIBRATE.ENCODER_SLOW_RATE = 15;
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
-		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF
+		CALIBRATE.RFU_HPF_START = 40000 * 1000;        // HPF
 		CALIBRATE.RFU_BPF_0_START = 138 * 1000 * 1000; // 2m
 		CALIBRATE.RFU_BPF_0_END = 150 * 1000 * 1000;   // 2m
 		CALIBRATE.RFU_BPF_1_START = 1500 * 1000;       // 160m
@@ -800,8 +800,8 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_4_END = 14700 * 1000;        // 30m,20m
 		CALIBRATE.RFU_BPF_5_START = 14700 * 1000;      // 20,17m
 		CALIBRATE.RFU_BPF_5_END = 22100 * 1000;        // 20,17m
-		CALIBRATE.RFU_BPF_6_START = 22100 * 1000;      // 15,12,10,6m
-		CALIBRATE.RFU_BPF_6_END = 60000 * 1000;        // 15,12,10,6m
+		CALIBRATE.RFU_BPF_6_START = 22100 * 1000;      // 15,12,10
+		CALIBRATE.RFU_BPF_6_END = 40000 * 1000;        // 15,12,10
 		CALIBRATE.RFU_BPF_7_START = 0;                 // disabled
 		CALIBRATE.RFU_BPF_7_END = 0;                   // disabled
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled
