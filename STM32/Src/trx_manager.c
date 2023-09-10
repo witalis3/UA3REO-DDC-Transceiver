@@ -2417,6 +2417,8 @@ void BUTTONHANDLER_ZOOM_N(uint32_t parameter) {
 			TRX.FFT_ZoomCW = 4;
 		} else if (TRX.FFT_ZoomCW == 16) {
 			TRX.FFT_ZoomCW = 8;
+		} else if (TRX.FFT_ZoomCW == 32) {
+			TRX.FFT_ZoomCW = 16;
 		}
 	} else {
 		if (TRX.FFT_Zoom == 2) {
@@ -2427,6 +2429,8 @@ void BUTTONHANDLER_ZOOM_N(uint32_t parameter) {
 			TRX.FFT_Zoom = 4;
 		} else if (TRX.FFT_Zoom == 16) {
 			TRX.FFT_Zoom = 8;
+		} else if (TRX.FFT_Zoom == 32) {
+			TRX.FFT_Zoom = 16;
 		}
 	}
 
@@ -2444,6 +2448,8 @@ void BUTTONHANDLER_ZOOM_P(uint32_t parameter) {
 			TRX.FFT_ZoomCW = 8;
 		} else if (TRX.FFT_ZoomCW == 8) {
 			TRX.FFT_ZoomCW = 16;
+		} else if (TRX.FFT_ZoomCW == 16) {
+			TRX.FFT_ZoomCW = 32;
 		}
 	} else {
 		if (TRX.FFT_Zoom == 1) {
@@ -2454,6 +2460,8 @@ void BUTTONHANDLER_ZOOM_P(uint32_t parameter) {
 			TRX.FFT_Zoom = 8;
 		} else if (TRX.FFT_Zoom == 8) {
 			TRX.FFT_Zoom = 16;
+		} else if (TRX.FFT_Zoom == 16) {
+			TRX.FFT_Zoom = 32;
 		}
 	}
 

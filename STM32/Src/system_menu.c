@@ -1285,7 +1285,6 @@ const static struct sysmenu_item_handler sysmenu_wspr_handlers[] = {
     {"BAND 10m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WSPR_BANDS_10, SYSMENU_HANDL_WSPR_BAND10},
     {"BAND 6m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WSPR_BANDS_6, SYSMENU_HANDL_WSPR_BAND6},
     {"BAND 2m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WSPR_BANDS_2, SYSMENU_HANDL_WSPR_BAND2},
-    {"", SYSMENU_INFOLINE, 0, 0},
 };
 
 const static struct sysmenu_item_handler sysmenu_auto_calibration_handlers[] = {
@@ -3523,6 +3522,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction) {
 			TRX.FFT_Zoom = 8;
 		} else if (TRX.FFT_Zoom == 8) {
 			TRX.FFT_Zoom = 16;
+		} else if (TRX.FFT_Zoom == 16) {
+			TRX.FFT_Zoom = 32;
 		}
 	} else {
 		if (TRX.FFT_Zoom == 2) {
@@ -3533,6 +3534,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction) {
 			TRX.FFT_Zoom = 4;
 		} else if (TRX.FFT_Zoom == 16) {
 			TRX.FFT_Zoom = 8;
+		} else if (TRX.FFT_Zoom == 32) {
+			TRX.FFT_Zoom = 16;
 		}
 	}
 	FFT_Init();
@@ -3548,6 +3551,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_ZoomCW(int8_t direction) {
 			TRX.FFT_ZoomCW = 8;
 		} else if (TRX.FFT_ZoomCW == 8) {
 			TRX.FFT_ZoomCW = 16;
+		} else if (TRX.FFT_ZoomCW == 16) {
+			TRX.FFT_ZoomCW = 32;
 		}
 	} else {
 		if (TRX.FFT_ZoomCW == 2) {
@@ -3558,6 +3563,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_ZoomCW(int8_t direction) {
 			TRX.FFT_ZoomCW = 4;
 		} else if (TRX.FFT_ZoomCW == 16) {
 			TRX.FFT_ZoomCW = 8;
+		} else if (TRX.FFT_ZoomCW == 32) {
+			TRX.FFT_ZoomCW = 16;
 		}
 	}
 	FFT_Init();
