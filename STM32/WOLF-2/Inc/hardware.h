@@ -50,11 +50,11 @@
 // #define HRDW_LCD_SPI
 #define HRDW_IWDG hiwdg1
 #define HRDW_LCD_FSMC_COPY_DMA hdma_memtomem_dma2_stream5
-#define HRDW_LCD_WTF_DOWN_MDMA hmdma_mdma_channel43_sw_0
-#define HRDW_MEMCPY_MDMA hmdma_mdma_channel40_sw_0
-#define HRDW_MEMSET_MDMA hmdma_mdma_channel44_sw_0
-#define HRDW_AUDIO_COPY_MDMA hmdma_mdma_channel41_sw_0
-#define HRDW_AUDIO_COPY2_MDMA hmdma_mdma_channel42_sw_0
+#define HRDW_LCD_WTF_DOWN_MDMA hmdma_mdma_channel3_sw_0
+#define HRDW_MEMCPY_MDMA hmdma_mdma_channel0_sw_0
+#define HRDW_MEMSET_MDMA hmdma_mdma_channel4_sw_0
+#define HRDW_AUDIO_COPY_MDMA hmdma_mdma_channel1_sw_0
+#define HRDW_AUDIO_COPY2_MDMA hmdma_mdma_channel2_sw_0
 
 // SPI Speed
 #define SPI_FRONT_UNIT_PRESCALER (!HRDW_SPI_Internal_STM32_Clock ? SPI_BAUDRATEPRESCALER_4 : SPI_BAUDRATEPRESCALER_32)

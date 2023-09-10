@@ -1818,7 +1818,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\Src\hardware.h</PathWithFileName>
+      <PathWithFileName>..\Inc\hardware.h</PathWithFileName>
       <FilenameWithoutPath>hardware.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
