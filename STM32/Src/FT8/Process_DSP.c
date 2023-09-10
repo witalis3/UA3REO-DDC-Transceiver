@@ -53,7 +53,6 @@ q15_t input_gulp[input_gulp_size] __attribute__((aligned(4)));
 #endif
 
 static arm_rfft_instance_q15 fft_inst;
-static arm_cfft_radix4_instance_q15 aux_inst;
 
 void init_DSP(void) {
 #if (defined(LAY_800x480))
@@ -72,8 +71,7 @@ void init_DSP(void) {
 	input_gulp = alloc_to_wtf(input_gulp_size * sizeof(q15_t), false);
 #endif
 
-	arm_rfft_init_q15(&fft_inst, FFT_SIZE_FT8, 0, 1);
-	arm_cfft_radix4_init_q15(&aux_inst, FFT_SIZE_FT8, 0, 1);
+	arm_rfft_init_2048_q15(&fft_inst, 0, 1);
 
 	for (int i = 0; i < FFT_SIZE_FT8; ++i) {
 		window[i] = ft_blackman_i(i, FFT_SIZE_FT8);

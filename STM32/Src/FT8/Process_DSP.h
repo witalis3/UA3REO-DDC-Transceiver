@@ -5,7 +5,7 @@
 #include "lcd.h"
 #include <stdbool.h>
 
-#define FFT_SIZE_FT8 2048   // 2048
+#define FFT_SIZE_FT8 2048   // 2048 arm_rfft_init_2048_q15
 #define num_que_blocks 40   // 8
 #define FT8_block_size 24   // 128
 #define input_gulp_size 960 // 1024
