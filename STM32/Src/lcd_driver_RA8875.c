@@ -47,7 +47,7 @@ inline uint16_t LCDDriver_readReg(uint16_t reg) {
 void LCDDriver_Init(void) {
 	// Wait LCD on
 	// PLL Init
-	LCDDriver_writeReg(LCD_RA8875_PLLC1, LCD_RA8875_PLLC1_PLLDIV1 + 11); // divider + multiplier
+	LCDDriver_writeReg(LCD_RA8875_PLLC1, LCD_RA8875_PLLC1_PLLDIV1 + 10); // divider + multiplier
 	HAL_Delay(1);
 	LCDDriver_writeReg(LCD_RA8875_PLLC2, LCD_RA8875_PLLC2_DIV2); // divider2
 	HAL_Delay(1);
