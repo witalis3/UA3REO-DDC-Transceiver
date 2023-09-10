@@ -1127,7 +1127,7 @@ void processTxAudio(void) {
 	if (!LISTEN_RX_AUDIO_ON_TX) {
 		if (TRX.CW_SelfHear && (TRX.CW_KEYER || CW_key_serial || CW_key_dot_hard || CW_key_dash_hard) && mode == TRX_MODE_CW && !TRX_Tune) {
 			static float32_t cwgen_index = 0;
-			float32_t amplitude = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE) * volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+			float32_t amplitude = volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 				float32_t point = generateSin(amplitude * APROC_Audio_Buffer_TX_I[i], &cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
 				int32_t sample = 0;
