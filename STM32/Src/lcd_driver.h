@@ -100,6 +100,9 @@ typedef struct {
 	const uint8_t yAdvance; ///< Newline distance (y axis)
 } GFXfont;
 
+#define FONT_ANTIALIASING_COEFF_LEFT 0.2f
+#define FONT_ANTIALIASING_COEFF_RIGHT 0.8f
+
 // Functions defines Macros
 #define uswap(a, b)          \
 	{                          \
@@ -128,8 +131,9 @@ extern void LCDDriver_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y
 extern void LCDDriver_drawFastHLine(uint16_t x, uint16_t y, int16_t w, uint16_t color);
 extern void LCDDriver_drawFastVLine(uint16_t x, uint16_t y, int16_t h, uint16_t color);
 extern void LCDDriver_drawRectXY(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
-extern void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size);
-extern void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, const GFXfont *gfxFont);
+extern void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint16_t antiAliasedColorLeft, uint16_t antiAliasedColorRight, uint8_t size);
+extern void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint16_t antiAliasedColorLeft, uint16_t antiAliasedColorRight,
+                                   const GFXfont *gfxFont);
 extern void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, uint8_t size);
 extern void LCDDriver_printTextInMemory(char text[], int16_t x, int16_t y, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h);
 extern void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, const GFXfont *gfxFont);

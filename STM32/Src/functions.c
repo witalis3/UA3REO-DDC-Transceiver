@@ -84,7 +84,7 @@ void print_chr_LCDOnly(char chr) {
 			return;
 		}
 
-		LCDDriver_drawChar(dbg_lcd_x, dbg_lcd_y, chr, COLOR_RED, BG_COLOR, 1);
+		LCDDriver_drawChar(dbg_lcd_x, dbg_lcd_y, chr, COLOR_RED, BG_COLOR, COLOR_RED, BG_COLOR, 1);
 		dbg_lcd_x += 6;
 	}
 }

@@ -18,7 +18,8 @@ uint16_t LCDDriver_GetCurrentXOffset(void) { return text_cursor_x; }
 void LCDDriver_SetCurrentXOffset(uint16_t x) { text_cursor_x = x; }
 
 // Text printing functions
-void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size, uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h) {
+void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint16_t antiAliasedColorLeft, uint16_t antiAliasedColorRight, uint8_t size,
+                                uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h) {
 	uint8_t line = 0;
 	uint8_t zoom = (size > 0 ? size : 1);
 	uint8_t size_w = (size > 0 ? RASTR_FONT_W : RASTR_FONT_4x6_W);
@@ -48,6 +49,7 @@ void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_
 			for (int8_t s_y = 0; s_y < zoom; s_y++) // y size scale
 			{
 				uint16_t *point = buffer + buffer_w * (y + j * (s_y + 1)) + x;
+				uint16_t prev_x_color = bg;
 				for (int8_t i = 0; i < size_w; i++) {
 					// x line out
 					if (i == 5) {
@@ -63,9 +65,19 @@ void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_
 					for (int8_t s_x = 0; s_x < zoom; s_x++) // x size scale
 					{
 						if (line & 0x1) {
-							*point = color; // font pixel
+							if (prev_x_color != color) {
+								*point = antiAliasedColorLeft; // anti-aliased font pixel
+								prev_x_color = color;
+							} else {
+								*point = color; // font pixel
+							}
 						} else {
-							*point = bg; // background pixel
+							if (prev_x_color != bg) {
+								*point = antiAliasedColorRight; // anti-aliased background pixel
+								prev_x_color = bg;
+							} else {
+								*point = bg; // background pixel
+							}
 						}
 						point++;
 					}
@@ -78,11 +90,22 @@ void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_
 		{
 			line = rastr_font_4x6[((c - 0x20) * 6) + j]; // read font
 			uint16_t *point = buffer + buffer_w * (y + j) + x;
+			uint16_t prev_x_color = bg;
 			for (int8_t i = 0; i < size_w; i++) {
 				if (line & 0x8) {
-					*point = color; // font pixel
+					if (prev_x_color != color) {
+						*point = antiAliasedColorLeft; // anti-aliased font pixel
+						prev_x_color = color;
+					} else {
+						*point = color; // font pixel
+					}
 				} else {
-					*point = bg; // background pixel
+					if (prev_x_color != bg) {
+						*point = antiAliasedColorRight; // anti-aliased background pixel
+						prev_x_color = bg;
+					} else {
+						*point = bg; // background pixel
+					}
 				}
 				point++;
 
@@ -96,20 +119,24 @@ void LCDDriver_printTextInMemory(char text[], int16_t x, int16_t y, uint16_t col
 	uint16_t i = 0;
 	uint16_t offset = size * 6;
 	uint16_t skipped = 0;
+
+	uint16_t antiAliasedColorLeft = mixColors(color, bg, FONT_ANTIALIASING_COEFF_LEFT);
+	uint16_t antiAliasedColorRight = mixColors(color, bg, FONT_ANTIALIASING_COEFF_RIGHT);
+
 	for (i = 0; i < 128 && text[i] != 0; i++) {
 		if (text[i] == '^' && text[i + 1] == 'o') // celsius
 		{
 			i++;
 			skipped++;
-			LCDDriver_drawCharInMemory(x + (offset * (i - skipped)), y - 3, text[i], color, bg, size, buffer, buffer_w, buffer_h);
+			LCDDriver_drawCharInMemory(x + (offset * (i - skipped)), y - 3, text[i], color, bg, antiAliasedColorLeft, antiAliasedColorRight, size, buffer, buffer_w, buffer_h);
 		} else {
-			LCDDriver_drawCharInMemory(x + (offset * (i - skipped)), y, text[i], color, bg, size, buffer, buffer_w, buffer_h);
+			LCDDriver_drawCharInMemory(x + (offset * (i - skipped)), y, text[i], color, bg, antiAliasedColorLeft, antiAliasedColorRight, size, buffer, buffer_w, buffer_h);
 		}
 		text_cursor_x = x + (offset * (i + 1 - skipped));
 	}
 }
 
-void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint8_t size) {
+void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint16_t antiAliasedColorLeft, uint16_t antiAliasedColorRight, uint8_t size) {
 	uint8_t line = 0;
 	uint8_t zoom = (size > 0 ? size : 1);
 	uint8_t size_w = (size > 0 ? RASTR_FONT_W : RASTR_FONT_4x6_W);
@@ -130,11 +157,12 @@ void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color,
 	}
 
 	LCDDriver_SetCursorAreaPosition(x, y, x + size_w * zoom - 1, y + size_h * zoom - 1); // char area
-	if (size > 0) {
-		for (int8_t j = 0; j < size_h; j++) // y line out
+	if (size > 0) {                                                                      // 6x8 char
+		for (int8_t j = 0; j < size_h; j++)                                                // y line out
 		{
 			for (int8_t s_y = 0; s_y < zoom; s_y++) // y size scale
 			{
+				uint16_t prev_x_color = bg;
 				for (int8_t i = 0; i < size_w; i++) {
 					// x line out
 					if (i == 5) {
@@ -146,9 +174,19 @@ void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color,
 					for (int8_t s_x = 0; s_x < zoom; s_x++) // x size scale
 					{
 						if (line & 0x1) {
-							LCDDriver_SendData16(color); // font pixel
+							if (prev_x_color != color) {
+								LCDDriver_SendData16(antiAliasedColorLeft); // anti-aliased font pixel
+								prev_x_color = color;
+							} else {
+								LCDDriver_SendData16(color); // font pixel
+							}
 						} else {
-							LCDDriver_SendData16(bg); // background pixel
+							if (prev_x_color != bg) {
+								LCDDriver_SendData16(antiAliasedColorRight); // anti-aliased background pixel
+								prev_x_color = bg;
+							} else {
+								LCDDriver_SendData16(bg); // background pixel
+							}
 						}
 					}
 				}
@@ -159,11 +197,22 @@ void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color,
 		for (int8_t j = 0; j < size_h; j++) // y line out
 		{
 			line = rastr_font_4x6[((c - 0x20) * 6) + j]; // read font
+			uint16_t prev_x_color = bg;
 			for (int8_t i = 0; i < size_w; i++) {
 				if (line & 0x8) {
-					LCDDriver_SendData16(color); // font pixel
+					if (prev_x_color != color) {
+						LCDDriver_SendData16(antiAliasedColorLeft); // anti-aliased font pixel
+						prev_x_color = color;
+					} else {
+						LCDDriver_SendData16(color); // font pixel
+					}
 				} else {
-					LCDDriver_SendData16(bg); // background pixel
+					if (prev_x_color != bg) {
+						LCDDriver_SendData16(antiAliasedColorRight); // anti-aliased background pixel
+						prev_x_color = bg;
+					} else {
+						LCDDriver_SendData16(bg); // background pixel
+					}
 				}
 
 				line <<= 1;
@@ -176,20 +225,24 @@ void LCDDriver_printText(char text[], uint16_t x, uint16_t y, uint16_t color, ui
 	uint16_t i = 0;
 	uint16_t offset = size * 6;
 	uint16_t skipped = 0;
+
+	uint16_t antiAliasedColorLeft = mixColors(color, bg, FONT_ANTIALIASING_COEFF_LEFT);
+	uint16_t antiAliasedColorRight = mixColors(color, bg, FONT_ANTIALIASING_COEFF_RIGHT);
+
 	for (i = 0; i < 128 && text[i] != 0; i++) {
 		if (text[i] == '^' && text[i + 1] == 'o') // celsius
 		{
 			i++;
 			skipped++;
-			LCDDriver_drawChar(x + (offset * (i - skipped)), y - 3, text[i], color, bg, size);
+			LCDDriver_drawChar(x + (offset * (i - skipped)), y - 3, text[i], color, bg, antiAliasedColorLeft, antiAliasedColorRight, size);
 		} else {
-			LCDDriver_drawChar(x + (offset * (i - skipped)), y, text[i], color, bg, size);
+			LCDDriver_drawChar(x + (offset * (i - skipped)), y, text[i], color, bg, antiAliasedColorLeft, antiAliasedColorRight, size);
 		}
 		text_cursor_x = x + (offset * (i + 1 - skipped));
 	}
 }
 
-void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, const GFXfont *gfxFont) {
+void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint16_t antiAliasedColorLeft, uint16_t antiAliasedColorRight, const GFXfont *gfxFont) {
 	c -= gfxFont->first;
 	const GFXglyph *glyph = (GFXglyph *)&gfxFont->glyph[c];
 
@@ -207,6 +260,7 @@ void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t co
 	LCDDriver_SetCursorAreaPosition(x, (uint16_t)ys1, x + glyph->xAdvance - 1, (uint16_t)ys2); // char area
 
 	for (uint8_t yy = 0; yy < glyph->height; yy++) {
+		uint16_t prev_x_color = bg;
 		for (uint8_t xx = 0; xx < glyph->xAdvance; xx++) {
 			if (xx < glyph->xOffset || xx >= (glyph->xOffset + glyph->width)) {
 				LCDDriver_SendData16(bg); // background pixel
@@ -216,9 +270,19 @@ void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t co
 				bits = gfxFont->bitmap[bo++];
 			}
 			if (bits & 0x80) {
-				LCDDriver_SendData16(color); // font pixel
+				if (prev_x_color != color) {
+					LCDDriver_SendData16(antiAliasedColorLeft); // anti-aliased font pixel
+					prev_x_color = color;
+				} else {
+					LCDDriver_SendData16(color); // font pixel
+				}
 			} else {
-				LCDDriver_SendData16(bg); // background pixel
+				if (prev_x_color != bg) {
+					LCDDriver_SendData16(antiAliasedColorRight); // anti-aliased background pixel
+					prev_x_color = bg;
+				} else {
+					LCDDriver_SendData16(bg); // background pixel
+				}
 			}
 			bits <<= 1;
 		}
@@ -229,6 +293,10 @@ void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color
 	uint8_t c = 0;
 	text_cursor_x = x;
 	text_cursor_y = y;
+
+	uint16_t antiAliasedColorLeft = mixColors(color, bg, FONT_ANTIALIASING_COEFF_LEFT);
+	uint16_t antiAliasedColorRight = mixColors(color, bg, FONT_ANTIALIASING_COEFF_RIGHT);
+
 	for (uint16_t i = 0; i < 1024 && text[i] != NULL; i++) {
 		c = text[i];
 		if (c == '\n') {
@@ -245,7 +313,7 @@ void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color
 						text_cursor_x = 0;
 						text_cursor_y += gfxFont->yAdvance;
 					}
-					LCDDriver_drawCharFont(text_cursor_x, text_cursor_y, c, color, bg, gfxFont);
+					LCDDriver_drawCharFont(text_cursor_x, text_cursor_y, c, color, bg, antiAliasedColorLeft, antiAliasedColorRight, gfxFont);
 				}
 				text_cursor_x += glyph->xAdvance;
 			}
