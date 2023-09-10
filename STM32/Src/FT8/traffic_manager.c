@@ -14,7 +14,7 @@
 #include <stdint.h>
 
 uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
-uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
+uint64_t FT8_BND_Freq; // frequency for the FT8 on the current Band
 int xmit_flag, ft8_xmit_counter;
 
 #define FT8_TONE_SPACING 6.25f
@@ -338,9 +338,12 @@ void LogQSO(void) {
 	case FT8_Freq_70CM:
 		strcpy(cBND, "70cm");
 		break;
+	case BANDID_QO100:
+		strcpy(cBND, "3cm");
+		break;
 	}
 
-	float QSO_Freq = ((float)FT8_BND_Freq + (float)cursor_freq / 1000) / 1000; // Calculate the QSO Frequency in MHz (for example 7.075500)
+	float64_t QSO_Freq = ((float64_t)FT8_BND_Freq + (float64_t)cursor_freq / 1000) / 1000; // Calculate the QSO Frequency in MHz (for example 7.075500)
 
 	GetQSODate();  // Get the date to be able to put it in the Log later
 	GetQSOTime(0); // End Time

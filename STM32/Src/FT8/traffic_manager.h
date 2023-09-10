@@ -17,9 +17,10 @@
 #define FT8_Freq_6M 50313
 #define FT8_Freq_2M 144174
 #define FT8_Freq_70CM 432174
+#define FT8_Freq_QO_100 10489540
 
 extern uint16_t cursor_freq;  // the AF frequency wich will be tansmited now (roughly from 0 to 3kHz)
-extern uint32_t FT8_BND_Freq; // frequency for the FT8 on the current Band
+extern uint64_t FT8_BND_Freq; // frequency for the FT8 on the current Band
 extern int xmit_flag, ft8_xmit_counter;
 extern int Beacon_State; //
 

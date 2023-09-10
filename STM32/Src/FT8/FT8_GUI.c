@@ -167,7 +167,11 @@ void FT8_Menu_Pos_Toggle(void) {
 void FT8_Print_Freq(void) {
 	char ctmp[10] = {0};
 
-	sprintf(ctmp, "%d kHz ", FT8_BND_Freq);
+	if (FT8_BND_Freq < 1000000) {
+		sprintf(ctmp, "%llu kHz", FT8_BND_Freq);
+	} else {
+		sprintf(ctmp, "%llu", FT8_BND_Freq);
+	}
 #if (defined(LAY_800x480))
 	LCDDriver_printText(ctmp, 680, 30, COLOR_WHITE, COLOR_BLACK, 2);
 #elif (defined(LAY_320x240))
