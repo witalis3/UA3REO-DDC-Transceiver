@@ -1671,7 +1671,7 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ(int8_t direction) {
-	const float32_t am_freq_steps[] = {0.1, 0.25, 0.5, 1, 2, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
+	const float32_t am_freq_steps[] = {0.1, 0.25, 0.5, 1, 2, 2.5, 5, 7.5, 8.33, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
 
 	for (uint8_t i = 0; i < ARRLENTH(am_freq_steps); i++) {
 		if (TRX.FRQ_ENC_AM_STEP_KHZ == am_freq_steps[i]) {
