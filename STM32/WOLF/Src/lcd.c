@@ -1675,34 +1675,37 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	// ENC2 Mode
 	switch (TRX.ENC2_func_mode) {
 	case ENC_FUNC_PAGER:
-		strcat(buff, "PAGE");
+		strcpy(buff, "PAGE");
 		break;
 	case ENC_FUNC_FAST_STEP:
-		strcat(buff, "STEP");
+		strcpy(buff, "STEP");
 		break;
 	case ENC_FUNC_SET_WPM:
-		strcat(buff, " WPM ");
+		strcpy(buff, " WPM ");
 		break;
 	case ENC_FUNC_SET_RIT:
-		strcat(buff, " RIT ");
+		strcpy(buff, " XIT ");
+		if (TRX.RIT_Enabled) {
+			strcpy(buff, " RIT ");
+		}
 		break;
 	case ENC_FUNC_SET_NOTCH:
-		strcat(buff, "NTCH");
+		strcpy(buff, "NTCH");
 		break;
 	case ENC_FUNC_SET_LPF:
-		strcat(buff, " LPF ");
+		strcpy(buff, " LPF ");
 		break;
 	case ENC_FUNC_SET_HPF:
-		strcat(buff, " HPF ");
+		strcpy(buff, " HPF ");
 		break;
 	case ENC_FUNC_SET_SQL:
-		strcat(buff, " SQL ");
+		strcpy(buff, " SQL ");
 		break;
 	case ENC_FUNC_SET_VOLUME:
-		strcat(buff, " VOL ");
+		strcpy(buff, " VOL ");
 		break;
 	case ENC_FUNC_SET_MEM:
-		strcat(buff, " MEM ");
+		strcpy(buff, " MEM ");
 		break;
 	case ENC_FUNC_SET_IF:
 		break;
