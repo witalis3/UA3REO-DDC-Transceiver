@@ -138,24 +138,24 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 
 		if (strcmp((char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].name, "DNR") == 0) {
 			if (CurrentVFO->DNR_Type == 0) {
-				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
-				          false, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
+				          COLOR->BUTTON_INACTIVE_TEXT, false, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
 			}
 			if (CurrentVFO->DNR_Type == 1) {
-				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "NR1", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
-				          true, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "NR1", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
+				          COLOR->BUTTON_INACTIVE_TEXT, true, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
 			}
 			if (CurrentVFO->DNR_Type == 2) {
-				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "NR2", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
-				          true, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "NR2", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
+				          COLOR->BUTTON_INACTIVE_TEXT, true, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
 			}
 		} else {
 			if (!dummyButton) {
 				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].name,
-				          COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, enabled, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+				          COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, enabled, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
 			} else {
-				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, " ", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
-				          false, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, " ", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
+				          COLOR->BUTTON_INACTIVE_TEXT, false, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
 			}
 		}
 		curr_x += LAYOUT->TOPBUTTONS_WIDTH + LAYOUT->TOPBUTTONS_LR_MARGIN;
