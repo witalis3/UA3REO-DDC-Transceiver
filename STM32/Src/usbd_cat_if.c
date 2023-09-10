@@ -510,11 +510,11 @@ void ua3reo_dev_cat_parseCommand(void) {
 				} else {
 					strcat(answer, "1");
 				}
-				strcat(answer, "0");  // Scan status. P1/ P2 0: Scan OFF 1: Scan ON 4: Tone Scan ON 5: CTCSS Scan ON
+				strcat(answer, "0"); // Scan status. P1/ P2 0: Scan OFF 1: Scan ON 4: Tone Scan ON 5: CTCSS Scan ON
 				if (TRX.SPLIT_Enabled) {
-					strcat(answer, "1");  // 0: Simplex operation, 1: Split operation
+					strcat(answer, "1"); // 0: Simplex operation, 1: Split operation
 				} else {
-					strcat(answer, "0");  // 0: Simplex operation, 1: Split operation
+					strcat(answer, "0"); // 0: Simplex operation, 1: Split operation
 				}
 				strcat(answer, "0");  // 0: OFF, 1: TONE, 2: CTCSS
 				strcat(answer, "00"); // Tone number (00 ~ 42). Refer to the TN and CN command.
