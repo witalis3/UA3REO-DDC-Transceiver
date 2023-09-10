@@ -1490,54 +1490,6 @@ static void MX_FMC_Init(void) {
 	/* USER CODE BEGIN FMC_Init 2 */
 
 	// LCD timings
-#if (defined(LCD_HX8357B))
-	Timing.AddressSetupTime = 5;
-	Timing.DataSetupTime = 5;
-	Timing.BusTurnAroundDuration = 3;
-	Timing.AccessMode = FMC_ACCESS_MODE_A;
-#endif
-#if (defined(LCD_HX8357C))
-	Timing.AddressSetupTime = 10;
-	Timing.DataSetupTime = 10;
-	Timing.BusTurnAroundDuration = 8;
-	Timing.AccessMode = FMC_ACCESS_MODE_A;
-#if (defined(LCD_SLOW))
-	Timing.AddressSetupTime = 20;
-	Timing.DataSetupTime = 20;
-	Timing.BusTurnAroundDuration = 16;
-	Timing.AccessMode = FMC_ACCESS_MODE_A;
-#endif
-#endif
-#if (defined(LCD_SSD1963))
-	Timing.AddressSetupTime = 5;
-	Timing.DataSetupTime = 5;
-	Timing.BusTurnAroundDuration = 3;
-	Timing.AccessMode = FMC_ACCESS_MODE_A;
-#endif
-#if (defined(LCD_ILI9486))
-	Timing.AddressSetupTime = 5;
-	Timing.DataSetupTime = 5;
-	Timing.BusTurnAroundDuration = 3;
-	Timing.AccessMode = FMC_ACCESS_MODE_A;
-#endif
-#if (defined(LCD_R61581))
-	Timing.AddressSetupTime = 5;
-	Timing.DataSetupTime = 5;
-	Timing.BusTurnAroundDuration = 3;
-	Timing.AccessMode = FMC_ACCESS_MODE_A;
-#endif
-#if defined(LCD_ILI9481)
-	Timing.AddressSetupTime = 5;
-	Timing.DataSetupTime = 5;
-	Timing.BusTurnAroundDuration = 3;
-	Timing.AccessMode = FMC_ACCESS_MODE_A;
-#endif
-#if defined(LCD_ST7796S)
-	Timing.AddressSetupTime = 5;
-	Timing.DataSetupTime = 5;
-	Timing.BusTurnAroundDuration = 3;
-	Timing.AccessMode = FMC_ACCESS_MODE_A;
-#endif
 #if (defined(LCD_RA8875))
 	Timing.AddressSetupTime = 30;
 	Timing.DataSetupTime = 30;
@@ -1545,6 +1497,7 @@ static void MX_FMC_Init(void) {
 	Timing.AccessMode = FMC_ACCESS_MODE_A;
 	// fast timings in lcd_driver_RA8875.c
 #endif
+	
 	if (HAL_SRAM_Init(&hsram1, &Timing, NULL) != HAL_OK) {
 		Error_Handler();
 	}
