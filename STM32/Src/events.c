@@ -335,10 +335,12 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 	// update the state of the RF-Unit board
 	RF_UNIT_UpdateState(false);
 
-	// INA226 current and voltage
+// INA226 current and voltage
+#ifdef HAS_TOUCHPAD
 	if (CALIBRATE.INA226_EN) {
 		Read_INA226_Data();
 	}
+#endif
 
 // check touchpad events
 #ifdef HAS_TOUCHPAD

@@ -96,8 +96,13 @@
 #define ATU_6x6_MAXPOS B8(00111111)
 #define ATU_7x7_MAXPOS B8(01111111)
 
+#ifdef FRONTPANEL_MINI
+static float32_t ATU_I_VALS[ATU_MAXLENGTH + 1] = {0.0, 0.1, 0.22, 0.45, 1.0, 2.2, 4.5, 4.5};
+static float32_t ATU_C_VALS[ATU_MAXLENGTH + 1] = {0.0, 22.0, 47.0, 100.0, 220.0, 470.0, 1000.0, 1000.0};
+#else
 static float32_t ATU_I_VALS[ATU_MAXLENGTH + 1] = {0.0, 0.05, 0.1, 0.22, 0.45, 1.0, 2.2, 4.4};
 static float32_t ATU_C_VALS[ATU_MAXLENGTH + 1] = {0.0, 10.0, 22.0, 47.0, 100.0, 220.0, 470.0, 1000.0};
+#endif
 
 // FRONT PANELS
 #ifdef FRONTPANEL_NONE

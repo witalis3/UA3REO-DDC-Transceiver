@@ -837,7 +837,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 				LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_I_X, LAYOUT->STATUS_ATU_I_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 				if (TRX.ATU_T) {
-					sprintf(ctmp, "CT=%dpF", (uint32_t)c_val);
+					sprintf(ctmp, "T+%dpF", (uint32_t)c_val);
 				} else {
 					sprintf(ctmp, "C=%dpF", (uint32_t)c_val);
 				}
