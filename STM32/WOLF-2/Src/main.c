@@ -268,13 +268,13 @@ int main(void) {
 	bool reset_calibrations = false;
 	bool go_dfu = false;
 
-	if (PERIPH_FrontPanel_Buttons[33].state) { // go DFU (TUNE)
+	if (PERIPH_FrontPanel_Buttons[34].state) { // go DFU (TUNE)
 		go_dfu = true;
 	}
-	if (PERIPH_FrontPanel_Buttons[25].state) { // soft reset (F1)
+	if (PERIPH_FrontPanel_Buttons[26].state) { // soft reset (F1)
 		reset_settings = true;
 	}
-	if (PERIPH_FrontPanel_Buttons[25].state && PERIPH_FrontPanel_Buttons[31].state) { // Very hard reset (F1+F8)
+	if (PERIPH_FrontPanel_Buttons[26].state && PERIPH_FrontPanel_Buttons[24].state) { // Very hard reset (F1+F9)
 		reset_calibrations = true;
 	}
 
