@@ -342,8 +342,8 @@ void LoadSettings(bool clear) {
 #ifdef STM32F407xx
 		TRX.FFT_Averaging = 6;
 #endif
-		TRX.FFT_Window = 1;        // FFT Window
-		TRX.FFT_Style = 5;         // FFT style
+		TRX.FFT_Window = 1; // FFT Window
+		TRX.FFT_Style = 5;  // FFT style
 #if !HRDW_HAS_FULL_FFT_BUFFER
 		TRX.FFT_Style = 1;
 #endif
@@ -932,10 +932,13 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.TX_StartDelay = 5;                // Relay switch delay before RF signal ON, ms
 		CALIBRATE.LCD_Rotate = false;               // LCD 180 degree rotation
 		CALIBRATE.TOUCHPAD_horizontal_flip = false; // Touchpad harozontal flip
-		CALIBRATE.INA226_EN = false;                // INA226 is not used				//Tisho
-		CALIBRATE.INA226_CurCalc = 0.4f;            // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
-		CALIBRATE.PWR_CUR_Calibration = 2.5f;       // CUR meter calibration
-		CALIBRATE.ATU_AVERAGING = 3;                // Tuner averaging stages
+		CALIBRATE.INA226_EN = false;                // INA226 enabled
+		CALIBRATE.INA226_CurCalc = 0.4f;            // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering)
+#ifdef FRONTPANEL_WOLF_2
+		CALIBRATE.INA226_EN = true; // INA226 enabled
+#endif
+		CALIBRATE.PWR_CUR_Calibration = 2.5f; // CUR meter calibration
+		CALIBRATE.ATU_AVERAGING = 3;          // Tuner averaging stages
 		CALIBRATE.CAT_Type = CAT_TS2000;
 		CALIBRATE.LNA_compensation = 0;       // Compensation for LNA, db
 		CALIBRATE.TwoSignalTune_Balance = 50; // balance of signals on twosignal-tune

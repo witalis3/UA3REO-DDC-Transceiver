@@ -2,7 +2,7 @@
 #include "FT8/FT8_GUI.h"
 #include "FT8/FT8_main.h"
 #include "FT8/decode_ft8.h"
-#include "INA226_PWR_monitor.h" //Tisho
+#include "INA226_PWR_monitor.h"
 #include "agc.h"
 #include "arm_math.h"
 #include "audio_filters.h"
@@ -1742,7 +1742,6 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 
 	if (CALIBRATE.INA226_EN && !TRX.SPLIT_Enabled && !TRX.RIT_Enabled && !TRX.XIT_Enabled) ////INA226 current voltage indication  Is the INA226 used (installed)
 	{
-		Read_INA226_Data();
 		sprintf(buff, "%2.1fV/%2.1fA ", (double)Get_INA226_Voltage(), (double)Get_INA226_Current());
 	} else {
 		// RIT
