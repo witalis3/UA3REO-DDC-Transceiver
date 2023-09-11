@@ -35,6 +35,8 @@ int16_t ADC_RAW_IN = 0;
 float32_t *FFTInput_I_current = (float32_t *)&FFTInput_I_A[0];
 float32_t *FFTInput_Q_current = (float32_t *)&FFTInput_Q_A[0];
 
+uint8_t DAC_GAINER_current_val = 0;
+
 // Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
 
@@ -390,7 +392,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 
 	// STAGE 13
 	// OUT DAC-GAIN
-	FPGA_writePacket(CALIBRATE.DAC_GAINER_val);
+	FPGA_writePacket(DAC_GAINER_current_val);
 	FPGA_clockRise();
 	FPGA_clockFall();
 
@@ -533,6 +535,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 		bitWrite(FPGA_fpgadata_out_tmp8, 0, 1); // DAC driver shutdown
 		bitWrite(FPGA_fpgadata_out_tmp8, 1, 1); // DAC driver shutdown
 	}
+	bitWrite(FPGA_fpgadata_out_tmp8, 2, HRDW_DAC_PLL_selected);
 	FPGA_writePacket(FPGA_fpgadata_out_tmp8 & 0XFFU);
 	FPGA_clockRise();
 	FPGA_clockFall();
@@ -1097,4 +1100,29 @@ void FPGA_spi_flash_write(uint32_t flash_pos, uint8_t *buff, uint32_t size) // w
 	FPGA_spi_flash_wait_WIP();                    // wait write in progress
 	FPGA_spi_start_command(M25P80_WRITE_DISABLE); // Write Disable
 	FPGA_spi_stop_command();
+}
+
+void FPGA_choise_DAC_PLL(uint64_t freq) {
+	static bool HRDW_DAC_PLL_selected_prev = true;
+
+	bool HRDW_DAC_PLL_selected_now = true; // PLL2 by default
+	if (freq > 46000000 && freq < 61000000) {
+		HRDW_DAC_PLL_selected_now = false;
+	}
+	if (freq > 92000000 && freq < 110000000) {
+		HRDW_DAC_PLL_selected_now = false;
+	}
+
+	if (HRDW_DAC_PLL_selected_prev != HRDW_DAC_PLL_selected_now && !TRX_on_TX) {
+		HRDW_DAC_PLL_selected = HRDW_DAC_PLL_selected_now;
+		HRDW_DAC_PLL_selected_prev = HRDW_DAC_PLL_selected;
+
+		FPGA_NeedRestart_TX = true;
+	}
+
+	// correct gain for low PLL1
+	DAC_GAINER_current_val = CALIBRATE.DAC_GAINER_val;
+	if (!HRDW_DAC_PLL_selected) {
+		DAC_GAINER_current_val += 1;
+	}
 }

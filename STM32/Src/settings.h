@@ -13,7 +13,7 @@
 #if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_MINI)
 #define FPGA_VERSION_STR "6.8.0" // needed FPGA version
 #else
-#define FPGA_VERSION_STR "8.0.0" // needed FPGA version
+#define FPGA_VERSION_STR "8.2.0" // needed FPGA version
 #endif
 
 #define SETT_VERSION 103        // Settings config version

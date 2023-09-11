@@ -21,5 +21,6 @@
   <pin name="out_startofpacket" direction="output" scope="external" />
   <pin name="out_endofpacket" direction="output" scope="external" />
   <pin name="out_channel" direction="output" scope="external" />
+  <pin name="rate[11..0]" direction="input" scope="external" />
  </global>
 </pinplan>

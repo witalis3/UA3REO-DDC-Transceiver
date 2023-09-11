@@ -19,6 +19,7 @@ module tx_cic_cic_ii_0 (
     clk,
     clken,
     reset_n,
+    rate,
     in_ready,
     in_startofpacket,
     in_endofpacket,
@@ -38,9 +39,9 @@ module tx_cic_cic_ii_0 (
     parameter FILTER_TYPE             =  "interpolator";
     parameter STAGES        =  4;
     parameter D_DELAY              =  1;
-    parameter VRC_EN   =  0;
-    parameter RCF_MAX         =  2272;
-    parameter RCF_MIN         =  2272;
+    parameter VRC_EN   =  1;
+    parameter RCF_MAX         =  2240;
+    parameter RCF_MIN         =  1600;
     parameter INTERFACES    =  1;
     parameter CH_PER_INT  =  2;
     parameter INT_USE_MEM      =  "false";
@@ -120,7 +121,7 @@ module tx_cic_cic_ii_0 (
 input       clk;
 input       clken;
 input       reset_n;
-logic       [RATE_FACTOR_WIDTH-1:0]  rate;  
+input       [RATE_FACTOR_WIDTH-1:0]	rate;
 input       in_startofpacket;
 input       in_endofpacket;
 output      in_ready;
@@ -145,7 +146,6 @@ wire [OUT_WIDTH-1:0] dout    [INTERFACES_OUT-1:0];
 assign din[0] = in_data;
 
 assign out_data = dout[0];
-assign   rate = '0;
 
 
 

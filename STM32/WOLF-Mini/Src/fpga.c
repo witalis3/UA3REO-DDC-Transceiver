@@ -1098,3 +1098,7 @@ void FPGA_spi_flash_write(uint32_t flash_pos, uint8_t *buff, uint32_t size) // w
 	FPGA_spi_start_command(M25P80_WRITE_DISABLE); // Write Disable
 	FPGA_spi_stop_command();
 }
+
+void FPGA_choise_DAC_PLL(uint64_t freq) {
+	// only one dac pll in fpga
+}

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="tx_cic" kind="tx_cic" version="1.0" fabric="QSYS">
  <!-- Format version 22.1 915 (Future versions may contain additional information.) -->
- <!-- 2023.05.09.20:48:54 -->
+ <!-- 2023.09.11.13:19:05 -->
  <!-- A collection of modules and connections -->
  <parameter name="AUTO_GENERATION_ID">
   <type>java.lang.Integer</type>
-  <value>1683654534</value>
+  <value>1694427545</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>false</visible>
@@ -142,7 +142,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="VRC_EN">
    <type>int</type>
-   <value>0</value>
+   <value>1</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -152,29 +152,29 @@ the requested settings for a module instance. -->
    <type>int</type>
    <value>2272</value>
    <derived>false</derived>
-   <enabled>true</enabled>
-   <visible>true</visible>
+   <enabled>false</enabled>
+   <visible>false</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="RCF_LB">
    <type>int</type>
-   <value>8</value>
+   <value>1600</value>
    <derived>false</derived>
-   <enabled>false</enabled>
-   <visible>false</visible>
+   <enabled>true</enabled>
+   <visible>true</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="RCF_UB">
    <type>int</type>
-   <value>21</value>
+   <value>2240</value>
    <derived>false</derived>
-   <enabled>false</enabled>
-   <visible>false</visible>
+   <enabled>true</enabled>
+   <visible>true</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="RCF_MIN">
    <type>int</type>
-   <value>2272</value>
+   <value>1600</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -182,7 +182,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="RCF_MAX">
    <type>int</type>
-   <value>2272</value>
+   <value>2240</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>false</visible>
@@ -843,6 +843,51 @@ parameters are a RESULT of the module parameters. -->
     <role>channel</role>
    </port>
   </interface>
+  <interface name="rate" kind="conduit_end" version="22.1">
+   <!-- The connection points exposed by a module instance for the
+particular module parameters. Connection points and their
+parameters are a RESULT of the module parameters. -->
+   <parameter name="associatedClock">
+    <type>java.lang.String</type>
+    <value></value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="associatedReset">
+    <type>java.lang.String</type>
+    <value></value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="deviceFamily">
+    <type>java.lang.String</type>
+    <value>UNKNOWN</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <parameter name="generateLegacySim">
+    <type>boolean</type>
+    <value>false</value>
+    <derived>false</derived>
+    <enabled>true</enabled>
+    <visible>true</visible>
+    <valid>true</valid>
+   </parameter>
+   <type>conduit</type>
+   <isStart>false</isStart>
+   <port>
+    <name>rate</name>
+    <direction>Input</direction>
+    <width>12</width>
+    <role>conduit</role>
+   </port>
+  </interface>
  </module>
  <plugin>
   <instanceCount>1</instanceCount>
@@ -869,7 +914,7 @@ parameters are a RESULT of the module parameters. -->
   <version>22.1</version>
  </plugin>
  <plugin>
-  <instanceCount>3</instanceCount>
+  <instanceCount>4</instanceCount>
   <name>conduit_end</name>
   <type>com.altera.entityinterfaces.IElementClass</type>
   <subtype>com.altera.entityinterfaces.IMutableConnectionPoint</subtype>

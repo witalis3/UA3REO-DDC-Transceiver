@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EnsembleReport name="tx_nco" kind="system" version="22.1" fabric="QSYS">
  <!-- Format version 22.1 915 (Future versions may contain additional information.) -->
- <!-- 2023.05.09.18:27:31 -->
+ <!-- 2023.09.11.01:06:12 -->
  <!-- A collection of modules and connections -->
  <parameter name="clockCrossingAdapter">
   <type>com.altera.sopcmodel.ensemble.EClockAdapter</type>
@@ -53,7 +53,7 @@
  </parameter>
  <parameter name="generationId">
   <type>int</type>
-  <value>1683646049</value>
+  <value>1694383570</value>
   <derived>false</derived>
   <enabled>true</enabled>
   <visible>true</visible>
@@ -258,7 +258,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="want_dither">
    <type>boolean</type>
-   <value>false</value>
+   <value>true</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -266,15 +266,15 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="dpri">
    <type>int</type>
-   <value>10</value>
+   <value>6</value>
    <derived>false</derived>
-   <enabled>false</enabled>
+   <enabled>true</enabled>
    <visible>true</visible>
    <valid>true</valid>
   </parameter>
   <parameter name="fsamp">
    <type>double</type>
-   <value>109.056</value>
+   <value>107.52</value>
    <derived>false</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -290,7 +290,7 @@ the requested settings for a module instance. -->
   </parameter>
   <parameter name="phi_inc">
    <type>long</type>
-   <value>275681953</value>
+   <value>279620267</value>
    <derived>true</derived>
    <enabled>true</enabled>
    <visible>true</visible>
@@ -620,5 +620,5 @@ parameters are a RESULT of the module parameters. -->
   <version>22.1</version>
  </plugin>
  <reportVersion>22.1 915</reportVersion>
- <uniqueIdentifier>283926066FD000000188011FF366</uniqueIdentifier>
+ <uniqueIdentifier>283926066FD00000018A812181CD</uniqueIdentifier>
 </EnsembleReport>

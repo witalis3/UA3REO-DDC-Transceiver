@@ -15,7 +15,8 @@
 			out_channel       : out std_logic;                                        -- channel
 			clken             : in  std_logic                     := 'X';             -- clken
 			clk               : in  std_logic                     := 'X';             -- clk
-			reset_n           : in  std_logic                     := 'X'              -- reset_n
+			reset_n           : in  std_logic                     := 'X';             -- reset_n
+			rate              : in  std_logic_vector(11 downto 0) := (others => 'X')  -- conduit
 		);
 	end component tx_cic;
 
@@ -36,6 +37,7 @@
 			out_channel       => CONNECTED_TO_out_channel,       --          .channel
 			clken             => CONNECTED_TO_clken,             --     clken.clken
 			clk               => CONNECTED_TO_clk,               --     clock.clk
-			reset_n           => CONNECTED_TO_reset_n            --     reset.reset_n
+			reset_n           => CONNECTED_TO_reset_n,           --     reset.reset_n
+			rate              => CONNECTED_TO_rate               --      rate.conduit
 		);
 

@@ -170,8 +170,9 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 	if (freq < 0) {
 		return 0;
 	}
+
 	bool inverted = false;
-	int32_t _freq = (int32_t)freq;
+	float64_t _freq = freq;
 
 	uint8_t TRX_TX_Harmonic_new = 0;
 	if (_freq > MAX_TX_FREQ_HZ) { // harmonics mode
@@ -185,6 +186,8 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 	} else {
 		TRX_TX_Harmonic = TRX_TX_Harmonic_new;
 	}
+
+	FPGA_choise_DAC_PLL(freq); // calculate better PLL for DAC
 
 	TRX_DAC_X4 = true;
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
