@@ -809,12 +809,12 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_7_END = 0;                   // disabled
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled
-		CALIBRATE.smeter_calibration_hf = 11;
+		CALIBRATE.smeter_calibration_hf = 16;
 		CALIBRATE.TUNE_MAX_POWER = 5;             // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER_ON_METER = 15;     // Max TRX Power for indication
+		CALIBRATE.MAX_RF_POWER_ON_METER = 30;     // Max TRX Power for indication
 		CALIBRATE.SWR_FWD_Calibration_HF = 21.0f; // SWR Transormator rate forward
 		CALIBRATE.SWR_BWD_Calibration_HF = 21.0f; // SWR Transormator rate return
-		CALIBRATE.PWR_VLT_Calibration = 1150.0f;  // VLT meter calibration
+		CALIBRATE.PWR_VLT_Calibration = 1100.0f;  // VLT meter calibration
 #else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF U14-RF1
