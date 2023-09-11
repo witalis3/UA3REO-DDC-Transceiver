@@ -1210,7 +1210,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
 #endif
 #if !defined(FRONTPANEL_LITE)
-    {"TCXO Frequency, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
+    {"TCXO Freq, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
 #else
     {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 #endif
@@ -1230,19 +1230,19 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
 #if !defined(FRONTPANEL_LITE)
     {"Transv Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
-    {"Transv 70cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
-    {"Transv 70cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
-    {"Transv 23cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_23cm},
-    {"Transv 23cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_23cm},
-    {"Transv 13cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_13cm},
-    {"Transv 13cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_13cm},
-    {"Transv 6cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_6cm},
-    {"Transv 6cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
-    {"Transv 3cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
-    {"Transv 3cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
-    {"Tr. QO100 RF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_HANDL_CALIB_TRANSV_RF_QO100},
-    {"Tr. QO100 RX IF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
-    {"Tr. QO100 TX IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
+    {"Transv 70cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
+    {"Transv 70cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
+    {"Transv 23cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_23cm},
+    {"Transv 23cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_23cm},
+    {"Transv 13cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_13cm},
+    {"Transv 13cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_13cm},
+    {"Transv 6cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_6cm},
+    {"Transv 6cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
+    {"Transv 3cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
+    {"Transv 3cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
+    {"Tr QO100 RF kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_HANDL_CALIB_TRANSV_RF_QO100},
+    {"Tr QO100 RX IF kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
+    {"Tr QO100 TX IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
 #endif
     {"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
     {"Calibrate reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_CALIBRATION_RESET},
