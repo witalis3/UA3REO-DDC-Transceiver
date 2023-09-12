@@ -1106,10 +1106,10 @@ void FPGA_choise_DAC_PLL(uint64_t freq) {
 	static bool HRDW_DAC_PLL_selected_prev = true;
 
 	bool HRDW_DAC_PLL_selected_now = true; // PLL2 by default
-	if (freq > 46000000 && freq < 61000000) {
+	if (freq > 46000000 && freq < 65000000) {
 		HRDW_DAC_PLL_selected_now = false;
 	}
-	if (freq > 92000000 && freq < 110000000) {
+	if (freq > 92000000 && freq < 111000000) {
 		HRDW_DAC_PLL_selected_now = false;
 	}
 
