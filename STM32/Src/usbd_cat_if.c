@@ -888,7 +888,7 @@ void ua3reo_dev_cat_parseCommand(void) {
 			} else {
 				println("Unknown CAT arguments: ", _command);
 			}
-			
+
 			if (band > -1) {
 				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
 				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
