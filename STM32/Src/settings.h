@@ -17,7 +17,7 @@
 #endif
 
 #define SETT_VERSION 103        // Settings config version
-#define CALIB_VERSION 67        // Calibration config version
+#define CALIB_VERSION 68        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                  // audio stream sampling rate during processing and TX (NOT RX!)
@@ -762,6 +762,11 @@ extern struct TRX_CALIBRATE {
 	uint32_t Transverter_QO100_IF_RX_Khz;
 	uint16_t Transverter_QO100_IF_TX_Mhz;
 	uint16_t KTY81_Calibration;
+	uint16_t TOUCHPAD_TIMEOUT;
+	uint16_t TOUCHPAD_CLICK_THRESHOLD;
+	uint16_t TOUCHPAD_CLICK_TIMEOUT;
+	uint16_t TOUCHPAD_HOLD_TIMEOUT;
+	uint16_t TOUCHPAD_SWIPE_THRESHOLD_PX;
 	uint8_t DAC_driver_mode;
 	uint8_t rf_out_power_2200m;
 	uint8_t rf_out_power_160m;
