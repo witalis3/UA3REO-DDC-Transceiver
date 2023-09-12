@@ -1287,6 +1287,8 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm, SYSMENU_INT8);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Fast", i);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].Fast, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].DNR_Type, SYSMENU_UINT8);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AGC", i);
@@ -2741,6 +2743,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 		if (strcmp(name, buff) == 0) {
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Fast", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].Fast = bval;
 		}
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
 		if (strcmp(name, buff) == 0) {

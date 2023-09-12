@@ -888,39 +888,11 @@ void ua3reo_dev_cat_parseCommand(void) {
 			} else {
 				println("Unknown CAT arguments: ", _command);
 			}
-			// println((uint8_t)band);
+			
 			if (band > -1) {
 				TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
 				TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
-				if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE) {
-					TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
-					FFT_Init();
-					NeedReinitAudioFilters = true;
-				}
-				TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
-				TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
-				TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-				TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
-				TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
-				TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
-				TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
-				TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-				if (!TRX.ANT_selected) {
-					TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
-					TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
-					TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
-				} else {
-					TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
-					TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
-					TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
-				}
-				CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-				CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
-				CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-				CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
-				TRX.FM_SQL_threshold_dbm_shadow = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-				TRX.SQL_shadow = TRX.BANDS_SAVED_SETTINGS[band].SQL;
-				TRX_Temporary_Stop_BandMap = false;
+				TRX_RestoreBandSettings(band);
 
 				LCD_UpdateQuery.TopButtons = true;
 				LCD_UpdateQuery.FreqInfoRedraw = true;

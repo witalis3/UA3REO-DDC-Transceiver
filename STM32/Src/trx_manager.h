@@ -33,6 +33,7 @@ extern bool TRX_TX_Disabled(uint64_t freq);
 extern void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder);
 extern void TRX_SaveRFGain_Data(uint8_t mode, int8_t band);
 extern void TRX_LoadRFGain_Data(uint8_t mode, int8_t band);
+extern void TRX_RestoreBandSettings(int8_t band);
 
 extern void BUTTONHANDLER_MODE_P(uint32_t parameter);
 extern void BUTTONHANDLER_MODE_N(uint32_t parameter);

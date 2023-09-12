@@ -3192,30 +3192,6 @@ void LCD_ManualFreqButtonHandler(uint32_t parameter) {
 	}
 	if (newfreq > 0) {
 		TRX_setFrequency(newfreq, CurrentVFO);
-
-		int8_t band = getBandFromFreq(newfreq, true);
-		if (band != -1) {
-			TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
-			if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE) {
-				TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
-				FFT_Init();
-				NeedReinitAudioFilters = true;
-			}
-			TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
-			TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-			TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
-			TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
-			TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
-			TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
-			CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-			TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-			CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
-			CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-			CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
-			TRX.SQL_shadow = CurrentVFO->SQL;
-			TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
-		}
-		TRX_Temporary_Stop_BandMap = false;
 	}
 
 	sprintf(buff, "%llu", manualFreqEnter);

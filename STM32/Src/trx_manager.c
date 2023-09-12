@@ -566,41 +566,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 
 	// Restore band settings
 	if (bandFromFreq >= 0 && bandFromOldFreq != bandFromFreq) {
-		DPD_Init();
-
-		TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].IF_Gain;
-		TRX.LNA = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].LNA;
-		TRX.ATT = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT;
-		if (TRX.ANT_selected != TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_selected || TRX.ANT_mode != TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_mode) {
-			LCD_UpdateQuery.StatusInfoGUI = true;
-		}
-		TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_selected;
-		TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT_mode;
-		TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ATT_DB;
-		TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ADC_Driver;
-		TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ADC_PGA;
-		if (!TRX.ANT_selected) {
-			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT1_ATU_I;
-			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT1_ATU_C;
-			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT1_ATU_T;
-		} else {
-			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT2_ATU_I;
-			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT2_ATU_C;
-			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].ANT2_ATU_T;
-		}
-		CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].FM_SQL_threshold_dbm;
-		CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].DNR_Type;
-		CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].AGC;
-		CurrentVFO->RepeaterMode = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].RepeaterMode;
-		CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].SQL;
-		TRX.FM_SQL_threshold_dbm_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].FM_SQL_threshold_dbm;
-		TRX.SQL_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].SQL;
-		TRX.AGC_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].AGC;
-		TRX.RepeaterMode_shadow = TRX.BANDS_SAVED_SETTINGS[bandFromFreq].RepeaterMode;
-		TRX_Temporary_Stop_BandMap = false;
-		TRX_DXCluster_UpdateTime = 0;
-
-		LCD_UpdateQuery.TopButtons = true;
+		TRX_RestoreBandSettings(bandFromFreq);
 	}
 
 	// SPLIT freq secondary VFO sync
@@ -822,6 +788,48 @@ void TRX_LoadRFGain_Data(uint8_t mode, int8_t band) {
 			break;
 		}
 	}
+}
+
+void TRX_RestoreBandSettings(int8_t band) {
+	DPD_Init();
+
+	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
+	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
+	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
+	if (TRX.ANT_selected != TRX.BANDS_SAVED_SETTINGS[band].ANT_selected || TRX.ANT_mode != TRX.BANDS_SAVED_SETTINGS[band].ANT_mode) {
+		LCD_UpdateQuery.StatusInfoGUI = true;
+	}
+	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
+	TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
+	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
+	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
+	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
+	TRX.Fast = TRX.BANDS_SAVED_SETTINGS[band].Fast;
+	if (!TRX.ANT_selected) {
+		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
+		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
+		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
+	} else {
+		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
+		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
+		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
+	}
+
+	CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
+	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
+	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+	CurrentVFO->RepeaterMode = TRX.BANDS_SAVED_SETTINGS[band].RepeaterMode;
+	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
+
+	TRX.FM_SQL_threshold_dbm_shadow = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
+	TRX.SQL_shadow = TRX.BANDS_SAVED_SETTINGS[band].SQL;
+	TRX.AGC_shadow = TRX.BANDS_SAVED_SETTINGS[band].AGC;
+	TRX.RepeaterMode_shadow = TRX.BANDS_SAVED_SETTINGS[band].RepeaterMode;
+
+	TRX_Temporary_Stop_BandMap = false;
+	TRX_DXCluster_UpdateTime = 0;
+
+	LCD_UpdateQuery.TopButtons = true;
 }
 
 void TRX_DoAutoGain(void) {
@@ -1164,34 +1172,7 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
-
-	TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
-	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
-	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
-	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
-	TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
-	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
-	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
-	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-	if (!TRX.ANT_selected) {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
-	} else {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
-	}
-	CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
-	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
-	CurrentVFO->RepeaterMode = TRX.BANDS_SAVED_SETTINGS[band].RepeaterMode;
-	TRX.SQL_shadow = CurrentVFO->SQL;
-	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
-	TRX.AGC_shadow = CurrentVFO->AGC;
-	TRX.RepeaterMode_shadow = CurrentVFO->RepeaterMode;
+	TRX_RestoreBandSettings(band);
 
 	TRX_DXCluster_UpdateTime = 0;
 	LCD_UpdateQuery.TopButtons = true;
@@ -1394,6 +1375,12 @@ void BUTTONHANDLER_DRV_ONLY(uint32_t parameter) {
 
 void BUTTONHANDLER_FAST(uint32_t parameter) {
 	TRX.Fast = !TRX.Fast;
+
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].Fast = TRX.Fast;
+	}
+
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
@@ -1491,35 +1478,6 @@ void BUTTONHANDLER_BAND_P(uint32_t parameter) {
 
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
-	if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE) {
-		TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
-		FFT_Init();
-		NeedReinitAudioFilters = true;
-	}
-	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
-	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
-	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
-	TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
-	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
-	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
-	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-	if (!TRX.ANT_selected) {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
-	} else {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
-	}
-	CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
-	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
-	TRX.SQL_shadow = CurrentVFO->SQL;
-	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
-	TRX_Temporary_Stop_BandMap = false;
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
@@ -1527,7 +1485,6 @@ void BUTTONHANDLER_BAND_P(uint32_t parameter) {
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	resetVAD();
 	TRX_ScanMode = false;
-	TRX_DXCluster_UpdateTime = 0;
 }
 
 void BUTTONHANDLER_BAND_N(uint32_t parameter) {
@@ -1550,35 +1507,6 @@ void BUTTONHANDLER_BAND_N(uint32_t parameter) {
 
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
-	if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE) {
-		TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
-		FFT_Init();
-		NeedReinitAudioFilters = true;
-	}
-	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
-	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
-	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
-	TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
-	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
-	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
-	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-	if (!TRX.ANT_selected) {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
-	} else {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
-	}
-	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
-	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
-	CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-	TRX.SQL_shadow = CurrentVFO->SQL;
-	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
-	TRX_Temporary_Stop_BandMap = false;
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
@@ -1586,7 +1514,6 @@ void BUTTONHANDLER_BAND_N(uint32_t parameter) {
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	resetVAD();
 	TRX_ScanMode = false;
-	TRX_DXCluster_UpdateTime = 0;
 }
 
 void BUTTONHANDLER_RF_POWER(uint32_t parameter) {
@@ -2069,35 +1996,6 @@ void BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter) {
 
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, CurrentVFO);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, CurrentVFO);
-	if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE) {
-		TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
-		FFT_Init();
-		NeedReinitAudioFilters = true;
-	}
-	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
-	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
-	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
-	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
-	TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
-	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
-	CurrentVFO->SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
-	CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-	TRX.SQL_shadow = CurrentVFO->SQL;
-	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
-	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-	if (!TRX.ANT_selected) {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
-	} else {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
-	}
-	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
-	CurrentVFO->AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-	TRX_Temporary_Stop_BandMap = false;
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
@@ -2108,7 +2006,6 @@ void BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter) {
 	if (LCD_window.opened) {
 		LCD_closeWindow();
 	}
-	TRX_DXCluster_UpdateTime = 0;
 
 #if FT8_SUPPORT
 	if (SYSMENU_FT8_DECODER_opened) {
@@ -2137,46 +2034,12 @@ void BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter) {
 
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, &TRX.VFO_A);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, &TRX.VFO_A);
-	if (TRX.SAMPLERATE_MAIN != TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE) {
-		TRX.SAMPLERATE_MAIN = TRX.BANDS_SAVED_SETTINGS[band].SAMPLERATE;
-		FFT_Init();
-		NeedReinitAudioFilters = true;
-	}
-	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
-	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
-	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
-	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
-	TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
-	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
-	TRX.VFO_A.SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
-	TRX.VFO_A.FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-	TRX.SQL_shadow = CurrentVFO->SQL;
-	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
-	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
-	TRX.VFO_A.DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
-	TRX.VFO_A.AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-	if (!TRX.ANT_selected) {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
-	} else {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
-	}
-	TRX_Temporary_Stop_BandMap = false;
-
-	LCD_UpdateQuery.TopButtons = true;
-	LCD_UpdateQuery.FreqInfoRedraw = true;
-	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 
 	resetVAD();
 	TRX_ScanMode = false;
 	if (LCD_window.opened) {
 		LCD_closeWindow();
 	}
-	TRX_DXCluster_UpdateTime = 0;
 }
 
 void BUTTONHANDLER_SET_VFOB_BAND(uint32_t parameter) {
@@ -2199,11 +2062,6 @@ void BUTTONHANDLER_SET_VFOB_BAND(uint32_t parameter) {
 
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, &TRX.VFO_B);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, &TRX.VFO_B);
-	TRX.VFO_B.FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
-	TRX.VFO_B.DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
-	TRX.VFO_B.AGC = TRX.BANDS_SAVED_SETTINGS[band].AGC;
-	TRX.VFO_B.SQL = TRX.BANDS_SAVED_SETTINGS[band].SQL;
-	TRX_Temporary_Stop_BandMap = false;
 
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
@@ -2212,7 +2070,6 @@ void BUTTONHANDLER_SET_VFOB_BAND(uint32_t parameter) {
 	resetVAD();
 	TRX_ScanMode = false;
 	LCD_closeWindow();
-	TRX_DXCluster_UpdateTime = 0;
 }
 
 void BUTTONHANDLER_SETMODE(uint32_t parameter) {

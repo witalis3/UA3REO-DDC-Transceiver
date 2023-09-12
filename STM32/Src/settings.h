@@ -415,13 +415,13 @@ typedef enum {
 typedef struct {
 	uint64_t Freq;
 	float32_t ATT_DB;
+	int8_t FM_SQL_threshold_dbm;
 	uint8_t Mode;
 	uint8_t DNR_Type;
 	uint8_t ANT1_ATU_I;
 	uint8_t ANT1_ATU_C;
 	uint8_t ANT2_ATU_I;
 	uint8_t ANT2_ATU_C;
-	int8_t FM_SQL_threshold_dbm;
 	uint8_t IF_Gain;
 	uint8_t RF_Gain;
 	uint8_t RF_Gain_By_Mode_CW;
@@ -438,6 +438,7 @@ typedef struct {
 	bool AGC;
 	bool RepeaterMode;
 	bool SQL;
+	bool Fast;
 	bool ANT1_ATU_T;
 	bool ANT2_ATU_T;
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
