@@ -72,7 +72,8 @@ Sensitivity at 10dB SNR, LNA enabled:
 
 Out-of-band emissions:
 
-* 28mHz -65dBc
+* 14mHz -69dBc
+* 28mHz -63dBc
 * 145mHz -48dBc
 
 ## Build
