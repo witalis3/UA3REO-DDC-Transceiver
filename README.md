@@ -15,7 +15,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 ## Specifications
 
 * Receiving frequencies: 0 MHz - 750 MHz with fading each 61.44 Mhz
-* Transmission frequencies: 0 MHz - 200 MHz with fading on 55, 110, 165 Mhz
+* Transmission frequencies: 0 MHz - 200 MHz with fading on 110, 165 Mhz
 * Transmission frequencies in harmonics mode (CW, FM): 360 Mhz - 480 Mhz
 * TX power (QRP version): 7W+ (HF), 5W (VHF)
 * TX power (QRP++ DB5AT version): 20W (HF), 7W (VHF)
@@ -358,7 +358,12 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **SWR FWD/BWD RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
 * **Settings reset** - Reset all settings to defaults
 * **TCXO Frequency, khz** - Frequency adjustment of the reference oscillator
-* **TOUCHPAD horiz flip** - Flip touchpad operation horizontally
+* **Touchpad horiz flip** - Flip the touchpad operation horizontally
+* **Touchpad timeout** - Minimum time between taps (protection against false trigger), ms
+* **Touchpad click threshold** - Minimum time for triggering a short click, ms
+* **Touchpad click timeout** - Maximum time for triggering a short click, ms
+* **Touchpad hold timeout** - Time before a long press is triggered, ms
+* **Touchpad swipe threshold** - Minimum distance to trigger a swipe, px
 * **TSignal Balance** - Sets the power balance between signals in Two signal tune mode
 * **TX CICCOMP Shift** - Bit shift after TX CIC compensator
 * **TX Start Delay** - Delay before the RF signal is applied (ms), so that the relay has time to trigger

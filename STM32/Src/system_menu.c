@@ -459,6 +459,11 @@ static void SYSMENU_HANDL_CALIB_WIFI_RESET(int8_t direction);
 static void SYSMENU_HANDL_CALIB_INA226_CUR_CALL(int8_t direction);
 static void SYSMENU_HANDL_CALIB_INA226_PWR_MON(int8_t direction);
 static void SYSMENU_HANDL_CALIB_KTY81_Calibration(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_TIMEOUT(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_CLICK_THRESHOLD(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_CLICK_TIMEOUT(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_HOLD_TIMEOUT(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_SWIPE_THRESHOLD_PX(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_FILTERMENU(int8_t direction);
@@ -1210,12 +1215,19 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
 #endif
 #if !defined(FRONTPANEL_LITE)
-    {"TCXO Frequency, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
+    {"TCXO Freq, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
 #else
     {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 #endif
 #ifdef TOUCHPAD_GT911
-    {"TOUCHPAD horiz flip", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_horizontal_flip, SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip},
+    {"Touchpad horiz flip", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_horizontal_flip, SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip},
+#endif
+#if defined(HAS_TOUCHPAD)
+    {"Touchpad timeout", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_TIMEOUT, SYSMENU_HANDL_CALIB_TOUCHPAD_TIMEOUT},
+    {"Touchpad click thresh", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_CLICK_THRESHOLD, SYSMENU_HANDL_CALIB_TOUCHPAD_CLICK_THRESHOLD},
+    {"Touchpad click timeou", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_CLICK_TIMEOUT, SYSMENU_HANDL_CALIB_TOUCHPAD_CLICK_TIMEOUT},
+    {"Touchpad hold timeout", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_HOLD_TIMEOUT, SYSMENU_HANDL_CALIB_TOUCHPAD_HOLD_TIMEOUT},
+    {"Touchpad swipe thresh", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_SWIPE_THRESHOLD_PX, SYSMENU_HANDL_CALIB_TOUCHPAD_SWIPE_THRESHOLD_PX},
 #endif
     {"TSignal Balance", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.TwoSignalTune_Balance, SYSMENU_HANDL_CALIB_TwoSignalTune_Balance},
     {"TX Start Delay", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TX_StartDelay, SYSMENU_HANDL_CALIB_TX_StartDelay},
@@ -1229,37 +1241,20 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"BW_AD8307_Offset (mV)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.BW_AD8307_OFFS, SYSMENU_HANDL_CALIB_BW_AD8307_OFFS},
 #endif
 #if !defined(FRONTPANEL_LITE)
-#ifdef LAY_320x240
-    {"Trans. Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
-    {"Trans. 70cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
-    {"Trans. 70cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
-    {"Trans. 23cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_23cm},
-    {"Trans. 23cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_23cm},
-    {"Trans. 13cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_13cm},
-    {"Trans. 13cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_13cm},
-    {"Trans. 6cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_6cm},
-    {"Trans. 6cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
-    {"Trans. 3cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
-    {"Trans. 3cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
-    {"Trans. QO100 RF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_HANDL_CALIB_TRANSV_RF_QO100},
-    {"Trans. QO100 RX IF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
-    {"Trans. QO100 TX IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
-#else
-    {"Transv. Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
-    {"Transv. 70cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
-    {"Transv. 70cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
-    {"Transv. 23cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_23cm},
-    {"Transv. 23cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_23cm},
-    {"Transv. 13cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_13cm},
-    {"Transv. 13cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_13cm},
-    {"Transv. 6cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_6cm},
-    {"Transv. 6cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
-    {"Transv. 3cm RF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
-    {"Transv. 3cm IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
-    {"Tr. QO100 RF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_HANDL_CALIB_TRANSV_RF_QO100},
-    {"Tr. QO100 RX IF, kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
-    {"Tr. QO100 TX IF, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
-#endif
+    {"Transv Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
+    {"Transv 70cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
+    {"Transv 70cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
+    {"Transv 23cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_23cm},
+    {"Transv 23cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_23cm},
+    {"Transv 13cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_13cm},
+    {"Transv 13cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_13cm},
+    {"Transv 6cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_6cm},
+    {"Transv 6cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
+    {"Transv 3cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
+    {"Transv 3cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
+    {"Tr QO100 RF kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_HANDL_CALIB_TRANSV_RF_QO100},
+    {"Tr QO100 RX IF kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
+    {"Tr QO100 TX IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
 #endif
     {"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
     {"Calibrate reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_CALIBRATION_RESET},
@@ -1302,7 +1297,6 @@ const static struct sysmenu_item_handler sysmenu_wspr_handlers[] = {
     {"BAND 10m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WSPR_BANDS_10, SYSMENU_HANDL_WSPR_BAND10},
     {"BAND 6m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WSPR_BANDS_6, SYSMENU_HANDL_WSPR_BAND6},
     {"BAND 2m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WSPR_BANDS_2, SYSMENU_HANDL_WSPR_BAND2},
-    {"", SYSMENU_INFOLINE, 0, 0},
 };
 
 const static struct sysmenu_item_handler sysmenu_auto_calibration_handlers[] = {
@@ -1689,7 +1683,7 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ(int8_t direction) {
-	const float32_t am_freq_steps[] = {0.1, 0.25, 0.5, 1, 2, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
+	const float32_t am_freq_steps[] = {0.1, 0.25, 0.5, 1, 2, 2.5, 5, 7.5, 8.33, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
 
 	for (uint8_t i = 0; i < ARRLENTH(am_freq_steps); i++) {
 		if (TRX.FRQ_ENC_AM_STEP_KHZ == am_freq_steps[i]) {
@@ -3540,6 +3534,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction) {
 			TRX.FFT_Zoom = 8;
 		} else if (TRX.FFT_Zoom == 8) {
 			TRX.FFT_Zoom = 16;
+		} else if (TRX.FFT_Zoom == 16) {
+			TRX.FFT_Zoom = 32;
 		}
 	} else {
 		if (TRX.FFT_Zoom == 2) {
@@ -3550,6 +3546,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Zoom(int8_t direction) {
 			TRX.FFT_Zoom = 4;
 		} else if (TRX.FFT_Zoom == 16) {
 			TRX.FFT_Zoom = 8;
+		} else if (TRX.FFT_Zoom == 32) {
+			TRX.FFT_Zoom = 16;
 		}
 	}
 	FFT_Init();
@@ -3565,6 +3563,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_ZoomCW(int8_t direction) {
 			TRX.FFT_ZoomCW = 8;
 		} else if (TRX.FFT_ZoomCW == 8) {
 			TRX.FFT_ZoomCW = 16;
+		} else if (TRX.FFT_ZoomCW == 16) {
+			TRX.FFT_ZoomCW = 32;
 		}
 	} else {
 		if (TRX.FFT_ZoomCW == 2) {
@@ -3575,6 +3575,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_ZoomCW(int8_t direction) {
 			TRX.FFT_ZoomCW = 4;
 		} else if (TRX.FFT_ZoomCW == 16) {
 			TRX.FFT_ZoomCW = 8;
+		} else if (TRX.FFT_ZoomCW == 32) {
+			TRX.FFT_ZoomCW = 16;
 		}
 	}
 	FFT_Init();
@@ -6057,6 +6059,51 @@ static void SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq(int8_t direction) {
 	}
 }
 
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_TIMEOUT(int8_t direction) {
+	if (CALIBRATE.TOUCHPAD_TIMEOUT > 1 || direction > 0) {
+		CALIBRATE.TOUCHPAD_TIMEOUT += direction;
+	}
+	if (CALIBRATE.TOUCHPAD_TIMEOUT > 1000) {
+		CALIBRATE.TOUCHPAD_TIMEOUT = 1000;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_CLICK_THRESHOLD(int8_t direction) {
+	if (CALIBRATE.TOUCHPAD_CLICK_THRESHOLD > 1 || direction > 0) {
+		CALIBRATE.TOUCHPAD_CLICK_THRESHOLD += direction;
+	}
+	if (CALIBRATE.TOUCHPAD_CLICK_THRESHOLD > 1000) {
+		CALIBRATE.TOUCHPAD_CLICK_THRESHOLD = 1000;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_CLICK_TIMEOUT(int8_t direction) {
+	if (CALIBRATE.TOUCHPAD_CLICK_TIMEOUT > 1 || direction > 0) {
+		CALIBRATE.TOUCHPAD_CLICK_TIMEOUT += direction;
+	}
+	if (CALIBRATE.TOUCHPAD_CLICK_TIMEOUT > 5000) {
+		CALIBRATE.TOUCHPAD_CLICK_TIMEOUT = 5000;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_HOLD_TIMEOUT(int8_t direction) {
+	if (CALIBRATE.TOUCHPAD_HOLD_TIMEOUT > 1 || direction > 0) {
+		CALIBRATE.TOUCHPAD_HOLD_TIMEOUT += direction;
+	}
+	if (CALIBRATE.TOUCHPAD_HOLD_TIMEOUT > 5000) {
+		CALIBRATE.TOUCHPAD_HOLD_TIMEOUT = 5000;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_SWIPE_THRESHOLD_PX(int8_t direction) {
+	if (CALIBRATE.TOUCHPAD_SWIPE_THRESHOLD_PX > 1 || direction > 0) {
+		CALIBRATE.TOUCHPAD_SWIPE_THRESHOLD_PX += direction;
+	}
+	if (CALIBRATE.TOUCHPAD_SWIPE_THRESHOLD_PX > 1000) {
+		CALIBRATE.TOUCHPAD_SWIPE_THRESHOLD_PX = 1000;
+	}
+}
+
 // Tisho
 static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction) {
 	CALIBRATE.FW_AD8307_SLP += (float32_t)direction * 0.1f;
@@ -7627,6 +7674,9 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 				}
 			}
 		}
+		if (visible == 0 && current_page > 0) {
+			current_page--;
+		}
 
 #if SYSMENU_TOUCHPAD_STYLE
 		uint8_t sysmenu_button_in_line = LCD_WIDTH / (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN);
@@ -8465,7 +8515,7 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 	                      LAYOUT->SYSMENU_BUTTON_MARGIN + y * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN), LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT,
 	                      menuElement->title, ctmp, !isInfoline && !redrawAsUnselected && selected, !isInfoline && !redrawAsUnselected && sysmenu_item_selected_by_enc2 && selected,
 	                      elementIndex, BUTTONHANDLER_CHOOSE_MENU_ELEMENT, BUTTONHANDLER_CHOOSE_MENU_ELEMENT, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER,
-	                      COLOR->BUTTON_BACK);
+	                      COLOR->BUTTON_SWITCH_BACKGROUND);
 
 	sysmenu_draw_index++;
 #else // old style

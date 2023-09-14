@@ -52,7 +52,9 @@ RX_CIC_RATE,
 IQ_RX_READ_REQ,
 IQ_RX_READ_CLK,
 DAC_DRV_A0,
-DAC_DRV_A1
+DAC_DRV_A1,
+TX_CLK_SELECT,
+TX_CIC_RATE,
 );
 
 input clk_in;
@@ -108,6 +110,8 @@ output reg DCDC_freq = 0;
 output reg DAC_DRV_A0 = 1;
 output reg DAC_DRV_A1 = 1;
 output reg unsigned [10:0] RX_CIC_RATE = 'd640;
+output reg TX_CLK_SELECT = 1;
+output reg unsigned [11:0] TX_CIC_RATE = 'd2240;
 
 inout [7:0] DATA_BUS;
 reg   [7:0] DATA_BUS_OUT;
@@ -349,6 +353,15 @@ begin
 	begin
 		DAC_DRV_A0 = DATA_BUS[0:0];
 		DAC_DRV_A1 = DATA_BUS[1:1];
+		TX_CLK_SELECT = DATA_BUS[2:2];
+		if (DATA_BUS[2:2] == 1)
+		begin
+			TX_CIC_RATE = 'd2240;
+		end
+		else
+		begin
+			TX_CIC_RATE = 'd1600;
+		end
 		k = 999;
 	end
 	
@@ -542,7 +555,7 @@ begin
 	end
 	else if (k == 801)
 	begin
-		DATA_BUS_OUT[7:0] = 'd0; //flash id 2
+		DATA_BUS_OUT[7:0] = 'd2; //flash id 2
 		k = 802;
 	end
 	else if (k == 802)

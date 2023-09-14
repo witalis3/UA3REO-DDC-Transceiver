@@ -58,7 +58,7 @@ static void CWDecoder_PrintChar(char *str); // output the character to the resul
 // initialize the CW decoder
 void CWDecoder_Init(void) {
 	// initialize CFFT
-	arm_cfft_init_f32(&CWDECODER_FFT_Inst, CWDECODER_FFTSIZE);
+	arm_cfft_init_256_f32(&CWDECODER_FFT_Inst);
 	// decimator
 	arm_fir_decimate_init_f32(&CWDEC_DECIMATE, CW_DEC_FirDecimate.numTaps, CWDECODER_MAGNIFY, CW_DEC_FirDecimate.pCoeffs, CWDEC_decimState, DECODER_PACKET_SIZE);
 	// Blackman-Harris window function

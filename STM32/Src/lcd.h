@@ -7,6 +7,8 @@
 #include "touchpad.h"
 #include "trx_manager.h"
 
+#define VHF_S_METER_FREQ_START 30000000
+
 typedef struct {
 	bool Background;
 	bool TopButtons;

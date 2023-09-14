@@ -227,6 +227,9 @@ int main(void) {
 	MX_USART6_UART_Init();
 	MX_ADC2_Init();
 	/* USER CODE BEGIN 2 */
+
+	// HRDW_GoToInternalSPIClock();
+
 #ifdef HAS_TOUCHPAD
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	GPIO_InitStruct.Pin = ENC2SW_AND_TOUCHPAD_Pin;

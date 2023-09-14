@@ -47,7 +47,7 @@ void CW_key_change(void) {
 	if (TRX_Tune) {
 		return;
 	}
-	
+
 	bool notx = TRX_TX_Disabled(CurrentVFO->Freq);
 	if (notx) {
 		TRX_ptt_soft = false;

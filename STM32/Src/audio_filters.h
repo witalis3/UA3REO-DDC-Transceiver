@@ -10,17 +10,18 @@
 
 #ifdef STM32F407xx
 #define IQ_HILBERT_TAPS_RX 101                 // Hilbert filter order RX
+#define IQ_HILBERT_TAPS_TX 201                 // Hilbert filter order TX
 #define IIR_LPF_STAGES IIR_BIQUAD_MAX_SECTIONS // order of IIR LPF filters
 #define IIR_HPF_STAGES 3                       // order of IIR HPF filters
 #define IIR_DECIMATOR_FILTER_STAGES 5          // order of decimator filter
 #else
 #define IQ_HILBERT_TAPS_RX 201                 // Hilbert filter order RX
+#define IQ_HILBERT_TAPS_TX 501                 // Hilbert filter order TX
 #define IIR_LPF_STAGES IIR_BIQUAD_MAX_SECTIONS // order of IIR LPF filters (12)
 #define IIR_HPF_STAGES 5                       // order of IIR HPF filters
 #define IIR_DECIMATOR_FILTER_STAGES 9          // order of decimator filter
 #endif
 
-#define IQ_HILBERT_TAPS_TX 201  // Hilbert filter order TX
 #define NOTCH_STAGES 3          // order of manual Notch filter
 #define EQ_STAGES 1             // order of the biquad of the equalizer filter
 #define GAUSS_STAGES 1          // order of the gauss CW filter
@@ -83,8 +84,7 @@ typedef struct // keep old sample values for DC filter. Multiple states for diff
 // Public variables
 extern arm_fir_instance_f32 FIR_RX1_Hilbert_I; // filter instances
 extern arm_fir_instance_f32 FIR_RX1_Hilbert_Q;
-extern arm_fir_instance_f32 FIR_TX_Hilbert_I;
-extern arm_fir_instance_f32 FIR_TX_Hilbert_Q;
+extern arm_fir_instance_f32 FIR_TX_Hilbert_90;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_LPF_I;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_LPF_Q;
 extern arm_biquad_cascade_df2T_instance_f32 IIR_RX1_LPF2_I;

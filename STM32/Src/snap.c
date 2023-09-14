@@ -72,8 +72,8 @@ static void SNAP_Process() {
 		bandwidth_bin_end = (FFT_SIZE / 2) + (bins_in_bandwidth / 2);
 	}
 	uint32_t bandwidth_bin_count = bandwidth_bin_end - bandwidth_bin_start;
-	
-	if(bandwidth_bin_count == 0) {
+
+	if (bandwidth_bin_count == 0) {
 		bandwidth_bin_start = (FFT_SIZE / 2) - 0;
 		bandwidth_bin_end = (FFT_SIZE / 2) + 1;
 		bandwidth_bin_count = 1;

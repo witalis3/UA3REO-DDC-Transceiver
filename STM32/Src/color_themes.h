@@ -8,8 +8,13 @@ typedef const struct {
 	const uint16_t FOREGROUND;
 	const uint16_t BUTTON_TEXT;
 	const uint16_t BUTTON_INACTIVE_TEXT;
-	const uint16_t BUTTON_PAGER;
-	const uint16_t BUTTON_BACKGROUND;
+	const uint16_t BUTTON_PAGER_TEXT;
+	const uint16_t BUTTON_PAGER_BACKGROUND;
+	const uint16_t BUTTON_STATUS_BACKGROUND;
+	const uint16_t BUTTON_SWITCH_BACKGROUND;
+	const uint16_t BUTTON_BORDER;
+	const uint16_t BUTTON_LIGHTER_ACTIVE;
+	const uint16_t BUTTON_LIGHTER_INACTIVE;
 	const uint16_t FREQ_MHZ;
 	const uint16_t FREQ_KHZ;
 	const uint16_t FREQ_HZ;
@@ -58,7 +63,6 @@ typedef const struct {
 	const uint16_t BW_TRAPEZ_STRIPE;
 	const uint16_t BW_TRAPEZ_FILL;
 	const uint16_t ACTIVE_BORDER;
-	// 7inch
 	const uint16_t FREQ_B_MHZ;
 	const uint16_t FREQ_B_KHZ;
 	const uint16_t FREQ_B_HZ;
@@ -66,10 +70,6 @@ typedef const struct {
 	const uint16_t FREQ_B_INACTIVE;
 	const uint16_t STATUS_LABEL_ACTIVE;
 	const uint16_t STATUS_LABEL_INACTIVE;
-	const uint16_t BUTTON_BACK;
-	const uint16_t BUTTON_BORDER;
-	const uint16_t BUTTON_LIGHTER_ACTIVE;
-	const uint16_t BUTTON_LIGHTER_INACTIVE;
 	const uint16_t WINDOWS_BORDER;
 	const uint16_t WINDOWS_BG;
 	const uint16_t KEYBOARD_BG;
@@ -77,7 +77,6 @@ typedef const struct {
 	const uint16_t IFGAIN_BAR_FG;
 	const uint16_t AFGAIN_BAR_BG;
 	const uint16_t AFGAIN_BAR_FG;
-	// touch buttons
 	const uint16_t DENY_BUTTON_BACKGROUND;
 	const uint16_t DENY_BUTTON_TEXT;
 	const uint16_t NORMAL_BUTTON_BACKGROUND;
@@ -91,13 +90,17 @@ typedef const struct {
 static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
     // 0 - black
     {
-        // 3'2 inch
         .BACKGROUND = COLOR_BLACK,
         .FOREGROUND = COLOR_WHITE,
         .BUTTON_TEXT = rgb888torgb565(32, 191, 17),
         .BUTTON_INACTIVE_TEXT = rgb888torgb565(130, 130, 130),
-        .BUTTON_PAGER = rgb888torgb565(60, 60, 60),
-        .BUTTON_BACKGROUND = rgb888torgb565(50, 50, 50),
+        .BUTTON_PAGER_TEXT = rgb888torgb565(130, 130, 130),
+        .BUTTON_PAGER_BACKGROUND = rgb888torgb565(0x10, 0x35, 0x10),
+        .BUTTON_STATUS_BACKGROUND = rgb888torgb565(50, 50, 50),
+        .BUTTON_SWITCH_BACKGROUND = rgb888torgb565(10, 10, 10),
+        .BUTTON_BORDER = rgb888torgb565(105, 105, 105),
+        .BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
+        .BUTTON_LIGHTER_INACTIVE = rgb888torgb565(90, 90, 90),
         .FREQ_MHZ = COLOR_WHITE,
         .FREQ_KHZ = COLOR_WHITE,
         .FREQ_HZ = rgb888torgb565(150, 150, 150),
@@ -146,7 +149,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
         .BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
         .ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
-        // 7inch
         .FREQ_B_MHZ = COLOR_WHITE,
         .FREQ_B_KHZ = COLOR_WHITE,
         .FREQ_B_HZ = rgb888torgb565(150, 150, 150),
@@ -154,10 +156,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .FREQ_B_INACTIVE = rgb888torgb565(100, 100, 100),
         .STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
         .STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
-        .BUTTON_BACK = rgb888torgb565(10, 10, 10),
-        .BUTTON_BORDER = rgb888torgb565(105, 105, 105),
-        .BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
-        .BUTTON_LIGHTER_INACTIVE = rgb888torgb565(90, 90, 90),
         .WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
         .WINDOWS_BG = COLOR_BLACK,
         .KEYBOARD_BG = rgb888torgb565(20, 20, 20),
@@ -174,13 +172,17 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
     },
     // 1 - white
     {
-        // 3'2 inch
         .BACKGROUND = COLOR_WHITE,
         .FOREGROUND = COLOR_BLACK,
         .BUTTON_TEXT = rgb888torgb565(150, 130, 50),
         .BUTTON_INACTIVE_TEXT = rgb888torgb565(220, 220, 220),
-        .BUTTON_PAGER = rgb888torgb565(150, 150, 150),
-        .BUTTON_BACKGROUND = rgb888torgb565(240, 240, 240),
+        .BUTTON_PAGER_TEXT = rgb888torgb565(220, 220, 220),
+        .BUTTON_PAGER_BACKGROUND = rgb888torgb565(0x10, 0x35, 0x10),
+        .BUTTON_STATUS_BACKGROUND = rgb888torgb565(240, 240, 240),
+        .BUTTON_SWITCH_BACKGROUND = rgb888torgb565(10, 10, 10),
+        .BUTTON_BORDER = rgb888torgb565(105, 105, 105),
+        .BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
+        .BUTTON_LIGHTER_INACTIVE = rgb888torgb565(90, 90, 90),
         .FREQ_MHZ = COLOR_BLACK,
         .FREQ_KHZ = COLOR_BLACK,
         .FREQ_HZ = rgb888torgb565(130, 130, 130),
@@ -229,7 +231,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
         .BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
         .ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
-        // 7inch
         .FREQ_B_MHZ = COLOR_BLACK,
         .FREQ_B_KHZ = COLOR_BLACK,
         .FREQ_B_HZ = rgb888torgb565(130, 130, 130),
@@ -237,10 +238,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .FREQ_B_INACTIVE = rgb888torgb565(100, 100, 100),
         .STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
         .STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
-        .BUTTON_BACK = rgb888torgb565(10, 10, 10),
-        .BUTTON_BORDER = rgb888torgb565(105, 105, 105),
-        .BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
-        .BUTTON_LIGHTER_INACTIVE = rgb888torgb565(90, 90, 90),
         .WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
         .WINDOWS_BG = COLOR_BLACK,
         .KEYBOARD_BG = rgb888torgb565(20, 20, 20),
@@ -257,13 +254,17 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
     },
     // 2 - colored
     {
-        // 3'2 inch
         .BACKGROUND = COLOR_BLACK,
         .FOREGROUND = COLOR_WHITE,
         .BUTTON_TEXT = rgb888torgb565(32, 191, 17),
         .BUTTON_INACTIVE_TEXT = rgb888torgb565(130, 130, 130),
-        .BUTTON_PAGER = rgb888torgb565(60, 60, 60),
-        .BUTTON_BACKGROUND = rgb888torgb565(50, 50, 50),
+        .BUTTON_PAGER_TEXT = rgb888torgb565(130, 130, 130),
+        .BUTTON_PAGER_BACKGROUND = rgb888torgb565(0x10, 0x35, 0x10),
+        .BUTTON_STATUS_BACKGROUND = rgb888torgb565(50, 50, 50),
+        .BUTTON_SWITCH_BACKGROUND = rgb888torgb565(10, 10, 10),
+        .BUTTON_BORDER = rgb888torgb565(105, 105, 105),
+        .BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
+        .BUTTON_LIGHTER_INACTIVE = rgb888torgb565(90, 90, 90),
         .FREQ_MHZ = rgb888torgb565(0, 255, 212),
         .FREQ_KHZ = rgb888torgb565(0, 255, 212),
         .FREQ_HZ = rgb888torgb565(255, 195, 0),
@@ -312,7 +313,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BW_TRAPEZ_STRIPE = rgb888torgb565(0, 200, 255),
         .BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
         .ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
-        // 7inch
         .FREQ_B_MHZ = rgb888torgb565(0, 255, 212),
         .FREQ_B_KHZ = rgb888torgb565(0, 255, 212),
         .FREQ_B_HZ = rgb888torgb565(255, 195, 0),
@@ -320,10 +320,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .FREQ_B_INACTIVE = rgb888torgb565(100, 100, 100),
         .STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
         .STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
-        .BUTTON_BACK = rgb888torgb565(10, 10, 10),
-        .BUTTON_BORDER = rgb888torgb565(105, 105, 105),
-        .BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
-        .BUTTON_LIGHTER_INACTIVE = rgb888torgb565(90, 90, 90),
         .WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
         .WINDOWS_BG = COLOR_BLACK,
         .KEYBOARD_BG = rgb888torgb565(20, 20, 20),
@@ -338,16 +334,19 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
         .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     },
-    // CN
+    // 3 - CN
     {
-        // 2 - black, 7-segments FREQ
-        // 3'2 inch
         .BACKGROUND = COLOR_BLACK,
         .FOREGROUND = COLOR_WHITE,
         .BUTTON_TEXT = COLOR_GREEN,
         .BUTTON_INACTIVE_TEXT = COLOR_WHITE,
-        .BUTTON_PAGER = rgb888torgb565(110, 110, 110),
-        .BUTTON_BACKGROUND = rgb888torgb565(20, 20, 20),
+        .BUTTON_PAGER_TEXT = COLOR_WHITE,
+        .BUTTON_PAGER_BACKGROUND = rgb888torgb565(0x10, 0x35, 0x10),
+        .BUTTON_STATUS_BACKGROUND = rgb888torgb565(20, 20, 20),
+        .BUTTON_SWITCH_BACKGROUND = rgb888torgb565(60, 60, 60),
+        .BUTTON_BORDER = rgb888torgb565(105, 105, 105),
+        .BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
+        .BUTTON_LIGHTER_INACTIVE = 0,
         .FREQ_MHZ = rgb888torgb565(255, 50, 0),
         .FREQ_KHZ = rgb888torgb565(255, 50, 0),
         .FREQ_HZ = rgb888torgb565(255, 195, 0),
@@ -396,7 +395,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BW_TRAPEZ_STRIPE = rgb888torgb565(255, 0, 0),
         .BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
         .ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
-        // 7inch
         .FREQ_B_MHZ = rgb888torgb565(0, 255, 212),
         .FREQ_B_KHZ = rgb888torgb565(0, 255, 212),
         .FREQ_B_HZ = rgb888torgb565(255, 195, 0),
@@ -404,10 +402,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .FREQ_B_INACTIVE = rgb888torgb565(100, 100, 100),
         .STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
         .STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
-        .BUTTON_BACK = rgb888torgb565(60, 60, 60),
-        .BUTTON_BORDER = rgb888torgb565(105, 105, 105),
-        .BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
-        .BUTTON_LIGHTER_INACTIVE = 0,
         .WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
         .WINDOWS_BG = COLOR_BLACK,
         .KEYBOARD_BG = rgb888torgb565(20, 20, 20),
@@ -422,16 +416,19 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
         .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     },
-    // CN+Green
+    // 4 - CN+Green
     {
-        // 2 - black, 7-segments FREQ
-        // 3'2 inch
         .BACKGROUND = COLOR_BLACK,
         .FOREGROUND = COLOR_WHITE,
         .BUTTON_TEXT = COLOR_GREEN,
         .BUTTON_INACTIVE_TEXT = COLOR_WHITE,
-        .BUTTON_PAGER = rgb888torgb565(110, 110, 110),
-        .BUTTON_BACKGROUND = rgb888torgb565(10, 10, 30),
+        .BUTTON_PAGER_TEXT = COLOR_WHITE,
+        .BUTTON_PAGER_BACKGROUND = rgb888torgb565(0x10, 0x35, 0x10),
+        .BUTTON_STATUS_BACKGROUND = rgb888torgb565(10, 10, 30),
+        .BUTTON_SWITCH_BACKGROUND = rgb888torgb565(10, 10, 40),
+        .BUTTON_BORDER = rgb888torgb565(105, 105, 105),
+        .BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
+        .BUTTON_LIGHTER_INACTIVE = 0,
         .FREQ_MHZ = COLOR_GREEN,
         .FREQ_KHZ = COLOR_GREEN,
         .FREQ_HZ = COLOR_GREEN,
@@ -480,7 +477,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BW_TRAPEZ_STRIPE = rgb888torgb565(255, 0, 0),
         .BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
         .ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
-        // 7inch
         .FREQ_B_MHZ = COLOR_YELLOW,
         .FREQ_B_KHZ = COLOR_YELLOW,
         .FREQ_B_HZ = COLOR_YELLOW,
@@ -488,10 +484,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .FREQ_B_INACTIVE = rgb888torgb565(100, 100, 100),
         .STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
         .STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
-        .BUTTON_BACK = rgb888torgb565(10, 10, 40),
-        .BUTTON_BORDER = rgb888torgb565(105, 105, 105),
-        .BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
-        .BUTTON_LIGHTER_INACTIVE = 0,
         .WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
         .WINDOWS_BG = COLOR_BLACK,
         .KEYBOARD_BG = rgb888torgb565(20, 20, 20),
@@ -506,16 +498,19 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .ACCEPT_BUTTON_BACKGROUND = rgb888torgb565(0x24, 0xAE, 0x00),
         .ACCEPT_BUTTON_TEXT = COLOR_WHITE,
     },
-    // CN+White
+    // 5 - CN+White
     {
-        // 2 - black, 7-segments FREQ
-        // 3'2 inch
         .BACKGROUND = COLOR_BLACK,
         .FOREGROUND = COLOR_WHITE,
         .BUTTON_TEXT = COLOR_GREEN,
         .BUTTON_INACTIVE_TEXT = COLOR_WHITE,
-        .BUTTON_PAGER = rgb888torgb565(110, 110, 110),
-        .BUTTON_BACKGROUND = rgb888torgb565(20, 20, 20),
+        .BUTTON_PAGER_TEXT = COLOR_WHITE,
+        .BUTTON_PAGER_BACKGROUND = rgb888torgb565(0x10, 0x35, 0x10),
+        .BUTTON_STATUS_BACKGROUND = rgb888torgb565(20, 20, 20),
+        .BUTTON_SWITCH_BACKGROUND = rgb888torgb565(60, 45, 60),
+        .BUTTON_BORDER = rgb888torgb565(105, 105, 105),
+        .BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
+        .BUTTON_LIGHTER_INACTIVE = 0,
         .FREQ_MHZ = COLOR_WHITE,
         .FREQ_KHZ = COLOR_WHITE,
         .FREQ_HZ = COLOR_WHITE,
@@ -564,7 +559,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .BW_TRAPEZ_STRIPE = rgb888torgb565(255, 0, 0),
         .BW_TRAPEZ_FILL = rgb888torgb565(140, 140, 140),
         .ACTIVE_BORDER = rgb888torgb565(0, 102, 153),
-        // 7inch
         .FREQ_B_MHZ = COLOR_WHITE,
         .FREQ_B_KHZ = COLOR_WHITE,
         .FREQ_B_HZ = COLOR_WHITE,
@@ -572,10 +566,6 @@ static const STRUCT_COLOR_THEME COLOR_THEMES[COLOR_THEMES_COUNT] = {
         .FREQ_B_INACTIVE = rgb888torgb565(90, 90, 90),
         .STATUS_LABEL_ACTIVE = rgb888torgb565(32, 191, 17),
         .STATUS_LABEL_INACTIVE = rgb888torgb565(90, 90, 90),
-        .BUTTON_BACK = rgb888torgb565(60, 45, 60),
-        .BUTTON_BORDER = rgb888torgb565(105, 105, 105),
-        .BUTTON_LIGHTER_ACTIVE = rgb888torgb565(32, 191, 17),
-        .BUTTON_LIGHTER_INACTIVE = 0,
         .WINDOWS_BORDER = rgb888torgb565(249, 205, 46),
         .WINDOWS_BG = COLOR_BLACK,
         .KEYBOARD_BG = rgb888torgb565(20, 20, 20),

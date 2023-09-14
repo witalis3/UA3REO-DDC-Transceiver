@@ -96,6 +96,9 @@ void InitFT8_Decoder(void) {
 	if (band == BANDID_70cm) { // 70cm
 		FT8_BND_Freq = FT8_Freq_70CM;
 	}
+	if (band == BANDID_QO100) { // QO-100
+		FT8_BND_Freq = FT8_Freq_QO_100;
+	}
 
 	receive_sequence();
 	cursor_freq = (uint16_t)((float)(cursor_line + ft8_min_bin) * (float32_t)ft8_shift);

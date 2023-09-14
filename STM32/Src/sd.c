@@ -998,7 +998,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			// CW
 			SD_WRITE_SETT_LINE("TRX.CW_Pitch", (uint64_t *)&TRX.CW_Pitch, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_Key_timeout", (uint64_t *)&TRX.CW_Key_timeout, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("TRX.CW_SelfHear", (uint64_t *)&TRX.CW_SelfHear, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.CW_SelfHear", (uint64_t *)&TRX.CW_SelfHear, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_KEYER", (uint64_t *)&TRX.CW_KEYER, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_OneSymbolMemory", (uint64_t *)&TRX.CW_OneSymbolMemory, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_KEYER_WPM", (uint64_t *)&TRX.CW_KEYER_WPM, SYSMENU_UINT16);
@@ -1250,6 +1250,11 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.ALC_Inverted_Logic", (uint64_t *)&CALIBRATE.ALC_Inverted_Logic, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.IF_GAIN_MIN", (uint64_t *)&CALIBRATE.IF_GAIN_MIN, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.IF_GAIN_MAX", (uint64_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.TOUCHPAD_TIMEOUT", (uint64_t *)&CALIBRATE.TOUCHPAD_TIMEOUT, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.TOUCHPAD_CLICK_THRESHOLD", (uint64_t *)&CALIBRATE.TOUCHPAD_CLICK_THRESHOLD, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.TOUCHPAD_CLICK_TIMEOUT", (uint64_t *)&CALIBRATE.TOUCHPAD_CLICK_TIMEOUT, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.TOUCHPAD_HOLD_TIMEOUT", (uint64_t *)&CALIBRATE.TOUCHPAD_HOLD_TIMEOUT, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.TOUCHPAD_SWIPE_THRESHOLD_PX", (uint64_t *)&CALIBRATE.TOUCHPAD_SWIPE_THRESHOLD_PX, SYSMENU_UINT16);
 
 			// Func buttons settings
 			char buff[64] = {0};
@@ -1282,6 +1287,8 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm, SYSMENU_INT8);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Fast", i);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].Fast, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].DNR_Type, SYSMENU_UINT8);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AGC", i);
@@ -1860,7 +1867,7 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 		TRX.CW_Key_timeout = (uint16_t)uintval;
 	}
 	if (strcmp(name, "TRX.CW_SelfHear") == 0) {
-		TRX.CW_SelfHear = (uint16_t)uintval;
+		TRX.CW_SelfHear = bval;
 	}
 	if (strcmp(name, "TRX.CW_KEYER") == 0) {
 		TRX.CW_KEYER = bval;
@@ -2666,6 +2673,21 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	if (strcmp(name, "CALIBRATE.IF_GAIN_MAX") == 0) {
 		CALIBRATE.IF_GAIN_MAX = (uint8_t)uintval;
 	}
+	if (strcmp(name, "CALIBRATE.TOUCHPAD_TIMEOUT") == 0) {
+		CALIBRATE.TOUCHPAD_TIMEOUT = uintval;
+	}
+	if (strcmp(name, "CALIBRATE.TOUCHPAD_CLICK_THRESHOLD") == 0) {
+		CALIBRATE.TOUCHPAD_CLICK_THRESHOLD = uintval;
+	}
+	if (strcmp(name, "CALIBRATE.TOUCHPAD_CLICK_TIMEOUT") == 0) {
+		CALIBRATE.TOUCHPAD_CLICK_TIMEOUT = uintval;
+	}
+	if (strcmp(name, "CALIBRATE.TOUCHPAD_HOLD_TIMEOUT") == 0) {
+		CALIBRATE.TOUCHPAD_HOLD_TIMEOUT = uintval;
+	}
+	if (strcmp(name, "CALIBRATE.TOUCHPAD_SWIPE_THRESHOLD_PX") == 0) {
+		CALIBRATE.TOUCHPAD_SWIPE_THRESHOLD_PX = uintval;
+	}
 
 	// Func buttons settings
 	char buff[64] = {0};
@@ -2721,6 +2743,10 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 		if (strcmp(name, buff) == 0) {
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Fast", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].Fast = bval;
 		}
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].DNR_Type", i);
 		if (strcmp(name, buff) == 0) {

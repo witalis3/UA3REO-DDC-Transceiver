@@ -14,6 +14,7 @@
 		.out_channel       (<connected-to-out_channel>),       //          .channel
 		.clken             (<connected-to-clken>),             //     clken.clken
 		.clk               (<connected-to-clk>),               //     clock.clk
-		.reset_n           (<connected-to-reset_n>)            //     reset.reset_n
+		.reset_n           (<connected-to-reset_n>),           //     reset.reset_n
+		.rate              (<connected-to-rate>)               //      rate.conduit
 	);
 

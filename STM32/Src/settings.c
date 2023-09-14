@@ -342,8 +342,11 @@ void LoadSettings(bool clear) {
 #ifdef STM32F407xx
 		TRX.FFT_Averaging = 6;
 #endif
-		TRX.FFT_Window = 1;        // FFT Window
-		TRX.FFT_Style = 1;         // FFT style
+		TRX.FFT_Window = 1; // FFT Window
+		TRX.FFT_Style = 5;  // FFT style
+#if !HRDW_HAS_FULL_FFT_BUFFER
+		TRX.FFT_Style = 1;
+#endif
 		TRX.FFT_BW_Style = 2;      // FFT BW style
 		TRX.FFT_Color = 0;         // FFT display color
 		TRX.WTF_Color = 1;         // WTF display color
@@ -444,6 +447,7 @@ void LoadSettings(bool clear) {
 			TRX.BANDS_SAVED_SETTINGS[i].DNR_Type = 0;
 			TRX.BANDS_SAVED_SETTINGS[i].AGC = true;
 			TRX.BANDS_SAVED_SETTINGS[i].RepeaterMode = false;
+			TRX.BANDS_SAVED_SETTINGS[i].Fast = TRX.Fast;
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
 			if (!TRX.ANT_selected) {
 				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_I = TRX.ATU_I;
@@ -787,7 +791,7 @@ void LoadCalibration(bool clear) {
 #elif defined(FRONTPANEL_MINI)
 		CALIBRATE.ENCODER_SLOW_RATE = 15;
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
-		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF
+		CALIBRATE.RFU_HPF_START = 40000 * 1000;        // HPF
 		CALIBRATE.RFU_BPF_0_START = 138 * 1000 * 1000; // 2m
 		CALIBRATE.RFU_BPF_0_END = 150 * 1000 * 1000;   // 2m
 		CALIBRATE.RFU_BPF_1_START = 1500 * 1000;       // 160m
@@ -800,18 +804,18 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_4_END = 14700 * 1000;        // 30m,20m
 		CALIBRATE.RFU_BPF_5_START = 14700 * 1000;      // 20,17m
 		CALIBRATE.RFU_BPF_5_END = 22100 * 1000;        // 20,17m
-		CALIBRATE.RFU_BPF_6_START = 22100 * 1000;      // 15,12,10,6m
-		CALIBRATE.RFU_BPF_6_END = 60000 * 1000;        // 15,12,10,6m
+		CALIBRATE.RFU_BPF_6_START = 22100 * 1000;      // 15,12,10
+		CALIBRATE.RFU_BPF_6_END = 40000 * 1000;        // 15,12,10
 		CALIBRATE.RFU_BPF_7_START = 0;                 // disabled
 		CALIBRATE.RFU_BPF_7_END = 0;                   // disabled
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled
-		CALIBRATE.smeter_calibration_hf = 11;
+		CALIBRATE.smeter_calibration_hf = 16;
 		CALIBRATE.TUNE_MAX_POWER = 5;             // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER_ON_METER = 15;     // Max TRX Power for indication
+		CALIBRATE.MAX_RF_POWER_ON_METER = 30;     // Max TRX Power for indication
 		CALIBRATE.SWR_FWD_Calibration_HF = 21.0f; // SWR Transormator rate forward
 		CALIBRATE.SWR_BWD_Calibration_HF = 21.0f; // SWR Transormator rate return
-		CALIBRATE.PWR_VLT_Calibration = 1150.0f;  // VLT meter calibration
+		CALIBRATE.PWR_VLT_Calibration = 1100.0f;  // VLT meter calibration
 #else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF U14-RF1
@@ -925,6 +929,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.Transverter_QO100_IF_RX_Khz = 28500;
 		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 28;
 #endif
+<<<<<<< HEAD
 		CALIBRATE.OTA_update = false;                // enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;                // Relay switch delay before RF signal ON, ms
 		CALIBRATE.LCD_Rotate = false;               // LCD 180 degree rotation
@@ -933,14 +938,32 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.INA226_CurCalc = 0.4f;            // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
 		CALIBRATE.PWR_CUR_Calibration = 2.5f;       // CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;                // Tuner averaging stages
+=======
+		CALIBRATE.OTA_update = true;     // enable OTA FW update over WiFi
+		CALIBRATE.TX_StartDelay = 5;     // Relay switch delay before RF signal ON, ms
+		CALIBRATE.LCD_Rotate = false;    // LCD 180 degree rotation
+		CALIBRATE.INA226_EN = false;     // INA226 enabled
+		CALIBRATE.INA226_CurCalc = 0.4f; // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering)
+#ifdef FRONTPANEL_WOLF_2
+		CALIBRATE.INA226_EN = true; // INA226 enabled
+#endif
+		CALIBRATE.PWR_CUR_Calibration = 2.5f; // CUR meter calibration
+		CALIBRATE.ATU_AVERAGING = 3;          // Tuner averaging stages
+>>>>>>> upstream/master
 		CALIBRATE.CAT_Type = CAT_TS2000;
-		CALIBRATE.LNA_compensation = 0;       // Compensation for LNA, db
-		CALIBRATE.TwoSignalTune_Balance = 50; // balance of signals on twosignal-tune
-		CALIBRATE.LinearPowerControl = false; // linear or logrithmic power control
-		CALIBRATE.ALC_Port_Enabled = false;   // enable ALC port to set TRX power from external amplifier
-		CALIBRATE.ALC_Inverted_Logic = false; // invert voltage logic
-		CALIBRATE.IF_GAIN_MIN = 0;            // min limit for if gain regulator
-		CALIBRATE.IF_GAIN_MAX = 40;           // max limit for if gain regulator
+		CALIBRATE.LNA_compensation = 0;             // Compensation for LNA, db
+		CALIBRATE.TwoSignalTune_Balance = 50;       // balance of signals on twosignal-tune
+		CALIBRATE.LinearPowerControl = false;       // linear or logrithmic power control
+		CALIBRATE.ALC_Port_Enabled = false;         // enable ALC port to set TRX power from external amplifier
+		CALIBRATE.ALC_Inverted_Logic = false;       // invert voltage logic
+		CALIBRATE.IF_GAIN_MIN = 0;                  // min limit for if gain regulator
+		CALIBRATE.IF_GAIN_MAX = 40;                 // max limit for if gain regulator
+		CALIBRATE.TOUCHPAD_horizontal_flip = false; // Touchpad harozontal flip
+		CALIBRATE.TOUCHPAD_TIMEOUT = 50;            // Touchpad timings calibrations
+		CALIBRATE.TOUCHPAD_CLICK_THRESHOLD = 5;
+		CALIBRATE.TOUCHPAD_CLICK_TIMEOUT = 400;
+		CALIBRATE.TOUCHPAD_HOLD_TIMEOUT = 400;
+		CALIBRATE.TOUCHPAD_SWIPE_THRESHOLD_PX = 5;
 
 		// Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {

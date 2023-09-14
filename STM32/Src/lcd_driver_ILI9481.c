@@ -1,5 +1,5 @@
 #include "settings.h"
-#if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_R61581) || defined(LCD_ST7796S))
+#if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_R61581))
 
 // Header files
 #include "fonts.h"
@@ -40,7 +40,7 @@ inline uint16_t LCDDriver_readReg(uint16_t reg) {
 
 // Initialise function
 void LCDDriver_Init(void) {
-#if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B) || defined(LCD_ST7796S))
+#if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B))
 #define ILI9481_COMM_DELAY 20
 
 	LCDDriver_SendCommand(LCD_COMMAND_SOFT_RESET); // 0x01
@@ -454,7 +454,7 @@ void LCDDriver_Init(void) {
 
 // Set screen rotation
 void LCDDriver_setRotation(uint8_t rotate) {
-#if defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486) || defined(LCD_ST7796S)
+#if defined(LCD_ILI9481) || defined(LCD_HX8357B) || defined(LCD_ILI9486)
 	LCDDriver_SendCommand(LCD_COMMAND_MADCTL);
 	switch (rotate) {
 	case 1: // Portrait

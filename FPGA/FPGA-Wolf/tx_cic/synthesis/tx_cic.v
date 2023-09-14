@@ -19,6 +19,7 @@ module tx_cic (
 		output wire        out_channel,       //          .channel
 		input  wire        clken,             //     clken.clken
 		input  wire        clk,               //     clock.clk
+		input  wire [11:0] rate,              //      rate.conduit
 		input  wire        reset_n            //     reset.reset_n
 	);
 
@@ -38,7 +39,8 @@ module tx_cic (
 		.out_ready         (out_ready),         //          .ready
 		.out_startofpacket (out_startofpacket), //          .startofpacket
 		.out_endofpacket   (out_endofpacket),   //          .endofpacket
-		.out_channel       (out_channel)        //          .channel
+		.out_channel       (out_channel),       //          .channel
+		.rate              (rate)               //      rate.conduit
 	);
 
 endmodule

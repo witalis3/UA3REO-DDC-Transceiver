@@ -84,7 +84,7 @@ void print_chr_LCDOnly(char chr) {
 			return;
 		}
 
-		LCDDriver_drawChar(dbg_lcd_x, dbg_lcd_y, chr, COLOR_RED, BG_COLOR, 1);
+		LCDDriver_drawChar(dbg_lcd_x, dbg_lcd_y, chr, COLOR_RED, BG_COLOR, COLOR_RED, BG_COLOR, 1);
 		dbg_lcd_x += 6;
 	}
 }
@@ -170,8 +170,9 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 	if (freq < 0) {
 		return 0;
 	}
+
 	bool inverted = false;
-	int32_t _freq = (int32_t)freq;
+	float64_t _freq = freq;
 
 	uint8_t TRX_TX_Harmonic_new = 0;
 	if (_freq > MAX_TX_FREQ_HZ) { // harmonics mode
@@ -185,6 +186,8 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 	} else {
 		TRX_TX_Harmonic = TRX_TX_Harmonic_new;
 	}
+
+	FPGA_choise_DAC_PLL(freq); // calculate better PLL for DAC
 
 	TRX_DAC_X4 = true;
 	uint8_t nyquist = _freq / (DAC_CLOCK / 2);
@@ -384,7 +387,7 @@ float32_t getMaxTXAmplitudeOnFreq(uint64_t freq) {
 }
 
 float32_t generateSin(float32_t amplitude, float32_t *index, float32_t samplerate, float32_t freq) {
-	float32_t ret = amplitude * arm_sin_f32(*index * F_2PI);
+	float32_t ret = amplitude * sinf(*index * F_2PI); // arm_sin_f32
 	*index += freq / samplerate;
 	while (*index >= 1.0f) {
 		*index -= 1.0f;
@@ -393,7 +396,7 @@ float32_t generateSin(float32_t amplitude, float32_t *index, float32_t samplerat
 }
 
 float32_t generateSinWithZeroCrossing(float32_t amplitude, float32_t *index, float32_t samplerate, float32_t *prev_freq, float32_t freq) {
-	float32_t ret = amplitude * arm_sin_f32(*index * F_2PI);
+	float32_t ret = amplitude * sinf(*index * F_2PI); // arm_sin_f32
 
 	*index += *prev_freq / samplerate;
 

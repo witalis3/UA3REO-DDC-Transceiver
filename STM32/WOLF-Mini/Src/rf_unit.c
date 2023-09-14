@@ -78,12 +78,6 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 	uint8_t bpf = getBPFByFreq(CurrentVFO->Freq);
 
-	uint32_t vga_need_gain = (TRX.VGA_GAIN - 10.5f) / 1.5f;
-	bool VGA_0 = bitRead(vga_need_gain, 3);
-	bool VGA_1 = bitRead(vga_need_gain, 2);
-	bool VGA_2 = bitRead(vga_need_gain, 1);
-	bool VGA_3 = bitRead(vga_need_gain, 0);
-
 	uint8_t lpf_index = 6;                   // 12-10m
 	if (CurrentVFO->RealRXFreq <= 2000000) { // 160m
 		lpf_index = 1;

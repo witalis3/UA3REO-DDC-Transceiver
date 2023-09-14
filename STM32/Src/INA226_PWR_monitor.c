@@ -51,19 +51,22 @@ uint8_t INA226_Write2Byte(uint8_t reg_addr, uint16_t reg_data) {
 }
 
 void INA226_Init(void) {
-	// INA226_Write2Byte(Config_Reg, 0x4527);//0100_010_100_100_111 //16 times average, 1.1ms, 1.1ms, continuous measurement of shunt voltage and
-	// bus voltage
-	INA226_Write2Byte(Config_Reg,
-	                  0x4AD7); // 0100_101_011_010_111 //256 times average, 588�s, 332�s, continuous measurement of shunt voltage and bus voltage
+	// 16 times average, 1.1ms, 1.1ms, continuous measurement of shunt voltage and bus voltage
+	// INA226_Write2Byte(Config_Reg, 0x4527);//0100_010_100_100_111
+
+	// 0100_101_011_010_111 //256 times average, 588ms, 332ms, continuous measurement of shunt voltage and bus voltage
+	INA226_Write2Byte(Config_Reg, 0x4AD7);
 	// New VBUS data is ready every 150,5ms
 	// New VSHC (current) data is ready every 85ms
 
-	// INA226_Write2Byte(Config_Reg, 0x4F27);//0100_111_100_100_111 //1024 times average, 1.1ms, 1.1ms, continuous measurement of shunt voltage and
-	// bus voltage INA226_Write2Byte(Config_Reg, 0x4127);//0100_001_100_100_111 //1 times average, 1.1ms, 1.1ms, continuous measurement of shunt
-	// voltage and bus voltage
+	// 0100_111_100_100_111 //1024 times average, 1.1ms, 1.1ms, continuous measurement of shunt voltage and bus voltage
+	// INA226_Write2Byte(Config_Reg, 0x4F27);
+
+	// 0100_001_100_100_111 //1 times average, 1.1ms, 1.1ms, continuous measurement of shunt voltage and bus voltage
+	// INA226_Write2Byte(Config_Reg, 0x4127);
 
 	// Write the calibration byte (used for the current calculation)
-	INA226_Write2Byte(Calib_Reg, 0x0800); // Current_LSB is selected 500�A R_Shunt is 5mOhm
+	INA226_Write2Byte(Calib_Reg, 0x0800); // Current_LSB is selected 500mA R_Shunt is 5mOhm
 	                                      // INA226_Write2Byte(Calib_Reg, 0x0A00);
 	                                      // INA226_Write2Byte(Calib_Reg, 0x0034);
 }

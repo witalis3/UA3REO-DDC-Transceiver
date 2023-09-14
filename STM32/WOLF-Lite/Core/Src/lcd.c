@@ -122,7 +122,7 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 	}
 
 	// display information about the operation of the transceiver
-	printInfo(LAYOUT->TOPBUTTONS_PRE_X, LAYOUT->TOPBUTTONS_PRE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DRV", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
+	printInfo(LAYOUT->TOPBUTTONS_PRE_X, LAYOUT->TOPBUTTONS_PRE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DRV", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
 	          COLOR->BUTTON_INACTIVE_TEXT, TRX.ADC_Driver);
 	char buff[64] = {0};
 	if (TRX.ATT_DB >= 1.0f) {
@@ -130,31 +130,31 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 	} else {
 		sprintf(buff, "ATT");
 	}
-	printInfo(LAYOUT->TOPBUTTONS_ATT_X, LAYOUT->TOPBUTTONS_ATT_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, buff, COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
+	printInfo(LAYOUT->TOPBUTTONS_ATT_X, LAYOUT->TOPBUTTONS_ATT_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, buff, COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
 	          COLOR->BUTTON_INACTIVE_TEXT, (TRX.ATT && TRX.ATT_DB >= 1.0f));
-	printInfo(LAYOUT->TOPBUTTONS_PGA_X, LAYOUT->TOPBUTTONS_PGA_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "SQL", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
+	printInfo(LAYOUT->TOPBUTTONS_PGA_X, LAYOUT->TOPBUTTONS_PGA_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "SQL", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
 	          COLOR->BUTTON_INACTIVE_TEXT, CurrentVFO->SQL);
-	printInfo(LAYOUT->TOPBUTTONS_DRV_X, LAYOUT->TOPBUTTONS_DRV_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "RIT", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
+	printInfo(LAYOUT->TOPBUTTONS_DRV_X, LAYOUT->TOPBUTTONS_DRV_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "RIT", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
 	          COLOR->BUTTON_INACTIVE_TEXT, TRX.RIT_Enabled || TRX.XIT_Enabled || TRX.SPLIT_Enabled);
-	printInfo(LAYOUT->TOPBUTTONS_FAST_X, LAYOUT->TOPBUTTONS_FAST_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "FAST", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
+	printInfo(LAYOUT->TOPBUTTONS_FAST_X, LAYOUT->TOPBUTTONS_FAST_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "FAST", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
 	          COLOR->BUTTON_INACTIVE_TEXT, TRX.Fast);
-	printInfo(LAYOUT->TOPBUTTONS_AGC_X, LAYOUT->TOPBUTTONS_AGC_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "AGC", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
+	printInfo(LAYOUT->TOPBUTTONS_AGC_X, LAYOUT->TOPBUTTONS_AGC_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "AGC", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
 	          COLOR->BUTTON_INACTIVE_TEXT, CurrentVFO->AGC);
 	if (CurrentVFO->DNR_Type == 1) {
-		printInfo(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
+		printInfo(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
 		          COLOR->BUTTON_INACTIVE_TEXT, true);
 	} else if (CurrentVFO->DNR_Type == 2) {
-		printInfo(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR2", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
+		printInfo(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR2", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
 		          COLOR->BUTTON_INACTIVE_TEXT, true);
 	} else {
-		printInfo(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
+		printInfo(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
 		          COLOR->BUTTON_INACTIVE_TEXT, false);
 	}
-	printInfo(LAYOUT->TOPBUTTONS_NB_X, LAYOUT->TOPBUTTONS_NB_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "NB", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT,
+	printInfo(LAYOUT->TOPBUTTONS_NB_X, LAYOUT->TOPBUTTONS_NB_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "NB", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
 	          COLOR->BUTTON_INACTIVE_TEXT, TRX.NOISE_BLANKER);
-	printInfo(LAYOUT->TOPBUTTONS_MUTE_X, LAYOUT->TOPBUTTONS_MUTE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "MUTE", COLOR->BUTTON_BACKGROUND, COLOR_RED,
+	printInfo(LAYOUT->TOPBUTTONS_MUTE_X, LAYOUT->TOPBUTTONS_MUTE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "MUTE", COLOR->BUTTON_STATUS_BACKGROUND, COLOR_RED,
 	          COLOR->BUTTON_INACTIVE_TEXT, TRX.Mute);
-	printInfo(LAYOUT->TOPBUTTONS_LOCK_X, LAYOUT->TOPBUTTONS_LOCK_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "LOCK", COLOR->BUTTON_BACKGROUND, COLOR_RED,
+	printInfo(LAYOUT->TOPBUTTONS_LOCK_X, LAYOUT->TOPBUTTONS_LOCK_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "LOCK", COLOR->BUTTON_STATUS_BACKGROUND, COLOR_RED,
 	          COLOR->BUTTON_INACTIVE_TEXT, TRX.Locked);
 
 	LCD_UpdateQuery.TopButtons = false;
@@ -682,7 +682,7 @@ static float32_t LCD_GetSMeterValPosition(float32_t dbm, bool correct_vhf) {
 	if (!LAYOUT->STATUS_SMETER_ANALOG) // digital version
 	{
 		TRX_s_meter = (127.0f + dbm); // 127dbm - S0, 6dBm - 1S div
-		if (correct_vhf && CurrentVFO->Freq >= 144000000) {
+		if (correct_vhf && CurrentVFO->Freq >= VHF_S_METER_FREQ_START) {
 			TRX_s_meter = (147.0f + dbm); // 147dbm - S0 for frequencies above 144mhz
 		}
 
@@ -702,7 +702,7 @@ static float32_t LCD_GetSMeterValPosition(float32_t dbm, bool correct_vhf) {
 	} else // analog meter version
 	{
 		TRX_s_meter = (127.0f + dbm); // 127dbm - S0, 6dBm - 1S div
-		if (correct_vhf && CurrentVFO->Freq >= 144000000) {
+		if (correct_vhf && CurrentVFO->Freq >= VHF_S_METER_FREQ_START) {
 			TRX_s_meter = (147.0f + dbm); // 147dbm - S0 for frequencies above 144mhz
 		}
 
@@ -973,7 +973,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			TRX_RX_dBm_averaging = TRX_RX1_dBm_lowrate;
 		}
 
-		if (CurrentVFO->Freq < 144000000) {
+		if (CurrentVFO->Freq < VHF_S_METER_FREQ_START) {
 			if (TRX_RX_dBm_averaging <= -118.0f) {
 				sprintf(ctmp, "S1");
 			} else if (TRX_RX_dBm_averaging <= -112.0f) {
@@ -992,14 +992,28 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 				sprintf(ctmp, "S8");
 			} else if (TRX_RX_dBm_averaging <= -68.0f) {
 				sprintf(ctmp, "S9");
+			} else if (TRX_RX_dBm_averaging <= -63.0f) {
+				sprintf(ctmp, "S9+5");
 			} else if (TRX_RX_dBm_averaging <= -58.0f) {
 				sprintf(ctmp, "S9+10");
+			} else if (TRX_RX_dBm_averaging <= -53.0f) {
+				sprintf(ctmp, "S9+15");
 			} else if (TRX_RX_dBm_averaging <= -48.0f) {
 				sprintf(ctmp, "S9+20");
+			} else if (TRX_RX_dBm_averaging <= -43.0f) {
+				sprintf(ctmp, "S9+25");
 			} else if (TRX_RX_dBm_averaging <= -38.0f) {
 				sprintf(ctmp, "S9+30");
+			} else if (TRX_RX_dBm_averaging <= -33.0f) {
+				sprintf(ctmp, "S9+35");
 			} else if (TRX_RX_dBm_averaging <= -28.0f) {
 				sprintf(ctmp, "S9+40");
+			} else if (TRX_RX_dBm_averaging <= -23.0f) {
+				sprintf(ctmp, "S9+45");
+			} else if (TRX_RX_dBm_averaging <= -18.0f) {
+				sprintf(ctmp, "S9+50");
+			} else if (TRX_RX_dBm_averaging <= -13.0f) {
+				sprintf(ctmp, "S9+55");
 			} else {
 				sprintf(ctmp, "S9+60");
 			}
@@ -1022,14 +1036,28 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 				sprintf(ctmp, "S8");
 			} else if (TRX_RX_dBm_averaging <= -88.0f) {
 				sprintf(ctmp, "S9");
+			} else if (TRX_RX_dBm_averaging <= -83.0f) {
+				sprintf(ctmp, "S9+5");
 			} else if (TRX_RX_dBm_averaging <= -78.0f) {
 				sprintf(ctmp, "S9+10");
+			} else if (TRX_RX_dBm_averaging <= -73.0f) {
+				sprintf(ctmp, "S9+15");
 			} else if (TRX_RX_dBm_averaging <= -68.0f) {
 				sprintf(ctmp, "S9+20");
+			} else if (TRX_RX_dBm_averaging <= -63.0f) {
+				sprintf(ctmp, "S9+25");
 			} else if (TRX_RX_dBm_averaging <= -58.0f) {
 				sprintf(ctmp, "S9+30");
+			} else if (TRX_RX_dBm_averaging <= -53.0f) {
+				sprintf(ctmp, "S9+35");
 			} else if (TRX_RX_dBm_averaging <= -48.0f) {
 				sprintf(ctmp, "S9+40");
+			} else if (TRX_RX_dBm_averaging <= -43.0f) {
+				sprintf(ctmp, "S9+45");
+			} else if (TRX_RX_dBm_averaging <= -38.0f) {
+				sprintf(ctmp, "S9+50");
+			} else if (TRX_RX_dBm_averaging <= -33.0f) {
+				sprintf(ctmp, "S9+55");
 			} else {
 				sprintf(ctmp, "S9+60");
 			}
@@ -1514,16 +1542,18 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 	uint16_t y_act = y + LAYOUT->BUTTON_PADDING;
 	uint16_t w_act = width - LAYOUT->BUTTON_PADDING * 2;
 	uint16_t h_act = height - LAYOUT->BUTTON_PADDING * 2;
-	LCDDriver_Fill_RectWH(x_act, y_act, w_act, h_act, COLOR->BUTTON_BACK);                                            // button body
+	LCDDriver_Fill_RectWH(x_act, y_act, w_act, h_act, COLOR->BUTTON_SWITCH_BACKGROUND);                               // button body
 	LCDDriver_drawRectXY(x_act, y_act, x_act + w_act, y_act + h_act, COLOR->BUTTON_BORDER);                           // border
 	LCDDriver_getTextBoundsFont(text, x_act, y_act, &x1_text, &y1_text, &w_text, &h_text, (GFXfont *)&FreeSans9pt7b); // get text bounds
 	if (show_lighter && LAYOUT->BUTTON_LIGHTER_HEIGHT > 0) {
-		LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act * 2 / 5) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK, &FreeSans9pt7b); // text
+		LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act * 2 / 5) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_SWITCH_BACKGROUND,
+		                        &FreeSans9pt7b); // text
 		uint16_t lighter_width = (uint16_t)((float32_t)w_act * LAYOUT->BUTTON_LIGHTER_WIDTH);
 		LCDDriver_Fill_RectWH(x_act + ((w_act - lighter_width) / 2), y_act + h_act * 3 / 4, lighter_width, LAYOUT->BUTTON_LIGHTER_HEIGHT,
 		                      active ? COLOR->BUTTON_LIGHTER_ACTIVE : COLOR->BUTTON_LIGHTER_INACTIVE); // lighter
 	} else {
-		LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act / 2) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_BACK, &FreeSans9pt7b); // text
+		LCDDriver_printTextFont(text, x_act + (w_act - w_text) / 2, y_act + (h_act / 2) + h_text / 2 - 1, active ? active_color : inactive_color, COLOR->BUTTON_SWITCH_BACKGROUND,
+		                        &FreeSans9pt7b); // text
 	}
 }
 

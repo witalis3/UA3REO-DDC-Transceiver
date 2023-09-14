@@ -22,7 +22,7 @@
 
 #define CWDECODER_NBTIME 2                              // ms noise blanker
 #define CWDECODER_MAGNIFY 16                            // what time we approximate FFT
-#define CWDECODER_FFTSIZE 256                           // FFT size for analysis
+#define CWDECODER_FFTSIZE 256                           // FFT size for analysis (set arm_cfft_init_256_f32 if change)
 #define CWDECODER_FFT_SAMPLES (DECODER_PACKET_SIZE * 4) // number of samples for analysis
 #define CWDECODER_FFTSIZE_HALF (CWDECODER_FFTSIZE / 2)  // half the size of the FFT
 // #define CWDECODER_MEAN_THRES 10.0f                      // Below this signal strength, we consider that it is noise

@@ -15,7 +15,8 @@ module tx_cic (
 	out_channel,
 	clken,
 	clk,
-	reset_n);	
+	reset_n,
+	rate);	
 
 	input	[1:0]	in_error;
 	input		in_valid;
@@ -33,4 +34,5 @@ module tx_cic (
 	input		clken;
 	input		clk;
 	input		reset_n;
+	input	[11:0]	rate;
 endmodule

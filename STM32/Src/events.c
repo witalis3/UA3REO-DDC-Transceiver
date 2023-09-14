@@ -1,5 +1,6 @@
 #include "events.h"
 #include "FT8/FT8_main.h"
+#include "INA226_PWR_monitor.h"
 #include "agc.h"
 #include "audio_filters.h"
 #include "audio_processor.h"
@@ -333,6 +334,13 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 
 	// update the state of the RF-Unit board
 	RF_UNIT_UpdateState(false);
+
+// INA226 current and voltage
+#ifdef HAS_TOUCHPAD
+	if (CALIBRATE.INA226_EN) {
+		Read_INA226_Data();
+	}
+#endif
 
 // check touchpad events
 #ifdef HAS_TOUCHPAD

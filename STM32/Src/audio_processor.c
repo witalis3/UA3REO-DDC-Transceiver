@@ -1127,7 +1127,7 @@ void processTxAudio(void) {
 	if (!LISTEN_RX_AUDIO_ON_TX) {
 		if (TRX.CW_SelfHear && (TRX.CW_KEYER || CW_key_serial || CW_key_dot_hard || CW_key_dash_hard) && mode == TRX_MODE_CW && !TRX_Tune) {
 			static float32_t cwgen_index = 0;
-			float32_t amplitude = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE) * volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+			float32_t amplitude = volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 				float32_t point = generateSin(amplitude * APROC_Audio_Buffer_TX_I[i], &cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
 				int32_t sample = 0;
@@ -1389,26 +1389,11 @@ static void doRX_HILBERT(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 }
 
 static void doTX_HILBERT(bool swap_iq, uint16_t size) {
-#ifndef STM32F407xx
-	if (!swap_iq) {
-		//  + 45 deg to I data
-		arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-		// - 45 deg to Q data
-		arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
-	} else {
-		//  + 45 deg to I data
-		arm_fir_f32(&FIR_TX_Hilbert_Q, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
-		// - 45 deg to Q data
-		arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
-	}
-#endif
-
-#ifdef STM32F407xx
 	// single transformer for slow CPU
 	if (!swap_iq) {
-		arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		arm_fir_f32(&FIR_TX_Hilbert_90, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 	} else {
-		arm_fir_f32(&FIR_TX_Hilbert_I, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, size);
+		arm_fir_f32(&FIR_TX_Hilbert_90, APROC_Audio_Buffer_TX_Q, APROC_Audio_Buffer_TX_Q, size);
 	}
 
 #define HILBERT_TX_DELAY (IQ_HILBERT_TAPS_TX / 2 + 1)
@@ -1435,7 +1420,6 @@ static void doTX_HILBERT(bool swap_iq, uint16_t size) {
 			tx_hilbert_delay_buffer_tail = 0;
 		}
 	}
-#endif
 }
 
 static void doTX_CESSB(uint16_t size) {

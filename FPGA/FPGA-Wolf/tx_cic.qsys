@@ -65,6 +65,9 @@
  <interface name="clock" internal="cic_ii_0.clock" type="clock" dir="end">
   <port name="clk" internal="clk" />
  </interface>
+ <interface name="rate" internal="cic_ii_0.rate" type="conduit" dir="end">
+  <port name="rate" internal="rate" />
+ </interface>
  <interface name="reset" internal="cic_ii_0.reset" type="reset" dir="end">
   <port name="reset_n" internal="reset_n" />
  </interface>
@@ -81,15 +84,15 @@
   <parameter name="INTERFACES" value="1" />
   <parameter name="IN_WIDTH" value="16" />
   <parameter name="RCF_FIX" value="2272" />
-  <parameter name="RCF_LB" value="8" />
-  <parameter name="RCF_UB" value="21" />
+  <parameter name="RCF_LB" value="1600" />
+  <parameter name="RCF_UB" value="2240" />
   <parameter name="REQ_DIF_MEM" value="logic_element" />
   <parameter name="REQ_INT_MEM" value="logic_element" />
   <parameter name="REQ_OUT_WIDTH" value="14" />
   <parameter name="REQ_PIPELINE" value="0" />
   <parameter name="ROUND_TYPE" value="CONV_ROUND" />
   <parameter name="STAGES" value="4" />
-  <parameter name="VRC_EN" value="0" />
+  <parameter name="VRC_EN" value="1" />
   <parameter name="design_env" value="NATIVE" />
   <parameter name="hyper_opt_select" value="0" />
   <parameter name="selected_device_family" value="Cyclone IV E" />

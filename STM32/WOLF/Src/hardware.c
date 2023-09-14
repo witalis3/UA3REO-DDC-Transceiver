@@ -7,6 +7,7 @@ bool HRDW_SPI_Periph_busy = false;
 volatile bool HRDW_SPI_Locked = false;
 bool dma_memset32_busy = false;
 bool dma_memcpy32_busy = false;
+bool HRDW_DAC_PLL_selected = true;
 
 CPULOAD_t CPU_LOAD = {0};
 static uint32_t CPULOAD_startWorkTime = 0;

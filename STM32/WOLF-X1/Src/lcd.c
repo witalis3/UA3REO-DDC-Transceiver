@@ -138,24 +138,24 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 
 		if (strcmp((char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].name, "DNR") == 0) {
 			if (CurrentVFO->DNR_Type == 0) {
-				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
-				          false, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
+				          COLOR->BUTTON_INACTIVE_TEXT, false, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
 			}
 			if (CurrentVFO->DNR_Type == 1) {
-				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "NR1", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
-				          true, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "NR1", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
+				          COLOR->BUTTON_INACTIVE_TEXT, true, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
 			}
 			if (CurrentVFO->DNR_Type == 2) {
-				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "NR2", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
-				          true, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, "NR2", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
+				          COLOR->BUTTON_INACTIVE_TEXT, true, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
 			}
 		} else {
 			if (!dummyButton) {
 				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].name,
-				          COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, enabled, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+				          COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, enabled, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
 			} else {
-				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, " ", COLOR->BUTTON_BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
-				          false, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
+				printInfo(curr_x, LAYOUT->TOPBUTTONS_Y1, LAYOUT->TOPBUTTONS_WIDTH - 1, LAYOUT->TOPBUTTONS_HEIGHT, " ", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
+				          COLOR->BUTTON_INACTIVE_TEXT, false, TRX.ENC2_func_mode == ENC_FUNC_PAGER, full_redraw);
 			}
 		}
 		curr_x += LAYOUT->TOPBUTTONS_WIDTH + LAYOUT->TOPBUTTONS_LR_MARGIN;
@@ -480,7 +480,7 @@ static float32_t LCD_GetSMeterValPosition(float32_t dbm, bool correct_vhf) {
 	float32_t TRX_s_meter = 0;
 
 	TRX_s_meter = (127.0f + dbm); // 127dbm - S0, 6dBm - 1S div
-	if (correct_vhf && CurrentVFO->Freq >= 144000000) {
+	if (correct_vhf && CurrentVFO->Freq >= VHF_S_METER_FREQ_START) {
 		TRX_s_meter = (147.0f + dbm); // 147dbm - S0 for frequencies above 144mhz
 	}
 
@@ -626,7 +626,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		                    LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 		// print s-meter value
-		if (CurrentVFO->Freq < 144000000) {
+		if (CurrentVFO->Freq < VHF_S_METER_FREQ_START) {
 			if (TRX_RX_dBm_averaging <= -118.0f) {
 				sprintf(ctmp, "S1");
 			} else if (TRX_RX_dBm_averaging <= -112.0f) {
@@ -645,14 +645,28 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 				sprintf(ctmp, "S8");
 			} else if (TRX_RX_dBm_averaging <= -68.0f) {
 				sprintf(ctmp, "S9");
+			} else if (TRX_RX_dBm_averaging <= -63.0f) {
+				sprintf(ctmp, "+5");
 			} else if (TRX_RX_dBm_averaging <= -58.0f) {
 				sprintf(ctmp, "+10");
+			} else if (TRX_RX_dBm_averaging <= -53.0f) {
+				sprintf(ctmp, "+15");
 			} else if (TRX_RX_dBm_averaging <= -48.0f) {
 				sprintf(ctmp, "+20");
+			} else if (TRX_RX_dBm_averaging <= -43.0f) {
+				sprintf(ctmp, "+25");
 			} else if (TRX_RX_dBm_averaging <= -38.0f) {
 				sprintf(ctmp, "+30");
+			} else if (TRX_RX_dBm_averaging <= -33.0f) {
+				sprintf(ctmp, "+35");
 			} else if (TRX_RX_dBm_averaging <= -28.0f) {
 				sprintf(ctmp, "+40");
+			} else if (TRX_RX_dBm_averaging <= -23.0f) {
+				sprintf(ctmp, "+45");
+			} else if (TRX_RX_dBm_averaging <= -18.0f) {
+				sprintf(ctmp, "+50");
+			} else if (TRX_RX_dBm_averaging <= -13.0f) {
+				sprintf(ctmp, "+55");
 			} else {
 				sprintf(ctmp, "+60");
 			}
@@ -675,14 +689,28 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 				sprintf(ctmp, "S8");
 			} else if (TRX_RX_dBm_averaging <= -88.0f) {
 				sprintf(ctmp, "S9");
+			} else if (TRX_RX_dBm_averaging <= -83.0f) {
+				sprintf(ctmp, "+5");
 			} else if (TRX_RX_dBm_averaging <= -78.0f) {
 				sprintf(ctmp, "+10");
+			} else if (TRX_RX_dBm_averaging <= -73.0f) {
+				sprintf(ctmp, "+15");
 			} else if (TRX_RX_dBm_averaging <= -68.0f) {
 				sprintf(ctmp, "+20");
+			} else if (TRX_RX_dBm_averaging <= -63.0f) {
+				sprintf(ctmp, "+25");
 			} else if (TRX_RX_dBm_averaging <= -58.0f) {
 				sprintf(ctmp, "+30");
+			} else if (TRX_RX_dBm_averaging <= -53.0f) {
+				sprintf(ctmp, "+35");
 			} else if (TRX_RX_dBm_averaging <= -48.0f) {
 				sprintf(ctmp, "+40");
+			} else if (TRX_RX_dBm_averaging <= -43.0f) {
+				sprintf(ctmp, "+45");
+			} else if (TRX_RX_dBm_averaging <= -38.0f) {
+				sprintf(ctmp, "+50");
+			} else if (TRX_RX_dBm_averaging <= -33.0f) {
+				sprintf(ctmp, "+55");
 			} else {
 				sprintf(ctmp, "+60");
 			}
