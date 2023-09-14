@@ -35,8 +35,6 @@ int16_t ADC_RAW_IN = 0;
 float32_t *FFTInput_I_current = (float32_t *)&FFTInput_I_A[0];
 float32_t *FFTInput_Q_current = (float32_t *)&FFTInput_Q_A[0];
 
-uint8_t DAC_GAINER_current_val = 0;
-
 // Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
 
@@ -392,7 +390,11 @@ static inline void FPGA_fpgadata_sendparam(void) {
 
 	// STAGE 13
 	// OUT DAC-GAIN
-	FPGA_writePacket(DAC_GAINER_current_val);
+	if (!HRDW_DAC_PLL_selected) { // correct gain for low PLL1
+		FPGA_writePacket(CALIBRATE.DAC_GAINER_val + 1);
+	} else {
+		FPGA_writePacket(CALIBRATE.DAC_GAINER_val);
+	}
 	FPGA_clockRise();
 	FPGA_clockFall();
 
@@ -1118,11 +1120,5 @@ void FPGA_choise_DAC_PLL(uint64_t freq) {
 		HRDW_DAC_PLL_selected_prev = HRDW_DAC_PLL_selected;
 
 		FPGA_NeedRestart_TX = true;
-	}
-
-	// correct gain for low PLL1
-	DAC_GAINER_current_val = CALIBRATE.DAC_GAINER_val;
-	if (!HRDW_DAC_PLL_selected) {
-		DAC_GAINER_current_val += 1;
 	}
 }
