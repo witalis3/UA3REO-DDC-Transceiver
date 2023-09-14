@@ -929,7 +929,6 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.Transverter_QO100_IF_RX_Khz = 28500;
 		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 28;
 #endif
-<<<<<<< HEAD
 		CALIBRATE.OTA_update = false;                // enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;                // Relay switch delay before RF signal ON, ms
 		CALIBRATE.LCD_Rotate = false;               // LCD 180 degree rotation
@@ -938,7 +937,6 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.INA226_CurCalc = 0.4f;            // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering) - Tisho
 		CALIBRATE.PWR_CUR_Calibration = 2.5f;       // CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;                // Tuner averaging stages
-=======
 		CALIBRATE.OTA_update = true;     // enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;     // Relay switch delay before RF signal ON, ms
 		CALIBRATE.LCD_Rotate = false;    // LCD 180 degree rotation
@@ -949,7 +947,6 @@ void LoadCalibration(bool clear) {
 #endif
 		CALIBRATE.PWR_CUR_Calibration = 2.5f; // CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;          // Tuner averaging stages
->>>>>>> upstream/master
 		CALIBRATE.CAT_Type = CAT_TS2000;
 		CALIBRATE.LNA_compensation = 0;             // Compensation for LNA, db
 		CALIBRATE.TwoSignalTune_Balance = 50;       // balance of signals on twosignal-tune
@@ -959,6 +956,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.IF_GAIN_MIN = 0;                  // min limit for if gain regulator
 		CALIBRATE.IF_GAIN_MAX = 40;                 // max limit for if gain regulator
 		CALIBRATE.TOUCHPAD_horizontal_flip = false; // Touchpad harozontal flip
+		CALIBRATE.TOUCHPAD_TIMEOUT = 50;            // Touchpad timings calibrations
+		CALIBRATE.TOUCHPAD_CLICK_THRESHOLD = 5;
+		CALIBRATE.TOUCHPAD_CLICK_TIMEOUT = 400;
+		CALIBRATE.TOUCHPAD_HOLD_TIMEOUT = 400;
+		CALIBRATE.TOUCHPAD_SWIPE_THRESHOLD_PX = 5;
 		CALIBRATE.TOUCHPAD_TIMEOUT = 50;            // Touchpad timings calibrations
 		CALIBRATE.TOUCHPAD_CLICK_THRESHOLD = 5;
 		CALIBRATE.TOUCHPAD_CLICK_TIMEOUT = 400;
