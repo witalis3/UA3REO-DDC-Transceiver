@@ -63,14 +63,17 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Digital pre-distortion
 * And other.. (see menu)
 
-### Sensitivity
+### RF Parameters
 
-At 10dB signal-to-noise ratio, LNA is on, ATT, LPF, BPF are off
+Sensitivity at 10dB SNR, LNA enabled:
 
-Frequency, mHz | Sensitivity, dBm | Sensitivity
------------- | ------------- | -------------
-<150	| -131	| 63.0 nV
-435	| -121	| 0.2 uV
+* <150mHz | -131dBm | 63.0 nV
+* 435mHz | -121dBm | 0.2 uV
+
+Out-of-band emissions:
+
+* 28mHz -65dBc
+* 145mHz -48dBc
 
 ## Build
 
