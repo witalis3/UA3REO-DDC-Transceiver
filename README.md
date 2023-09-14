@@ -74,7 +74,7 @@ Out-of-band emissions:
 
 * 14mHz -69dBc
 * 28mHz -63dBc
-* 145mHz -48dBc
+* 145mHz -48dBc -55dBc
 
 ## Build
 
