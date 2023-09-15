@@ -1561,7 +1561,7 @@ static uint8_t USBD_AUDIO_DataOut(USBD_HandleTypeDef *pdev, uint8_t epnum) {
 	USBD_AUDIO_HandleTypeDef *haudio = (USBD_AUDIO_HandleTypeDef *)pdev->pClassDataAUDIO;
 	if (epnum == AUDIO_OUT_EP) {
 		haudio->TxBufferIndex += AUDIO_OUT_PACKET;
-		if (haudio->TxBufferIndex > (USB_AUDIO_TX_BUFFER_SIZE - AUDIO_OUT_PACKET)) {
+		if (haudio->TxBufferIndex >= USB_AUDIO_TX_BUFFER_SIZE) {
 			haudio->TxBufferIndex = 0;
 		}
 		USBD_LL_PrepareReceive(pdev, AUDIO_OUT_EP, haudio->TxBuffer + haudio->TxBufferIndex, AUDIO_OUT_PACKET);

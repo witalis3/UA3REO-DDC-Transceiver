@@ -751,6 +751,9 @@ void processTxAudio(void) {
 	if (getInputType() == TRX_INPUT_USB) // USB AUDIO
 	{
 		uint32_t buffer_index = USB_AUDIO_GetTXBufferIndex_FS() / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET; // buffer 8bit, data 24 bit
+		if (buffer_index >= (USB_AUDIO_TX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET)) {
+			buffer_index = 0;
+		}
 		if ((buffer_index % BYTES_IN_SAMPLE_AUDIO_OUT_PACKET) == 1) {
 			buffer_index -= (buffer_index % BYTES_IN_SAMPLE_AUDIO_OUT_PACKET);
 		}
