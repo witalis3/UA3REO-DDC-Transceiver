@@ -8,11 +8,6 @@
 #include <math.h>
 #include <stdbool.h>
 
-// witek
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
-
-
 #ifdef STM32H743xx
 #define FFT_SIZE 1024       // specify the size of the calculated FFT
 #define FFT_USEFUL_SIZE 960 // size after FFT cropping
