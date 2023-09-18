@@ -14,7 +14,7 @@ bool SYSMENU_selftest_opened = false;
 // Private Variables
 static int8_t SELF_TEST_current_page = 0;
 static bool SELF_TEST_old_autogainer = false;
-static uint32_t SELF_TEST_old_freq = SELF_TEST_frequency;
+static uint32_t SELF_TEST_old_freq = SELF_TEST_frequency_HF;
 static bool LastLNA = false;
 static bool LastDRV = false;
 static bool LastPGA = false;
@@ -37,7 +37,6 @@ void SELF_TEST_Start(void) {
 	SELF_TEST_old_autogainer = TRX.AutoGain;
 	SELF_TEST_old_freq = CurrentVFO->Freq;
 	SELF_TEST_current_page = 0;
-	TRX_setFrequency(SELF_TEST_frequency, CurrentVFO);
 	LCDDriver_Fill(BG_COLOR);
 
 	LCD_busy = false;
@@ -142,6 +141,7 @@ void SELF_TEST_Draw(void) {
 		static bool ok[16] = {false};
 		static int8_t prev_adc_state[16] = {0};
 
+		TRX_setFrequency(SELF_TEST_frequency_HF, CurrentVFO);
 		LCDDriver_printText("Insert ANT 14mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		pos_y += margin_bottom;
 
@@ -191,11 +191,22 @@ void SELF_TEST_Draw(void) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 
-	if (SELF_TEST_current_page == 2) {
+	if (!HRDW_HAS_LNA_VHF && SELF_TEST_current_page == 3) {
+		SELF_TEST_current_page++;
+	}
+
+	if (SELF_TEST_current_page == 2 || SELF_TEST_current_page == 3) {
 		static uint8_t current_test = 0;
 		static uint32_t current_test_start_time = 0;
 
-		LCDDriver_printText("Insert ANT 14mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		if (SELF_TEST_current_page == 2) {
+			TRX_setFrequency(SELF_TEST_frequency_HF, CurrentVFO);
+			LCDDriver_printText("Insert ANT 14mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		}
+		if (SELF_TEST_current_page == 3) {
+			TRX_setFrequency(SELF_TEST_frequency_VHF, CurrentVFO);
+			LCDDriver_printText("Insert ANT 145mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		}
 		pos_y += margin_bottom;
 
 		// predefine
@@ -319,21 +330,19 @@ void SELF_TEST_Draw(void) {
 			float32_t ADC_LNA_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ADC_LNA_db = rate2dbV(ADC_LNA_signal / base_signal);
 
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
-    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
-			LCDDriver_printText("LNA signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %d          ", (uint16_t)ADC_LNA_signal);
-			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_signal < 32000.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
-#endif
-			pos_y += margin_bottom;
+			if ((HRDW_HAS_LNA_HF && SELF_TEST_current_page == 2) || (HRDW_HAS_LNA_VHF && SELF_TEST_current_page == 3)) {
+				LCDDriver_printText("LNA signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+				sprintf(str, " %d          ", (uint16_t)ADC_LNA_signal);
+				LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_signal < 32000.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+				pos_y += margin_bottom;
 
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
-    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
-			LCDDriver_printText("LNA gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %.2f dB          ", (double)ADC_LNA_db);
-			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_db > 23.0f && ADC_LNA_db < 30.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
-#endif
-			pos_y += margin_bottom;
+				LCDDriver_printText("LNA gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+				sprintf(str, " %.2f dB          ", (double)ADC_LNA_db);
+				LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_db > 23.0f && ADC_LNA_db < 30.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+				pos_y += margin_bottom;
+			} else {
+				pos_y += margin_bottom * 2;
+			}
 
 			current_test = 0;
 		} else {
@@ -344,10 +353,11 @@ void SELF_TEST_Draw(void) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 
-	if (SELF_TEST_current_page == 3) {
+	if (SELF_TEST_current_page == 4) {
 		static uint8_t current_test = 0;
 		static uint32_t current_test_start_time = 0;
 
+		TRX_setFrequency(SELF_TEST_frequency_HF, CurrentVFO);
 		LCDDriver_printText("Insert ANT 14mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		pos_y += margin_bottom;
 
@@ -605,6 +615,10 @@ void SELF_TEST_EncRotate(int8_t direction) {
 	LCD_busy = false;
 
 	SELF_TEST_current_page += direction;
+	if (!HRDW_HAS_LNA_VHF && SELF_TEST_current_page == 3) {
+		SELF_TEST_current_page--;
+	}
+	
 	if (SELF_TEST_current_page < 0) {
 		SELF_TEST_current_page = 0;
 	}

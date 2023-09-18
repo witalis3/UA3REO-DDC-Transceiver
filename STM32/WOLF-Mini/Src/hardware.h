@@ -10,7 +10,7 @@
 #define HRDW_HAS_MDMA true
 #define HRDW_HAS_SD true
 #define HRDW_HAS_DMA2D true
-// #define HRDW_HAS_JPEG false
+#define HRDW_HAS_JPEG false
 #define HRDW_HAS_WIFI true
 #define HRDW_HAS_USB_DEBUG true
 #define HRDW_HAS_USB_CAT true
@@ -20,7 +20,8 @@
 #define HRDW_USB_AUDIO_BITS 24
 #define HRDW_AUDIO_CODEC_NAU8822 true
 #define HRDW_HAS_BLUETOOTH_AUDIO true
-// #define SWR_AD8307_LOG true			//Enable if used log amplifier for the power measurement
+#define HRDW_HAS_LNA_HF true
+#define HRDW_HAS_LNA_VHF true
 
 // settings
 #define ADC_CLOCK 122880000            // ADC generator frequency

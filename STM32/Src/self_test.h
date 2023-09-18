@@ -7,8 +7,9 @@
 #include "stdbool.h"
 #include "stdint.h"
 
-#define SELF_TEST_pages 4
-#define SELF_TEST_frequency 14000000
+#define SELF_TEST_pages 5
+#define SELF_TEST_frequency_HF 14000000
+#define SELF_TEST_frequency_VHF 145000000
 #define SELF_TEST_adc_test_latency 500
 
 // Public variabled

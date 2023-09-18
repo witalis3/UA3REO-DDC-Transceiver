@@ -19,7 +19,7 @@
 #endif
 
 #define SETT_VERSION 103        // Settings config version
-#define CALIB_VERSION 68        // Calibration config version
+#define CALIB_VERSION 69        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                  // audio stream sampling rate during processing and TX (NOT RX!)
@@ -716,10 +716,6 @@ extern struct TRX_CALIBRATE {
 	float32_t SWR_BWD_Calibration_6M;
 	float32_t SWR_FWD_Calibration_VHF;
 	float32_t SWR_BWD_Calibration_VHF;
-	float32_t FW_AD8307_SLP;
-	float32_t FW_AD8307_OFFS;
-	float32_t BW_AD8307_SLP;
-	float32_t BW_AD8307_OFFS;
 	float32_t INA226_CurCalc; // X_mA/Bit Coeficient is dependant on the used shunt (tolerances and soldering)
 	float32_t PWR_VLT_Calibration;
 	float32_t PWR_CUR_Calibration;

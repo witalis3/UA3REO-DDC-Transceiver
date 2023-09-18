@@ -1,4 +1,5 @@
 ----Version 8.2.1----
++STM32: Добален Self Test для диапазона 145мгц, Tnx Serg Iv
 +STM32: Устранение ошибок, Tnx R6DLC
 
 ----Version 8.2.0----

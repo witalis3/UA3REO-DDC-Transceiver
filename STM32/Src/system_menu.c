@@ -316,8 +316,6 @@ static void SYSMENU_HANDL_CALIB_BPF_8_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_8_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_9_END(int8_t direction);
 static void SYSMENU_HANDL_CALIB_BPF_9_START(int8_t direction);
-static void SYSMENU_HANDL_CALIB_BW_AD8307_OFFS(int8_t direction); // Tisho
-static void SYSMENU_HANDL_CALIB_BW_AD8307_SLP(int8_t direction);  // Tisho
 static void SYSMENU_HANDL_CALIB_CALIBRATION_RESET(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CAT_Type(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CICCOMP_192K_SHIFT(int8_t direction);
@@ -364,8 +362,6 @@ static void SYSMENU_HANDL_CALIB_FAN_FULL_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FAN_MEDIUM_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FAN_MEDIUM_STOP(int8_t direction);
 static void SYSMENU_HANDL_CALIB_FM_DEVIATION_SCALE(int8_t direction);
-static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction); // Tisho
-static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction);  // Tisho
 static void SYSMENU_HANDL_CALIB_FlashGT911(int8_t direction);
 static void SYSMENU_HANDL_CALIB_HPF_START(int8_t direction);
 static void SYSMENU_HANDL_CALIB_IF_GAIN_MAX(int8_t direction);
@@ -713,9 +709,6 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"VAD Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_HANDL_RX_VAD_THRESHOLD},
     {"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_RX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
     {"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_RX_SAMPLERATE_FM, {"48khz", "96khz", "192khz", "384khz"}},
-#if HRDW_HAS_VGA
-    {"VGA Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.VGA_GAIN, SYSMENU_HANDL_RX_VGA_GAIN},
-#endif
 #if !defined(STM32F407xx)
     {"WFM Stereo", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FM_Stereo, SYSMENU_HANDL_RX_FM_Stereo},
 #endif
@@ -1234,12 +1227,6 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
     {"Tangent Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.TangentType, SYSMENU_HANDL_CALIB_TangentType, {"MH-36", "MH-48"}},
 #endif
-#ifdef SWR_AD8307_LOG
-    {"FW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_SLP, SYSMENU_HANDL_CALIB_FW_AD8307_SLP},
-    {"FW_AD8307_Offset (mV)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.FW_AD8307_OFFS, SYSMENU_HANDL_CALIB_FW_AD8307_OFFS},
-    {"BW_AD8307_Slope (mv/dB)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.BW_AD8307_SLP, SYSMENU_HANDL_CALIB_BW_AD8307_SLP},
-    {"BW_AD8307_Offset (mV)", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.BW_AD8307_OFFS, SYSMENU_HANDL_CALIB_BW_AD8307_OFFS},
-#endif
 #if !defined(FRONTPANEL_LITE)
     {"Transv Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
     {"Transv 70cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
@@ -1335,9 +1322,6 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] = {
 #endif
 #if FT8_SUPPORT
     {"FT-8", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_FT8_Decoder}, // Tisho
-#endif
-#ifdef SWR_AD8307_LOG
-    {"SWR Tandem Match Contr.", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SWR_Tandem_Ctrl}, // Tisho
 #endif
 #ifdef LAY_800x480
     {"Locator info", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_LOCATOR_INFO},
@@ -2233,18 +2217,6 @@ static void SYSMENU_HANDL_RX_ATT_DB(int8_t direction) {
 		TRX.ATT_DB = 31.5f;
 	}
 }
-
-#if HRDW_HAS_VGA
-static void SYSMENU_HANDL_RX_VGA_GAIN(int8_t direction) {
-	TRX.VGA_GAIN += (float32_t)direction * 1.5f;
-	if (TRX.VGA_GAIN < 10.5f) {
-		TRX.VGA_GAIN = 10.5f;
-	}
-	if (TRX.VGA_GAIN > 33.0f) {
-		TRX.VGA_GAIN = 33.0f;
-	}
-}
-#endif
 
 void SYSMENU_RX_IF_HOTKEY(void) {
 	SYSMENU_HANDL_RXMENU(0);
@@ -6104,47 +6076,6 @@ static void SYSMENU_HANDL_CALIB_TOUCHPAD_SWIPE_THRESHOLD_PX(int8_t direction) {
 	}
 }
 
-// Tisho
-static void SYSMENU_HANDL_CALIB_FW_AD8307_SLP(int8_t direction) {
-	CALIBRATE.FW_AD8307_SLP += (float32_t)direction * 0.1f;
-	if (CALIBRATE.FW_AD8307_SLP < 20.0f) {
-		CALIBRATE.FW_AD8307_SLP = 20.0f;
-	}
-	if (CALIBRATE.FW_AD8307_SLP > 30.0f) {
-		CALIBRATE.FW_AD8307_SLP = 30.0f;
-	}
-}
-
-static void SYSMENU_HANDL_CALIB_FW_AD8307_OFFS(int8_t direction) {
-	CALIBRATE.FW_AD8307_OFFS += (float32_t)direction;
-	if (CALIBRATE.FW_AD8307_OFFS < 0.1f) {
-		CALIBRATE.FW_AD8307_OFFS = 0.1f;
-	}
-	if (CALIBRATE.FW_AD8307_OFFS > 4000.0f) {
-		CALIBRATE.FW_AD8307_OFFS = 4000.0f;
-	}
-}
-
-static void SYSMENU_HANDL_CALIB_BW_AD8307_SLP(int8_t direction) {
-	CALIBRATE.BW_AD8307_SLP += (float32_t)direction * 0.1f;
-	if (CALIBRATE.BW_AD8307_SLP < 20.0f) {
-		CALIBRATE.BW_AD8307_SLP = 20.0f;
-	}
-	if (CALIBRATE.BW_AD8307_SLP > 30.0f) {
-		CALIBRATE.BW_AD8307_SLP = 30.0f;
-	}
-}
-
-static void SYSMENU_HANDL_CALIB_BW_AD8307_OFFS(int8_t direction) {
-	CALIBRATE.BW_AD8307_OFFS += (float32_t)direction;
-	if (CALIBRATE.BW_AD8307_OFFS < 0.1f) {
-		CALIBRATE.BW_AD8307_OFFS = 0.1f;
-	}
-	if (CALIBRATE.BW_AD8307_OFFS > 4000.0f) {
-		CALIBRATE.BW_AD8307_OFFS = 4000.0f;
-	}
-}
-// end Tisho
 static void SYSMENU_HANDL_CALIB_FAN_MEDIUM_START(int8_t direction) {
 	CALIBRATE.FAN_MEDIUM_START += direction;
 	if (CALIBRATE.FAN_MEDIUM_START < 10) {

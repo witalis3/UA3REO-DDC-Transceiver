@@ -120,21 +120,18 @@ void LoadSettings(bool clear) {
 		TRX.ATT = false;                      // attenuator
 		TRX.ATT_DB = 12.0f;                   // suppress the attenuator
 		TRX.ATT_STEP = 6.0f;                  // step of tuning the attenuator
-#if HRDW_HAS_VGA
-		TRX.VGA_GAIN = 21.0f; // VGA Gain, dB
-#endif
-		TRX.RF_Filters = true;             // LPF / HPF / BPF
-		TRX.ANT_selected = false;          // ANT-1
-		TRX.ANT_mode = false;              // RX=TX
-		TRX.RF_Gain = 20;                  // output power (%)
-		TRX.RF_Gain_For_Each_Band = false; // save RF Gain for each band separatly
-		TRX.RF_Gain_For_Each_Mode = false; // save RF Gain for each mode separatly
-		TRX.ChannelMode = false;           // enable channel mode on VFO
-		TRX.RIT_Enabled = false;           // activate the SHIFT mode
-		TRX.XIT_Enabled = false;           // activate the SPLIT mode
-		TRX.RIT_INTERVAL = 1000;           // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
-		TRX.XIT_INTERVAL = 1000;           // Detune range with the SPLIT knob (5000 = -5000hz / + 5000hz)
-		TRX.TWO_SIGNAL_TUNE = false;       // Two-signal generator in TUNE mode (1 + 2kHz)
+		TRX.RF_Filters = true;                // LPF / HPF / BPF
+		TRX.ANT_selected = false;             // ANT-1
+		TRX.ANT_mode = false;                 // RX=TX
+		TRX.RF_Gain = 20;                     // output power (%)
+		TRX.RF_Gain_For_Each_Band = false;    // save RF Gain for each band separatly
+		TRX.RF_Gain_For_Each_Mode = false;    // save RF Gain for each mode separatly
+		TRX.ChannelMode = false;              // enable channel mode on VFO
+		TRX.RIT_Enabled = false;              // activate the SHIFT mode
+		TRX.XIT_Enabled = false;              // activate the SPLIT mode
+		TRX.RIT_INTERVAL = 1000;              // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
+		TRX.XIT_INTERVAL = 1000;              // Detune range with the SPLIT knob (5000 = -5000hz / + 5000hz)
+		TRX.TWO_SIGNAL_TUNE = false;          // Two-signal generator in TUNE mode (1 + 2kHz)
 #ifdef LAY_160x128
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; // Samplerate for ssb/cw/digi/nfm/etc modes
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
@@ -847,10 +844,6 @@ void LoadCalibration(bool clear) {
 #endif
 		CALIBRATE.MAX_ChargePump_Freq = 200;    // Maximum frequency for charge pump pwm
 		CALIBRATE.VCXO_correction = 0;          // VCXO Frequency offset
-		CALIBRATE.FW_AD8307_SLP = 25.5f;        // Slope for the log amp used to mreasure the FW power (mV/dB)
-		CALIBRATE.FW_AD8307_OFFS = 1150.0f;     // Offset to back calculate the output voltage to dBm (mV)
-		CALIBRATE.BW_AD8307_SLP = 25.5f;        // Slope for the log amp used to mreasure the BW power (mV/dB)
-		CALIBRATE.BW_AD8307_OFFS = 1150.0f;     // Offset to back calculate the output voltage to dBm (mV)
 		CALIBRATE.FAN_MEDIUM_START = 45;        // Temperature at which the fan starts at half power
 		CALIBRATE.FAN_MEDIUM_STOP = 40;         // Temperature at which the fan stops
 		CALIBRATE.FAN_FULL_START = 55;          // Temperature at which the fan starts at full power
