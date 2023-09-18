@@ -851,7 +851,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.FW_AD8307_OFFS = 1150.0f;     // Offset to back calculate the output voltage to dBm (mV)
 		CALIBRATE.BW_AD8307_SLP = 25.5f;        // Slope for the log amp used to mreasure the BW power (mV/dB)
 		CALIBRATE.BW_AD8307_OFFS = 1150.0f;     // Offset to back calculate the output voltage to dBm (mV)
-		CALIBRATE.FAN_MEDIUM_START = 55;        // Temperature at which the fan starts at half power
+		CALIBRATE.FAN_MEDIUM_START = 45;        // Temperature at which the fan starts at half power
 		CALIBRATE.FAN_MEDIUM_STOP = 40;         // Temperature at which the fan stops
 		CALIBRATE.FAN_FULL_START = 55;          // Temperature at which the fan starts at full power
 		CALIBRATE.TRX_MAX_RF_TEMP = 80;         // Maximum RF unit themperature to enable protect
