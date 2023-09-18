@@ -674,8 +674,20 @@ void processRxAudio(void) {
 		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++) {
 			float32_t signal = generateSin(amplitude, &beep_index, TRX_SAMPLERATE, 1500);
 			arm_float_to_q31(&signal, &out, 1);
-			APROC_AudioBuffer_out[pos * 2] = convertToSPIBigEndian(out);         // left channel
-			APROC_AudioBuffer_out[pos * 2 + 1] = APROC_AudioBuffer_out[pos * 2]; // right channel
+			int32_t sample = convertToSPIBigEndian(out);
+
+			if (CODEC_Beeping_Left) {
+				APROC_AudioBuffer_out[pos * 2] = sample; // left channel
+			} else {
+				APROC_AudioBuffer_out[pos * 2] = 0;
+			}
+
+			if (CODEC_Beeping_Right) {
+				APROC_AudioBuffer_out[pos * 2 + 1] = sample; // right channel
+			} else {
+				APROC_AudioBuffer_out[pos * 2 + 1] = 0;
+			}
+
 			if (beep_samples >= 20 && old_signal < 0 && signal >= 0) {
 				halted = true;
 				break;
@@ -687,6 +699,8 @@ void processRxAudio(void) {
 			beep_index = 0;
 			beep_samples = 0;
 			CODEC_Beeping = false;
+			CODEC_Beeping_Left = false;
+			CODEC_Beeping_Right = false;
 		}
 	}
 

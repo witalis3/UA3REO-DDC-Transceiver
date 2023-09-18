@@ -15,6 +15,8 @@ bool CODEC_Buffer_underrun = false;                                // lack of da
 SRAM int32_t CODEC_Audio_Buffer_RX[CODEC_AUDIO_BUFFER_SIZE] = {0}; // audio codec ring buffers
 SRAM int32_t CODEC_Audio_Buffer_TX[CODEC_AUDIO_BUFFER_SIZE] = {0};
 bool CODEC_Beeping;            // Beeping flag
+bool CODEC_Beeping_Left;       // Beeping flag in left channel
+bool CODEC_Beeping_Right;      // Beeping flag in left channel
 bool CODEC_Muting;             // Muting flag
 bool CODEC_test_result = true; // self-test flag
 
@@ -89,8 +91,16 @@ void CODEC_UnMute_AF_AMP(void) {
 
 void CODEC_Beep(void) {
 	if (TRX.Beeper) {
+		CODEC_Beeping_Left = true;
+		CODEC_Beeping_Right = true;
 		CODEC_Beeping = true;
 	}
+}
+
+void CODEC_TestBeep(bool channel) {
+	CODEC_Beeping_Left = !channel;
+	CODEC_Beeping_Right = channel;
+	CODEC_Beeping = true;
 }
 
 // RX Buffer is fully sent to the codec

@@ -583,7 +583,6 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 	RX_USB_AUDIO_SAMPLES = 0;
 	TX_USB_AUDIO_SAMPLES = 0;
 	FPGA_NeedSendParams = true;
-	CODEC_Beeping = false;
 
 // redraw lcd to fix problem
 #ifdef LCD_HX8357B

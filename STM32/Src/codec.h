@@ -13,6 +13,8 @@ extern bool CODEC_DMA_state;       // what part of the buffer are we working wit
 extern bool CODEC_Buffer_underrun; // lack of data in the buffer from the audio processor
 extern uint32_t CODEC_DMA_samples; // count the number of samples transmitted to the audio codec
 extern bool CODEC_Beeping;         // Beeping flag
+extern bool CODEC_Beeping_Left;    // Beeping flag on left channel
+extern bool CODEC_Beeping_Right;   // Beeping flag on left channel
 extern bool CODEC_Muting;          // Muting flag
 extern bool CODEC_test_result;
 
@@ -26,4 +28,5 @@ extern void CODEC_UnMute(void);            // disable audio mute
 extern void CODEC_Mute_AF_AMP(void);       // mute audio out (AF AMP only)
 extern void CODEC_UnMute_AF_AMP(void);     // disable audio mute (AF AMP only)
 extern void CODEC_Beep(void);              // beep on key press
+extern void CODEC_TestBeep(bool channel);  // beep on self test
 #endif
