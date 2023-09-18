@@ -321,6 +321,8 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **ATU Averaging** - The number of steps of averaging SWR values during measurements in the operation of an automatic tuner
 * **BPF x** - Bandpass filter parameters
 * **CAT Type** - Type of CAT subsystem (FT-450 / TS-2000)
+* **COM CAT DTR/RTS** - Configuring the functions of the DTR/RTS control lines of the CAT port
+* **COM DEBUG DTR/RTS** - Configuring the functions of the DTR/RTS control lines of the Debug port
 * **CICCOMP Shift** - Bit shift after CIC compensator
 * **Calibrate reset** - Reset all calibrations to defaults
 * **DAC Driver Mode** - DAC Driver OPA2673 bias mode (2 = 100% bias, 1 = 75% bias, 0 = 50% bias)

@@ -460,6 +460,10 @@ static void SYSMENU_HANDL_CALIB_TOUCHPAD_CLICK_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TOUCHPAD_CLICK_TIMEOUT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TOUCHPAD_HOLD_TIMEOUT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TOUCHPAD_SWIPE_THRESHOLD_PX(int8_t direction);
+static void SYSMENU_HANDL_CALIB_COM_CAT_DTR_Mode(int8_t direction);
+static void SYSMENU_HANDL_CALIB_COM_CAT_RTS_Mode(int8_t direction);
+static void SYSMENU_HANDL_CALIB_COM_DEBUG_DTR_Mode(int8_t direction);
+static void SYSMENU_HANDL_CALIB_COM_DEBUG_RTS_Mode(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_FILTERMENU(int8_t direction);
@@ -1046,6 +1050,12 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"LPF END", SYSMENU_UINT32, SYSMENU_HANDL_CHECK_HAS_LPF, (uint32_t *)&CALIBRATE.RFU_LPF_END, SYSMENU_HANDL_CALIB_LPF_END},
 #endif
     {"CAT Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.CAT_Type, SYSMENU_HANDL_CALIB_CAT_Type, {"FT-450", "TS2000"}},
+    {"COM CAT DTR", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.COM_CAT_DTR_Mode, SYSMENU_HANDL_CALIB_COM_CAT_DTR_Mode, {"Disabled", "PTT", "Keyer"}},
+    {"COM CAT RTS", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.COM_CAT_RTS_Mode, SYSMENU_HANDL_CALIB_COM_CAT_RTS_Mode, {"Disabled", "PTT", "Keyer"}},
+#if HRDW_HAS_USB_DEBUG
+    {"COM DEBUG DTR", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.COM_DEBUG_DTR_Mode, SYSMENU_HANDL_CALIB_COM_DEBUG_DTR_Mode, {"Disabled", "PTT", "Keyer"}},
+    {"COM DEBUG RTS", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.COM_DEBUG_RTS_Mode, SYSMENU_HANDL_CALIB_COM_DEBUG_RTS_Mode, {"Disabled", "PTT", "Keyer"}},
+#endif
     {"CICCOMP 48K Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.CICFIR_GAINER_48K_val, SYSMENU_HANDL_CALIB_CICCOMP_48K_SHIFT},
     {"CICCOMP 96K Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.CICFIR_GAINER_96K_val, SYSMENU_HANDL_CALIB_CICCOMP_96K_SHIFT},
     {"CICCOMP 192K Shift", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.CICFIR_GAINER_192K_val, SYSMENU_HANDL_CALIB_CICCOMP_192K_SHIFT},
@@ -6865,6 +6875,42 @@ static void SYSMENU_HANDL_CALIB_CAT_Type(int8_t direction) {
 	}
 	if (CALIBRATE.CAT_Type > 1) {
 		CALIBRATE.CAT_Type = 1;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_COM_CAT_DTR_Mode(int8_t direction) {
+	if (CALIBRATE.COM_CAT_DTR_Mode > 0 || direction > 0) {
+		CALIBRATE.COM_CAT_DTR_Mode += direction;
+	}
+	if (CALIBRATE.COM_CAT_DTR_Mode > 2) {
+		CALIBRATE.COM_CAT_DTR_Mode = 2;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_COM_CAT_RTS_Mode(int8_t direction) {
+	if (CALIBRATE.COM_CAT_RTS_Mode > 0 || direction > 0) {
+		CALIBRATE.COM_CAT_RTS_Mode += direction;
+	}
+	if (CALIBRATE.COM_CAT_RTS_Mode > 2) {
+		CALIBRATE.COM_CAT_RTS_Mode = 2;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_COM_DEBUG_DTR_Mode(int8_t direction) {
+	if (CALIBRATE.COM_DEBUG_DTR_Mode > 0 || direction > 0) {
+		CALIBRATE.COM_DEBUG_DTR_Mode += direction;
+	}
+	if (CALIBRATE.COM_DEBUG_DTR_Mode > 2) {
+		CALIBRATE.COM_DEBUG_DTR_Mode = 2;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_COM_DEBUG_RTS_Mode(int8_t direction) {
+	if (CALIBRATE.COM_DEBUG_RTS_Mode > 0 || direction > 0) {
+		CALIBRATE.COM_DEBUG_RTS_Mode += direction;
+	}
+	if (CALIBRATE.COM_DEBUG_RTS_Mode > 2) {
+		CALIBRATE.COM_DEBUG_RTS_Mode = 2;
 	}
 }
 

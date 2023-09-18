@@ -19,7 +19,7 @@
 #endif
 
 #define SETT_VERSION 103        // Settings config version
-#define CALIB_VERSION 69        // Calibration config version
+#define CALIB_VERSION 70        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                  // audio stream sampling rate during processing and TX (NOT RX!)
@@ -412,6 +412,13 @@ typedef enum {
 	ENC_FUNC_SET_IF,
 	ENC_FUNC_SET_MEM,
 } ENC2_FUNC_MODE;
+
+// COM port RTS/DTR lines mode
+typedef enum {
+	COM_LINE_MODE_DISABLED,
+	COM_LINE_MODE_PTT,
+	COM_LINE_MODE_KEYER,
+} COM_LINE_MODE;
 
 // Save settings by band
 typedef struct {
@@ -840,6 +847,10 @@ extern struct TRX_CALIBRATE {
 	TRX_RF_UNIT_TYPE RF_unit_type;
 	TRX_TANGENT_TYPE TangentType;
 	CAT_TYPE CAT_Type;
+	COM_LINE_MODE COM_CAT_DTR_Mode;
+	COM_LINE_MODE COM_CAT_RTS_Mode;
+	COM_LINE_MODE COM_DEBUG_DTR_Mode;
+	COM_LINE_MODE COM_DEBUG_RTS_Mode;
 	bool ENCODER_INVERT;
 	bool ENCODER2_INVERT;
 	bool ENCODER_ON_FALLING;

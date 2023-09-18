@@ -618,7 +618,7 @@ void SELF_TEST_EncRotate(int8_t direction) {
 	if (!HRDW_HAS_LNA_VHF && SELF_TEST_current_page == 3) {
 		SELF_TEST_current_page--;
 	}
-	
+
 	if (SELF_TEST_current_page < 0) {
 		SELF_TEST_current_page = 0;
 	}
