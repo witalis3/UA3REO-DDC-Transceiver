@@ -42,8 +42,7 @@ void processAutoNotchReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 	// overflow protect
 	float32_t minValOut = 0;
 	float32_t maxValOut = 0;
-	uint32_t index = 0;
-	arm_min_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &minValOut, &index);
+	arm_min_no_idx_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &minValOut);
 	arm_max_no_idx_f32(buffer, AUTO_NOTCH_BLOCK_SIZE, &maxValOut);
 	if (isnanf(minValOut) || isinff(minValOut) || isnanf(maxValOut) || isinff(maxValOut)) {
 		if (AUTO_NOTCH_DEBUG) {

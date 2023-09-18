@@ -939,8 +939,7 @@ bool FFT_printFFT(void) {
 	// Looking for the maximum/minimum in frequency response
 	float32_t maxAmplValue = 0;
 	float32_t minAmplValue = 0;
-	uint32_t minAmplValueIndex = 0;
-	arm_min_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &minAmplValue, &minAmplValueIndex);
+	arm_min_no_idx_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &minAmplValue);
 	if (FFT_SCALE_TYPE == 2) {
 		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++) {
 			if (FFTOutput_mean[i] == 0.0f) {

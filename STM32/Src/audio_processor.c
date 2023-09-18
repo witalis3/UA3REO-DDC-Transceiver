@@ -1266,11 +1266,10 @@ void processTxAudio(void) {
 	float32_t ampl_max_q = 0.0f;
 	float32_t ampl_min_i = 0.0f;
 	float32_t ampl_min_q = 0.0f;
-	uint32_t tmp_index;
 	arm_max_no_idx_f32(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, &ampl_max_i);
 	arm_max_no_idx_f32(APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE, &ampl_max_q);
-	arm_min_f32(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, &ampl_min_i, &tmp_index);
-	arm_min_f32(APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE, &ampl_min_q, &tmp_index);
+	arm_min_no_idx_f32(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, &ampl_min_i);
+	arm_min_no_idx_f32(APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE, &ampl_min_q);
 	float32_t Processor_TX_MAX_amplitude_IN = ampl_max_i;
 	if (ampl_max_q > Processor_TX_MAX_amplitude_IN) {
 		Processor_TX_MAX_amplitude_IN = ampl_max_q;
@@ -2038,7 +2037,6 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 	float32_t if_gain = db2rateP(TRX.IF_Gain);
 	float32_t minVal = 0;
 	float32_t maxVal = 0;
-	uint32_t index = 0;
 	bool CW = false;
 
 	float32_t *I_buff = APROC_Audio_Buffer_RX1_I;
@@ -2063,7 +2061,7 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 	}
 
 	// overflow protect
-	arm_min_f32(I_buff, size, &minVal, &index);
+	arm_min_no_idx_f32(I_buff, size, &minVal);
 	arm_max_no_idx_f32(I_buff, size, &maxVal);
 	if ((minVal * if_gain) < -1.0f) {
 		if (!CurrentVFO->AGC) {
@@ -2075,7 +2073,7 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 			APROC_IFGain_Overflow = true;
 		}
 	}
-	arm_min_f32(Q_buff, size, &minVal, &index);
+	arm_min_no_idx_f32(Q_buff, size, &minVal);
 	arm_max_no_idx_f32(Q_buff, size, &maxVal);
 	if ((minVal * if_gain) < -1.0f) {
 		if (!CurrentVFO->AGC) {
