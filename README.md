@@ -362,6 +362,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **S METER** - S-meter calibration
 * **SSB Power addition** - Addition of RF power in SSB power, %
 * **SWR FWD/BWD RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
+* **Swap USB IQ** - Swap USB IQ output
 * **Settings reset** - Reset all settings to defaults
 * **TCXO Frequency, khz** - Frequency adjustment of the reference oscillator
 * **Touchpad horiz flip** - Flip the touchpad operation horizontally

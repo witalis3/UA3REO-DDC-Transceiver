@@ -464,6 +464,7 @@ static void SYSMENU_HANDL_CALIB_COM_CAT_DTR_Mode(int8_t direction);
 static void SYSMENU_HANDL_CALIB_COM_CAT_RTS_Mode(int8_t direction);
 static void SYSMENU_HANDL_CALIB_COM_DEBUG_DTR_Mode(int8_t direction);
 static void SYSMENU_HANDL_CALIB_COM_DEBUG_RTS_Mode(int8_t direction);
+static void SYSMENU_HANDL_CALIB_Swap_USB_IQ(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_FILTERMENU(int8_t direction);
@@ -1216,6 +1217,9 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"SWR FWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_FWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_FWD_RATE_VHF},
     {"SWR BWD RATE VHF", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.SWR_BWD_Calibration_VHF, SYSMENU_HANDL_CALIB_SWR_REF_RATE_VHF},
 #endif
+#endif
+#if HRDW_HAS_USB_IQ
+    {"Swap USB IQ", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.Swap_USB_IQ, SYSMENU_HANDL_CALIB_Swap_USB_IQ},
 #endif
 #if !defined(FRONTPANEL_LITE)
     {"TCXO Freq, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
@@ -6038,6 +6042,15 @@ static void SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq(int8_t direction) {
 	}
 	if (CALIBRATE.MAX_ChargePump_Freq > 2000) {
 		CALIBRATE.MAX_ChargePump_Freq = 2000;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_Swap_USB_IQ(int8_t direction) {
+	if (direction > 0) {
+		CALIBRATE.Swap_USB_IQ = true;
+	}
+	if (direction < 0) {
+		CALIBRATE.Swap_USB_IQ = false;
 	}
 }
 

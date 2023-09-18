@@ -954,6 +954,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.COM_CAT_DTR_Mode = COM_LINE_MODE_KEYER;
 		CALIBRATE.COM_CAT_RTS_Mode = COM_LINE_MODE_PTT;
 #endif
+		CALIBRATE.Swap_USB_IQ = false; // Swap IQ for USB output
 
 		// Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {

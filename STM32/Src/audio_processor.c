@@ -242,9 +242,16 @@ void processRxAudio(void) {
 		}
 
 		// drop LSB 32b->24b
+		int32_t iq_i, iq_q;
 		for (uint_fast16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET / 2); i++) {
-			int32_t iq_i = APROC_Audio_Buffer_RX1_I[i] * 2147483648;
-			int32_t iq_q = APROC_Audio_Buffer_RX1_Q[i] * 2147483648;
+			if (CALIBRATE.Swap_USB_IQ) {
+				iq_i = APROC_Audio_Buffer_RX1_Q[i] * 2147483648;
+				iq_q = APROC_Audio_Buffer_RX1_I[i] * 2147483648;
+			} else {
+				iq_i = APROC_Audio_Buffer_RX1_I[i] * 2147483648;
+				iq_q = APROC_Audio_Buffer_RX1_Q[i] * 2147483648;
+			}
+
 			USB_IQ_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 + 0] = (iq_i >> 8) & 0xFF;
 			USB_IQ_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 + 1] = (iq_i >> 16) & 0xFF;
 			USB_IQ_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 + 2] = (iq_i >> 24) & 0xFF;

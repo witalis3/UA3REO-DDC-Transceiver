@@ -1259,6 +1259,7 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.COM_CAT_RTS_Mode", (uint64_t *)&CALIBRATE.COM_CAT_RTS_Mode, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.COM_DEBUG_DTR_Mode", (uint64_t *)&CALIBRATE.COM_DEBUG_DTR_Mode, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.COM_DEBUG_RTS_Mode", (uint64_t *)&CALIBRATE.COM_DEBUG_RTS_Mode, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.Swap_USB_IQ", (uint64_t *)&CALIBRATE.Swap_USB_IQ, SYSMENU_BOOLEAN);
 
 			// Func buttons settings
 			char buff[64] = {0};
@@ -2703,6 +2704,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "CALIBRATE.COM_DEBUG_RTS_Mode") == 0) {
 		CALIBRATE.COM_DEBUG_RTS_Mode = (uint8_t)uintval;
+	}
+	if (strcmp(name, "CALIBRATE.Swap_USB_IQ") == 0) {
+		CALIBRATE.Swap_USB_IQ = bval;
 	}
 
 	// Func buttons settings
