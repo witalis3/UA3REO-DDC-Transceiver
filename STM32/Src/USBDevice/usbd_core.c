@@ -41,7 +41,7 @@ USBD_StatusTypeDef USBD_Init(USBD_HandleTypeDef *pdev, USBD_DescriptorsTypeDef *
 	if (pdev == NULL) {
 		return USBD_FAIL;
 	}
-	
+
 	/* Unlink previous class*/
 	pdev->pClass = NULL;
 	// pdev->pUserData[0] = NULL;
@@ -600,4 +600,3 @@ uint8_t USBD_CoreFindEP(USBD_HandleTypeDef *pdev, uint8_t index) {
 
 	return 0x00U;
 }
-

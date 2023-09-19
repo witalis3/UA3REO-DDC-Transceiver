@@ -690,6 +690,11 @@
               <FilePath>..\..\Src\i2c.h</FilePath>
             </File>
             <File>
+              <FileName>images.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\images.c</FilePath>
+            </File>
+            <File>
               <FileName>images.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\images.h</FilePath>
@@ -2233,6 +2238,11 @@
               <FileName>i2c.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\i2c.h</FilePath>
+            </File>
+            <File>
+              <FileName>images.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\images.c</FilePath>
             </File>
             <File>
               <FileName>images.h</FileName>
