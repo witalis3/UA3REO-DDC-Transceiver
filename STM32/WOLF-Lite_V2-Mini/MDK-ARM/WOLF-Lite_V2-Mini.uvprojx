@@ -420,14 +420,14 @@
               <FilePath>..\Src\front_unit.c</FilePath>
             </File>
             <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\WOLF-Mini\Src\lcd.c</FilePath>
+            </File>
+            <File>
               <FileName>rf_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\rf_unit.c</FilePath>
-            </File>
-            <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\lcd.c</FilePath>
             </File>
             <File>
               <FileName>main.c</FileName>
@@ -1965,14 +1965,14 @@
               <FilePath>..\Src\front_unit.c</FilePath>
             </File>
             <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\WOLF-Mini\Src\lcd.c</FilePath>
+            </File>
+            <File>
               <FileName>rf_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\rf_unit.c</FilePath>
-            </File>
-            <File>
-              <FileName>lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\lcd.c</FilePath>
             </File>
             <File>
               <FileName>main.c</FileName>
