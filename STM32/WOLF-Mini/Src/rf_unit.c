@@ -95,212 +95,88 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		lpf_index = 5;
 	}
 
-	// RF Unit
+// Shift array
+#define SHIFT_ARRAY_SIZE 48
+	bool shift_array[SHIFT_ARRAY_SIZE];
+	static bool shift_array_old[SHIFT_ARRAY_SIZE];
+
+	shift_array[47] = false;                                          // U17-D0 unused
+	shift_array[46] = TRX.BluetoothAudio_Enabled;                     // U17-D1 Bluetooth
+	shift_array[45] = TRX.LNA;                                        // U17-D2 LNA
+	shift_array[44] = !att_val_05;                                    // U17-D3 ATT_ON_05
+	shift_array[43] = (bpf == 5 || bpf == 6 || bpf == 7 || bpf == 8); // U17-D4 BPF_2_EN
+	shift_array[42] = (bpf == 1 || bpf == 2 || bpf == 3 || bpf == 4); // U17-D5 BPF_EN
+	shift_array[41] = (bpf == 1 || bpf == 2);                         // U17-D6 BPF_A1
+	shift_array[40] = (bpf == 1 || bpf == 3);                         // U17-D7 BPF_A0
+
+	shift_array[39] = TRX.LNA;                // U16-D0 Net_LNA
+	shift_array[38] = !att_val_2;             // U16-D1 ATT_ON_2
+	shift_array[37] = !att_val_1;             // U16-D2 ATT_ON_1
+	shift_array[36] = !att_val_16;            // U16-D3 ATT_ON_16
+	shift_array[35] = !att_val_8;             // U16-D4 ATT_ON_8
+	shift_array[34] = !att_val_4;             // U16-D5 ATT_ON_4
+	shift_array[33] = (bpf == 5 || bpf == 6); // U16-D6 BPF_2_A1
+	shift_array[32] = (bpf == 5 || bpf == 7); // U16-D7 BPF_2_A0
+
+	shift_array[31] = lpf_index == 6;                                     // U3-D0 LPF_6
+	shift_array[30] = lpf_index == 5;                                     // U3-D1 LPF_5
+	shift_array[29] = lpf_index == 4;                                     // U3-D2 LPF_4
+	shift_array[28] = lpf_index == 3;                                     // U3-D3 LPF_3
+	shift_array[27] = lpf_index == 2;                                     // U3-D4 LPF_2
+	shift_array[26] = lpf_index == 1;                                     // U3-D5 LPF_1
+	shift_array[25] = false;                                              // U3-D6 unused
+	shift_array[24] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U3-D7 RX/TX
+
+	shift_array[23] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 5);         // U4-D0 TUN_C6
+	shift_array[22] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4);         // U4-D1 TUN_C5
+	shift_array[21] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3);         // U4-D2 TUN_C4
+	shift_array[20] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2);         // U4-D3 TUN_C3
+	shift_array[19] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U4-D4 RX/TX
+	shift_array[18] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0);         // U4-D5 TUN_C1
+	shift_array[17] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1);         // U4-D6 TUN_C2
+	shift_array[16] = false;                                              // U4-D7 unused
+
+	shift_array[15] = false;                                      // U5-D0 unused
+	shift_array[14] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 5); // U5-D1 TUN_I6
+	shift_array[13] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4); // U5-D2 TUN_I5
+	shift_array[12] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3); // U5-D3 TUN_I4
+	shift_array[11] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 2); // U5-D4 TUN_I3
+	shift_array[10] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 1); // U5-D5 TUN_I2
+	shift_array[9] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0);  // U5-D6 TUN_I1
+	shift_array[8] = TRX.TUNER_Enabled && TRX.ATU_T;              // U5-D7 TUN_T
+
+	shift_array[7] = false; // U7-D0 J1
+	shift_array[6] = false; // U7-D1 J2
+	shift_array[5] = false; // U7-D2 J3
+	shift_array[4] = false; // U7-D2 J4
+	shift_array[3] = false; // U7-D2 J5
+	shift_array[2] = false; // U7-D2 J6
+	shift_array[1] = false; // U7-D2 J7
+	shift_array[0] = false; // U7-D2 J8
+
+	/// Set array
+	bool array_equal = true;
+	for (uint8_t i = 0; i < SHIFT_ARRAY_SIZE; i++) {
+		if (shift_array[i] != shift_array_old[i]) {
+			shift_array_old[i] = shift_array[i];
+			array_equal = false;
+		}
+	}
+	if (array_equal && !clean) {
+		return;
+	}
+
 	HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); // latch
 	MINI_DELAY
-	for (uint8_t registerNumber = 0; registerNumber < 48; registerNumber++) {
+	for (uint8_t registerNumber = 0; registerNumber < SHIFT_ARRAY_SIZE; registerNumber++) {
 		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_RESET); // data block
 		MINI_DELAY
 		HAL_GPIO_WritePin(RFUNIT_DATA_GPIO_Port, RFUNIT_DATA_Pin, GPIO_PIN_RESET); // data
 		MINI_DELAY
 		if (!clean) {
-			// U7-D7 J9
-			if (registerNumber == 0 && false) {
+			if (shift_array[registerNumber]) {
 				SET_DATA_PIN;
 			}
-			// U7-D6 J8
-			if (registerNumber == 1 && false) {
-				SET_DATA_PIN;
-			}
-			// U7-D5 J7
-			if (registerNumber == 2 && false) {
-				SET_DATA_PIN;
-			}
-			// U7-D4 J6
-			if (registerNumber == 3 && false) {
-				SET_DATA_PIN;
-			}
-			// U7-D3 J5
-			if (registerNumber == 4 && false) {
-				SET_DATA_PIN;
-			}
-			// U7-D2 J4
-			if (registerNumber == 5 && false) {
-				SET_DATA_PIN;
-			}
-			// U7-D1 J3
-			if (registerNumber == 6 && false) {
-				SET_DATA_PIN;
-			}
-			// U7-D0 J2
-			if (registerNumber == 7 && false) {
-				SET_DATA_PIN;
-			}
-
-			// U5-D7 TUN_T
-			if (registerNumber == 8 && TRX.TUNER_Enabled && TRX.ATU_T) {
-				SET_DATA_PIN;
-			}
-			// U5-D6 TUN_I1
-			if (registerNumber == 9 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0)) {
-				SET_DATA_PIN;
-			}
-			// U5-D5 TUN_I2
-			if (registerNumber == 10 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 1)) {
-				SET_DATA_PIN;
-			}
-			// U5-D4 TUN_I3
-			if (registerNumber == 11 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 2)) {
-				SET_DATA_PIN;
-			}
-			// U5-D3 TUN_I4
-			if (registerNumber == 12 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3)) {
-				SET_DATA_PIN;
-			}
-			// U5-D2 TUN_I5
-			if (registerNumber == 13 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4)) {
-				SET_DATA_PIN;
-			}
-			// U5-D1 TUN_I6
-			if (registerNumber == 14 && TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 5)) {
-				SET_DATA_PIN;
-			}
-			// U5-D0 unused
-			if (registerNumber == 15 && false) {
-				SET_DATA_PIN;
-			}
-
-			// U4-D7 unused
-			if (registerNumber == 16 && false) {
-				SET_DATA_PIN;
-			}
-			// U4-D6 TUN_C2
-			if (registerNumber == 17 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1)) {
-				SET_DATA_PIN;
-			}
-			// U4-D5 TUN_C1
-			if (registerNumber == 18 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0)) {
-				SET_DATA_PIN;
-			}
-			// U4-D4 RX/TX
-			if (registerNumber == 19 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK) {
-				SET_DATA_PIN;
-			}
-			// U4-D3 TUN_C3
-			if (registerNumber == 20 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2)) {
-				SET_DATA_PIN;
-			}
-			// U4-D2 TUN_C4
-			if (registerNumber == 21 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3)) {
-				SET_DATA_PIN;
-			}
-			// U4-D1 TUN_C5
-			if (registerNumber == 22 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4)) {
-				SET_DATA_PIN;
-			}
-			// U4-D0 TUN_C6
-			if (registerNumber == 23 && TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 5)) {
-				SET_DATA_PIN;
-			}
-
-			// U3-D7 RX/TX
-			if (registerNumber == 24 && TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK) {
-				SET_DATA_PIN;
-			}
-			// U3-D6 unused
-			if (registerNumber == 25 && false) {
-				SET_DATA_PIN;
-			}
-			// U3-D5 LPF_1
-			if (registerNumber == 26 && lpf_index == 1) {
-				SET_DATA_PIN;
-			}
-			// U3-D4 LPF_2
-			if (registerNumber == 27 && lpf_index == 2) {
-				SET_DATA_PIN;
-			}
-			// U3-D3 LPF_3
-			if (registerNumber == 28 && lpf_index == 3) {
-				SET_DATA_PIN;
-			}
-			// U3-D2 LPF_4
-			if (registerNumber == 29 && lpf_index == 4) {
-				SET_DATA_PIN;
-			}
-			// U3-D1 LPF_5
-			if (registerNumber == 30 && lpf_index == 5) {
-				SET_DATA_PIN;
-			}
-			// U3-D0 LPF_6
-			if (registerNumber == 31 && lpf_index == 6) {
-				SET_DATA_PIN;
-			}
-
-			// U16-D7 BPF_2_A0
-			if (registerNumber == 32 && (bpf == 5 || bpf == 7)) {
-				SET_DATA_PIN;
-			}
-			// U16-D6 BPF_2_A1
-			if (registerNumber == 33 && (bpf == 5 || bpf == 6)) {
-				SET_DATA_PIN;
-			}
-			// U16-D5 ATT_ON_4
-			if (registerNumber == 34 && !att_val_4) {
-				SET_DATA_PIN;
-			}
-			// U16-D4 ATT_ON_8
-			if (registerNumber == 35 && !att_val_8) {
-				SET_DATA_PIN;
-			}
-			// U16-D3 ATT_ON_16
-			if (registerNumber == 36 && !att_val_16) {
-				SET_DATA_PIN;
-			}
-			// U16-D2 ATT_ON_1
-			if (registerNumber == 37 && !att_val_1) {
-				SET_DATA_PIN;
-			}
-			// U16-D1 ATT_ON_2
-			if (registerNumber == 38 && !att_val_2) {
-				SET_DATA_PIN;
-			}
-			// U16-D0 Net_LNA
-			if (registerNumber == 39 && TRX.LNA) {
-				SET_DATA_PIN;
-			}
-
-			// U17-D7 BPF_A0
-			if (registerNumber == 40 && (bpf == 1 || bpf == 3)) {
-				SET_DATA_PIN;
-			}
-			// U17-D6 BPF_A1
-			if (registerNumber == 41 && (bpf == 1 || bpf == 2)) {
-				SET_DATA_PIN;
-			}
-			// U17-D5 BPF_EN
-			if (registerNumber == 42 && (bpf == 1 || bpf == 2 || bpf == 3 || bpf == 4)) {
-				SET_DATA_PIN;
-			}
-			// U17-D4 BPF_2_EN
-			if (registerNumber == 43 && (bpf == 5 || bpf == 6 || bpf == 7 || bpf == 8)) {
-				SET_DATA_PIN;
-			}
-			// U17-D3 ATT_ON_05
-			if (registerNumber == 44 && !att_val_05) {
-				SET_DATA_PIN;
-			}
-			// U17-D2 Net_connect bluetooth
-			if (registerNumber == 45 && TRX.LNA) {
-				SET_DATA_PIN;
-			}
-			// U17-D1 unused
-			if (registerNumber == 46 && TRX.BluetoothAudio_Enabled) {
-				SET_DATA_PIN;
-			}
-			// U17-D0 unused
-			// if (registerNumber == 47 && ) {
-			//	SET_DATA_PIN;
-			//}
 		}
 		MINI_DELAY
 		HAL_GPIO_WritePin(RFUNIT_CLK_GPIO_Port, RFUNIT_CLK_Pin, GPIO_PIN_SET);
