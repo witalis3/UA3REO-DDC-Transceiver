@@ -425,17 +425,30 @@ void RF_UNIT_ProcessSensors(void) {
 	sprintf(TRX_SWR_SMOOTHED_STR, "%.1f", (double)TRX_SWR_SMOOTHED);
 
 	// TANGENT
-	float32_t SW1_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_1) * TRX_STM32_VREF / B16_RANGE * 1000.0f;
-	float32_t SW2_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_2) * TRX_STM32_VREF / B16_RANGE * 1000.0f;
-	// println(SW1_Voltage, " ", SW2_Voltage);
+	static float32_t SW1_Voltage = 0.0f;
+	static float32_t SW2_Voltage = 0.0f;
+	float32_t SW1_Voltage_now = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_1) * TRX_STM32_VREF / B16_RANGE * 1000.0f;
+	float32_t SW2_Voltage_now = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_2) * TRX_STM32_VREF / B16_RANGE * 1000.0f;
+
+	bool SW_Voltage_Stabilized = true;
+	if (fabsf(SW1_Voltage - SW1_Voltage_now) > 100.0f || fabsf(SW2_Voltage - SW2_Voltage_now) > 100.0f) {
+		SW_Voltage_Stabilized = false;
+	}
+	SW1_Voltage = SW1_Voltage * 0.2f + SW1_Voltage_now * 0.8f;
+	SW2_Voltage = SW2_Voltage * 0.2f + SW2_Voltage_now * 0.8f;
+
+	// println((double)SW1_Voltage, " ", (double)SW2_Voltage);
 
 	// Yaesu MH-48
-	for (uint16_t tb = 0; tb < (sizeof(PERIPH_FrontPanel_TANGENT_MH48) / sizeof(PERIPH_FrontPanel_Button)); tb++) {
-		if ((SW2_Voltage < 500.0f || SW2_Voltage > 3100.0f) && PERIPH_FrontPanel_TANGENT_MH48[tb].channel == 1) {
-			FRONTPANEL_CheckButton(&PERIPH_FrontPanel_TANGENT_MH48[tb], SW1_Voltage);
-		}
-		if (SW1_Voltage > 2800.0f & PERIPH_FrontPanel_TANGENT_MH48[tb].channel == 2) {
-			FRONTPANEL_CheckButton(&PERIPH_FrontPanel_TANGENT_MH48[tb], SW2_Voltage);
+	if (SW_Voltage_Stabilized) {
+		for (uint16_t tb = 0; tb < (sizeof(PERIPH_FrontPanel_TANGENT_MH48) / sizeof(PERIPH_FrontPanel_Button)); tb++) {
+			if (SW2_Voltage < 500.0f && PERIPH_FrontPanel_TANGENT_MH48[tb].channel == 1) {
+				FRONTPANEL_CheckButton(&PERIPH_FrontPanel_TANGENT_MH48[tb], SW1_Voltage);
+			} else if (SW1_Voltage > 2500.0f & PERIPH_FrontPanel_TANGENT_MH48[tb].channel == 2) {
+				FRONTPANEL_CheckButton(&PERIPH_FrontPanel_TANGENT_MH48[tb], SW2_Voltage);
+			} else {
+				FRONTPANEL_CheckButton(&PERIPH_FrontPanel_TANGENT_MH48[tb], 3500.0f);
+			}
 		}
 	}
 
