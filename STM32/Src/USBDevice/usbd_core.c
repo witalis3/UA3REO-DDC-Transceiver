@@ -111,22 +111,12 @@ USBD_StatusTypeDef USBD_DeInit(USBD_HandleTypeDef *pdev) {
  * @retval USBD Status
  */
 USBD_StatusTypeDef USBD_RegisterClass(USBD_HandleTypeDef *pdev, USBD_ClassTypeDef *pclass) {
-	uint16_t len = 0U;
-
 	if (pclass == NULL) {
 		return USBD_FAIL;
 	}
 
 	/* link the class to the USB Device handle */
 	pdev->pClass = pclass;
-
-	/* Get Device Configuration Descriptor */
-	if (pdev->pClass->GetFSConfigDescriptor != NULL) {
-		// pdev->pConfDesc = (void *)pdev->pClass[pdev->classId]->GetFSConfigDescriptor(&len);
-	}
-
-	/* Increment the NumClasses */
-	// pdev->NumClasses ++;
 
 	return USBD_OK;
 }
@@ -338,7 +328,6 @@ USBD_StatusTypeDef USBD_LL_DataOutStage(USBD_HandleTypeDef *pdev, uint8_t epnum,
 USBD_StatusTypeDef USBD_LL_DataInStage(USBD_HandleTypeDef *pdev, uint8_t epnum, uint8_t *pdata) {
 	USBD_EndpointTypeDef *pep;
 	USBD_StatusTypeDef ret;
-	uint8_t idx;
 
 	if (epnum == 0U) {
 		pep = &pdev->ep_in[0];
@@ -378,18 +367,16 @@ USBD_StatusTypeDef USBD_LL_DataInStage(USBD_HandleTypeDef *pdev, uint8_t epnum, 
 		}
 	} else {
 		/* Get the class index relative to this interface */
-		idx = USBD_CoreFindEP(pdev, ((uint8_t)epnum | 0x80U));
+		USBD_CoreFindEP(pdev, ((uint8_t)epnum | 0x80U));
 
-		if (((uint16_t)idx != 0xFFU) && (idx < USBD_MAX_SUPPORTED_CLASS)) {
-			/* Call the class data out function to manage the request */
-			if (pdev->dev_state == USBD_STATE_CONFIGURED) {
-				if (pdev->pClass->DataIn != NULL) {
-					// pdev->classId = idx;
-					ret = (USBD_StatusTypeDef)pdev->pClass->DataIn(pdev, epnum);
+		/* Call the class data out function to manage the request */
+		if (pdev->dev_state == USBD_STATE_CONFIGURED) {
+			if (pdev->pClass->DataIn != NULL) {
+				// pdev->classId = idx;
+				ret = (USBD_StatusTypeDef)pdev->pClass->DataIn(pdev, epnum);
 
-					if (ret != USBD_OK) {
-						return ret;
-					}
+				if (ret != USBD_OK) {
+					return ret;
 				}
 			}
 		}

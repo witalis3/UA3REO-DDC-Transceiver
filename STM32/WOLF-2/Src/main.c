@@ -304,7 +304,6 @@ int main(void) {
 	println("[OK] LCD init");
 	LCD_busy = true;
 	LCD_Init();
-	JPEG_InitColorTables();
 	if (SHOW_LOGO) {
 		strcpy(greetings_buff, "ver. ");
 		strcat(greetings_buff, STM32_VERSION_STR);
