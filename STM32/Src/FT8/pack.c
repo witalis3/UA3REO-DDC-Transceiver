@@ -33,8 +33,6 @@ static int32_t pack28(const char *callsign) {
 	}
 
 	if (starts_with(callsign, "CQ_")) {
-		int nnum = 0, nlet = 0;
-
 		// TODO:
 		// if(nnum.eq.3 .and. nlet.eq.0) then n28=3+nqsy
 		// if(nlet.ge.1 .and. nlet.le.4 .and. nnum.eq.0) then n28=3+1000+m
@@ -245,7 +243,7 @@ void packtext77(const char *text, uint8_t *b77) {
 	int length = strlen(text);
 
 	// Skip leading and trailing spaces
-	while (*text == ' ' && *text != 0) {
+	while (*text == ' ') {
 		++text;
 		--length;
 	}
@@ -314,44 +312,3 @@ int pack77(const char *msg, uint8_t *c77) {
 	packtext77(msg, c77);
 	return 0;
 }
-
-#ifdef UNIT_TEST
-
-#include <iostream>
-
-using namespace std;
-
-bool test1() {
-	const char *inputs[] = {"", " ", "ABC", "A9", "L9A", "L7BC", "L0ABC", "LL3JG", "LL3AJG", "CQ ", 0};
-
-	for (int i = 0; inputs[i]; ++i) {
-		int32_t result = ft8_v2::pack28(inputs[i]);
-		printf("pack28(\"%s\") = %d\n", inputs[i], result);
-	}
-
-	return true;
-}
-
-bool test2() {
-	const char *inputs[] = {"CQ LL3JG", "CQ LL3JG KO26", "L0UAA LL3JG KO26", "L0UAA LL3JG +02", "L0UAA LL3JG RRR", "L0UAA LL3JG 73", 0};
-
-	for (int i = 0; inputs[i]; ++i) {
-		uint8_t result[10];
-		int rc = ft8_v2::pack77_1(inputs[i], result);
-		printf("pack77_1(\"%s\") = %d\t[", inputs[i], rc);
-		for (int j = 0; j < 10; ++j) {
-			printf("%02x ", result[j]);
-		}
-		printf("]\n");
-	}
-
-	return true;
-}
-
-int main() {
-	test1();
-	test2();
-	return 0;
-}
-
-#endif

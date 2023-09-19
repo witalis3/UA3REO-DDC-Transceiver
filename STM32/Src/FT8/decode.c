@@ -127,8 +127,7 @@ void extract_likelihood(const uint8_t *power, int num_bins, Candidate cand, cons
 	// show_variable(600,200,offset);
 	//  Go over FSK tones and skip Costas sync symbols
 	const int n_syms = 1;
-	const int n_bits = 3 * n_syms;
-	const int n_tones = (1 << n_bits);
+
 	for (int k = 0; k < ND; k += n_syms) {
 		int sym_idx = (k < ND / 2) ? (k + 7) : (k + 14);
 		int bit_idx = 3 * k;

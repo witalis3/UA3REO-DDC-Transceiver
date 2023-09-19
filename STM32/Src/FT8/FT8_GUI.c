@@ -256,7 +256,7 @@ void FT8_Clear_TX_Mess(void) {
 }
 
 void Enc2Rotate_Menager(int8_t direction, uint8_t decoded_msg) {
-	char MessIdx = 0;
+	char MessIdx;
 
 	if (sButtonData[2].state) // if "Time correction" button is pressed
 	{

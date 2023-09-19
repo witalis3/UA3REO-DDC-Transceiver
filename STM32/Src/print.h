@@ -6,7 +6,7 @@
 #define __print_array(T, qual, color)                     \
 	int max_len = 16;                                       \
 	int n = size / sizeof(T);                               \
-	T *m = va_arg(v, T *);                                  \
+	const T *m = va_arg(v, const T *);                      \
 	printf("[");                                            \
 	for (int i = 0; i < (n < max_len ? n : max_len); i++) { \
 		if (i > 0)                                            \

@@ -9,6 +9,8 @@ Scheme/*/*/*.PcbDoc.htm
 STM32/*/MDK-ARM/*/*.htm
 STM32/*/MDK-ARM/*/*.hex
 STM32/*/MDK-ARM/*.bin
+STM32/.cppcheck/*
+STM32/cppcheck-errors.txt
 STM32/Debug/*
 Status Report.txt
 Design Rule Check*

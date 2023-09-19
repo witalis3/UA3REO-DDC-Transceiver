@@ -8,10 +8,6 @@ static float Current = 0;
 uint16_t INA226_Read2Byte(uint8_t reg_addr) {
 #ifdef HAS_TOUCHPAD
 	uint16_t reg_data = 0;
-	uint16_t temp = 0;
-
-	uint8_t NumBytes = 5;
-	// uint8_t buf[6] = {0};
 
 	i2c_beginTransmission_u8(&I2C_TOUCHPAD, INA226_ADDR);
 	i2c_write_u8(&I2C_TOUCHPAD, reg_addr);

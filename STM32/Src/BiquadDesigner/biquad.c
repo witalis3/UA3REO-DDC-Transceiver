@@ -11,11 +11,6 @@
 #include "functions.h"
 
 typedef struct {
-	float re;
-	float im;
-} complex_s;
-
-typedef struct {
 	double re;
 	double im;
 } complex_d;

@@ -17,9 +17,9 @@ static char message[20];
 
 void set_message(uint16_t index) {
 	uint8_t packed[K_BYTES];
-	char blank[] = "                   ";
-	char seventy_three[] = "RR73";
-	char seventy_three2[] = "73";
+	const char blank[] = "                   ";
+	const char seventy_three[] = "RR73";
+	const char seventy_three2[] = "73";
 
 	strcpy(message, blank);
 

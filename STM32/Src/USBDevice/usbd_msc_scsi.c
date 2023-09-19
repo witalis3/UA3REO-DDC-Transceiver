@@ -162,7 +162,7 @@ int8_t SCSI_ProcessCmd(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *cmd) {
 		break;
 
 	case SCSI_READ16: // 136 HACK!
-		ret = SCSI_Read12(pdev, lun, cmd);
+		SCSI_Read12(pdev, lun, cmd);
 		ret = 0;
 		break;
 
@@ -818,7 +818,7 @@ static int8_t SCSI_Verify10(USBD_HandleTypeDef *pdev, uint8_t lun, uint8_t *para
  * @retval status
  */
 static int8_t SCSI_CheckAddressRange(USBD_HandleTypeDef *pdev, uint8_t lun, uint32_t blk_offset, uint32_t blk_nbr) {
-	USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
+	const USBD_MSC_BOT_HandleTypeDef *hmsc = (USBD_MSC_BOT_HandleTypeDef *)pdev->pClassDataSTORAGE;
 
 	if ((blk_offset + blk_nbr) > hmsc->scsi_blk_nbr) {
 		SCSI_SenseCode(pdev, lun, ILLEGAL_REQUEST, ADDRESS_OUT_OF_RANGE);

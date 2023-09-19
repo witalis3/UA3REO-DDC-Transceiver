@@ -55,10 +55,6 @@ int ft8_decode(void) {
 
 	int num_candidates = find_sync(export_fft_power, ft8_msg_samples, ft8_buffer, kCostas_map, kMax_candidates, candidate_list, kMin_score);
 
-	char decoded[kMax_decoded_messages + 1][kMax_message_length];
-
-	const float fsk_dev = 6.25f; // tone deviation in Hz and symbol rate
-
 	// Go over candidates and attempt to decode messages
 	int num_decoded = 0;
 
@@ -75,7 +71,6 @@ int ft8_decode(void) {
 
 	for (int idx = 0; idx < num_candidates; ++idx) {
 		Candidate cand = candidate_list[idx];
-		float freq_hz = (cand.freq_offset + cand.freq_sub / 2.0f) * fsk_dev;
 
 		float log174[N];
 		extract_likelihood(export_fft_power, ft8_buffer, cand, kGray_map, log174);
@@ -132,7 +127,6 @@ int ft8_decode(void) {
 
 		int raw_RSL;
 		int display_RSL;
-		float distance;
 
 		if (!found && num_decoded < kMax_decoded_messages) {
 			if (strlen(message) > 4 && strlen(message) < kMax_message_length) {
@@ -183,7 +177,6 @@ void display_messages(int decoded_messages) {
 void SetNew_TargetCall(int index) {
 
 	char selected_station[18];
-	char blank[] = "        ";
 	strcpy(Target_Call, new_decoded[index].field2); // take the target (partner) callsign
 	Target_RSL = new_decoded[index].snr;
 
@@ -254,7 +247,7 @@ int CheckRecieved73(int index, char CQ_Answer) {
   we just have to be sure it is the station we were in contact till now!
 */
 int FindPartnerIDX(int num_decoded) {
-	uint8_t Partner_Idx;
+	uint8_t Partner_Idx = 0;
 
 	for (int i = 0; i < num_decoded; i++) {
 		if (strindex(new_decoded[i].field2, Target_Call) >= 0) {

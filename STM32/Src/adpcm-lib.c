@@ -59,6 +59,7 @@ struct adpcm_context {
  */
 
 static struct adpcm_context pcnxt;
+
 void *adpcm_create_context(int num_channels, int lookahead, int noise_shaping, int32_t initial_deltas[2]) {
 	int ch, i;
 
@@ -83,13 +84,6 @@ void *adpcm_create_context(int num_channels, int lookahead, int noise_shaping, i
 /* Free the ADPCM encoder context.
  */
 
-void adpcm_free_context(void *p) {
-	struct adpcm_context *pcnxt = (struct adpcm_context *)p;
-
-	// free (pcnxt);
-	dma_memset(pcnxt, 0, sizeof(struct adpcm_context));
-}
-
 static void set_decode_parameters(struct adpcm_context *pcnxt, int32_t *init_pcmdata, int8_t *init_index) {
 	int ch;
 
@@ -113,7 +107,7 @@ static double minimum_error(const struct adpcm_channel *pchan, int nch, int32_t 
 	struct adpcm_channel chan = *pchan;
 	int step = step_table[chan.index];
 	int trial_delta = (step >> 3);
-	int nibble, nibble2;
+	int nibble;
 	double min_error;
 
 	if (delta < 0) {
@@ -151,45 +145,6 @@ static double minimum_error(const struct adpcm_channel *pchan, int nch, int32_t 
 	} else {
 		return min_error;
 	}
-
-	/*for (nibble2 = 0; nibble2 <= 0xF; ++nibble2)
-	{
-	    double error;
-
-	    if (nibble2 == nibble)
-	        continue;
-
-	    chan = *pchan;
-	    trial_delta = (step >> 3);
-
-	    if (nibble2 & 1)
-	        trial_delta += (step >> 2);
-	    if (nibble2 & 2)
-	        trial_delta += (step >> 1);
-	    if (nibble2 & 4)
-	        trial_delta += step;
-	    if (nibble2 & 8)
-	        trial_delta = -trial_delta;
-
-	    chan.pcmdata += trial_delta;
-	    CLIP(chan.pcmdata, -32768, 32767);
-
-	    error = (double)(chan.pcmdata - csample) * (chan.pcmdata - csample);
-
-	    if (error < min_error)
-	    {
-	        chan.index += index_table[nibble2 & 0x07];
-	        CLIP(chan.index, 0, 88);
-	        error += minimum_error(&chan, nch, sample[nch], sample + nch, depth - 1, NULL);
-
-	        if (error < min_error)
-	        {
-	            if (best_nibble)
-	                *best_nibble = nibble2;
-	            min_error = error;
-	        }
-	    }
-	}*/
 
 	return min_error;
 }
