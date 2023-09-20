@@ -49,7 +49,7 @@ uint32_t USB_AUDIO_GetTXBufferIndex_FS(void) {
 	if (!USB_AUDIO_Inited) {
 		return 0;
 	}
-	USBD_AUDIO_HandleTypeDef *haudio = (USBD_AUDIO_HandleTypeDef *)hUsbDeviceFS.pClassDataAUDIO;
+	const USBD_AUDIO_HandleTypeDef *haudio = (USBD_AUDIO_HandleTypeDef *)hUsbDeviceFS.pClassDataAUDIO;
 	return haudio->TxBufferIndex;
 }
 

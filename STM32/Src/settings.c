@@ -1347,7 +1347,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 	if (verify) {
 		Aligned_CleanDCache_by_Addr((uint32_t *)read_clone, size);
 
-		uint32_t BigAddress = sector * W25Q16_SECTOR_SIZE;
+		BigAddress = sector * W25Q16_SECTOR_SIZE;
 		Address[2] = (BigAddress >> 16) & 0xFF;
 		Address[1] = (BigAddress >> 8) & 0xFF;
 		Address[0] = BigAddress & 0xFF;

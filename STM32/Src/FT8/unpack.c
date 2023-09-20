@@ -355,28 +355,3 @@ int unpack77_fields(const uint8_t *a77, char *field1, char *field2, char *field3
 	// unknown type, should never get here
 	return -1;
 }
-
-int unpack77(const uint8_t *a77, char *message) {
-	char field1[14];
-	char field2[14];
-	char field3[7];
-	int rc = unpack77_fields(a77, field1, field2, field3);
-	if (rc < 0) {
-		return rc;
-	}
-
-	char *dst = message;
-	// int msg_sz = strlen(field1) + strlen(field2) + strlen(field3) + 2;
-
-	// dst = stpcpy(dst, field1);
-	dst = strcpy(dst, field1);
-	*dst++ = ' ';
-	// dst = stpcpy(dst, field2);
-	dst = strcpy(dst, field2);
-	*dst++ = ' ';
-	// dst = stpcpy(dst, field3);
-	dst = strcpy(dst, field3);
-	*dst = '\0';
-
-	return 0;
-}

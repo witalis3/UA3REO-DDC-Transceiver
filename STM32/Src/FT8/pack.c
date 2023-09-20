@@ -293,22 +293,3 @@ void packtext77(const char *text, uint8_t *b77) {
 	b77[8] &= 0xFE;
 	b77[9] &= 0x00;
 }
-
-int pack77(const char *msg, uint8_t *c77) {
-	// Check Type 1 (Standard 77-bit message) or Type 2, with optional "/P"
-	if (0 == pack77_1(msg, c77)) {
-		return 0;
-	}
-
-	// TODO:
-	// Check 0.5 (telemetry)
-	// i3=0 n3=5 write(c77,1006) ntel,n3,i3 1006 format(b23.23,2b24.24,2b3.3)
-
-	// Check Type 4 (One nonstandard call and one hashed call)
-	// pack77_4(nwords,w,i3,n3,c77)
-
-	// Default to free text
-	// i3=0 n3=0
-	packtext77(msg, c77);
-	return 0;
-}

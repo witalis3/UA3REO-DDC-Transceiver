@@ -20,7 +20,7 @@ void LCDDriver_SetCurrentXOffset(uint16_t x) { text_cursor_x = x; }
 // Text printing functions
 void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint16_t antiAliasedColorLeft, uint16_t antiAliasedColorRight, uint8_t size,
                                 uint16_t *buffer, uint16_t buffer_w, uint16_t buffer_h) {
-	uint8_t line = 0;
+	uint8_t line;
 	uint8_t zoom = (size > 0 ? size : 1);
 	uint8_t size_w = (size > 0 ? RASTR_FONT_W : RASTR_FONT_4x6_W);
 	uint8_t size_h = (size > 0 ? RASTR_FONT_H : RASTR_FONT_4x6_H);
@@ -55,11 +55,7 @@ void LCDDriver_drawCharInMemory(uint16_t x, uint16_t y, unsigned char c, uint16_
 					if (i == 5) {
 						line = 0x0;
 					} else {
-						if (size > 0) {
-							line = rastr_font[(c * 5) + i]; // read font
-						} else {
-							line = rastr_font_4x6[(c * 5) + i]; // read font
-						}
+						line = rastr_font[(c * 5) + i]; // read font
 					}
 					line >>= j;
 					for (int8_t s_x = 0; s_x < zoom; s_x++) // x size scale
@@ -137,7 +133,7 @@ void LCDDriver_printTextInMemory(char text[], int16_t x, int16_t y, uint16_t col
 }
 
 void LCDDriver_drawChar(uint16_t x, uint16_t y, unsigned char c, uint16_t color, uint16_t bg, uint16_t antiAliasedColorLeft, uint16_t antiAliasedColorRight, uint8_t size) {
-	uint8_t line = 0;
+	uint8_t line;
 	uint8_t zoom = (size > 0 ? size : 1);
 	uint8_t size_w = (size > 0 ? RASTR_FONT_W : RASTR_FONT_4x6_W);
 	uint8_t size_h = (size > 0 ? RASTR_FONT_H : RASTR_FONT_4x6_H);
@@ -290,7 +286,7 @@ void LCDDriver_drawCharFont(uint16_t x, uint16_t y, unsigned char c, uint16_t co
 }
 
 void LCDDriver_printTextFont(char text[], uint16_t x, uint16_t y, uint16_t color, uint16_t bg, const GFXfont *gfxFont) {
-	uint8_t c = 0;
+	uint8_t c;
 	text_cursor_x = x;
 	text_cursor_y = y;
 

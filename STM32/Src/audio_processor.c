@@ -1038,12 +1038,12 @@ void processTxAudio(void) {
 
 	// Send TX data to FFT
 	if (TRX_on_TX && !SHOW_RX_FFT_ON_TX) {
-		float32_t *FFTInput_I_current = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
-		float32_t *FFTInput_Q_current = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
+		float32_t *FFTInput_I_current_ = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
+		float32_t *FFTInput_Q_current_ = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
 
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
-			FFTInput_I_current[FFT_buff_index] = APROC_Audio_Buffer_TX_I[i];
-			FFTInput_Q_current[FFT_buff_index] = APROC_Audio_Buffer_TX_Q[i];
+			FFTInput_I_current_[FFT_buff_index] = APROC_Audio_Buffer_TX_I[i];
+			FFTInput_Q_current_[FFT_buff_index] = APROC_Audio_Buffer_TX_Q[i];
 
 			FFT_buff_index++;
 			if (FFT_buff_index >= FFT_HALF_SIZE) {
@@ -1053,8 +1053,8 @@ void processTxAudio(void) {
 				} else {
 					FFT_new_buffer_ready = true;
 					FFT_buff_current = !FFT_buff_current;
-					FFTInput_I_current = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
-					FFTInput_Q_current = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
+					FFTInput_I_current_ = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
+					FFTInput_Q_current_ = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
 				}
 			}
 		}
@@ -1881,8 +1881,8 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	demod_fm_instance *DFM = &DFM_RX1;
 	bool sql_enabled = CurrentVFO->SQL;
 	int8_t FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
-	arm_biquad_cascade_df2T_instance_f32 *SFM_Pilot_Filter = &SFM_RX1_Pilot_Filter;
-	arm_biquad_cascade_df2T_instance_f32 *SFM_Audio_Filter = &SFM_RX1_Audio_Filter;
+	const arm_biquad_cascade_df2T_instance_f32 *SFM_Pilot_Filter = &SFM_RX1_Pilot_Filter;
+	const arm_biquad_cascade_df2T_instance_f32 *SFM_Audio_Filter = &SFM_RX1_Audio_Filter;
 
 	float32_t angle;
 

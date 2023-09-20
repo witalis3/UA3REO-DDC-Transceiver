@@ -180,7 +180,7 @@ void RDSDecoder_Process(float32_t *bufferIn) {
 		static bool filtered_state_prev = false;
 		if (process_bits > 0) {
 			// print(process_bits);
-			for (uint8_t i = 0; i < process_bits; i++) {
+			for (uint8_t b = 0; b < process_bits; b++) {
 				if (!bit1_ready) {
 					bit1_state = filtered_state_prev;
 					bit1_ready = true;

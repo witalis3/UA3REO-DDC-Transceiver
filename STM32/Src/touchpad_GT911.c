@@ -16,15 +16,13 @@ static uint8_t GT911_Config[186] = {
 };
 
 uint8_t GT911_WR_Reg(uint16_t reg, uint8_t *buf, uint8_t len) {
-	uint8_t i;
-	uint8_t ret = 0;
 	i2c_beginTransmission_u8(&I2C_TOUCHPAD, gt911_i2c_addr);
 	i2c_write_u8(&I2C_TOUCHPAD, (reg >> 8) & 0xFF);
 	i2c_write_u8(&I2C_TOUCHPAD, reg & 0xFF);
-	for (i = 0; i < len; i++) {
+	for (uint8_t i = 0; i < len; i++) {
 		i2c_write_u8(&I2C_TOUCHPAD, buf[i]);
 	}
-	ret = i2c_endTransmission(&I2C_TOUCHPAD);
+	uint8_t ret = i2c_endTransmission(&I2C_TOUCHPAD);
 	if (ret != SUCCESS && TRX.Debug_Type == TRX_DEBUG_I2C) {
 		println("I2C GT911 Write error: ", ret);
 	}
@@ -32,7 +30,6 @@ uint8_t GT911_WR_Reg(uint16_t reg, uint8_t *buf, uint8_t len) {
 }
 
 void GT911_RD_RegOneByte(uint16_t reg, uint8_t *buf) {
-	uint8_t i;
 	i2c_beginTransmission_u8(&I2C_TOUCHPAD, gt911_i2c_addr);
 	i2c_write_u8(&I2C_TOUCHPAD, (reg >> 8) & 0xFF);
 	i2c_write_u8(&I2C_TOUCHPAD, reg & 0xFF);

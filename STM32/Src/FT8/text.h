@@ -12,7 +12,6 @@ char *trim(char *str);
 char to_upper(char c);
 bool is_digit(char c);
 bool is_letter(char c);
-bool is_space(char c);
 bool in_range(char c, char min, char max);
 bool starts_with(const char *string, const char *prefix);
 bool equals(const char *string1, const char *string2);
@@ -31,5 +30,4 @@ int dd_to_int(const char *str, int length);
 void int_to_dd(char *str, int value, int width, bool full_sign);
 
 char charn(int c, int table_idx);
-int nchar(char c, int table_idx);
 #endif

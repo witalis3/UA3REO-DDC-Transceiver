@@ -230,11 +230,7 @@ static void SWR_DrawGraphCol(uint16_t x, bool clear) {
 		}
 	}
 	// draw the graph
-	if (x > 0) {
-		LCDDriver_drawLine((graph_start_x + x), SWR_getYfromX(x - 1), (graph_start_x + x + 1), SWR_getYfromX(x), COLOR_RED);
-	} else {
-		LCDDriver_drawPixel((graph_start_x + x + 1), SWR_getYfromX(x), COLOR_RED);
-	}
+	LCDDriver_drawLine((graph_start_x + x), SWR_getYfromX(x - 1), (graph_start_x + x + 1), SWR_getYfromX(x), COLOR_RED);
 }
 
 // display status at the bottom of the screen

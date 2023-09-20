@@ -241,7 +241,6 @@ void WSPR_DoEvents(void) {
 	sprintf(tmp_buff, "SWR: %.1f, PWR: %.1fW, TEMP: % 2d     ", (double)TRX_SWR, ((double)TRX_PWR_Forward - (double)TRX_PWR_Backward), (int16_t)TRX_RF_Temperature);
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 #endif
-	y += y_step;
 
 	LCD_busy = false;
 	LCD_UpdateQuery.SystemMenuRedraw = true;

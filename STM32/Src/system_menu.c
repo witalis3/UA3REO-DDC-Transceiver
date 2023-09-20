@@ -8381,8 +8381,8 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 	}
 	char ctmp[32] = {0};
 	char enum_value[ENUM_MAX_LENGTH + 1] = {0};
-	float32_t *atu_i = ATU_I_VALS;
-	float32_t *atu_c = ATU_C_VALS;
+	const float32_t *atu_i = ATU_I_VALS;
+	const float32_t *atu_c = ATU_C_VALS;
 	float32_t float_tmp_val = 0;
 
 #if !SYSMENU_TOUCHPAD_STYLE

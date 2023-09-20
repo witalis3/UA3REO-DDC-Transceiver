@@ -470,12 +470,11 @@ void LCDDriver_Fill_Triangle(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1,
 }
 
 void LCDDriver_fadeScreen(float32_t brightness) {
-	uint16_t color = 0;
 	LCDDriver_SetCursorPosition(0, 0);
 	for (uint16_t y = 0; y < LCD_HEIGHT; y++) {
 		for (uint16_t x = 0; x < LCD_WIDTH; x++) {
 			// get current pixel
-			color = LCDDriver_ReadData();
+			uint16_t color = LCDDriver_ReadData();
 			// transform
 			// uint8_t r = (uint8_t)((float32_t)((color >> 11) & 0x1F) * brightness);
 			// uint8_t g = (uint8_t)((float32_t)((color >> 5) & 0x3F) * brightness);
@@ -590,7 +589,7 @@ void LCDDriver_drawRoundedRectWH(uint16_t x0, uint16_t y0, uint16_t w, uint16_t 
 	if (filled) {
 		LCDDriver_SendData(0x80 | 0x40 | 0x20);
 	} else {
-		LCDDriver_SendData(0x80 | 0x00 | 0x20);
+		LCDDriver_SendData(0x80 | 0x20);
 	}
 
 	/* Wait for the command to finish */
