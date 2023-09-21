@@ -18,11 +18,6 @@ bool equals(const char *string1, const char *string2);
 
 int char_index(const char *string, char c);
 
-// Text message formatting:
-//   - replaces lowercase letters with uppercase
-//   - merges consecutive spaces into single space
-void fmtmsg(char *msg_out, const char *msg_in);
-
 // Parse a 2 digit integer from string
 int dd_to_int(const char *str, int length);
 

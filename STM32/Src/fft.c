@@ -864,7 +864,6 @@ bool FFT_printFFT(void) {
 	  return;*/
 	LCD_busy = true;
 
-	uint16_t height = 0; // column height in FFT output
 	uint16_t tmp = 0;
 	uint16_t fftHeight = GET_FFTHeight;
 	uint16_t wtfHeight = GET_WTFHeight;

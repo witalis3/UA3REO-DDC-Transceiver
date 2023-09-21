@@ -90,7 +90,6 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc) {
 	RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 	if (hadc->Instance == ADC1) {
 		/* USER CODE BEGIN ADC1_MspInit 0 */
-		RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 		PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_ADC;
 		PeriphClkInitStruct.AdcClockSelection = RCC_ADCCLKSOURCE_CLKP;
 		if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {

@@ -8,7 +8,6 @@ static float max4(float a, float b, float c, float d);
 static void heapify_down(Candidate *heap, int heap_size);
 static void heapify_up(Candidate *heap, int heap_size);
 static void decode_symbol(const uint8_t *power, const uint8_t *code_map, int bit_idx, float *log174);
-static void decode_multi_symbols(const uint8_t *power, int num_bins, int n_syms, const uint8_t *code_map, int bit_idx, float *log174);
 
 extern int ND;
 extern int NS;
@@ -214,62 +213,4 @@ static void decode_symbol(const uint8_t *power, const uint8_t *code_map, int bit
 	log174[bit_idx + 0] = max4(s2[4], s2[5], s2[6], s2[7]) - max4(s2[0], s2[1], s2[2], s2[3]);
 	log174[bit_idx + 1] = max4(s2[2], s2[3], s2[6], s2[7]) - max4(s2[0], s2[1], s2[4], s2[5]);
 	log174[bit_idx + 2] = max4(s2[1], s2[3], s2[5], s2[7]) - max4(s2[0], s2[2], s2[4], s2[6]);
-}
-
-// Compute unnormalized log likelihood log(p(1) / p(0)) of bits corresponding to several FSK symbols at once
-static void decode_multi_symbols(const uint8_t *power, int num_bins, int n_syms, const uint8_t *code_map, int bit_idx, float *log174) {
-	// The following section implements what seems to be multiple-symbol decode at one go,
-	// corresponding to WSJT-X's ft8b.f90. Experimentally found not to be any better than
-	// 1-symbol decode.
-
-	const int n_bits = 3 * n_syms;
-	const int n_tones = (1 << n_bits);
-
-	float s2[n_tones];
-
-	for (int j = 0; j < n_tones; ++j) {
-		int j1 = j & 0x07;
-		if (n_syms == 1) {
-			s2[j] = (float)power[code_map[j1]];
-			continue;
-		}
-		int j2 = (j >> 3) & 0x07;
-		if (n_syms == 2) {
-			s2[j] = (float)power[code_map[j2]];
-			s2[j] += (float)power[code_map[j1] + 4 * num_bins];
-			continue;
-		}
-		int j3 = (j >> 6) & 0x07;
-		s2[j] = (float)power[code_map[j3]];
-		s2[j] += (float)power[code_map[j2] + 4 * num_bins];
-		s2[j] += (float)power[code_map[j1] + 8 * num_bins];
-	}
-	// No need to go back to linear scale any more. Works better in dB.
-	// for (int j = 0; j < n_tones; ++j) {
-	//     s2[j] = powf(10.0f, 0.1f * s2[j]);
-	// }
-
-	uint16_t mask; // chh
-
-	// Extract bit significance (and convert them to float)
-	// 8 FSK tones = 3 bits
-	for (int i = 0; i < n_bits; ++i) {
-
-		if (bit_idx + i >= N) {
-			// Respect array size
-			break;
-		}
-
-		mask = (n_tones >> (i + 1));
-		float max_zero = -1000, max_one = -1000;
-		for (int n = 0; n < n_tones; ++n) {
-			if (n & mask) {
-				max_one = max2(max_one, s2[n]);
-			} else {
-				max_zero = max2(max_zero, s2[n]);
-			}
-		}
-
-		log174[bit_idx + i] = max_one - max_zero;
-	}
 }

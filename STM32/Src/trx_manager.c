@@ -833,7 +833,7 @@ void TRX_RestoreBandSettings(int8_t band) {
 }
 
 void TRX_DoAutoGain(void) {
-	uint8_t skip_cycles = 0;
+	static uint8_t skip_cycles = 0;
 	if (skip_cycles > 0) {
 		skip_cycles--;
 		return;
@@ -954,7 +954,7 @@ void TRX_ProcessScanMode(void) {
 			// LCD_UpdateQuery.StatusInfoGUI = true;
 			// LCD_UpdateQuery.StatusInfoBarRedraw = true;
 			StateChangeTime = HAL_GetTick();
-		} else // common region mode
+		} else if (band != -1) // common region mode
 		{
 			for (uint8_t region_id = 0; region_id < BANDS[band].regionsCount; region_id++) {
 				if ((BANDS[band].regions[region_id].startFreq <= CurrentVFO->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO->Freq)) {
@@ -1005,7 +1005,7 @@ void TRX_setFrequencySlowly_Process(void) {
 
 void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 	float64_t newfreq = (float64_t)CurrentVFO->Freq;
-	float64_t step = 0;
+	float64_t step;
 
 	if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0) {
 		int_fast8_t band = getBandFromFreq(CurrentVFO->Freq, false);
@@ -1392,7 +1392,7 @@ void BUTTONHANDLER_MODE_P(uint32_t parameter) {
 	} else if (mode == TRX_MODE_USB) {
 		mode = TRX_MODE_LSB;
 	} else if (mode == TRX_MODE_CW) {
-		mode = TRX_MODE_CW;
+		// mode = TRX_MODE_CW;
 	} else if (mode == TRX_MODE_NFM) {
 		mode = TRX_MODE_WFM;
 	} else if (mode == TRX_MODE_WFM) {

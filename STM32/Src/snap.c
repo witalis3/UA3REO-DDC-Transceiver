@@ -62,11 +62,10 @@ static void SNAP_Process() {
 	float32_t noise_level = SNAP_buffer_tmp[(uint32_t)(SNAP_NOISE_FLOOR * (float32_t)FFT_SIZE)];
 	float32_t hz_in_bin = (float32_t)FFT_current_spectrum_width_hz / (float32_t)FFT_SIZE;
 
-	uint32_t bins_in_bandwidth;
-	uint32_t bandwidth_bin_start;
-	uint32_t bandwidth_bin_end;
+	uint32_t bandwidth_bin_start = 0;
+	uint32_t bandwidth_bin_end = 0;
+	uint32_t bins_in_bandwidth = (float32_t)CurrentVFO->LPF_RX_Filter_Width / hz_in_bin;
 
-	bins_in_bandwidth = (float32_t)CurrentVFO->LPF_RX_Filter_Width / hz_in_bin;
 	if (SNAP_process_mode == 0) { // unidirect
 		bandwidth_bin_start = (FFT_SIZE / 2) - (bins_in_bandwidth / 2);
 		bandwidth_bin_end = (FFT_SIZE / 2) + (bins_in_bandwidth / 2);
@@ -148,7 +147,7 @@ static void SNAP_Process() {
 		if (SNAP_process_mode == 1) { // left
 			target_freq += 500;
 		}
-		if (SNAP_process_mode == 2 && CurrentVFO->Mode == TRX_MODE_LSB) { // right
+		if (SNAP_process_mode == 2) { // right
 			target_freq += CurrentVFO->LPF_RX_Filter_Width;
 		}
 

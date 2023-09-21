@@ -127,7 +127,7 @@ void FPGA_Init(bool bus_test, bool firmware_test) {
 		LCD_showError("Check FPGA BUS...", false);
 		HAL_Delay(1000);
 
-		while (bus_test) {
+		while (true) {
 			for (uint16_t i = 0; i < 256; i++) {
 				FPGA_setBusOutput();
 				FPGA_writePacket(0);
@@ -227,7 +227,7 @@ void FPGA_fpgadata_iqclock(void) {
 	if (FPGA_bus_stop) {
 		return;
 	}
-	VFO *current_vfo = CurrentVFO;
+	const VFO *current_vfo = CurrentVFO;
 	if (current_vfo->Mode == TRX_MODE_LOOPBACK) {
 		return;
 	}
@@ -1006,7 +1006,7 @@ bool FPGA_spi_flash_verify(uint32_t flash_pos, uint8_t *buff, uint32_t size) // 
 	FPGA_spi_continue_command(flash_pos & 0xFF);         // addr 3
 	data = FPGA_spi_continue_command(0xFF);
 	uint8_t progress_prev = 0;
-	uint8_t progress = 0;
+	uint8_t progress;
 
 	// Decompress RLE and verify
 	uint32_t errors = 0;

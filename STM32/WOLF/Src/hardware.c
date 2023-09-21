@@ -232,7 +232,7 @@ void dma_memcpy32(void *dest, void *src, uint32_t size) {
 	Aligned_CleanDCache_by_Addr(src, size * 4);
 	Aligned_CleanDCache_by_Addr(dest, size * 4);
 
-	uint8_t res = HAL_MDMA_Start(&HRDW_MEMCPY_MDMA, (uint32_t)src, (uint32_t)dest, size * 4, 1);
+	HAL_MDMA_Start(&HRDW_MEMCPY_MDMA, (uint32_t)src, (uint32_t)dest, size * 4, 1);
 	SLEEPING_MDMA_PollForTransfer(&HRDW_MEMCPY_MDMA);
 
 	Aligned_CleanInvalidateDCache_by_Addr(dest, size * 4);

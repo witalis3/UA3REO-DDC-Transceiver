@@ -607,11 +607,9 @@ void SELF_TEST_Draw(void) {
 	// Pager
 	pos_y += margin_bottom;
 	LCDDriver_printText("Rotate ENC2", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-	pos_y += margin_bottom;
 #else
 	pos_y += margin_bottom;
 	LCDDriver_printText("Rotate ENC2 to print next page", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-	pos_y += margin_bottom;
 #endif
 	LCD_busy = false;
 }

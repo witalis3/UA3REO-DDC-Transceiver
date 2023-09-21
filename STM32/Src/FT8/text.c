@@ -49,23 +49,6 @@ int char_index(const char *string, char c) {
 	return -1; // Not found
 }
 
-// Text message formatting:
-//   - replaces lowercase letters with uppercase
-//   - merges consecutive spaces into single space
-void fmtmsg(char *msg_out, const char *msg_in) {
-	char c;
-	char last_out = 0;
-	while ((c = *msg_in)) {
-		if (c != ' ' || last_out != ' ') {
-			last_out = to_upper(c);
-			*msg_out = last_out;
-			++msg_out;
-		}
-		++msg_in;
-	}
-	*msg_out = 0; // Add zero termination
-}
-
 // Parse a 2 digit integer from string
 int dd_to_int(const char *str, int length) {
 	int result = 0;
