@@ -6,6 +6,7 @@
 #include "lcd.h"
 #include "main.h"
 #include "pre_distortion.h"
+#include "rds_decoder.h"
 #include "screen_layout.h"
 #include "snap.h"
 #include "trx_manager.h"
@@ -1741,6 +1742,11 @@ bool FFT_printFFT(void) {
 		sprintf(tmp, "%.2fhz", (double)SAM_Carrier_offset);
 		LCDDriver_printTextInMemory(tmp, 5, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 	}
+
+	// Print Stereo FM RDS Label
+	// if (CurrentVFO->Mode == TRX_MODE_WFM && TRX.FM_Stereo && RDS_Stereo) {
+	// LCDDriver_printTextInMemory("Stereo FM", 5, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+	// }
 
 	// Init print 2D FFT+WTF
 	Aligned_CleanDCache_by_Addr(print_output_buffer, sizeof(print_output_buffer));

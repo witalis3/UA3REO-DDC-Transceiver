@@ -201,6 +201,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Volume step** - AF gain step by ENC2 (X1, Lite)
 * **Volume** - AF gain
 * **WFM Stereo** - select WFM stereo or mono decoder
+* **WFM Stereo Modulation** - Stereo FM sub-carrier level
 
 ### TX Settings
 

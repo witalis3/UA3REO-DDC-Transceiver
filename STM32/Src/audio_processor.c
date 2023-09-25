@@ -1959,6 +1959,8 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		arm_biquad_cascade_df2T_f32_single(SFM_Pilot_Filter, data_i, DFM->stereo_fm_pilot_out, size);
 		arm_biquad_cascade_df2T_f32_single(SFM_Audio_Filter, data_i, DFM->stereo_fm_audio_out, size);
 
+		// float32_t stereo_rms = 0.0f;
+
 		// move signal to low freq
 		for (uint_fast16_t i = 0; i < size; i++) {
 			static float32_t prev_sfm_pilot_sample = 0.0f;
@@ -1967,15 +1969,23 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 			prev_sfm_pilot_sample = DFM->stereo_fm_pilot_out[i];
 
 			// get stereo sample from decoded wfm
-			float32_t stereo_sample = DFM->stereo_fm_audio_out[i] * arm_sin_f32(angle) * 2.0f; // 2 - stereo depth
-			if (isnanf(stereo_sample) || isinf(stereo_sample)) {
+			float32_t stereo_sample = DFM->stereo_fm_audio_out[i] * arm_sin_f32(angle) * (100.0f / (float32_t)TRX.FM_Stereo_Modulation);
+			if (isnanf(stereo_sample) || isinff(stereo_sample)) {
 				continue;
 			}
 
 			// get channels
-			data_q[i] = (data_i[i] - stereo_sample); // Mono (L+R) - Stereo (L-R) = 2R
-			data_i[i] = (data_i[i] + stereo_sample); // Mono (L+R) + Stereo (L-R) = 2L
+			float32_t audio_sample = data_i[i];
+			data_q[i] = (audio_sample - stereo_sample); // Mono (L+R) - Stereo (L-R) = 2R
+			data_i[i] = (audio_sample + stereo_sample); // Mono (L+R) + Stereo (L-R) = 2L
+
+			// calculate RMS
+			// stereo_rms += (stereo_sample * 1000.0f) * (stereo_sample * 1000.0f);
 		}
+
+		// stereo_rms /= size;
+		// stereo_rms = sqrtf(stereo_rms);
+		// println("Stereo RMS: ", (double)rate2dbP(stereo_rms));
 	}
 }
 

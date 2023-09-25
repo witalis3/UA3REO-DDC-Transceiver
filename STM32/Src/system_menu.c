@@ -99,6 +99,7 @@ static void SYSMENU_HANDL_RX_EQ_P5(int8_t direction);
 static void SYSMENU_HANDL_RX_EQ_P5_WFM(int8_t direction);
 static void SYSMENU_HANDL_RX_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_RX_FM_Stereo(int8_t direction);
+static void SYSMENU_HANDL_RX_FM_Stereo_Modulation(int8_t direction);
 static void SYSMENU_HANDL_RX_IFGain(int8_t direction);
 static void SYSMENU_HANDL_RX_NOISE_BLANKER(int8_t direction);
 static void SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD(int8_t direction);
@@ -716,6 +717,7 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_RX_SAMPLERATE_FM, {"48khz", "96khz", "192khz", "384khz"}},
 #if !defined(STM32F407xx)
     {"WFM Stereo", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FM_Stereo, SYSMENU_HANDL_RX_FM_Stereo},
+    {"WFM Stereo Modul", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FM_Stereo_Modulation, SYSMENU_HANDL_RX_FM_Stereo_Modulation},
 #endif
 };
 
@@ -2610,6 +2612,16 @@ static void SYSMENU_HANDL_RX_FM_Stereo(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.FM_Stereo = false;
+	}
+}
+
+static void SYSMENU_HANDL_RX_FM_Stereo_Modulation(int8_t direction) {
+	TRX.FM_Stereo_Modulation += direction;
+	if (TRX.FM_Stereo_Modulation > 99) {
+		TRX.FM_Stereo_Modulation = 99;
+	}
+	if (TRX.FM_Stereo_Modulation < 1) {
+		TRX.FM_Stereo_Modulation = 1;
 	}
 }
 
