@@ -18,7 +18,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 105        // Settings config version
+#define SETT_VERSION 106        // Settings config version
 #define CALIB_VERSION 71        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -589,6 +589,7 @@ extern struct TRX_SETTINGS {
 	int8_t RX_EQ_P3_WFM;
 	int8_t RX_EQ_P4_WFM;
 	int8_t RX_EQ_P5_WFM;
+	int8_t RX_EQ_P6_WFM;
 	int8_t MIC_EQ_P1_SSB;
 	int8_t MIC_EQ_P2_SSB;
 	int8_t MIC_EQ_P3_SSB;

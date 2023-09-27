@@ -1626,6 +1626,7 @@ static void doRX_EQ(uint16_t size, uint8_t mode) {
 	bool eq3_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P3_WFM != 0) : (TRX.RX_EQ_P3 != 0);
 	bool eq4_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P4_WFM != 0) : (TRX.RX_EQ_P4 != 0);
 	bool eq5_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P5_WFM != 0) : (TRX.RX_EQ_P5 != 0);
+	bool eq6_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P6_WFM != 0) : false;
 
 	if (eq1_enabled) {
 		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P1_FILTER, &EQ_RX_Q_P1_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
@@ -1641,6 +1642,9 @@ static void doRX_EQ(uint16_t size, uint8_t mode) {
 	}
 	if (eq5_enabled) {
 		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P5_FILTER, &EQ_RX_Q_P5_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	}
+	if (eq6_enabled) {
+		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P6_FILTER, &EQ_RX_Q_P6_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 	}
 }
 

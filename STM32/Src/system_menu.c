@@ -97,6 +97,7 @@ static void SYSMENU_HANDL_RX_EQ_P4(int8_t direction);
 static void SYSMENU_HANDL_RX_EQ_P4_WFM(int8_t direction);
 static void SYSMENU_HANDL_RX_EQ_P5(int8_t direction);
 static void SYSMENU_HANDL_RX_EQ_P5_WFM(int8_t direction);
+static void SYSMENU_HANDL_RX_EQ_P6_WFM(int8_t direction);
 static void SYSMENU_HANDL_RX_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_RX_FM_Stereo(int8_t direction);
 static void SYSMENU_HANDL_RX_FM_Stereo_Modulation(int8_t direction);
@@ -711,7 +712,8 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"RX WFM EQ 0.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P2_WFM, SYSMENU_HANDL_RX_EQ_P2_WFM},
     {"RX WFM EQ 1.5k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P3_WFM, SYSMENU_HANDL_RX_EQ_P3_WFM},
     {"RX WFM EQ 5.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4_WFM, SYSMENU_HANDL_RX_EQ_P4_WFM},
-    {"RX WFM EQ 12.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5_WFM, SYSMENU_HANDL_RX_EQ_P5_WFM},
+    {"RX WFM EQ 8.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5_WFM, SYSMENU_HANDL_RX_EQ_P5_WFM},
+    {"RX WFM EQ 12.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P6_WFM, SYSMENU_HANDL_RX_EQ_P6_WFM},
     {"VAD Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_HANDL_RX_VAD_THRESHOLD},
     {"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_RX_SAMPLERATE_MAIN, {"48khz", "96khz", "192khz", "384khz"}},
     {"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_RX_SAMPLERATE_FM, {"48khz", "96khz", "192khz", "384khz"}},
@@ -2511,6 +2513,17 @@ static void SYSMENU_HANDL_RX_EQ_P5_WFM(int8_t direction) {
 	}
 	if (TRX.RX_EQ_P5_WFM > 50) {
 		TRX.RX_EQ_P5_WFM = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_RX_EQ_P6_WFM(int8_t direction) {
+	TRX.RX_EQ_P6_WFM += direction;
+	if (TRX.RX_EQ_P6_WFM < -50) {
+		TRX.RX_EQ_P6_WFM = -50;
+	}
+	if (TRX.RX_EQ_P6_WFM > 50) {
+		TRX.RX_EQ_P6_WFM = 50;
 	}
 	NeedReinitAudioFilters = true;
 }
