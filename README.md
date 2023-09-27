@@ -155,6 +155,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Split freq sync** - Synchronous VFO frequency change in SPLIT mode
 * **Transverter XXcm** - Enable external ham band transverter support
 * **URSI Code** - Ionogramm URSI Code https://digisonde.com/index.html#stationmap-section
+* **Tropo Region** - Region for tropospheric forecast https://www.dxinfocentre.com/tropo.html 
 * **XIT Interval** - Offset range XIT (+ -)
 
 ### FILTERS Settings
@@ -419,6 +420,10 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 ### Propagation 
 
 * Show propagation statistics (from internet)
+
+### Tropo 
+
+* Show tropospheric forecast
 
 ### DayNight Map 
 

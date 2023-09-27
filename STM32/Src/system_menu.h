@@ -6,8 +6,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define ENUM_MAX_COUNT 10
-
 #ifdef LAY_160x128
 #define ENUM_MAX_LENGTH 7
 #else
@@ -39,13 +37,15 @@ typedef enum {
 	SYSMENU_TIMEZONE,
 } SystemMenuType;
 
+typedef char enumerate_item[ENUM_MAX_LENGTH];
+
 struct sysmenu_item_handler {
-	char *title;
-	SystemMenuType type;
+	const char *title;
+	const SystemMenuType type;
 	bool (*checkVisibleHandler)(void);
 	uint32_t *value;
 	void (*menuHandler)(int8_t direction);
-	char enumerate[ENUM_MAX_COUNT][ENUM_MAX_LENGTH];
+	const enumerate_item *enumerate;
 };
 
 struct sysmenu_menu_wrapper {

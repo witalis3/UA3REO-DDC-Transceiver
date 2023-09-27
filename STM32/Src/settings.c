@@ -181,6 +181,7 @@ void LoadSettings(bool clear) {
 		strcpy(TRX.CALLSIGN, "HamRad");            // Callsign
 		strcpy(TRX.LOCATOR, "LO02RR");             // Locator
 		strcpy(TRX.URSI_CODE, "SO148");            // URSI Ionogramm location CODE https://digisonde.com/index.html#stationmap-section
+		TRX.TROPO_Region = 0;                      // Eastern europe by default
 		TRX.Custom_Transverter_Enabled = false;    // Enable transverter mode
 		TRX.ATU_I = 0;                             // ATU default state
 		TRX.ATU_C = 0;                             // ATU default state
