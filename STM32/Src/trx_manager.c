@@ -122,8 +122,9 @@ void TRX_Restart_Mode() {
 			TRX_Start_TX();
 		}
 	} else {
-		TRX_TX_sendZeroes = 0;
 		TRX_Start_RX();
+		TRX_TX_sendZeroes = 0;
+		TRX_SWR_PROTECTOR = false;
 	}
 
 	// SPLIT
@@ -283,7 +284,6 @@ void TRX_ptt_change(void) {
 			}
 		}
 
-		TRX_SWR_PROTECTOR = false;
 		TRX_ptt_hard = TRX_new_ptt_hard;
 		TRX_ptt_soft = false;
 		CW_key_serial = false;
@@ -300,7 +300,6 @@ void TRX_ptt_change(void) {
 			}
 		}
 
-		TRX_SWR_PROTECTOR = false;
 		TRX_old_ptt_soft = TRX_ptt_soft;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;
