@@ -2475,7 +2475,7 @@ void LCD_processTouch(uint16_t x, uint16_t y) {
 		}
 	}
 
-	if (!LCD_screenKeyboardOpened) {
+	if (!LCD_screenKeyboardOpened && !TRX_on_TX) {
 		// fft/wtf tap
 		if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + LAYOUT->FFT_FFTWTF_BOTTOM - 50) >= y)) {
 			// frequency tap
@@ -2608,6 +2608,10 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 
 	// fft/wtf swipe
 	if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) >= y)) {
+		if (TRX_on_TX) {
+				return false;
+		}
+		
 		const uint8_t slowler = 4;
 		float64_t step = TRX.FRQ_STEP;
 		if (TRX.Fast) {
@@ -2666,6 +2670,9 @@ bool LCD_processSwipeTwoFingersTouch(uint16_t x, uint16_t y, int16_t dx, int16_t
 	}
 	if (LCD_systemMenuOpened || LCD_window.opened) {
 		return false;
+	}
+	if (TRX_on_TX) {
+			return false;
 	}
 
 	// fft/wtf two finger swipe zoom
