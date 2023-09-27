@@ -293,7 +293,7 @@ static void update_synchronization(void) {
 
 // analyzer events to the encoder
 void FT8_EncRotate(int8_t direction) {
-	if (LCD_busy) {
+	if (LCD_busy || TRX_on_TX) {
 		return;
 	}
 	LCD_busy = true;
