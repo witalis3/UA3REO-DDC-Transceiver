@@ -4,11 +4,7 @@
 #include <stdlib.h>
 
 SRAM4 bool BAND_SELECTABLE[BANDS_COUNT] = {
-#ifndef FRONTPANEL_LITE
-    true, // 2200METERS
-#else
-    false,
-#endif
+    false, // 2200METERS
     false, // LWBR
     false, // MWBR
     true,  // 160m
@@ -54,15 +50,12 @@ SRAM4 bool BAND_SELECTABLE[BANDS_COUNT] = {
     false,
 #endif
     false, // Marine
-#ifndef FRONTPANEL_LITE
-    true, // 70cm
-#else
-    false,
-#endif
+    false, // 70cm
     false, // 23cm
     false, // 13cm
     false, // 6cm
     false, // 3cm
+    false, // QO-100
 };
 
 const BAND_MAP BANDS[BANDS_COUNT] = {

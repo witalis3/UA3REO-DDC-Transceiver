@@ -326,10 +326,12 @@ static void SYSMENU_HANDL_CALIB_CICCOMP_48K_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_CICCOMP_96K_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_DAC_SHIFT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_DAC_driver_mode(int8_t direction);
-static void SYSMENU_HANDL_CALIB_ENABLE_4m_band(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ENABLE_2200m_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_60m_band(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ENABLE_4m_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_AIR_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ENABLE_70cm_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER2_INVERT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction);
@@ -1071,11 +1073,13 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     defined(FRONTPANEL_MINI)
     {"DAC Driver Mode", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.DAC_driver_mode, SYSMENU_HANDL_CALIB_DAC_driver_mode},
 #endif
+    {"ENABLE 2200M Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_2200m_band, SYSMENU_HANDL_CALIB_ENABLE_2200m_band},
     {"ENABLE 60M Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_60m_band, SYSMENU_HANDL_CALIB_ENABLE_60m_band},
 #if !defined(FRONTPANEL_LITE)
     {"ENABLE 4M Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_4m_band, SYSMENU_HANDL_CALIB_ENABLE_4m_band},
     {"ENABLE Air Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_AIR_band, SYSMENU_HANDL_CALIB_ENABLE_AIR_band},
     {"ENABLE Marine Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_HANDL_CALIB_ENABLE_marine_band},
+    {"ENABLE 70cm Band", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENABLE_70cm_band, SYSMENU_HANDL_CALIB_ENABLE_70cm_band},
 #endif
 #if !defined(FRONTPANEL_LITE)
     {"EXT 2200m", SYSMENU_B4, NULL, (uint32_t *)&CALIBRATE.EXT_2200m, SYSMENU_HANDL_CALIB_EXT_2200m},
@@ -6598,6 +6602,17 @@ static void SYSMENU_HANDL_CALIB_NOTX_70cm(int8_t direction) {
 	}
 }
 
+static void SYSMENU_HANDL_CALIB_ENABLE_2200m_band(int8_t direction) {
+	if (direction > 0) {
+		CALIBRATE.ENABLE_2200m_band = true;
+	}
+	if (direction < 0) {
+		CALIBRATE.ENABLE_2200m_band = false;
+	}
+
+	BAND_SELECTABLE[BANDID_2200m] = CALIBRATE.ENABLE_2200m_band;
+}
+
 static void SYSMENU_HANDL_CALIB_ENABLE_60m_band(int8_t direction) {
 	if (direction > 0) {
 		CALIBRATE.ENABLE_60m_band = true;
@@ -6640,6 +6655,17 @@ static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction) {
 	}
 
 	BAND_SELECTABLE[BANDID_Marine] = CALIBRATE.ENABLE_marine_band;
+}
+
+static void SYSMENU_HANDL_CALIB_ENABLE_70cm_band(int8_t direction) {
+	if (direction > 0) {
+		CALIBRATE.ENABLE_70cm_band = true;
+	}
+	if (direction < 0) {
+		CALIBRATE.ENABLE_70cm_band = false;
+	}
+
+	BAND_SELECTABLE[BANDID_70cm] = CALIBRATE.ENABLE_70cm_band;
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom(int8_t direction) {

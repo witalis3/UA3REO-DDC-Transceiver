@@ -19,7 +19,7 @@
 #endif
 
 #define SETT_VERSION 106        // Settings config version
-#define CALIB_VERSION 71        // Calibration config version
+#define CALIB_VERSION 72        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                  // audio stream sampling rate during processing and TX (NOT RX!)
@@ -874,10 +874,12 @@ extern struct TRX_CALIBRATE {
 	bool NOTX_FM;
 	bool NOTX_2m;
 	bool NOTX_70cm;
+	bool ENABLE_2200m_band;
 	bool ENABLE_60m_band;
 	bool ENABLE_4m_band;
 	bool ENABLE_AIR_band;
 	bool ENABLE_marine_band;
+	bool ENABLE_70cm_band;
 	bool OTA_update;
 	bool LCD_Rotate;
 	bool TOUCHPAD_horizontal_flip;

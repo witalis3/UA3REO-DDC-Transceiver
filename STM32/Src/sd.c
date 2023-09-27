@@ -1217,10 +1217,12 @@ static void SDCOMM_EXPORT_SETT_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_FM", (uint64_t *)&CALIBRATE.NOTX_FM, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_2m", (uint64_t *)&CALIBRATE.NOTX_2m, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.NOTX_70cm", (uint64_t *)&CALIBRATE.NOTX_70cm, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_2200m_band", (uint64_t *)&CALIBRATE.ENABLE_2200m_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_60m_band", (uint64_t *)&CALIBRATE.ENABLE_60m_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_4m_band", (uint64_t *)&CALIBRATE.ENABLE_4m_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_AIR_band", (uint64_t *)&CALIBRATE.ENABLE_AIR_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_marine_band", (uint64_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_70cm_band", (uint64_t *)&CALIBRATE.ENABLE_70cm_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_Custom_Offset_Mhz", (uint64_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_70cm_RF_Mhz", (uint64_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_70cm_IF_Mhz", (uint64_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_UINT16);
@@ -2581,6 +2583,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	if (strcmp(name, "CALIBRATE.NOTX_70cm") == 0) {
 		CALIBRATE.NOTX_70cm = bval;
 	}
+	if (strcmp(name, "CALIBRATE.ENABLE_2200m_band") == 0) {
+		CALIBRATE.ENABLE_2200m_band = bval;
+	}
 	if (strcmp(name, "CALIBRATE.ENABLE_60m_band") == 0) {
 		CALIBRATE.ENABLE_60m_band = bval;
 	}
@@ -2592,6 +2597,9 @@ static void SDCOMM_PARSE_SETT_LINE(char *line) {
 	}
 	if (strcmp(name, "CALIBRATE.ENABLE_marine_band") == 0) {
 		CALIBRATE.ENABLE_marine_band = bval;
+	}
+	if (strcmp(name, "CALIBRATE.ENABLE_70cm_band") == 0) {
+		CALIBRATE.ENABLE_70cm_band = bval;
 	}
 	if (strcmp(name, "CALIBRATE.Transverter_Custom_Offset_Mhz") == 0) {
 		CALIBRATE.Transverter_Custom_Offset_Mhz = (uint16_t)uintval;

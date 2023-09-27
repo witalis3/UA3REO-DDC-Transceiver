@@ -328,7 +328,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Calibrate reset** - Reset all calibrations to defaults
 * **DAC Driver Mode** - DAC Driver OPA2673 bias mode (2 = 100% bias, 1 = 75% bias, 0 = 50% bias)
 * **DAC Shift** - Bit shift of the output to the DAC
-* **ENABLE 60m/4m/AIR/Marine Band** - Enable hidden bands
+* **ENABLE 2200m/60m/4m/AIR/Marine Band/70cm** - Enable hidden bands
 * **EXT xxx** - External port control by band (EXT3, EXT2, EXT1, EXT0) - open drain
 * **Encoder acceleration** - The encoder acceleration on faster rotation speeds
 * **Encoder debounce** - Time of debouncing contacts of the main encoder

@@ -896,10 +896,12 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.NOTX_4m = false;
 		CALIBRATE.NOTX_2m = false;
 		CALIBRATE.NOTX_70cm = false;
-		CALIBRATE.ENABLE_60m_band = false; // enable hidden bands
+		CALIBRATE.ENABLE_2200m_band = false; // enable hidden bands
+		CALIBRATE.ENABLE_60m_band = false;
 		CALIBRATE.ENABLE_4m_band = false;
 		CALIBRATE.ENABLE_AIR_band = false;
 		CALIBRATE.ENABLE_marine_band = false;
+		CALIBRATE.ENABLE_70cm_band = true;
 		CALIBRATE.Transverter_Custom_Offset_Mhz = 100; // Offset from VFO
 		CALIBRATE.Transverter_70cm_RF_Mhz = 432;
 		CALIBRATE.Transverter_70cm_IF_Mhz = 144;
@@ -982,10 +984,12 @@ void LoadCalibration(bool clear) {
 	}
 	EEPROM_PowerDown();
 	// enable bands
+	BAND_SELECTABLE[BANDID_2200m] = CALIBRATE.ENABLE_2200m_band;
 	BAND_SELECTABLE[BANDID_60m] = CALIBRATE.ENABLE_60m_band;
 	BAND_SELECTABLE[BANDID_4m] = CALIBRATE.ENABLE_4m_band;
 	BAND_SELECTABLE[BANDID_AIR] = CALIBRATE.ENABLE_AIR_band;
 	BAND_SELECTABLE[BANDID_Marine] = CALIBRATE.ENABLE_marine_band;
+	BAND_SELECTABLE[BANDID_70cm] = CALIBRATE.ENABLE_70cm_band;
 
 	// load WiFi settings after calibrations
 	LoadWiFiSettings(false);
