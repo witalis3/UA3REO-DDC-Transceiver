@@ -308,10 +308,10 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	shift_array[57] = VHF_RXA;                          // U19	VHF_RXA
 	shift_array[56] = VHF_RXB;                          // U19	VHF_RXB
 
-	shift_array[55] = !tx_lpf_0;                                                                               // U20 STPIC6C595TTR	HFAMP_B0 !!!
-	shift_array[54] = !tx_lpf_1;                                                                               // U20	HFAMP_B1 !!!
-	shift_array[53] = !tx_lpf_2;                                                                               // U20	HFAMP_B2 !!!
-	shift_array[52] = !tx_lpf_3;                                                                               // U20	HFAMP_B3 !!!
+	shift_array[55] = !tx_lpf_0;                                                                               // U20 STPIC6C595TTR	HFAMP_B0
+	shift_array[54] = !tx_lpf_1;                                                                               // U20	HFAMP_B1
+	shift_array[53] = !tx_lpf_2;                                                                               // U20	HFAMP_B2
+	shift_array[52] = !tx_lpf_3;                                                                               // U20	HFAMP_B3
 	shift_array[51] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RealRXFreq < 60000000; // U20	HF TX
 	shift_array[50] = TRX.ATT && att_val_8;                                                                    // U20	VHF_ATT8
 	shift_array[49] = TRX.ATT && att_val_16;                                                                   // U20	VHF_ATT16
@@ -398,14 +398,14 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			static uint8_t pwm_ticks = 0;
 			pwm_ticks++;
 			if (pwm_status) {
-				shift_array[32] = true;
+				shift_array[48] = true;
 			}
 			if ((pwm_status && pwm_ticks == on_ticks) || (!pwm_status && pwm_ticks == off_ticks)) {
 				pwm_status = !pwm_status;
 				pwm_ticks = 0;
 			}
 		} else {
-			shift_array[32] = true;
+			shift_array[48] = true;
 		}
 	}
 
