@@ -1060,14 +1060,28 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		if (step < 1.0) {
 			step = 1.0;
 		}
+		bool air_step = (step == 8333 || step == 8333 * 5);
+		if (air_step) {
+			step = 8333;
+		}
 
-		if (direction == -1.0f) {
+		if (direction == -1.0f && !air_step) {
 			newfreq = ceill(newfreq / step) * step;
 		}
-		if (direction == 1.0f) {
+		if (direction == 1.0f && !air_step) {
 			newfreq = floorl(newfreq / step) * step;
 		}
+
 		newfreq = newfreq + step * (float64_t)direction;
+		if (air_step) {
+			float64_t mod = fmodl(newfreq, 1000);
+			if (mod == 999) {
+				newfreq += 1;
+			}
+			if (mod == 334 || mod == 667 || mod == 1) {
+				newfreq -= 1;
+			}
+		}
 	} else { // not TRX.Fast
 		step = TRX.FRQ_STEP;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
@@ -1103,14 +1117,28 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		if (step < 1.0) {
 			step = 1.0;
 		}
+		bool air_step = (step == 833.3 || step == 8.333);
+		if (air_step) {
+			step = 8333;
+		}
 
-		if (direction == -1.0f) {
+		if (direction == -1.0f && !air_step) {
 			newfreq = ceill(newfreq / step) * step;
 		}
-		if (direction == 1.0f) {
+		if (direction == 1.0f && !air_step) {
 			newfreq = floorl(newfreq / step) * step;
 		}
+
 		newfreq = newfreq + step * (float64_t)direction;
+		if (air_step) {
+			float64_t mod = fmodl(newfreq, 1000);
+			if (mod == 999) {
+				newfreq += 1;
+			}
+			if (mod == 334 || mod == 667 || mod == 1) {
+				newfreq -= 1;
+			}
+		}
 	}
 
 	TRX_setFrequency(newfreq, CurrentVFO);
