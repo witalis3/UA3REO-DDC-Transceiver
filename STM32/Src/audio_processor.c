@@ -1074,6 +1074,23 @@ void processTxAudio(void) {
 	}
 #endif
 
+	// Prepare codec out data
+	float32_t volume_gain_tx = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);
+#if HRDW_HAS_SD
+	if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess) {
+		volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+	}
+#else
+	volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+#endif
+
+	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
+		float32_t sample = APROC_Audio_Buffer_TX_I[i] * volume_gain_tx;
+		arm_float_to_q31(&sample, &APROC_AudioBuffer_out[i * 2], 1);
+		APROC_AudioBuffer_out[i * 2] = convertToSPIBigEndian(APROC_AudioBuffer_out[i * 2]); // left channel
+		APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];                    // right channel
+	}
+
 	// Loopback/DIGI mode self-hearing
 	bool has_self_hearing_data = false;
 #if HRDW_HAS_SD
@@ -1107,22 +1124,6 @@ void processTxAudio(void) {
 
 		// Send to Codec
 		if (!LISTEN_RX_AUDIO_ON_TX) {
-			float32_t volume_gain_tx = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);
-#if HRDW_HAS_SD
-			if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess) {
-				volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
-			}
-#else
-			volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
-#endif
-
-			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
-				float32_t sample = APROC_Audio_Buffer_TX_I[i] * volume_gain_tx;
-				arm_float_to_q31(&sample, &APROC_AudioBuffer_out[i * 2], 1);
-				APROC_AudioBuffer_out[i * 2] = convertToSPIBigEndian(APROC_AudioBuffer_out[i * 2]); // left channel
-				APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];                    // right channel
-			}
-
 			has_self_hearing_data = true;
 			Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
 			if (start_CODEC_DMA_state) // compleate
@@ -1651,6 +1652,9 @@ static void doMIC_EQ(uint16_t size, uint8_t mode) {
 		if (TRX.MIC_EQ_P5_SSB != 0) {
 			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P5_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 		}
+		if (TRX.MIC_EQ_P6_SSB != 0) {
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P6_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		}
 		break;
 
 	case TRX_MODE_NFM:
@@ -1671,6 +1675,9 @@ static void doMIC_EQ(uint16_t size, uint8_t mode) {
 		}
 		if (TRX.MIC_EQ_P5_AMFM != 0) {
 			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P5_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		}
+		if (TRX.MIC_EQ_P6_AMFM != 0) {
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P6_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 		}
 		break;
 	}

@@ -61,21 +61,25 @@ static float32_t EQ_MIC_P2_FILTER_State_SSB[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P3_FILTER_State_SSB[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P4_FILTER_State_SSB[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P5_FILTER_State_SSB[2 * EQ_STAGES] = {0};
+static float32_t EQ_MIC_P6_FILTER_State_SSB[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P1_FILTER_Coeffs_SSB[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P2_FILTER_Coeffs_SSB[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P3_FILTER_Coeffs_SSB[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P4_FILTER_Coeffs_SSB[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P5_FILTER_Coeffs_SSB[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
+static float32_t EQ_MIC_P6_FILTER_Coeffs_SSB[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P1_FILTER_State_AMFM[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P2_FILTER_State_AMFM[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P3_FILTER_State_AMFM[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P4_FILTER_State_AMFM[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P5_FILTER_State_AMFM[2 * EQ_STAGES] = {0};
+static float32_t EQ_MIC_P6_FILTER_State_AMFM[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P1_FILTER_Coeffs_AMFM[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P2_FILTER_Coeffs_AMFM[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P3_FILTER_Coeffs_AMFM[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P4_FILTER_Coeffs_AMFM[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P5_FILTER_Coeffs_AMFM[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
+static float32_t EQ_MIC_P6_FILTER_Coeffs_AMFM[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t AGC_RX1_KW_HSHELF_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t AGC_RX1_KW_HPASS_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t AGC_RX_KW_HSHELF_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
@@ -487,11 +491,13 @@ arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P2_FILTER_SSB = {EQ_STAGES, EQ_MIC_P
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P3_FILTER_SSB = {EQ_STAGES, EQ_MIC_P3_FILTER_State_SSB, EQ_MIC_P3_FILTER_Coeffs_SSB};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P4_FILTER_SSB = {EQ_STAGES, EQ_MIC_P4_FILTER_State_SSB, EQ_MIC_P4_FILTER_Coeffs_SSB};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P5_FILTER_SSB = {EQ_STAGES, EQ_MIC_P5_FILTER_State_SSB, EQ_MIC_P5_FILTER_Coeffs_SSB};
+arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P6_FILTER_SSB = {EQ_STAGES, EQ_MIC_P6_FILTER_State_SSB, EQ_MIC_P6_FILTER_Coeffs_SSB};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P1_FILTER_AMFM = {EQ_STAGES, EQ_MIC_P1_FILTER_State_AMFM, EQ_MIC_P1_FILTER_Coeffs_AMFM};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P2_FILTER_AMFM = {EQ_STAGES, EQ_MIC_P2_FILTER_State_AMFM, EQ_MIC_P2_FILTER_Coeffs_AMFM};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P3_FILTER_AMFM = {EQ_STAGES, EQ_MIC_P3_FILTER_State_AMFM, EQ_MIC_P3_FILTER_Coeffs_AMFM};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P4_FILTER_AMFM = {EQ_STAGES, EQ_MIC_P4_FILTER_State_AMFM, EQ_MIC_P4_FILTER_Coeffs_AMFM};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P5_FILTER_AMFM = {EQ_STAGES, EQ_MIC_P5_FILTER_State_AMFM, EQ_MIC_P5_FILTER_Coeffs_AMFM};
+arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P6_FILTER_AMFM = {EQ_STAGES, EQ_MIC_P6_FILTER_State_AMFM, EQ_MIC_P6_FILTER_Coeffs_AMFM};
 arm_biquad_cascade_df2T_instance_f32 AGC_RX1_KW_HSHELF_FILTER = {EQ_STAGES, AGC_RX1_KW_HSHELF_FILTER_State, AGC_RX_KW_HSHELF_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 AGC_RX1_KW_HPASS_FILTER = {EQ_STAGES, AGC_RX1_KW_HPASS_FILTER_State, AGC_RX_KW_HPASS_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 SFM_RX1_Pilot_Filter = {SFM_FILTER_STAGES, SFM_RX1_Pilot_Filter_State, SFM_Pilot_Filter_Coeffs};
@@ -729,8 +735,8 @@ void ReinitAudioFilters(void) {
 	calcBiquad(BIQUAD_peak, 700, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P2, EQ_RX_P2_FILTER_Coeffs);
 	calcBiquad(BIQUAD_peak, 1200, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P3 - 3, EQ_RX_P3_FILTER_Coeffs);
 	calcBiquad(BIQUAD_peak, 1800, TRX_SAMPLERATE, 1.5f, TRX.RX_EQ_P4, EQ_RX_P4_FILTER_Coeffs);
-	calcBiquad(BIQUAD_peak, 2300, TRX_SAMPLERATE, 2.0f, TRX.RX_EQ_P5 - 3, EQ_RX_P5_FILTER_Coeffs);
-	calcBiquad(BIQUAD_peak, 5000, TRX_SAMPLERATE, 1.0f, 0, EQ_RX_P6_FILTER_Coeffs); // dummy SSB filter
+	calcBiquad(BIQUAD_peak, 2000, TRX_SAMPLERATE, 2.0f, TRX.RX_EQ_P5 - 3, EQ_RX_P5_FILTER_Coeffs);
+	calcBiquad(BIQUAD_peak, 2500, TRX_SAMPLERATE, 2.0f, TRX.RX_EQ_P6, EQ_RX_P6_FILTER_Coeffs);
 
 	if (CurrentVFO->Mode == TRX_MODE_WFM) {
 		calcBiquad(BIQUAD_peak, 50, TRX_SAMPLERATE, 0.5f, TRX.RX_EQ_P1_WFM, EQ_RX_P1_FILTER_Coeffs);
@@ -744,15 +750,17 @@ void ReinitAudioFilters(void) {
 	// MIC Equalizer
 	calcBiquad(BIQUAD_peak, 300, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P1_SSB, EQ_MIC_P1_FILTER_Coeffs_SSB);
 	calcBiquad(BIQUAD_peak, 700, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P2_SSB, EQ_MIC_P2_FILTER_Coeffs_SSB);
-	calcBiquad(BIQUAD_peak, 1200, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P3_SSB, EQ_MIC_P3_FILTER_Coeffs_SSB);
+	calcBiquad(BIQUAD_peak, 1200, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P3_SSB - 2, EQ_MIC_P3_FILTER_Coeffs_SSB);
 	calcBiquad(BIQUAD_peak, 1800, TRX_SAMPLERATE, 1.5f, TRX.MIC_EQ_P4_SSB, EQ_MIC_P4_FILTER_Coeffs_SSB);
-	calcBiquad(BIQUAD_peak, 2300, TRX_SAMPLERATE, 2.0f, TRX.MIC_EQ_P5_SSB, EQ_MIC_P5_FILTER_Coeffs_SSB);
+	calcBiquad(BIQUAD_peak, 2000, TRX_SAMPLERATE, 2.0f, TRX.MIC_EQ_P5_SSB - 1, EQ_MIC_P5_FILTER_Coeffs_SSB);
+	calcBiquad(BIQUAD_peak, 2500, TRX_SAMPLERATE, 2.0f, TRX.MIC_EQ_P6_SSB - 2, EQ_MIC_P6_FILTER_Coeffs_SSB);
 
 	calcBiquad(BIQUAD_peak, 300, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P1_AMFM, EQ_MIC_P1_FILTER_Coeffs_AMFM);
 	calcBiquad(BIQUAD_peak, 700, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P2_AMFM, EQ_MIC_P2_FILTER_Coeffs_AMFM);
-	calcBiquad(BIQUAD_peak, 1200, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P3_AMFM, EQ_MIC_P3_FILTER_Coeffs_AMFM);
+	calcBiquad(BIQUAD_peak, 1200, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P3_AMFM - 2, EQ_MIC_P3_FILTER_Coeffs_AMFM);
 	calcBiquad(BIQUAD_peak, 1800, TRX_SAMPLERATE, 1.5f, TRX.MIC_EQ_P4_AMFM, EQ_MIC_P4_FILTER_Coeffs_AMFM);
-	calcBiquad(BIQUAD_peak, 2300, TRX_SAMPLERATE, 2.0f, TRX.MIC_EQ_P5_AMFM, EQ_MIC_P5_FILTER_Coeffs_AMFM);
+	calcBiquad(BIQUAD_peak, 2000, TRX_SAMPLERATE, 2.0f, TRX.MIC_EQ_P5_AMFM - 1, EQ_MIC_P5_FILTER_Coeffs_AMFM);
+	calcBiquad(BIQUAD_peak, 2500, TRX_SAMPLERATE, 2.0f, TRX.MIC_EQ_P6_AMFM - 2, EQ_MIC_P6_FILTER_Coeffs_AMFM);
 
 	// Stereo FM pilot
 	filter = biquad_create(SFM_FILTER_STAGES);

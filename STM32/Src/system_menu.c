@@ -98,6 +98,7 @@ static void SYSMENU_HANDL_RX_EQ_P4(int8_t direction);
 static void SYSMENU_HANDL_RX_EQ_P4_WFM(int8_t direction);
 static void SYSMENU_HANDL_RX_EQ_P5(int8_t direction);
 static void SYSMENU_HANDL_RX_EQ_P5_WFM(int8_t direction);
+static void SYSMENU_HANDL_RX_EQ_P6(int8_t direction);
 static void SYSMENU_HANDL_RX_EQ_P6_WFM(int8_t direction);
 static void SYSMENU_HANDL_RX_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_RX_FM_Stereo(int8_t direction);
@@ -142,6 +143,8 @@ static void SYSMENU_HANDL_TX_MIC_EQ_P4_AMFM(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_EQ_P4_SSB(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_EQ_P5_AMFM(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_EQ_P5_SSB(int8_t direction);
+static void SYSMENU_HANDL_TX_MIC_EQ_P6_AMFM(int8_t direction);
+static void SYSMENU_HANDL_TX_MIC_EQ_P6_SSB(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_Gain(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_NOISE_GATE(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_REVERBER(int8_t direction);
@@ -714,7 +717,8 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"RX EQ 0.7k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P2, SYSMENU_HANDL_RX_EQ_P2},
     {"RX EQ 1.2k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P3, SYSMENU_HANDL_RX_EQ_P3},
     {"RX EQ 1.8k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4, SYSMENU_HANDL_RX_EQ_P4},
-    {"RX EQ 2.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5, SYSMENU_HANDL_RX_EQ_P5},
+    {"RX EQ 2.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5, SYSMENU_HANDL_RX_EQ_P5},
+    {"RX EQ 2.5k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P6, SYSMENU_HANDL_RX_EQ_P6},
     {"RX WFM EQ 50hz", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P1_WFM, SYSMENU_HANDL_RX_EQ_P1_WFM},
     {"RX WFM EQ 0.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P2_WFM, SYSMENU_HANDL_RX_EQ_P2_WFM},
     {"RX WFM EQ 1.5k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P3_WFM, SYSMENU_HANDL_RX_EQ_P3_WFM},
@@ -751,12 +755,14 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"MIC EQ 0.7k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P2_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P2_AMFM},
     {"MIC EQ 1.2k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P3_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P3_AMFM},
     {"MIC EQ 1.8k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P4_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P4_AMFM},
-    {"MIC EQ 2.3k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P5_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P5_AMFM},
+    {"MIC EQ 2.0k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P5_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P5_AMFM},
+    {"MIC EQ 2.5k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P6_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P6_AMFM},
     {"MIC EQ 0.3k SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P1_SSB, SYSMENU_HANDL_TX_MIC_EQ_P1_SSB},
     {"MIC EQ 0.7k SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P2_SSB, SYSMENU_HANDL_TX_MIC_EQ_P2_SSB},
     {"MIC EQ 1.2k SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P3_SSB, SYSMENU_HANDL_TX_MIC_EQ_P3_SSB},
     {"MIC EQ 1.8k SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P4_SSB, SYSMENU_HANDL_TX_MIC_EQ_P4_SSB},
-    {"MIC EQ 2.3k SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P5_SSB, SYSMENU_HANDL_TX_MIC_EQ_P5_SSB},
+    {"MIC EQ 2.0k SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P5_SSB, SYSMENU_HANDL_TX_MIC_EQ_P5_SSB},
+    {"MIC EQ 2.5k SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P6_SSB, SYSMENU_HANDL_TX_MIC_EQ_P6_SSB},
 #if !defined(STM32F407xx)
     {"MIC Reverber", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.MIC_REVERBER, SYSMENU_HANDL_TX_MIC_REVERBER},
 #endif
@@ -2476,6 +2482,17 @@ static void SYSMENU_HANDL_RX_EQ_P5(int8_t direction) {
 	NeedReinitAudioFilters = true;
 }
 
+static void SYSMENU_HANDL_RX_EQ_P6(int8_t direction) {
+	TRX.RX_EQ_P6 += direction;
+	if (TRX.RX_EQ_P6 < -50) {
+		TRX.RX_EQ_P6 = -50;
+	}
+	if (TRX.RX_EQ_P6 > 50) {
+		TRX.RX_EQ_P6 = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
 static void SYSMENU_HANDL_RX_EQ_P1_WFM(int8_t direction) {
 	TRX.RX_EQ_P1_WFM += direction;
 	if (TRX.RX_EQ_P1_WFM < -50) {
@@ -3181,6 +3198,28 @@ static void SYSMENU_HANDL_TX_MIC_EQ_P5_AMFM(int8_t direction) {
 	}
 	if (TRX.MIC_EQ_P5_AMFM > 50) {
 		TRX.MIC_EQ_P5_AMFM = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_TX_MIC_EQ_P6_SSB(int8_t direction) {
+	TRX.MIC_EQ_P6_SSB += direction;
+	if (TRX.MIC_EQ_P6_SSB < -50) {
+		TRX.MIC_EQ_P6_SSB = -50;
+	}
+	if (TRX.MIC_EQ_P6_SSB > 50) {
+		TRX.MIC_EQ_P6_SSB = 50;
+	}
+	NeedReinitAudioFilters = true;
+}
+
+static void SYSMENU_HANDL_TX_MIC_EQ_P6_AMFM(int8_t direction) {
+	TRX.MIC_EQ_P6_AMFM += direction;
+	if (TRX.MIC_EQ_P6_AMFM < -50) {
+		TRX.MIC_EQ_P6_AMFM = -50;
+	}
+	if (TRX.MIC_EQ_P6_AMFM > 50) {
+		TRX.MIC_EQ_P6_AMFM = 50;
 	}
 	NeedReinitAudioFilters = true;
 }
