@@ -2961,7 +2961,8 @@ static void SDCOMM_IMPORT_SETTINGS_handler(void) {
 	}
 	f_close(&File);
 	NeedSaveSettings = true;
-	LCD_showInfo("Settings import complete", true);
+	NeedSaveCalibration = true;
+	LCD_showInfo("Import complete", true);
 }
 
 static void SDCOMM_MKFS_handler(void) {
