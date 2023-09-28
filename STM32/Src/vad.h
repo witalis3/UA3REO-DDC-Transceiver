@@ -12,14 +12,11 @@
 #define VAD_FFT_SIZE 128  // FFT size for processing in VAD
 #define VAD_FFT_SIZE_HALF (VAD_FFT_SIZE / 2)
 #define VAD_ZOOMED_SAMPLES (VAD_BLOCK_SIZE / VAD_MAGNIFY)
+#define VAD_DECIMATE_NUM_TAPS 4
 
 typedef struct {
-	const arm_cfft_instance_f32 *FFT_Inst;
-	float32_t FFTBuffer[VAD_FFT_SIZE * 2];
 	float32_t FFTBufferCharge[VAD_FFT_SIZE * 2]; // cumulative buffer
-	float32_t InputBuffer[VAD_BLOCK_SIZE];       // Input buffer
 	float32_t decimState[VAD_BLOCK_SIZE + 4 - 1];
-	arm_fir_decimate_instance_f32 DECIMATE;
 	arm_fir_decimate_instance_f32 FirDecimate;
 
 	float32_t Min_E1;

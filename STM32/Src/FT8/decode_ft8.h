@@ -1,6 +1,8 @@
 #ifndef DECODE_FT8_H_
 #define DECODE_FT8_H_
 
+#include <stdint.h>
+
 int ft8_decode(void);
 
 extern char Target_Call[7];
@@ -12,27 +14,25 @@ typedef struct {
 	char field1[14];
 	char field2[14];
 	char field3[7];
-	int freq_hz;
-	char decode_time[10];
-	int sync_score;
-	int snr;
-	int distance;
-
+	// int freq_hz;
+	// char decode_time[10];
+	int16_t sync_score;
+	int16_t snr;
+	// int distance;
 } Decode;
 
-typedef struct {
-	char decode_time[10];
-	char call[7];
-
+/*typedef struct {
+  char decode_time[10];
+  char call[7];
 } Calling_Station;
 
 typedef struct {
-	char decode_time[10];
-	char call[7];
-	int distance;
-	int snr;
-	int freq_hz;
-} CQ_Station;
+  char decode_time[10];
+  char call[7];
+  int distance;
+  int snr;
+  int freq_hz;
+} CQ_Station;*/
 
 void save_Answer_CQ_List(void);
 

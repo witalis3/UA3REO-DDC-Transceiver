@@ -125,8 +125,8 @@ int ft8_decode(void) {
 			}
 		}
 
-		int raw_RSL;
-		int display_RSL;
+		int16_t raw_RSL;
+		int16_t display_RSL;
 
 		if (!found && num_decoded < kMax_decoded_messages) {
 			if (strlen(message) > 4 && strlen(message) < kMax_message_length) {
@@ -175,7 +175,6 @@ void display_messages(int decoded_messages) {
 }
 
 void SetNew_TargetCall(int index) {
-
 	char selected_station[18];
 	strcpy(Target_Call, new_decoded[index].field2); // take the target (partner) callsign
 	Target_RSL = new_decoded[index].snr;
