@@ -4869,7 +4869,6 @@ static void SYSMENU_HANDL_SD_ImportCalibrations(int8_t direction) {
 	if (direction > 0 && SD_isIdle() && !LCD_busy) {
 		strcpy((char *)SD_workbuffer_A, "wolf-calibrations.ini");
 		SD_doCommand(SDCOMM_IMPORT_SETTINGS, false);
-		NeedSaveCalibration = true;
 	}
 }
 
