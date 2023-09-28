@@ -464,6 +464,7 @@ void LoadSettings(bool clear) {
 		}
 
 #if defined(FRONTPANEL_MINI)
+		TRX.IF_Gain = 15;
 		TRX.FFT_Background = false;
 		TRX.FFT_BW_Style = 3;
 		TRX.FFT_Height = 4;
