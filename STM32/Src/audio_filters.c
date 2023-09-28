@@ -725,20 +725,20 @@ void ReinitAudioFilters(void) {
 #endif
 
 	// RX Equalizer with default settings to normalize frequency response
-	calcBiquad(BIQUAD_peak, 300, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P1 + 1, EQ_RX_P1_FILTER_Coeffs);
+	calcBiquad(BIQUAD_peak, 300, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P1 - 3, EQ_RX_P1_FILTER_Coeffs);
 	calcBiquad(BIQUAD_peak, 700, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P2, EQ_RX_P2_FILTER_Coeffs);
 	calcBiquad(BIQUAD_peak, 1200, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P3 - 3, EQ_RX_P3_FILTER_Coeffs);
 	calcBiquad(BIQUAD_peak, 1800, TRX_SAMPLERATE, 1.5f, TRX.RX_EQ_P4, EQ_RX_P4_FILTER_Coeffs);
-	calcBiquad(BIQUAD_peak, 2300, TRX_SAMPLERATE, 2.0f, TRX.RX_EQ_P5 - 5, EQ_RX_P5_FILTER_Coeffs);
+	calcBiquad(BIQUAD_peak, 2300, TRX_SAMPLERATE, 2.0f, TRX.RX_EQ_P5 - 3, EQ_RX_P5_FILTER_Coeffs);
 	calcBiquad(BIQUAD_peak, 5000, TRX_SAMPLERATE, 1.0f, 0, EQ_RX_P6_FILTER_Coeffs); // dummy SSB filter
 
 	if (CurrentVFO->Mode == TRX_MODE_WFM) {
 		calcBiquad(BIQUAD_peak, 50, TRX_SAMPLERATE, 0.5f, TRX.RX_EQ_P1_WFM, EQ_RX_P1_FILTER_Coeffs);
 		calcBiquad(BIQUAD_peak, 300, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P2_WFM, EQ_RX_P2_FILTER_Coeffs);
-		calcBiquad(BIQUAD_peak, 1500, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P3_WFM - 6, EQ_RX_P3_FILTER_Coeffs);
-		calcBiquad(BIQUAD_peak, 5000, TRX_SAMPLERATE, 3.0f, TRX.RX_EQ_P4_WFM - 3, EQ_RX_P4_FILTER_Coeffs);
-		calcBiquad(BIQUAD_peak, 8000, TRX_SAMPLERATE, 3.0f, TRX.RX_EQ_P5_WFM - 2, EQ_RX_P5_FILTER_Coeffs);
-		calcBiquad(BIQUAD_peak, 12000, TRX_SAMPLERATE, 3.0f, TRX.RX_EQ_P6_WFM - 1, EQ_RX_P6_FILTER_Coeffs);
+		calcBiquad(BIQUAD_peak, 1500, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P3_WFM - 1, EQ_RX_P3_FILTER_Coeffs);
+		calcBiquad(BIQUAD_peak, 5000, TRX_SAMPLERATE, 3.0f, TRX.RX_EQ_P4_WFM - 2, EQ_RX_P4_FILTER_Coeffs);
+		calcBiquad(BIQUAD_peak, 8000, TRX_SAMPLERATE, 5.0f, TRX.RX_EQ_P5_WFM - 2, EQ_RX_P5_FILTER_Coeffs);
+		calcBiquad(BIQUAD_peak, 12000, TRX_SAMPLERATE, 6.0f, TRX.RX_EQ_P6_WFM - 3, EQ_RX_P6_FILTER_Coeffs);
 	}
 
 	// MIC Equalizer
