@@ -18,7 +18,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 108        // Settings config version
+#define SETT_VERSION 109        // Settings config version
 #define CALIB_VERSION 72        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -424,6 +424,10 @@ typedef enum {
 typedef struct {
 	uint64_t Freq;
 	float32_t ATT_DB;
+	uint16_t CW_LPF_Filter;
+	uint16_t SSB_LPF_RX_Filter;
+	uint16_t AM_LPF_RX_Filter;
+	uint16_t FM_LPF_RX_Filter;
 	int8_t FM_SQL_threshold_dbm;
 	uint8_t Mode;
 	uint8_t DNR_Type;

@@ -813,6 +813,10 @@ void TRX_RestoreBandSettings(int8_t band) {
 		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
 		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
 	}
+	TRX.CW_LPF_Filter = TRX.BANDS_SAVED_SETTINGS[band].CW_LPF_Filter;
+	TRX.SSB_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].SSB_LPF_RX_Filter;
+	TRX.AM_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].AM_LPF_RX_Filter;
+	TRX.FM_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].FM_LPF_RX_Filter;
 
 	CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
 	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
@@ -2148,6 +2152,14 @@ void BUTTONHANDLER_SET_RX_BW(uint32_t parameter) {
 	}
 	if (CurrentVFO->Mode == TRX_MODE_NFM) {
 		TRX.FM_LPF_RX_Filter = parameter;
+	}
+
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].CW_LPF_Filter = TRX.CW_LPF_Filter;
+		TRX.BANDS_SAVED_SETTINGS[band].SSB_LPF_RX_Filter = TRX.SSB_LPF_RX_Filter;
+		TRX.BANDS_SAVED_SETTINGS[band].AM_LPF_RX_Filter = TRX.AM_LPF_RX_Filter;
+		TRX.BANDS_SAVED_SETTINGS[band].FM_LPF_RX_Filter = TRX.FM_LPF_RX_Filter;
 	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);

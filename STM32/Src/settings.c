@@ -33,7 +33,7 @@ static_assert(sizeof(TRX) < W25Q16_SECTOR_SIZE, "TRX Data structure doesn't matc
 static_assert(sizeof(CALIBRATE) < W25Q16_SECTOR_SIZE, "CALIBRATE Data structure doesn't match page size");
 
 IRAM2 static uint8_t write_clone[MAX_CLONE_SIZE] = {0};
-IRAM2 static uint8_t read_clone[MAX_CLONE_SIZE] = {0};
+IRAM2_ON_F407 static uint8_t read_clone[MAX_CLONE_SIZE] = {0};
 IRAM2 static uint8_t verify_clone[MAX_CLONE_SIZE] = {0};
 
 volatile bool NeedSaveSettings = false;
@@ -461,6 +461,10 @@ void LoadSettings(bool clear) {
 				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_C = TRX.ATU_C;
 				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_T = TRX.ATU_T;
 			}
+			TRX.BANDS_SAVED_SETTINGS[i].CW_LPF_Filter = TRX.CW_LPF_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].SSB_LPF_RX_Filter = TRX.SSB_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].AM_LPF_RX_Filter = TRX.AM_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].FM_LPF_RX_Filter = TRX.FM_LPF_RX_Filter;
 		}
 
 #if defined(FRONTPANEL_MINI)

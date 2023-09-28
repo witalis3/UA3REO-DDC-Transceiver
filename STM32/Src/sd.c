@@ -1156,6 +1156,14 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_T, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT2_ATU_T", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_T, SYSMENU_BOOLEAN);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].CW_LPF_Filter", i);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].CW_LPF_Filter, SYSMENU_UINT16);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SSB_LPF_RX_Filter", i);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].SSB_LPF_RX_Filter, SYSMENU_UINT16);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AM_LPF_RX_Filter", i);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].AM_LPF_RX_Filter, SYSMENU_UINT16);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_LPF_RX_Filter", i);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_LPF_RX_Filter, SYSMENU_UINT16);
 			}
 
 			// Memory channels settings
@@ -2859,6 +2867,22 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT2_ATU_T", i);
 		if (strcmp(name, buff) == 0) {
 			TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_T = bval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].CW_LPF_Filter", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].CW_LPF_Filter = uintval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SSB_LPF_RX_Filter", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].SSB_LPF_RX_Filter = uintval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].AM_LPF_RX_Filter", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].AM_LPF_RX_Filter = uintval;
+		}
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_LPF_RX_Filter", i);
+		if (strcmp(name, buff) == 0) {
+			TRX.BANDS_SAVED_SETTINGS[i].FM_LPF_RX_Filter = uintval;
 		}
 	}
 

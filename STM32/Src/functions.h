@@ -19,6 +19,7 @@ __asm(".global __use_no_heap\n\t");
 #define SRAM4 __attribute__((section(".SRAM4"))) __attribute__((aligned(32))) // SRAM4 64kb
 #define BACKUP_SRAM_BANK_ADDR (uint32_t *)0x38800000
 
+#define IRAM2_ON_F407
 #define SRAM_ON_F407
 #define SRAM_ON_H743 SRAM
 #endif
@@ -32,6 +33,7 @@ __asm(".global __use_no_heap\n\t");
 #define SRAM4 IRAM2 // double
 #define BACKUP_SRAM_BANK_ADDR (uint32_t *)(BKPSRAM_BASE)
 
+#define IRAM2_ON_F407 IRAM2
 #define SRAM_ON_F407 SRAM
 #define SRAM_ON_H743
 #endif

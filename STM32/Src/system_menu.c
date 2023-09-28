@@ -2014,6 +2014,11 @@ void SYSMENU_HANDL_FILTER_CW_LPF_pass(int8_t direction) {
 		TRX.CW_LPF_Filter = MAX_LPF_WIDTH_CW;
 	}
 
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].CW_LPF_Filter = TRX.CW_LPF_Filter;
+	}
+
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
@@ -2036,6 +2041,11 @@ void SYSMENU_HANDL_FILTER_SSB_LPF_RX_pass(int8_t direction) {
 	}
 	if (TRX.SSB_LPF_RX_Filter > MAX_LPF_WIDTH_SSB) {
 		TRX.SSB_LPF_RX_Filter = MAX_LPF_WIDTH_SSB;
+	}
+
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].SSB_LPF_RX_Filter = TRX.SSB_LPF_RX_Filter;
 	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
@@ -2062,6 +2072,11 @@ void SYSMENU_HANDL_FILTER_AM_LPF_RX_pass(int8_t direction) {
 		TRX.AM_LPF_RX_Filter = MAX_LPF_WIDTH_AM;
 	}
 
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].AM_LPF_RX_Filter = TRX.AM_LPF_RX_Filter;
+	}
+
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
@@ -2084,6 +2099,11 @@ void SYSMENU_HANDL_FILTER_FM_LPF_RX_pass(int8_t direction) {
 	}
 	if (TRX.FM_LPF_RX_Filter > MAX_LPF_WIDTH_NFM) {
 		TRX.FM_LPF_RX_Filter = MAX_LPF_WIDTH_NFM;
+	}
+
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].FM_LPF_RX_Filter = TRX.FM_LPF_RX_Filter;
 	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
