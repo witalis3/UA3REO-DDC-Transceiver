@@ -1621,31 +1621,12 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 
 // RX Equalizer
 static void doRX_EQ(uint16_t size, uint8_t mode) {
-	bool eq1_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P1_WFM != 0) : (TRX.RX_EQ_P1 != 0);
-	bool eq2_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P2_WFM != 0) : (TRX.RX_EQ_P2 != 0);
-	bool eq3_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P3_WFM != 0) : (TRX.RX_EQ_P3 != 0);
-	bool eq4_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P4_WFM != 0) : (TRX.RX_EQ_P4 != 0);
-	bool eq5_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P5_WFM != 0) : (TRX.RX_EQ_P5 != 0);
-	bool eq6_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P6_WFM != 0) : false;
-
-	if (eq1_enabled) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P1_FILTER, &EQ_RX_Q_P1_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
-	}
-	if (eq2_enabled) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P2_FILTER, &EQ_RX_Q_P2_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
-	}
-	if (eq3_enabled) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P3_FILTER, &EQ_RX_Q_P3_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
-	}
-	if (eq4_enabled) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P4_FILTER, &EQ_RX_Q_P4_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
-	}
-	if (eq5_enabled) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P5_FILTER, &EQ_RX_Q_P5_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
-	}
-	if (eq6_enabled) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P6_FILTER, &EQ_RX_Q_P6_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
-	}
+	arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P1_FILTER, &EQ_RX_Q_P1_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P2_FILTER, &EQ_RX_Q_P2_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P3_FILTER, &EQ_RX_Q_P3_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P4_FILTER, &EQ_RX_Q_P4_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P5_FILTER, &EQ_RX_Q_P5_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P6_FILTER, &EQ_RX_Q_P6_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 }
 
 // Equalizer microphone
