@@ -1033,7 +1033,7 @@ const static struct sysmenu_item_handler sysmenu_sd_format_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #if defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1)
-    {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, {"QRP", "BIG", "SPLIT", "RU4PN", "KT-100S", "WF-100D"}},
+    {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, (const enumerate_item[6]){"QRP", "BIG", "SPLIT", "RU4PN", "KT-100S", "WF-100D"}},
 #endif
     {"ALC Port Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Port_Enabled, SYSMENU_HANDL_CALIB_ALC_Port_Enabled},
     {"ALC Inverted", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Inverted_Logic, SYSMENU_HANDL_CALIB_ALC_Inverted_Logic},
