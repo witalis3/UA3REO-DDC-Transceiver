@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "8.3.0" // current STM32 version
+#define STM32_VERSION_STR "8.3.1" // current STM32 version
 
 #if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_MINI)
 #define FPGA_VERSION_STR "6.8.0" // needed FPGA version Wolf-Mini
@@ -167,6 +167,17 @@ static char ota_config_frontpanel[] = "WF_100D";
 #define ATU_MAXPOS ATU_7x7_MAXPOS
 #endif
 
+#ifdef FRONTPANEL_KT_100S
+#define HRDW_MCP3008_1 true
+#define HRDW_HAS_FUNCBUTTONS true
+#define MAX_VOLUME_VALUE 1024.0f
+#define FUNCBUTTONS_ON_PAGE 8
+#define FUNCBUTTONS_PAGES 5
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5)
+static char ota_config_frontpanel[] = "KT_100S";
+#define ATU_MAXPOS ATU_5x5_MAXPOS
+#endif
+
 #ifdef FRONTPANEL_WOLF_2
 #define HRDW_MCP3008_1 true
 #define HRDW_HAS_FUNCBUTTONS true
@@ -266,14 +277,14 @@ static char ota_config_lcd[] = "ST7735S";
 #endif
 
 #if defined(LCD_RA8875)
-#ifdef FRONTPANEL_WF_100D
+#if defined(FRONTPANEL_WF_100D)
 static char ota_config_lcd[] = "WF-100D";
-#else
-#ifdef FRONTPANEL_WOLF_2
+#elif defined(FRONTPANEL_KT_100S)
+static char ota_config_lcd[] = "KT-100S";
+#elif defined(FRONTPANEL_WOLF_2)
 static char ota_config_lcd[] = "WOLF-2";
 #else
 static char ota_config_lcd[] = "RA8875";
-#endif
 #endif
 
 #ifdef STM32H743xx

@@ -292,7 +292,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
 const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS_COUNT] = {};
 #endif
 
-#ifdef FRONTPANEL_BIG_V1
+#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_KT_100S)
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     // buttons
     {.port = 1, .channel = 0, .type = FUNIT_CTRL_AF_GAIN},    // AF GAIN

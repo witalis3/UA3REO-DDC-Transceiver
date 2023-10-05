@@ -232,6 +232,8 @@ int main(void) {
 	MX_CRC_Init();
 	MX_JPEG_Init();
 	/* USER CODE BEGIN 2 */
+	// HRDW_GoToInternalSPIClock();
+
 #ifdef HAS_TOUCHPAD
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 	GPIO_InitStruct.Pin = ENC2SW_AND_TOUCHPAD_Pin;
@@ -269,7 +271,7 @@ int main(void) {
 		reset_calibrations = true;
 	}
 #endif
-#ifdef FRONTPANEL_BIG_V1
+#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_KT_100S)
 	if (PERIPH_FrontPanel_Buttons[15].state) { // soft reset (F1)
 		reset_settings = true;
 	}
@@ -313,6 +315,11 @@ int main(void) {
 
 #ifdef FRONTPANEL_WF_100D
 	if (CALIBRATE.RF_unit_type != RF_UNIT_WF_100D) {
+		LoadCalibration(true);
+	}
+#endif
+#ifdef FRONTPANEL_KT_100S
+	if (CALIBRATE.RF_unit_type != RF_UNIT_KT_100S) {
 		LoadCalibration(true);
 	}
 #endif

@@ -2967,7 +2967,7 @@ static void SDCOMM_IMPORT_SETTINGS_handler(void) {
 		LAYOUT = &LAYOUT_THEMES[TRX.LayoutThemeId];
 		FFT_Init();
 		LCD_Init();
-#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
+#if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_KT_100S) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
 		if (CALIBRATE.INA226_EN) {
 			INA226_Init();
 		}
