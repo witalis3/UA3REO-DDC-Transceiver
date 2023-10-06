@@ -903,12 +903,12 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			                      LAYOUT->STATUS_BAR_HEIGHT - 3, BG_COLOR);
 
 			// ALC
-			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + LAYOUT->STATUS_PMETER_WIDTH + LAYOUT->STATUS_TX_ALC_X_OFFSET,
+			LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + LAYOUT->STATUS_PMETER_WIDTH + LAYOUT->STATUS_TX_ALC_X_OFFSET + 8,
 			                      LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, LAYOUT->STATUS_TX_LABELS_VAL_WIDTH,
 			                      LAYOUT->STATUS_TX_LABELS_VAL_HEIGHT, BG_COLOR);
 			uint8_t alc_level = (uint8_t)(TRX_ALC_OUT * 100.0f);
 			sprintf(ctmp, "%d%%", alc_level);
-			LCDDriver_printText(ctmp, LAYOUT->STATUS_BAR_X_OFFSET + LAYOUT->STATUS_PMETER_WIDTH + LAYOUT->STATUS_TX_ALC_X_OFFSET,
+			LCDDriver_printText(ctmp, LAYOUT->STATUS_BAR_X_OFFSET + LAYOUT->STATUS_PMETER_WIDTH + LAYOUT->STATUS_TX_ALC_X_OFFSET + 8,
 			                    LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_LABELS_OFFSET_Y, COLOR->STATUS_BAR_LABELS, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 			uint16_t alc_level_width = LAYOUT->STATUS_AMETER_WIDTH * alc_level / 100;
 			if (alc_level_width > LAYOUT->STATUS_AMETER_WIDTH) {
@@ -929,38 +929,38 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	char buff[32] = "";
 	// BW HPF-LPF
 	if (CurrentVFO->Mode == TRX_MODE_CW) {
-		sprintf(buff, "BW:%d", TRX.CW_LPF_Filter);
+		sprintf(buff, "%.1f", (float64_t)TRX.CW_LPF_Filter / 1000.0);
 	} else if ((CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)) {
-		sprintf(buff, "BW:%d", TRX.DIGI_LPF_Filter);
+		sprintf(buff, "%.1f", (float64_t)TRX.DIGI_LPF_Filter / 1000.0);
 	} else if ((CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB)) {
 		if (TRX_on_TX) {
-			sprintf(buff, "BW:%d-%d", TRX.SSB_HPF_TX_Filter, TRX.SSB_LPF_TX_Filter);
+			sprintf(buff, "%.1f", (float64_t)TRX.SSB_LPF_TX_Filter / 1000.0);
 		} else {
-			sprintf(buff, "BW:%d-%d", TRX.SSB_HPF_RX_Filter, TRX.SSB_LPF_RX_Filter);
+			sprintf(buff, "%.1f", (float64_t)TRX.SSB_LPF_RX_Filter / 1000.0);
 		}
 	} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
 		if (TRX_on_TX) {
-			sprintf(buff, "BW:%d", TRX.AM_LPF_TX_Filter);
+			sprintf(buff, "%.1f", (float64_t)TRX.AM_LPF_TX_Filter / 1000.0);
 		} else {
-			sprintf(buff, "BW:%d", TRX.AM_LPF_RX_Filter);
+			sprintf(buff, "%.1f", (float64_t)TRX.AM_LPF_RX_Filter / 1000.0);
 		}
 	} else if (CurrentVFO->Mode == TRX_MODE_NFM) {
 		if (TRX_on_TX) {
-			sprintf(buff, "BW:%d", TRX.FM_LPF_TX_Filter);
+			sprintf(buff, "%.1f", (float64_t)TRX.FM_LPF_TX_Filter / 1000.0);
 		} else {
-			sprintf(buff, "BW:%d", TRX.FM_LPF_RX_Filter);
+			sprintf(buff, "%.1f", (float64_t)TRX.FM_LPF_RX_Filter / 1000.0);
 		}
 	} else {
-		sprintf(buff, "BW:FULL");
+		sprintf(buff, "%d", TRX_GetRXSampleRate / 1000);
 	}
-	// addSymbols(buff, buff, 12, " ", true);
+	addSymbols(buff, buff, 4, " ", true);
 
-	// static char prev_bw_buff[16] = "";
-	// if(redraw || strcmp(prev_bw_buff, buff) != 0) {
-	// strcpy(prev_bw_buff, buff);
-	// LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_BW_Y_OFFSET,
-	// COLOR->STATUS_LABEL_BW, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-	//}
+	static char prev_bw_buff[16] = "";
+	if (redraw || strcmp(prev_bw_buff, buff) != 0) {
+		strcpy(prev_bw_buff, buff);
+		LCDDriver_printText(buff, LAYOUT->STATUS_LABEL_BW_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_BW_Y_OFFSET, COLOR->STATUS_LABEL_BW, BG_COLOR,
+		                    LAYOUT->STATUS_LABELS_FONT_SIZE);
+	}
 
 	// RIT
 	if (TRX.SPLIT_Enabled) {

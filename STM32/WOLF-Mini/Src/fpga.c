@@ -102,6 +102,7 @@ void FPGA_Init(bool bus_test, bool firmware_test) {
 			LCD_showError(buff, false);
 			LCD_busy = true;
 			HAL_Delay(300);
+			break;
 		}
 	}
 	LCD_busy = false;

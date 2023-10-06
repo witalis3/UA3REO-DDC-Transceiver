@@ -35,8 +35,6 @@ int16_t ADC_RAW_IN = 0;
 float32_t *FFTInput_I_current = (float32_t *)&FFTInput_I_A[0];
 float32_t *FFTInput_Q_current = (float32_t *)&FFTInput_Q_A[0];
 
-uint8_t DAC_GAINER_current_val = 0;
-
 // Private variables
 static GPIO_InitTypeDef FPGA_GPIO_InitStruct; // structure of GPIO ports
 
@@ -129,7 +127,7 @@ void FPGA_Init(bool bus_test, bool firmware_test) {
 		LCD_showError("Check FPGA BUS...", false);
 		HAL_Delay(1000);
 
-		while (bus_test) {
+		while (true) {
 			for (uint16_t i = 0; i < 256; i++) {
 				FPGA_setBusOutput();
 				FPGA_writePacket(0);
@@ -229,7 +227,7 @@ void FPGA_fpgadata_iqclock(void) {
 	if (FPGA_bus_stop) {
 		return;
 	}
-	VFO *current_vfo = CurrentVFO;
+	const VFO *current_vfo = CurrentVFO;
 	if (current_vfo->Mode == TRX_MODE_LOOPBACK) {
 		return;
 	}
@@ -392,7 +390,11 @@ static inline void FPGA_fpgadata_sendparam(void) {
 
 	// STAGE 13
 	// OUT DAC-GAIN
-	FPGA_writePacket(DAC_GAINER_current_val);
+	if (!HRDW_DAC_PLL_selected) { // correct gain for low PLL1
+		FPGA_writePacket(CALIBRATE.DAC_GAINER_val + 1);
+	} else {
+		FPGA_writePacket(CALIBRATE.DAC_GAINER_val);
+	}
 	FPGA_clockRise();
 	FPGA_clockFall();
 
@@ -1004,7 +1006,7 @@ bool FPGA_spi_flash_verify(uint32_t flash_pos, uint8_t *buff, uint32_t size) // 
 	FPGA_spi_continue_command(flash_pos & 0xFF);         // addr 3
 	data = FPGA_spi_continue_command(0xFF);
 	uint8_t progress_prev = 0;
-	uint8_t progress = 0;
+	uint8_t progress;
 
 	// Decompress RLE and verify
 	uint32_t errors = 0;
@@ -1118,11 +1120,5 @@ void FPGA_choise_DAC_PLL(uint64_t freq) {
 		HRDW_DAC_PLL_selected_prev = HRDW_DAC_PLL_selected;
 
 		FPGA_NeedRestart_TX = true;
-	}
-
-	// correct gain for low PLL1
-	DAC_GAINER_current_val = CALIBRATE.DAC_GAINER_val;
-	if (!HRDW_DAC_PLL_selected) {
-		DAC_GAINER_current_val += 1;
 	}
 }

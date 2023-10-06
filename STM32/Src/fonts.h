@@ -29,7 +29,7 @@ extern const GFXfont DS_DIGIT26pt7b;
 extern const GFXfont DS_DIGIT32pt7b;
 extern const GFXfont DS_DIGIT36pt7b;
 
-extern const unsigned char rastr_font[];
-extern const unsigned char rastr_font_4x6[];
+extern const uint8_t rastr_font[];
+extern const uint8_t rastr_font_4x6[];
 
 #endif

@@ -6,7 +6,7 @@
 #define __print_array(T, qual, color)                     \
 	int max_len = 16;                                       \
 	int n = size / sizeof(T);                               \
-	T *m = va_arg(v, T *);                                  \
+	const T *m = va_arg(v, const T *);                      \
 	printf("[");                                            \
 	for (int i = 0; i < (n < max_len ? n : max_len); i++) { \
 		if (i > 0)                                            \
@@ -34,18 +34,21 @@ static void __print_setup_colors(int normal, int number, int string, int hex, in
 static void __print_func(int count, unsigned short types[], ...) {
 	va_list v;
 	va_start(v, types);
+
+	/*
 #ifdef __print_DEBUG
 	fprintf("args[%i]: ", count);
 	for (int i = 0; i < count; i++) {
-		char type = types[i] & 0x1F;
-		char size = types[i] >> 5;
-		if (i > 0) {
-			fprintf(" ");
-		}
-		fprintf("%i[%i]", type, size);
+	  char type = types[i] & 0x1F;
+	  char size = types[i] >> 5;
+	  if (i > 0) {
+	    fprintf(" ");
+	  }
+	  fprintf("%i[%i]", type, size);
 	}
 	fprintf("\n");
 #endif // __print_DEBUG
+	*/
 
 	for (int i = 0; i < count; i++) {
 		char type = types[i] & 0x1F;

@@ -14,6 +14,7 @@
 #include <string.h>
 
 char RDS_Decoder_Text[RDS_DECODER_STRLEN + 1] = {0}; // decoded string
+bool RDS_Stereo = false;
 
 static char RDS_Decoder_0A[RDS_STR_MAXLEN];
 static char RDS_Decoder_2A[RDS_STR_MAXLEN];
@@ -94,6 +95,7 @@ void RDSDecoder_Init(void) {
 	dma_memset(RDS_Decoder_2A, 0x00, sizeof(RDS_Decoder_2A));
 	dma_memset(RDS_Decoder_2B, 0x00, sizeof(RDS_Decoder_2B));
 	sprintf(RDS_Decoder_Text, " RDS: -");
+	RDS_Stereo = false;
 	addSymbols(RDS_Decoder_Text, RDS_Decoder_Text, RDS_DECODER_STRLEN, " ", true);
 	LCD_UpdateQuery.TextBar = true;
 }
@@ -180,7 +182,7 @@ void RDSDecoder_Process(float32_t *bufferIn) {
 		static bool filtered_state_prev = false;
 		if (process_bits > 0) {
 			// print(process_bits);
-			for (uint8_t i = 0; i < process_bits; i++) {
+			for (uint8_t b = 0; b < process_bits; b++) {
 				if (!bit1_ready) {
 					bit1_state = filtered_state_prev;
 					bit1_ready = true;
@@ -310,8 +312,39 @@ void RDSDecoder_Process(float32_t *bufferIn) {
 }
 
 static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC, uint32_t groupD) {
+	// 0A or 0B group radio text
+	if ((groupB & 0xf800) == 0b0000000000000000) {
+		int index = (groupB & 0x3) * 2; // text segment and DI segment address
+
+		if (index == (3 * 2)) { // DI mono/stereo information
+			RDS_Stereo = groupB & 0x4;
+		}
+
+		if (index > (RDS_STR_MAXLEN - 5)) {
+			return;
+		}
+
+		char chr_c = cleanASCIIgarbage((char)(groupD >> 8));
+		char chr_d = cleanASCIIgarbage((char)(groupD & 0xff));
+
+		if (chr_c == 0 || chr_d == 0) {
+			return;
+		}
+
+		RDS_Decoder_0A[index] = chr_c;
+		RDS_Decoder_0A[index + 1] = chr_d;
+
+		for (uint8_t i = 0; i < index; i++) {
+			if (RDS_Decoder_0A[i] == 0) {
+				RDS_Decoder_0A[i] = ' ';
+			}
+		}
+
+		// println("0A ", index, ": ", str);
+	}
+
 	// 2A group radio text
-	if ((groupB & 0xf800) == 0x2000) {
+	if ((groupB & 0xf800) == 0b0010000000000000) {
 		int index = (groupB & 0xf) * 4; // text segment
 		bool abFlag = ((groupB >> 4) & 0x1) == 1;
 
@@ -353,33 +386,6 @@ static void RDS_AnalyseFrames(uint32_t groupA, uint32_t groupB, uint32_t groupC,
 		}
 
 		// println("2A ", abFlag?" A ":" B ", index, ": ", str);
-	}
-
-	// 0A group radio text
-	if ((groupB & 0xf800) == 0x0000) {
-		int index = (groupB & 0x3) * 2; // text segment
-
-		if (index > (RDS_STR_MAXLEN - 5)) {
-			return;
-		}
-
-		char chr_c = cleanASCIIgarbage((char)(groupD >> 8));
-		char chr_d = cleanASCIIgarbage((char)(groupD & 0xff));
-
-		if (chr_c == 0 || chr_d == 0) {
-			return;
-		}
-
-		RDS_Decoder_0A[index] = chr_c;
-		RDS_Decoder_0A[index + 1] = chr_d;
-
-		for (uint8_t i = 0; i < index; i++) {
-			if (RDS_Decoder_0A[i] == 0) {
-				RDS_Decoder_0A[i] = ' ';
-			}
-		}
-
-		// println("0A ", index, ": ", str);
 	}
 }
 

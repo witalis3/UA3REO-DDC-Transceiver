@@ -988,7 +988,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		if (!FAN_Active && TRX_RF_Temperature >= CALIBRATE.FAN_MEDIUM_START) // Temperature at which the fan starts at half power
 		{
 			FAN_Active = true;
-			// fan_pwm = true;
+			fan_pwm = true;
 		}
 		if (TRX_RF_Temperature >= CALIBRATE.FAN_FULL_START) { // Temperature at which the fan starts at full power
 			fan_pwm = false;
@@ -1278,36 +1278,6 @@ void RF_UNIT_ProcessSensors(void) {
 		TRX_PWR_ALC_SWR_OVERFLOW = true;
 	}
 
-#if (defined(SWR_AD8307_LOG)) // If it is used the Log amp. AD8307
-	float32_t P_FW_dBm, P_BW_dBm;
-	float32_t V_FW_Scaled, V_BW_Scaled;
-	// float32_t NewSWR;
-
-	TRX_VLT_forward = TRX_VLT_forward + (forward - TRX_VLT_forward) / 4;
-	TRX_VLT_backward = TRX_VLT_backward + (backward - TRX_VLT_backward) / 4;
-
-	// Calculate the Forward values
-	P_FW_dBm = ((TRX_VLT_forward * 1000) - CALIBRATE.FW_AD8307_OFFS) / (CALIBRATE.FW_AD8307_SLP);
-	V_FW_Scaled = pow(10, (double)((P_FW_dBm - 10) / 20));     // Calculate in voltage (Vp - 50ohm terminated)
-	TRX_PWR_Forward = pow(10, (double)((P_FW_dBm - 30) / 10)); // Calculate in W
-
-	// Calculate the Backward values
-	P_BW_dBm = ((TRX_VLT_backward * 1000) - CALIBRATE.BW_AD8307_OFFS) / (CALIBRATE.BW_AD8307_SLP);
-	V_BW_Scaled = pow(10, (double)((P_BW_dBm - 10) / 20));      // Calculate in voltage (Vp - 50ohm terminated)
-	TRX_PWR_Backward = pow(10, (double)((P_BW_dBm - 30) / 10)); // Calculate in W
-
-	TRX_SWR = (V_FW_Scaled + V_BW_Scaled) / (V_FW_Scaled - V_BW_Scaled); // Calculate SWR
-
-	// TRX_SWR = TRX_SWR + (NewSWR - TRX_SWR) / 2;
-
-	if (TRX_SWR > 10.0f) {
-		TRX_SWR = 10.0f;
-	}
-	if (TRX_SWR < 0.0f) {
-		TRX_SWR = 0.0f;
-	}
-
-#else // if it is used the standard measure (diode rectifier)
 	// forward = forward / (510.0f / (0.0f + 510.0f)); // adjust the voltage based on the voltage divider (0 ohm and 510 ohm)
 	if (forward < 0.05f) // do not measure less than 50mV
 	{
@@ -1374,7 +1344,6 @@ void RF_UNIT_ProcessSensors(void) {
 			TRX_PWR_Backward = TRX_PWR_Forward;
 		}
 	}
-#endif
 
 #define smooth_stick_time 100
 #define smooth_up_coeff 0.3f

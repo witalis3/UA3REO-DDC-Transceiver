@@ -122,8 +122,9 @@ void TRX_Restart_Mode() {
 			TRX_Start_TX();
 		}
 	} else {
-		TRX_TX_sendZeroes = 0;
 		TRX_Start_RX();
+		TRX_TX_sendZeroes = 0;
+		TRX_SWR_PROTECTOR = false;
 	}
 
 	// SPLIT
@@ -283,7 +284,6 @@ void TRX_ptt_change(void) {
 			}
 		}
 
-		TRX_SWR_PROTECTOR = false;
 		TRX_ptt_hard = TRX_new_ptt_hard;
 		TRX_ptt_soft = false;
 		CW_key_serial = false;
@@ -300,7 +300,6 @@ void TRX_ptt_change(void) {
 			}
 		}
 
-		TRX_SWR_PROTECTOR = false;
 		TRX_old_ptt_soft = TRX_ptt_soft;
 		LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		FPGA_NeedSendParams = true;
@@ -814,6 +813,10 @@ void TRX_RestoreBandSettings(int8_t band) {
 		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
 		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
 	}
+	TRX.CW_LPF_Filter = TRX.BANDS_SAVED_SETTINGS[band].CW_LPF_Filter;
+	TRX.SSB_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].SSB_LPF_RX_Filter;
+	TRX.AM_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].AM_LPF_RX_Filter;
+	TRX.FM_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].FM_LPF_RX_Filter;
 
 	CurrentVFO->FM_SQL_threshold_dbm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm;
 	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
@@ -833,7 +836,7 @@ void TRX_RestoreBandSettings(int8_t band) {
 }
 
 void TRX_DoAutoGain(void) {
-	uint8_t skip_cycles = 0;
+	static uint8_t skip_cycles = 0;
 	if (skip_cycles > 0) {
 		skip_cycles--;
 		return;
@@ -954,7 +957,7 @@ void TRX_ProcessScanMode(void) {
 			// LCD_UpdateQuery.StatusInfoGUI = true;
 			// LCD_UpdateQuery.StatusInfoBarRedraw = true;
 			StateChangeTime = HAL_GetTick();
-		} else // common region mode
+		} else if (band != -1) // common region mode
 		{
 			for (uint8_t region_id = 0; region_id < BANDS[band].regionsCount; region_id++) {
 				if ((BANDS[band].regions[region_id].startFreq <= CurrentVFO->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO->Freq)) {
@@ -1005,7 +1008,7 @@ void TRX_setFrequencySlowly_Process(void) {
 
 void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 	float64_t newfreq = (float64_t)CurrentVFO->Freq;
-	float64_t step = 0;
+	float64_t step;
 
 	if (TRX.ChannelMode && getBandFromFreq(CurrentVFO->Freq, false) != -1 && BANDS[getBandFromFreq(CurrentVFO->Freq, false)].channelsCount > 0) {
 		int_fast8_t band = getBandFromFreq(CurrentVFO->Freq, false);
@@ -1061,14 +1064,28 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		if (step < 1.0) {
 			step = 1.0;
 		}
+		bool air_step = (step == 8333 || step == 8333 * 5);
+		if (air_step) {
+			step = 8333;
+		}
 
-		if (direction == -1.0f) {
+		if (direction == -1.0f && !air_step) {
 			newfreq = ceill(newfreq / step) * step;
 		}
-		if (direction == 1.0f) {
+		if (direction == 1.0f && !air_step) {
 			newfreq = floorl(newfreq / step) * step;
 		}
+
 		newfreq = newfreq + step * (float64_t)direction;
+		if (air_step) {
+			float64_t mod = fmodl(newfreq, 1000);
+			if (mod == 999) {
+				newfreq += 1;
+			}
+			if (mod == 334 || mod == 667 || mod == 1) {
+				newfreq -= 1;
+			}
+		}
 	} else { // not TRX.Fast
 		step = TRX.FRQ_STEP;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
@@ -1104,14 +1121,28 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		if (step < 1.0) {
 			step = 1.0;
 		}
+		bool air_step = (step == 833.3 || step == 8.333);
+		if (air_step) {
+			step = 8333;
+		}
 
-		if (direction == -1.0f) {
+		if (direction == -1.0f && !air_step) {
 			newfreq = ceill(newfreq / step) * step;
 		}
-		if (direction == 1.0f) {
+		if (direction == 1.0f && !air_step) {
 			newfreq = floorl(newfreq / step) * step;
 		}
+
 		newfreq = newfreq + step * (float64_t)direction;
+		if (air_step) {
+			float64_t mod = fmodl(newfreq, 1000);
+			if (mod == 999) {
+				newfreq += 1;
+			}
+			if (mod == 334 || mod == 667 || mod == 1) {
+				newfreq -= 1;
+			}
+		}
 	}
 
 	TRX_setFrequency(newfreq, CurrentVFO);
@@ -1392,7 +1423,7 @@ void BUTTONHANDLER_MODE_P(uint32_t parameter) {
 	} else if (mode == TRX_MODE_USB) {
 		mode = TRX_MODE_LSB;
 	} else if (mode == TRX_MODE_CW) {
-		mode = TRX_MODE_CW;
+		// mode = TRX_MODE_CW;
 	} else if (mode == TRX_MODE_NFM) {
 		mode = TRX_MODE_WFM;
 	} else if (mode == TRX_MODE_WFM) {
@@ -2121,6 +2152,14 @@ void BUTTONHANDLER_SET_RX_BW(uint32_t parameter) {
 	}
 	if (CurrentVFO->Mode == TRX_MODE_NFM) {
 		TRX.FM_LPF_RX_Filter = parameter;
+	}
+
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.BANDS_SAVED_SETTINGS[band].CW_LPF_Filter = TRX.CW_LPF_Filter;
+		TRX.BANDS_SAVED_SETTINGS[band].SSB_LPF_RX_Filter = TRX.SSB_LPF_RX_Filter;
+		TRX.BANDS_SAVED_SETTINGS[band].AM_LPF_RX_Filter = TRX.AM_LPF_RX_Filter;
+		TRX.BANDS_SAVED_SETTINGS[band].FM_LPF_RX_Filter = TRX.FM_LPF_RX_Filter;
 	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);

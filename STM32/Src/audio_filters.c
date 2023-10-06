@@ -43,36 +43,43 @@ static float32_t EQ_RX_I_P2_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t EQ_RX_I_P3_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t EQ_RX_I_P4_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t EQ_RX_I_P5_FILTER_State[2 * EQ_STAGES] = {0};
+static float32_t EQ_RX_I_P6_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t EQ_RX_Q_P1_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t EQ_RX_Q_P2_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t EQ_RX_Q_P3_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t EQ_RX_Q_P4_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t EQ_RX_Q_P5_FILTER_State[2 * EQ_STAGES] = {0};
+static float32_t EQ_RX_Q_P6_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t EQ_RX_P1_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_RX_P2_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_RX_P3_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_RX_P4_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_RX_P5_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
+static float32_t EQ_RX_P6_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P1_FILTER_State_SSB[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P2_FILTER_State_SSB[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P3_FILTER_State_SSB[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P4_FILTER_State_SSB[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P5_FILTER_State_SSB[2 * EQ_STAGES] = {0};
+static float32_t EQ_MIC_P6_FILTER_State_SSB[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P1_FILTER_Coeffs_SSB[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P2_FILTER_Coeffs_SSB[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P3_FILTER_Coeffs_SSB[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P4_FILTER_Coeffs_SSB[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P5_FILTER_Coeffs_SSB[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
+static float32_t EQ_MIC_P6_FILTER_Coeffs_SSB[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P1_FILTER_State_AMFM[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P2_FILTER_State_AMFM[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P3_FILTER_State_AMFM[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P4_FILTER_State_AMFM[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P5_FILTER_State_AMFM[2 * EQ_STAGES] = {0};
+static float32_t EQ_MIC_P6_FILTER_State_AMFM[2 * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P1_FILTER_Coeffs_AMFM[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P2_FILTER_Coeffs_AMFM[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P3_FILTER_Coeffs_AMFM[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P4_FILTER_Coeffs_AMFM[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t EQ_MIC_P5_FILTER_Coeffs_AMFM[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
+static float32_t EQ_MIC_P6_FILTER_Coeffs_AMFM[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
 static float32_t AGC_RX1_KW_HSHELF_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t AGC_RX1_KW_HPASS_FILTER_State[2 * EQ_STAGES] = {0};
 static float32_t AGC_RX_KW_HSHELF_FILTER_Coeffs[BIQUAD_COEFF_IN_STAGE * EQ_STAGES] = {0};
@@ -472,21 +479,25 @@ arm_biquad_cascade_df2T_instance_f32 EQ_RX_I_P2_FILTER = {EQ_STAGES, EQ_RX_I_P2_
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_I_P3_FILTER = {EQ_STAGES, EQ_RX_I_P3_FILTER_State, EQ_RX_P3_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_I_P4_FILTER = {EQ_STAGES, EQ_RX_I_P4_FILTER_State, EQ_RX_P4_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_I_P5_FILTER = {EQ_STAGES, EQ_RX_I_P5_FILTER_State, EQ_RX_P5_FILTER_Coeffs};
+arm_biquad_cascade_df2T_instance_f32 EQ_RX_I_P6_FILTER = {EQ_STAGES, EQ_RX_I_P6_FILTER_State, EQ_RX_P6_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_Q_P1_FILTER = {EQ_STAGES, EQ_RX_Q_P1_FILTER_State, EQ_RX_P1_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_Q_P2_FILTER = {EQ_STAGES, EQ_RX_Q_P2_FILTER_State, EQ_RX_P2_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_Q_P3_FILTER = {EQ_STAGES, EQ_RX_Q_P3_FILTER_State, EQ_RX_P3_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_Q_P4_FILTER = {EQ_STAGES, EQ_RX_Q_P4_FILTER_State, EQ_RX_P4_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_RX_Q_P5_FILTER = {EQ_STAGES, EQ_RX_Q_P5_FILTER_State, EQ_RX_P5_FILTER_Coeffs};
+arm_biquad_cascade_df2T_instance_f32 EQ_RX_Q_P6_FILTER = {EQ_STAGES, EQ_RX_Q_P6_FILTER_State, EQ_RX_P6_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P1_FILTER_SSB = {EQ_STAGES, EQ_MIC_P1_FILTER_State_SSB, EQ_MIC_P1_FILTER_Coeffs_SSB};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P2_FILTER_SSB = {EQ_STAGES, EQ_MIC_P2_FILTER_State_SSB, EQ_MIC_P2_FILTER_Coeffs_SSB};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P3_FILTER_SSB = {EQ_STAGES, EQ_MIC_P3_FILTER_State_SSB, EQ_MIC_P3_FILTER_Coeffs_SSB};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P4_FILTER_SSB = {EQ_STAGES, EQ_MIC_P4_FILTER_State_SSB, EQ_MIC_P4_FILTER_Coeffs_SSB};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P5_FILTER_SSB = {EQ_STAGES, EQ_MIC_P5_FILTER_State_SSB, EQ_MIC_P5_FILTER_Coeffs_SSB};
+arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P6_FILTER_SSB = {EQ_STAGES, EQ_MIC_P6_FILTER_State_SSB, EQ_MIC_P6_FILTER_Coeffs_SSB};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P1_FILTER_AMFM = {EQ_STAGES, EQ_MIC_P1_FILTER_State_AMFM, EQ_MIC_P1_FILTER_Coeffs_AMFM};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P2_FILTER_AMFM = {EQ_STAGES, EQ_MIC_P2_FILTER_State_AMFM, EQ_MIC_P2_FILTER_Coeffs_AMFM};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P3_FILTER_AMFM = {EQ_STAGES, EQ_MIC_P3_FILTER_State_AMFM, EQ_MIC_P3_FILTER_Coeffs_AMFM};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P4_FILTER_AMFM = {EQ_STAGES, EQ_MIC_P4_FILTER_State_AMFM, EQ_MIC_P4_FILTER_Coeffs_AMFM};
 arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P5_FILTER_AMFM = {EQ_STAGES, EQ_MIC_P5_FILTER_State_AMFM, EQ_MIC_P5_FILTER_Coeffs_AMFM};
+arm_biquad_cascade_df2T_instance_f32 EQ_MIC_P6_FILTER_AMFM = {EQ_STAGES, EQ_MIC_P6_FILTER_State_AMFM, EQ_MIC_P6_FILTER_Coeffs_AMFM};
 arm_biquad_cascade_df2T_instance_f32 AGC_RX1_KW_HSHELF_FILTER = {EQ_STAGES, AGC_RX1_KW_HSHELF_FILTER_State, AGC_RX_KW_HSHELF_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 AGC_RX1_KW_HPASS_FILTER = {EQ_STAGES, AGC_RX1_KW_HPASS_FILTER_State, AGC_RX_KW_HPASS_FILTER_Coeffs};
 arm_biquad_cascade_df2T_instance_f32 SFM_RX1_Pilot_Filter = {SFM_FILTER_STAGES, SFM_RX1_Pilot_Filter_State, SFM_Pilot_Filter_Coeffs};
@@ -625,11 +636,11 @@ void ReinitAudioFilters(void) {
 	uint32_t decim_iir_filter_width = 20000;
 
 #if HRDW_HAS_DUAL_RX
-	if (lpf_rx1_width < 5000 && (!TRX.Dual_RX || lpf_rx2_width < 5000)) {
+	if (lpf_rx1_width > 0 && lpf_rx1_width < 5000 && (!TRX.Dual_RX || (lpf_rx2_width > 0 && lpf_rx2_width < 5000))) {
 		decim_iir_filter_width = 5000;
 	}
 #else
-	if (lpf_rx1_width < 5000 && (true || lpf_rx2_width < 5000)) {
+	if (lpf_rx1_width > 0 && lpf_rx1_width < 5000 && (true || (lpf_rx2_width > 0 && lpf_rx2_width < 5000))) {
 		decim_iir_filter_width = 5000;
 	}
 #endif
@@ -640,10 +651,12 @@ void ReinitAudioFilters(void) {
 	if (TRX_GetRXSampleRateENUM == TRX_SAMPLERATE_K384) {
 		decim_iir_filter_stages = 3;
 	}
+
 	iir_filter_t *filter = biquad_create(decim_iir_filter_stages);
-	biquad_init_lowpass(filter, TRX_GetRXSampleRate, 20000);
+	biquad_init_lowpass(filter, TRX_GetRXSampleRate, decim_iir_filter_width);
 	fill_biquad_coeffs(filter, DECIMATE_IIR_Coeffs, decim_iir_filter_stages);
 	uint32_t need_decimate_rate = TRX_GetRXSampleRate / TRX_SAMPLERATE;
+
 	DECIMATE_FIR_RX1_AUDIO_I.M = need_decimate_rate;
 	DECIMATE_FIR_RX1_AUDIO_Q.M = need_decimate_rate;
 	DECIMATE_IIR_RX1_AUDIO_I.numStages = decim_iir_filter_stages;
@@ -717,33 +730,37 @@ void ReinitAudioFilters(void) {
 	arm_biquad_cascade_df2T_initNoClean_f32(&IIR_RX2_GAUSS_Q, GAUSS_STAGES, IIR_RX_GAUSS_Coeffs, (float32_t *)&IIR_RX2_GAUSS_Q_State[0]);
 #endif
 
-	// RX Equalizer
-	calcBiquad(BIQUAD_peak, 300, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P1, EQ_RX_P1_FILTER_Coeffs);
+	// RX Equalizer with default settings to normalize frequency response
+	calcBiquad(BIQUAD_peak, 300, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P1 - 3, EQ_RX_P1_FILTER_Coeffs);
 	calcBiquad(BIQUAD_peak, 700, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P2, EQ_RX_P2_FILTER_Coeffs);
-	calcBiquad(BIQUAD_peak, 1200, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P3, EQ_RX_P3_FILTER_Coeffs);
+	calcBiquad(BIQUAD_peak, 1200, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P3 - 3, EQ_RX_P3_FILTER_Coeffs);
 	calcBiquad(BIQUAD_peak, 1800, TRX_SAMPLERATE, 1.5f, TRX.RX_EQ_P4, EQ_RX_P4_FILTER_Coeffs);
-	calcBiquad(BIQUAD_peak, 2300, TRX_SAMPLERATE, 2.0f, TRX.RX_EQ_P5, EQ_RX_P5_FILTER_Coeffs);
+	calcBiquad(BIQUAD_peak, 2000, TRX_SAMPLERATE, 2.0f, TRX.RX_EQ_P5 - 3, EQ_RX_P5_FILTER_Coeffs);
+	calcBiquad(BIQUAD_peak, 2500, TRX_SAMPLERATE, 2.0f, TRX.RX_EQ_P6, EQ_RX_P6_FILTER_Coeffs);
 
 	if (CurrentVFO->Mode == TRX_MODE_WFM) {
 		calcBiquad(BIQUAD_peak, 50, TRX_SAMPLERATE, 0.5f, TRX.RX_EQ_P1_WFM, EQ_RX_P1_FILTER_Coeffs);
 		calcBiquad(BIQUAD_peak, 300, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P2_WFM, EQ_RX_P2_FILTER_Coeffs);
-		calcBiquad(BIQUAD_peak, 1500, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P3_WFM, EQ_RX_P3_FILTER_Coeffs);
-		calcBiquad(BIQUAD_peak, 5000, TRX_SAMPLERATE, 3.0f, TRX.RX_EQ_P4_WFM, EQ_RX_P4_FILTER_Coeffs);
-		calcBiquad(BIQUAD_peak, 12000, TRX_SAMPLERATE, 3.0f, TRX.RX_EQ_P5_WFM, EQ_RX_P5_FILTER_Coeffs);
+		calcBiquad(BIQUAD_peak, 1500, TRX_SAMPLERATE, 1.0f, TRX.RX_EQ_P3_WFM - 1, EQ_RX_P3_FILTER_Coeffs);
+		calcBiquad(BIQUAD_peak, 5000, TRX_SAMPLERATE, 3.0f, TRX.RX_EQ_P4_WFM - 2, EQ_RX_P4_FILTER_Coeffs);
+		calcBiquad(BIQUAD_peak, 8000, TRX_SAMPLERATE, 5.0f, TRX.RX_EQ_P5_WFM - 2, EQ_RX_P5_FILTER_Coeffs);
+		calcBiquad(BIQUAD_peak, 12000, TRX_SAMPLERATE, 6.0f, TRX.RX_EQ_P6_WFM - 3, EQ_RX_P6_FILTER_Coeffs);
 	}
 
 	// MIC Equalizer
 	calcBiquad(BIQUAD_peak, 300, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P1_SSB, EQ_MIC_P1_FILTER_Coeffs_SSB);
 	calcBiquad(BIQUAD_peak, 700, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P2_SSB, EQ_MIC_P2_FILTER_Coeffs_SSB);
-	calcBiquad(BIQUAD_peak, 1200, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P3_SSB, EQ_MIC_P3_FILTER_Coeffs_SSB);
+	calcBiquad(BIQUAD_peak, 1200, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P3_SSB - 2, EQ_MIC_P3_FILTER_Coeffs_SSB);
 	calcBiquad(BIQUAD_peak, 1800, TRX_SAMPLERATE, 1.5f, TRX.MIC_EQ_P4_SSB, EQ_MIC_P4_FILTER_Coeffs_SSB);
-	calcBiquad(BIQUAD_peak, 2300, TRX_SAMPLERATE, 2.0f, TRX.MIC_EQ_P5_SSB, EQ_MIC_P5_FILTER_Coeffs_SSB);
+	calcBiquad(BIQUAD_peak, 2000, TRX_SAMPLERATE, 2.0f, TRX.MIC_EQ_P5_SSB - 1, EQ_MIC_P5_FILTER_Coeffs_SSB);
+	calcBiquad(BIQUAD_peak, 2500, TRX_SAMPLERATE, 2.0f, TRX.MIC_EQ_P6_SSB - 2, EQ_MIC_P6_FILTER_Coeffs_SSB);
 
 	calcBiquad(BIQUAD_peak, 300, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P1_AMFM, EQ_MIC_P1_FILTER_Coeffs_AMFM);
 	calcBiquad(BIQUAD_peak, 700, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P2_AMFM, EQ_MIC_P2_FILTER_Coeffs_AMFM);
-	calcBiquad(BIQUAD_peak, 1200, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P3_AMFM, EQ_MIC_P3_FILTER_Coeffs_AMFM);
+	calcBiquad(BIQUAD_peak, 1200, TRX_SAMPLERATE, 1.0f, TRX.MIC_EQ_P3_AMFM - 2, EQ_MIC_P3_FILTER_Coeffs_AMFM);
 	calcBiquad(BIQUAD_peak, 1800, TRX_SAMPLERATE, 1.5f, TRX.MIC_EQ_P4_AMFM, EQ_MIC_P4_FILTER_Coeffs_AMFM);
-	calcBiquad(BIQUAD_peak, 2300, TRX_SAMPLERATE, 2.0f, TRX.MIC_EQ_P5_AMFM, EQ_MIC_P5_FILTER_Coeffs_AMFM);
+	calcBiquad(BIQUAD_peak, 2000, TRX_SAMPLERATE, 2.0f, TRX.MIC_EQ_P5_AMFM - 1, EQ_MIC_P5_FILTER_Coeffs_AMFM);
+	calcBiquad(BIQUAD_peak, 2500, TRX_SAMPLERATE, 2.0f, TRX.MIC_EQ_P6_AMFM - 2, EQ_MIC_P6_FILTER_Coeffs_AMFM);
 
 	// Stereo FM pilot
 	filter = biquad_create(SFM_FILTER_STAGES);

@@ -164,7 +164,6 @@ float32_t LOCINFO_distanceInKmBetweenEarthCoordinates(float32_t lat1, float32_t 
 }
 
 float32_t LOCINFO_azimuthFromCoordinates(float32_t lat1, float32_t lon1, float32_t lat2, float32_t lon2) {
-	float32_t dLat = DEG2RAD(lat2 - lat1);
 	float32_t dLon = DEG2RAD(lon2 - lon1);
 
 	lat1 = DEG2RAD(lat1);

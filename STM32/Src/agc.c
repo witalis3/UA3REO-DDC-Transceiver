@@ -231,9 +231,8 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_r
 	float32_t AGC_TX_I_magnitude = 0;
 	float32_t ampl_max_i = 0.0f;
 	float32_t ampl_min_i = 0.0f;
-	uint32_t tmp_index;
 	arm_max_no_idx_f32(agcBuffer_i, blockSize, &ampl_max_i);
-	arm_min_f32(agcBuffer_i, blockSize, &ampl_min_i, &tmp_index);
+	arm_min_no_idx_f32(agcBuffer_i, blockSize, &ampl_min_i);
 	if (ampl_max_i > -ampl_min_i) {
 		AGC_TX_I_magnitude = ampl_max_i;
 	} else {
@@ -256,7 +255,7 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_r
 			AGC_TX_I_magnitude = 0.001f;
 		}
 		float32_t full_scale_rate = AGC_TX_I_magnitude / FLOAT_FULL_SCALE_POW;
-		float32_t AGC_TX_dbFS = rate2dbP(full_scale_rate);
+		AGC_TX_dbFS = rate2dbP(full_scale_rate);
 	}
 
 	if (AGC_TX_dbFS < -100.0f) {

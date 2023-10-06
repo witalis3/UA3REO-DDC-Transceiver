@@ -307,7 +307,7 @@ void CW_do_Process_Macros(void) {
 		return;
 	}
 
-	char *chr = CW_CharToDots(*(CW_Macros_Message + CW_current_message_index));
+	const char *chr = CW_CharToDots(*(CW_Macros_Message + CW_current_message_index));
 	char symbol = chr[CW_current_symbol_index];
 
 	if (CW_EncodeStatus == 1) {

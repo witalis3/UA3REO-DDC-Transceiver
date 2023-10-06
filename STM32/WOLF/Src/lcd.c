@@ -345,7 +345,6 @@ static void LCD_displayBottomButtons(bool redraw) {
 	if (TRX.EnableBottomNavigationButtons) {
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, ">", false, false, false, 0, BUTTONHANDLER_RIGHT_ARR,
 		            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND);
-		curr_x += bottomNavigationButtonsWidth;
 	}
 #endif
 
@@ -457,7 +456,7 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 			}
 		}
 		if (TRX.ChannelMode && band >= 0 && BANDS[band].channelsCount > 0) {
-			if (band != -1 && channel != -1 && strlen((char *)BANDS[band].channels[channel].subname) > 0) {
+			if (channel != -1 && strlen((char *)BANDS[band].channels[channel].subname) > 0) {
 				sprintf(buff, "%s", (char *)BANDS[band].channels[channel].subname);
 			} else {
 				sprintf(buff, "CH");
@@ -465,7 +464,7 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 			addSymbols(buff, buff, 2, " ", false);
 			LCDDriver_printText(buff, LAYOUT->FREQ_X_OFFSET_HZ + 2, LAYOUT->FREQ_Y_BASELINE_SMALL - RASTR_FONT_H * 2, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE, BG_COLOR, 2);
 
-			if (band != -1 && channel != -1) {
+			if (channel != -1) {
 				sprintf(buff, "%d", BANDS[band].channels[channel].number);
 			} else {
 				sprintf(buff, "-");
@@ -537,7 +536,7 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 			}
 		}
 		if (TRX.ChannelMode && band >= 0 && BANDS[band].channelsCount > 0) {
-			if (band != -1 && channel != -1 && strlen((char *)BANDS[band].channels[channel].subname) > 0) {
+			if (channel != -1 && strlen((char *)BANDS[band].channels[channel].subname) > 0) {
 				sprintf(buff, "%.2s", (char *)BANDS[band].channels[channel].subname);
 			} else {
 				sprintf(buff, "CH");
@@ -545,7 +544,7 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 			addSymbols(buff, buff, 2, " ", false);
 			LCDDriver_printText(buff, LAYOUT->FREQ_B_X_OFFSET_HZ, LAYOUT->FREQ_B_Y_BASELINE_SMALL - RASTR_FONT_H - 3, TRX.selected_vfo ? COLOR->FREQ_B_KHZ : COLOR->FREQ_B_INACTIVE, BG_COLOR, 1);
 
-			if (band != -1 && channel != -1) {
+			if (channel != -1) {
 				sprintf(buff, "%d", BANDS[band].channels[channel].number);
 			} else {
 				sprintf(buff, "-");
@@ -1216,8 +1215,8 @@ static void LCD_PrintMeterArrow(int16_t target_pixel_x, int16_t target_color) {
 
 	// length cut
 	const uint32_t max_length = 220;
-	float32_t x_diff = 0;
-	float32_t y_diff = 0;
+	float32_t x_diff;
+	float32_t y_diff;
 	float32_t length;
 	arm_sqrt_f32((x1 - x0) * (x1 - x0) + (y1 - y0) * (y1 - y0), &length);
 	if (length > max_length) {
@@ -1522,8 +1521,8 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		// ATU
 		if (SYSMENU_HANDL_CHECK_HAS_ATU() && LAYOUT->STATUS_ATU_I_Y > 0) {
 			if (TRX.TUNER_Enabled) {
-				float32_t *atu_i = ATU_I_VALS;
-				float32_t *atu_c = ATU_C_VALS;
+				const float32_t *atu_i = ATU_I_VALS;
+				const float32_t *atu_c = ATU_C_VALS;
 
 				float32_t i_val = 0;
 				float32_t c_val = 0;
@@ -2476,7 +2475,7 @@ void LCD_processTouch(uint16_t x, uint16_t y) {
 		}
 	}
 
-	if (!LCD_screenKeyboardOpened) {
+	if (!LCD_screenKeyboardOpened && !TRX_on_TX) {
 		// fft/wtf tap
 		if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + LAYOUT->FFT_FFTWTF_BOTTOM - 50) >= y)) {
 			// frequency tap
@@ -2609,6 +2608,10 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 
 	// fft/wtf swipe
 	if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) >= y)) {
+		if (TRX_on_TX) {
+			return false;
+		}
+
 		const uint8_t slowler = 4;
 		float64_t step = TRX.FRQ_STEP;
 		if (TRX.Fast) {
@@ -2666,6 +2669,9 @@ bool LCD_processSwipeTwoFingersTouch(uint16_t x, uint16_t y, int16_t dx, int16_t
 		return false;
 	}
 	if (LCD_systemMenuOpened || LCD_window.opened) {
+		return false;
+	}
+	if (TRX_on_TX) {
 		return false;
 	}
 
@@ -3274,7 +3280,7 @@ void LCD_printKeyboard(void (*keyboardHandler)(char *string, uint32_t max_size, 
 	//
 	char line1[] = "~1234567890_+<";
 	if (lowcase) {
-		char line1[] = "`1234567890-=<";
+		strcpy(line1, "`1234567890-=<");
 	}
 	for (uint8_t i = 0; i < strlen(line1); i++) {
 		char text[2] = {0};

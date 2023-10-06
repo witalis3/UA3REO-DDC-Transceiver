@@ -404,8 +404,8 @@ void EVENTS_do_EVERY_100ms(void) // 10 hz
 	// Detect FPGA stuck error
 	static float32_t old_FPGA_Audio_Buffer_RX1_I = 0;
 	static float32_t old_FPGA_Audio_Buffer_RX1_Q = 0;
-	float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
-	float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
+	const float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
+	const float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
 	static uint16_t fpga_stuck_errors = 0;
 	if (FPGA_Audio_Buffer_RX1_I_current[0] == old_FPGA_Audio_Buffer_RX1_I || FPGA_Audio_Buffer_RX1_Q_current[0] == old_FPGA_Audio_Buffer_RX1_Q) {
 		fpga_stuck_errors++;
@@ -529,8 +529,8 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 		// Print debug
 		uint32_t dbg_WM8731_DMA_samples = (uint32_t)((float32_t)CODEC_DMA_samples / 2.0f * dbg_coeff);
 		uint32_t dbg_AUDIOPROC_samples = (uint32_t)((float32_t)AUDIOPROC_samples * dbg_coeff);
-		float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
-		float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
+		const float32_t *FPGA_Audio_Buffer_RX1_I_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_I_A : (float32_t *)&FPGA_Audio_Buffer_RX1_I_B;
+		const float32_t *FPGA_Audio_Buffer_RX1_Q_current = !FPGA_RX_Buffer_Current ? (float32_t *)&FPGA_Audio_Buffer_RX1_Q_A : (float32_t *)&FPGA_Audio_Buffer_RX1_Q_B;
 		float32_t dbg_FPGA_Audio_Buffer_I_tmp = FPGA_Audio_Buffer_RX1_I_current[0];
 		float32_t dbg_FPGA_Audio_Buffer_Q_tmp = FPGA_Audio_Buffer_RX1_Q_current[0];
 		if (TRX_on_TX) {
@@ -583,7 +583,6 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 	RX_USB_AUDIO_SAMPLES = 0;
 	TX_USB_AUDIO_SAMPLES = 0;
 	FPGA_NeedSendParams = true;
-	CODEC_Beeping = false;
 
 // redraw lcd to fix problem
 #ifdef LCD_HX8357B

@@ -84,6 +84,7 @@ extern bool WIFI_postHTTPpage(char *host, char *url, void (*callback)(void), boo
 extern void WIFI_getRDA(void);
 extern void WIFI_getDXCluster(void);
 extern void WIFI_getPropagation(void);
+extern void WIFI_getTropo(void);
 extern void WIFI_getDayNightMap(void);
 extern void WIFI_getIonogram(void);
 extern bool WIFI_SW_Restart(void (*callback)(void));

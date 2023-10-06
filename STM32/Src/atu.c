@@ -41,7 +41,7 @@ void ATU_Process(void) {
 		return;
 	}
 
-	if (!ATU_Finished && TRX.RF_Gain == 0) {
+	if (TRX.RF_Gain == 0) {
 		ATU_Finished = true;
 		return;
 	}

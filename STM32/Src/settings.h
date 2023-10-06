@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "8.2.0" // current STM32 version
+#define STM32_VERSION_STR "8.3.0" // current STM32 version
 
 #if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_MINI)
 #define FPGA_VERSION_STR "6.8.0" // needed FPGA version Wolf-Mini
@@ -18,8 +18,8 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 103        // Settings config version
-#define CALIB_VERSION 68        // Calibration config version
+#define SETT_VERSION 109        // Settings config version
+#define CALIB_VERSION 72        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                  // audio stream sampling rate during processing and TX (NOT RX!)
@@ -413,10 +413,21 @@ typedef enum {
 	ENC_FUNC_SET_MEM,
 } ENC2_FUNC_MODE;
 
+// COM port RTS/DTR lines mode
+typedef enum {
+	COM_LINE_MODE_DISABLED,
+	COM_LINE_MODE_PTT,
+	COM_LINE_MODE_KEYER,
+} COM_LINE_MODE;
+
 // Save settings by band
 typedef struct {
 	uint64_t Freq;
 	float32_t ATT_DB;
+	uint16_t CW_LPF_Filter;
+	uint16_t SSB_LPF_RX_Filter;
+	uint16_t AM_LPF_RX_Filter;
+	uint16_t FM_LPF_RX_Filter;
 	int8_t FM_SQL_threshold_dbm;
 	uint8_t Mode;
 	uint8_t DNR_Type;
@@ -570,27 +581,33 @@ extern struct TRX_SETTINGS {
 	uint8_t SELFHEAR_Volume;
 	uint8_t LINE_Volume;
 	uint8_t CODEC_Out_Volume;
+	uint8_t FM_Stereo_Modulation;
+	uint8_t TROPO_Region;
 	int8_t MIC_NOISE_GATE;
 	int8_t RX_EQ_P1;
 	int8_t RX_EQ_P2;
 	int8_t RX_EQ_P3;
 	int8_t RX_EQ_P4;
 	int8_t RX_EQ_P5;
+	int8_t RX_EQ_P6;
 	int8_t RX_EQ_P1_WFM;
 	int8_t RX_EQ_P2_WFM;
 	int8_t RX_EQ_P3_WFM;
 	int8_t RX_EQ_P4_WFM;
 	int8_t RX_EQ_P5_WFM;
+	int8_t RX_EQ_P6_WFM;
 	int8_t MIC_EQ_P1_SSB;
 	int8_t MIC_EQ_P2_SSB;
 	int8_t MIC_EQ_P3_SSB;
 	int8_t MIC_EQ_P4_SSB;
 	int8_t MIC_EQ_P5_SSB;
+	int8_t MIC_EQ_P6_SSB;
 	int8_t MIC_EQ_P1_AMFM;
 	int8_t MIC_EQ_P2_AMFM;
 	int8_t MIC_EQ_P3_AMFM;
 	int8_t MIC_EQ_P4_AMFM;
 	int8_t MIC_EQ_P5_AMFM;
+	int8_t MIC_EQ_P6_AMFM;
 	int8_t AGC_GAIN_TARGET;
 	int8_t VOX_THRESHOLD;
 	bool Mute;
@@ -716,10 +733,6 @@ extern struct TRX_CALIBRATE {
 	float32_t SWR_BWD_Calibration_6M;
 	float32_t SWR_FWD_Calibration_VHF;
 	float32_t SWR_BWD_Calibration_VHF;
-	float32_t FW_AD8307_SLP;
-	float32_t FW_AD8307_OFFS;
-	float32_t BW_AD8307_SLP;
-	float32_t BW_AD8307_OFFS;
 	float32_t INA226_CurCalc; // X_mA/Bit Coeficient is dependant on the used shunt (tolerances and soldering)
 	float32_t PWR_VLT_Calibration;
 	float32_t PWR_CUR_Calibration;
@@ -844,6 +857,10 @@ extern struct TRX_CALIBRATE {
 	TRX_RF_UNIT_TYPE RF_unit_type;
 	TRX_TANGENT_TYPE TangentType;
 	CAT_TYPE CAT_Type;
+	COM_LINE_MODE COM_CAT_DTR_Mode;
+	COM_LINE_MODE COM_CAT_RTS_Mode;
+	COM_LINE_MODE COM_DEBUG_DTR_Mode;
+	COM_LINE_MODE COM_DEBUG_RTS_Mode;
 	bool ENCODER_INVERT;
 	bool ENCODER2_INVERT;
 	bool ENCODER_ON_FALLING;
@@ -865,10 +882,12 @@ extern struct TRX_CALIBRATE {
 	bool NOTX_FM;
 	bool NOTX_2m;
 	bool NOTX_70cm;
+	bool ENABLE_2200m_band;
 	bool ENABLE_60m_band;
 	bool ENABLE_4m_band;
 	bool ENABLE_AIR_band;
 	bool ENABLE_marine_band;
+	bool ENABLE_70cm_band;
 	bool OTA_update;
 	bool LCD_Rotate;
 	bool TOUCHPAD_horizontal_flip;
@@ -876,6 +895,7 @@ extern struct TRX_CALIBRATE {
 	bool LinearPowerControl;
 	bool ALC_Port_Enabled;
 	bool ALC_Inverted_Logic;
+	bool Swap_USB_IQ;
 	CHANNEL_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 	uint32_t BAND_MEMORIES[BANDS_COUNT][BANDS_MEMORIES_COUNT];
 

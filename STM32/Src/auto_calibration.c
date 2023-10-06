@@ -655,9 +655,7 @@ static bool AUTO_CALIBRATION_ProcessPowerCalibration(uint8_t *rf_calibration) {
 		AUTO_CALIBRATION_current_power_low_diff++;
 
 		if (AUTO_CALIBRATION_current_power_low_diff > 2) {
-			if (*rf_calibration > 0) {
-				*rf_calibration = *rf_calibration - 1;
-			}
+			*rf_calibration = *rf_calibration - 1;
 			return true;
 		}
 	} else {

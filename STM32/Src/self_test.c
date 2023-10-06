@@ -14,7 +14,7 @@ bool SYSMENU_selftest_opened = false;
 // Private Variables
 static int8_t SELF_TEST_current_page = 0;
 static bool SELF_TEST_old_autogainer = false;
-static uint32_t SELF_TEST_old_freq = SELF_TEST_frequency;
+static uint32_t SELF_TEST_old_freq = SELF_TEST_frequency_HF;
 static bool LastLNA = false;
 static bool LastDRV = false;
 static bool LastPGA = false;
@@ -37,7 +37,6 @@ void SELF_TEST_Start(void) {
 	SELF_TEST_old_autogainer = TRX.AutoGain;
 	SELF_TEST_old_freq = CurrentVFO->Freq;
 	SELF_TEST_current_page = 0;
-	TRX_setFrequency(SELF_TEST_frequency, CurrentVFO);
 	LCDDriver_Fill(BG_COLOR);
 
 	LCD_busy = false;
@@ -93,7 +92,6 @@ void SELF_TEST_Draw(void) {
 		pos_y += margin_bottom;
 
 		// MCP3008 test
-		pass = true;
 #ifdef HRDW_MCP3008_1
 		if (!FRONTPanel_MCP3008_1_Enabled) {
 			pass = false;
@@ -139,9 +137,38 @@ void SELF_TEST_Draw(void) {
 	}
 
 	if (SELF_TEST_current_page == 1) {
+		static uint8_t current_test = 0;
+		static uint32_t current_test_start_time = 0;
+
+		LCDDriver_printText("Audio test", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		pos_y += margin_bottom;
+
+		if (current_test == 0 && (HAL_GetTick() - current_test_start_time) > SELF_TEST_adc_test_latency) {
+			current_test_start_time = HAL_GetTick();
+			LCDDriver_printText("LEFT ", margin_left, pos_y, COLOR_GREEN, BG_COLOR, font_size);
+			current_test = 1;
+
+			CODEC_TestBeep(false);
+		}
+		if (current_test == 1 && (HAL_GetTick() - current_test_start_time) > SELF_TEST_adc_test_latency) {
+			current_test_start_time = HAL_GetTick();
+			LCDDriver_printText("RIGHT", margin_left, pos_y, COLOR_GREEN, BG_COLOR, font_size);
+			current_test = 0;
+
+			CODEC_TestBeep(true);
+		}
+
+		pos_y += margin_bottom;
+
+		// redraw loop
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+
+	if (SELF_TEST_current_page == 2) {
 		static bool ok[16] = {false};
 		static int8_t prev_adc_state[16] = {0};
 
+		TRX_setFrequency(SELF_TEST_frequency_HF, CurrentVFO);
 		LCDDriver_printText("Insert ANT 14mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		pos_y += margin_bottom;
 
@@ -191,11 +218,22 @@ void SELF_TEST_Draw(void) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 
-	if (SELF_TEST_current_page == 2) {
+	if (!HRDW_HAS_LNA_VHF && SELF_TEST_current_page == 4) {
+		SELF_TEST_current_page++;
+	}
+
+	if (SELF_TEST_current_page == 3 || SELF_TEST_current_page == 4) {
 		static uint8_t current_test = 0;
 		static uint32_t current_test_start_time = 0;
 
-		LCDDriver_printText("Insert ANT 14mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		if (SELF_TEST_current_page == 3) {
+			TRX_setFrequency(SELF_TEST_frequency_HF, CurrentVFO);
+			LCDDriver_printText("Insert ANT 14mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		}
+		if (SELF_TEST_current_page == 4) {
+			TRX_setFrequency(SELF_TEST_frequency_VHF, CurrentVFO);
+			LCDDriver_printText("Insert ANT 145mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		}
 		pos_y += margin_bottom;
 
 		// predefine
@@ -285,16 +323,14 @@ void SELF_TEST_Draw(void) {
 			float32_t ADC_PGA_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ADC_PGA_db = rate2dbV(ADC_PGA_signal / base_signal);
 
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
-    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
+#if !defined(FRONTPANEL_LITE_V2_MINI)
 			LCDDriver_printText("ADC PGA signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d          ", (uint16_t)ADC_PGA_signal);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_PGA_signal < 32000.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 #endif
 			pos_y += margin_bottom;
 
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
-    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
+#if !defined(FRONTPANEL_LITE_V2_MINI)
 			LCDDriver_printText("ADC PGA gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %.2f dB          ", (double)ADC_PGA_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_PGA_db > 2.0f && ADC_PGA_db < 7.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
@@ -319,21 +355,19 @@ void SELF_TEST_Draw(void) {
 			float32_t ADC_LNA_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ADC_LNA_db = rate2dbV(ADC_LNA_signal / base_signal);
 
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
-    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
-			LCDDriver_printText("LNA signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %d          ", (uint16_t)ADC_LNA_signal);
-			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_signal < 32000.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
-#endif
-			pos_y += margin_bottom;
+			if ((HRDW_HAS_LNA_HF && SELF_TEST_current_page == 3) || (HRDW_HAS_LNA_VHF && SELF_TEST_current_page == 4)) {
+				LCDDriver_printText("LNA signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+				sprintf(str, " %d          ", (uint16_t)ADC_LNA_signal);
+				LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_signal < 32000.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+				pos_y += margin_bottom;
 
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
-    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
-			LCDDriver_printText("LNA gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-			sprintf(str, " %.2f dB          ", (double)ADC_LNA_db);
-			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_db > 23.0f && ADC_LNA_db < 30.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
-#endif
-			pos_y += margin_bottom;
+				LCDDriver_printText("LNA gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+				sprintf(str, " %.2f dB          ", (double)ADC_LNA_db);
+				LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_LNA_db > 23.0f && ADC_LNA_db < 30.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
+				pos_y += margin_bottom;
+			} else {
+				pos_y += margin_bottom * 2;
+			}
 
 			current_test = 0;
 		} else {
@@ -344,10 +378,11 @@ void SELF_TEST_Draw(void) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
 
-	if (SELF_TEST_current_page == 3) {
+	if (SELF_TEST_current_page == 5) {
 		static uint8_t current_test = 0;
 		static uint32_t current_test_start_time = 0;
 
+		TRX_setFrequency(SELF_TEST_frequency_HF, CurrentVFO);
 		LCDDriver_printText("Insert ANT 14mhz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		pos_y += margin_bottom;
 
@@ -400,9 +435,7 @@ void SELF_TEST_Draw(void) {
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ATT_signal < 32000.0f && (ATT_db > -2.0f && ATT_db < 1.0f)) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
-    defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
-
+#if !defined(FRONTPANEL_LITE_V2_MINI)
 			current_test = 4;
 		} else {
 			pos_y += margin_bottom;
@@ -574,11 +607,9 @@ void SELF_TEST_Draw(void) {
 	// Pager
 	pos_y += margin_bottom;
 	LCDDriver_printText("Rotate ENC2", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-	pos_y += margin_bottom;
 #else
 	pos_y += margin_bottom;
 	LCDDriver_printText("Rotate ENC2 to print next page", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
-	pos_y += margin_bottom;
 #endif
 	LCD_busy = false;
 }
@@ -605,6 +636,10 @@ void SELF_TEST_EncRotate(int8_t direction) {
 	LCD_busy = false;
 
 	SELF_TEST_current_page += direction;
+	if (!HRDW_HAS_LNA_VHF && SELF_TEST_current_page == 4) {
+		SELF_TEST_current_page--;
+	}
+
 	if (SELF_TEST_current_page < 0) {
 		SELF_TEST_current_page = 0;
 	}

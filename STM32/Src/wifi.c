@@ -1258,6 +1258,38 @@ static void WIFI_printImage_Propagation_callback(void) {
 #endif
 }
 
+static void WIFI_printImage_Tropo_callback(void) {
+	LCDDriver_Fill(BG_COLOR);
+	if (WIFI_HTTP_Response_Status == 200) {
+		char *istr1 = strchr(WIFI_HTTResponseHTML, ',');
+		if (istr1 != NULL) {
+			*istr1 = 0;
+			uint32_t filesize = atoi(WIFI_HTTResponseHTML);
+			istr1++;
+			char *istr2 = strchr(istr1, ',');
+			if (istr2 != NULL) {
+				*istr2 = 0;
+				uint16_t width = (uint16_t)(atoi(istr1));
+				istr2++;
+
+				uint16_t height = (uint16_t)(atoi(istr2));
+
+				if (filesize > 0 && width > 0 && height > 0) {
+					LCDDriver_printImage_RLECompressed_StartStream(LCD_WIDTH / 2 - width / 2, LCD_HEIGHT / 2 - height / 2, width, height);
+					char buff[64] = {0};
+					sprintf(buff, "/trx_services/tropo.php?region=%u&part=0&width=%u&height=%u", TRX.TROPO_Region, LCD_WIDTH, LCD_HEIGHT);
+					WIFI_getHTTPpage("wolf-sdr.com", buff, WIFI_printImage_stream_callback, false, false);
+				}
+			}
+		}
+	} else
+#ifdef LCD_SMALL_INTERFACE
+		LCDDriver_printText("Network error", 10, 20, FG_COLOR, BG_COLOR, 1);
+#else
+		LCDDriver_printTextFont("Network error", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+#endif
+}
+
 static void WIFI_printImage_DayNight_callback(void) {
 	LCDDriver_Fill(BG_COLOR);
 	if (WIFI_HTTP_Response_Status == 200) {
@@ -1477,6 +1509,19 @@ void WIFI_getPropagation(void) {
 	char buff[64] = {0};
 	sprintf(buff, "/trx_services/propagination.php?width=%u&height=%u", LCD_WIDTH, LCD_HEIGHT);
 	WIFI_getHTTPpage("wolf-sdr.com", buff, WIFI_printImage_Propagation_callback, false, false);
+}
+
+void WIFI_getTropo(void) {
+	LCDDriver_Fill(BG_COLOR);
+	if (WIFI_connected && WIFI_State == WIFI_READY) {
+		LCDDriver_printTextFont("Loading...", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+	} else {
+		LCDDriver_printTextFont("No connection", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
+		return;
+	}
+	char buff[64] = {0};
+	sprintf(buff, "/trx_services/tropo.php?region=%u", TRX.TROPO_Region);
+	WIFI_getHTTPpage("wolf-sdr.com", "/trx_services/tropo.php", WIFI_printImage_Tropo_callback, false, false);
 }
 
 void WIFI_getDayNightMap(void) {

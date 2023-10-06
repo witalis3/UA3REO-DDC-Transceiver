@@ -59,6 +59,7 @@ struct adpcm_context {
  */
 
 static struct adpcm_context pcnxt;
+
 void *adpcm_create_context(int num_channels, int lookahead, int noise_shaping, int32_t initial_deltas[2]) {
 	int ch, i;
 
@@ -83,13 +84,6 @@ void *adpcm_create_context(int num_channels, int lookahead, int noise_shaping, i
 /* Free the ADPCM encoder context.
  */
 
-void adpcm_free_context(void *p) {
-	struct adpcm_context *pcnxt = (struct adpcm_context *)p;
-
-	// free (pcnxt);
-	dma_memset(pcnxt, 0, sizeof(struct adpcm_context));
-}
-
 static void set_decode_parameters(struct adpcm_context *pcnxt, int32_t *init_pcmdata, int8_t *init_index) {
 	int ch;
 
@@ -113,7 +107,7 @@ static double minimum_error(const struct adpcm_channel *pchan, int nch, int32_t 
 	struct adpcm_channel chan = *pchan;
 	int step = step_table[chan.index];
 	int trial_delta = (step >> 3);
-	int nibble, nibble2;
+	int nibble;
 	double min_error;
 
 	if (delta < 0) {
@@ -151,45 +145,6 @@ static double minimum_error(const struct adpcm_channel *pchan, int nch, int32_t 
 	} else {
 		return min_error;
 	}
-
-	/*for (nibble2 = 0; nibble2 <= 0xF; ++nibble2)
-	{
-	    double error;
-
-	    if (nibble2 == nibble)
-	        continue;
-
-	    chan = *pchan;
-	    trial_delta = (step >> 3);
-
-	    if (nibble2 & 1)
-	        trial_delta += (step >> 2);
-	    if (nibble2 & 2)
-	        trial_delta += (step >> 1);
-	    if (nibble2 & 4)
-	        trial_delta += step;
-	    if (nibble2 & 8)
-	        trial_delta = -trial_delta;
-
-	    chan.pcmdata += trial_delta;
-	    CLIP(chan.pcmdata, -32768, 32767);
-
-	    error = (double)(chan.pcmdata - csample) * (chan.pcmdata - csample);
-
-	    if (error < min_error)
-	    {
-	        chan.index += index_table[nibble2 & 0x07];
-	        CLIP(chan.index, 0, 88);
-	        error += minimum_error(&chan, nch, sample[nch], sample + nch, depth - 1, NULL);
-
-	        if (error < min_error)
-	        {
-	            if (best_nibble)
-	                *best_nibble = nibble2;
-	            min_error = error;
-	        }
-	    }
-	}*/
 
 	return min_error;
 }
@@ -300,7 +255,7 @@ static void encode_chunks(struct adpcm_context *pcnxt, uint8_t **outbuf, size_t 
  */
 
 int adpcm_encode_block(void *p, uint8_t *outbuf, size_t *outbufsize, const int16_t *inbuf, int inbufcount) {
-	struct adpcm_context *pcnxt = (struct adpcm_context *)p;
+	struct adpcm_context *_pcnxt = (struct adpcm_context *)p;
 	int32_t init_pcmdata[2] = {0};
 	int8_t init_index[2] = {0};
 	int ch;
@@ -311,9 +266,9 @@ int adpcm_encode_block(void *p, uint8_t *outbuf, size_t *outbufsize, const int16
 		return 1;
 	}
 
-	get_decode_parameters(pcnxt, init_pcmdata, init_index);
+	get_decode_parameters(_pcnxt, init_pcmdata, init_index);
 
-	for (ch = 0; ch < pcnxt->num_channels; ch++) {
+	for (ch = 0; ch < _pcnxt->num_channels; ch++) {
 		init_pcmdata[ch] = *inbuf++;
 		outbuf[0] = init_pcmdata[ch];
 		outbuf[1] = init_pcmdata[ch] >> 8;
@@ -324,8 +279,8 @@ int adpcm_encode_block(void *p, uint8_t *outbuf, size_t *outbufsize, const int16
 		*outbufsize += 4;
 	}
 
-	set_decode_parameters(pcnxt, init_pcmdata, init_index);
-	encode_chunks(pcnxt, &outbuf, outbufsize, &inbuf, inbufcount);
+	set_decode_parameters(_pcnxt, init_pcmdata, init_index);
+	encode_chunks(_pcnxt, &outbuf, outbufsize, &inbuf, inbufcount);
 
 	return 1;
 }
@@ -347,7 +302,7 @@ int adpcm_encode_block(void *p, uint8_t *outbuf, size_t *outbufsize, const int16
  */
 
 int adpcm_decode_block(int16_t *outbuf, const uint8_t *inbuf, size_t inbufsize, int channels) {
-	int ch, samples = 1, chunks;
+	int samples = 1, chunks;
 	int32_t pcmdata[2];
 	int8_t index[2];
 
@@ -355,7 +310,7 @@ int adpcm_decode_block(int16_t *outbuf, const uint8_t *inbuf, size_t inbufsize, 
 		return 0;
 	}
 
-	for (ch = 0; ch < channels; ch++) {
+	for (int ch = 0; ch < channels; ch++) {
 		*outbuf++ = pcmdata[ch] = (int16_t)(inbuf[0] | (inbuf[1] << 8));
 		index[ch] = inbuf[2];
 
@@ -371,11 +326,9 @@ int adpcm_decode_block(int16_t *outbuf, const uint8_t *inbuf, size_t inbufsize, 
 	samples += chunks * 8;
 
 	while (chunks--) {
-		int ch, i;
+		for (int ch = 0; ch < channels; ++ch) {
 
-		for (ch = 0; ch < channels; ++ch) {
-
-			for (i = 0; i < 4; ++i) {
+			for (int i = 0; i < 4; ++i) {
 				int step = step_table[index[ch]], delta = step >> 3;
 
 				if (*inbuf & 1) {

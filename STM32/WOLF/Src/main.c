@@ -321,7 +321,6 @@ int main(void) {
 	println("[OK] LCD init");
 	LCD_busy = true;
 	LCD_Init();
-	JPEG_InitColorTables();
 	if (SHOW_LOGO) {
 		strcpy(greetings_buff, "ver. ");
 		strcat(greetings_buff, STM32_VERSION_STR);
@@ -1529,12 +1528,6 @@ static void MX_FMC_Init(void) {
 	Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif
 #if (defined(LCD_ILI9486))
-	Timing.AddressSetupTime = 5;
-	Timing.DataSetupTime = 5;
-	Timing.BusTurnAroundDuration = 3;
-	Timing.AccessMode = FMC_ACCESS_MODE_A;
-#endif
-#if (defined(LCD_R61581))
 	Timing.AddressSetupTime = 5;
 	Timing.DataSetupTime = 5;
 	Timing.BusTurnAroundDuration = 3;

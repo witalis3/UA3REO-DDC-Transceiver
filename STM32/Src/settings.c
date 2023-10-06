@@ -33,7 +33,7 @@ static_assert(sizeof(TRX) < W25Q16_SECTOR_SIZE, "TRX Data structure doesn't matc
 static_assert(sizeof(CALIBRATE) < W25Q16_SECTOR_SIZE, "CALIBRATE Data structure doesn't match page size");
 
 IRAM2 static uint8_t write_clone[MAX_CLONE_SIZE] = {0};
-IRAM2 static uint8_t read_clone[MAX_CLONE_SIZE] = {0};
+IRAM2_ON_F407 static uint8_t read_clone[MAX_CLONE_SIZE] = {0};
 IRAM2 static uint8_t verify_clone[MAX_CLONE_SIZE] = {0};
 
 volatile bool NeedSaveSettings = false;
@@ -120,21 +120,18 @@ void LoadSettings(bool clear) {
 		TRX.ATT = false;                      // attenuator
 		TRX.ATT_DB = 12.0f;                   // suppress the attenuator
 		TRX.ATT_STEP = 6.0f;                  // step of tuning the attenuator
-#if HRDW_HAS_VGA
-		TRX.VGA_GAIN = 21.0f; // VGA Gain, dB
-#endif
-		TRX.RF_Filters = true;             // LPF / HPF / BPF
-		TRX.ANT_selected = false;          // ANT-1
-		TRX.ANT_mode = false;              // RX=TX
-		TRX.RF_Gain = 20;                  // output power (%)
-		TRX.RF_Gain_For_Each_Band = false; // save RF Gain for each band separatly
-		TRX.RF_Gain_For_Each_Mode = false; // save RF Gain for each mode separatly
-		TRX.ChannelMode = false;           // enable channel mode on VFO
-		TRX.RIT_Enabled = false;           // activate the SHIFT mode
-		TRX.XIT_Enabled = false;           // activate the SPLIT mode
-		TRX.RIT_INTERVAL = 1000;           // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
-		TRX.XIT_INTERVAL = 1000;           // Detune range with the SPLIT knob (5000 = -5000hz / + 5000hz)
-		TRX.TWO_SIGNAL_TUNE = false;       // Two-signal generator in TUNE mode (1 + 2kHz)
+		TRX.RF_Filters = true;                // LPF / HPF / BPF
+		TRX.ANT_selected = false;             // ANT-1
+		TRX.ANT_mode = false;                 // RX=TX
+		TRX.RF_Gain = 20;                     // output power (%)
+		TRX.RF_Gain_For_Each_Band = false;    // save RF Gain for each band separatly
+		TRX.RF_Gain_For_Each_Mode = false;    // save RF Gain for each mode separatly
+		TRX.ChannelMode = false;              // enable channel mode on VFO
+		TRX.RIT_Enabled = false;              // activate the SHIFT mode
+		TRX.XIT_Enabled = false;              // activate the SPLIT mode
+		TRX.RIT_INTERVAL = 1000;              // Detune range with the SHIFT knob (5000 = -5000hz / + 5000hz)
+		TRX.XIT_INTERVAL = 1000;              // Detune range with the SPLIT knob (5000 = -5000hz / + 5000hz)
+		TRX.TWO_SIGNAL_TUNE = false;          // Two-signal generator in TUNE mode (1 + 2kHz)
 #ifdef LAY_160x128
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; // Samplerate for ssb/cw/digi/nfm/etc modes
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
@@ -184,6 +181,7 @@ void LoadSettings(bool clear) {
 		strcpy(TRX.CALLSIGN, "HamRad");            // Callsign
 		strcpy(TRX.LOCATOR, "LO02RR");             // Locator
 		strcpy(TRX.URSI_CODE, "SO148");            // URSI Ionogramm location CODE https://digisonde.com/index.html#stationmap-section
+		TRX.TROPO_Region = 0;                      // Eastern europe by default
 		TRX.Custom_Transverter_Enabled = false;    // Enable transverter mode
 		TRX.ATU_I = 0;                             // ATU default state
 		TRX.ATU_C = 0;                             // ATU default state
@@ -222,22 +220,26 @@ void LoadSettings(bool clear) {
 		TRX.RX_EQ_P2 = 0;                   // Receiver Equalizer 700hz
 		TRX.RX_EQ_P3 = 0;                   // Receiver Equalizer 1200hz
 		TRX.RX_EQ_P4 = 0;                   // Receiver Equalizer 1800hz
-		TRX.RX_EQ_P5 = 0;                   // Receiver Equalizer 2300hz
+		TRX.RX_EQ_P5 = 0;                   // Receiver Equalizer 2000hz
+		TRX.RX_EQ_P6 = 0;                   // Receiver Equalizer 2500hz
 		TRX.RX_EQ_P1_WFM = 0;               // Receiver WFM Equalizer 50hz
 		TRX.RX_EQ_P2_WFM = 0;               // Receiver WFM Equalizer 300hz
 		TRX.RX_EQ_P3_WFM = 0;               // Receiver WFM Equalizer 1500hz
 		TRX.RX_EQ_P4_WFM = 0;               // Receiver WFM Equalizer 5000hz
-		TRX.RX_EQ_P5_WFM = 0;               // Receiver WFM Equalizer 12000hz
+		TRX.RX_EQ_P5_WFM = 0;               // Receiver WFM Equalizer 8000hz
+		TRX.RX_EQ_P6_WFM = 0;               // Receiver WFM Equalizer 12000hz
 		TRX.MIC_EQ_P1_SSB = 0;              // Mic EQ SSB
 		TRX.MIC_EQ_P2_SSB = 0;              // Mic EQ SSB
 		TRX.MIC_EQ_P3_SSB = 0;              // Mic EQ SSB
 		TRX.MIC_EQ_P4_SSB = 0;              // Mic EQ SSB
 		TRX.MIC_EQ_P5_SSB = 0;              // Mic EQ SSB
+		TRX.MIC_EQ_P6_SSB = 0;              // Mic EQ SSB
 		TRX.MIC_EQ_P1_AMFM = 0;             // Mic EQ AM/FM
 		TRX.MIC_EQ_P2_AMFM = 0;             // Mic EQ AM/FM
 		TRX.MIC_EQ_P3_AMFM = 0;             // Mic EQ AM/FM
 		TRX.MIC_EQ_P4_AMFM = 0;             // Mic EQ AM/FM
 		TRX.MIC_EQ_P5_AMFM = 0;             // Mic EQ AM/FM
+		TRX.MIC_EQ_P6_AMFM = 0;             // Mic EQ AM/FM
 		TRX.MIC_REVERBER = 0;               // Mic Reveerber
 		TRX.DNR1_SNR_THRESHOLD = 50;        // Digital noise reduction 1 level
 		TRX.DNR2_SNR_THRESHOLD = 35;        // Digital noise reduction 2 level
@@ -250,7 +252,7 @@ void LoadSettings(bool clear) {
 		TRX.NOISE_BLANKER = false;                     // suppressor of short impulse noise NOISE BLANKER
 		TRX.AGC_Spectral = true;                       // Spectral AGC mode
 #endif
-		TRX.NOISE_BLANKER_THRESHOLD = 15;                              // threshold for noise blanker
+		TRX.NOISE_BLANKER_THRESHOLD = 10;                              // threshold for noise blanker
 		TRX.TX_CESSB = true;                                           // Controlled-envelope single-sideband modulation
 		TRX.TX_CESSB_COMPRESS_DB = 1.0f;                               // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;                                     // AGC receive rate on SSB
@@ -282,6 +284,7 @@ void LoadSettings(bool clear) {
 		TRX.CTCSS_Freq = 0;                                            // CTCSS FM Frequency
 		TRX.SELFHEAR_Volume = 40;                                      // Selfhearing volume
 		TRX.FM_Stereo = false;                                         // Stereo FM Mode
+		TRX.FM_Stereo_Modulation = 40;                                 // Stereo FM Sub-carrier modulation
 		TRX.VAD_THRESHOLD = 150;                                       // Threshold of SSB/SCAN squelch
 		TRX.VOX = false;                                               // TX by voice activation
 		TRX.VOX_TIMEOUT = 300;                                         // VOX timeout in ms
@@ -458,9 +461,14 @@ void LoadSettings(bool clear) {
 				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_C = TRX.ATU_C;
 				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_T = TRX.ATU_T;
 			}
+			TRX.BANDS_SAVED_SETTINGS[i].CW_LPF_Filter = TRX.CW_LPF_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].SSB_LPF_RX_Filter = TRX.SSB_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].AM_LPF_RX_Filter = TRX.AM_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].FM_LPF_RX_Filter = TRX.FM_LPF_RX_Filter;
 		}
 
 #if defined(FRONTPANEL_MINI)
+		TRX.IF_Gain = 15;
 		TRX.FFT_Background = false;
 		TRX.FFT_BW_Style = 3;
 		TRX.FFT_Height = 4;
@@ -847,11 +855,7 @@ void LoadCalibration(bool clear) {
 #endif
 		CALIBRATE.MAX_ChargePump_Freq = 200;    // Maximum frequency for charge pump pwm
 		CALIBRATE.VCXO_correction = 0;          // VCXO Frequency offset
-		CALIBRATE.FW_AD8307_SLP = 25.5f;        // Slope for the log amp used to mreasure the FW power (mV/dB)
-		CALIBRATE.FW_AD8307_OFFS = 1150.0f;     // Offset to back calculate the output voltage to dBm (mV)
-		CALIBRATE.BW_AD8307_SLP = 25.5f;        // Slope for the log amp used to mreasure the BW power (mV/dB)
-		CALIBRATE.BW_AD8307_OFFS = 1150.0f;     // Offset to back calculate the output voltage to dBm (mV)
-		CALIBRATE.FAN_MEDIUM_START = 55;        // Temperature at which the fan starts at half power
+		CALIBRATE.FAN_MEDIUM_START = 45;        // Temperature at which the fan starts at half power
 		CALIBRATE.FAN_MEDIUM_STOP = 40;         // Temperature at which the fan stops
 		CALIBRATE.FAN_FULL_START = 55;          // Temperature at which the fan starts at full power
 		CALIBRATE.TRX_MAX_RF_TEMP = 80;         // Maximum RF unit themperature to enable protect
@@ -901,10 +905,12 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.NOTX_4m = false;
 		CALIBRATE.NOTX_2m = false;
 		CALIBRATE.NOTX_70cm = false;
-		CALIBRATE.ENABLE_60m_band = false; // enable hidden bands
+		CALIBRATE.ENABLE_2200m_band = false; // enable hidden bands
+		CALIBRATE.ENABLE_60m_band = false;
 		CALIBRATE.ENABLE_4m_band = false;
 		CALIBRATE.ENABLE_AIR_band = false;
 		CALIBRATE.ENABLE_marine_band = false;
+		CALIBRATE.ENABLE_70cm_band = true;
 		CALIBRATE.Transverter_Custom_Offset_Mhz = 100; // Offset from VFO
 		CALIBRATE.Transverter_70cm_RF_Mhz = 432;
 		CALIBRATE.Transverter_70cm_IF_Mhz = 144;
@@ -953,6 +959,15 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.TOUCHPAD_CLICK_TIMEOUT = 400;
 		CALIBRATE.TOUCHPAD_HOLD_TIMEOUT = 400;
 		CALIBRATE.TOUCHPAD_SWIPE_THRESHOLD_PX = 5;
+		CALIBRATE.COM_CAT_DTR_Mode = COM_LINE_MODE_DISABLED; // COM Ports control lines modes
+		CALIBRATE.COM_CAT_RTS_Mode = COM_LINE_MODE_DISABLED;
+		CALIBRATE.COM_DEBUG_DTR_Mode = COM_LINE_MODE_KEYER;
+		CALIBRATE.COM_DEBUG_RTS_Mode = COM_LINE_MODE_PTT;
+#if !HRDW_HAS_USB_DEBUG
+		CALIBRATE.COM_CAT_DTR_Mode = COM_LINE_MODE_KEYER;
+		CALIBRATE.COM_CAT_RTS_Mode = COM_LINE_MODE_PTT;
+#endif
+		CALIBRATE.Swap_USB_IQ = false; // Swap IQ for USB output
 
 		// Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
@@ -978,10 +993,12 @@ void LoadCalibration(bool clear) {
 	}
 	EEPROM_PowerDown();
 	// enable bands
+	BAND_SELECTABLE[BANDID_2200m] = CALIBRATE.ENABLE_2200m_band;
 	BAND_SELECTABLE[BANDID_60m] = CALIBRATE.ENABLE_60m_band;
 	BAND_SELECTABLE[BANDID_4m] = CALIBRATE.ENABLE_4m_band;
 	BAND_SELECTABLE[BANDID_AIR] = CALIBRATE.ENABLE_AIR_band;
 	BAND_SELECTABLE[BANDID_Marine] = CALIBRATE.ENABLE_marine_band;
+	BAND_SELECTABLE[BANDID_70cm] = CALIBRATE.ENABLE_70cm_band;
 
 	// load WiFi settings after calibrations
 	LoadWiFiSettings(false);
@@ -1345,7 +1362,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 	if (verify) {
 		Aligned_CleanDCache_by_Addr((uint32_t *)read_clone, size);
 
-		uint32_t BigAddress = sector * W25Q16_SECTOR_SIZE;
+		BigAddress = sector * W25Q16_SECTOR_SIZE;
 		Address[2] = (BigAddress >> 16) & 0xFF;
 		Address[1] = (BigAddress >> 8) & 0xFF;
 		Address[0] = BigAddress & 0xFF;

@@ -23,12 +23,6 @@ int8_t FRONTPANEL_ProcessEncoder4 = 0;
 #ifdef HRDW_MCP3008_1
 bool FRONTPanel_MCP3008_1_Enabled = true;
 #endif
-#ifdef HRDW_MCP3008_2
-bool FRONTPanel_MCP3008_2_Enabled = true;
-#endif
-#ifdef HRDW_MCP3008_3
-bool FRONTPanel_MCP3008_3_Enabled = true;
-#endif
 
 static void FRONTPANEL_ENCODER_Rotated(float32_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
@@ -865,7 +859,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 			currentMemIndex = 0;
 		}
 
-		while (CALIBRATE.MEMORY_CHANNELS[currentMemIndex].Freq == 0 && currentMemIndex < MEMORY_CHANNELS_COUNT && currentMemIndex > 0) {
+		while (currentMemIndex < MEMORY_CHANNELS_COUNT && currentMemIndex > 0 && CALIBRATE.MEMORY_CHANNELS[currentMemIndex].Freq == 0) {
 			currentMemIndex += direction * 1;
 		}
 
@@ -1151,29 +1145,12 @@ void FRONTPANEL_ENC2SW_validate() {
 }
 
 void FRONTPANEL_Init(void) {
-	uint16_t test_value = 0;
 #ifdef HRDW_MCP3008_1
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 1, 1);
+	uint16_t test_value = FRONTPANEL_ReadMCP3008_Value(0, 1, 1);
 	if (test_value == 65535) {
 		FRONTPanel_MCP3008_1_Enabled = false;
 		println("[ERR] Frontpanel MCP3008 - 1 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
 		LCD_showError("MCP3008 - 1 init error (FPGA I2S CLK?)", true);
-	}
-#endif
-#ifdef HRDW_MCP3008_2
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 2, 1);
-	if (test_value == 65535) {
-		FRONTPanel_MCP3008_2_Enabled = false;
-		println("[ERR] Frontpanel MCP3008 - 2 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
-		LCD_showError("MCP3008 - 2 init error", true);
-	}
-#endif
-#ifdef HRDW_MCP3008_3
-	test_value = FRONTPANEL_ReadMCP3008_Value(0, 3, 1);
-	if (test_value == 65535) {
-		FRONTPanel_MCP3008_3_Enabled = false;
-		println("[ERR] Frontpanel MCP3008 - 3 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
-		LCD_showError("MCP3008 - 3 init error", true);
 	}
 #endif
 	FRONTPANEL_Process();
@@ -1221,31 +1198,11 @@ void FRONTPANEL_Process(void) {
 			continue;
 		}
 #endif
-#ifdef HRDW_MCP3008_2
-		if (button->port == 2 && !FRONTPanel_MCP3008_2_Enabled) {
-			continue;
-		}
-#endif
-#ifdef HRDW_MCP3008_3
-		if (button->port == 3 && !FRONTPanel_MCP3008_3_Enabled) {
-			continue;
-		}
-#endif
 
 // get state from ADC MCP3008 (10bit - 1024values)
 #ifdef HRDW_MCP3008_1
 		if (button->port == 1) {
 			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 1, 5);
-		} else
-#endif
-#ifdef HRDW_MCP3008_2
-		    if (button->port == 2) {
-			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 2, 5);
-		} else
-#endif
-#ifdef HRDW_MCP3008_3
-		    if (button->port == 3) {
-			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 3, 5);
 		} else
 #endif
 			continue;
@@ -1443,7 +1400,7 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, u
 			HRDW_SPI_Locked = false;
 			return 65535;
 		}
-		mcp3008_value += (uint16_t)(0 | ((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
+		mcp3008_value += (uint16_t)(((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
 	}
 	mcp3008_value /= count;
 

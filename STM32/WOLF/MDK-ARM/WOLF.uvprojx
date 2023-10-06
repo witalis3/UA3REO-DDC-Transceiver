@@ -3025,6 +3025,11 @@
               <FilePath>..\..\Src\i2c.h</FilePath>
             </File>
             <File>
+              <FileName>images.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\images.c</FilePath>
+            </File>
+            <File>
               <FileName>images.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\images.h</FilePath>
@@ -4622,6 +4627,11 @@
               <FileName>i2c.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\i2c.h</FilePath>
+            </File>
+            <File>
+              <FileName>images.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\images.c</FilePath>
             </File>
             <File>
               <FileName>images.h</FileName>
@@ -6292,6 +6302,11 @@
               <FilePath>..\..\Src\i2c.h</FilePath>
             </File>
             <File>
+              <FileName>images.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\images.c</FilePath>
+            </File>
+            <File>
               <FileName>images.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\images.h</FilePath>
@@ -7958,6 +7973,11 @@
               <FileName>i2c.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\i2c.h</FilePath>
+            </File>
+            <File>
+              <FileName>images.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\images.c</FilePath>
             </File>
             <File>
               <FileName>images.h</FileName>
@@ -9628,6 +9648,11 @@
               <FilePath>..\..\Src\i2c.h</FilePath>
             </File>
             <File>
+              <FileName>images.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\images.c</FilePath>
+            </File>
+            <File>
               <FileName>images.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\images.h</FilePath>
@@ -11296,6 +11321,11 @@
               <FilePath>..\..\Src\i2c.h</FilePath>
             </File>
             <File>
+              <FileName>images.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\images.c</FilePath>
+            </File>
+            <File>
               <FileName>images.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\images.h</FilePath>
@@ -12893,6 +12923,11 @@
               <FileName>i2c.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\i2c.h</FilePath>
+            </File>
+            <File>
+              <FileName>images.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\images.c</FilePath>
             </File>
             <File>
               <FileName>images.h</FileName>
@@ -14596,6 +14631,11 @@
               <FilePath>..\..\Src\i2c.h</FilePath>
             </File>
             <File>
+              <FileName>images.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\images.c</FilePath>
+            </File>
+            <File>
               <FileName>images.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\images.h</FilePath>
@@ -14774,57 +14814,6 @@
               <FileName>self_test.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\self_test.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>2</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>7</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>0</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <uGnu>2</uGnu>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>2</vShortEn>
-                    <vShortWch>2</vShortWch>
-                    <v6Lto>2</v6Lto>
-                    <v6WtE>2</v6WtE>
-                    <v6Rtti>2</v6Rtti>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
             </File>
             <File>
               <FileName>self_test.h</FileName>
@@ -14875,57 +14864,6 @@
               <FileName>system_menu.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\system_menu.c</FilePath>
-              <FileOption>
-                <CommonProperty>
-                  <UseCPPCompiler>2</UseCPPCompiler>
-                  <RVCTCodeConst>0</RVCTCodeConst>
-                  <RVCTZI>0</RVCTZI>
-                  <RVCTOtherData>0</RVCTOtherData>
-                  <ModuleSelection>0</ModuleSelection>
-                  <IncludeInBuild>2</IncludeInBuild>
-                  <AlwaysBuild>2</AlwaysBuild>
-                  <GenerateAssemblyFile>2</GenerateAssemblyFile>
-                  <AssembleAssemblyFile>2</AssembleAssemblyFile>
-                  <PublicsOnly>2</PublicsOnly>
-                  <StopOnExitCode>11</StopOnExitCode>
-                  <CustomArgument></CustomArgument>
-                  <IncludeLibraryModules></IncludeLibraryModules>
-                  <ComprImg>1</ComprImg>
-                </CommonProperty>
-                <FileArmAds>
-                  <Cads>
-                    <interw>2</interw>
-                    <Optim>7</Optim>
-                    <oTime>2</oTime>
-                    <SplitLS>2</SplitLS>
-                    <OneElfS>2</OneElfS>
-                    <Strict>2</Strict>
-                    <EnumInt>2</EnumInt>
-                    <PlainCh>2</PlainCh>
-                    <Ropi>2</Ropi>
-                    <Rwpi>2</Rwpi>
-                    <wLevel>0</wLevel>
-                    <uThumb>2</uThumb>
-                    <uSurpInc>2</uSurpInc>
-                    <uC99>2</uC99>
-                    <uGnu>2</uGnu>
-                    <useXO>2</useXO>
-                    <v6Lang>0</v6Lang>
-                    <v6LangP>0</v6LangP>
-                    <vShortEn>2</vShortEn>
-                    <vShortWch>2</vShortWch>
-                    <v6Lto>2</v6Lto>
-                    <v6WtE>2</v6WtE>
-                    <v6Rtti>2</v6Rtti>
-                    <VariousControls>
-                      <MiscControls></MiscControls>
-                      <Define></Define>
-                      <Undefine></Undefine>
-                      <IncludePath></IncludePath>
-                    </VariousControls>
-                  </Cads>
-                </FileArmAds>
-              </FileOption>
             </File>
             <File>
               <FileName>system_menu.h</FileName>

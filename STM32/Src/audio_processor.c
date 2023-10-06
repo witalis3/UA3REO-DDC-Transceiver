@@ -242,9 +242,16 @@ void processRxAudio(void) {
 		}
 
 		// drop LSB 32b->24b
+		int32_t iq_i, iq_q;
 		for (uint_fast16_t i = 0; i < (USB_AUDIO_RX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET / 2); i++) {
-			int32_t iq_i = APROC_Audio_Buffer_RX1_I[i] * 2147483648;
-			int32_t iq_q = APROC_Audio_Buffer_RX1_Q[i] * 2147483648;
+			if (CALIBRATE.Swap_USB_IQ) {
+				iq_i = APROC_Audio_Buffer_RX1_Q[i] * 2147483648;
+				iq_q = APROC_Audio_Buffer_RX1_I[i] * 2147483648;
+			} else {
+				iq_i = APROC_Audio_Buffer_RX1_I[i] * 2147483648;
+				iq_q = APROC_Audio_Buffer_RX1_Q[i] * 2147483648;
+			}
+
 			USB_IQ_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 + 0] = (iq_i >> 8) & 0xFF;
 			USB_IQ_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 + 1] = (iq_i >> 16) & 0xFF;
 			USB_IQ_rx_buffer_current[i * BYTES_IN_SAMPLE_AUDIO_OUT_PACKET * 2 + 2] = (iq_i >> 24) & 0xFF;
@@ -667,8 +674,20 @@ void processRxAudio(void) {
 		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++) {
 			float32_t signal = generateSin(amplitude, &beep_index, TRX_SAMPLERATE, 1500);
 			arm_float_to_q31(&signal, &out, 1);
-			APROC_AudioBuffer_out[pos * 2] = convertToSPIBigEndian(out);         // left channel
-			APROC_AudioBuffer_out[pos * 2 + 1] = APROC_AudioBuffer_out[pos * 2]; // right channel
+			int32_t sample = convertToSPIBigEndian(out);
+
+			if (CODEC_Beeping_Left) {
+				APROC_AudioBuffer_out[pos * 2] = sample; // left channel
+			} else {
+				APROC_AudioBuffer_out[pos * 2] = 0;
+			}
+
+			if (CODEC_Beeping_Right) {
+				APROC_AudioBuffer_out[pos * 2 + 1] = sample; // right channel
+			} else {
+				APROC_AudioBuffer_out[pos * 2 + 1] = 0;
+			}
+
 			if (beep_samples >= 20 && old_signal < 0 && signal >= 0) {
 				halted = true;
 				break;
@@ -680,6 +699,8 @@ void processRxAudio(void) {
 			beep_index = 0;
 			beep_samples = 0;
 			CODEC_Beeping = false;
+			CODEC_Beeping_Left = false;
+			CODEC_Beeping_Right = false;
 		}
 	}
 
@@ -751,6 +772,9 @@ void processTxAudio(void) {
 	if (getInputType() == TRX_INPUT_USB) // USB AUDIO
 	{
 		uint32_t buffer_index = USB_AUDIO_GetTXBufferIndex_FS() / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET; // buffer 8bit, data 24 bit
+		if (buffer_index >= (USB_AUDIO_TX_BUFFER_SIZE / BYTES_IN_SAMPLE_AUDIO_OUT_PACKET)) {
+			buffer_index = 0;
+		}
 		if ((buffer_index % BYTES_IN_SAMPLE_AUDIO_OUT_PACKET) == 1) {
 			buffer_index -= (buffer_index % BYTES_IN_SAMPLE_AUDIO_OUT_PACKET);
 		}
@@ -1014,12 +1038,12 @@ void processTxAudio(void) {
 
 	// Send TX data to FFT
 	if (TRX_on_TX && !SHOW_RX_FFT_ON_TX) {
-		float32_t *FFTInput_I_current = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
-		float32_t *FFTInput_Q_current = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
+		float32_t *FFTInput_I_current_ = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
+		float32_t *FFTInput_Q_current_ = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
 
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
-			FFTInput_I_current[FFT_buff_index] = APROC_Audio_Buffer_TX_I[i];
-			FFTInput_Q_current[FFT_buff_index] = APROC_Audio_Buffer_TX_Q[i];
+			FFTInput_I_current_[FFT_buff_index] = APROC_Audio_Buffer_TX_I[i];
+			FFTInput_Q_current_[FFT_buff_index] = APROC_Audio_Buffer_TX_Q[i];
 
 			FFT_buff_index++;
 			if (FFT_buff_index >= FFT_HALF_SIZE) {
@@ -1029,8 +1053,8 @@ void processTxAudio(void) {
 				} else {
 					FFT_new_buffer_ready = true;
 					FFT_buff_current = !FFT_buff_current;
-					FFTInput_I_current = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
-					FFTInput_Q_current = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
+					FFTInput_I_current_ = FFT_buff_current ? (float32_t *)&FFTInput_I_A : (float32_t *)&FFTInput_I_B;
+					FFTInput_Q_current_ = FFT_buff_current ? (float32_t *)&FFTInput_Q_A : (float32_t *)&FFTInput_Q_B;
 				}
 			}
 		}
@@ -1049,6 +1073,23 @@ void processTxAudio(void) {
 		}
 	}
 #endif
+
+	// Prepare codec out data
+	float32_t volume_gain_tx = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);
+#if HRDW_HAS_SD
+	if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess) {
+		volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+	}
+#else
+	volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+#endif
+
+	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
+		float32_t sample = APROC_Audio_Buffer_TX_I[i] * volume_gain_tx;
+		arm_float_to_q31(&sample, &APROC_AudioBuffer_out[i * 2], 1);
+		APROC_AudioBuffer_out[i * 2] = convertToSPIBigEndian(APROC_AudioBuffer_out[i * 2]); // left channel
+		APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];                    // right channel
+	}
 
 	// Loopback/DIGI mode self-hearing
 	bool has_self_hearing_data = false;
@@ -1083,22 +1124,6 @@ void processTxAudio(void) {
 
 		// Send to Codec
 		if (!LISTEN_RX_AUDIO_ON_TX) {
-			float32_t volume_gain_tx = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);
-#if HRDW_HAS_SD
-			if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess) {
-				volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
-			}
-#else
-			volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
-#endif
-
-			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
-				float32_t sample = APROC_Audio_Buffer_TX_I[i] * volume_gain_tx;
-				arm_float_to_q31(&sample, &APROC_AudioBuffer_out[i * 2], 1);
-				APROC_AudioBuffer_out[i * 2] = convertToSPIBigEndian(APROC_AudioBuffer_out[i * 2]); // left channel
-				APROC_AudioBuffer_out[i * 2 + 1] = APROC_AudioBuffer_out[i * 2];                    // right channel
-			}
-
 			has_self_hearing_data = true;
 			Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
 			if (start_CODEC_DMA_state) // compleate
@@ -1242,11 +1267,10 @@ void processTxAudio(void) {
 	float32_t ampl_max_q = 0.0f;
 	float32_t ampl_min_i = 0.0f;
 	float32_t ampl_min_q = 0.0f;
-	uint32_t tmp_index;
 	arm_max_no_idx_f32(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, &ampl_max_i);
 	arm_max_no_idx_f32(APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE, &ampl_max_q);
-	arm_min_f32(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, &ampl_min_i, &tmp_index);
-	arm_min_f32(APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE, &ampl_min_q, &tmp_index);
+	arm_min_no_idx_f32(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, &ampl_min_i);
+	arm_min_no_idx_f32(APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE, &ampl_min_q);
 	float32_t Processor_TX_MAX_amplitude_IN = ampl_max_i;
 	if (ampl_max_q > Processor_TX_MAX_amplitude_IN) {
 		Processor_TX_MAX_amplitude_IN = ampl_max_q;
@@ -1598,27 +1622,12 @@ static void doRX_NOTCH(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 
 // RX Equalizer
 static void doRX_EQ(uint16_t size, uint8_t mode) {
-	bool eq1_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P1_WFM != 0) : (TRX.RX_EQ_P1 != 0);
-	bool eq2_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P2_WFM != 0) : (TRX.RX_EQ_P2 != 0);
-	bool eq3_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P3_WFM != 0) : (TRX.RX_EQ_P3 != 0);
-	bool eq4_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P4_WFM != 0) : (TRX.RX_EQ_P4 != 0);
-	bool eq5_enabled = (mode == TRX_MODE_WFM) ? (TRX.RX_EQ_P5_WFM != 0) : (TRX.RX_EQ_P5 != 0);
-
-	if (eq1_enabled) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P1_FILTER, &EQ_RX_Q_P1_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
-	}
-	if (eq2_enabled) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P2_FILTER, &EQ_RX_Q_P2_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
-	}
-	if (eq3_enabled) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P3_FILTER, &EQ_RX_Q_P3_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
-	}
-	if (eq4_enabled) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P4_FILTER, &EQ_RX_Q_P4_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
-	}
-	if (eq5_enabled) {
-		arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P5_FILTER, &EQ_RX_Q_P5_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
-	}
+	arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P1_FILTER, &EQ_RX_Q_P1_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P2_FILTER, &EQ_RX_Q_P2_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P3_FILTER, &EQ_RX_Q_P3_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P4_FILTER, &EQ_RX_Q_P4_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P5_FILTER, &EQ_RX_Q_P5_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
+	arm_biquad_cascade_df2T_f32_IQ(&EQ_RX_I_P6_FILTER, &EQ_RX_Q_P6_FILTER, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size);
 }
 
 // Equalizer microphone
@@ -1643,6 +1652,9 @@ static void doMIC_EQ(uint16_t size, uint8_t mode) {
 		if (TRX.MIC_EQ_P5_SSB != 0) {
 			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P5_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 		}
+		if (TRX.MIC_EQ_P6_SSB != 0) {
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P6_FILTER_SSB, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		}
 		break;
 
 	case TRX_MODE_NFM:
@@ -1663,6 +1675,9 @@ static void doMIC_EQ(uint16_t size, uint8_t mode) {
 		}
 		if (TRX.MIC_EQ_P5_AMFM != 0) {
 			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P5_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
+		}
+		if (TRX.MIC_EQ_P6_AMFM != 0) {
+			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P6_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 		}
 		break;
 	}
@@ -1858,8 +1873,8 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 	demod_fm_instance *DFM = &DFM_RX1;
 	bool sql_enabled = CurrentVFO->SQL;
 	int8_t FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
-	arm_biquad_cascade_df2T_instance_f32 *SFM_Pilot_Filter = &SFM_RX1_Pilot_Filter;
-	arm_biquad_cascade_df2T_instance_f32 *SFM_Audio_Filter = &SFM_RX1_Audio_Filter;
+	const arm_biquad_cascade_df2T_instance_f32 *SFM_Pilot_Filter = &SFM_RX1_Pilot_Filter;
+	const arm_biquad_cascade_df2T_instance_f32 *SFM_Audio_Filter = &SFM_RX1_Audio_Filter;
 
 	float32_t angle;
 
@@ -1936,6 +1951,8 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 		arm_biquad_cascade_df2T_f32_single(SFM_Pilot_Filter, data_i, DFM->stereo_fm_pilot_out, size);
 		arm_biquad_cascade_df2T_f32_single(SFM_Audio_Filter, data_i, DFM->stereo_fm_audio_out, size);
 
+		// float32_t stereo_rms = 0.0f;
+
 		// move signal to low freq
 		for (uint_fast16_t i = 0; i < size; i++) {
 			static float32_t prev_sfm_pilot_sample = 0.0f;
@@ -1944,15 +1961,23 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 			prev_sfm_pilot_sample = DFM->stereo_fm_pilot_out[i];
 
 			// get stereo sample from decoded wfm
-			float32_t stereo_sample = DFM->stereo_fm_audio_out[i] * arm_sin_f32(angle) * 2.0f; // 2 - stereo depth
-			if (isnanf(stereo_sample) || isinf(stereo_sample)) {
+			float32_t stereo_sample = DFM->stereo_fm_audio_out[i] * arm_sin_f32(angle) * (100.0f / (float32_t)TRX.FM_Stereo_Modulation);
+			if (isnanf(stereo_sample) || isinff(stereo_sample)) {
 				continue;
 			}
 
 			// get channels
-			data_q[i] = (data_i[i] - stereo_sample); // Mono (L+R) - Stereo (L-R) = 2R
-			data_i[i] = (data_i[i] + stereo_sample); // Mono (L+R) + Stereo (L-R) = 2L
+			float32_t audio_sample = data_i[i];
+			data_q[i] = (audio_sample - stereo_sample); // Mono (L+R) - Stereo (L-R) = 2R
+			data_i[i] = (audio_sample + stereo_sample); // Mono (L+R) + Stereo (L-R) = 2L
+
+			// calculate RMS
+			// stereo_rms += (stereo_sample * 1000.0f) * (stereo_sample * 1000.0f);
 		}
+
+		// stereo_rms /= size;
+		// stereo_rms = sqrtf(stereo_rms);
+		// println("Stereo RMS: ", (double)rate2dbP(stereo_rms));
 	}
 }
 
@@ -2014,7 +2039,6 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 	float32_t if_gain = db2rateP(TRX.IF_Gain);
 	float32_t minVal = 0;
 	float32_t maxVal = 0;
-	uint32_t index = 0;
 	bool CW = false;
 
 	float32_t *I_buff = APROC_Audio_Buffer_RX1_I;
@@ -2039,7 +2063,7 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 	}
 
 	// overflow protect
-	arm_min_f32(I_buff, size, &minVal, &index);
+	arm_min_no_idx_f32(I_buff, size, &minVal);
 	arm_max_no_idx_f32(I_buff, size, &maxVal);
 	if ((minVal * if_gain) < -1.0f) {
 		if (!CurrentVFO->AGC) {
@@ -2051,7 +2075,7 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 			APROC_IFGain_Overflow = true;
 		}
 	}
-	arm_min_f32(Q_buff, size, &minVal, &index);
+	arm_min_no_idx_f32(Q_buff, size, &minVal);
 	arm_max_no_idx_f32(Q_buff, size, &maxVal);
 	if ((minVal * if_gain) < -1.0f) {
 		if (!CurrentVFO->AGC) {

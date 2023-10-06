@@ -63,14 +63,18 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Digital pre-distortion
 * And other.. (see menu)
 
-### Sensitivity
+### RF Parameters
 
-At 10dB signal-to-noise ratio, LNA is on, ATT, LPF, BPF are off
+Sensitivity at 10dB SNR, LNA enabled:
 
-Frequency, mHz | Sensitivity, dBm | Sensitivity
------------- | ------------- | -------------
-<150	| -131	| 63.0 nV
-435	| -121	| 0.2 uV
+* <150mHz | -131dBm | 63.0 nV
+* 435mHz | -121dBm | 0.2 uV
+
+Out-of-band emissions:
+
+* 14mHz -69dBc
+* 28mHz -63dBc
+* 145mHz -48dBc -55dBc
 
 ## Build
 
@@ -151,6 +155,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Split freq sync** - Synchronous VFO frequency change in SPLIT mode
 * **Transverter XXcm** - Enable external ham band transverter support
 * **URSI Code** - Ionogramm URSI Code https://digisonde.com/index.html#stationmap-section
+* **Tropo Region** - Region for tropospheric forecast https://www.dxinfocentre.com/tropo.html 
 * **XIT Interval** - Offset range XIT (+ -)
 
 ### FILTERS Settings
@@ -197,6 +202,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Volume step** - AF gain step by ENC2 (X1, Lite)
 * **Volume** - AF gain
 * **WFM Stereo** - select WFM stereo or mono decoder
+* **WFM Stereo Modulation** - Stereo FM sub-carrier level
 
 ### TX Settings
 
@@ -317,11 +323,13 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **ATU Averaging** - The number of steps of averaging SWR values during measurements in the operation of an automatic tuner
 * **BPF x** - Bandpass filter parameters
 * **CAT Type** - Type of CAT subsystem (FT-450 / TS-2000)
+* **COM CAT DTR/RTS** - Configuring the functions of the DTR/RTS control lines of the CAT port
+* **COM DEBUG DTR/RTS** - Configuring the functions of the DTR/RTS control lines of the Debug port
 * **CICCOMP Shift** - Bit shift after CIC compensator
 * **Calibrate reset** - Reset all calibrations to defaults
 * **DAC Driver Mode** - DAC Driver OPA2673 bias mode (2 = 100% bias, 1 = 75% bias, 0 = 50% bias)
 * **DAC Shift** - Bit shift of the output to the DAC
-* **ENABLE 60m/4m/AIR/Marine Band** - Enable hidden bands
+* **ENABLE 2200m/60m/4m/AIR/Marine Band/70cm** - Enable hidden bands
 * **EXT xxx** - External port control by band (EXT3, EXT2, EXT1, EXT0) - open drain
 * **Encoder acceleration** - The encoder acceleration on faster rotation speeds
 * **Encoder debounce** - Time of debouncing contacts of the main encoder
@@ -356,6 +364,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **S METER** - S-meter calibration
 * **SSB Power addition** - Addition of RF power in SSB power, %
 * **SWR FWD/BWD RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
+* **Swap USB IQ** - Swap USB IQ output
 * **Settings reset** - Reset all settings to defaults
 * **TCXO Frequency, khz** - Frequency adjustment of the reference oscillator
 * **Touchpad horiz flip** - Flip the touchpad operation horizontally
@@ -411,6 +420,10 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 ### Propagation 
 
 * Show propagation statistics (from internet)
+
+### Tropo 
+
+* Show tropospheric forecast
 
 ### DayNight Map 
 

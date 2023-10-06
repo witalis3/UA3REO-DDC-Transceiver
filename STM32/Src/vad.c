@@ -6,19 +6,17 @@
 
 // https://habr.com/ru/post/192954/
 
-static float32_t window_multipliers[VAD_FFT_SIZE] = {0}; // coefficients for the window function
-volatile bool VAD_RX1_Muting = false;                    // Muting flag
-volatile bool VAD_RX2_Muting = false;                    // Muting flag
+static float32_t VAD_window_multipliers[VAD_FFT_SIZE] = {0}; // coefficients for the window function
+volatile bool VAD_RX1_Muting = false;                        // Muting flag
+volatile bool VAD_RX2_Muting = false;                        // Muting flag
+float32_t VAD_InputBuffer[VAD_BLOCK_SIZE];                   // Input buffer
+const arm_cfft_instance_f32 *VAD_FFT_Inst = &arm_cfft_sR_f32_len128;
+float32_t VAD_FFTBuffer[VAD_FFT_SIZE * 2];
+
+// 48ksps, 3kHz lowpass
+const float32_t VAD_FirDecimate_Coeffs[] = {0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f};
 
 static VAD_Instance VAD_RX1 = {
-    .FFT_Inst = &arm_cfft_sR_f32_len128,
-    .FirDecimate =
-        {
-            // 48ksps, 3kHz lowpass
-            .numTaps = 4,
-            .pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
-            .pState = NULL,
-        },
     .Min_E1 = 999.0f,
     .Min_E2 = 999.0f,
     .Min_MD1 = 999.0f,
@@ -27,14 +25,6 @@ static VAD_Instance VAD_RX1 = {
 
 #if HRDW_HAS_DUAL_RX
 static VAD_Instance VAD_RX2 = {
-    .FFT_Inst = &arm_cfft_sR_f32_len128,
-    .FirDecimate =
-        {
-            // 48ksps, 3kHz lowpass
-            .numTaps = 4,
-            .pCoeffs = (float32_t *)(const float32_t[]){0.199820836596682871f, 0.272777397353925699f, 0.272777397353925699f, 0.199820836596682871f},
-            .pState = NULL,
-        },
     .Min_E1 = 999.0f,
     .Min_E2 = 999.0f,
     .Min_MD1 = 999.0f,
@@ -45,13 +35,13 @@ static VAD_Instance VAD_RX2 = {
 // initialize VAD
 void InitVAD(void) {
 	// decimator
-	arm_fir_decimate_init_f32(&VAD_RX1.DECIMATE, VAD_RX1.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX1.FirDecimate.pCoeffs, VAD_RX1.decimState, VAD_BLOCK_SIZE);
+	arm_fir_decimate_init_f32(&VAD_RX1.FirDecimate, VAD_DECIMATE_NUM_TAPS, VAD_MAGNIFY, VAD_FirDecimate_Coeffs, VAD_RX1.decimState, VAD_BLOCK_SIZE);
 #if HRDW_HAS_DUAL_RX
-	arm_fir_decimate_init_f32(&VAD_RX2.DECIMATE, VAD_RX2.FirDecimate.numTaps, VAD_MAGNIFY, VAD_RX2.FirDecimate.pCoeffs, VAD_RX2.decimState, VAD_BLOCK_SIZE);
+	arm_fir_decimate_init_f32(&VAD_RX2.FirDecimate, VAD_DECIMATE_NUM_TAPS, VAD_MAGNIFY, VAD_FirDecimate_Coeffs, VAD_RX2.decimState, VAD_BLOCK_SIZE);
 #endif
 	// Blackman window function
 	for (uint_fast16_t i = 0; i < VAD_FFT_SIZE; i++) {
-		window_multipliers[i] =
+		VAD_window_multipliers[i] =
 		    ((1.0f - 0.16f) / 2) - 0.5f * arm_cos_f32((2.0f * PI * i) / ((float32_t)VAD_FFT_SIZE - 1.0f)) + (0.16f / 2) * arm_cos_f32(4.0f * PI * i / ((float32_t)VAD_FFT_SIZE - 1.0f));
 	}
 }
@@ -89,26 +79,26 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
 #endif
 
 	// clear the old FFT buffer
-	dma_memset(VAD->FFTBuffer, 0x00, sizeof(VAD->FFTBuffer));
+	dma_memset(VAD_FFTBuffer, 0x00, sizeof(VAD_FFTBuffer));
 	// copy the incoming data for the next work
-	dma_memcpy(VAD->InputBuffer, buffer, sizeof(VAD->InputBuffer));
+	dma_memcpy(VAD_InputBuffer, buffer, sizeof(VAD_InputBuffer));
 	// Decimator
-	arm_fir_decimate_f32(&(VAD->DECIMATE), VAD->InputBuffer, VAD->InputBuffer, VAD_BLOCK_SIZE);
+	arm_fir_decimate_f32(&(VAD->FirDecimate), VAD_InputBuffer, VAD_InputBuffer, VAD_BLOCK_SIZE);
 	// Fill the unnecessary part of the buffer with zeros
 	for (uint_fast16_t i = 0; i < VAD_FFT_SIZE; i++) {
 		if (i < (VAD_FFT_SIZE - VAD_ZOOMED_SAMPLES)) { // offset old data
 			VAD->FFTBufferCharge[i] = VAD->FFTBufferCharge[(i + VAD_ZOOMED_SAMPLES)];
 		} else { // Add new data to the FFT buffer for calculation
-			VAD->FFTBufferCharge[i] = VAD->InputBuffer[i - (VAD_FFT_SIZE - VAD_ZOOMED_SAMPLES)];
+			VAD->FFTBufferCharge[i] = VAD_InputBuffer[i - (VAD_FFT_SIZE - VAD_ZOOMED_SAMPLES)];
 		}
 
-		VAD->FFTBuffer[i * 2] = window_multipliers[i] * VAD->FFTBufferCharge[i]; // + Window function for FFT
-		VAD->FFTBuffer[i * 2 + 1] = 0.0f;
+		VAD_FFTBuffer[i * 2] = VAD_window_multipliers[i] * VAD->FFTBufferCharge[i]; // + Window function for FFT
+		VAD_FFTBuffer[i * 2 + 1] = 0.0f;
 	}
 
 	// Do FFT
-	arm_cfft_f32(VAD->FFT_Inst, VAD->FFTBuffer, 0, 1);
-	arm_cmplx_mag_squared_f32(VAD->FFTBuffer, VAD->FFTBuffer, VAD_FFT_SIZE);
+	arm_cfft_f32(VAD_FFT_Inst, VAD_FFTBuffer, 0, 1);
+	arm_cmplx_mag_squared_f32(VAD_FFTBuffer, VAD_FFTBuffer, VAD_FFT_SIZE);
 
 	// DEBUG VAD
 	/*if(NeedFFTInputBuffer)
@@ -145,27 +135,27 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
 	float32_t power1 = 0;
 	float32_t power2 = 0;
 	for (uint32_t bin = fft_hpf_bin; bin < fft_center_bin; bin++) {
-		power1 += VAD->FFTBuffer[bin];
+		power1 += VAD_FFTBuffer[bin];
 	}
 	for (uint32_t bin = fft_center_bin; bin < fft_lpf_bin; bin++) {
-		power2 += VAD->FFTBuffer[bin];
+		power2 += VAD_FFTBuffer[bin];
 	}
 
 	// calc SFM — Spectral Flatness Measure
 	float32_t Amean1 = 0;
 	float32_t Amean2 = 0;
-	arm_mean_f32(&VAD->FFTBuffer[fft_hpf_bin], fft_bin_halflen, &Amean1);
-	arm_mean_f32(&VAD->FFTBuffer[fft_center_bin], fft_bin_halflen, &Amean2);
+	arm_mean_f32(&VAD_FFTBuffer[fft_hpf_bin], fft_bin_halflen, &Amean1);
+	arm_mean_f32(&VAD_FFTBuffer[fft_center_bin], fft_bin_halflen, &Amean2);
 	float32_t Gmean1 = 0;
 	float32_t Gmean2 = 0;
 	for (uint32_t i = 0; i < fft_center_bin; i++) {
-		if (VAD->FFTBuffer[i] != 0) {
-			Gmean1 += log10f_fast(VAD->FFTBuffer[i]);
+		if (VAD_FFTBuffer[i] != 0) {
+			Gmean1 += log10f_fast(VAD_FFTBuffer[i]);
 		}
 	}
 	for (uint32_t i = fft_center_bin; i < fft_lpf_bin; i++) {
-		if (VAD->FFTBuffer[i] != 0) {
-			Gmean2 += log10f_fast(VAD->FFTBuffer[i]);
+		if (VAD_FFTBuffer[i] != 0) {
+			Gmean2 += log10f_fast(VAD_FFTBuffer[i]);
 		}
 	}
 	Gmean1 = Gmean1 / fft_bin_halflen;
@@ -178,10 +168,10 @@ void processVAD(AUDIO_PROC_RX_NUM rx_id, float32_t *buffer) {
 	// find most dominant frequency component
 	float32_t MD1 = 0.0f;
 	uint32_t MD1_index = 0.0f;
-	arm_max_f32(&VAD->FFTBuffer[fft_hpf_bin], fft_bin_halflen, &MD1, &MD1_index);
+	arm_max_f32(&VAD_FFTBuffer[fft_hpf_bin], fft_bin_halflen, &MD1, &MD1_index);
 	float32_t MD2 = 0.0f;
 	uint32_t MD2_index = 0.0f;
-	arm_max_f32(&VAD->FFTBuffer[fft_center_bin], fft_bin_halflen, &MD2, &MD2_index);
+	arm_max_f32(&VAD_FFTBuffer[fft_center_bin], fft_bin_halflen, &MD2, &MD2_index);
 
 	// minimums
 	if (VAD->start_counter < 100) // skip first packets

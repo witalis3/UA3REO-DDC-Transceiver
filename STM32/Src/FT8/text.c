@@ -34,8 +34,6 @@ bool is_digit(char c) { return (c >= '0') && (c <= '9'); }
 
 bool is_letter(char c) { return ((c >= 'A') && (c <= 'Z')) || ((c >= 'a') && (c <= 'z')); }
 
-bool is_space(char c) { return (c == ' '); }
-
 bool in_range(char c, char min, char max) { return (c >= min) && (c <= max); }
 
 bool starts_with(const char *string, const char *prefix) { return 0 == memcmp(string, prefix, strlen(prefix)); }
@@ -49,23 +47,6 @@ int char_index(const char *string, char c) {
 		}
 	}
 	return -1; // Not found
-}
-
-// Text message formatting:
-//   - replaces lowercase letters with uppercase
-//   - merges consecutive spaces into single space
-void fmtmsg(char *msg_out, const char *msg_in) {
-	char c;
-	char last_out = 0;
-	while ((c = *msg_in)) {
-		if (c != ' ' || last_out != ' ') {
-			last_out = to_upper(c);
-			*msg_out = last_out;
-			++msg_out;
-		}
-		++msg_in;
-	}
-	*msg_out = 0; // Add zero termination
 }
 
 // Parse a 2 digit integer from string
@@ -162,52 +143,4 @@ char charn(int c, int table_idx) {
 	}
 
 	return '_'; // unknown character, should never get here
-}
-
-// Convert character to its index (charn in reverse) according to a table
-int nchar(char c, int table_idx) {
-	int n = 0;
-	if (table_idx != 2 && table_idx != 3) {
-		if (c == ' ') {
-			return n + 0;
-		}
-		n += 1;
-	}
-	if (table_idx != 4) {
-		if (c >= '0' && c <= '9') {
-			return n + (c - '0');
-		}
-		n += 10;
-	}
-	if (table_idx != 3) {
-		if (c >= 'A' && c <= 'Z') {
-			return n + (c - 'A');
-		}
-		n += 26;
-	}
-
-	if (table_idx == 0) {
-		if (c == '+') {
-			return n + 0;
-		}
-		if (c == '-') {
-			return n + 1;
-		}
-		if (c == '.') {
-			return n + 2;
-		}
-		if (c == '/') {
-			return n + 3;
-		}
-		if (c == '?') {
-			return n + 4;
-		}
-	} else if (table_idx == 5) {
-		if (c == '/') {
-			return n + 0;
-		}
-	}
-
-	// Character not found
-	return -1;
 }

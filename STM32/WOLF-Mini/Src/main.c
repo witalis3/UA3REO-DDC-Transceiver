@@ -265,7 +265,7 @@ int main(void) {
 	}
 
 	// DFU bootloader
-	if (TRX.NeedGoToBootloader || PERIPH_FrontPanel_Buttons[6].state) { // MENU
+	if (TRX.NeedGoToBootloader) { // MENU  || PERIPH_FrontPanel_Buttons[6].state
 		TRX.NeedGoToBootloader = false;
 		SaveSettings();
 		JumpToBootloader();

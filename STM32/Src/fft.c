@@ -6,6 +6,7 @@
 #include "lcd.h"
 #include "main.h"
 #include "pre_distortion.h"
+#include "rds_decoder.h"
 #include "screen_layout.h"
 #include "snap.h"
 #include "trx_manager.h"
@@ -473,12 +474,12 @@ void FFT_Init(void) {
 		FFT_current_spectrum_width_hz = TRX_GetRXSampleRate / fft_zoom;
 	}
 
-	// clear the buffers
-	uint16_t color = palette_wtf[GET_FFTHeight];
-	if (TRX.FFT_Automatic) {
-		color = palette_wtf[(uint32_t)(GET_FFTHeight * 0.9f)];
-	}
 #if HRDW_HAS_FULL_FFT_BUFFER
+	// clear the buffers
+	// uint16_t color = palette_wtf[GET_FFTHeight];
+	// if (TRX.FFT_Automatic) {
+	// 	color = palette_wtf[(uint32_t)(GET_FFTHeight * 0.9f)];
+	// }
 	// memset16(print_output_buffer, color, sizeof(print_output_buffer) / 2);
 #else
 	// dma_memset(print_output_short_buffer, 0, sizeof(print_output_short_buffer));
@@ -521,8 +522,8 @@ void FFT_bufferPrepare(void) {
 
 	fft_charge_ready = false;
 
-	float32_t *FFTInput_I_current = FFT_buff_current ? (float32_t *)FFTInput_I_B : (float32_t *)FFTInput_I_A; // inverted
-	float32_t *FFTInput_Q_current = FFT_buff_current ? (float32_t *)FFTInput_Q_B : (float32_t *)FFTInput_Q_A;
+	float32_t *FFTInput_I_current_ = FFT_buff_current ? (float32_t *)FFTInput_I_B : (float32_t *)FFTInput_I_A; // inverted
+	float32_t *FFTInput_Q_current_ = FFT_buff_current ? (float32_t *)FFTInput_Q_B : (float32_t *)FFTInput_Q_A;
 
 	// Reset old samples if frequency changed
 	uint64_t nowFFTChargeBufferFreq = CurrentVFO->Freq;
@@ -537,24 +538,24 @@ void FFT_bufferPrepare(void) {
 	if (fft_zoom > 1) {
 		uint32_t zoomed_width_half = zoomed_width / 2;
 		// Biquad LPF filter
-		arm_biquad_cascade_df2T_f32_IQ(&IIR_biquad_Zoom_FFT_I, &IIR_biquad_Zoom_FFT_Q, FFTInput_I_current, FFTInput_Q_current, FFTInput_I_current, FFTInput_Q_current, FFT_HALF_SIZE);
+		arm_biquad_cascade_df2T_f32_IQ(&IIR_biquad_Zoom_FFT_I, &IIR_biquad_Zoom_FFT_Q, FFTInput_I_current_, FFTInput_Q_current_, FFTInput_I_current_, FFTInput_Q_current_, FFT_HALF_SIZE);
 		// Decimator
-		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I_current, FFTInput_I_current, FFT_HALF_SIZE);
-		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q_current, FFTInput_Q_current, FFT_HALF_SIZE);
+		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_I, FFTInput_I_current_, FFTInput_I_current_, FFT_HALF_SIZE);
+		arm_fir_decimate_f32(&DECIMATE_ZOOM_FFT_Q, FFTInput_Q_current_, FFTInput_Q_current_, FFT_HALF_SIZE);
 		// Shift old data
 		dma_memcpy(&FFTInputCharge[0], &FFTInputCharge[zoomed_width_half * 2], sizeof(float32_t) * (FFT_SIZE - zoomed_width_half) * 2); //*2 - >i+q
 		// Add new data with 50% overlap
 		for (uint_fast16_t i = 0; i < zoomed_width_half; i++) {
-			FFTInputCharge[(FFT_SIZE - zoomed_width_half + i) * 2] = FFTInput_I_current[i];
-			FFTInputCharge[(FFT_SIZE - zoomed_width_half + i) * 2 + 1] = FFTInput_Q_current[i];
+			FFTInputCharge[(FFT_SIZE - zoomed_width_half + i) * 2] = FFTInput_I_current_[i];
+			FFTInputCharge[(FFT_SIZE - zoomed_width_half + i) * 2 + 1] = FFTInput_Q_current_[i];
 		}
 		FFT_ChargeBuffer_collected += zoomed_width_half;
 	} else {
 		// Make a combined buffer for calculation with 50% overlap
 		dma_memcpy(&FFTInputCharge[0], &FFTInputCharge[FFT_HALF_SIZE * 2], sizeof(float32_t) * FFT_HALF_SIZE * 2); //*2 - >i+q
 		for (uint_fast16_t i = 0; i < FFT_HALF_SIZE; i++) {
-			FFTInputCharge[(FFT_HALF_SIZE + i) * 2] = FFTInput_I_current[i];
-			FFTInputCharge[(FFT_HALF_SIZE + i) * 2 + 1] = FFTInput_Q_current[i];
+			FFTInputCharge[(FFT_HALF_SIZE + i) * 2] = FFTInput_I_current_[i];
+			FFTInputCharge[(FFT_HALF_SIZE + i) * 2 + 1] = FFTInput_Q_current_[i];
 		}
 		FFT_ChargeBuffer_collected += FFT_HALF_SIZE;
 	}
@@ -864,7 +865,6 @@ bool FFT_printFFT(void) {
 	  return;*/
 	LCD_busy = true;
 
-	uint16_t height = 0; // column height in FFT output
 	uint16_t tmp = 0;
 	uint16_t fftHeight = GET_FFTHeight;
 	uint16_t wtfHeight = GET_WTFHeight;
@@ -878,7 +878,7 @@ bool FFT_printFFT(void) {
 		// calculate scale lines
 		dma_memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos));
 		uint8_t index = 0;
-		uint64_t grid_step = FFT_current_spectrum_width_hz / 9.6;
+		int64_t grid_step = FFT_current_spectrum_width_hz / 9.6;
 		if (grid_step < 1000) {
 			grid_step = 1000;
 		}
@@ -886,7 +886,7 @@ bool FFT_printFFT(void) {
 
 		for (int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++) {
 			int64_t pos = -1;
-			uint64_t grid_freq = (CurrentVFO->Freq / grid_step * grid_step) + ((i - 6) * grid_step);
+			int64_t grid_freq = (CurrentVFO->Freq / grid_step * grid_step) + ((i - 6) * grid_step);
 			pos = getFreqPositionOnFFT(grid_freq, false);
 			if (pos >= 0) {
 				grid_lines_pos[index] = pos;
@@ -939,8 +939,7 @@ bool FFT_printFFT(void) {
 	// Looking for the maximum/minimum in frequency response
 	float32_t maxAmplValue = 0;
 	float32_t minAmplValue = 0;
-	uint32_t minAmplValueIndex = 0;
-	arm_min_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &minAmplValue, &minAmplValueIndex);
+	arm_min_no_idx_f32(FFTOutput_mean, LAYOUT->FFT_PRINT_SIZE, &minAmplValue);
 	if (FFT_SCALE_TYPE == 2) {
 		for (uint_fast16_t i = 0; i < LAYOUT->FFT_PRINT_SIZE; i++) {
 			if (FFTOutput_mean[i] == 0.0f) {
@@ -1469,7 +1468,7 @@ bool FFT_printFFT(void) {
 		uint16_t wtf_y_index = (print_wtf_yindex - fftHeight) / line_repeats_need;
 		// calculate offset
 		float64_t freq_diff = (((float64_t)currentFFTFreq - (float64_t)wtf_buffer_freqs[wtf_y_index]) / (double)hz_in_pixel) * (float64_t)fft_zoom;
-		float64_t freq_diff_part = fmodl(freq_diff, 1.0);
+		// float64_t freq_diff_part = fmodl(freq_diff, 1.0);
 		int64_t margin_left = 0;
 		if (freq_diff < 0) {
 			margin_left = -floorf(freq_diff);
@@ -1744,6 +1743,11 @@ bool FFT_printFFT(void) {
 		LCDDriver_printTextInMemory(tmp, 5, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 	}
 
+	// Print Stereo FM RDS Label
+	// if (CurrentVFO->Mode == TRX_MODE_WFM && TRX.FM_Stereo && RDS_Stereo) {
+	// LCDDriver_printTextInMemory("Stereo FM", 5, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+	// }
+
 	// Init print 2D FFT+WTF
 	Aligned_CleanDCache_by_Addr(print_output_buffer, sizeof(print_output_buffer));
 	uint32_t fft_2d_print_height = fftHeight + wtf_printed_lines;
@@ -1776,7 +1780,7 @@ void FFT_ShortBufferPrintFFT(void) {
 	uint16_t grid_color = palette_fft[fftHeight * 3 / 4];
 	static uint32_t fft_output_printed = 0;
 	static uint32_t fft_output_prepared = 0;
-	uint32_t fft_y = 0;
+	uint32_t fft_y;
 
 	while (fft_output_printed < (fftHeight + wtfHeight - decoder_offset)) {
 		fft_output_prepared = 0;
@@ -1840,7 +1844,7 @@ void FFT_ShortBufferPrintFFT(void) {
 
 				// calculate offset
 				float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[wtf_y_index]) / hz_in_pixel) * (float32_t)fft_zoom;
-				float32_t freq_diff_part = fmodl((float64_t)freq_diff, 1.0);
+				// float32_t freq_diff_part = fmodl((float64_t)freq_diff, 1.0);
 				int32_t margin_left = 0;
 				if (freq_diff < 0) {
 					margin_left = -floorf(freq_diff);
@@ -2161,8 +2165,7 @@ void FFT_afterPrintFFT(void) {
 		if (band_curr < (BANDS_COUNT - 1)) {
 			band_right = band_curr + 1;
 		}
-		int64_t fft_freq_position_start = 0;
-		int64_t fft_freq_position_stop = 0;
+		int64_t fft_freq_position_start, fft_freq_position_stop;
 		for (uint16_t band = band_left; band <= band_right; band++) {
 			// regions
 			for (uint16_t region = 0; region < BANDS[band].regionsCount; region++) {

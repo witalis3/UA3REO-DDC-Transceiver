@@ -68,6 +68,9 @@ static int8_t DEBUG_DeInit_FS(void) {
  */
 static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len) {
 	/* USER CODE BEGIN 5 */
+	bool dtr = false;
+	bool rts = false;
+
 	switch (cmd) {
 	case CDC_SEND_ENCAPSULATED_COMMAND:
 		break;
@@ -110,20 +113,27 @@ static int8_t DEBUG_Control_FS(uint8_t cmd, uint8_t *pbuf, uint32_t len) {
 		break;
 
 	case CDC_SET_CONTROL_LINE_STATE:
-		if ((pbuf[2] & 0x1) == 0x1) // DTR
-		{
-			CW_key_serial = true;
-		} else {
-			CW_key_serial = false;
+		dtr = (pbuf[2] & 0x1) == 0x1;
+		rts = (pbuf[2] & 0x2) == 0x2;
+
+		if (CALIBRATE.COM_DEBUG_DTR_Mode == COM_LINE_MODE_KEYER) {
+			CW_key_serial = dtr;
+		}
+		if (CALIBRATE.COM_DEBUG_RTS_Mode == COM_LINE_MODE_KEYER) {
+			CW_key_serial = rts;
 		}
 
-		if ((pbuf[2] & 0x2) == 0x2) // RTS
-		{
-			if (!CW_key_serial && !TRX_ptt_soft) {
+		if (CALIBRATE.COM_DEBUG_DTR_Mode == COM_LINE_MODE_PTT) {
+			if (dtr && !CW_key_serial && !TRX_ptt_soft) {
 				TRX_ptt_soft = true;
+			} else if (!dtr && !CW_key_serial && TRX_ptt_soft) {
+				TRX_ptt_soft = false;
 			}
-		} else {
-			if (!CW_key_serial && TRX_ptt_soft) {
+		}
+		if (CALIBRATE.COM_DEBUG_RTS_Mode == COM_LINE_MODE_PTT) {
+			if (rts && !CW_key_serial && !TRX_ptt_soft) {
+				TRX_ptt_soft = true;
+			} else if (!rts && !CW_key_serial && TRX_ptt_soft) {
 				TRX_ptt_soft = false;
 			}
 		}

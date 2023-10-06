@@ -294,8 +294,6 @@ void GetQSOTime(uint8_t QSO_Start) {
 
 void LogQSO(void) {
 	static char StrToLog[260];
-	int CR = 0xD; // CR -  ascii code
-	              // ctmp[Len+3] = 0;
 	char cBND[5]; // for the strng containing the current band
 
 	switch (FT8_BND_Freq) {

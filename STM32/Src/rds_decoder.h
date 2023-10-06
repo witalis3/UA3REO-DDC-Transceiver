@@ -27,6 +27,7 @@
 
 // Public variables
 extern char RDS_Decoder_Text[RDS_DECODER_STRLEN + 1];
+extern bool RDS_Stereo;
 
 // Public methods
 extern void RDSDecoder_Init(void);                   // initialize the CW decoder
