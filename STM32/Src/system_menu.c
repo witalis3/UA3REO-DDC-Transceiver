@@ -116,6 +116,7 @@ static void SYSMENU_HANDL_RX_Volume(int8_t direction);
 static void SYSMENU_HANDL_RX_Volume_Step(int8_t direction);
 static void SYSMENU_HANDL_RX_CODEC_Out_Volume(int8_t direction);
 static void SYSMENU_HANDL_RX_BluetoothAudio_Enabled(int8_t direction);
+static void SYSMENU_HANDL_RX_AUDIO_MODE(int8_t direction);
 
 static void SYSMENU_HANDL_TX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TX_ATU_Enabled(int8_t direction);
@@ -713,8 +714,9 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_RX_NOISE_BLANKER},
     {"NB Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD},
 #if !defined(FRONTPANEL_LITE)
-    {"RF_Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_RX_RFFilters},
+//{"RF_Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_RX_RFFilters},
 #endif
+    {"RX AUDIO Mode", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.RX_AUDIO_MODE, SYSMENU_HANDL_RX_AUDIO_MODE, (const enumerate_item[3]){"STEREO", "LEFT", "RIGHT"}},
     {"RX AGC CW Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_HANDL_RX_AGC_CW_Speed},
     {"RX AGC SSB Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_HANDL_RX_AGC_SSB_Speed},
     {"RX AGC Max gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_Max_gain, SYSMENU_HANDL_RX_AGC_Max_gain},
@@ -2596,6 +2598,15 @@ static void SYSMENU_HANDL_RX_AGC_SSB_Speed(int8_t direction) {
 	}
 	if (TRX.RX_AGC_SSB_speed > 20) {
 		TRX.RX_AGC_SSB_speed = 20;
+	}
+}
+
+static void SYSMENU_HANDL_RX_AUDIO_MODE(int8_t direction) {
+	if (TRX.RX_AUDIO_MODE > 0 || direction > 0) {
+		TRX.RX_AUDIO_MODE += direction;
+	}
+	if (TRX.RX_AUDIO_MODE > 2) {
+		TRX.RX_AUDIO_MODE = 2;
 	}
 }
 

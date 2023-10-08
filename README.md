@@ -188,7 +188,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **IF Gain, dB** - IF gain
 * **NB Threshold** - Threshold of Noise blanker
 * **Noise Blanker** - Activating the Surge Suppressor
-* **RF Filters** - Hardware filter management (LPF / HPF / BPF)
+* **RX AUDIO Mode** - Audio lines control: Stereo\Left\Right
 * **RX AGC Hold time** - Time before release of AGC gain in signal peaks, ms
 * **RX AGC Hold limit** - Burst limit for AGC delay time
 * **RX AGC Hold step up** - AGC Delay Time Step on Peaks
@@ -329,7 +329,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Calibrate reset** - Reset all calibrations to defaults
 * **DAC Driver Mode** - DAC Driver OPA2673 bias mode (2 = 100% bias, 1 = 75% bias, 0 = 50% bias)
 * **DAC Shift** - Bit shift of the output to the DAC
-* **ENABLE 2200m/60m/4m/AIR/Marine Band/70cm** - Enable hidden bands
+* **ENABLE 2200m/60m/6m/4m/FM/2m/AIR/Marine Band/70cm** - Enable hidden bands
 * **EXT xxx** - External port control by band (EXT3, EXT2, EXT1, EXT0) - open drain
 * **Encoder acceleration** - The encoder acceleration on faster rotation speeds
 * **Encoder debounce** - Time of debouncing contacts of the main encoder

@@ -289,6 +289,7 @@ void LoadSettings(bool clear) {
 		TRX.VOX = false;                                               // TX by voice activation
 		TRX.VOX_TIMEOUT = 300;                                         // VOX timeout in ms
 		TRX.VOX_THRESHOLD = -27;                                       // VOX threshold in dbFS
+		TRX.RX_AUDIO_MODE = RX_AUDIO_MODE_STEREO;
 		// CW
 		TRX.CW_Pitch = 600;                                             // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key

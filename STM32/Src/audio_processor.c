@@ -107,6 +107,7 @@ static bool APROC_SD_PlayTX(void);
 static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize);
 static void doTX_HILBERT(bool swap_iq, uint16_t size);
 static void doTX_CESSB(uint16_t size);
+static void APROC_ProcessCodecMuting(void);
 
 // initialize audio processor
 void initAudioProcessor(void) {
@@ -704,13 +705,8 @@ void processRxAudio(void) {
 		}
 	}
 
-	// Mute codec
-	if (CODEC_Muting) {
-		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++) {
-			APROC_AudioBuffer_out[pos * 2] = 0;     // left channel
-			APROC_AudioBuffer_out[pos * 2 + 1] = 0; // right channel
-		}
-	}
+	// Mute codec if need
+	APROC_ProcessCodecMuting();
 
 	// Send to Codec DMA
 	if (TRX_Inited) {
@@ -1122,6 +1118,9 @@ void processTxAudio(void) {
 			USB_AUDIO_need_rx_buffer = false;
 		}
 
+		// Mute codec if need
+		APROC_ProcessCodecMuting();
+
 		// Send to Codec
 		if (!LISTEN_RX_AUDIO_ON_TX) {
 			has_self_hearing_data = true;
@@ -1158,12 +1157,33 @@ void processTxAudio(void) {
 				int32_t sample = 0;
 				arm_float_to_q31(&point, &sample, 1);
 				int32_t data = convertToSPIBigEndian(sample);
-				if (start_CODEC_DMA_state) {
-					CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2] = data;
-					CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2 + 1] = data;
-				} else {
-					CODEC_Audio_Buffer_RX[i * 2] = data;
-					CODEC_Audio_Buffer_RX[i * 2 + 1] = data;
+
+				if (TRX.RX_AUDIO_MODE == RX_AUDIO_MODE_STEREO) {
+					if (start_CODEC_DMA_state) {
+						CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2] = data;
+						CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2 + 1] = data;
+					} else {
+						CODEC_Audio_Buffer_RX[i * 2] = data;
+						CODEC_Audio_Buffer_RX[i * 2 + 1] = data;
+					}
+				}
+				if (TRX.RX_AUDIO_MODE == RX_AUDIO_MODE_LEFT) {
+					if (start_CODEC_DMA_state) {
+						CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2] = data;
+						CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2 + 1] = 0;
+					} else {
+						CODEC_Audio_Buffer_RX[i * 2] = data;
+						CODEC_Audio_Buffer_RX[i * 2 + 1] = 0;
+					}
+				}
+				if (TRX.RX_AUDIO_MODE == RX_AUDIO_MODE_RIGHT) {
+					if (start_CODEC_DMA_state) {
+						CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2] = 0;
+						CODEC_Audio_Buffer_RX[AUDIO_BUFFER_SIZE + i * 2 + 1] = data;
+					} else {
+						CODEC_Audio_Buffer_RX[i * 2] = 0;
+						CODEC_Audio_Buffer_RX[i * 2 + 1] = data;
+					}
 				}
 			}
 			Aligned_CleanDCache_by_Addr((uint32_t *)&CODEC_Audio_Buffer_RX[0], sizeof(CODEC_Audio_Buffer_RX));
@@ -2127,6 +2147,9 @@ static void APROC_SD_Play(void) {
 				APROC_AudioBuffer_out[i] = convertToSPIBigEndian(APROC_AudioBuffer_out[i]); // for 32bit audio
 			}
 
+			// Mute codec if need
+			APROC_ProcessCodecMuting();
+
 			// Send to Codec DMA
 			if (TRX_Inited) {
 				Aligned_CleanDCache_by_Addr((uint32_t *)&APROC_AudioBuffer_out[0], sizeof(APROC_AudioBuffer_out));
@@ -2410,5 +2433,24 @@ void APROC_doVOX(void) {
 	if (VOX_applied && (vox_timeout_now >= TRX.VOX_TIMEOUT)) {
 		TRX_ptt_soft = false;
 		VOX_applied = false;
+	}
+}
+
+static void APROC_ProcessCodecMuting(void) {
+	if (CODEC_Muting) {
+		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++) {
+			APROC_AudioBuffer_out[pos * 2] = 0;     // left channel
+			APROC_AudioBuffer_out[pos * 2 + 1] = 0; // right channel
+		}
+	}
+	if (TRX.RX_AUDIO_MODE == RX_AUDIO_MODE_LEFT) {
+		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++) {
+			APROC_AudioBuffer_out[pos * 2 + 1] = 0; // right channel
+		}
+	}
+	if (TRX.RX_AUDIO_MODE == RX_AUDIO_MODE_RIGHT) {
+		for (uint32_t pos = 0; pos < AUDIO_BUFFER_HALF_SIZE; pos++) {
+			APROC_AudioBuffer_out[pos * 2] = 0; // left channel
+		}
 	}
 }

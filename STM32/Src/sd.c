@@ -1004,6 +1004,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VOX", (uint64_t *)&TRX.VOX, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VOX_TIMEOUT", (uint64_t *)&TRX.VOX_TIMEOUT, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VOX_THRESHOLD", (uint64_t *)&TRX.VOX_THRESHOLD, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.RX_AUDIO_MODE", (uint64_t *)&TRX.RX_AUDIO_MODE, SYSMENU_UINT8);
 			// CW
 			SD_WRITE_SETT_LINE("TRX.CW_Pitch", (uint64_t *)&TRX.CW_Pitch, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.CW_Key_timeout", (uint64_t *)&TRX.CW_Key_timeout, SYSMENU_UINT16);
@@ -1919,6 +1920,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.VOX_THRESHOLD") == 0) {
 		TRX.VOX_THRESHOLD = (int8_t)intval;
+	}
+	if (strcmp(name, "TRX.RX_AUDIO_MODE") == 0) {
+		TRX.RX_AUDIO_MODE = (uint8_t)uintval;
 	}
 	// CW
 	if (strcmp(name, "TRX.CW_Pitch") == 0) {
