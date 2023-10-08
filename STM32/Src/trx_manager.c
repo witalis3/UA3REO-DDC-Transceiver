@@ -1179,6 +1179,8 @@ void BUTTONHANDLER_DOUBLEMODE(uint32_t parameter) {
 	LCD_UpdateQuery.TopButtons = true;
 }
 
+void BUTTONHANDLER_PTT_TOGGLE(uint32_t parameter) { TRX_ptt_soft = !TRX_ptt_soft; }
+
 void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 {
 	// TX block

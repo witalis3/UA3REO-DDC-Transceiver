@@ -80,6 +80,7 @@ extern void BUTTONHANDLER_FAST(uint32_t parameter);
 extern void BUTTONHANDLER_MUTE(uint32_t parameter);
 extern void BUTTONHANDLER_MUTE_AFAMP(uint32_t parameter);
 extern void BUTTONHANDLER_BLUETOOTH_AUDIO_ENABLED(uint32_t parameter);
+extern void BUTTONHANDLER_PTT_TOGGLE(uint32_t parameter);
 extern void BUTTONHANDLER_AsB(uint32_t parameter);
 extern void BUTTONHANDLER_ArB(uint32_t parameter);
 extern void BUTTONHANDLER_TUNE(uint32_t parameter);
