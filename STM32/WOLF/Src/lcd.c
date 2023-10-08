@@ -164,8 +164,7 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 			// selectable bands first
 			uint8_t xi = 0;
 			for (uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++) {
-				if (!BAND_SELECTABLE[bindx] || BANDS[bindx].broadcast || BANDS[bindx].name == (char *)BANDS[BANDID_2200m].name || BANDS[bindx].name == (char *)BANDS[BANDID_CB].name ||
-				    BANDS[bindx].name == (char *)BANDS[BANDID_4m].name || BANDS[bindx].name == (char *)BANDS[BANDID_FM].name || BANDS[bindx].name == (char *)BANDS[BANDID_AIR].name) {
+				if (!BAND_SELECTABLE[bindx] || BANDS[bindx].broadcast || BANDS[bindx].name == (char *)BANDS[BANDID_CB].name) {
 					continue;
 				}
 

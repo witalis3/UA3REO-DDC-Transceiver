@@ -32,23 +32,11 @@ SRAM4 bool BAND_SELECTABLE[BANDS_COUNT] = {
     false, // BR 25.8
     true,  // CB
     true,  // 10m
-#ifndef FRONTPANEL_LITE
-    true, // 6m
-#else
-    false,
-#endif
+    true,  // 6m
     false, // 4m
-#ifndef FRONTPANEL_LITE
-    true, // FM
-#else
-    false,
-#endif
+    true,  // FM
     false, // AIR
-#ifndef FRONTPANEL_LITE
-    true, // 2m
-#else
-    false,
-#endif
+    true,  // 2m
     false, // Marine
     false, // 70cm
     false, // 23cm

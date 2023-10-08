@@ -1199,13 +1199,13 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	}
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if(band != -1) {
+	if (band != -1) {
 		TRX_LoadRFGain_Data(CurrentVFO->Mode, band);
 	}
 
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
-	if(band != -1) {
+	if (band != -1) {
 		TRX_RestoreBandSettings(band);
 	}
 

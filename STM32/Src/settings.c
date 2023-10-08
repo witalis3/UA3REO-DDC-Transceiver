@@ -958,7 +958,10 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.NOTX_70cm = false;
 		CALIBRATE.ENABLE_2200m_band = false; // enable hidden bands
 		CALIBRATE.ENABLE_60m_band = false;
+		CALIBRATE.ENABLE_6m_band = true;
 		CALIBRATE.ENABLE_4m_band = false;
+		CALIBRATE.ENABLE_FM_band = true;
+		CALIBRATE.ENABLE_2m_band = true;
 		CALIBRATE.ENABLE_AIR_band = false;
 		CALIBRATE.ENABLE_marine_band = false;
 		CALIBRATE.ENABLE_70cm_band = true;
@@ -978,6 +981,10 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 144;
 		CALIBRATE.KTY81_Calibration = 2000;
 #ifdef FRONTPANEL_LITE
+		CALIBRATE.ENABLE_6m_band = false;
+		CALIBRATE.ENABLE_FM_band = false;
+		CALIBRATE.ENABLE_2m_band = false;
+		CALIBRATE.ENABLE_70cm_band = false;
 		CALIBRATE.Transverter_70cm_IF_Mhz = 28;
 		CALIBRATE.Transverter_23cm_IF_Mhz = 28;
 		CALIBRATE.Transverter_13cm_IF_Mhz = 28;
@@ -1046,7 +1053,10 @@ void LoadCalibration(bool clear) {
 	// enable bands
 	BAND_SELECTABLE[BANDID_2200m] = CALIBRATE.ENABLE_2200m_band;
 	BAND_SELECTABLE[BANDID_60m] = CALIBRATE.ENABLE_60m_band;
+	BAND_SELECTABLE[BANDID_6m] = CALIBRATE.ENABLE_6m_band;
 	BAND_SELECTABLE[BANDID_4m] = CALIBRATE.ENABLE_4m_band;
+	BAND_SELECTABLE[BANDID_FM] = CALIBRATE.ENABLE_FM_band;
+	BAND_SELECTABLE[BANDID_2m] = CALIBRATE.ENABLE_2m_band;
 	BAND_SELECTABLE[BANDID_AIR] = CALIBRATE.ENABLE_AIR_band;
 	BAND_SELECTABLE[BANDID_Marine] = CALIBRATE.ENABLE_marine_band;
 	BAND_SELECTABLE[BANDID_70cm] = CALIBRATE.ENABLE_70cm_band;
