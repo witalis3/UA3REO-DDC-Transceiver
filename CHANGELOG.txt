@@ -1,5 +1,5 @@
 ----Version 8.3.1----
-+STM32: Устранение ошибок, Tnx RU4PN
++STM32: Устранение ошибок, Tnx RU4PN, Дмитрий
 
 ----Version 8.3.0----
 +STM32: Добавлен Self Test для диапазона 145мГц, Tnx Serg Iv
