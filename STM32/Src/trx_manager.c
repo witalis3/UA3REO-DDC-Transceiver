@@ -1199,11 +1199,15 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	}
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	TRX_LoadRFGain_Data(CurrentVFO->Mode, band);
+	if(band != -1) {
+		TRX_LoadRFGain_Data(CurrentVFO->Mode, band);
+	}
 
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
-	TRX_RestoreBandSettings(band);
+	if(band != -1) {
+		TRX_RestoreBandSettings(band);
+	}
 
 	TRX_DXCluster_UpdateTime = 0;
 	LCD_UpdateQuery.TopButtons = true;

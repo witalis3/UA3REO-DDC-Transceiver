@@ -1553,13 +1553,13 @@ bool FFT_printFFT(void) {
 	}
 
 	// Gauss filter center
-	if (TRX.CW_GaussFilter && CurrentVFO->Mode == TRX_MODE_CW) {
+	if (TRX.CW_GaussFilter && CurrentVFO->Mode == TRX_MODE_CW && bw_rx1_line_center >=0 && bw_rx1_line_center < LAYOUT->FFT_PRINT_SIZE) {
 		uint16_t color = palette_fft[fftHeight / 2];
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
 			print_output_buffer[fft_y][bw_rx1_line_center] = color;
 		}
 	}
-	if (TRX.CW_GaussFilter && SecondaryVFO->Mode == TRX_MODE_CW) {
+	if (TRX.CW_GaussFilter && SecondaryVFO->Mode == TRX_MODE_CW && TRX.Show_Sec_VFO && bw_rx2_line_center >=0 && bw_rx2_line_center < LAYOUT->FFT_PRINT_SIZE) {
 		uint16_t color = palette_fft[fftHeight / 2];
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
 			print_output_buffer[fft_y][bw_rx2_line_center] = color;
@@ -1584,7 +1584,7 @@ bool FFT_printFFT(void) {
 			print_output_buffer[fft_y][rx1_notch_line_pos] = color;
 		}
 	}
-	if (SecondaryVFO->ManualNotchFilter && TRX_on_RX && rx2_notch_line_pos >= 0 && rx2_notch_line_pos < LAYOUT->FFT_PRINT_SIZE) {
+	if (SecondaryVFO->ManualNotchFilter && TRX_on_RX && TRX.Show_Sec_VFO && rx2_notch_line_pos >= 0 && rx2_notch_line_pos < LAYOUT->FFT_PRINT_SIZE) {
 		uint16_t color = palette_fft[fftHeight * 1 / 4];
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
 			print_output_buffer[fft_y][rx2_notch_line_pos] = color;
@@ -1592,7 +1592,7 @@ bool FFT_printFFT(void) {
 	}
 
 	// Draw RX2 center line
-	if (rx2_line_pos >= 0 && rx2_line_pos < LAYOUT->FFT_PRINT_SIZE && TRX.Show_Sec_VFO) {
+	if (TRX.Show_Sec_VFO && rx2_line_pos >= 0 && rx2_line_pos < LAYOUT->FFT_PRINT_SIZE) {
 		uint16_t color = palette_fft[fftHeight / 2];
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
 			print_output_buffer[fft_y][rx2_line_pos] = color;
