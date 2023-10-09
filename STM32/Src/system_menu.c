@@ -470,7 +470,8 @@ static void SYSMENU_HANDL_CALIB_TangentType(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TwoSignalTune_Balance(int8_t direction);
 static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction);
 static void SYSMENU_HANDL_CALIB_WIFI_RESET(int8_t direction);
-static void SYSMENU_HANDL_CALIB_INA226_CUR_CALL(int8_t direction);
+static void SYSMENU_HANDL_CALIB_INA226_CurrentCoeff(int8_t direction);
+static void SYSMENU_HANDL_CALIB_INA226_VoltageOffset(int8_t direction);
 static void SYSMENU_HANDL_CALIB_INA226_PWR_MON(int8_t direction);
 static void SYSMENU_HANDL_CALIB_KTY81_Calibration(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TOUCHPAD_TIMEOUT(int8_t direction);
@@ -1148,7 +1149,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_KT_100S) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
     {"INA226 Pwr Mon", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_CALIB_INA226_PWR_MON},
-    {"INA226 Cur Calc", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurCalc, SYSMENU_HANDL_CALIB_INA226_CUR_CALL},
+    {"INA226 Current", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_CurrentCoeff, SYSMENU_HANDL_CALIB_INA226_CurrentCoeff},
+    {"INA226 Voltage", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_VoltageOffset, SYSMENU_HANDL_CALIB_INA226_VoltageOffset},
 #endif
 #if !defined(FRONTPANEL_MINI) && !defined(FRONTPANEL_X1) && !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_LITE_V2_MINI) && !defined(FRONTPANEL_LITE_V2_BIG) && \
     !defined(FRONTPANEL_LITE_V2_MICRO)
@@ -7055,13 +7057,23 @@ static void SYSMENU_HANDL_CALIB_INA226_PWR_MON(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_CALIB_INA226_CUR_CALL(int8_t direction) {
-	CALIBRATE.INA226_CurCalc += (float32_t)direction * 0.01f;
-	if (CALIBRATE.INA226_CurCalc < 0.01f) {
-		CALIBRATE.INA226_CurCalc = 0.01f;
+static void SYSMENU_HANDL_CALIB_INA226_CurrentCoeff(int8_t direction) {
+	CALIBRATE.INA226_CurrentCoeff += (float32_t)direction * 0.01f;
+	if (CALIBRATE.INA226_CurrentCoeff < 0.01f) {
+		CALIBRATE.INA226_CurrentCoeff = 0.01f;
 	}
-	if (CALIBRATE.INA226_CurCalc > 10.0f) {
-		CALIBRATE.INA226_CurCalc = 10.0f;
+	if (CALIBRATE.INA226_CurrentCoeff > 10.0f) {
+		CALIBRATE.INA226_CurrentCoeff = 10.0f;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_INA226_VoltageOffset(int8_t direction) {
+	CALIBRATE.INA226_VoltageOffset += (float32_t)direction * 0.1f;
+	if (CALIBRATE.INA226_VoltageOffset < -10.0f) {
+		CALIBRATE.INA226_VoltageOffset = -10.0f;
+	}
+	if (CALIBRATE.INA226_VoltageOffset > 10.0f) {
+		CALIBRATE.INA226_VoltageOffset = 10.0f;
 	}
 }
 

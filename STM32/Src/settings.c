@@ -994,13 +994,15 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.Transverter_QO100_IF_RX_Khz = 28500;
 		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 28;
 #endif
-		CALIBRATE.OTA_update = true;     // enable OTA FW update over WiFi
-		CALIBRATE.TX_StartDelay = 5;     // Relay switch delay before RF signal ON, ms
-		CALIBRATE.LCD_Rotate = false;    // LCD 180 degree rotation
-		CALIBRATE.INA226_EN = false;     // INA226 enabled
-		CALIBRATE.INA226_CurCalc = 0.4f; // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering)
+		CALIBRATE.OTA_update = true;           // enable OTA FW update over WiFi
+		CALIBRATE.TX_StartDelay = 5;           // Relay switch delay before RF signal ON, ms
+		CALIBRATE.LCD_Rotate = false;          // LCD 180 degree rotation
+		CALIBRATE.INA226_EN = false;           // INA226 enabled
+		CALIBRATE.INA226_CurrentCoeff = 0.4f;  // 0,4mA/Bit - INA226 current calculation coeficient - dependant on the used shunt (tolerances and soldering)
+		CALIBRATE.INA226_VoltageOffset = 0.0f; // INA226 voltage offset
 #ifdef FRONTPANEL_WOLF_2
 		CALIBRATE.INA226_EN = true; // INA226 enabled
+		CALIBRATE.INA226_CurrentCoeff = 0.1f;
 #endif
 		CALIBRATE.PWR_CUR_Calibration = 2.5f; // CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;          // Tuner averaging stages

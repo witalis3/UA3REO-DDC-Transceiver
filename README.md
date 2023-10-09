@@ -345,6 +345,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Flash GT911** - Starting the touchpad update procedure according to LCD screen resolution
 * **HPF START** - HPF filter parameters
 * **IF Gain MIN/MAX** - IF Gain adjusting limits
+* **INA226** - Activation and calibration of the INA226 voltage/current sensor on the I2C bus
 * **KTY81 Calibration** - Calibration of the KTY81 sensor (setting the resistance of the divider arm)
 * **LCD Rotate** - Rotate screen at 180 degrees
 * **LNA Compensation** - Compensates the S-meter value when the LNA is turned on, dBm

@@ -78,8 +78,8 @@ void Read_INA226_Data(void) {
 	if (Rd_Count > INA226_Read_Tm) {
 		Rd_Count = 0;
 
-		Voltage = INA226_Read2Byte(Bus_V_Reg) * 0.00125f;
-		Current = INA226_Read2Byte(Current_Reg) * CALIBRATE.INA226_CurCalc * 0.001f; // multiply the Current register value with the calibration coefficient (mA/Bit)
+		Voltage = INA226_Read2Byte(Bus_V_Reg) * 0.00125f + CALIBRATE.INA226_VoltageOffset;
+		Current = INA226_Read2Byte(Current_Reg) * CALIBRATE.INA226_CurrentCoeff * 0.001f; // multiply the Current register value with the calibration coefficient (mA/Bit)
 	}
 }
 
