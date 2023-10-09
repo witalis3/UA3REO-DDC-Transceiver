@@ -259,7 +259,7 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 
 	// Process SWR, Power meter, ALC, Thermal sensors, Fan, ...
 	RF_UNIT_ProcessSensors();
-	
+
 	if (TRX_on_TX) {
 		sprintf(TRX_SWR_SMOOTHED_STR, "SWR: %.1f", (double)TRX_SWR_SMOOTHED);
 	} else {
