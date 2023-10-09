@@ -1075,6 +1075,11 @@
               <FilePath>..\..\Src\screen_layout.h</FilePath>
             </File>
             <File>
+              <FileName>screen_layout_480x320.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\..\Src\screen_layout_480x320.cpp</FilePath>
+            </File>
+            <File>
               <FileName>screen_layout_800x480.cpp</FileName>
               <FileType>8</FileType>
               <FilePath>..\..\Src\screen_layout_800x480.cpp</FilePath>

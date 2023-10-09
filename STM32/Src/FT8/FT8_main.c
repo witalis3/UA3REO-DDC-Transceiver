@@ -256,7 +256,7 @@ static void update_synchronization(void) {
 		LCDDriver_printText(ctmp, 260, 5, COLOR_WHITE, COLOR_BLACK, 1);
 
 #else
-		LCDDriver_printText(ctmp, 300, 5, COLOR_WHITE, COLOR_BLACK, 2);
+		LCDDriver_printText(ctmp, 360, 5, COLOR_WHITE, COLOR_BLACK, 2);
 #endif
 
 		// TX parameters
@@ -266,7 +266,7 @@ static void update_synchronization(void) {
 #elif (defined(LAY_320x240))
 		LCDDriver_printText(ctmp, 180, 215, FG_COLOR, BG_COLOR, 1);
 #else
-		LCDDriver_printText(ctmp, 200, 280, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText(ctmp, 225, 280, FG_COLOR, BG_COLOR, 2);
 #endif
 
 		sprintf(ctmp, "TEMP:% 2d, QSO: %d  ", (int16_t)TRX_RF_Temperature, FT8_QSO_Count);
@@ -275,7 +275,7 @@ static void update_synchronization(void) {
 #elif (defined(LAY_320x240))
 		// LCDDriver_printText(ctmp, 180, 225, FG_COLOR, BG_COLOR, 1);
 #else
-		LCDDriver_printText(ctmp, 200, 300, FG_COLOR, BG_COLOR, 2);
+		LCDDriver_printText(ctmp, 225, 300, FG_COLOR, BG_COLOR, 2);
 #endif
 
 		Seconds_Old = Seconds;

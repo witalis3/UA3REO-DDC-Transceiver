@@ -474,18 +474,6 @@ void FFT_Init(void) {
 		FFT_current_spectrum_width_hz = TRX_GetRXSampleRate / fft_zoom;
 	}
 
-#if HRDW_HAS_FULL_FFT_BUFFER
-	// clear the buffers
-	// uint16_t color = palette_wtf[GET_FFTHeight];
-	// if (TRX.FFT_Automatic) {
-	// 	color = palette_wtf[(uint32_t)(GET_FFTHeight * 0.9f)];
-	// }
-	// memset16(print_output_buffer, color, sizeof(print_output_buffer) / 2);
-#else
-	// dma_memset(print_output_short_buffer, 0, sizeof(print_output_short_buffer));
-#endif
-	// dma_memset(indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
-	// dma_memset(wtf_buffer_freqs, 0x00, sizeof(wtf_buffer_freqs));
 	dma_memset(fft_meanbuffer_freqs, 0x00, sizeof(fft_meanbuffer_freqs));
 	dma_memset(FFT_meanBuffer, 0x00, sizeof(FFT_meanBuffer));
 	dma_memset(FFTInputCharge, 0x00, sizeof(FFTInputCharge));
