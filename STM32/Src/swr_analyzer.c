@@ -216,7 +216,7 @@ static uint16_t SWR_getYfromX(uint16_t x) {
 
 // display the data column
 static void SWR_DrawGraphCol(uint16_t x, bool clear) {
-	if (x >= graph_width) {
+	if (x == 0 || x >= graph_width) {
 		return;
 	}
 
