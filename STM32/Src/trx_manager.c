@@ -1636,7 +1636,8 @@ void BUTTONHANDLER_STEP(uint32_t parameter) {
 
 void BUTTONHANDLER_DNR(uint32_t parameter) {
 	TRX_TemporaryMute();
-	InitNoiseReduction();
+	CleanNoiseReduction();
+
 	if (CurrentVFO->DNR_Type == 0) {
 		CurrentVFO->DNR_Type = 1;
 	} else if (CurrentVFO->DNR_Type == 1) {

@@ -49,7 +49,8 @@ typedef struct {
 } NR_Instance;
 
 // Public methods
-extern void InitNoiseReduction(void); // initialize DNR
+extern void InitNoiseReduction(void);  // initialize DNR
+extern void CleanNoiseReduction(void); // Clean old DNR data
 extern void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t nr_type, uint_fast8_t mode,
                                   bool do_agc); // run DNR for the data block
 
