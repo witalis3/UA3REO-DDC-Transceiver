@@ -447,6 +447,7 @@ static void SYSMENU_HANDL_CALIB_S_METER_HF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_S_METER_VHF(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TCXO(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip(int8_t direction);
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_vertical_flip(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_13cm(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_23cm(int8_t direction);
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_3cm(int8_t direction);
@@ -1256,6 +1257,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
 #ifdef TOUCHPAD_GT911
     {"Touchpad horiz flip", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_horizontal_flip, SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip},
+    {"Touchpad verti flip", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_vertical_flip, SYSMENU_HANDL_CALIB_TOUCHPAD_vertical_flip},
 #endif
 #if defined(HAS_TOUCHPAD)
     {"Touchpad timeout", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_TIMEOUT, SYSMENU_HANDL_CALIB_TOUCHPAD_TIMEOUT},
@@ -7017,6 +7019,15 @@ static void SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip(int8_t direction) {
 	}
 	if (direction < 0) {
 		CALIBRATE.TOUCHPAD_horizontal_flip = false;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_TOUCHPAD_vertical_flip(int8_t direction) {
+	if (direction > 0) {
+		CALIBRATE.TOUCHPAD_vertical_flip = true;
+	}
+	if (direction < 0) {
+		CALIBRATE.TOUCHPAD_vertical_flip = false;
 	}
 }
 

@@ -1015,6 +1015,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.IF_GAIN_MIN = 0;                  // min limit for if gain regulator
 		CALIBRATE.IF_GAIN_MAX = 40;                 // max limit for if gain regulator
 		CALIBRATE.TOUCHPAD_horizontal_flip = false; // Touchpad harozontal flip
+		CALIBRATE.TOUCHPAD_vertical_flip = false;   // Touchpad vertical flip
 		CALIBRATE.TOUCHPAD_TIMEOUT = 50;            // Touchpad timings calibrations
 		CALIBRATE.TOUCHPAD_CLICK_THRESHOLD = 5;
 		CALIBRATE.TOUCHPAD_CLICK_TIMEOUT = 400;

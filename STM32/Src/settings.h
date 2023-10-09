@@ -19,7 +19,7 @@
 #endif
 
 #define SETT_VERSION 110        // Settings config version
-#define CALIB_VERSION 74        // Calibration config version
+#define CALIB_VERSION 75        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                  // audio stream sampling rate during processing and TX (NOT RX!)
@@ -914,6 +914,7 @@ extern struct TRX_CALIBRATE {
 	bool OTA_update;
 	bool LCD_Rotate;
 	bool TOUCHPAD_horizontal_flip;
+	bool TOUCHPAD_vertical_flip;
 	bool INA226_EN;
 	bool LinearPowerControl;
 	bool ALC_Port_Enabled;

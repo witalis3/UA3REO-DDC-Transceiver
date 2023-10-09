@@ -1343,6 +1343,7 @@ static void SDCOMM_EXPORT_CALIBRATIONS_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.TX_StartDelay", (uint64_t *)&CALIBRATE.TX_StartDelay, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.LCD_Rotate", (uint64_t *)&CALIBRATE.LCD_Rotate, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.TOUCHPAD_horizontal_flip", (uint64_t *)&CALIBRATE.TOUCHPAD_horizontal_flip, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.TOUCHPAD_vertical_flip", (uint64_t *)&CALIBRATE.TOUCHPAD_vertical_flip, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.INA226_EN", (uint64_t *)&CALIBRATE.INA226_EN, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.INA226_CurrentCoeff", (uint64_t *)&CALIBRATE.INA226_CurrentCoeff, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("CALIBRATE.INA226_VoltageOffset", (uint64_t *)&CALIBRATE.INA226_VoltageOffset, SYSMENU_FLOAT32);
@@ -2717,6 +2718,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "CALIBRATE.TOUCHPAD_horizontal_flip") == 0) {
 		CALIBRATE.TOUCHPAD_horizontal_flip = bval;
+	}
+	if (strcmp(name, "CALIBRATE.TOUCHPAD_vertical_flip") == 0) {
+		CALIBRATE.TOUCHPAD_vertical_flip = bval;
 	}
 	if (strcmp(name, "CALIBRATE.INA226_EN") == 0) { // Tisho
 		CALIBRATE.INA226_EN = bval;
