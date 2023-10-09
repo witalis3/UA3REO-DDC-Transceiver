@@ -150,7 +150,7 @@ volatile extern float32_t TRX_SWR;
 volatile extern float32_t TRX_PWR_Forward_SMOOTHED;
 volatile extern float32_t TRX_PWR_Backward_SMOOTHED;
 volatile extern float32_t TRX_SWR_SMOOTHED;
-extern char TRX_SWR_SMOOTHED_STR[8];
+extern char TRX_SWR_SMOOTHED_STR[12];
 volatile extern float32_t TRX_VLT_forward;  // Tisho
 volatile extern float32_t TRX_VLT_backward; // Tisho
 volatile extern float32_t TRX_ALC_IN;

@@ -201,7 +201,8 @@ void EVENTS_do_ENC(void) // 20 0000 hz
 			TOUCHPAD_reserveInterrupt();
 		}
 	}
-	return;
+
+	// TOUCHPAD_reserveInterrupt();
 #endif
 }
 
@@ -258,6 +259,12 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 
 	// Process SWR, Power meter, ALC, Thermal sensors, Fan, ...
 	RF_UNIT_ProcessSensors();
+	
+	if (TRX_on_TX) {
+		sprintf(TRX_SWR_SMOOTHED_STR, "SWR: %.1f", (double)TRX_SWR_SMOOTHED);
+	} else {
+		sprintf(TRX_SWR_SMOOTHED_STR, "SWR: -RX-");
+	}
 
 	// TRX protector
 	if (TRX_on_TX) {

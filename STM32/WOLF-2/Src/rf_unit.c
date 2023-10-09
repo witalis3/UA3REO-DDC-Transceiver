@@ -586,8 +586,6 @@ void RF_UNIT_ProcessSensors(void) {
 
 	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * (1.0f - smooth_down_coeff) + TRX_SWR * smooth_down_coeff;
 
-	sprintf(TRX_SWR_SMOOTHED_STR, "%.1f", (double)TRX_SWR_SMOOTHED);
-
 	HAL_ADCEx_InjectedStart(&hadc1); // start next manual conversion
 }
 
