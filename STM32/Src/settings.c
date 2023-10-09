@@ -209,7 +209,7 @@ void LoadSettings(bool clear) {
 		TRX.Mute = false;                   // AF Mute
 		TRX.AFAmp_Mute = false;             // AF Amp Mute
 		TRX.IF_Gain = 20;                   // IF gain, dB (before all processing and AGC)
-		TRX.AGC_GAIN_TARGET = -20;          // Maximum (target) AGC gain
+		TRX.AGC_GAIN_TARGET = -30;          // Maximum (target) AGC gain
 		TRX.MIC_GAIN_DB = 9.0f;             // Microphone gain, dB
 		TRX.MIC_Boost = false;              // +20dB mic amplifier
 		TRX.LINE_Volume = 23;               // Line input level
