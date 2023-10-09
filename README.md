@@ -177,6 +177,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **ADC Shutdown** - Turn off the ADC
 * **AGC Gain target, LKFS** - Maximum AGC gain (Maximum volume with AGC on)
 * **AGC Spectral** - Enable FFT-based AGC
+* **AGC Threshold** - Enabling the AGC opening threshold
 * **Att step, dB** - Attenuator tuning step
 * **Attenuation, dB** - Current attenuation
 * **Auto Snap** - Automaticly track and snap to near signal frequency (CW mode)

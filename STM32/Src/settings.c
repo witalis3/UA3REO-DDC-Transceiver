@@ -209,7 +209,7 @@ void LoadSettings(bool clear) {
 		TRX.Mute = false;                   // AF Mute
 		TRX.AFAmp_Mute = false;             // AF Amp Mute
 		TRX.IF_Gain = 20;                   // IF gain, dB (before all processing and AGC)
-		TRX.AGC_GAIN_TARGET = -30;          // Maximum (target) AGC gain
+		TRX.AGC_GAIN_TARGET = -20;          // Maximum (target) AGC gain
 		TRX.MIC_GAIN_DB = 9.0f;             // Microphone gain, dB
 		TRX.MIC_Boost = false;              // +20dB mic amplifier
 		TRX.LINE_Volume = 23;               // Line input level
@@ -289,7 +289,8 @@ void LoadSettings(bool clear) {
 		TRX.VOX = false;                                               // TX by voice activation
 		TRX.VOX_TIMEOUT = 300;                                         // VOX timeout in ms
 		TRX.VOX_THRESHOLD = -27;                                       // VOX threshold in dbFS
-		TRX.RX_AUDIO_MODE = RX_AUDIO_MODE_STEREO;
+		TRX.RX_AUDIO_MODE = RX_AUDIO_MODE_STEREO;                      // OUT Lines mode stereo/left/right
+		TRX.AGC_Threshold = true;                                      // Disable AGC on noise signals
 		// CW
 		TRX.CW_Pitch = 600;                                             // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key

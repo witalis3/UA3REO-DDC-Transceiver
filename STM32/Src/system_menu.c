@@ -79,6 +79,7 @@ static void SYSMENU_HANDL_RX_AGC_Hold_Step_Down(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_Max_gain(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_SSB_Speed(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_Spectral(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_Threshold(int8_t direction);
 static void SYSMENU_HANDL_RX_ATT_DB(int8_t direction);
 static void SYSMENU_HANDL_RX_ATT_STEP(int8_t direction);
 static void SYSMENU_HANDL_RX_AutoGain(int8_t direction);
@@ -689,6 +690,7 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"AGC Gain targ, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_RX_AGC_GAIN_TARGET},
 #endif
     {"AGC Spectral", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Spectral, SYSMENU_HANDL_RX_AGC_Spectral},
+    {"AGC Threshold", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Threshold, SYSMENU_HANDL_RX_AGC_Threshold},
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_LITE) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_KT_100S) || defined(FRONTPANEL_WF_100D) || \
     defined(FRONTPANEL_WOLF_2) || defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
     {"Att step, dB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.ATT_STEP, SYSMENU_HANDL_RX_ATT_STEP},
@@ -2718,6 +2720,15 @@ static void SYSMENU_HANDL_RX_AGC_Spectral(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.AGC_Spectral = false;
+	}
+}
+
+static void SYSMENU_HANDL_RX_AGC_Threshold(int8_t direction) {
+	if (direction > 0) {
+		TRX.AGC_Threshold = true;
+	}
+	if (direction < 0) {
+		TRX.AGC_Threshold = false;
 	}
 }
 

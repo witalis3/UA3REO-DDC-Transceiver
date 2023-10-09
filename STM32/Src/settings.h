@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "8.3.1-dev" // current STM32 version
+#define STM32_VERSION_STR "8.3.1" // current STM32 version
 
 #if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_MINI)
 #define FPGA_VERSION_STR "6.8.0" // needed FPGA version Wolf-Mini
@@ -18,7 +18,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 110        // Settings config version
+#define SETT_VERSION 111        // Settings config version
 #define CALIB_VERSION 75        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -636,9 +636,10 @@ extern struct TRX_SETTINGS {
 	bool NOISE_BLANKER;
 	bool Beeper;
 	bool FM_Stereo;
-	bool AGC_Spectral;
+	bool AGC_Threshold;
 	bool VOX;
 	bool TX_CESSB;
+	bool AGC_Spectral;
 	// CW
 	float32_t CW_DotToDashRate;
 	uint16_t CW_Pitch;

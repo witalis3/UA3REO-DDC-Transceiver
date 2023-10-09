@@ -244,21 +244,32 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				}
 
 				// gain limiter
+				float32_t current_gain_db = instance->need_gain_db;
 				if (instance->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain) {
-					instance->need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
+					if (!TRX.AGC_Threshold || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY) {
+						current_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
+					} else {
+						const float32_t max_threshold_diff = 10.0f;
+						float32_t threshold_diff = instance->need_gain_db - (float32_t)TRX.RX_AGC_Max_gain;
+						if (threshold_diff > max_threshold_diff) {
+							threshold_diff = max_threshold_diff;
+						}
+						float32_t threshold_rise_level = (max_threshold_diff - threshold_diff) / max_threshold_diff;
+						current_gain_db = (float32_t)TRX.RX_AGC_Max_gain * threshold_rise_level;
+					}
 				}
-				if ((AGC_RX_dbFS + instance->need_gain_db) > (gain_target + AGC_CLIPPING)) {
-					println("AGC overload ", (double)diff, " ", (double)(instance->need_gain_db - (gain_target - AGC_RX_dbFS)));
+				if ((AGC_RX_dbFS + current_gain_db) > (gain_target + AGC_CLIPPING)) {
+					println("AGC overload ", (double)diff, " ", (double)(current_gain_db - (gain_target - AGC_RX_dbFS)));
+					current_gain_db = gain_target - AGC_RX_dbFS;
 					instance->need_gain_db = gain_target - AGC_RX_dbFS;
-					// instance->need_gain_db -= 20.0f;
 				}
 
 				// println("HOLD: ", instance->hold_time, " GAIN: ", instance->need_gain_db, " DIFF: ", diff);
 				AGC_SCREEN_maxGain = (float32_t)TRX.RX_AGC_Max_gain;
-				AGC_SCREEN_currentGain = instance->need_gain_db;
+				AGC_SCREEN_currentGain = instance->need_gain_db > AGC_SCREEN_maxGain ? AGC_SCREEN_maxGain : current_gain_db;
 
 				// appy gain
-				float32_t rateV = db2rateV(instance->need_gain_db);
+				float32_t rateV = db2rateV(current_gain_db);
 
 				// Muting if need
 				bool VAD_Muting = VAD_RX1_Muting;

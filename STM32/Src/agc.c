@@ -140,15 +140,24 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 #endif
 
 	// gain limitation
+	float32_t current_need_gain = AGC->need_gain_db;
 	if (AGC->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain) {
-		AGC->need_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
+		if (!TRX.AGC_Threshold || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY) {
+			current_need_gain = (float32_t)TRX.RX_AGC_Max_gain;
+		} else {
+			const float32_t max_threshold_diff = 10.0f;
+			float32_t threshold_diff = AGC->need_gain_db - (float32_t)TRX.RX_AGC_Max_gain;
+			if (threshold_diff > max_threshold_diff) {
+				threshold_diff = max_threshold_diff;
+			}
+			float32_t threshold_rise_level = (max_threshold_diff - threshold_diff) / max_threshold_diff;
+			current_need_gain = (float32_t)TRX.RX_AGC_Max_gain * threshold_rise_level;
+		}
 	}
 
 	// println("HOLD: ", AGC->hold_time, " GAIN: ", AGC->need_gain_db, " DIFF: ", diff);
 	AGC_SCREEN_maxGain = (float32_t)TRX.RX_AGC_Max_gain;
-	AGC_SCREEN_currentGain = AGC->need_gain_db;
-
-	float32_t current_need_gain = AGC->need_gain_db;
+	AGC_SCREEN_currentGain = AGC->need_gain_db > AGC_SCREEN_maxGain ? AGC_SCREEN_maxGain : current_need_gain;
 
 	// Muting if need
 	if (CODEC_Muting || VAD_Muting) {
