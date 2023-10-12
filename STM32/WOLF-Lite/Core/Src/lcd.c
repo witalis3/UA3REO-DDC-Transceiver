@@ -1252,7 +1252,11 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	}
 
 	// IN-OUT
-	sprintf(buff, "MIC:%d", (uint32_t)TRX.MIC_GAIN_DB);
+	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM) {
+		sprintf(buff, "MIC:%d", (uint32_t)TRX.MIC_Gain_AMFM_DB);
+	} else {
+		sprintf(buff, "MIC:%d", (uint32_t)TRX.MIC_Gain_SSB_DB);
+	}
 
 	static char prev_mic_buff[16] = "";
 	if (redraw || strcmp(prev_mic_buff, buff) != 0) {
