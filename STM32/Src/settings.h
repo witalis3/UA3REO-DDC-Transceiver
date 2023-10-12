@@ -19,7 +19,7 @@
 #endif
 
 #define SETT_VERSION 112        // Settings config version
-#define CALIB_VERSION 76        // Calibration config version
+#define CALIB_VERSION 77        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                  // audio stream sampling rate during processing and TX (NOT RX!)
@@ -892,6 +892,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t TwoSignalTune_Balance;
 	uint8_t IF_GAIN_MIN;
 	uint8_t IF_GAIN_MAX;
+	uint8_t FAN_Medium_speed;
 	int8_t LNA_compensation;
 	TRX_RF_UNIT_TYPE RF_unit_type;
 	TRX_TANGENT_TYPE TangentType;

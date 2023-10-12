@@ -342,6 +342,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **FAN Full start** - Temperature of the PA for starting the fan at full speed
 * **FAN Medium start** - Temperature of the PA for starting the fan at medium speed
 * **FAN Medium stop** - Temperature of the PA for stopping the fan
+* **FAN Medium PWM** - Adjusting the duty cycle of a PWM fan in Medium mode
 * **FM Deviation Scale** - Set TX FM Deviation Scale
 * **Flash GT911** - Starting the touchpad update procedure according to LCD screen resolution
 * **HPF START** - HPF filter parameters

@@ -392,8 +392,17 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	if (FAN_Active) {
 		if (fan_pwm) // PWM
 		{
-			const uint8_t on_ticks = 1;
-			const uint8_t off_ticks = 1;
+			uint8_t on_ticks = (CALIBRATE.FAN_Medium_speed / 10);
+			uint8_t off_ticks = 10 - (CALIBRATE.FAN_Medium_speed / 10);
+			if (on_ticks % 2 == 0 && off_ticks % 2 == 0) {
+				on_ticks /= 2;
+				off_ticks /= 2;
+			}
+			if (on_ticks == off_ticks) {
+				on_ticks = 1;
+				off_ticks = 1;
+			}
+
 			static bool pwm_status = false; // true - on false - off
 			static uint8_t pwm_ticks = 0;
 			pwm_ticks++;
