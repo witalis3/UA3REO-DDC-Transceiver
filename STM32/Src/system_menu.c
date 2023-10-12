@@ -147,7 +147,8 @@ static void SYSMENU_HANDL_TX_MIC_EQ_P5_AMFM(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_EQ_P5_SSB(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_EQ_P6_AMFM(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_EQ_P6_SSB(int8_t direction);
-static void SYSMENU_HANDL_TX_MIC_Gain(int8_t direction);
+static void SYSMENU_HANDL_TX_MIC_Gain_SSB_DB(int8_t direction);
+static void SYSMENU_HANDL_TX_MIC_Gain_AMFM_DB(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_NOISE_GATE(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_REVERBER(int8_t direction);
 static void SYSMENU_HANDL_TX_REPEATER_Offset(int8_t direction);
@@ -766,16 +767,17 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"FT8 Auto CQ", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FT8_Auto_CQ, SYSMENU_HANDL_TX_FT8_Auto_CQ},
     {"Input Type MAIN", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_MAIN, SYSMENU_HANDL_TX_INPUT_TYPE_MAIN, (const enumerate_item[3]){"MIC", "LINE", "USB"}},
     {"Input Type DIGI", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_DIGI, SYSMENU_HANDL_TX_INPUT_TYPE_DIGI, (const enumerate_item[3]){"MIC", "LINE", "USB"}},
-    {"LINE Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LINE_Volume, SYSMENU_HANDL_TX_LINE_Volume},
-    {"MIC Boost", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.MIC_Boost, SYSMENU_HANDL_TX_MIC_Boost},
-    {"MIC Gain, dB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_GAIN_DB, SYSMENU_HANDL_TX_MIC_Gain},
-    {"MIC Noise Gate", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_NOISE_GATE, SYSMENU_HANDL_TX_MIC_NOISE_GATE},
     {"TUNER Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.TUNER_Enabled, SYSMENU_HANDL_TX_TUNER_Enabled},
     {"ATU Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_Enabled, SYSMENU_HANDL_TX_ATU_Enabled},
     {"ATU Cap", SYSMENU_ATU_C, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_C, SYSMENU_HANDL_TX_ATU_C},
     {"ATU Ind", SYSMENU_ATU_I, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_I, SYSMENU_HANDL_TX_ATU_I},
     {"ATU T", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_T, SYSMENU_HANDL_TX_ATU_T},
     {TRX_SWR_SMOOTHED_STR, SYSMENU_INFOLINE, SYSMENU_HANDL_CHECK_HAS_ATU, 0},
+    {"LINE Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LINE_Volume, SYSMENU_HANDL_TX_LINE_Volume},
+    {"MIC Boost", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.MIC_Boost, SYSMENU_HANDL_TX_MIC_Boost},
+    {"MIC Gain SSB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_Gain_SSB_DB, SYSMENU_HANDL_TX_MIC_Gain_SSB_DB},
+    {"MIC Gain AMFM", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_Gain_AMFM_DB, SYSMENU_HANDL_TX_MIC_Gain_AMFM_DB},
+    {"MIC Noise Gate", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_NOISE_GATE, SYSMENU_HANDL_TX_MIC_NOISE_GATE},
     {"MIC EQ 0.3k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P1_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P1_AMFM},
     {"MIC EQ 0.7k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P2_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P2_AMFM},
     {"MIC EQ 1.2k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P3_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P3_AMFM},
@@ -3306,13 +3308,23 @@ static void SYSMENU_HANDL_TX_MIC_NOISE_GATE(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_TX_MIC_Gain(int8_t direction) {
-	TRX.MIC_GAIN_DB += direction * 0.1f;
-	if (TRX.MIC_GAIN_DB < 1.0f) {
-		TRX.MIC_GAIN_DB = 1.0f;
+static void SYSMENU_HANDL_TX_MIC_Gain_SSB_DB(int8_t direction) {
+	TRX.MIC_Gain_SSB_DB += direction * 0.1f;
+	if (TRX.MIC_Gain_SSB_DB < 1.0f) {
+		TRX.MIC_Gain_SSB_DB = 1.0f;
 	}
-	if (TRX.MIC_GAIN_DB > 20.0f) {
-		TRX.MIC_GAIN_DB = 20.0f;
+	if (TRX.MIC_Gain_SSB_DB > 20.0f) {
+		TRX.MIC_Gain_SSB_DB = 20.0f;
+	}
+}
+
+static void SYSMENU_HANDL_TX_MIC_Gain_AMFM_DB(int8_t direction) {
+	TRX.MIC_Gain_AMFM_DB += direction * 0.1f;
+	if (TRX.MIC_Gain_AMFM_DB < 1.0f) {
+		TRX.MIC_Gain_AMFM_DB = 1.0f;
+	}
+	if (TRX.MIC_Gain_AMFM_DB > 20.0f) {
+		TRX.MIC_Gain_AMFM_DB = 20.0f;
 	}
 }
 

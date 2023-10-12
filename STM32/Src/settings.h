@@ -18,7 +18,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 111        // Settings config version
+#define SETT_VERSION 112        // Settings config version
 #define CALIB_VERSION 76        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -574,7 +574,8 @@ extern struct TRX_SETTINGS {
 	char URSI_CODE[MAX_CALLSIGN_LENGTH + 1];
 	// AUDIO
 	float32_t CTCSS_Freq;
-	float32_t MIC_GAIN_DB;
+	float32_t MIC_Gain_SSB_DB;
+	float32_t MIC_Gain_AMFM_DB;
 	float32_t TX_CESSB_COMPRESS_DB;
 	uint16_t Volume;
 	uint16_t RX_AGC_Hold_Time;
