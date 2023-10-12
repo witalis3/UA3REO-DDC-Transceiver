@@ -44,7 +44,7 @@ static void CW_do_Process_Macros(void);
 
 void CW_key_change(void) {
 	TRX_Inactive_Time = 0;
-	if (TRX_Tune) {
+	if (TRX_Tune || !TRX_Inited) {
 		return;
 	}
 
