@@ -285,7 +285,9 @@ static void SYSMENU_HANDL_WIFI_UpdateFW(int8_t direction);
 static void SYSMENU_HANDL_SD_ExportSettings1(int8_t direction);
 static void SYSMENU_HANDL_SD_ExportSettings2(int8_t direction);
 static void SYSMENU_HANDL_SD_ExportSettings3(int8_t direction);
-static void SYSMENU_HANDL_SD_ExportCalibrations(int8_t direction);
+static void SYSMENU_HANDL_SD_ExportCalibrations1(int8_t direction);
+static void SYSMENU_HANDL_SD_ExportCalibrations2(int8_t direction);
+static void SYSMENU_HANDL_SD_ExportCalibrations3(int8_t direction);
 static void SYSMENU_HANDL_SD_ExportSettingsDialog(int8_t direction);
 static void SYSMENU_HANDL_SD_Filemanager(int8_t direction);
 static void SYSMENU_HANDL_SD_Format(int8_t direction);
@@ -293,7 +295,9 @@ static void SYSMENU_HANDL_SD_FormatDialog(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportSettings1(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportSettings2(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportSettings3(int8_t direction);
-static void SYSMENU_HANDL_SD_ImportCalibrations(int8_t direction);
+static void SYSMENU_HANDL_SD_ImportCalibrations1(int8_t direction);
+static void SYSMENU_HANDL_SD_ImportCalibrations2(int8_t direction);
+static void SYSMENU_HANDL_SD_ImportCalibrations3(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportSettingsDialog(int8_t direction);
 static void SYSMENU_HANDL_SD_USB(int8_t direction);
 #endif
@@ -1018,7 +1022,9 @@ const static struct sysmenu_item_handler sysmenu_sd_export_handlers[] = {
     {"Export Settings", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings1},
     {"Export Settings 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings2},
     {"Export Settings 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings3},
-    {"Export Calibration", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportCalibrations},
+    {"Export Calibration 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportCalibrations1},
+		{"Export Calibration 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportCalibrations2},
+		{"Export Calibration 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportCalibrations3},
 };
 
 const static struct sysmenu_item_handler sysmenu_sd_import_handlers[] = {
@@ -1026,7 +1032,9 @@ const static struct sysmenu_item_handler sysmenu_sd_import_handlers[] = {
     {"Import Settings", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings1},
     {"Import Settings 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings2},
     {"Import Settings 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings3},
-    {"Import Calibration", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportCalibrations},
+    {"Import Calibration 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportCalibrations1},
+		{"Import Calibration 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportCalibrations2},
+		{"Import Calibration 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportCalibrations3},
 };
 const static struct sysmenu_item_handler sysmenu_sd_format_handlers[] = {
     {"Back", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Back},
@@ -4887,9 +4895,23 @@ static void SYSMENU_HANDL_SD_ExportSettings3(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_SD_ExportCalibrations(int8_t direction) {
+static void SYSMENU_HANDL_SD_ExportCalibrations1(int8_t direction) {
 	if (direction > 0 && SD_isIdle() && !LCD_busy) {
 		strcpy((char *)SD_workbuffer_A, "wolf-calibrations.ini");
+		SD_doCommand(SDCOMM_EXPORT_CALIBRATIONS, false);
+	}
+}
+
+static void SYSMENU_HANDL_SD_ExportCalibrations2(int8_t direction) {
+	if (direction > 0 && SD_isIdle() && !LCD_busy) {
+		strcpy((char *)SD_workbuffer_A, "wolf-calibrations-2.ini");
+		SD_doCommand(SDCOMM_EXPORT_CALIBRATIONS, false);
+	}
+}
+
+static void SYSMENU_HANDL_SD_ExportCalibrations3(int8_t direction) {
+	if (direction > 0 && SD_isIdle() && !LCD_busy) {
+		strcpy((char *)SD_workbuffer_A, "wolf-calibrations-3.ini");
 		SD_doCommand(SDCOMM_EXPORT_CALIBRATIONS, false);
 	}
 }
@@ -4915,9 +4937,23 @@ static void SYSMENU_HANDL_SD_ImportSettings3(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_SD_ImportCalibrations(int8_t direction) {
+static void SYSMENU_HANDL_SD_ImportCalibrations1(int8_t direction) {
 	if (direction > 0 && SD_isIdle() && !LCD_busy) {
 		strcpy((char *)SD_workbuffer_A, "wolf-calibrations.ini");
+		SD_doCommand(SDCOMM_IMPORT_SETTINGS, false);
+	}
+}
+
+static void SYSMENU_HANDL_SD_ImportCalibrations2(int8_t direction) {
+	if (direction > 0 && SD_isIdle() && !LCD_busy) {
+		strcpy((char *)SD_workbuffer_A, "wolf-calibrations-2.ini");
+		SD_doCommand(SDCOMM_IMPORT_SETTINGS, false);
+	}
+}
+
+static void SYSMENU_HANDL_SD_ImportCalibrations3(int8_t direction) {
+	if (direction > 0 && SD_isIdle() && !LCD_busy) {
+		strcpy((char *)SD_workbuffer_A, "wolf-calibrations-3.ini");
 		SD_doCommand(SDCOMM_IMPORT_SETTINGS, false);
 	}
 }
