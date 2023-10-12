@@ -323,14 +323,14 @@ void SELF_TEST_Draw(void) {
 			float32_t ADC_PGA_signal = fmaxf(fabsf((float32_t)TRX_ADC_MINAMPLITUDE), fabsf((float32_t)TRX_ADC_MAXAMPLITUDE));
 			float32_t ADC_PGA_db = rate2dbV(ADC_PGA_signal / base_signal);
 
-#if !defined(FRONTPANEL_LITE_V2_MINI)
+#if !defined(FRONTPANEL_LITE_V2_MINI) && !defined(FRONTPANEL_LITE)
 			LCDDriver_printText("ADC PGA signal", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %d          ", (uint16_t)ADC_PGA_signal);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_PGA_signal < 32000.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
 #endif
 			pos_y += margin_bottom;
 
-#if !defined(FRONTPANEL_LITE_V2_MINI)
+#if !defined(FRONTPANEL_LITE_V2_MINI) && !defined(FRONTPANEL_LITE)
 			LCDDriver_printText("ADC PGA gain", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			sprintf(str, " %.2f dB          ", (double)ADC_PGA_db);
 			LCDDriver_printText(str, LCDDriver_GetCurrentXOffset(), pos_y, (ADC_PGA_db > 2.0f && ADC_PGA_db < 7.0f) ? COLOR_GREEN : COLOR_RED, BG_COLOR, font_size);
@@ -396,7 +396,7 @@ void SELF_TEST_Draw(void) {
 			TRX.ATT_DB = 0;
 			TRX.LNA = true;
 			TRX.ADC_PGA = true;
-			TRX.ADC_Driver = false;
+			TRX.ADC_Driver = !HRDW_HAS_LNA_HF;
 			FPGA_NeedSendParams = true;
 			current_test = 1;
 			current_test_start_time = HAL_GetTick();
@@ -636,7 +636,7 @@ void SELF_TEST_EncRotate(int8_t direction) {
 	LCD_busy = false;
 
 	SELF_TEST_current_page += direction;
-	if (!HRDW_HAS_LNA_VHF && SELF_TEST_current_page == 4) {
+	if (!HRDW_HAS_LNA_VHF && SELF_TEST_current_page == 4 && direction < 0) {
 		SELF_TEST_current_page--;
 	}
 

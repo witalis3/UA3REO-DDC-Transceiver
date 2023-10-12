@@ -19,7 +19,7 @@
 #define HRDW_HAS_FULL_FFT_BUFFER false
 #define HRDW_USB_AUDIO_BITS 16
 #define HRDW_AUDIO_CODEC_WM8731 true
-#define HRDW_HAS_LNA_HF true
+#define HRDW_HAS_LNA_HF false
 #define HRDW_HAS_LNA_VHF false
 
 #define HRDW_DEBUG_ON_CAT_PORT false
