@@ -62,7 +62,7 @@ void INA226_Init(void) {
 	// INA226_Write2Byte(Config_Reg, 0x4127);
 	float64_t INA226_Shunt = (float64_t)CALIBRATE.INA226_Shunt_mOhm / 1000.0;
 	float64_t INA226_MaximumExpectedCurrent = 30.0 * 1000000.0; // 30 Amp
-	float64_t INA226_CurrentLSB = INA226_MaximumExpectedCurrent / pow(2,15);
+	float64_t INA226_CurrentLSB = INA226_MaximumExpectedCurrent / pow(2, 15);
 	float64_t INA226_Calibration = 0.00512 / ((INA226_CurrentLSB / 1000.0 / 1000.0) * INA226_Shunt);
 
 	// Write the calibration bytes (used for the current calculation)

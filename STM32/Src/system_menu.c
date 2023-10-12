@@ -722,7 +722,7 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_RX_NOISE_BLANKER},
     {"NB Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD},
 #if !defined(FRONTPANEL_LITE)
-		{"RF Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_RX_RFFilters},
+    {"RF Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_RX_RFFilters},
 #endif
     {"RX AUDIO Mode", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.RX_AUDIO_MODE, SYSMENU_HANDL_RX_AUDIO_MODE, (const enumerate_item[3]){"STEREO", "LEFT", "RIGHT"}},
     {"RX AGC CW Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_HANDL_RX_AGC_CW_Speed},
@@ -1023,8 +1023,8 @@ const static struct sysmenu_item_handler sysmenu_sd_export_handlers[] = {
     {"Export Settings 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings2},
     {"Export Settings 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings3},
     {"Export Calibration 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportCalibrations1},
-		{"Export Calibration 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportCalibrations2},
-		{"Export Calibration 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportCalibrations3},
+    {"Export Calibration 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportCalibrations2},
+    {"Export Calibration 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportCalibrations3},
 };
 
 const static struct sysmenu_item_handler sysmenu_sd_import_handlers[] = {
@@ -1033,8 +1033,8 @@ const static struct sysmenu_item_handler sysmenu_sd_import_handlers[] = {
     {"Import Settings 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings2},
     {"Import Settings 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings3},
     {"Import Calibration 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportCalibrations1},
-		{"Import Calibration 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportCalibrations2},
-		{"Import Calibration 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportCalibrations3},
+    {"Import Calibration 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportCalibrations2},
+    {"Import Calibration 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportCalibrations3},
 };
 const static struct sysmenu_item_handler sysmenu_sd_format_handlers[] = {
     {"Back", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Back},
@@ -7121,7 +7121,7 @@ static void SYSMENU_HANDL_CALIB_INA226_Shunt_mOhm(int8_t direction) {
 	if (CALIBRATE.INA226_Shunt_mOhm > 500) {
 		CALIBRATE.INA226_Shunt_mOhm = 500;
 	}
-	
+
 	INA226_Init();
 }
 
