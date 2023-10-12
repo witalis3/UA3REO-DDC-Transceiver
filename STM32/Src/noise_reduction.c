@@ -246,7 +246,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				// gain limiter
 				float32_t current_gain_db = instance->need_gain_db;
 				if (instance->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain) {
-					if (!TRX.AGC_Threshold || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY) {
+					if (!TRX.AGC_Threshold || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY || nr_type != 0) {
 						current_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
 					} else {
 						const float32_t max_threshold_diff = 10.0f;

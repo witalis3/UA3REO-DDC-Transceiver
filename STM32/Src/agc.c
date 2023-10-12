@@ -15,7 +15,7 @@ float32_t AGC_SCREEN_maxGain = 1.0f;
 float32_t AGC_SCREEN_currentGain = 0.0f;
 
 // Run AGC on data block
-void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id, uint_fast8_t mode, bool stereo) {
+void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id, uint8_t nr_type, uint_fast8_t mode, bool stereo) {
 	// RX1 or RX2
 	AGC_RX_Instance *AGC = &AGC_RX1;
 	bool VAD_Muting = VAD_RX1_Muting;
@@ -142,7 +142,7 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	// gain limitation
 	float32_t current_need_gain = AGC->need_gain_db;
 	if (AGC->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain) {
-		if (!TRX.AGC_Threshold || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY) {
+		if (!TRX.AGC_Threshold || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY || nr_type != 0) {
 			current_need_gain = (float32_t)TRX.RX_AGC_Max_gain;
 		} else {
 			const float32_t max_threshold_diff = 10.0f;

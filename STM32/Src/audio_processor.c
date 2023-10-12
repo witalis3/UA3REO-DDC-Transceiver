@@ -1761,11 +1761,11 @@ static void doRX_DNR(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode, 
 static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode, bool stereo) {
 	if (!TRX.AGC_Spectral) { // else do agc in NR
 		if (rx_id == AUDIO_RX1) {
-			DoRxAGC(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size, rx_id, mode, stereo);
+			DoRxAGC(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, size, rx_id, CurrentVFO->DNR_Type, mode, stereo);
 		}
 #if HRDW_HAS_DUAL_RX
 		else {
-			DoRxAGC(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size, rx_id, mode, stereo);
+			DoRxAGC(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, size, rx_id, SecondaryVFO->DNR_Type, mode, stereo);
 		}
 #endif
 	}
