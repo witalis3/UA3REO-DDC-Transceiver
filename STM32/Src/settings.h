@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "8.3.1" // current STM32 version
+#define STM32_VERSION_STR "8.4.0" // current STM32 version
 
 #if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_MINI)
 #define FPGA_VERSION_STR "6.8.0" // needed FPGA version Wolf-Mini
@@ -19,7 +19,7 @@
 #endif
 
 #define SETT_VERSION 111        // Settings config version
-#define CALIB_VERSION 75        // Calibration config version
+#define CALIB_VERSION 76        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                  // audio stream sampling rate during processing and TX (NOT RX!)
@@ -753,7 +753,6 @@ extern struct TRX_CALIBRATE {
 	float32_t SWR_BWD_Calibration_6M;
 	float32_t SWR_FWD_Calibration_VHF;
 	float32_t SWR_BWD_Calibration_VHF;
-	float32_t INA226_CurrentCoeff;
 	float32_t INA226_VoltageOffset;
 	float32_t PWR_VLT_Calibration;
 	float32_t PWR_CUR_Calibration;
@@ -782,6 +781,7 @@ extern struct TRX_CALIBRATE {
 	uint16_t TCXO_frequency;
 	uint16_t MAX_ChargePump_Freq;
 	uint16_t TX_StartDelay;
+	uint16_t INA226_Shunt_mOhm;
 	int16_t smeter_calibration_hf;
 	int16_t smeter_calibration_vhf;
 	uint16_t Transverter_Custom_Offset_Mhz;

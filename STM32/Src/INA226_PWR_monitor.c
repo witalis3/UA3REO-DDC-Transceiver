@@ -2,8 +2,8 @@
 #include "i2c.h"
 #include "lcd.h"
 
-static float Voltage = 0;
-static float Current = 0;
+static float32_t Voltage = 0;
+static float32_t Current = 0;
 
 uint16_t INA226_Read2Byte(uint8_t reg_addr) {
 #ifdef HAS_TOUCHPAD
@@ -60,11 +60,13 @@ void INA226_Init(void) {
 
 	// 0100_001_100_100_111 //1 times average, 1.1ms, 1.1ms, continuous measurement of shunt voltage and bus voltage
 	// INA226_Write2Byte(Config_Reg, 0x4127);
+	float64_t INA226_Shunt = (float64_t)CALIBRATE.INA226_Shunt_mOhm / 1000.0;
+	float64_t INA226_MaximumExpectedCurrent = 30.0 * 1000000.0; // 30 Amp
+	float64_t INA226_CurrentLSB = INA226_MaximumExpectedCurrent / pow(2,15);
+	float64_t INA226_Calibration = 0.00512 / ((INA226_CurrentLSB / 1000.0 / 1000.0) * INA226_Shunt);
 
-	// Write the calibration byte (used for the current calculation)
-	INA226_Write2Byte(Calib_Reg, 0x0800); // Current_LSB is selected 500mA R_Shunt is 5mOhm
-	                                      // INA226_Write2Byte(Calib_Reg, 0x0A00);
-	                                      // INA226_Write2Byte(Calib_Reg, 0x0034);
+	// Write the calibration bytes (used for the current calculation)
+	INA226_Write2Byte(Calib_Reg, (uint16_t)INA226_Calibration);
 }
 
 // Read the INA226 Voltage and Current data
@@ -79,12 +81,12 @@ void Read_INA226_Data(void) {
 		Rd_Count = 0;
 
 		Voltage = INA226_Read2Byte(Bus_V_Reg) * 0.00125f + CALIBRATE.INA226_VoltageOffset;
-		Current = INA226_Read2Byte(Current_Reg) * CALIBRATE.INA226_CurrentCoeff * 0.001f; // multiply the Current register value with the calibration coefficient (mA/Bit)
+		Current = INA226_Read2Byte(Current_Reg) * 0.001f; // multiply the Current register value with the calibration coefficient (mA/Bit)
 	}
 }
 
 // Return the INA226 Bus Voltage
-float Get_INA226_Voltage(void) { return Voltage; }
+float32_t Get_INA226_Voltage(void) { return Voltage; }
 
 // Return the INA226 Schunt Current
-float Get_INA226_Current(void) { return Current; }
+float32_t Get_INA226_Current(void) { return Current; }

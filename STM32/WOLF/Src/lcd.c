@@ -1743,7 +1743,12 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 
 	if (CALIBRATE.INA226_EN && !TRX.SPLIT_Enabled && !TRX.RIT_Enabled && !TRX.XIT_Enabled) ////INA226 current voltage indication  Is the INA226 used (installed)
 	{
-		sprintf(buff, "%2.1fV/%2.1fA ", (double)Get_INA226_Voltage(), (double)Get_INA226_Current());
+		float32_t current = Get_INA226_Current();
+		if (current < 1.0f) {
+			sprintf(buff, "%2.1fV/%umA", (double)Get_INA226_Voltage(), (uint32_t)(current * 1000.0f));
+		} else {
+			sprintf(buff, "%2.1fV/%2.1fA ", (double)Get_INA226_Voltage(), (double)current);
+		}
 	} else {
 		// RIT
 		if (TRX.SPLIT_Enabled) {
