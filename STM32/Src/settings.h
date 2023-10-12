@@ -227,50 +227,66 @@ static char ota_config_lcd[] = "ILI9481";
 #define FT8_SUPPORT true
 #endif
 #endif
+
 #if defined(LCD_ILI9481_IPS)
 static char ota_config_lcd[] = "ILI9481_IPS";
 #ifdef STM32H743xx
 #define FT8_SUPPORT true
 #endif
 #endif
+
 #if defined(LCD_HX8357B)
 static char ota_config_lcd[] = "HX8357B";
 #ifdef STM32H743xx
 #define FT8_SUPPORT true
 #endif
 #endif
+
 #if defined(LCD_HX8357C) && !defined(LCD_SLOW)
 static char ota_config_lcd[] = "HX8357C";
 #ifdef STM32H743xx
 #define FT8_SUPPORT true
 #endif
 #endif
+
 #if defined(LCD_HX8357C) && defined(LCD_SLOW)
 static char ota_config_lcd[] = "HX8357C-SLOW";
 #ifdef STM32H743xx
 #define FT8_SUPPORT true
 #endif
 #endif
+
 #if defined(LCD_ILI9486)
 static char ota_config_lcd[] = "ILI9486";
 #ifdef STM32H743xx
 #define FT8_SUPPORT true
 #endif
 #endif
+
 #if defined(LCD_ILI9341)
+#if defined(FRONTPANEL_MINI)
+static char ota_config_lcd[] = "WOLF-Mini-ILI9341";
+#else
 static char ota_config_lcd[] = "ILI9341";
+#endif
 #ifdef STM32H743xx
 #define FT8_SUPPORT true
 #endif
 #endif
+
 #if defined(LCD_ST7789)
 static char ota_config_lcd[] = "LCD_ST7789";
 #ifdef STM32H743xx
 #define FT8_SUPPORT true
 #endif
 #endif
+
 #if defined(LCD_ST7735S)
+#if defined(FRONTPANEL_MINI)
+static char ota_config_lcd[] = "WOLF-Mini-ST7735S";
+#else
 static char ota_config_lcd[] = "ST7735S";
+#endif
 #ifdef STM32H743xx
 #define FT8_SUPPORT false
 #endif
