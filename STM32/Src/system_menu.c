@@ -718,7 +718,7 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_RX_NOISE_BLANKER},
     {"NB Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD},
 #if !defined(FRONTPANEL_LITE)
-//{"RF_Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_RX_RFFilters},
+		{"RF Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_RX_RFFilters},
 #endif
     {"RX AUDIO Mode", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.RX_AUDIO_MODE, SYSMENU_HANDL_RX_AUDIO_MODE, (const enumerate_item[3]){"STEREO", "LEFT", "RIGHT"}},
     {"RX AGC CW Speed", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RX_AGC_CW_speed, SYSMENU_HANDL_RX_AGC_CW_Speed},
