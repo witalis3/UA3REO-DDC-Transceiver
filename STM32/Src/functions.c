@@ -96,6 +96,12 @@ void print_flush(void) {
 		tryes++;
 	}
 #endif
+#if HRDW_DEBUG_ON_CAT_PORT
+	uint_fast16_t tryes = 0;
+	while (CAT_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512) {
+		tryes++;
+	}
+#endif
 }
 
 void print_hex(uint8_t data, bool _inline) {

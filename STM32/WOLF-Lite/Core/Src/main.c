@@ -28,6 +28,7 @@
 #include "functions.h"
 #include "lcd.h"
 #include "rf_unit.h"
+#include "usbd_cat_if.h"
 #include "usbd_debug_if.h"
 #include "usbd_ua3reo.h"
 /* USER CODE END Includes */
@@ -1440,6 +1441,13 @@ int fputc(int ch, FILE *f) {
 	if (USB_DEBUG_ENABLED) {
 		char usb_char = (char)ch;
 		DEBUG_Transmit_FIFO((uint8_t *)&usb_char, 1);
+	}
+#endif
+
+#if HRDW_DEBUG_ON_CAT_PORT
+	if (USB_DEBUG_ENABLED) {
+		char usb_char = (char)ch;
+		CAT_Transmit_FIFO((uint8_t *)&usb_char, 1);
 	}
 #endif
 
