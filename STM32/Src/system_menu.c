@@ -1051,7 +1051,7 @@ const static struct sysmenu_item_handler sysmenu_sd_format_handlers[] = {
 const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #if defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1)
     {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type,
-     (const enumerate_item[6]){"QRP", "BIG", "SPLIT", "RU4PN", "KT-100S", "WF-100D"}},
+     (const enumerate_item[7]){"NONE", "QRP", "BIG", "SPLIT", "RU4PN", "KT-100S", "WF-100D"}},
 #endif
     {"ALC Port Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Port_Enabled, SYSMENU_HANDL_CALIB_ALC_Port_Enabled},
     {"ALC Inverted", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Inverted_Logic, SYSMENU_HANDL_CALIB_ALC_Inverted_Logic},
@@ -5306,8 +5306,8 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 	if (CALIBRATE.RF_unit_type > 0 || direction > 0) {
 		CALIBRATE.RF_unit_type += direction;
 	}
-	if (CALIBRATE.RF_unit_type > 3) {
-		CALIBRATE.RF_unit_type = 3;
+	if (CALIBRATE.RF_unit_type > 4) {
+		CALIBRATE.RF_unit_type = 4;
 	}
 
 	if (CALIBRATE.RF_unit_type == RF_UNIT_QRP) {
@@ -8906,6 +8906,8 @@ static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex) {
 
 static bool SYSMENU_HANDL_CHECK_HAS_LPF(void) {
 	switch (CALIBRATE.RF_unit_type) {
+	case RF_UNIT_NONE:
+		return true;
 	case RF_UNIT_QRP:
 		return true;
 	case RF_UNIT_RU4PN:
@@ -8929,6 +8931,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_HPF(void) {
 #endif
 
 	switch (CALIBRATE.RF_unit_type) {
+	case RF_UNIT_NONE:
+		return true;
 	case RF_UNIT_QRP:
 		return true;
 	case RF_UNIT_RU4PN:
@@ -8952,6 +8956,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_BPF_8(void) {
 #endif
 
 	switch (CALIBRATE.RF_unit_type) {
+	case RF_UNIT_NONE:
+		return false;
 	case RF_UNIT_QRP:
 		return false;
 	case RF_UNIT_RU4PN:
@@ -8975,6 +8981,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_BPF_9(void) {
 #endif
 
 	switch (CALIBRATE.RF_unit_type) {
+	case RF_UNIT_NONE:
+		return false;
 	case RF_UNIT_QRP:
 		return false;
 	case RF_UNIT_RU4PN:
@@ -9000,6 +9008,8 @@ bool SYSMENU_HANDL_CHECK_HAS_ATU(void) {
 	return true;
 #endif
 	switch (CALIBRATE.RF_unit_type) {
+	case RF_UNIT_NONE:
+		return false;
 	case RF_UNIT_QRP:
 		return false;
 	case RF_UNIT_RU4PN:
@@ -9023,6 +9033,8 @@ static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void) {
 #endif
 
 	switch (CALIBRATE.RF_unit_type) {
+	case RF_UNIT_NONE:
+		return true;
 	case RF_UNIT_QRP:
 		return true;
 	case RF_UNIT_RU4PN:

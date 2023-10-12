@@ -549,7 +549,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER_ON_FALLING = true;   // encoder only triggers when level A falls
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
-		CALIBRATE.RF_unit_type = RF_UNIT_QRP;  // RF-unit type
+		CALIBRATE.RF_unit_type = RF_UNIT_NONE; // RF-unit type
 		CALIBRATE.CICFIR_GAINER_48K_val = 7;   // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_96K_val = 12;  // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_192K_val = 17; // Offset from the output of the CIC compensator
