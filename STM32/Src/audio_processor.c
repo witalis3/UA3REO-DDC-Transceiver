@@ -1826,7 +1826,7 @@ static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, float32_t *buff, uint16_t size,
 			if (TRX.LNA) {
 				TRX_RX1_dBm += CALIBRATE.LNA_compensation;
 			}
-			
+
 			if (CALIBRATE.ATT_compensation && TRX.ATT) {
 				TRX_RX1_dBm += TRX.ATT_DB;
 			}
@@ -1872,7 +1872,7 @@ static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, float32_t *buff, uint16_t size,
 			if (TRX.LNA) {
 				TRX_RX2_dBm += CALIBRATE.LNA_compensation;
 			}
-			
+
 			if (CALIBRATE.ATT_compensation && TRX.ATT) {
 				TRX_RX2_dBm += TRX.ATT_DB;
 			}

@@ -14,9 +14,9 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 
 ## Specifications
 
-* Receiving frequencies: 0 MHz - 750 MHz with fading each 61.44 Mhz
-* Transmission frequencies: 0 MHz - 200 MHz with fading on 110, 165 Mhz
-* Transmission frequencies in harmonics mode (CW, FM): 360 Mhz - 480 Mhz
+* Receiving frequencies: 0 MHz - 750 MHz with fading each 61.44 MHz
+* Transmission frequencies: 0 MHz - 200 MHz with fading on 110, 165 MHz
+* Transmission frequencies in harmonics mode (CW, FM): 360 MHz - 480 MHz
 * TX power (QRP version): 7W+ (HF), 5W (VHF)
 * TX power (QRP++ DB5AT version): 20W (HF), 7W (VHF)
 * TX power (RU4PN/WF-100D version): 100W (HF), 50W+ (VHF)
@@ -65,16 +65,16 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 
 ### RF Parameters
 
-Sensitivity at 10dB SNR, LNA enabled:
+Sensitivity at 10 dB SNR, LNA enabled:
 
-* <150mHz | -131dBm | 63.0 nV
-* 435mHz | -121dBm | 0.2 uV
+* <150 MHz | -131 dBm | 63.0 nV
+* 435 MHz | -121 dBm | 0.2 uV
 
 Out-of-band emissions:
 
-* 14mHz -69dBc
-* 28mHz -63dBc
-* 145mHz -48dBc -55dBc
+* 14 MHz -69 dBc
+* 28 MHz -63 dBc
+* 145 MHz -48 dBc -55 dBc
 
 ## Build
 
@@ -149,6 +149,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Freq Step ENC2** - Frequency tuning step by main add. encoder
 * **Freq Step FAST** - Frequency step by the main encoder in FAST mode
 * **Freq Step** - Frequency step by the main encoder
+* **Notch Step** - Frequency step of manual notch filter
 * **Full Duplex** - Full duplex RX+TX mode
 * **Locator** - User QTH locator
 * **RIT Interval** - Offset range RIT (+ -)
@@ -355,7 +356,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **ATT Compensation** - Compensates the S-meter value when the ATT is turned on
 * **LPF END** - LPF filter parameters
 * **Linear Pwr Control** - Sets a linear way to change the signal amplitude when adjusting the power (if disabled - logarithmic)
-* **MAX ChargePump, khz** - Maximum PWM frequency for ChargePump circuit
+* **MAX ChargePump, kHz** - Maximum PWM frequency for ChargePump circuit
 * **MAX PWR on Meter** - Maximim RF power (for indication)
 * **MAX Power in TUNE** - Maximum RF power in Tune mode
 * **MAX RF Temp** - Maximum temperature of the PA before the protection operation
@@ -371,7 +372,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **SWR FWD/BWD RATE** - Adjustment of the transformation ratio of the SWR meter (forward / return)
 * **Swap USB IQ** - Swap USB IQ output
 * **Settings reset** - Reset all settings to defaults
-* **TCXO Frequency, khz** - Frequency adjustment of the reference oscillator
+* **TCXO Frequency, kHz** - Frequency adjustment of the reference oscillator
 * **Touchpad flip** - Flip the touchpad operation horizontally/vertically
 * **Touchpad timeout** - Minimum time between taps (protection against false trigger), ms
 * **Touchpad click threshold** - Minimum time for triggering a short click, ms
@@ -382,9 +383,9 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **TX CICCOMP Shift** - Bit shift after TX CIC compensator
 * **TX Start Delay** - Delay before the RF signal is applied (ms), so that the relay has time to trigger
 * **Tangent Type** - Select tangent type
-* **Transverter Offset, mHz** - Offset frequency shown on the display (for custom transverters)
-* **Transverter xxx IF, mHz** - Setting the IF frequency of the transverter
-* **Transverter xxx RF, mHz** - Setting the RF frequency of the transceiver to match the IF
+* **Transverter Offset, MHz** - Offset frequency shown on the display (for custom transverters)
+* **Transverter xxx IF, MHz** - Setting the IF frequency of the transverter
+* **Transverter xxx RF, MHz** - Setting the RF frequency of the transceiver to match the IF
 
 ### Set Clock Time
 
@@ -408,7 +409,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 * **Spectrum START** - Start the spectrum analyzer
 * **Begin, kHz** - Starting frequency of the analyzer with a step of 1 kHz
-* **End, kHz** - End frequency of the analyzer in 1kHz steps
+* **End, kHz** - End frequency of the analyzer in 1 kHz steps
 * **Top, dBm** - Upper threshold of the graph
 * **Bottom, dBm** - Lower threshold of the graph
 

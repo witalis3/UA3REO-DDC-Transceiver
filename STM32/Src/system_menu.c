@@ -42,6 +42,7 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_kHz(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
+static void SYSMENU_HANDL_TRX_NOTCH_STEP_Hz(int8_t direction);
 static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction);
 static void SYSMENU_HANDL_TRX_Full_Duplex(int8_t direction);
 static void SYSMENU_HANDL_TRX_RIT_INTERVAL(int8_t direction);
@@ -625,6 +626,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Fr Step WFM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_WFM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_kHz},
     {"Fr Step FM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_FM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_kHz},
     {"Fr Step AM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz},
+    {"Notch Step, Hz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.NOTCH_STEP_Hz, SYSMENU_HANDL_TRX_NOTCH_STEP_Hz},
     {"CW Fr Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
 #else
     {"Freq Step", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
@@ -634,6 +636,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Freq Step WFM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_WFM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_kHz},
     {"Freq Step FM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_FM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_kHz},
     {"Freq Step AM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz},
+    {"Notch Step, Hz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.NOTCH_STEP_Hz, SYSMENU_HANDL_TRX_NOTCH_STEP_Hz},
     {"CW Freq Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
 #endif
     {"Full Duplex", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Full_Duplex, SYSMENU_HANDL_TRX_Full_Duplex},
@@ -1179,7 +1182,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
     {"LNA Compensation", SYSMENU_INT8, NULL, (uint32_t *)&CALIBRATE.LNA_compensation, SYSMENU_HANDL_CALIB_LNA_compensation},
 #endif
-		{"ATT Compensation", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ATT_compensation, SYSMENU_HANDL_CALIB_ATT_compensation},
+    {"ATT Compensation", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ATT_compensation, SYSMENU_HANDL_CALIB_ATT_compensation},
     {"Linear Pwr Control", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_HANDL_CALIB_LinearPowerControl},
 #if !defined(FRONTPANEL_LITE)
 #ifdef LAY_320x240
@@ -1759,6 +1762,31 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz(int8_t direction) {
 		}
 	}
 	TRX.FRQ_ENC_AM_STEP_kHz = am_freq_steps[0];
+}
+
+static void SYSMENU_HANDL_TRX_NOTCH_STEP_Hz(int8_t direction) {
+	const float32_t notch_freq_steps[] = {1, 5, 10, 12.5, 25, 50, 100};
+
+	for (uint8_t i = 0; i < ARRLENTH(notch_freq_steps); i++) {
+		if (TRX.NOTCH_STEP_Hz == notch_freq_steps[i]) {
+			if (direction < 0) {
+				if (i > 0) {
+					TRX.NOTCH_STEP_Hz = notch_freq_steps[i - 1];
+				} else {
+					TRX.NOTCH_STEP_Hz = notch_freq_steps[0];
+				}
+				return;
+			} else {
+				if (i < (ARRLENTH(notch_freq_steps) - 1)) {
+					TRX.NOTCH_STEP_Hz = notch_freq_steps[i + 1];
+				} else {
+					TRX.NOTCH_STEP_Hz = notch_freq_steps[ARRLENTH(notch_freq_steps) - 1];
+				}
+				return;
+			}
+		}
+	}
+	TRX.NOTCH_STEP_Hz = notch_freq_steps[0];
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER(int8_t direction) {

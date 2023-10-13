@@ -806,9 +806,9 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH) // Manual Notch
 	{
-		float64_t step = 50;
+		float64_t step = (float64_t)TRX.NOTCH_STEP_Hz;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			step = 10;
+			step /= (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
 		}
 		if (CurrentVFO->ManualNotchFilter) {
 			if (CurrentVFO->NotchFC > step && direction < 0) {
