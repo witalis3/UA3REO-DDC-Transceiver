@@ -352,6 +352,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **KTY81 Calibration** - Calibration of the KTY81 sensor (setting the resistance of the divider arm)
 * **LCD Rotate** - Rotate screen at 180 degrees
 * **LNA Compensation** - Compensates the S-meter value when the LNA is turned on, dBm
+* **ATT Compensation** - Compensates the S-meter value when the ATT is turned on
 * **LPF END** - LPF filter parameters
 * **Linear Pwr Control** - Sets a linear way to change the signal amplitude when adjusting the power (if disabled - logarithmic)
 * **MAX ChargePump, khz** - Maximum PWM frequency for ChargePump circuit

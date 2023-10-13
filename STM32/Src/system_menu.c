@@ -493,6 +493,7 @@ static void SYSMENU_HANDL_CALIB_COM_CAT_RTS_Mode(int8_t direction);
 static void SYSMENU_HANDL_CALIB_COM_DEBUG_DTR_Mode(int8_t direction);
 static void SYSMENU_HANDL_CALIB_COM_DEBUG_RTS_Mode(int8_t direction);
 static void SYSMENU_HANDL_CALIB_Swap_USB_IQ(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ATT_compensation(int8_t direction);
 
 static void SYSMENU_HANDL_TRXMENU(int8_t direction);
 static void SYSMENU_HANDL_FILTERMENU(int8_t direction);
@@ -1178,6 +1179,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
     {"LNA Compensation", SYSMENU_INT8, NULL, (uint32_t *)&CALIBRATE.LNA_compensation, SYSMENU_HANDL_CALIB_LNA_compensation},
 #endif
+		{"ATT Compensation", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ATT_compensation, SYSMENU_HANDL_CALIB_ATT_compensation},
     {"Linear Pwr Control", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.LinearPowerControl, SYSMENU_HANDL_CALIB_LinearPowerControl},
 #if !defined(FRONTPANEL_LITE)
 #ifdef LAY_320x240
@@ -6292,6 +6294,15 @@ static void SYSMENU_HANDL_CALIB_Swap_USB_IQ(int8_t direction) {
 	}
 	if (direction < 0) {
 		CALIBRATE.Swap_USB_IQ = false;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_ATT_compensation(int8_t direction) {
+	if (direction > 0) {
+		CALIBRATE.ATT_compensation = true;
+	}
+	if (direction < 0) {
+		CALIBRATE.ATT_compensation = false;
 	}
 }
 

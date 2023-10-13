@@ -1371,6 +1371,7 @@ static void SDCOMM_EXPORT_CALIBRATIONS_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.COM_DEBUG_DTR_Mode", (uint64_t *)&CALIBRATE.COM_DEBUG_DTR_Mode, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.COM_DEBUG_RTS_Mode", (uint64_t *)&CALIBRATE.COM_DEBUG_RTS_Mode, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.Swap_USB_IQ", (uint64_t *)&CALIBRATE.Swap_USB_IQ, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("CALIBRATE.ATT_compensation", (uint64_t *)&CALIBRATE.ATT_compensation, SYSMENU_BOOLEAN);
 		}
 
 		if (!res) {
@@ -2806,6 +2807,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "CALIBRATE.Swap_USB_IQ") == 0) {
 		CALIBRATE.Swap_USB_IQ = bval;
+	}
+	if (strcmp(name, "CALIBRATE.ATT_compensation") == 0) {
+		CALIBRATE.ATT_compensation = bval;
 	}
 
 	// Func buttons settings

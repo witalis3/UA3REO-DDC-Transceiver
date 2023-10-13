@@ -19,7 +19,7 @@
 #endif
 
 #define SETT_VERSION 113        // Settings config version
-#define CALIB_VERSION 78        // Calibration config version
+#define CALIB_VERSION 79        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -946,6 +946,7 @@ extern struct TRX_CALIBRATE {
 	bool ALC_Port_Enabled;
 	bool ALC_Inverted_Logic;
 	bool Swap_USB_IQ;
+	bool ATT_compensation;
 	CHANNEL_SAVED_SETTINGS_TYPE MEMORY_CHANNELS[MEMORY_CHANNELS_COUNT];
 	uint32_t BAND_MEMORIES[BANDS_COUNT][BANDS_MEMORIES_COUNT];
 
