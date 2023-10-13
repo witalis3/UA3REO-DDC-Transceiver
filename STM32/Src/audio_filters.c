@@ -794,8 +794,8 @@ void InitNotchFilter(void) {
 		SecondaryVFO->NotchFC = SecondaryVFO->LPF_RX_Filter_Width;
 	}
 
-	int16_t rx1_notch_width_hz = 100;
-	int16_t rx2_notch_width_hz = 100;
+	int16_t rx1_notch_width_Hz = 100;
+	int16_t rx2_notch_width_Hz = 100;
 	int16_t rx1_notch_pos = CurrentVFO->NotchFC;
 	int16_t rx2_notch_pos = SecondaryVFO->NotchFC;
 
@@ -806,10 +806,10 @@ void InitNotchFilter(void) {
 		rx2_notch_pos = (TRX.CW_Pitch + SecondaryVFO->NotchFC - SecondaryVFO->LPF_RX_Filter_Width / 2);
 	}
 
-	int16_t rx1_notch_pos_f1 = rx1_notch_pos - rx1_notch_width_hz / 2;
-	int16_t rx1_notch_pos_f2 = rx1_notch_pos + rx1_notch_width_hz / 2;
-	int16_t rx2_notch_pos_f1 = rx2_notch_pos - rx2_notch_width_hz / 2;
-	int16_t rx2_notch_pos_f2 = rx2_notch_pos + rx2_notch_width_hz / 2;
+	int16_t rx1_notch_pos_f1 = rx1_notch_pos - rx1_notch_width_Hz / 2;
+	int16_t rx1_notch_pos_f2 = rx1_notch_pos + rx1_notch_width_Hz / 2;
+	int16_t rx2_notch_pos_f1 = rx2_notch_pos - rx2_notch_width_Hz / 2;
+	int16_t rx2_notch_pos_f2 = rx2_notch_pos + rx2_notch_width_Hz / 2;
 	if (rx1_notch_pos_f1 < 50) {
 		rx1_notch_pos_f1 = 50;
 	}

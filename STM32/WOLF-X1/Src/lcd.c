@@ -30,13 +30,13 @@ IRAM2 WindowType LCD_window = {0};
 STRUCT_COLOR_THEME *COLOR = &COLOR_THEMES[0];
 STRUCT_LAYOUT_THEME *LAYOUT = &LAYOUT_THEMES[0];
 
-static char LCD_freq_string_hz[6] = {0};
-static char LCD_freq_string_khz[6] = {0};
-static char LCD_freq_string_mhz[6] = {0};
+static char LCD_freq_string_Hz[6] = {0};
+static char LCD_freq_string_kHz[6] = {0};
+static char LCD_freq_string_MHz[6] = {0};
 static uint64_t LCD_last_showed_freq = 0;
-static uint16_t LCD_last_showed_freq_mhz = 9999;
-static uint16_t LCD_last_showed_freq_khz = 9999;
-static uint16_t LCD_last_showed_freq_hz = 9999;
+static uint16_t LCD_last_showed_freq_MHz = 9999;
+static uint16_t LCD_last_showed_freq_kHz = 9999;
+static uint16_t LCD_last_showed_freq_Hz = 9999;
 
 static uint32_t manualFreqEnter = 0;
 static bool LCD_screenKeyboardOpened = false;
@@ -194,7 +194,7 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	uint64_t display_freq = CurrentVFO->Freq;
 
 	if (TRX.Custom_Transverter_Enabled) {
-		display_freq += (uint64_t)CALIBRATE.Transverter_Custom_Offset_Mhz * 1000 * 1000;
+		display_freq += (uint64_t)CALIBRATE.Transverter_Custom_Offset_MHz * 1000 * 1000;
 	}
 	if (TRX_on_TX && !TRX.selected_vfo) {
 		display_freq += TRX_XIT;
@@ -214,24 +214,24 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	LCD_busy = true;
 
 	LCD_last_showed_freq = display_freq;
-	uint16_t hz = (display_freq % 1000);
-	uint16_t khz = ((display_freq / 1000) % 1000);
-	uint16_t mhz = ((display_freq / 1000000) % 1000);
-	uint16_t ghz = ((display_freq / 1000000000) % 1000);
-	if (display_freq >= 1000000000) //>= 1GHZ
+	uint16_t Hz = (display_freq % 1000);
+	uint16_t kHz = ((display_freq / 1000) % 1000);
+	uint16_t MHz = ((display_freq / 1000000) % 1000);
+	uint16_t GHz = ((display_freq / 1000000000) % 1000);
+	if (display_freq >= 1000000000) //>= 1GHz
 	{
-		hz = khz;
-		khz = mhz;
-		mhz = ghz;
+		Hz = kHz;
+		kHz = MHz;
+		MHz = GHz;
 	}
 
-	uint16_t mhz_x_offset = 0;
-	if (mhz >= 100) {
-		mhz_x_offset = LAYOUT->FREQ_X_OFFSET_100;
-	} else if (mhz >= 10) {
-		mhz_x_offset = LAYOUT->FREQ_X_OFFSET_10;
+	uint16_t MHz_x_offset = 0;
+	if (MHz >= 100) {
+		MHz_x_offset = LAYOUT->FREQ_X_OFFSET_100;
+	} else if (MHz >= 10) {
+		MHz_x_offset = LAYOUT->FREQ_X_OFFSET_10;
 	} else {
-		mhz_x_offset = LAYOUT->FREQ_X_OFFSET_1;
+		MHz_x_offset = LAYOUT->FREQ_X_OFFSET_1;
 	}
 
 	if (redraw) {
@@ -239,34 +239,34 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 		                      BG_COLOR);
 	}
 
-	if ((mhz_x_offset - LAYOUT->FREQ_LEFT_MARGIN) > 0) {
-		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP, mhz_x_offset - LAYOUT->FREQ_LEFT_MARGIN - 1, LAYOUT->FREQ_TOP_OFFSET + LAYOUT->FREQ_HEIGHT + 2, BG_COLOR);
+	if ((MHz_x_offset - LAYOUT->FREQ_LEFT_MARGIN) > 0) {
+		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP, MHz_x_offset - LAYOUT->FREQ_LEFT_MARGIN - 1, LAYOUT->FREQ_TOP_OFFSET + LAYOUT->FREQ_HEIGHT + 2, BG_COLOR);
 	}
 
 	// add spaces to output the frequency
-	sprintf(LCD_freq_string_hz, "%d", hz);
-	sprintf(LCD_freq_string_khz, "%d", khz);
-	sprintf(LCD_freq_string_mhz, "%d", mhz);
+	sprintf(LCD_freq_string_Hz, "%d", Hz);
+	sprintf(LCD_freq_string_kHz, "%d", kHz);
+	sprintf(LCD_freq_string_MHz, "%d", MHz);
 
-	if (redraw || (LCD_last_showed_freq_mhz != mhz)) {
-		LCDDriver_printTextFont(LCD_freq_string_mhz, mhz_x_offset, LAYOUT->FREQ_Y_BASELINE, COLOR->FREQ_MHZ, BG_COLOR, LAYOUT->FREQ_FONT);
-		LCD_last_showed_freq_mhz = mhz;
+	if (redraw || (LCD_last_showed_freq_MHz != MHz)) {
+		LCDDriver_printTextFont(LCD_freq_string_MHz, MHz_x_offset, LAYOUT->FREQ_Y_BASELINE, COLOR->FREQ_MHZ, BG_COLOR, LAYOUT->FREQ_FONT);
+		LCD_last_showed_freq_MHz = MHz;
 	}
 
 	char buff[50] = "";
-	if (redraw || (LCD_last_showed_freq_khz != khz)) {
-		addSymbols(buff, LCD_freq_string_khz, 3, "0", false);
+	if (redraw || (LCD_last_showed_freq_kHz != kHz)) {
+		addSymbols(buff, LCD_freq_string_kHz, 3, "0", false);
 		LCDDriver_printTextFont(buff, LAYOUT->FREQ_X_OFFSET_KHZ, LAYOUT->FREQ_Y_BASELINE, COLOR->FREQ_KHZ, BG_COLOR, LAYOUT->FREQ_FONT);
-		LCD_last_showed_freq_khz = khz;
+		LCD_last_showed_freq_kHz = kHz;
 	}
-	if (redraw || (LCD_last_showed_freq_hz != hz) || TRX.ChannelMode) {
-		addSymbols(buff, LCD_freq_string_hz, 3, "0", false);
+	if (redraw || (LCD_last_showed_freq_Hz != Hz) || TRX.ChannelMode) {
+		addSymbols(buff, LCD_freq_string_Hz, 3, "0", false);
 		int_fast8_t band = -1;
 		int_fast8_t channel = -1;
 
-		uint16_t hz_color = COLOR->FREQ_HZ;
+		uint16_t Hz_color = COLOR->FREQ_HZ;
 		if (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP) {
-			hz_color = COLOR->ACTIVE_BORDER;
+			Hz_color = COLOR->ACTIVE_BORDER;
 		}
 
 		if (TRX.ChannelMode) {
@@ -294,9 +294,9 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 			addSymbols(buff, buff, 2, " ", true);
 			LCDDriver_printTextFont(buff, LAYOUT->FREQ_X_OFFSET_HZ + 2 + RASTR_FONT_W * 2 * 2, LAYOUT->FREQ_Y_BASELINE_SMALL, COLOR->STATUS_MODE, BG_COLOR, LAYOUT->FREQ_CH_FONT);
 		} else {
-			LCDDriver_printTextFont(buff, LAYOUT->FREQ_X_OFFSET_HZ, LAYOUT->FREQ_Y_BASELINE_SMALL, hz_color, BG_COLOR, LAYOUT->FREQ_SMALL_FONT);
+			LCDDriver_printTextFont(buff, LAYOUT->FREQ_X_OFFSET_HZ, LAYOUT->FREQ_Y_BASELINE_SMALL, Hz_color, BG_COLOR, LAYOUT->FREQ_SMALL_FONT);
 		}
-		LCD_last_showed_freq_hz = hz;
+		LCD_last_showed_freq_Hz = Hz;
 	}
 
 	if (redraw) {
@@ -475,13 +475,13 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	LCD_busy = false;
 }
 
-static float32_t LCD_GetSMeterValPosition(float32_t dbm, bool correct_vhf) {
+static float32_t LCD_GetSMeterValPosition(float32_t dBm, bool correct_vhf) {
 	int32_t width = LAYOUT->STATUS_SMETER_WIDTH - 2;
 	float32_t TRX_s_meter = 0;
 
-	TRX_s_meter = (127.0f + dbm); // 127dbm - S0, 6dBm - 1S div
+	TRX_s_meter = (127.0f + dBm); // 127dBm - S0, 6dBm - 1S div
 	if (correct_vhf && CurrentVFO->Freq >= VHF_S_METER_FREQ_START) {
-		TRX_s_meter = (147.0f + dbm); // 147dbm - S0 for frequencies above 144mhz
+		TRX_s_meter = (147.0f + dBm); // 147dBm - S0 for frequencies above 144MHz
 	}
 
 	if (TRX_s_meter < 54.01f) { // first 9 points of meter is 6 dB each
@@ -509,21 +509,21 @@ static float32_t LCD_SWR2DBM_meter(float32_t swr) {
 		swr = 8.0f;
 	}
 
-	float32_t swr_to_dbm = -115.0f;
+	float32_t swr_to_dBm = -115.0f;
 	if (swr <= 1.5f) {
-		swr_to_dbm += (swr - 1.0f) * 40.0f;
+		swr_to_dBm += (swr - 1.0f) * 40.0f;
 	}
 	if (swr > 1.5f && swr <= 2.0f) {
-		swr_to_dbm += 0.5f * 40.0f + (swr - 1.5f) * 20.0f;
+		swr_to_dBm += 0.5f * 40.0f + (swr - 1.5f) * 20.0f;
 	}
 	if (swr > 2.0f && swr <= 3.0f) {
-		swr_to_dbm += 0.5f * 40.0f + 0.5f * 20.0f + (swr - 2.0f) * 10.0f;
+		swr_to_dBm += 0.5f * 40.0f + 0.5f * 20.0f + (swr - 2.0f) * 10.0f;
 	}
 	if (swr > 3.0f) {
-		swr_to_dbm += 0.5f * 40.0f + 0.5f * 20.0f + 1.0f * 20.0f + (swr - 3.0f) * 10.0f;
+		swr_to_dBm += 0.5f * 40.0f + 0.5f * 20.0f + 1.0f * 20.0f + (swr - 3.0f) * 10.0f;
 	}
 
-	return swr_to_dbm;
+	return swr_to_dBm;
 }
 
 static void LCD_displayStatusInfoBar(bool redraw) {
@@ -600,7 +600,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 
 			// FM Squelch stripe
 			if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM) {
-				uint16_t x_pos = LCD_GetSMeterValPosition(CurrentVFO->FM_SQL_threshold_dbm, true);
+				uint16_t x_pos = LCD_GetSMeterValPosition(CurrentVFO->FM_SQL_threshold_dBm, true);
 				LCDDriver_Fill_RectWH(LAYOUT->STATUS_BAR_X_OFFSET + x_pos, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_SMETER_TOP_OFFSET + LAYOUT->STATUS_BAR_Y_OFFSET + 2, 1,
 				                      LAYOUT->STATUS_BAR_HEIGHT - 3, COLOR->STATUS_SMETER_PEAK);
 			}
@@ -815,7 +815,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		sprintf(buff, "FULL");
 	} else {
 		if (lpf_width < 1000) {
-			sprintf(buff, "%dhz", (uint32_t)lpf_width);
+			sprintf(buff, "%dHz", (uint32_t)lpf_width);
 		} else {
 			lpf_width /= 1000;
 			sprintf(buff, "%.1fkHz", (float64_t)lpf_width);
@@ -866,7 +866,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		if (CurrentVFO->AutoNotchFilter) {
 			sprintf(buff, "ANTCH");
 		} else if (CurrentVFO->ManualNotchFilter && CurrentVFO->NotchFC < 1000) {
-			sprintf(buff, "%uhz", CurrentVFO->NotchFC);
+			sprintf(buff, "%uHz", CurrentVFO->NotchFC);
 		} else if (CurrentVFO->ManualNotchFilter && CurrentVFO->NotchFC >= 1000) {
 			sprintf(buff, "%u", CurrentVFO->NotchFC);
 		} else {
@@ -905,7 +905,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	if (CurrentVFO->Mode == TRX_MODE_CW) {
 		fft_zoom = TRX.FFT_ZoomCW;
 	}
-	uint16_t fft_width = FFT_current_spectrum_width_hz / 1000;
+	uint16_t fft_width = FFT_current_spectrum_width_Hz / 1000;
 	if (fft_width < 100) {
 		sprintf(buff, "%dk", fft_width);
 	} else {
@@ -1027,9 +1027,9 @@ void LCD_redraw(bool do_now) {
 	Last_showed_Hours = 255;
 	Last_showed_Minutes = 255;
 	Last_showed_Seconds = 255;
-	LCD_last_showed_freq_mhz = 9999;
-	LCD_last_showed_freq_khz = 9999;
-	LCD_last_showed_freq_hz = 9999;
+	LCD_last_showed_freq_MHz = 9999;
+	LCD_last_showed_freq_kHz = 9999;
+	LCD_last_showed_freq_Hz = 9999;
 	NeedWTFRedraw = true;
 	if (do_now) {
 		LCD_doEvents();

@@ -133,7 +133,7 @@ int ft8_decode(void) {
 				chksumAray[num_decoded] = chksum; // Used to check for duplicate messages
 
 				new_decoded[num_decoded].sync_score = cand.score;
-				// new_decoded[num_decoded].freq_hz = (int)freq_hz;
+				// new_decoded[num_decoded].freq_Hz = (int)freq_Hz;
 				strcpy(new_decoded[num_decoded].field1, field1);
 				strcpy(new_decoded[num_decoded].field2, field2);
 				strcpy(new_decoded[num_decoded].field3, field3);

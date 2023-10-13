@@ -40,7 +40,7 @@ static arm_spline_instance_f32 DPD_SPLINE_Instance;
 static bool DPD_SPLINE_NeedReinit = true;
 
 static void DPD_checkCurrentPointAvailable();
-static void DPD_printDbmStatus(float32_t imd3, float32_t imd5);
+static void DPD_printDBMStatus(float32_t imd3, float32_t imd5);
 static void DPD_getDistortionForSample(float32_t *i, float32_t *q);
 static void DPD_Load();
 static void DPD_Clean();
@@ -178,11 +178,11 @@ void DPD_ProcessCalibration() {
 		return;
 	}
 
-	static uint32_t DPD_last_dbm_show_time = 0;
-	if (HAL_GetTick() - DPD_last_dbm_show_time > 1000) {
-		DPD_last_dbm_show_time = HAL_GetTick();
+	static uint32_t DPD_last_dBm_show_time = 0;
+	if (HAL_GetTick() - DPD_last_dBm_show_time > 1000) {
+		DPD_last_dBm_show_time = HAL_GetTick();
 
-		DPD_printDbmStatus(FFT_Current_TX_IMD3, FFT_Current_TX_IMD5);
+		DPD_printDBMStatus(FFT_Current_TX_IMD3, FFT_Current_TX_IMD5);
 	}
 
 	if (!DPD_need_calibration) {
@@ -200,7 +200,7 @@ void DPD_ProcessCalibration() {
 
 	if (!DPD_start_imd_printed) {
 		DPD_start_imd_printed = true;
-		DPD_printDbmStatus(FFT_Current_TX_IMD3, FFT_Current_TX_IMD5);
+		DPD_printDBMStatus(FFT_Current_TX_IMD3, FFT_Current_TX_IMD5);
 	}
 
 	DPD_checkCurrentPointAvailable();
@@ -341,7 +341,7 @@ static void DPD_checkCurrentPointAvailable() {
 	}
 }
 
-static void DPD_printDbmStatus(float32_t imd3, float32_t imd5) {
+static void DPD_printDBMStatus(float32_t imd3, float32_t imd5) {
 	char ctmp[32] = {0};
 	sprintf(ctmp, "IMD3: %.1f IMD5: %.1f", (double)imd3, (double)imd5);
 	LCD_showTooltip(ctmp);

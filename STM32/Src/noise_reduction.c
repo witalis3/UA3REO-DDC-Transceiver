@@ -206,16 +206,16 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				}
 
 				float32_t full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
-				float32_t AGC_RX_dbFS = rate2dbV(full_scale_rate);
+				float32_t AGC_RX_dBFS = rate2dbV(full_scale_rate);
 				if (nr_type != 0) {
-					AGC_RX_dbFS -= 12.0f; // DNR compensation
+					AGC_RX_dBFS -= 12.0f; // DNR compensation
 				}
 
 				float32_t gain_target = (float32_t)TRX.AGC_GAIN_TARGET;
 				if (mode == TRX_MODE_CW) {
 					gain_target += CW_ADD_GAIN_AF;
 				}
-				float32_t diff = (gain_target - (AGC_RX_dbFS + instance->need_gain_db));
+				float32_t diff = (gain_target - (AGC_RX_dBFS + instance->need_gain_dB));
 
 				// hold time limiter
 				if (fabsf(diff) < (float32_t)TRX.RX_AGC_Hold_Limiter && instance->hold_time < TRX.RX_AGC_Hold_Time) {
@@ -228,7 +228,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 				// move
 				if (diff > 0) {
 					if ((HAL_GetTick() - instance->last_agc_peak_time) > instance->hold_time) {
-						instance->need_gain_db += diff / RX_AGC_STEPSIZE_UP;
+						instance->need_gain_dB += diff / RX_AGC_STEPSIZE_UP;
 
 						if (diff > (float32_t)TRX.RX_AGC_Hold_Limiter && instance->hold_time > 0) {
 							if (instance->hold_time >= TRX.RX_AGC_Hold_Step_Down) {
@@ -239,37 +239,37 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 						}
 					}
 				} else {
-					instance->need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
+					instance->need_gain_dB += diff / RX_AGC_STEPSIZE_DOWN;
 					instance->last_agc_peak_time = HAL_GetTick();
 				}
 
 				// gain limiter
-				float32_t current_gain_db = instance->need_gain_db;
-				if (instance->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain) {
+				float32_t current_gain_dB = instance->need_gain_dB;
+				if (instance->need_gain_dB > (float32_t)TRX.RX_AGC_Max_gain) {
 					if (!TRX.AGC_Threshold || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY || nr_type != 0) {
-						current_gain_db = (float32_t)TRX.RX_AGC_Max_gain;
+						current_gain_dB = (float32_t)TRX.RX_AGC_Max_gain;
 					} else {
 						const float32_t max_threshold_diff = 10.0f;
-						float32_t threshold_diff = instance->need_gain_db - (float32_t)TRX.RX_AGC_Max_gain;
+						float32_t threshold_diff = instance->need_gain_dB - (float32_t)TRX.RX_AGC_Max_gain;
 						if (threshold_diff > max_threshold_diff) {
 							threshold_diff = max_threshold_diff;
 						}
 						float32_t threshold_rise_level = (max_threshold_diff - threshold_diff) / max_threshold_diff;
-						current_gain_db = (float32_t)TRX.RX_AGC_Max_gain * threshold_rise_level;
+						current_gain_dB = (float32_t)TRX.RX_AGC_Max_gain * threshold_rise_level;
 					}
 				}
-				if ((AGC_RX_dbFS + current_gain_db) > (gain_target + AGC_CLIPPING)) {
-					println("AGC overload ", (double)diff, " ", (double)(current_gain_db - (gain_target - AGC_RX_dbFS)));
-					current_gain_db = gain_target - AGC_RX_dbFS;
-					instance->need_gain_db = gain_target - AGC_RX_dbFS;
+				if ((AGC_RX_dBFS + current_gain_dB) > (gain_target + AGC_CLIPPING)) {
+					println("AGC overload ", (double)diff, " ", (double)(current_gain_dB - (gain_target - AGC_RX_dBFS)));
+					current_gain_dB = gain_target - AGC_RX_dBFS;
+					instance->need_gain_dB = gain_target - AGC_RX_dBFS;
 				}
 
-				// println("HOLD: ", instance->hold_time, " GAIN: ", instance->need_gain_db, " DIFF: ", diff);
+				// println("HOLD: ", instance->hold_time, " GAIN: ", instance->need_gain_dB, " DIFF: ", diff);
 				AGC_SCREEN_maxGain = (float32_t)TRX.RX_AGC_Max_gain;
-				AGC_SCREEN_currentGain = instance->need_gain_db > AGC_SCREEN_maxGain ? AGC_SCREEN_maxGain : current_gain_db;
+				AGC_SCREEN_currentGain = instance->need_gain_dB > AGC_SCREEN_maxGain ? AGC_SCREEN_maxGain : current_gain_dB;
 
 				// appy gain
-				float32_t rateV = db2rateV(current_gain_db);
+				float32_t rateV = db2rateV(current_gain_dB);
 
 				// Muting if need
 				bool VAD_Muting = VAD_RX1_Muting;
@@ -282,7 +282,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					rateV = db2rateV(-200.0f);
 				}
 
-				// println("[SpectraAGC] AGC_RX_dbFS: ", (double)AGC_RX_dbFS, " Gain: ", (double)instance->need_gain_db);
+				// println("[SpectraAGC] AGC_RX_dBFS: ", (double)AGC_RX_dBFS, " Gain: ", (double)instance->need_gain_dB);
 
 				// apply AGC
 				for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE * 2; idx++) {

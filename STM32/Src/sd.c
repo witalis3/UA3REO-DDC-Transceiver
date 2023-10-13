@@ -847,7 +847,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR_Type", (uint64_t *)&TRX.VFO_A.DNR_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint64_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SQL", (uint64_t *)&TRX.VFO_A.SQL, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold_dbm", (uint64_t *)&TRX.VFO_A.FM_SQL_threshold_dbm, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold_dBm", (uint64_t *)&TRX.VFO_A.FM_SQL_threshold_dBm, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.RepeaterMode", (uint64_t *)&TRX.VFO_A.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Freq", (uint64_t *)&TRX.VFO_B.Freq, SYSMENU_UINT64);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.Mode", (uint64_t *)&TRX.VFO_B.Mode, SYSMENU_UINT32);
@@ -861,7 +861,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VFO_B.DNR_Type", (uint64_t *)&TRX.VFO_B.DNR_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.AGC", (uint64_t *)&TRX.VFO_B.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.SQL", (uint64_t *)&TRX.VFO_B.SQL, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold_dbm", (uint64_t *)&TRX.VFO_B.FM_SQL_threshold_dbm, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold_dBm", (uint64_t *)&TRX.VFO_B.FM_SQL_threshold_dBm, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.RepeaterMode", (uint64_t *)&TRX.VFO_B.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.selected_vfo", (uint64_t *)&TRX.selected_vfo, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ADC_Driver", (uint64_t *)&TRX.ADC_Driver, SYSMENU_BOOLEAN);
@@ -891,9 +891,9 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.FRQ_FAST_STEP", (uint64_t *)&TRX.FRQ_FAST_STEP, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_STEP", (uint64_t *)&TRX.FRQ_ENC_STEP, SYSMENU_UINT32);
 			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_FAST_STEP", (uint64_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_WFM_STEP_KHZ", (uint64_t *)&TRX.FRQ_ENC_WFM_STEP_KHZ, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_FM_STEP_KHZ", (uint64_t *)&TRX.FRQ_ENC_FM_STEP_KHZ, SYSMENU_FLOAT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_AM_STEP_KHZ", (uint64_t *)&TRX.FRQ_ENC_AM_STEP_KHZ, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_WFM_STEP_kHz", (uint64_t *)&TRX.FRQ_ENC_WFM_STEP_kHz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_FM_STEP_kHz", (uint64_t *)&TRX.FRQ_ENC_FM_STEP_kHz, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_AM_STEP_kHz", (uint64_t *)&TRX.FRQ_ENC_AM_STEP_kHz, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.FRQ_CW_STEP_DIVIDER", (uint64_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.Debug_Type", (uint64_t *)&TRX.Debug_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.DXCluster_Type", (uint64_t *)&TRX.DXCluster_Type, SYSMENU_UINT8);
@@ -1134,8 +1134,8 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SQL", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].SQL, SYSMENU_BOOLEAN);
-				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dbm", i);
-				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm, SYSMENU_INT8);
+				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dBm", i);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm, SYSMENU_INT8);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Fast", i);
@@ -1328,20 +1328,20 @@ static void SDCOMM_EXPORT_CALIBRATIONS_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_AIR_band", (uint64_t *)&CALIBRATE.ENABLE_AIR_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_marine_band", (uint64_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_70cm_band", (uint64_t *)&CALIBRATE.ENABLE_70cm_band, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_Custom_Offset_Mhz", (uint64_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_70cm_RF_Mhz", (uint64_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_70cm_IF_Mhz", (uint64_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_23cm_RF_Mhz", (uint64_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_23cm_IF_Mhz", (uint64_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_13cm_RF_Mhz", (uint64_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_13cm_IF_Mhz", (uint64_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_6cm_RF_Mhz", (uint64_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_6cm_IF_Mhz", (uint64_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_3cm_RF_Mhz", (uint64_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_3cm_IF_Mhz", (uint64_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_UINT16);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_QO100_RF_Khz", (uint64_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_QO100_IF_RX_Khz", (uint64_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_QO100_IF_TX_Mhz", (uint64_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_Custom_Offset_MHz", (uint64_t *)&CALIBRATE.Transverter_Custom_Offset_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_70cm_RF_MHz", (uint64_t *)&CALIBRATE.Transverter_70cm_RF_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_70cm_IF_MHz", (uint64_t *)&CALIBRATE.Transverter_70cm_IF_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_23cm_RF_MHz", (uint64_t *)&CALIBRATE.Transverter_23cm_RF_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_23cm_IF_MHz", (uint64_t *)&CALIBRATE.Transverter_23cm_IF_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_13cm_RF_MHz", (uint64_t *)&CALIBRATE.Transverter_13cm_RF_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_13cm_IF_MHz", (uint64_t *)&CALIBRATE.Transverter_13cm_IF_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_6cm_RF_MHz", (uint64_t *)&CALIBRATE.Transverter_6cm_RF_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_6cm_IF_MHz", (uint64_t *)&CALIBRATE.Transverter_6cm_IF_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_3cm_RF_MHz", (uint64_t *)&CALIBRATE.Transverter_3cm_RF_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_3cm_IF_MHz", (uint64_t *)&CALIBRATE.Transverter_3cm_IF_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_QO100_RF_kHz", (uint64_t *)&CALIBRATE.Transverter_QO100_RF_kHz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_QO100_IF_RX_kHz", (uint64_t *)&CALIBRATE.Transverter_QO100_IF_RX_kHz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_QO100_IF_TX_MHz", (uint64_t *)&CALIBRATE.Transverter_QO100_IF_TX_MHz, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.KTY81_Calibration", (uint64_t *)&CALIBRATE.KTY81_Calibration, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.OTA_update", (uint64_t *)&CALIBRATE.OTA_update, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.TX_StartDelay", (uint64_t *)&CALIBRATE.TX_StartDelay, SYSMENU_UINT16);
@@ -1456,8 +1456,8 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.VFO_A.SQL") == 0) {
 		TRX.VFO_A.SQL = bval;
 	}
-	if (strcmp(name, "TRX.VFO_A.FM_SQL_threshold_dbm") == 0) {
-		TRX.VFO_A.FM_SQL_threshold_dbm = (int8_t)intval;
+	if (strcmp(name, "TRX.VFO_A.FM_SQL_threshold_dBm") == 0) {
+		TRX.VFO_A.FM_SQL_threshold_dBm = (int8_t)intval;
 	}
 	if (strcmp(name, "TRX.VFO_B.Freq") == 0) {
 		TRX.VFO_B.Freq = uint64val;
@@ -1498,8 +1498,8 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.VFO_B.SQL") == 0) {
 		TRX.VFO_B.SQL = bval;
 	}
-	if (strcmp(name, "TRX.VFO_B.FM_SQL_threshold_dbm") == 0) {
-		TRX.VFO_B.FM_SQL_threshold_dbm = (int8_t)intval;
+	if (strcmp(name, "TRX.VFO_B.FM_SQL_threshold_dBm") == 0) {
+		TRX.VFO_B.FM_SQL_threshold_dBm = (int8_t)intval;
 	}
 	if (strcmp(name, "TRX.selected_vfo") == 0) {
 		TRX.selected_vfo = bval;
@@ -1579,14 +1579,14 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.FRQ_ENC_FAST_STEP") == 0) {
 		TRX.FRQ_ENC_FAST_STEP = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_WFM_STEP_KHZ") == 0) {
-		TRX.FRQ_ENC_WFM_STEP_KHZ = uintval;
+	if (strcmp(name, "TRX.FRQ_ENC_WFM_STEP_kHz") == 0) {
+		TRX.FRQ_ENC_WFM_STEP_kHz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_FM_STEP_KHZ") == 0) {
-		TRX.FRQ_ENC_FM_STEP_KHZ = floatval;
+	if (strcmp(name, "TRX.FRQ_ENC_FM_STEP_kHz") == 0) {
+		TRX.FRQ_ENC_FM_STEP_kHz = floatval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_AM_STEP_KHZ") == 0) {
-		TRX.FRQ_ENC_AM_STEP_KHZ = floatval;
+	if (strcmp(name, "TRX.FRQ_ENC_AM_STEP_kHz") == 0) {
+		TRX.FRQ_ENC_AM_STEP_kHz = floatval;
 	}
 	if (strcmp(name, "TRX.FRQ_CW_STEP_DIVIDER") == 0) {
 		TRX.FRQ_CW_STEP_DIVIDER = (uint8_t)uintval;
@@ -2678,47 +2678,47 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "CALIBRATE.ENABLE_70cm_band") == 0) {
 		CALIBRATE.ENABLE_70cm_band = bval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_Custom_Offset_Mhz") == 0) {
-		CALIBRATE.Transverter_Custom_Offset_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_Custom_Offset_MHz") == 0) {
+		CALIBRATE.Transverter_Custom_Offset_MHz = (uint16_t)uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_70cm_RF_Mhz") == 0) {
-		CALIBRATE.Transverter_70cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_70cm_RF_MHz") == 0) {
+		CALIBRATE.Transverter_70cm_RF_MHz = (uint16_t)uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_70cm_IF_Mhz") == 0) {
-		CALIBRATE.Transverter_70cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_70cm_IF_MHz") == 0) {
+		CALIBRATE.Transverter_70cm_IF_MHz = (uint16_t)uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_23cm_RF_Mhz") == 0) {
-		CALIBRATE.Transverter_23cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_23cm_RF_MHz") == 0) {
+		CALIBRATE.Transverter_23cm_RF_MHz = (uint16_t)uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_23cm_IF_Mhz") == 0) {
-		CALIBRATE.Transverter_23cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_23cm_IF_MHz") == 0) {
+		CALIBRATE.Transverter_23cm_IF_MHz = (uint16_t)uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_13cm_RF_Mhz") == 0) {
-		CALIBRATE.Transverter_13cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_13cm_RF_MHz") == 0) {
+		CALIBRATE.Transverter_13cm_RF_MHz = (uint16_t)uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_13cm_IF_Mhz") == 0) {
-		CALIBRATE.Transverter_13cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_13cm_IF_MHz") == 0) {
+		CALIBRATE.Transverter_13cm_IF_MHz = (uint16_t)uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_6cm_RF_Mhz") == 0) {
-		CALIBRATE.Transverter_6cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_6cm_RF_MHz") == 0) {
+		CALIBRATE.Transverter_6cm_RF_MHz = (uint16_t)uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_6cm_IF_Mhz") == 0) {
-		CALIBRATE.Transverter_6cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_6cm_IF_MHz") == 0) {
+		CALIBRATE.Transverter_6cm_IF_MHz = (uint16_t)uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_3cm_RF_Mhz") == 0) {
-		CALIBRATE.Transverter_3cm_RF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_3cm_RF_MHz") == 0) {
+		CALIBRATE.Transverter_3cm_RF_MHz = (uint16_t)uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_3cm_IF_Mhz") == 0) {
-		CALIBRATE.Transverter_3cm_IF_Mhz = (uint16_t)uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_3cm_IF_MHz") == 0) {
+		CALIBRATE.Transverter_3cm_IF_MHz = (uint16_t)uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_QO100_RF_Khz") == 0) {
-		CALIBRATE.Transverter_QO100_RF_Khz = uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_QO100_RF_kHz") == 0) {
+		CALIBRATE.Transverter_QO100_RF_kHz = uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_QO100_IF_RX_Khz") == 0) {
-		CALIBRATE.Transverter_QO100_IF_RX_Khz = uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_QO100_IF_RX_kHz") == 0) {
+		CALIBRATE.Transverter_QO100_IF_RX_kHz = uintval;
 	}
-	if (strcmp(name, "CALIBRATE.Transverter_QO100_IF_TX_Mhz") == 0) {
-		CALIBRATE.Transverter_QO100_IF_TX_Mhz = uintval;
+	if (strcmp(name, "CALIBRATE.Transverter_QO100_IF_TX_MHz") == 0) {
+		CALIBRATE.Transverter_QO100_IF_TX_MHz = uintval;
 	}
 	if (strcmp(name, "CALIBRATE.KTY81_Calibration") == 0) {
 		CALIBRATE.KTY81_Calibration = uintval;
@@ -2855,9 +2855,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		if (strcmp(name, buff) == 0) {
 			TRX.BANDS_SAVED_SETTINGS[i].SQL = bval;
 		}
-		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dbm", i);
+		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dBm", i);
 		if (strcmp(name, buff) == 0) {
-			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dbm = (int8_t)intval;
+			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm = (int8_t)intval;
 		}
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 		if (strcmp(name, buff) == 0) {

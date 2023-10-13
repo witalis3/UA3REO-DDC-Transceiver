@@ -35,11 +35,11 @@ static void SYSMENU_HANDL_TRX_ChannelMode(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction);
 static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER(int8_t direction);
-static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction);
-static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_kHz(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction);
-static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_kHz(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
 static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction);
@@ -556,20 +556,20 @@ static void SYSMENU_HANDL_AUTO_CALIBRATION_SWR(int8_t direction);
 static void SYSMENU_HANDL_AUTO_CALIBRATION_POWER(int8_t direction);
 
 static void SYSMENU_HANDL_TIME_BEACON(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_40KHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_50KHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_60KHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_66_66KHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_75KHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_77_5KHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_2_5MHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_4_996MHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_5MHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_9_996MHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_10MHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_14_996MHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_15MHZ(int8_t direction);
-static void SYSMENU_HANDL_TIME_BEACON_20MHZ(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_40kHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_50kHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_60kHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_66_66kHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_75kHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_77_5kHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_2_5MHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_4_996MHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_5MHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_9_996MHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_10MHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_14_996MHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_15MHz(int8_t direction);
+static void SYSMENU_HANDL_TIME_BEACON_20MHz(int8_t direction);
 
 static bool SYSMENU_HANDL_CHECK_HAS_LPF(void);
 static bool SYSMENU_HANDL_CHECK_HAS_HPF(void);
@@ -621,18 +621,18 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Fr Step FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
     {"Fr Step ENC2", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
     {"Fr Step ENC2 FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
-    {"Fr Step WFM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_WFM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ},
-    {"Fr Step FM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_FM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ},
-    {"Fr Step AM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ},
+    {"Fr Step WFM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_WFM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_kHz},
+    {"Fr Step FM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_FM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_kHz},
+    {"Fr Step AM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz},
     {"CW Fr Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
 #else
     {"Freq Step", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
     {"Freq Step FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
     {"Freq Step ENC2", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
     {"Freq Step ENC2 FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
-    {"Freq Step WFM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_WFM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ},
-    {"Freq Step FM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_FM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ},
-    {"Freq Step AM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_KHZ, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ},
+    {"Freq Step WFM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_WFM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_kHz},
+    {"Freq Step FM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_FM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_kHz},
+    {"Freq Step AM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz},
     {"CW Freq Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
 #endif
     {"Full Duplex", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Full_Duplex, SYSMENU_HANDL_TRX_Full_Duplex},
@@ -719,9 +719,9 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 #endif
     {"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SQL_shadow, SYSMENU_HANDL_RX_Squelch},
 #ifdef LAY_320x240
-    {"FM Squelch level", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dbm_shadow, SYSMENU_HANDL_RX_FMSquelch},
+    {"FM Squelch level", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
 #else
-    {"FM Squelch level, dbm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dbm_shadow, SYSMENU_HANDL_RX_FMSquelch},
+    {"FM Squelch level, dBm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
 #endif
     {"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_RX_NOISE_BLANKER},
     {"NB Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD},
@@ -742,15 +742,15 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"RX EQ 1.8k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4, SYSMENU_HANDL_RX_EQ_P4},
     {"RX EQ 2.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5, SYSMENU_HANDL_RX_EQ_P5},
     {"RX EQ 2.5k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P6, SYSMENU_HANDL_RX_EQ_P6},
-    {"RX WFM EQ 50hz", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P1_WFM, SYSMENU_HANDL_RX_EQ_P1_WFM},
+    {"RX WFM EQ 50Hz", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P1_WFM, SYSMENU_HANDL_RX_EQ_P1_WFM},
     {"RX WFM EQ 0.3k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P2_WFM, SYSMENU_HANDL_RX_EQ_P2_WFM},
     {"RX WFM EQ 1.5k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P3_WFM, SYSMENU_HANDL_RX_EQ_P3_WFM},
     {"RX WFM EQ 5.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4_WFM, SYSMENU_HANDL_RX_EQ_P4_WFM},
     {"RX WFM EQ 8.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5_WFM, SYSMENU_HANDL_RX_EQ_P5_WFM},
     {"RX WFM EQ 12.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P6_WFM, SYSMENU_HANDL_RX_EQ_P6_WFM},
     {"VAD Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_HANDL_RX_VAD_THRESHOLD},
-    {"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_RX_SAMPLERATE_MAIN, (const enumerate_item[4]){"48khz", "96khz", "192khz", "384khz"}},
-    {"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_RX_SAMPLERATE_FM, (const enumerate_item[4]){"48khz", "96khz", "192khz", "384khz"}},
+    {"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_RX_SAMPLERATE_MAIN, (const enumerate_item[4]){"48kHz", "96kHz", "192kHz", "384kHz"}},
+    {"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_RX_SAMPLERATE_FM, (const enumerate_item[4]){"48kHz", "96kHz", "192kHz", "384kHz"}},
 #if !defined(STM32F407xx)
     {"WFM Stereo", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FM_Stereo, SYSMENU_HANDL_RX_FM_Stereo},
     {"WFM Stereo Modul", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FM_Stereo_Modulation, SYSMENU_HANDL_RX_FM_Stereo_Modulation},
@@ -1183,7 +1183,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #ifdef LAY_320x240
     {"Max ChargePump", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq},
 #else
-    {"Max ChargePump, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq},
+    {"Max ChargePump, kHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq},
 #endif
 #endif
     {"Max PWR on Meter", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.MAX_RF_POWER_ON_METER, SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER},
@@ -1265,7 +1265,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"Swap USB IQ", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.Swap_USB_IQ, SYSMENU_HANDL_CALIB_Swap_USB_IQ},
 #endif
 #if !defined(FRONTPANEL_LITE)
-    {"TCXO Freq, khz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
+    {"TCXO Freq, kHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
 #else
     {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 #endif
@@ -1286,20 +1286,20 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"Tangent Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.TangentType, SYSMENU_HANDL_CALIB_TangentType, (const enumerate_item[2]){"MH-36", "MH-48"}},
 #endif
 #if !defined(FRONTPANEL_LITE)
-    {"Transv Offset, mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_Mhz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
-    {"Transv 70cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
-    {"Transv 70cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
-    {"Transv 23cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_23cm},
-    {"Transv 23cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_23cm},
-    {"Transv 13cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_13cm},
-    {"Transv 13cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_13cm},
-    {"Transv 6cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_6cm},
-    {"Transv 6cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
-    {"Transv 3cm RF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
-    {"Transv 3cm IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
-    {"Tr QO100 RF kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_RF_Khz, SYSMENU_HANDL_CALIB_TRANSV_RF_QO100},
-    {"Tr QO100 RX IF kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_Khz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
-    {"Tr QO100 TX IF mHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_Mhz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
+    {"Transv Offset, MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_MHz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
+    {"Transv 70cm RF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_RF_MHz, SYSMENU_HANDL_CALIB_TRANSV_RF_70cm},
+    {"Transv 70cm IF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_70cm_IF_MHz, SYSMENU_HANDL_CALIB_TRANSV_IF_70cm},
+    {"Transv 23cm RF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_RF_MHz, SYSMENU_HANDL_CALIB_TRANSV_RF_23cm},
+    {"Transv 23cm IF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_23cm_IF_MHz, SYSMENU_HANDL_CALIB_TRANSV_IF_23cm},
+    {"Transv 13cm RF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_RF_MHz, SYSMENU_HANDL_CALIB_TRANSV_RF_13cm},
+    {"Transv 13cm IF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_13cm_IF_MHz, SYSMENU_HANDL_CALIB_TRANSV_IF_13cm},
+    {"Transv 6cm RF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_RF_MHz, SYSMENU_HANDL_CALIB_TRANSV_RF_6cm},
+    {"Transv 6cm IF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_6cm_IF_MHz, SYSMENU_HANDL_CALIB_TRANSV_IF_6cm},
+    {"Transv 3cm RF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_RF_MHz, SYSMENU_HANDL_CALIB_TRANSV_RF_3cm},
+    {"Transv 3cm IF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_3cm_IF_MHz, SYSMENU_HANDL_CALIB_TRANSV_IF_3cm},
+    {"Tr QO100 RF kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_RF_kHz, SYSMENU_HANDL_CALIB_TRANSV_RF_QO100},
+    {"Tr QO100 RX IF kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_kHz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
+    {"Tr QO100 TX IF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_MHz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
 #endif
     {"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
     {"Calibrate reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_CALIBRATION_RESET},
@@ -1322,8 +1322,8 @@ const static struct sysmenu_item_handler sysmenu_swr_analyser_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_spectrum_handlers[] = {
     {"Spectrum START", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SPECTRUM_Start},
-    {"Begin, mHz", SYSMENU_UINT32, NULL, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
-    {"End, mHz", SYSMENU_UINT32, NULL, (uint32_t *)&TRX.SPEC_End, SYSMENU_HANDL_SPECTRUM_End},
+    {"Begin, MHz", SYSMENU_UINT32, NULL, (uint32_t *)&TRX.SPEC_Begin, SYSMENU_HANDL_SPECTRUM_Begin},
+    {"End, MHz", SYSMENU_UINT32, NULL, (uint32_t *)&TRX.SPEC_End, SYSMENU_HANDL_SPECTRUM_End},
     {"Top, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.SPEC_TopDBM, SYSMENU_HANDL_SPECTRUM_TopDBM},
     {"Bottom, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.SPEC_BottomDBM, SYSMENU_HANDL_SPECTRUM_BottomDBM},
 };
@@ -1350,14 +1350,14 @@ const static struct sysmenu_item_handler sysmenu_auto_calibration_handlers[] = {
 };
 
 const static struct sysmenu_item_handler sysmenu_time_beacons_handlers[] = {
-    {"JJY 40kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_40KHZ},   {"RTZ 50kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_50KHZ},
-    {"JJY 60kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_60KHZ},   {"MSF 60kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_60KHZ},
-    {"WWVB 60kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_60KHZ},  {"RBU 66.66kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_66_66KHZ},
-    {"HBG 75kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_75KHZ},   {"DCF77 77.5kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_77_5KHZ},
-    {"WWV 2.5MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_2_5MHZ}, {"RWM 4.996MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_4_996MHZ},
-    {"WWV 5MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_5MHZ},     {"RWM 9.996MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_9_996MHZ},
-    {"WWV 10MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_10MHZ},   {"RWM 14.996MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_14_996MHZ},
-    {"WWV 15MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_15MHZ},   {"WWV 20MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_20MHZ},
+    {"JJY 40kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_40kHz},   {"RTZ 50kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_50kHz},
+    {"JJY 60kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_60kHz},   {"MSF 60kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_60kHz},
+    {"WWVB 60kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_60kHz},  {"RBU 66.66kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_66_66kHz},
+    {"HBG 75kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_75kHz},   {"DCF77 77.5kHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_77_5kHz},
+    {"WWV 2.5MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_2_5MHz}, {"RWM 4.996MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_4_996MHz},
+    {"WWV 5MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_5MHz},     {"RWM 9.996MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_9_996MHz},
+    {"WWV 10MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_10MHz},   {"RWM 14.996MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_14_996MHz},
+    {"WWV 15MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_15MHz},   {"WWV 20MHz", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TIME_BEACON_20MHz},
 };
 
 const static struct sysmenu_item_handler sysmenu_services_handlers[] = {
@@ -1684,79 +1684,79 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction) {
 	TRX.FRQ_ENC_FAST_STEP = freq_steps[0];
 }
 
-static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_KHZ(int8_t direction) {
+static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_kHz(int8_t direction) {
 	const uint32_t wfm_freq_steps[] = {1, 2, 5, 10, 20, 25, 50, 100, 200, 500, 1000};
 
 	for (uint8_t i = 0; i < ARRLENTH(wfm_freq_steps); i++) {
-		if (TRX.FRQ_ENC_WFM_STEP_KHZ == wfm_freq_steps[i]) {
+		if (TRX.FRQ_ENC_WFM_STEP_kHz == wfm_freq_steps[i]) {
 			if (direction < 0) {
 				if (i > 0) {
-					TRX.FRQ_ENC_WFM_STEP_KHZ = wfm_freq_steps[i - 1];
+					TRX.FRQ_ENC_WFM_STEP_kHz = wfm_freq_steps[i - 1];
 				} else {
-					TRX.FRQ_ENC_WFM_STEP_KHZ = wfm_freq_steps[0];
+					TRX.FRQ_ENC_WFM_STEP_kHz = wfm_freq_steps[0];
 				}
 				return;
 			} else {
 				if (i < (ARRLENTH(wfm_freq_steps) - 1)) {
-					TRX.FRQ_ENC_WFM_STEP_KHZ = wfm_freq_steps[i + 1];
+					TRX.FRQ_ENC_WFM_STEP_kHz = wfm_freq_steps[i + 1];
 				} else {
-					TRX.FRQ_ENC_WFM_STEP_KHZ = wfm_freq_steps[ARRLENTH(wfm_freq_steps) - 1];
+					TRX.FRQ_ENC_WFM_STEP_kHz = wfm_freq_steps[ARRLENTH(wfm_freq_steps) - 1];
 				}
 				return;
 			}
 		}
 	}
-	TRX.FRQ_ENC_WFM_STEP_KHZ = wfm_freq_steps[0];
+	TRX.FRQ_ENC_WFM_STEP_kHz = wfm_freq_steps[0];
 }
 
-static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_KHZ(int8_t direction) {
+static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_kHz(int8_t direction) {
 	const float32_t fm_freq_steps[] = {0.1, 0.25, 0.5, 1, 2, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
 
 	for (uint8_t i = 0; i < ARRLENTH(fm_freq_steps); i++) {
-		if (TRX.FRQ_ENC_FM_STEP_KHZ == fm_freq_steps[i]) {
+		if (TRX.FRQ_ENC_FM_STEP_kHz == fm_freq_steps[i]) {
 			if (direction < 0) {
 				if (i > 0) {
-					TRX.FRQ_ENC_FM_STEP_KHZ = fm_freq_steps[i - 1];
+					TRX.FRQ_ENC_FM_STEP_kHz = fm_freq_steps[i - 1];
 				} else {
-					TRX.FRQ_ENC_FM_STEP_KHZ = fm_freq_steps[0];
+					TRX.FRQ_ENC_FM_STEP_kHz = fm_freq_steps[0];
 				}
 				return;
 			} else {
 				if (i < (ARRLENTH(fm_freq_steps) - 1)) {
-					TRX.FRQ_ENC_FM_STEP_KHZ = fm_freq_steps[i + 1];
+					TRX.FRQ_ENC_FM_STEP_kHz = fm_freq_steps[i + 1];
 				} else {
-					TRX.FRQ_ENC_FM_STEP_KHZ = fm_freq_steps[ARRLENTH(fm_freq_steps) - 1];
+					TRX.FRQ_ENC_FM_STEP_kHz = fm_freq_steps[ARRLENTH(fm_freq_steps) - 1];
 				}
 				return;
 			}
 		}
 	}
-	TRX.FRQ_ENC_FM_STEP_KHZ = fm_freq_steps[0];
+	TRX.FRQ_ENC_FM_STEP_kHz = fm_freq_steps[0];
 }
 
-static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_KHZ(int8_t direction) {
+static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz(int8_t direction) {
 	const float32_t am_freq_steps[] = {0.1, 0.25, 0.5, 1, 2, 2.5, 5, 7.5, 8.333, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
 
 	for (uint8_t i = 0; i < ARRLENTH(am_freq_steps); i++) {
-		if (TRX.FRQ_ENC_AM_STEP_KHZ == am_freq_steps[i]) {
+		if (TRX.FRQ_ENC_AM_STEP_kHz == am_freq_steps[i]) {
 			if (direction < 0) {
 				if (i > 0) {
-					TRX.FRQ_ENC_AM_STEP_KHZ = am_freq_steps[i - 1];
+					TRX.FRQ_ENC_AM_STEP_kHz = am_freq_steps[i - 1];
 				} else {
-					TRX.FRQ_ENC_AM_STEP_KHZ = am_freq_steps[0];
+					TRX.FRQ_ENC_AM_STEP_kHz = am_freq_steps[0];
 				}
 				return;
 			} else {
 				if (i < (ARRLENTH(am_freq_steps) - 1)) {
-					TRX.FRQ_ENC_AM_STEP_KHZ = am_freq_steps[i + 1];
+					TRX.FRQ_ENC_AM_STEP_kHz = am_freq_steps[i + 1];
 				} else {
-					TRX.FRQ_ENC_AM_STEP_KHZ = am_freq_steps[ARRLENTH(am_freq_steps) - 1];
+					TRX.FRQ_ENC_AM_STEP_kHz = am_freq_steps[ARRLENTH(am_freq_steps) - 1];
 				}
 				return;
 			}
 		}
 	}
-	TRX.FRQ_ENC_AM_STEP_KHZ = am_freq_steps[0];
+	TRX.FRQ_ENC_AM_STEP_kHz = am_freq_steps[0];
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER(int8_t direction) {
@@ -2324,7 +2324,7 @@ void SYSMENU_RX_IF_HOTKEY(void) {
 
 void SYSMENU_RX_SQUELCH_HOTKEY(void) {
 	SYSMENU_HANDL_RXMENU(0);
-	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "FM Squelch level, dbm");
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "FM Squelch level, dBm");
 	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
@@ -2694,12 +2694,12 @@ static void SYSMENU_HANDL_RX_AGC_Hold_Step_Down(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_RX_FMSquelch(int8_t direction) {
-	CurrentVFO->FM_SQL_threshold_dbm += direction;
-	TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
+	CurrentVFO->FM_SQL_threshold_dBm += direction;
+	TRX.FM_SQL_threshold_dBm_shadow = CurrentVFO->FM_SQL_threshold_dBm;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
+		TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dBm = CurrentVFO->FM_SQL_threshold_dBm;
 	}
 }
 
@@ -5334,7 +5334,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.rf_out_power_17m = 24;               // 17m
 		CALIBRATE.rf_out_power_15m = 24;               // 15m
 		CALIBRATE.rf_out_power_12m = 24;               // 12m
-		CALIBRATE.rf_out_power_cb = 24;                // 27mhz
+		CALIBRATE.rf_out_power_cb = 24;                // 27MHz
 		CALIBRATE.rf_out_power_10m = 24;               // 10m
 		CALIBRATE.rf_out_power_6m = 13;                // 6m
 		CALIBRATE.rf_out_power_4m = 13;                // 4m
@@ -5385,7 +5385,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.rf_out_power_17m = 40;           // 17m
 		CALIBRATE.rf_out_power_15m = 40;           // 15m
 		CALIBRATE.rf_out_power_12m = 40;           // 12m
-		CALIBRATE.rf_out_power_cb = 40;            // 27mhz
+		CALIBRATE.rf_out_power_cb = 40;            // 27MHz
 		CALIBRATE.rf_out_power_10m = 40;           // 10m
 		CALIBRATE.rf_out_power_6m = 40;            // 6m
 		CALIBRATE.rf_out_power_4m = 40;            // 4m
@@ -5458,7 +5458,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.rf_out_power_17m = 30;               // 17m
 		CALIBRATE.rf_out_power_15m = 35;               // 15m
 		CALIBRATE.rf_out_power_12m = 38;               // 12m
-		CALIBRATE.rf_out_power_cb = 40;                // 27mhz
+		CALIBRATE.rf_out_power_cb = 40;                // 27MHz
 		CALIBRATE.rf_out_power_10m = 40;               // 10m
 		CALIBRATE.rf_out_power_6m = 40;                // 6m
 		CALIBRATE.rf_out_power_4m = 40;                // 4m
@@ -5473,19 +5473,19 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5mH
 		CALIBRATE.RFU_BPF_0_END = 2500 * 1000;         //
-		CALIBRATE.RFU_BPF_1_START = 2500 * 1000;       // 2.5-4mHz
+		CALIBRATE.RFU_BPF_1_START = 2500 * 1000;       // 2.5-4MHz
 		CALIBRATE.RFU_BPF_1_END = 4000 * 1000;         //
-		CALIBRATE.RFU_BPF_2_START = 6000 * 1000;       // 6-7.3mHz
+		CALIBRATE.RFU_BPF_2_START = 6000 * 1000;       // 6-7.3MHz
 		CALIBRATE.RFU_BPF_2_END = 7300 * 1000;         //
-		CALIBRATE.RFU_BPF_3_START = 7300 * 1000;       // 7-12mHz
+		CALIBRATE.RFU_BPF_3_START = 7300 * 1000;       // 7-12MHz
 		CALIBRATE.RFU_BPF_3_END = 12000 * 1000;        //
-		CALIBRATE.RFU_BPF_4_START = 12000 * 1000;      // 12-14.5mHz
+		CALIBRATE.RFU_BPF_4_START = 12000 * 1000;      // 12-14.5MHz
 		CALIBRATE.RFU_BPF_4_END = 14500 * 1000;        //
-		CALIBRATE.RFU_BPF_5_START = 14500 * 1000;      // 14.5-21.5mHz
+		CALIBRATE.RFU_BPF_5_START = 14500 * 1000;      // 14.5-21.5MHz
 		CALIBRATE.RFU_BPF_5_END = 21500 * 1000;        //
-		CALIBRATE.RFU_BPF_6_START = 21500 * 1000;      // 21.5-30 mHz
+		CALIBRATE.RFU_BPF_6_START = 21500 * 1000;      // 21.5-30 MHz
 		CALIBRATE.RFU_BPF_6_END = 30000 * 1000;        //
-		CALIBRATE.RFU_BPF_7_START = 138 * 1000 * 1000; // 138-150mHz
+		CALIBRATE.RFU_BPF_7_START = 138 * 1000 * 1000; // 138-150MHz
 		CALIBRATE.RFU_BPF_7_END = 150 * 1000 * 1000;   //
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled
@@ -6924,142 +6924,142 @@ static void SYSMENU_HANDL_CALIB_ENABLE_70cm_band(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom(int8_t direction) {
-	CALIBRATE.Transverter_Custom_Offset_Mhz += direction;
-	if (CALIBRATE.Transverter_Custom_Offset_Mhz < 1) {
-		CALIBRATE.Transverter_Custom_Offset_Mhz = 1;
+	CALIBRATE.Transverter_Custom_Offset_MHz += direction;
+	if (CALIBRATE.Transverter_Custom_Offset_MHz < 1) {
+		CALIBRATE.Transverter_Custom_Offset_MHz = 1;
 	}
-	if (CALIBRATE.Transverter_Custom_Offset_Mhz > 750) {
-		CALIBRATE.Transverter_Custom_Offset_Mhz = 750;
+	if (CALIBRATE.Transverter_Custom_Offset_MHz > 750) {
+		CALIBRATE.Transverter_Custom_Offset_MHz = 750;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_70cm(int8_t direction) {
-	CALIBRATE.Transverter_70cm_RF_Mhz += direction;
-	if (CALIBRATE.Transverter_70cm_RF_Mhz < 1) {
-		CALIBRATE.Transverter_70cm_RF_Mhz = 1;
+	CALIBRATE.Transverter_70cm_RF_MHz += direction;
+	if (CALIBRATE.Transverter_70cm_RF_MHz < 1) {
+		CALIBRATE.Transverter_70cm_RF_MHz = 1;
 	}
-	if (CALIBRATE.Transverter_70cm_RF_Mhz > 15000) {
-		CALIBRATE.Transverter_70cm_RF_Mhz = 15000;
+	if (CALIBRATE.Transverter_70cm_RF_MHz > 15000) {
+		CALIBRATE.Transverter_70cm_RF_MHz = 15000;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_70cm(int8_t direction) {
-	CALIBRATE.Transverter_70cm_IF_Mhz += direction;
-	if (CALIBRATE.Transverter_70cm_IF_Mhz < 1) {
-		CALIBRATE.Transverter_70cm_IF_Mhz = 1;
+	CALIBRATE.Transverter_70cm_IF_MHz += direction;
+	if (CALIBRATE.Transverter_70cm_IF_MHz < 1) {
+		CALIBRATE.Transverter_70cm_IF_MHz = 1;
 	}
-	if (CALIBRATE.Transverter_70cm_IF_Mhz > 750) {
-		CALIBRATE.Transverter_70cm_IF_Mhz = 750;
+	if (CALIBRATE.Transverter_70cm_IF_MHz > 750) {
+		CALIBRATE.Transverter_70cm_IF_MHz = 750;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_23cm(int8_t direction) {
-	CALIBRATE.Transverter_23cm_RF_Mhz += direction;
-	if (CALIBRATE.Transverter_23cm_RF_Mhz < 1) {
-		CALIBRATE.Transverter_23cm_RF_Mhz = 1;
+	CALIBRATE.Transverter_23cm_RF_MHz += direction;
+	if (CALIBRATE.Transverter_23cm_RF_MHz < 1) {
+		CALIBRATE.Transverter_23cm_RF_MHz = 1;
 	}
-	if (CALIBRATE.Transverter_23cm_RF_Mhz > 15000) {
-		CALIBRATE.Transverter_23cm_RF_Mhz = 15000;
+	if (CALIBRATE.Transverter_23cm_RF_MHz > 15000) {
+		CALIBRATE.Transverter_23cm_RF_MHz = 15000;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_23cm(int8_t direction) {
-	CALIBRATE.Transverter_23cm_IF_Mhz += direction;
-	if (CALIBRATE.Transverter_23cm_IF_Mhz < 1) {
-		CALIBRATE.Transverter_23cm_IF_Mhz = 1;
+	CALIBRATE.Transverter_23cm_IF_MHz += direction;
+	if (CALIBRATE.Transverter_23cm_IF_MHz < 1) {
+		CALIBRATE.Transverter_23cm_IF_MHz = 1;
 	}
-	if (CALIBRATE.Transverter_23cm_IF_Mhz > 750) {
-		CALIBRATE.Transverter_23cm_IF_Mhz = 750;
+	if (CALIBRATE.Transverter_23cm_IF_MHz > 750) {
+		CALIBRATE.Transverter_23cm_IF_MHz = 750;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_13cm(int8_t direction) {
-	CALIBRATE.Transverter_13cm_RF_Mhz += direction;
-	if (CALIBRATE.Transverter_13cm_RF_Mhz < 1) {
-		CALIBRATE.Transverter_13cm_RF_Mhz = 1;
+	CALIBRATE.Transverter_13cm_RF_MHz += direction;
+	if (CALIBRATE.Transverter_13cm_RF_MHz < 1) {
+		CALIBRATE.Transverter_13cm_RF_MHz = 1;
 	}
-	if (CALIBRATE.Transverter_13cm_RF_Mhz > 15000) {
-		CALIBRATE.Transverter_13cm_RF_Mhz = 15000;
+	if (CALIBRATE.Transverter_13cm_RF_MHz > 15000) {
+		CALIBRATE.Transverter_13cm_RF_MHz = 15000;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_13cm(int8_t direction) {
-	CALIBRATE.Transverter_13cm_IF_Mhz += direction;
-	if (CALIBRATE.Transverter_13cm_IF_Mhz < 1) {
-		CALIBRATE.Transverter_13cm_IF_Mhz = 1;
+	CALIBRATE.Transverter_13cm_IF_MHz += direction;
+	if (CALIBRATE.Transverter_13cm_IF_MHz < 1) {
+		CALIBRATE.Transverter_13cm_IF_MHz = 1;
 	}
-	if (CALIBRATE.Transverter_13cm_IF_Mhz > 750) {
-		CALIBRATE.Transverter_13cm_IF_Mhz = 750;
+	if (CALIBRATE.Transverter_13cm_IF_MHz > 750) {
+		CALIBRATE.Transverter_13cm_IF_MHz = 750;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_6cm(int8_t direction) {
-	CALIBRATE.Transverter_6cm_RF_Mhz += direction;
-	if (CALIBRATE.Transverter_6cm_RF_Mhz < 1) {
-		CALIBRATE.Transverter_6cm_RF_Mhz = 1;
+	CALIBRATE.Transverter_6cm_RF_MHz += direction;
+	if (CALIBRATE.Transverter_6cm_RF_MHz < 1) {
+		CALIBRATE.Transverter_6cm_RF_MHz = 1;
 	}
-	if (CALIBRATE.Transverter_6cm_RF_Mhz > 15000) {
-		CALIBRATE.Transverter_6cm_RF_Mhz = 15000;
+	if (CALIBRATE.Transverter_6cm_RF_MHz > 15000) {
+		CALIBRATE.Transverter_6cm_RF_MHz = 15000;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_6cm(int8_t direction) {
-	CALIBRATE.Transverter_6cm_IF_Mhz += direction;
-	if (CALIBRATE.Transverter_6cm_IF_Mhz < 1) {
-		CALIBRATE.Transverter_6cm_IF_Mhz = 1;
+	CALIBRATE.Transverter_6cm_IF_MHz += direction;
+	if (CALIBRATE.Transverter_6cm_IF_MHz < 1) {
+		CALIBRATE.Transverter_6cm_IF_MHz = 1;
 	}
-	if (CALIBRATE.Transverter_6cm_IF_Mhz > 750) {
-		CALIBRATE.Transverter_6cm_IF_Mhz = 750;
+	if (CALIBRATE.Transverter_6cm_IF_MHz > 750) {
+		CALIBRATE.Transverter_6cm_IF_MHz = 750;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_3cm(int8_t direction) {
-	CALIBRATE.Transverter_3cm_RF_Mhz += direction;
-	if (CALIBRATE.Transverter_3cm_RF_Mhz < 1) {
-		CALIBRATE.Transverter_3cm_RF_Mhz = 1;
+	CALIBRATE.Transverter_3cm_RF_MHz += direction;
+	if (CALIBRATE.Transverter_3cm_RF_MHz < 1) {
+		CALIBRATE.Transverter_3cm_RF_MHz = 1;
 	}
-	if (CALIBRATE.Transverter_3cm_RF_Mhz > 15000) {
-		CALIBRATE.Transverter_3cm_RF_Mhz = 15000;
+	if (CALIBRATE.Transverter_3cm_RF_MHz > 15000) {
+		CALIBRATE.Transverter_3cm_RF_MHz = 15000;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_3cm(int8_t direction) {
-	CALIBRATE.Transverter_3cm_IF_Mhz += direction;
-	if (CALIBRATE.Transverter_3cm_IF_Mhz < 1) {
-		CALIBRATE.Transverter_3cm_IF_Mhz = 1;
+	CALIBRATE.Transverter_3cm_IF_MHz += direction;
+	if (CALIBRATE.Transverter_3cm_IF_MHz < 1) {
+		CALIBRATE.Transverter_3cm_IF_MHz = 1;
 	}
-	if (CALIBRATE.Transverter_3cm_IF_Mhz > 750) {
-		CALIBRATE.Transverter_3cm_IF_Mhz = 750;
+	if (CALIBRATE.Transverter_3cm_IF_MHz > 750) {
+		CALIBRATE.Transverter_3cm_IF_MHz = 750;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_QO100(int8_t direction) {
-	CALIBRATE.Transverter_QO100_RF_Khz += direction;
-	if (CALIBRATE.Transverter_QO100_RF_Khz < 1) {
-		CALIBRATE.Transverter_QO100_RF_Khz = 1;
+	CALIBRATE.Transverter_QO100_RF_kHz += direction;
+	if (CALIBRATE.Transverter_QO100_RF_kHz < 1) {
+		CALIBRATE.Transverter_QO100_RF_kHz = 1;
 	}
-	if (CALIBRATE.Transverter_QO100_RF_Khz > 15000000) {
-		CALIBRATE.Transverter_QO100_RF_Khz = 15000000;
+	if (CALIBRATE.Transverter_QO100_RF_kHz > 15000000) {
+		CALIBRATE.Transverter_QO100_RF_kHz = 15000000;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100(int8_t direction) {
-	CALIBRATE.Transverter_QO100_IF_RX_Khz += direction;
-	if (CALIBRATE.Transverter_QO100_IF_RX_Khz < 1) {
-		CALIBRATE.Transverter_QO100_IF_RX_Khz = 1;
+	CALIBRATE.Transverter_QO100_IF_RX_kHz += direction;
+	if (CALIBRATE.Transverter_QO100_IF_RX_kHz < 1) {
+		CALIBRATE.Transverter_QO100_IF_RX_kHz = 1;
 	}
-	if (CALIBRATE.Transverter_QO100_IF_RX_Khz > 750000) {
-		CALIBRATE.Transverter_QO100_IF_RX_Khz = 750000;
+	if (CALIBRATE.Transverter_QO100_IF_RX_kHz > 750000) {
+		CALIBRATE.Transverter_QO100_IF_RX_kHz = 750000;
 	}
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100(int8_t direction) {
-	CALIBRATE.Transverter_QO100_IF_TX_Mhz += direction;
-	if (CALIBRATE.Transverter_QO100_IF_TX_Mhz < 1) {
-		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 1;
+	CALIBRATE.Transverter_QO100_IF_TX_MHz += direction;
+	if (CALIBRATE.Transverter_QO100_IF_TX_MHz < 1) {
+		CALIBRATE.Transverter_QO100_IF_TX_MHz = 1;
 	}
-	if (CALIBRATE.Transverter_QO100_IF_TX_Mhz > 750) {
-		CALIBRATE.Transverter_QO100_IF_TX_Mhz = 750;
+	if (CALIBRATE.Transverter_QO100_IF_TX_MHz > 750) {
+		CALIBRATE.Transverter_QO100_IF_TX_MHz = 750;
 	}
 }
 
@@ -7476,72 +7476,72 @@ static void SYSMENU_HANDL_TIME_BEACON(int8_t direction) {
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
-static void SYSMENU_HANDL_TIME_BEACON_40KHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_40kHz(int8_t direction) {
 	TRX_setFrequency(40000, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_50KHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_50kHz(int8_t direction) {
 	TRX_setFrequency(50000, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_60KHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_60kHz(int8_t direction) {
 	TRX_setFrequency(60000, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_66_66KHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_66_66kHz(int8_t direction) {
 	TRX_setFrequency(66660, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_75KHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_75kHz(int8_t direction) {
 	TRX_setFrequency(75000, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_77_5KHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_77_5kHz(int8_t direction) {
 	TRX_setFrequency(77500, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_2_5MHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_2_5MHz(int8_t direction) {
 	TRX_setFrequency(2500000, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_4_996MHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_4_996MHz(int8_t direction) {
 	TRX_setFrequency(4996000, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_5MHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_5MHz(int8_t direction) {
 	TRX_setFrequency(5000000, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_9_996MHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_9_996MHz(int8_t direction) {
 	TRX_setFrequency(9996000, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_10MHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_10MHz(int8_t direction) {
 	TRX_setFrequency(10000000, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_14_996MHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_14_996MHz(int8_t direction) {
 	TRX_setFrequency(14996000, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_15MHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_15MHz(int8_t direction) {
 	TRX_setFrequency(15000000, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
-static void SYSMENU_HANDL_TIME_BEACON_20MHZ(int8_t direction) {
+static void SYSMENU_HANDL_TIME_BEACON_20MHz(int8_t direction) {
 	TRX_setFrequency(20000000, CurrentVFO);
 	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();

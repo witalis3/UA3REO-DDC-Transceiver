@@ -14,7 +14,7 @@ typedef struct {
 	char field1[14];
 	char field2[14];
 	char field3[7];
-	// int freq_hz;
+	// int freq_Hz;
 	// char decode_time[10];
 	int16_t sync_score;
 	int16_t snr;
@@ -31,7 +31,7 @@ typedef struct {
   char call[7];
   int distance;
   int snr;
-  int freq_hz;
+  int freq_Hz;
 } CQ_Station;*/
 
 void save_Answer_CQ_List(void);

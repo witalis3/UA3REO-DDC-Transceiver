@@ -51,7 +51,7 @@ void LCDDriver_Init(void) {
 	HAL_Delay(1);
 	LCDDriver_writeReg(LCD_RA8875_PLLC2, LCD_RA8875_PLLC2_DIV2); // divider2
 	HAL_Delay(1);
-	// SYS_CLK = FIN(25mhz) * ( LCD_RA8875_PLLC1_PLLDIV1[4:0] + 1 ) / (( LCD_RA8875_PLLC1_PLLDIV1[7:7] + 1 ) * ( 2 ^ LCD_RA8875_PLLC2[2:0] ))
+	// SYS_CLK = FIN(25MHz) * ( LCD_RA8875_PLLC1_PLLDIV1[4:0] + 1 ) / (( LCD_RA8875_PLLC1_PLLDIV1[7:7] + 1 ) * ( 2 ^ LCD_RA8875_PLLC2[2:0] ))
 	HAL_Delay(200); // for pll stability
 
 	// Software reset

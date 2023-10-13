@@ -835,19 +835,19 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_SQL) // SQL
 	{
-		CurrentVFO->FM_SQL_threshold_dbm += direction * 1;
-		TRX.FM_SQL_threshold_dbm_shadow = CurrentVFO->FM_SQL_threshold_dbm;
+		CurrentVFO->FM_SQL_threshold_dBm += direction * 1;
+		TRX.FM_SQL_threshold_dBm_shadow = CurrentVFO->FM_SQL_threshold_dBm;
 
-		if (CurrentVFO->FM_SQL_threshold_dbm > 0) {
-			CurrentVFO->FM_SQL_threshold_dbm = 0;
+		if (CurrentVFO->FM_SQL_threshold_dBm > 0) {
+			CurrentVFO->FM_SQL_threshold_dBm = 0;
 		}
-		if (CurrentVFO->FM_SQL_threshold_dbm < -126) {
-			CurrentVFO->FM_SQL_threshold_dbm = -126;
+		if (CurrentVFO->FM_SQL_threshold_dBm < -126) {
+			CurrentVFO->FM_SQL_threshold_dBm = -126;
 		}
 
 		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 		if (band >= 0) {
-			TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
+			TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dBm = CurrentVFO->FM_SQL_threshold_dBm;
 		}
 
 		LCD_UpdateQuery.StatusInfoBarRedraw = true;

@@ -532,7 +532,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, BPF_A);    // BPF_A
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, BPF_B);    // BPF_B
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, !BPF_OE1); // BPF_OE1
-	// 11 - 48khz 01 - 96khz 10 - 192khz 00 - 384khz IQ speed
+	// 11 - 48kHz 01 - 96kHz 10 - 192kHz 00 - 384kHz IQ speed
 	switch (TRX_GetRXSampleRateENUM) {
 	case TRX_SAMPLERATE_K48:
 		bitWrite(FPGA_fpgadata_out_tmp8, 6, 1);

@@ -60,11 +60,11 @@ static void SNAP_Process() {
 	arm_sort_f32(&SNAP_SortInstance, SNAP_buffer, SNAP_buffer_tmp, FFT_SIZE);
 
 	float32_t noise_level = SNAP_buffer_tmp[(uint32_t)(SNAP_NOISE_FLOOR * (float32_t)FFT_SIZE)];
-	float32_t hz_in_bin = (float32_t)FFT_current_spectrum_width_hz / (float32_t)FFT_SIZE;
+	float32_t Hz_in_bin = (float32_t)FFT_current_spectrum_width_Hz / (float32_t)FFT_SIZE;
 
 	uint32_t bandwidth_bin_start = 0;
 	uint32_t bandwidth_bin_end = 0;
-	uint32_t bins_in_bandwidth = (float32_t)CurrentVFO->LPF_RX_Filter_Width / hz_in_bin;
+	uint32_t bins_in_bandwidth = (float32_t)CurrentVFO->LPF_RX_Filter_Width / Hz_in_bin;
 
 	if (SNAP_process_mode == 0) { // unidirect
 		bandwidth_bin_start = (FFT_SIZE / 2) - (bins_in_bandwidth / 2);
@@ -78,7 +78,7 @@ static void SNAP_Process() {
 		bandwidth_bin_count = 1;
 	}
 
-	uint64_t fft_freq_start = (float64_t)CurrentVFO->Freq - (float64_t)FFT_current_spectrum_width_hz / 2.0;
+	uint64_t fft_freq_start = (float64_t)CurrentVFO->Freq - (float64_t)FFT_current_spectrum_width_Hz / 2.0;
 	float32_t maxAmplValue;
 	uint32_t maxAmplIndex;
 	float32_t signal_snr = 0;
@@ -88,7 +88,7 @@ static void SNAP_Process() {
 	if (SNAP_process_mode == 0) { // unidirect
 		arm_max_f32(&SNAP_buffer[bandwidth_bin_start], bandwidth_bin_count, &maxAmplValue, &maxAmplIndex);
 		signal_snr = rate2dbP(maxAmplValue / noise_level);
-		target_freq = fft_freq_start + ((bandwidth_bin_start + maxAmplIndex) * hz_in_bin);
+		target_freq = fft_freq_start + ((bandwidth_bin_start + maxAmplIndex) * Hz_in_bin);
 	}
 
 	// search in all FFT (nearest)
@@ -101,7 +101,7 @@ static void SNAP_Process() {
 
 				arm_max_f32(&SNAP_buffer[allfft_bin_start], allfft_bin_count, &maxAmplValue, &maxAmplIndex);
 				signal_snr = rate2dbP(maxAmplValue / noise_level);
-				target_freq = fft_freq_start + ((allfft_bin_start + maxAmplIndex) * hz_in_bin);
+				target_freq = fft_freq_start + ((allfft_bin_start + maxAmplIndex) * Hz_in_bin);
 
 				if (signal_snr >= SNAP_BW_SNR_AUTO_THRESHOLD) {
 					break;
@@ -117,7 +117,7 @@ static void SNAP_Process() {
 
 				arm_max_f32(&SNAP_buffer[allfft_bin_start], allfft_bin_count, &maxAmplValue, &maxAmplIndex);
 				signal_snr = rate2dbP(maxAmplValue / noise_level);
-				target_freq = fft_freq_start + ((allfft_bin_start + maxAmplIndex) * hz_in_bin);
+				target_freq = fft_freq_start + ((allfft_bin_start + maxAmplIndex) * Hz_in_bin);
 
 				if (signal_snr >= SNAP_BW_SNR_AUTO_THRESHOLD) {
 					break;
@@ -133,7 +133,7 @@ static void SNAP_Process() {
 
 				arm_max_f32(&SNAP_buffer[allfft_bin_start], allfft_bin_count, &maxAmplValue, &maxAmplIndex);
 				signal_snr = rate2dbP(maxAmplValue / noise_level);
-				target_freq = fft_freq_start + ((allfft_bin_start + maxAmplIndex) * hz_in_bin);
+				target_freq = fft_freq_start + ((allfft_bin_start + maxAmplIndex) * Hz_in_bin);
 
 				if (signal_snr >= SNAP_BW_SNR_AUTO_THRESHOLD) {
 					break;
@@ -180,6 +180,6 @@ static void SNAP_Process() {
 	}
 
 	println("NOISE: ", (double)noise_level, " MAX: ", (double)maxAmplValue, " SNR: ", (double)signal_snr);
-	println("INDEX: ", maxAmplIndex, " HZ/BIN: ", (double)hz_in_bin, " TARGET: ", target_freq, " OK: ", (uint8_t)result_ok);
+	println("INDEX: ", maxAmplIndex, " Hz/BIN: ", (double)Hz_in_bin, " TARGET: ", target_freq, " OK: ", (uint8_t)result_ok);
 	println("");
 }

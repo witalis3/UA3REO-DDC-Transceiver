@@ -93,7 +93,7 @@ static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size);          
 static void doRX_SMETER(AUDIO_PROC_RX_NUM rx_id, float32_t *buff, uint16_t size, bool if_gained); // s-meter
 static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size);                             // copy I to Q channel
 static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm,
-                         float32_t dbm);                         // FM demodulator
+                         float32_t dBm);                         // FM demodulator
 static void ModulateFM(uint16_t size, float32_t amplitude);      // FM modulator
 static void doRX_EQ(uint16_t size, uint8_t mode);                // receiver equalizer
 static void doMIC_EQ(uint16_t size, uint8_t mode);               // microphone equalizer
@@ -368,7 +368,7 @@ void processRxAudio(void) {
 	case TRX_MODE_NFM:
 		doRX_LPF_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
-		DemodulateFM(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, false, TRX_RX1_dBm); // 48khz iq
+		DemodulateFM(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, false, TRX_RX1_dBm); // 48kHz iq
 		doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_HPF_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_LPF2_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -1892,10 +1892,10 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 }
 
 // FM demodulator
-static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm, float32_t dbm) {
+static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm, float32_t dBm) {
 	demod_fm_instance *DFM = &DFM_RX1;
 	bool sql_enabled = CurrentVFO->SQL;
-	int8_t FM_SQL_threshold_dbm = CurrentVFO->FM_SQL_threshold_dbm;
+	int8_t FM_SQL_threshold_dBm = CurrentVFO->FM_SQL_threshold_dBm;
 	const arm_biquad_cascade_df2T_instance_f32 *SFM_Pilot_Filter = &SFM_RX1_Pilot_Filter;
 	const arm_biquad_cascade_df2T_instance_f32 *SFM_Audio_Filter = &SFM_RX1_Audio_Filter;
 
@@ -1904,7 +1904,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 #if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2) {
 		DFM = &DFM_RX2;
-		FM_SQL_threshold_dbm = SecondaryVFO->FM_SQL_threshold_dbm;
+		FM_SQL_threshold_dBm = SecondaryVFO->FM_SQL_threshold_dBm;
 		sql_enabled = SecondaryVFO->SQL;
 		SFM_Pilot_Filter = &SFM_RX2_Pilot_Filter;
 		SFM_Audio_Filter = &SFM_RX2_Audio_Filter;
@@ -1912,11 +1912,11 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 #endif
 
 	// *** Squelch Processing ***
-	if (!DFM->squelchSuggested && FM_SQL_threshold_dbm > dbm) {
+	if (!DFM->squelchSuggested && FM_SQL_threshold_dBm > dBm) {
 
 		DFM->squelchSuggested = true; // yes, close the squelch
 		DFM->squelchSuggested_starttime = HAL_GetTick();
-	} else if (DFM->squelchSuggested && FM_SQL_threshold_dbm <= dbm) {
+	} else if (DFM->squelchSuggested && FM_SQL_threshold_dBm <= dBm) {
 		DFM->squelchSuggested = false; //  yes, open the squelch
 		DFM->squelchSuggested_starttime = HAL_GetTick();
 	}

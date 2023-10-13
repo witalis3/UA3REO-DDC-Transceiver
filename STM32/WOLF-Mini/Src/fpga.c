@@ -416,7 +416,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 		TCXO_frequency_calculated = CALIBRATE.TCXO_frequency;
 		MAX_ChargePump_Freq_calculated = CALIBRATE.MAX_ChargePump_Freq;
 
-		const uint32_t VCXO_Freq_Khz = ADC_CLOCK / 1000;
+		const uint32_t VCXO_Freq_kHz = ADC_CLOCK / 1000;
 
 		for (uint16_t divider = 2; divider < 4096; divider++) {
 			uint16_t mod_tcxo = CALIBRATE.TCXO_frequency % divider;
@@ -429,14 +429,14 @@ static inline void FPGA_fpgadata_sendparam(void) {
 				continue;
 			}
 
-			uint16_t mod_vcxo = VCXO_Freq_Khz % TCXO_PWM_Frequency;
+			uint16_t mod_vcxo = VCXO_Freq_kHz % TCXO_PWM_Frequency;
 			if (mod_vcxo > 0) {
 				continue;
 			}
 
 			TCXO_Divider = divider - 1;
-			VCXO_Divider = VCXO_Freq_Khz / TCXO_PWM_Frequency - 1;
-			println("Dividers calculated - TCXO: ", TCXO_Divider + 1, " VCXO: ", VCXO_Divider + 1, " PWM, khz: ", TCXO_PWM_Frequency);
+			VCXO_Divider = VCXO_Freq_kHz / TCXO_PWM_Frequency - 1;
+			println("Dividers calculated - TCXO: ", TCXO_Divider + 1, " VCXO: ", VCXO_Divider + 1, " PWM, kHz: ", TCXO_PWM_Frequency);
 			break;
 		}
 	}
@@ -474,7 +474,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 	bitWrite(FPGA_fpgadata_out_tmp8, 3, TRX_DAC_HP2);
 	bitWrite(FPGA_fpgadata_out_tmp8, 4, TRX_DAC_X4);
 	bitWrite(FPGA_fpgadata_out_tmp8, 5, TRX_DCDC_Freq);
-	// 11 - 48khz 01 - 96khz 10 - 192khz 00 - 384khz IQ speed
+	// 11 - 48kHz 01 - 96kHz 10 - 192kHz 00 - 384kHz IQ speed
 	switch (TRX_GetRXSampleRateENUM) {
 	case TRX_SAMPLERATE_K48:
 		bitWrite(FPGA_fpgadata_out_tmp8, 6, 1);

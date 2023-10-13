@@ -211,14 +211,14 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		HAL_GPIO_WritePin(BPF_OE1_GPIO_Port, BPF_OE1_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(BPF_OE2_GPIO_Port, BPF_OE2_Pin, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(BPF_OE3_GPIO_Port, BPF_OE3_Pin, GPIO_PIN_RESET);
-	} else if (bpf == 8 || (TRX.Dual_RX && !dualrx_hpf_disabled)) // HPF 60+mHz
+	} else if (bpf == 8 || (TRX.Dual_RX && !dualrx_hpf_disabled)) // HPF 60+MHz
 	{
 		HAL_GPIO_WritePin(BPF_A_GPIO_Port, BPF_A_Pin, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(BPF_B_GPIO_Port, BPF_B_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(BPF_OE1_GPIO_Port, BPF_OE1_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(BPF_OE2_GPIO_Port, BPF_OE2_Pin, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(BPF_OE3_GPIO_Port, BPF_OE3_Pin, GPIO_PIN_RESET);
-	} else if (bpf == 7 && !dualrx_bpf_disabled) // 135-150mHz
+	} else if (bpf == 7 && !dualrx_bpf_disabled) // 135-150MHz
 	{
 		HAL_GPIO_WritePin(BPF_A_GPIO_Port, BPF_A_Pin, GPIO_PIN_RESET);
 		HAL_GPIO_WritePin(BPF_B_GPIO_Port, BPF_B_Pin, GPIO_PIN_RESET);

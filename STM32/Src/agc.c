@@ -79,11 +79,11 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		AGC_RX_magnitude = 0.001f;
 	}
 	float32_t full_scale_rate = AGC_RX_magnitude / FLOAT_FULL_SCALE_POW;
-	float32_t AGC_RX_dbFS = rate2dbV(full_scale_rate);
-	if (AGC->AGC_RX_dbFS_old > AGC_RX_dbFS) {
-		AGC_RX_dbFS = AGC->AGC_RX_dbFS_old;
+	float32_t AGC_RX_dBFS = rate2dbV(full_scale_rate);
+	if (AGC->AGC_RX_dBFS_old > AGC_RX_dBFS) {
+		AGC_RX_dBFS = AGC->AGC_RX_dBFS_old;
 	}
-	AGC->AGC_RX_dbFS_old = rate2dbV(full_scale_rate);
+	AGC->AGC_RX_dBFS_old = rate2dbV(full_scale_rate);
 
 	// gain target
 	float32_t gain_target = (float32_t)TRX.AGC_GAIN_TARGET;
@@ -93,7 +93,7 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 
 	// move the gain one step
 	if (!CODEC_Muting && !VAD_Muting) {
-		float32_t diff = (gain_target - (AGC_RX_dbFS + AGC->need_gain_db));
+		float32_t diff = (gain_target - (AGC_RX_dBFS + AGC->need_gain_dB));
 
 		// hold time limiter
 		if (fabsf(diff) < (float32_t)TRX.RX_AGC_Hold_Limiter && AGC->hold_time < TRX.RX_AGC_Hold_Time) {
@@ -106,7 +106,7 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		// move
 		if (diff > 0) {
 			if ((HAL_GetTick() - AGC->last_agc_peak_time) > AGC->hold_time) {
-				AGC->need_gain_db += diff / RX_AGC_STEPSIZE_UP;
+				AGC->need_gain_dB += diff / RX_AGC_STEPSIZE_UP;
 
 				if (diff > (float32_t)TRX.RX_AGC_Hold_Limiter && AGC->hold_time > 0) {
 					if (AGC->hold_time >= TRX.RX_AGC_Hold_Step_Down) {
@@ -117,36 +117,36 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 				}
 			}
 		} else {
-			AGC->need_gain_db += diff / RX_AGC_STEPSIZE_DOWN;
+			AGC->need_gain_dB += diff / RX_AGC_STEPSIZE_DOWN;
 			AGC->last_agc_peak_time = HAL_GetTick();
 		}
 
 		// overload (clipping), sharply reduce the gain
-		if ((AGC_RX_dbFS + AGC->need_gain_db) > (gain_target + AGC_CLIPPING)) {
-			AGC->need_gain_db = gain_target - AGC_RX_dbFS;
+		if ((AGC_RX_dBFS + AGC->need_gain_dB) > (gain_target + AGC_CLIPPING)) {
+			AGC->need_gain_dB = gain_target - AGC_RX_dBFS;
 			println("AGC overload ", (double)diff);
 		}
 	}
 
 	// AGC off, not adjustable
 	if (rx_id == AUDIO_RX1 && !CurrentVFO->AGC) {
-		AGC->need_gain_db = 1.0f;
+		AGC->need_gain_dB = 1.0f;
 	}
 
 #if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2 && !SecondaryVFO->AGC) {
-		AGC->need_gain_db = 1.0f;
+		AGC->need_gain_dB = 1.0f;
 	}
 #endif
 
 	// gain limitation
-	float32_t current_need_gain = AGC->need_gain_db;
-	if (AGC->need_gain_db > (float32_t)TRX.RX_AGC_Max_gain) {
+	float32_t current_need_gain = AGC->need_gain_dB;
+	if (AGC->need_gain_dB > (float32_t)TRX.RX_AGC_Max_gain) {
 		if (!TRX.AGC_Threshold || mode == TRX_MODE_DIGI_L || mode == TRX_MODE_DIGI_U || mode == TRX_MODE_RTTY || nr_type != 0) {
 			current_need_gain = (float32_t)TRX.RX_AGC_Max_gain;
 		} else {
 			const float32_t max_threshold_diff = 10.0f;
-			float32_t threshold_diff = AGC->need_gain_db - (float32_t)TRX.RX_AGC_Max_gain;
+			float32_t threshold_diff = AGC->need_gain_dB - (float32_t)TRX.RX_AGC_Max_gain;
 			if (threshold_diff > max_threshold_diff) {
 				threshold_diff = max_threshold_diff;
 			}
@@ -155,9 +155,9 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 		}
 	}
 
-	// println("HOLD: ", AGC->hold_time, " GAIN: ", AGC->need_gain_db, " DIFF: ", diff);
+	// println("HOLD: ", AGC->hold_time, " GAIN: ", AGC->need_gain_dB, " DIFF: ", diff);
 	AGC_SCREEN_maxGain = (float32_t)TRX.RX_AGC_Max_gain;
-	AGC_SCREEN_currentGain = AGC->need_gain_db > AGC_SCREEN_maxGain ? AGC_SCREEN_maxGain : current_need_gain;
+	AGC_SCREEN_currentGain = AGC->need_gain_dB > AGC_SCREEN_maxGain ? AGC_SCREEN_maxGain : current_need_gain;
 
 	// Muting if need
 	if (CODEC_Muting || VAD_Muting) {
@@ -165,15 +165,15 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	}
 
 	// apply gain
-	// println("cur agc: ", AGC_RX_dbFS, " need: ", AGC->need_gain_db, " cur: ", current_need_gain, " old: ", AGC->need_gain_db_old);
-	if (fabsf(AGC->need_gain_db_old - current_need_gain) >= 1.0f) // gain changed
+	// println("cur agc: ", AGC_RX_dBFS, " need: ", AGC->need_gain_dB, " cur: ", current_need_gain, " old: ", AGC->need_gain_dB_old);
+	if (fabsf(AGC->need_gain_dB_old - current_need_gain) >= 1.0f) // gain changed
 	{
 		float32_t gainApplyStep = 0;
-		if (AGC->need_gain_db_old > current_need_gain) {
-			gainApplyStep = -(AGC->need_gain_db_old - current_need_gain) / (float32_t)blockSize;
+		if (AGC->need_gain_dB_old > current_need_gain) {
+			gainApplyStep = -(AGC->need_gain_dB_old - current_need_gain) / (float32_t)blockSize;
 		}
-		if (AGC->need_gain_db_old < current_need_gain) {
-			gainApplyStep = (current_need_gain - AGC->need_gain_db_old) / (float32_t)blockSize;
+		if (AGC->need_gain_dB_old < current_need_gain) {
+			gainApplyStep = (current_need_gain - AGC->need_gain_dB_old) / (float32_t)blockSize;
 		}
 		float32_t val_prev = 0.0f;
 		bool zero_cross = false;
@@ -184,20 +184,20 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 				zero_cross = true;
 			}
 			if (zero_cross) {
-				AGC->need_gain_db_old += gainApplyStep;
+				AGC->need_gain_dB_old += gainApplyStep;
 			}
 
-			agcBuffer_i[i] = agcBuffer_i[i] * db2rateV(AGC->need_gain_db_old);
+			agcBuffer_i[i] = agcBuffer_i[i] * db2rateV(AGC->need_gain_dB_old);
 			if (stereo) {
-				agcBuffer_q[i] = agcBuffer_q[i] * db2rateV(AGC->need_gain_db_old);
+				agcBuffer_q[i] = agcBuffer_q[i] * db2rateV(AGC->need_gain_dB_old);
 			}
 			val_prev = agcBuffer_i[i];
 		}
 	} else // gain did not change, apply gain across all samples
 	{
-		arm_scale_f32(agcBuffer_i, db2rateV(AGC->need_gain_db_old), agcBuffer_i, blockSize);
+		arm_scale_f32(agcBuffer_i, db2rateV(AGC->need_gain_dB_old), agcBuffer_i, blockSize);
 		if (stereo) {
-			arm_scale_f32(agcBuffer_q, db2rateV(AGC->need_gain_db_old), agcBuffer_q, blockSize);
+			arm_scale_f32(agcBuffer_q, db2rateV(AGC->need_gain_dB_old), agcBuffer_q, blockSize);
 		}
 	}
 }
@@ -251,12 +251,12 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_r
 		AGC_TX_I_magnitude = 0.000001f;
 	}
 
-	float32_t AGC_TX_dbFS = rate2dbV(AGC_TX_I_magnitude);
-	float32_t target_db = rate2dbV(target_rate);
+	float32_t AGC_TX_dBFS = rate2dbV(AGC_TX_I_magnitude);
+	float32_t target_dB = rate2dbV(target_rate);
 
 	// CESSB AGC from power
 	if (TRX.TX_CESSB) {
-		target_db = rate2dbP(target_rate);
+		target_dB = rate2dbP(target_rate);
 
 		arm_rms_f32(agcBuffer_i, blockSize, &AGC_TX_I_magnitude);
 
@@ -264,15 +264,15 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_r
 			AGC_TX_I_magnitude = 0.001f;
 		}
 		float32_t full_scale_rate = AGC_TX_I_magnitude / FLOAT_FULL_SCALE_POW;
-		AGC_TX_dbFS = rate2dbP(full_scale_rate);
+		AGC_TX_dBFS = rate2dbP(full_scale_rate);
 	}
 
-	if (AGC_TX_dbFS < -100.0f) {
-		AGC_TX_dbFS = -100.0f;
+	if (AGC_TX_dBFS < -100.0f) {
+		AGC_TX_dBFS = -100.0f;
 	}
 
 	// mic noise threshold (gate), below it - mute
-	if (AGC_TX_dbFS < TRX.MIC_NOISE_GATE && TRX.MIC_NOISE_GATE > -120) { //-120db - disabled
+	if (AGC_TX_dBFS < TRX.MIC_NOISE_GATE && TRX.MIC_NOISE_GATE > -120) { //-120dB - disabled
 		target_rate = 0.0f;
 		TRX_MIC_BELOW_NOISEGATE = true;
 	} else {
@@ -281,16 +281,16 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_r
 
 	// move the gain one step
 	if (target_rate > 0.0f) {
-		float32_t diff = (target_db - (AGC_TX_dbFS + AGC_TX.need_gain_db));
+		float32_t diff = (target_dB - (AGC_TX_dBFS + AGC_TX.need_gain_dB));
 		if (diff > 0) {
-			AGC_TX.need_gain_db += diff / TX_AGC_STEPSIZE_UP;
+			AGC_TX.need_gain_dB += diff / TX_AGC_STEPSIZE_UP;
 		} else {
-			AGC_TX.need_gain_db += diff / TX_AGC_STEPSIZE_DOWN;
+			AGC_TX.need_gain_dB += diff / TX_AGC_STEPSIZE_DOWN;
 		}
 
 		// overload (clipping), sharply reduce the gain
-		if ((AGC_TX_dbFS + AGC_TX.need_gain_db) > target_db) {
-			AGC_TX.need_gain_db = target_db - AGC_TX_dbFS;
+		if ((AGC_TX_dBFS + AGC_TX.need_gain_dB) > target_dB) {
+			AGC_TX.need_gain_dB = target_dB - AGC_TX_dBFS;
 			// sendToDebug_float32(diff,false);
 		}
 	}
@@ -301,8 +301,8 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_r
 	case TRX_MODE_WFM:
 	case TRX_MODE_AM:
 	case TRX_MODE_SAM:
-		if (AGC_TX.need_gain_db > TRX.TX_Compressor_maxgain_AMFM) {
-			AGC_TX.need_gain_db = TRX.TX_Compressor_maxgain_AMFM;
+		if (AGC_TX.need_gain_dB > TRX.TX_Compressor_maxgain_AMFM) {
+			AGC_TX.need_gain_dB = TRX.TX_Compressor_maxgain_AMFM;
 		}
 		break;
 
@@ -310,23 +310,23 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_r
 	case TRX_MODE_USB:
 	case TRX_MODE_LOOPBACK:
 	default:
-		if (AGC_TX.need_gain_db > TRX.TX_Compressor_maxgain_SSB) {
-			AGC_TX.need_gain_db = TRX.TX_Compressor_maxgain_SSB;
+		if (AGC_TX.need_gain_dB > TRX.TX_Compressor_maxgain_SSB) {
+			AGC_TX.need_gain_dB = TRX.TX_Compressor_maxgain_SSB;
 		}
 		break;
 	}
 
 	// apply gain
-	// println(AGC_TX_I_magnitude, " ", AGC_TX_dbFS, " ", AGC_TX.need_gain_db, " ", target_db);
+	// println(AGC_TX_I_magnitude, " ", AGC_TX_dBFS, " ", AGC_TX.need_gain_dB, " ", target_dB);
 	if (target_rate == 0.0f) // zero gain (mute)
 	{
 #define zero_gain 200.0f
 		float32_t gainApplyStep = 0;
-		if (AGC_TX.need_gain_db_old > zero_gain) {
-			gainApplyStep = -(AGC_TX.need_gain_db_old - zero_gain) / (float32_t)blockSize;
+		if (AGC_TX.need_gain_dB_old > zero_gain) {
+			gainApplyStep = -(AGC_TX.need_gain_dB_old - zero_gain) / (float32_t)blockSize;
 		}
-		if (AGC_TX.need_gain_db_old < zero_gain) {
-			gainApplyStep = (zero_gain - AGC_TX.need_gain_db_old) / (float32_t)blockSize;
+		if (AGC_TX.need_gain_dB_old < zero_gain) {
+			gainApplyStep = (zero_gain - AGC_TX.need_gain_dB_old) / (float32_t)blockSize;
 		}
 		float32_t val_prev = 0.0f;
 		bool zero_cross = false;
@@ -337,25 +337,25 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_r
 				zero_cross = true;
 			}
 			if (zero_cross) {
-				AGC_TX.need_gain_db_old += gainApplyStep;
+				AGC_TX.need_gain_dB_old += gainApplyStep;
 			}
 
-			if (AGC_TX.need_gain_db_old >= zero_gain) {
-				agcBuffer_i[i] = agcBuffer_i[i] * db2rateV(AGC_TX.need_gain_db_old);
+			if (AGC_TX.need_gain_dB_old >= zero_gain) {
+				agcBuffer_i[i] = agcBuffer_i[i] * db2rateV(AGC_TX.need_gain_dB_old);
 			} else {
 				agcBuffer_i[i] = 0.0f;
 			}
 
 			val_prev = agcBuffer_i[i];
 		}
-	} else if (fabsf(AGC_TX.need_gain_db_old - AGC_TX.need_gain_db) > 0.0f) // gain changed
+	} else if (fabsf(AGC_TX.need_gain_dB_old - AGC_TX.need_gain_dB) > 0.0f) // gain changed
 	{
 		float32_t gainApplyStep = 0;
-		if (AGC_TX.need_gain_db_old > AGC_TX.need_gain_db) {
-			gainApplyStep = -(AGC_TX.need_gain_db_old - AGC_TX.need_gain_db) / (float32_t)blockSize;
+		if (AGC_TX.need_gain_dB_old > AGC_TX.need_gain_dB) {
+			gainApplyStep = -(AGC_TX.need_gain_dB_old - AGC_TX.need_gain_dB) / (float32_t)blockSize;
 		}
-		if (AGC_TX.need_gain_db_old < AGC_TX.need_gain_db) {
-			gainApplyStep = (AGC_TX.need_gain_db - AGC_TX.need_gain_db_old) / (float32_t)blockSize;
+		if (AGC_TX.need_gain_dB_old < AGC_TX.need_gain_dB) {
+			gainApplyStep = (AGC_TX.need_gain_dB - AGC_TX.need_gain_dB_old) / (float32_t)blockSize;
 		}
 		float32_t val_prev = 0.0f;
 		bool zero_cross = false;
@@ -366,21 +366,21 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_r
 				zero_cross = true;
 			}
 			if (zero_cross) {
-				AGC_TX.need_gain_db_old += gainApplyStep;
+				AGC_TX.need_gain_dB_old += gainApplyStep;
 			}
 
-			agcBuffer_i[i] = agcBuffer_i[i] * db2rateV(AGC_TX.need_gain_db_old);
+			agcBuffer_i[i] = agcBuffer_i[i] * db2rateV(AGC_TX.need_gain_dB_old);
 			val_prev = agcBuffer_i[i];
 		}
 	} else // gain did not change, apply gain across all samples
 	{
-		arm_scale_f32(agcBuffer_i, db2rateV(AGC_TX.need_gain_db), agcBuffer_i, blockSize);
+		arm_scale_f32(agcBuffer_i, db2rateV(AGC_TX.need_gain_dB), agcBuffer_i, blockSize);
 	}
 }
 
 void ResetAGC(void) {
-	// AGC_RX1.need_gain_db = 0.0f;
-	// AGC_RX2.need_gain_db = 0.0f;
+	// AGC_RX1.need_gain_dB = 0.0f;
+	// AGC_RX2.need_gain_dB = 0.0f;
 	dma_memset(AGC_RX1.ringbuffer, 0x00, sizeof(AGC_RX1.ringbuffer));
 
 #if HRDW_HAS_DUAL_RX

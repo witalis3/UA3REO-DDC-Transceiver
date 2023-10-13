@@ -7,9 +7,9 @@
 #define AGC_RINGBUFFER_TAPS_SIZE 3
 
 typedef struct {
-	float32_t need_gain_db;
-	float32_t need_gain_db_old;
-	float32_t AGC_RX_dbFS_old;
+	float32_t need_gain_dB;
+	float32_t need_gain_dB_old;
+	float32_t AGC_RX_dBFS_old;
 	uint32_t last_agc_peak_time;
 #ifndef STM32F407xx
 	float32_t agcBuffer_kw[AUDIO_BUFFER_HALF_SIZE];
@@ -19,8 +19,8 @@ typedef struct {
 } AGC_RX_Instance;
 
 typedef struct {
-	float32_t need_gain_db;
-	float32_t need_gain_db_old;
+	float32_t need_gain_dB;
+	float32_t need_gain_dB_old;
 } AGC_TX_Instance;
 
 extern float32_t AGC_SCREEN_maxGain;

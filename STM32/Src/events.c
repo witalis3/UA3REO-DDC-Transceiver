@@ -30,14 +30,14 @@
 #include "wifi.h"
 #include "wspr.h"
 
-void EVENTS_do_WSPR(void) // 1,4648 hz
+void EVENTS_do_WSPR(void) // 1,4648 Hz
 {
 	if (SYSMENU_wspr_opened) {
 		WSPR_DoFastEvents();
 	}
 }
 
-void EVENTS_do_WIFI(void) // 1000 hz
+void EVENTS_do_WIFI(void) // 1000 Hz
 {
 	static uint16_t wifi_start_timeout = 0;
 
@@ -56,7 +56,7 @@ void EVENTS_do_WIFI(void) // 1000 hz
 	}
 }
 
-void EVENTS_do_FFT(void) // 1000 hz
+void EVENTS_do_FFT(void) // 1000 Hz
 {
 	if (SYSMENU_spectrum_opened || SYSMENU_swr_opened) {
 		SYSMENU_drawSystemMenu(false, false);
@@ -72,7 +72,7 @@ void EVENTS_do_FFT(void) // 1000 hz
 #endif
 }
 
-void EVENTS_do_AUDIO_PROCESSOR(void) // 20 000 hz
+void EVENTS_do_AUDIO_PROCESSOR(void) // 20 000 Hz
 {
 	if (!Processor_NeedTXBuffer && !Processor_NeedRXBuffer) {
 		return;
@@ -99,7 +99,7 @@ void EVENTS_do_AUDIO_PROCESSOR(void) // 20 000 hz
 #endif
 }
 
-void EVENTS_do_USB_FIFO(void) // 1000 hz
+void EVENTS_do_USB_FIFO(void) // 1000 Hz
 {
 	print_flush(); // send data to debug from the buffer
 
@@ -110,7 +110,7 @@ void EVENTS_do_USB_FIFO(void) // 1000 hz
 	}
 }
 
-void EVENTS_do_PERIPHERAL(void) // 1000 hz
+void EVENTS_do_PERIPHERAL(void) // 1000 Hz
 {
 #if HRDW_HAS_SD
 	if (SD_BusyByUSB) {
@@ -140,7 +140,7 @@ void EVENTS_do_PERIPHERAL(void) // 1000 hz
 #endif
 }
 
-void EVENTS_do_ENC(void) // 20 0000 hz
+void EVENTS_do_ENC(void) // 20 0000 Hz
 {
 	// Update watchdog
 	HAL_IWDG_Refresh(&HRDW_IWDG);
@@ -206,7 +206,7 @@ void EVENTS_do_ENC(void) // 20 0000 hz
 #endif
 }
 
-void EVENTS_do_PREPROCESS(void) // 1000 hz
+void EVENTS_do_PREPROCESS(void) // 1000 Hz
 {
 	// audio buffer RX preprocessor
 	if (TRX_on_RX) {
@@ -222,7 +222,7 @@ void EVENTS_do_PREPROCESS(void) // 1000 hz
 	}
 }
 
-void EVENTS_do_EVERY_10ms(void) // 100 hz
+void EVENTS_do_EVERY_10ms(void) // 100 Hz
 {
 	static uint32_t powerdown_start_delay = 0;
 	static bool prev_pwr_state = true;
@@ -403,7 +403,7 @@ void EVENTS_do_EVERY_10ms(void) // 100 hz
 	}
 }
 
-void EVENTS_do_EVERY_100ms(void) // 10 hz
+void EVENTS_do_EVERY_100ms(void) // 10 Hz
 {
 	// every 100ms we receive data from FPGA (amplitude, ADC overload, etc.)
 	FPGA_NeedGetParams = true;
@@ -448,13 +448,13 @@ void EVENTS_do_EVERY_100ms(void) // 10 hz
 #endif
 }
 
-void EVENTS_do_EVERY_500ms(void) // 2 hz
+void EVENTS_do_EVERY_500ms(void) // 2 Hz
 {
 	// Redraw menu infolines if needed
 	LCD_UpdateQuery.SystemMenuInfolines = true;
 }
 
-void EVENTS_do_EVERY_1000ms(void) // 1 hz
+void EVENTS_do_EVERY_1000ms(void) // 1 Hz
 {
 	static uint32_t tim6_delay = 0;
 	TRX_Inactive_Time++;

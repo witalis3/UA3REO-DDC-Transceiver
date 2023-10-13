@@ -26,7 +26,7 @@ uint16_t FFT_FPS = 0;
 uint16_t FFT_FPS_Last = 0;
 bool NeedWTFRedraw = false;
 bool NeedFFTReinit = false;
-uint32_t FFT_current_spectrum_width_hz = 96000; // Current sectrum width
+uint32_t FFT_current_spectrum_width_Hz = 96000; // Current sectrum width
 float32_t FFT_Current_TX_SNR = 0;
 float32_t FFT_Current_TX_IMD3 = 0;
 float32_t FFT_Current_TX_IMD5 = 0;
@@ -87,7 +87,7 @@ static int32_t bw_rx2_line_center = 0;
 static int32_t rx2_notch_line_pos = 0;
 static int32_t bw_rx2_line_end = 0;                        // BW bar params RX2
 static float32_t window_multipliers[FFT_SIZE] = {0};       // coefficients of the selected window function
-static float32_t hz_in_pixel = 1.0f;                       // current FFT density value
+static float32_t Hz_in_pixel = 1.0f;                       // current FFT density value
 static uint8_t bandmap_line_tmp[MAX_FFT_PRINT_SIZE] = {0}; // temporary buffer for bandmap draw
 static uint32_t print_fft_dma_estimated_size = 0;          // block size for dma
 static uint32_t print_fft_dma_position = 0;                // positior for dma fft print
@@ -313,7 +313,7 @@ static void FFT_3DPrintFFT(void);
 #endif
 static float32_t getDBFromFFTAmpl(float32_t ampl);
 static float32_t getFFTAmplFromDB(float32_t ampl);
-static float32_t getMaxDbmFromFreq(uint64_t freq, uint8_t span);
+static float32_t getMaxDBMFromFreq(uint64_t freq, uint8_t span);
 
 // FFT initialization
 void FFT_PreInit(void) {
@@ -469,9 +469,9 @@ void FFT_Init(void) {
 	}
 
 	if ((TRX_on_TX && !SHOW_RX_FFT_ON_TX) && CurrentVFO->Mode != TRX_MODE_LOOPBACK) {
-		FFT_current_spectrum_width_hz = TRX_SAMPLERATE / fft_zoom;
+		FFT_current_spectrum_width_Hz = TRX_SAMPLERATE / fft_zoom;
 	} else {
-		FFT_current_spectrum_width_hz = TRX_GetRXSampleRate / fft_zoom;
+		FFT_current_spectrum_width_Hz = TRX_GetRXSampleRate / fft_zoom;
 	}
 
 	dma_memset(fft_meanbuffer_freqs, 0x00, sizeof(fft_meanbuffer_freqs));
@@ -607,7 +607,7 @@ void FFT_doFFT(void) {
 	// FFT scale
 	if (FFT_SCALE_TYPE == 1) { // Squared scale
 		arm_cmplx_mag_squared_f32(FFTInput, FFTInput, FFT_SIZE);
-	} else { // ampl or dbm scale
+	} else { // ampl or dBm scale
 		arm_cmplx_mag_f32(FFTInput, FFTInput, FFT_SIZE);
 	}
 
@@ -740,7 +740,7 @@ void FFT_doFFT(void) {
 	dma_memset(FFTOutput_mean_count, 0x00, sizeof(FFTOutput_mean_count));
 
 	for (uint_fast16_t avg_idx = 0; avg_idx < max_mean; avg_idx++) {
-		int64_t freq_diff = roundl(((float64_t)((float64_t)fft_meanbuffer_freqs[avg_idx] - (float64_t)CurrentVFO->Freq) / (double)hz_in_pixel) * (float64_t)fft_zoom);
+		int64_t freq_diff = roundl(((float64_t)((float64_t)fft_meanbuffer_freqs[avg_idx] - (float64_t)CurrentVFO->Freq) / (double)Hz_in_pixel) * (float64_t)fft_zoom);
 
 		if (!TRX.WTF_Moving) {
 			freq_diff = 0;
@@ -794,31 +794,31 @@ void FFT_doFFT(void) {
 		uint64_t imd9_freq_1 = 2 * imd5_freq_1 - freq_1;
 		uint64_t imd9_freq_2 = 2 * imd5_freq_2 - freq_2;
 
-		const uint8_t span_hz = 50;
-		float32_t zero_dbm = FFTOutput_mean[LAYOUT->FFT_PRINT_SIZE / 5];
-		float32_t freq_dbm_1 = getMaxDbmFromFreq(freq_1, span_hz);
-		float32_t freq_dbm_2 = getMaxDbmFromFreq(freq_2, span_hz);
-		float32_t imd3_dbm_1 = getMaxDbmFromFreq(imd3_freq_1, span_hz);
-		float32_t imd3_dbm_2 = getMaxDbmFromFreq(imd3_freq_2, span_hz);
-		float32_t imd5_dbm_1 = getMaxDbmFromFreq(imd5_freq_1, span_hz);
-		float32_t imd5_dbm_2 = getMaxDbmFromFreq(imd5_freq_2, span_hz);
-		float32_t imd7_dbm_1 = getMaxDbmFromFreq(imd7_freq_1, span_hz);
-		float32_t imd7_dbm_2 = getMaxDbmFromFreq(imd7_freq_2, span_hz);
-		float32_t imd9_dbm_1 = getMaxDbmFromFreq(imd9_freq_1, span_hz);
-		float32_t imd9_dbm_2 = getMaxDbmFromFreq(imd9_freq_2, span_hz);
+		const uint8_t span_Hz = 50;
+		float32_t zero_dBm = FFTOutput_mean[LAYOUT->FFT_PRINT_SIZE / 5];
+		float32_t freq_dBm_1 = getMaxDBMFromFreq(freq_1, span_Hz);
+		float32_t freq_dBm_2 = getMaxDBMFromFreq(freq_2, span_Hz);
+		float32_t imd3_dBm_1 = getMaxDBMFromFreq(imd3_freq_1, span_Hz);
+		float32_t imd3_dBm_2 = getMaxDBMFromFreq(imd3_freq_2, span_Hz);
+		float32_t imd5_dBm_1 = getMaxDBMFromFreq(imd5_freq_1, span_Hz);
+		float32_t imd5_dBm_2 = getMaxDBMFromFreq(imd5_freq_2, span_Hz);
+		float32_t imd7_dBm_1 = getMaxDBMFromFreq(imd7_freq_1, span_Hz);
+		float32_t imd7_dBm_2 = getMaxDBMFromFreq(imd7_freq_2, span_Hz);
+		float32_t imd9_dBm_1 = getMaxDBMFromFreq(imd9_freq_1, span_Hz);
+		float32_t imd9_dBm_2 = getMaxDBMFromFreq(imd9_freq_2, span_Hz);
 
-		float32_t freq_dbm = MAX(freq_dbm_1, freq_dbm_2);
-		FFT_Current_TX_SNR = freq_dbm - zero_dbm;
-		FFT_Current_TX_IMD3 = MIN((freq_dbm - imd3_dbm_1), (freq_dbm - imd3_dbm_2));
-		FFT_Current_TX_IMD5 = MIN((freq_dbm - imd5_dbm_1), (freq_dbm - imd5_dbm_2));
-		FFT_Current_TX_IMD7 = MIN((freq_dbm - imd7_dbm_1), (freq_dbm - imd7_dbm_2));
-		FFT_Current_TX_IMD9 = MIN((freq_dbm - imd9_dbm_1), (freq_dbm - imd9_dbm_2));
+		float32_t freq_dBm = MAX(freq_dBm_1, freq_dBm_2);
+		FFT_Current_TX_SNR = freq_dBm - zero_dBm;
+		FFT_Current_TX_IMD3 = MIN((freq_dBm - imd3_dBm_1), (freq_dBm - imd3_dBm_2));
+		FFT_Current_TX_IMD5 = MIN((freq_dBm - imd5_dBm_1), (freq_dBm - imd5_dBm_2));
+		FFT_Current_TX_IMD7 = MIN((freq_dBm - imd7_dBm_1), (freq_dBm - imd7_dBm_2));
+		FFT_Current_TX_IMD9 = MIN((freq_dBm - imd9_dBm_1), (freq_dBm - imd9_dBm_2));
 
 		// char ctmp[128] = {0};
-		// sprintf(ctmp, "IMD3: %d IMD5: %d", (int32_t)imd3_dbm, (int32_t)imd5_dbm);
+		// sprintf(ctmp, "IMD3: %d IMD5: %d", (int32_t)imd3_dBm, (int32_t)imd5_dBm);
 		// LCD_showTooltip(ctmp);
 
-		// println("DBM: ", freq_dbm, " SNR: ", snr_dbm, " IMD3: ", FFT_Current_TX_IMD3, " IMD5: ", FFT_Current_TX_IMD5, " IMD7: ", imd7_dbm, " IMD9: ", imd9_dbm, " ");
+		// println("DBM: ", freq_dBm, " SNR: ", snr_dBm, " IMD3: ", FFT_Current_TX_IMD3, " IMD5: ", FFT_Current_TX_IMD5, " IMD7: ", imd7_dBm, " IMD9: ", imd9_dBm, " ");
 
 		DPD_ProcessCalibration();
 	}
@@ -860,13 +860,13 @@ bool FFT_printFFT(void) {
 	if (NeedProcessDecoder) {
 		decoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 	}
-	hz_in_pixel = (TRX_on_TX && !SHOW_RX_FFT_ON_TX) ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
+	Hz_in_pixel = (TRX_on_TX && !SHOW_RX_FFT_ON_TX) ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
 
 	if (CurrentVFO->Freq != currentFFTFreq || NeedWTFRedraw) {
 		// calculate scale lines
 		dma_memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos));
 		uint8_t index = 0;
-		int64_t grid_step = FFT_current_spectrum_width_hz / 9.6;
+		int64_t grid_step = FFT_current_spectrum_width_Hz / 9.6;
 		if (grid_step < 1000) {
 			grid_step = 1000;
 		}
@@ -960,7 +960,7 @@ bool FFT_printFFT(void) {
 	float32_t targetValue = (medianValue * FFT_TARGET);
 	float32_t minValue = (medianValue * FFT_MIN);
 
-	// dbm scaling
+	// dBm scaling
 	if (FFT_SCALE_TYPE == 2) {
 		if (TRX.FFT_Automatic) {
 			if (minAmplValue_averaged > minAmplValue) {
@@ -1097,7 +1097,7 @@ bool FFT_printFFT(void) {
 		// peaks moving
 		if (lastWTFFreq != currentFFTFreq) {
 			float64_t diff = (float64_t)currentFFTFreq - (float64_t)lastWTFFreq;
-			diff = diff / (float64_t)(hz_in_pixel * fft_zoom);
+			diff = diff / (float64_t)(Hz_in_pixel * fft_zoom);
 			diff = roundl(diff);
 
 			if (diff > 0) {
@@ -1146,46 +1146,46 @@ bool FFT_printFFT(void) {
 	switch (CurrentVFO->Mode) {
 	case TRX_MODE_LSB:
 	case TRX_MODE_DIGI_L:
-		bw_rx1_line_width = (int32_t)(cur_lpf_width / hz_in_pixel * fft_zoom);
+		bw_rx1_line_width = (int32_t)(cur_lpf_width / Hz_in_pixel * fft_zoom);
 		if (bw_rx1_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
 			bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
 		bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - bw_rx1_line_width;
-		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width - (cur_hpf_width / hz_in_pixel * fft_zoom);
-		rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
+		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width - (cur_hpf_width / Hz_in_pixel * fft_zoom);
+		rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_USB:
 	case TRX_MODE_RTTY:
 	case TRX_MODE_DIGI_U:
-		bw_rx1_line_width = (int32_t)(cur_lpf_width / hz_in_pixel * fft_zoom);
+		bw_rx1_line_width = (int32_t)(cur_lpf_width / Hz_in_pixel * fft_zoom);
 		if (bw_rx1_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
 			bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
-		bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2 + cur_hpf_width / hz_in_pixel * fft_zoom;
+		bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2 + cur_hpf_width / Hz_in_pixel * fft_zoom;
 		bw_rx1_line_end = LAYOUT->FFT_PRINT_SIZE / 2 + bw_rx1_line_width;
-		rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
+		rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
 	case TRX_MODE_SAM:
 	case TRX_MODE_CW:
-		bw_rx1_line_width = (int32_t)(cur_lpf_width / hz_in_pixel * fft_zoom);
+		bw_rx1_line_width = (int32_t)(cur_lpf_width / Hz_in_pixel * fft_zoom);
 		if (bw_rx1_line_width > LAYOUT->FFT_PRINT_SIZE) {
 			bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE;
 		}
 		bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - (bw_rx1_line_width / 2);
 		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
+			rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		} else {
-			rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
+			rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		}
 		break;
 	case TRX_MODE_WFM:
 		bw_rx1_line_width = 0;
 		bw_rx1_line_start = LAYOUT->FFT_PRINT_SIZE / 2 - (bw_rx1_line_width / 2);
 		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
-		rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / hz_in_pixel * fft_zoom;
+		rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	default:
 		break;
@@ -1193,46 +1193,46 @@ bool FFT_printFFT(void) {
 	switch (SecondaryVFO->Mode) {
 	case TRX_MODE_LSB:
 	case TRX_MODE_DIGI_L:
-		bw_rx2_line_width = (int32_t)(SecondaryVFO->LPF_RX_Filter_Width / hz_in_pixel * fft_zoom);
+		bw_rx2_line_width = (int32_t)(SecondaryVFO->LPF_RX_Filter_Width / Hz_in_pixel * fft_zoom);
 		if (bw_rx2_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
 			bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
 		bw_rx2_line_start = rx2_line_pos - bw_rx2_line_width;
 		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
-		rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
+		rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_USB:
 	case TRX_MODE_RTTY:
 	case TRX_MODE_DIGI_U:
-		bw_rx2_line_width = (int32_t)(SecondaryVFO->LPF_RX_Filter_Width / hz_in_pixel * fft_zoom);
+		bw_rx2_line_width = (int32_t)(SecondaryVFO->LPF_RX_Filter_Width / Hz_in_pixel * fft_zoom);
 		if (bw_rx2_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
 			bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
 		bw_rx2_line_start = rx2_line_pos;
 		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
-		rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
+		rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
 	case TRX_MODE_SAM:
 	case TRX_MODE_CW:
-		bw_rx2_line_width = (int32_t)(SecondaryVFO->LPF_RX_Filter_Width / hz_in_pixel * fft_zoom);
+		bw_rx2_line_width = (int32_t)(SecondaryVFO->LPF_RX_Filter_Width / Hz_in_pixel * fft_zoom);
 		if (bw_rx2_line_width > LAYOUT->FFT_PRINT_SIZE) {
 			bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE;
 		}
 		bw_rx2_line_start = rx2_line_pos - (bw_rx2_line_width / 2);
 		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
 		if (SecondaryVFO->Mode == TRX_MODE_CW) {
-			rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
+			rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		} else {
-			rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
+			rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		}
 		break;
 	case TRX_MODE_WFM:
 		bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE;
 		bw_rx2_line_start = rx2_line_pos - (bw_rx2_line_width / 2);
 		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
-		rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / hz_in_pixel * fft_zoom;
+		rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	default:
 		break;
@@ -1269,7 +1269,7 @@ bool FFT_printFFT(void) {
 	uint16_t grid_color = palette_fft[fftHeight * 3 / 4];
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++) // Background
 	{
-		bool dbm_grid = false;
+		bool dBm_grid = false;
 		if (TRX.FFT_Background) {
 			background = palette_bg_gradient[fft_y];
 		} else {
@@ -1280,7 +1280,7 @@ bool FFT_printFFT(void) {
 			for (uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL) {
 				if (y == fft_y) {
 					background = grid_color;
-					dbm_grid = true;
+					dBm_grid = true;
 				}
 			}
 		}
@@ -1288,7 +1288,7 @@ bool FFT_printFFT(void) {
 		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
 			if ((fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) || ((int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end)) // bw bar
 			{
-				print_output_buffer[fft_y][fft_x] = dbm_grid ? background : palette_bw_bg_colors[fft_y];
+				print_output_buffer[fft_y][fft_x] = dBm_grid ? background : palette_bw_bg_colors[fft_y];
 			} else {
 				print_output_buffer[fft_y][fft_x] = background;
 			}
@@ -1455,7 +1455,7 @@ bool FFT_printFFT(void) {
 	{
 		uint16_t wtf_y_index = (print_wtf_yindex - fftHeight) / line_repeats_need;
 		// calculate offset
-		float64_t freq_diff = (((float64_t)currentFFTFreq - (float64_t)wtf_buffer_freqs[wtf_y_index]) / (double)hz_in_pixel) * (float64_t)fft_zoom;
+		float64_t freq_diff = (((float64_t)currentFFTFreq - (float64_t)wtf_buffer_freqs[wtf_y_index]) / (double)Hz_in_pixel) * (float64_t)fft_zoom;
 		// float64_t freq_diff_part = fmodl(freq_diff, 1.0);
 		int64_t margin_left = 0;
 		if (freq_diff < 0) {
@@ -1557,8 +1557,8 @@ bool FFT_printFFT(void) {
 	// RTTY center frequency
 	if (CurrentVFO->Mode == TRX_MODE_RTTY) {
 		uint16_t color = palette_fft[fftHeight / 2];
-		uint16_t x1 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) / hz_in_pixel * fft_zoom;
-		uint16_t x2 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) / hz_in_pixel * fft_zoom;
+		uint16_t x1 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) / Hz_in_pixel * fft_zoom;
+		uint16_t x2 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) / Hz_in_pixel * fft_zoom;
 		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
 			print_output_buffer[fft_y][x1] = color;
 			print_output_buffer[fft_y][x2] = color;
@@ -1711,16 +1711,16 @@ bool FFT_printFFT(void) {
 		}
 
 		for (uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL) {
-			int16_t dbm = 0;
+			int16_t dBm = 0;
 			if (TRX.FFT_Automatic) {
-				dbm = getDBFromFFTAmpl(maxValueFFT - ampl_on_bin * (float32_t)y);
+				dBm = getDBFromFFTAmpl(maxValueFFT - ampl_on_bin * (float32_t)y);
 			} else {
-				dbm = getDBFromFFTAmpl((maxValueFFT + minValueFFT) - ampl_on_bin * (float32_t)y);
+				dBm = getDBFromFFTAmpl((maxValueFFT + minValueFFT) - ampl_on_bin * (float32_t)y);
 			}
-			if (dbm > 50) {
+			if (dBm > 50) {
 				continue;
 			}
-			sprintf(tmp, "%d", dbm);
+			sprintf(tmp, "%d", dBm);
 			LCDDriver_printTextInMemory(tmp, 0, y - 4, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 		}
 	}
@@ -1728,14 +1728,14 @@ bool FFT_printFFT(void) {
 	// Print DBM grid (dBm Scale)
 	if (TRX.FFT_dBmGrid && FFT_SCALE_TYPE == 2) {
 		char tmp[64] = {0};
-		float32_t dbm_on_bin = (FFT_maxDBM - FFT_minDBM) / (float32_t)fftHeight;
+		float32_t dBm_on_bin = (FFT_maxDBM - FFT_minDBM) / (float32_t)fftHeight;
 		// println(FFT_minDBM, " ", FFT_maxDBM);
 		for (uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL) {
-			int16_t dbm = FFT_maxDBM - dbm_on_bin * (float32_t)y;
-			if (dbm > 50) {
+			int16_t dBm = FFT_maxDBM - dBm_on_bin * (float32_t)y;
+			if (dBm > 50) {
 				continue;
 			}
-			sprintf(tmp, "%d", dbm);
+			sprintf(tmp, "%d", dBm);
 			LCDDriver_printTextInMemory(tmp, 0, y - 4, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 		}
 	}
@@ -1760,7 +1760,7 @@ bool FFT_printFFT(void) {
 	// Print SAM Carrier offset
 	if (CurrentVFO->Mode == TRX_MODE_SAM) {
 		char tmp[32] = {0};
-		sprintf(tmp, "%.2fhz", (double)SAM_Carrier_offset);
+		sprintf(tmp, "%.2fHz", (double)SAM_Carrier_offset);
 		LCDDriver_printTextInMemory(tmp, 5, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 	}
 
@@ -1814,7 +1814,7 @@ void FFT_ShortBufferPrintFFT(void) {
 
 			if (fft_y < fftHeight) // FFT PART
 			{
-				// Background and dBM grid
+				// Background and dBm grid
 				uint16_t background = BG_COLOR;
 
 				if (TRX.FFT_Background) {
@@ -1864,7 +1864,7 @@ void FFT_ShortBufferPrintFFT(void) {
 				uint16_t wtf_y_index = fft_y - fftHeight;
 
 				// calculate offset
-				float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[wtf_y_index]) / hz_in_pixel) * (float32_t)fft_zoom;
+				float32_t freq_diff = (((float32_t)currentFFTFreq - (float32_t)wtf_buffer_freqs[wtf_y_index]) / Hz_in_pixel) * (float32_t)fft_zoom;
 				// float32_t freq_diff_part = fmodl((float64_t)freq_diff, 1.0);
 				int32_t margin_left = 0;
 				if (freq_diff < 0) {
@@ -1949,8 +1949,8 @@ void FFT_ShortBufferPrintFFT(void) {
 			// RTTY center frequency
 			if (CurrentVFO->Mode == TRX_MODE_RTTY) {
 				uint16_t color = palette_fft[fftHeight / 2];
-				uint16_t x1 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) / hz_in_pixel * fft_zoom;
-				uint16_t x2 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) / hz_in_pixel * fft_zoom;
+				uint16_t x1 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) / Hz_in_pixel * fft_zoom;
+				uint16_t x2 = (LAYOUT->FFT_PRINT_SIZE / 2) + (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) / Hz_in_pixel * fft_zoom;
 				print_output_short_buffer[buff_idx][x1] = color;
 				print_output_short_buffer[buff_idx][x2] = color;
 			}
@@ -2641,7 +2641,7 @@ static void FFT_fill_color_palette(void) // Fill FFT Color Gradient On Initializ
 	}
 }
 
-static float32_t getMaxDbmFromFreq(uint64_t freq, uint8_t span) {
+static float32_t getMaxDBMFromFreq(uint64_t freq, uint8_t span) {
 	float32_t result = -200;
 	for (uint32_t i = freq - span; i <= (freq + span); i++) {
 		int32_t pos = getFreqPositionOnFFT(i, false);
@@ -2649,15 +2649,15 @@ static float32_t getMaxDbmFromFreq(uint64_t freq, uint8_t span) {
 			continue;
 		}
 
-		float32_t dbm = FFTOutput_mean[pos];
-		result = MAX(dbm, result);
+		float32_t dBm = FFTOutput_mean[pos];
+		result = MAX(dBm, result);
 	}
 
 	return result;
 }
 
 static inline int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos) {
-	int32_t pos = (int32_t)((float64_t)LAYOUT->FFT_PRINT_SIZE / 2.0 + (float64_t)((float64_t)freq - (float64_t)CurrentVFO->Freq) / (float64_t)hz_in_pixel * (float64_t)fft_zoom);
+	int32_t pos = (int32_t)((float64_t)LAYOUT->FFT_PRINT_SIZE / 2.0 + (float64_t)((float64_t)freq - (float64_t)CurrentVFO->Freq) / (float64_t)Hz_in_pixel * (float64_t)fft_zoom);
 	if (!full_pos && (pos < 0 || pos >= LAYOUT->FFT_PRINT_SIZE)) {
 		return -1;
 	}
@@ -2668,8 +2668,8 @@ static inline int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos) {
 }
 
 uint64_t getFreqOnFFTPosition(uint16_t position) {
-	return (uint64_t)((int64_t)CurrentVFO->Freq + (int64_t)(-((float64_t)LAYOUT->FFT_PRINT_SIZE * ((float64_t)hz_in_pixel / (float64_t)fft_zoom) / 2.0) +
-	                                                        (float64_t)position * ((float64_t)hz_in_pixel / (float64_t)fft_zoom)));
+	return (uint64_t)((int64_t)CurrentVFO->Freq + (int64_t)(-((float64_t)LAYOUT->FFT_PRINT_SIZE * ((float64_t)Hz_in_pixel / (float64_t)fft_zoom) / 2.0) +
+	                                                        (float64_t)position * ((float64_t)Hz_in_pixel / (float64_t)fft_zoom)));
 }
 
 static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center) {
@@ -2714,33 +2714,33 @@ static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center) {
 }
 
 static float32_t getDBFromFFTAmpl(float32_t ampl) {
-	float32_t db = 0.0f;
+	float32_t dB = 0.0f;
 
-	if (FFT_SCALE_TYPE == 0 || FFT_SCALE_TYPE == 2) {                                             // ampl / dbm scale
-		db = rate2dbP(powf(ampl / (float32_t)FFT_SIZE, 2) / 50.0f / 0.001f) + FFT_DBM_COMPENSATION; // roughly... because window and other...
+	if (FFT_SCALE_TYPE == 0 || FFT_SCALE_TYPE == 2) {                                             // ampl / dBm scale
+		dB = rate2dbP(powf(ampl / (float32_t)FFT_SIZE, 2) / 50.0f / 0.001f) + FFT_DBM_COMPENSATION; // roughly... because window and other...
 	}
 
 	if (FFT_SCALE_TYPE == 1) {                                                  // squared scale
-		db = rate2dbP(ampl / (float32_t)FFT_SIZE / 50.0f) + FFT_DBM_COMPENSATION; // roughly... because window and other...
+		dB = rate2dbP(ampl / (float32_t)FFT_SIZE / 50.0f) + FFT_DBM_COMPENSATION; // roughly... because window and other...
 	}
 
 	if (TRX.ADC_Driver) {
-		db -= ADC_DRIVER_GAIN_DB;
+		dB -= ADC_DRIVER_GAIN_DB;
 	}
 
 	if (CurrentVFO->Freq < 70000000) {
-		db += CALIBRATE.smeter_calibration_hf;
+		dB += CALIBRATE.smeter_calibration_hf;
 	} else {
-		db += CALIBRATE.smeter_calibration_vhf;
+		dB += CALIBRATE.smeter_calibration_vhf;
 	}
 
-	return db;
+	return dB;
 }
 
 static float32_t getFFTAmplFromDB(float32_t ampl) {
 	float32_t result;
 
-	if (FFT_SCALE_TYPE == 0 || FFT_SCALE_TYPE == 2) { // ampl / dbm scale
+	if (FFT_SCALE_TYPE == 0 || FFT_SCALE_TYPE == 2) { // ampl / dBm scale
 		float32_t power = db2rateP(ampl - FFT_DBM_COMPENSATION + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) -
 		                           ((CurrentVFO->Freq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) *
 		                  0.001f * 50.0f;

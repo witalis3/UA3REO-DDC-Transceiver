@@ -29,7 +29,7 @@ static q15_t *FFT_Scale;
 static q15_t *FFT_Magnitude;
 static int32_t *FFT_Mag_10;
 static uint8_t *FFT_Buffer;
-static float *mag_db;
+static float *mag_dB;
 
 q15_t *dsp_buffer;
 q15_t *dsp_output;
@@ -45,7 +45,7 @@ static SRAM q15_t FFT_Scale[FFT_SIZE_FT8 * 2];
 static SRAM q15_t FFT_Magnitude[FFT_SIZE_FT8];
 static SRAM int32_t FFT_Mag_10[FFT_SIZE_FT8 / 2];
 static SRAM uint8_t FFT_Buffer[FFT_SIZE_FT8 / 2];
-static SRAM float mag_db[FFT_SIZE_FT8 / 2 + 1];
+static SRAM float mag_dB[FFT_SIZE_FT8 / 2 + 1];
 
 SRAM q15_t dsp_buffer[3 * input_gulp_size] __attribute__((aligned(4)));
 SRAM q15_t dsp_output[FFT_SIZE_FT8 * 2] __attribute__((aligned(4)));
@@ -65,7 +65,7 @@ void init_DSP(void) {
 	FFT_Magnitude = alloc_to_wtf(FFT_SIZE_FT8 * sizeof(q15_t), false);
 	FFT_Mag_10 = alloc_to_wtf((FFT_SIZE_FT8 / 2) * sizeof(int32_t), false);
 	FFT_Buffer = alloc_to_wtf(FFT_SIZE_FT8 / 2, false);
-	mag_db = alloc_to_wtf((FFT_SIZE_FT8 / 2 + 1) * sizeof(float), false);
+	mag_dB = alloc_to_wtf((FFT_SIZE_FT8 / 2 + 1) * sizeof(float), false);
 	dsp_buffer = alloc_to_wtf((3 * input_gulp_size) * sizeof(q15_t), false);
 	dsp_output = alloc_to_wtf((FFT_SIZE_FT8 * 2) * sizeof(q15_t), false);
 	input_gulp = alloc_to_wtf(input_gulp_size * sizeof(q15_t), false);
@@ -109,17 +109,17 @@ static void extract_power(int offset) {
 
 		for (int j = 0; j < FFT_SIZE_FT8 / 2; j++) {
 			FFT_Mag_10[j] = 10 * (int32_t)FFT_Magnitude[j];
-			mag_db[j] = 5.0 * log((float64_t)FFT_Mag_10[j] + 0.1);
+			mag_dB[j] = 5.0 * log((float64_t)FFT_Mag_10[j] + 0.1);
 		}
 
 		// Loop over two possible frequency bin offsets (for averaging)
 		for (int freq_sub = 0; freq_sub < 2; ++freq_sub) {
 			for (int j = 0; j < ft8_buffer; ++j) {
-				float db1 = mag_db[j * 2 + freq_sub];
-				float db2 = mag_db[j * 2 + freq_sub + 1];
-				float db = (db1 + db2) / 2;
+				float dB1 = mag_dB[j * 2 + freq_sub];
+				float dB2 = mag_dB[j * 2 + freq_sub + 1];
+				float dB = (dB1 + dB2) / 2;
 
-				int scaled = (int)(db);
+				int scaled = (int)(dB);
 				export_fft_power[offset] = (scaled < 0) ? 0 : ((scaled > 255) ? 255 : scaled);
 				++offset;
 			}

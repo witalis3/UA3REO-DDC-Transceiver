@@ -218,7 +218,7 @@ void WSPR_DoEvents(void) {
 	sprintf(tmp_buff, "Current band: % 2dm    ", wspr_band);
 	LCDDriver_printText(tmp_buff, 5, y, FG_COLOR, BG_COLOR, 1);
 #else
-	sprintf(tmp_buff, "Current band: % 2dm (%dhz)", wspr_band, (uint32_t)(WSPR_GetFreqFromBand(wspr_band)));
+	sprintf(tmp_buff, "Current band: % 2dm (%dHz)", wspr_band, (uint32_t)(WSPR_GetFreqFromBand(wspr_band)));
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 #endif
 	y += y_step;
@@ -228,7 +228,7 @@ void WSPR_DoEvents(void) {
 	sprintf(tmp_buff, "Next band: % 2dm    ", WSPR_GetNextBand());
 	LCDDriver_printText(tmp_buff, 5, y, FG_COLOR, BG_COLOR, 1);
 #else
-	sprintf(tmp_buff, "Next band: % 2dm (%dhz)", WSPR_GetNextBand(), (uint32_t)(WSPR_GetFreqFromBand(WSPR_GetNextBand())));
+	sprintf(tmp_buff, "Next band: % 2dm (%dHz)", WSPR_GetNextBand(), (uint32_t)(WSPR_GetFreqFromBand(WSPR_GetNextBand())));
 	LCDDriver_printText(tmp_buff, 10, y, FG_COLOR, BG_COLOR, 2);
 #endif
 	y += y_step;

@@ -167,7 +167,7 @@ uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num) // calculate the
 	if (rx_num == 2) {
 		TRX_RX2_IQ_swap = inverted;
 	}
-	float64_t res = round(((float64_t)_freq / (float64_t)ADC_CLOCK) * (float64_t)4294967296); // freq in hz/oscil in hz*2^bits (32 now);
+	float64_t res = round(((float64_t)_freq / (float64_t)ADC_CLOCK) * (float64_t)4294967296); // freq in Hz/oscil in Hz*2^bits (32 now);
 	return (uint32_t)res;
 }
 
@@ -230,7 +230,7 @@ uint32_t getTXPhraseFromFrequency(float64_t freq) // calculate the frequency fro
 	}
 	TRX_TX_IQ_swap = inverted;
 
-	float64_t res = round((float64_t)_freq / (float64_t)DAC_CLOCK * (float64_t)4294967296); // freq in hz/oscil in hz*2^NCO phase bits (32 now)
+	float64_t res = round((float64_t)_freq / (float64_t)DAC_CLOCK * (float64_t)4294967296); // freq in Hz/oscil in Hz*2^NCO phase bits (32 now)
 	return (uint32_t)res;
 }
 

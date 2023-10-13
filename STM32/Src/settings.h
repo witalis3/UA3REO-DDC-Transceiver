@@ -349,7 +349,7 @@ typedef struct {
 	uint_fast8_t Mode;
 	uint_fast16_t NotchFC;
 	uint8_t DNR_Type; // 0-disabled 1-dnr 2-dnr2
-	int8_t FM_SQL_threshold_dbm;
+	int8_t FM_SQL_threshold_dBm;
 	bool ManualNotchFilter;
 	bool AutoNotchFilter;
 	bool AGC;
@@ -464,7 +464,7 @@ typedef struct {
 	uint16_t SSB_LPF_RX_Filter;
 	uint16_t AM_LPF_RX_Filter;
 	uint16_t FM_LPF_RX_Filter;
-	int8_t FM_SQL_threshold_dbm;
+	int8_t FM_SQL_threshold_dBm;
 	uint8_t Mode;
 	uint8_t DNR_Type;
 	uint8_t ANT1_ATU_I;
@@ -506,8 +506,8 @@ extern struct TRX_SETTINGS {
 	VFO VFO_B;
 
 	float32_t ATT_DB;
-	float32_t FRQ_ENC_FM_STEP_KHZ;
-	float32_t FRQ_ENC_AM_STEP_KHZ;
+	float32_t FRQ_ENC_FM_STEP_kHz;
+	float32_t FRQ_ENC_AM_STEP_kHz;
 	float32_t CTCSS_Freq;
 	float32_t MIC_Gain_SSB_DB;
 	float32_t MIC_Gain_AMFM_DB;
@@ -518,7 +518,7 @@ extern struct TRX_SETTINGS {
 	uint32_t FRQ_FAST_STEP;
 	uint32_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
-	uint32_t FRQ_ENC_WFM_STEP_KHZ;
+	uint32_t FRQ_ENC_WFM_STEP_kHz;
 	uint32_t SWR_CUSTOM_Begin;
 	uint32_t SWR_CUSTOM_End;
 	uint32_t SPEC_Begin;
@@ -587,7 +587,7 @@ extern struct TRX_SETTINGS {
 	int8_t AGC_GAIN_TARGET;
 	int8_t VOX_THRESHOLD;
 	int8_t FFT_FreqGrid;
-	int8_t FM_SQL_threshold_dbm_shadow;
+	int8_t FM_SQL_threshold_dBm_shadow;
 
 	uint8_t ATT_STEP;
 	uint8_t RF_Gain;
@@ -808,20 +808,20 @@ extern struct TRX_CALIBRATE {
 	uint16_t MAX_ChargePump_Freq;
 	uint16_t TX_StartDelay;
 	uint16_t INA226_Shunt_mOhm;
-	uint16_t Transverter_Custom_Offset_Mhz;
-	uint16_t Transverter_70cm_RF_Mhz;
-	uint16_t Transverter_70cm_IF_Mhz;
-	uint16_t Transverter_23cm_RF_Mhz;
-	uint16_t Transverter_23cm_IF_Mhz;
-	uint16_t Transverter_13cm_RF_Mhz;
-	uint16_t Transverter_13cm_IF_Mhz;
-	uint16_t Transverter_6cm_RF_Mhz;
-	uint16_t Transverter_6cm_IF_Mhz;
-	uint16_t Transverter_3cm_RF_Mhz;
-	uint16_t Transverter_3cm_IF_Mhz;
-	uint32_t Transverter_QO100_RF_Khz;
-	uint32_t Transverter_QO100_IF_RX_Khz;
-	uint16_t Transverter_QO100_IF_TX_Mhz;
+	uint16_t Transverter_Custom_Offset_MHz;
+	uint16_t Transverter_70cm_RF_MHz;
+	uint16_t Transverter_70cm_IF_MHz;
+	uint16_t Transverter_23cm_RF_MHz;
+	uint16_t Transverter_23cm_IF_MHz;
+	uint16_t Transverter_13cm_RF_MHz;
+	uint16_t Transverter_13cm_IF_MHz;
+	uint16_t Transverter_6cm_RF_MHz;
+	uint16_t Transverter_6cm_IF_MHz;
+	uint16_t Transverter_3cm_RF_MHz;
+	uint16_t Transverter_3cm_IF_MHz;
+	uint32_t Transverter_QO100_RF_kHz;
+	uint32_t Transverter_QO100_IF_RX_kHz;
+	uint16_t Transverter_QO100_IF_TX_MHz;
 	uint16_t KTY81_Calibration;
 	uint16_t TOUCHPAD_TIMEOUT;
 	uint16_t TOUCHPAD_CLICK_THRESHOLD;

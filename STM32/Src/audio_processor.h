@@ -13,8 +13,8 @@
 #define FM_RX_SQL_SMOOTHING 0.25f     // Smoothing factor for IIR squelch noise averaging
 #define FM_RX_SQL_TIMEOUT_MS 20       // time to open/close squelch
 #define AUDIO_MAX_REVERBER_TAPS 10
-#define TWO_TONE_GEN_FREQ1 1000 // two tone generator freq, hz
-#define TWO_TONE_GEN_FREQ2 2200 // two tone generator freq, hz
+#define TWO_TONE_GEN_FREQ1 1000 // two tone generator freq, Hz
+#define TWO_TONE_GEN_FREQ2 2200 // two tone generator freq, Hz
 
 // SAM
 #define SAM_PLL_HILBERT_STAGES 7

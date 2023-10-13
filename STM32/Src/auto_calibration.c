@@ -139,7 +139,7 @@ void AUTO_CALIBRATION_Draw(void) {
 			TRX.ANT_selected = false;
 			TRX.RF_Gain = 30;
 
-			LCDDriver_printText("14Mhz, 30% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("14MHz, 30% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 			LCDDriver_printText("Rotate to adjust FORWARD", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -174,7 +174,7 @@ void AUTO_CALIBRATION_Draw(void) {
 			TRX.ANT_selected = false;
 			TRX.RF_Gain = 30;
 
-			LCDDriver_printText("14Mhz, 30% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("14MHz, 30% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 			LCDDriver_printText("Rotate to adjust BACKWARD", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -226,7 +226,7 @@ void AUTO_CALIBRATION_Draw(void) {
 			TRX.ANT_selected = false;
 			TRX.RF_Gain = 30;
 
-			LCDDriver_printText("52Mhz, 30% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("52MHz, 30% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 			LCDDriver_printText("Rotate to adjust FORWARD", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -261,7 +261,7 @@ void AUTO_CALIBRATION_Draw(void) {
 			TRX.ANT_selected = false;
 			TRX.RF_Gain = 30;
 
-			LCDDriver_printText("52Mhz, 30% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("52MHz, 30% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 			LCDDriver_printText("Rotate to adjust BACKWARD", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -313,7 +313,7 @@ void AUTO_CALIBRATION_Draw(void) {
 			TRX.ANT_selected = false;
 			TRX.RF_Gain = 100;
 
-			LCDDriver_printText("145Mhz, 100% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("145MHz, 100% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 			LCDDriver_printText("Rotate to adjust FORWARD", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
@@ -348,7 +348,7 @@ void AUTO_CALIBRATION_Draw(void) {
 			TRX.ANT_selected = false;
 			TRX.RF_Gain = 100;
 
-			LCDDriver_printText("145Mhz, 100% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("145MHz, 100% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
 			LCDDriver_printText("Rotate to adjust BACKWARD", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 			pos_y += margin_bottom;
