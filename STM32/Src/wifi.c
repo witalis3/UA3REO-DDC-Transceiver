@@ -35,6 +35,8 @@ static uint8_t post_HTTP_tryes = 0;
 
 DXCLUSTER_ENTRY WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_MAX_RECORDS] = {0};
 uint16_t WIFI_DXCLUSTER_list_count = 0;
+WOLFCLUSTER_ENTRY WIFI_WOLFCLUSTER_list[WIFI_WOLFCLUSTER_MAX_RECORDS] = {0};
+uint16_t WIFI_WOLFCLUSTER_list_count = 0;
 
 static void WIFI_SendCommand(char *command);
 static bool WIFI_WaitForOk(void);
@@ -1428,6 +1430,61 @@ static void WIFI_getDXCluster_background_callback(void) {
 	}
 }
 
+static void WIFI_getWOLFCluster_background_callback(void) {
+	if (WIFI_HTTP_Response_Status == 200) {
+		WIFI_WOLFCLUSTER_list_count = 0;
+
+		char *istr_l = WIFI_HTTResponseHTML;
+		bool end = false;
+		while (!end) {
+			char *istr_r = strchr(istr_l, ' ');
+			if (istr_r != NULL) {
+				*istr_r = 0;
+				uint64_t freq = atoll(istr_l);
+
+				istr_l = istr_r + 1;
+				istr_r = strchr(istr_l, '\t');
+				if (istr_r != NULL) {
+					*istr_r = 0;
+
+					if (strlen(istr_l) < WIFI_WOLFCLUSTER_MAX_CALL_LEN) {
+						WIFI_WOLFCLUSTER_list[WIFI_WOLFCLUSTER_list_count].Freq = freq;
+						strcpy(WIFI_WOLFCLUSTER_list[WIFI_WOLFCLUSTER_list_count].Callsign, istr_l);
+						WIFI_WOLFCLUSTER_list[WIFI_WOLFCLUSTER_list_count].Azimuth = 0;
+						if (TRX.FFT_DXCluster_Azimuth) {
+							CALLSIGN_INFO_LINE *info;
+							CALLSIGN_getInfoByCallsign(&info, WIFI_WOLFCLUSTER_list[WIFI_WOLFCLUSTER_list_count].Callsign);
+							float32_t my_lat = LOCINFO_get_latlon_from_locator(TRX.LOCATOR, true);
+							float32_t my_lon = LOCINFO_get_latlon_from_locator(TRX.LOCATOR, false);
+							int16_t azimuth = LOCINFO_azimuthFromCoordinates(my_lat, my_lon, info->lat, info->lon);
+							WIFI_WOLFCLUSTER_list[WIFI_WOLFCLUSTER_list_count].Azimuth = azimuth;
+						}
+
+						WIFI_WOLFCLUSTER_list_count++;
+
+						istr_l = istr_r + 1;
+
+						if (WIFI_WOLFCLUSTER_list_count >= WIFI_WOLFCLUSTER_MAX_RECORDS) {
+							end = true;
+						}
+					} else {
+						end = true;
+					}
+				} else {
+					end = true;
+				}
+			} else {
+				end = true;
+			}
+		}
+
+		// for(uint16_t i = 0; i < WIFI_WOLFCLUSTER_list_count ; i ++)
+		// println(WIFI_WOLFCLUSTER_list[i].Freq, "|", WIFI_WOLFCLUSTER_list[i].Callsign);
+
+		println("WOLFCluster updated, count: ", WIFI_WOLFCLUSTER_list_count);
+	}
+}
+
 bool WIFI_getDXCluster_background(void) {
 	if (!WIFI_connected || WIFI_State != WIFI_READY) {
 		return false;
@@ -1450,6 +1507,17 @@ bool WIFI_getDXCluster_background(void) {
 	strcat(url, BANDS[band].name);
 	sprintf(url, "%s&timeout=%d", url, TRX.FFT_DXCluster_Timeout);
 	WIFI_getHTTPpage("wolf-sdr.com", url, WIFI_getDXCluster_background_callback, false, false);
+	return true;
+}
+
+bool WIFI_getWOLFCluster_background(void) {
+	if (!WIFI_connected || WIFI_State != WIFI_READY) {
+		return false;
+	}
+
+	char url[150];
+	sprintf(url, "/trx_services/wolf_cluster.php?background&freq=%llu&callsign=%s&timeout=%d", CurrentVFO->Freq, TRX.CALLSIGN, TRX.FFT_DXCluster_Timeout);
+	WIFI_getHTTPpage("wolf-sdr.com", url, WIFI_getWOLFCluster_background_callback, false, false);
 	return true;
 }
 

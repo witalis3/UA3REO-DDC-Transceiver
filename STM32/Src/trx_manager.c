@@ -83,6 +83,7 @@ uint32_t TRX_TX_StartTime = 0;
 uint32_t TRX_TX_EndTime = 0;
 uint32_t TRX_Inactive_Time = 0;
 uint32_t TRX_DXCluster_UpdateTime = 0;
+uint32_t TRX_WOLF_Cluster_UpdateTime = 0;
 volatile float32_t TRX_PWR_Voltage = 12.0f;
 volatile float32_t TRX_PWR_Current = 0.0f;
 volatile float32_t TRX_RF_Current = 0.0f;
@@ -836,6 +837,7 @@ void TRX_RestoreBandSettings(int8_t band) {
 
 	TRX_Temporary_Stop_BandMap = false;
 	TRX_DXCluster_UpdateTime = 0;
+	TRX_WOLF_Cluster_UpdateTime = 0;
 
 	LCD_UpdateQuery.TopButtons = true;
 }
@@ -1217,6 +1219,7 @@ void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
 	}
 
 	TRX_DXCluster_UpdateTime = 0;
+	TRX_WOLF_Cluster_UpdateTime = 0;
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.BottomButtons = true;
 	LCD_UpdateQuery.FreqInfoRedraw = true;
@@ -2397,6 +2400,7 @@ void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter) {
 	TRX_ScanMode = false;
 	LCD_closeWindow();
 	TRX_DXCluster_UpdateTime = 0;
+	TRX_WOLF_Cluster_UpdateTime = 0;
 }
 
 void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {

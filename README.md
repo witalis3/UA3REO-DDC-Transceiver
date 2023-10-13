@@ -152,11 +152,12 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Full Duplex** - Full duplex RX+TX mode
 * **Locator** - User QTH locator
 * **RIT Interval** - Offset range RIT (+ -)
+* **XIT Interval** - Offset range XIT (+ -)
 * **Split freq sync** - Synchronous VFO frequency change in SPLIT mode
 * **Transverter XXcm** - Enable external ham band transverter support
 * **URSI Code** - Ionogramm URSI Code https://digisonde.com/index.html#stationmap-section
 * **Tropo Region** - Region for tropospheric forecast https://www.dxinfocentre.com/tropo.html 
-* **XIT Interval** - Offset range XIT (+ -)
+* **Wolf Cluster** - Display Wolf TRX users on spectrum and send self data
 
 ### FILTERS Settings
 

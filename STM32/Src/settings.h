@@ -18,38 +18,39 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 112        // Settings config version
-#define CALIB_VERSION 77        // Calibration config version
+#define SETT_VERSION 113        // Settings config version
+#define CALIB_VERSION 78        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
-#define TRX_SAMPLERATE 48000                  // audio stream sampling rate during processing and TX (NOT RX!)
-#define MAX_TX_AMPLITUDE_MULT 0.85f           // Maximum amplitude when transmitting to FPGA
-#define AGC_CLIPPING 6.0f                     // Limit over target in AGC, dB
-#define TOUCHPAD_DELAY 200                    // Anti-bounce time for pressing the touchpad
-#define AUTOGAIN_TARGET_AMPLITUDE 20000.0f    // target autocorrector amplitude
-#define AUTOGAIN_MAX_AMPLITUDE 30000.0f       // maximum autocorrector amplitude
-#define AUTOGAIN_CORRECTOR_WAITSTEP 5         // waiting for the averaging of the results when the auto-corrector of the input circuits is running
-#define KEY_HOLD_TIME 500                     // time of long pressing of the keyboard button for triggering, ms
-#define SHOW_LOGO true                        // Show logo on boot (from images.h)
-#define POWERDOWN_TIMEOUT 1000                // time of pressing the shutdown button, for operation, ms
-#define POWERDOWN_FORCE_TIMEOUT 2000          // force time
-#define USB_RESTART_TIMEOUT 5000              // time after which USB restart occurs if there are no packets
-#define SNTP_SYNC_INTERVAL (60 * 2)           // Time synchronization interval via NTP, sec
-#define SCANNER_NOSIGNAL_TIME 50              // time to continue sweeping if signal too low
-#define SCANNER_SIGNAL_TIME_FM 5000           // time to continue sweeping if signal founded for FM
-#define SCANNER_SIGNAL_TIME_OTHER 1000        // time to continue sweeping if signal founded for SSB
-#define SCANNER_FREQ_STEP_WFM 100000          // step for freq scanner for WFM
-#define SCANNER_FREQ_STEP_NFM 25000           // step for freq scanner for NFM
-#define SCANNER_FREQ_STEP_OTHER 500           // step for freq scanner for SSB
-#define ENCODER_MIN_RATE_ACCELERATION 2.0f    // encoder enable rounding if lower than value
-#define DXCLUSTER_UPDATE_TIME (1000 * 60 * 1) // interval to get cluster info, 1min
-#define NORMAL_SWR_SAVED 1.5f                 // ATU SWR target for saved settings
-#define NORMAL_SWR_TUNE 1.2f                  // ATU SWR target for new tune
-#define IDLE_LCD_BRIGHTNESS 5                 // Low brightness for IDLE mode (dimmer)
-#define CW_ADD_GAIN_IF 20.0f                  // additional IF gain in CW
-#define CW_ADD_GAIN_AF 10.0f                  // additional AF gain in CW
-#define TX_LPF_TIMEOUT (180 * 1000)           // TX LPF On Timeout, millisec (3 min)
-#define SWR_PROTECTOR_MAX_POWER 20.0f         // drop down to PWR %, if SWR high
+#define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
+#define MAX_TX_AMPLITUDE_MULT 0.85f          // Maximum amplitude when transmitting to FPGA
+#define AGC_CLIPPING 6.0f                    // Limit over target in AGC, dB
+#define TOUCHPAD_DELAY 200                   // Anti-bounce time for pressing the touchpad
+#define AUTOGAIN_TARGET_AMPLITUDE 20000.0f   // target autocorrector amplitude
+#define AUTOGAIN_MAX_AMPLITUDE 30000.0f      // maximum autocorrector amplitude
+#define AUTOGAIN_CORRECTOR_WAITSTEP 5        // waiting for the averaging of the results when the auto-corrector of the input circuits is running
+#define KEY_HOLD_TIME 500                    // time of long pressing of the keyboard button for triggering, ms
+#define SHOW_LOGO true                       // Show logo on boot (from images.h)
+#define POWERDOWN_TIMEOUT 1000               // time of pressing the shutdown button, for operation, ms
+#define POWERDOWN_FORCE_TIMEOUT 2000         // force time
+#define USB_RESTART_TIMEOUT 5000             // time after which USB restart occurs if there are no packets
+#define SNTP_SYNC_INTERVAL (60 * 2)          // Time synchronization interval via NTP, sec
+#define SCANNER_NOSIGNAL_TIME 50             // time to continue sweeping if signal too low
+#define SCANNER_SIGNAL_TIME_FM 5000          // time to continue sweeping if signal founded for FM
+#define SCANNER_SIGNAL_TIME_OTHER 1000       // time to continue sweeping if signal founded for SSB
+#define SCANNER_FREQ_STEP_WFM 100000         // step for freq scanner for WFM
+#define SCANNER_FREQ_STEP_NFM 25000          // step for freq scanner for NFM
+#define SCANNER_FREQ_STEP_OTHER 500          // step for freq scanner for SSB
+#define ENCODER_MIN_RATE_ACCELERATION 2.0f   // encoder enable rounding if lower than value
+#define DXCLUSTER_UPDATE_TIME (1000 * 60)    // interval to get cluster info, 1min
+#define WOLF_CLUSTER_UPDATE_TIME (1000 * 30) // interval to get WOLF cluster info, 30sec
+#define NORMAL_SWR_SAVED 1.5f                // ATU SWR target for saved settings
+#define NORMAL_SWR_TUNE 1.2f                 // ATU SWR target for new tune
+#define IDLE_LCD_BRIGHTNESS 5                // Low brightness for IDLE mode (dimmer)
+#define CW_ADD_GAIN_IF 20.0f                 // additional IF gain in CW
+#define CW_ADD_GAIN_AF 10.0f                 // additional AF gain in CW
+#define TX_LPF_TIMEOUT (180 * 1000)          // TX LPF On Timeout, millisec (3 min)
+#define SWR_PROTECTOR_MAX_POWER 20.0f        // drop down to PWR %, if SWR high
 
 #define FULL_DUPLEX TRX.Full_Duplex             // Enable duplex RX and TX
 #define SHOW_RX_FFT_ON_TX FULL_DUPLEX           // Show RX FFT channel on TX
@@ -500,21 +501,94 @@ typedef struct {
 
 extern struct TRX_SETTINGS {
 	uint8_t flash_id; // version check
-	bool NeedGoToBootloader;
-	// TRX
+
+	VFO VFO_A;
+	VFO VFO_B;
+
 	float32_t ATT_DB;
+	float32_t FRQ_ENC_FM_STEP_KHZ;
+	float32_t FRQ_ENC_AM_STEP_KHZ;
+	float32_t CTCSS_Freq;
+	float32_t MIC_Gain_SSB_DB;
+	float32_t MIC_Gain_AMFM_DB;
+	float32_t TX_CESSB_COMPRESS_DB;
+	float32_t CW_DotToDashRate;
+
 	uint32_t FRQ_STEP;
 	uint32_t FRQ_FAST_STEP;
 	uint32_t FRQ_ENC_STEP;
 	uint32_t FRQ_ENC_FAST_STEP;
 	uint32_t FRQ_ENC_WFM_STEP_KHZ;
-	float32_t FRQ_ENC_FM_STEP_KHZ;
-	float32_t FRQ_ENC_AM_STEP_KHZ;
-	VFO VFO_A;
-	VFO VFO_B;
+	uint32_t SWR_CUSTOM_Begin;
+	uint32_t SWR_CUSTOM_End;
+	uint32_t SPEC_Begin;
+	uint32_t SPEC_End;
+
+	int16_t REPEATER_Offset;
+	int16_t FFT_ManualBottom;
+	int16_t FFT_ManualTop;
+	int16_t SPEC_TopDBM;
+	int16_t SPEC_BottomDBM;
+	int16_t WSPR_FREQ_OFFSET;
+
 	uint16_t RIT_INTERVAL;
 	uint16_t XIT_INTERVAL;
-	int16_t REPEATER_Offset;
+	uint16_t Volume;
+	uint16_t RX_AGC_Hold_Time;
+	uint16_t RX_AGC_Hold_Limiter;
+	uint16_t RX_AGC_Hold_Step_Up;
+	uint16_t RX_AGC_Hold_Step_Down;
+	uint16_t CW_LPF_Filter;
+	uint16_t DIGI_LPF_Filter;
+	uint16_t SSB_LPF_RX_Filter;
+	uint16_t SSB_LPF_TX_Filter;
+	uint16_t SSB_HPF_RX_Filter;
+	uint16_t SSB_HPF_TX_Filter;
+	uint16_t AM_LPF_RX_Filter;
+	uint16_t AM_LPF_TX_Filter;
+	uint16_t FM_LPF_RX_Filter;
+	uint16_t FM_LPF_TX_Filter;
+	uint16_t FM_HPF_RX_Filter;
+	uint16_t VOX_TIMEOUT;
+	uint16_t CW_Pitch;
+	uint16_t CW_Key_timeout;
+	uint16_t CW_SelfHear;
+	uint16_t CW_KEYER_WPM;
+	uint16_t LCD_SleepTimeout;
+	uint16_t RTTY_Speed;
+	uint16_t RTTY_Shift;
+	uint16_t RTTY_Freq;
+
+	int8_t MIC_NOISE_GATE;
+	int8_t RX_EQ_P1;
+	int8_t RX_EQ_P2;
+	int8_t RX_EQ_P3;
+	int8_t RX_EQ_P4;
+	int8_t RX_EQ_P5;
+	int8_t RX_EQ_P6;
+	int8_t RX_EQ_P1_WFM;
+	int8_t RX_EQ_P2_WFM;
+	int8_t RX_EQ_P3_WFM;
+	int8_t RX_EQ_P4_WFM;
+	int8_t RX_EQ_P5_WFM;
+	int8_t RX_EQ_P6_WFM;
+	int8_t MIC_EQ_P1_SSB;
+	int8_t MIC_EQ_P2_SSB;
+	int8_t MIC_EQ_P3_SSB;
+	int8_t MIC_EQ_P4_SSB;
+	int8_t MIC_EQ_P5_SSB;
+	int8_t MIC_EQ_P6_SSB;
+	int8_t MIC_EQ_P1_AMFM;
+	int8_t MIC_EQ_P2_AMFM;
+	int8_t MIC_EQ_P3_AMFM;
+	int8_t MIC_EQ_P4_AMFM;
+	int8_t MIC_EQ_P5_AMFM;
+	int8_t MIC_EQ_P6_AMFM;
+	int8_t AGC_GAIN_TARGET;
+	int8_t VOX_THRESHOLD;
+	int8_t FFT_FreqGrid;
+	int8_t FM_SQL_threshold_dbm_shadow;
+
 	uint8_t ATT_STEP;
 	uint8_t RF_Gain;
 	uint8_t RF_Gain_By_Mode_CW;
@@ -525,16 +599,68 @@ extern struct TRX_SETTINGS {
 	uint8_t FRQ_CW_STEP_DIVIDER;
 	uint8_t ATU_I;
 	uint8_t ATU_C;
+	uint8_t CW_LPF_Stages;
+	uint8_t SSB_LPF_Stages;
+	uint8_t AMFM_LPF_Stages;
+	uint8_t Volume_Step;
+	uint8_t IF_Gain;
+	uint8_t MIC_REVERBER;
+	uint8_t DNR1_SNR_THRESHOLD;
+	uint8_t DNR2_SNR_THRESHOLD;
+	uint8_t DNR_AVERAGE;
+	uint8_t DNR_MINIMAL;
+	uint8_t VAD_THRESHOLD;
+	uint8_t NOISE_BLANKER_THRESHOLD;
+	uint8_t RX_AGC_SSB_speed;
+	uint8_t RX_AGC_CW_speed;
+	uint8_t RX_AGC_Max_gain;
+	uint8_t TX_Compressor_speed_SSB;
+	uint8_t TX_Compressor_maxgain_SSB;
+	uint8_t TX_Compressor_speed_AMFM;
+	uint8_t TX_Compressor_maxgain_AMFM;
+	uint8_t SELFHEAR_Volume;
+	uint8_t LINE_Volume;
+	uint8_t CODEC_Out_Volume;
+	uint8_t FM_Stereo_Modulation;
+	uint8_t TROPO_Region;
+	uint8_t RX_AUDIO_MODE;
+	uint8_t CW_Iambic_Type;
+	uint8_t ColorThemeId;
+	uint8_t LayoutThemeId;
+	uint8_t FFT_Zoom;
+	uint8_t FFT_ZoomCW;
+	uint8_t LCD_Brightness;
+	uint8_t FFT_Sensitivity;
+	uint8_t FFT_Speed;
+	uint8_t FFT_Averaging;
+	uint8_t FFT_Window;
+	uint8_t FFT_Height;
+	uint8_t FFT_Style;
+	uint8_t FFT_BW_Style;
+	uint8_t FFT_Color;
+	uint8_t WTF_Color;
+	uint8_t FFT_3D;
+	uint8_t FFT_DXCluster_Timeout;
+	uint8_t FFT_Scale_Type;
+	uint8_t RTTY_StopBits;
+	uint8_t CW_Decoder_Threshold;
+	uint8_t DNR_shadow;
+	uint8_t FRONTPANEL_funcbuttons_page;
+	uint8_t FuncButtons[(FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE)];
+
 	DX_CLUSTER_TYPE DXCluster_Type;
 	TRX_DEBUG_TYPE Debug_Type;
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE_MAIN;
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE_FM;
 	TRX_INPUT_TYPE InputType_MAIN;
 	TRX_INPUT_TYPE InputType_DIGI;
+	CW_PTT_TYPE CW_PTT_Type;
+	ENC2_FUNC_MODE ENC2_func_mode;
 #if HRDW_HAS_DUAL_RX
 	DUAL_RX_TYPE Dual_RX_Type;
-	bool Dual_RX;
 #endif
+
+	bool NeedGoToBootloader;
 	bool selected_vfo; // false - A; true - B
 	bool Fast;
 	bool LNA;
@@ -570,83 +696,6 @@ extern struct TRX_SETTINGS {
 	bool Digital_Pre_Distortion;
 	bool Split_Mode_Sync_Freq;
 	bool FT8_Auto_CQ;
-	char CALLSIGN[MAX_CALLSIGN_LENGTH + 1];
-	char LOCATOR[MAX_CALLSIGN_LENGTH + 1];
-	char URSI_CODE[MAX_CALLSIGN_LENGTH + 1];
-	// AUDIO
-	float32_t CTCSS_Freq;
-	float32_t MIC_Gain_SSB_DB;
-	float32_t MIC_Gain_AMFM_DB;
-	float32_t TX_CESSB_COMPRESS_DB;
-	uint16_t Volume;
-	uint16_t RX_AGC_Hold_Time;
-	uint16_t RX_AGC_Hold_Limiter;
-	uint16_t RX_AGC_Hold_Step_Up;
-	uint16_t RX_AGC_Hold_Step_Down;
-	uint16_t CW_LPF_Filter;
-	uint16_t DIGI_LPF_Filter;
-	uint16_t SSB_LPF_RX_Filter;
-	uint16_t SSB_LPF_TX_Filter;
-	uint16_t SSB_HPF_RX_Filter;
-	uint16_t SSB_HPF_TX_Filter;
-	uint16_t AM_LPF_RX_Filter;
-	uint16_t AM_LPF_TX_Filter;
-	uint16_t FM_LPF_RX_Filter;
-	uint16_t FM_LPF_TX_Filter;
-	uint16_t FM_HPF_RX_Filter;
-	uint16_t VOX_TIMEOUT;
-	uint8_t CW_LPF_Stages;
-	uint8_t SSB_LPF_Stages;
-	uint8_t AMFM_LPF_Stages;
-	uint8_t Volume_Step;
-	uint8_t IF_Gain;
-	uint8_t MIC_REVERBER;
-	uint8_t DNR1_SNR_THRESHOLD;
-	uint8_t DNR2_SNR_THRESHOLD;
-	uint8_t DNR_AVERAGE;
-	uint8_t DNR_MINIMAL;
-	uint8_t VAD_THRESHOLD;
-	uint8_t NOISE_BLANKER_THRESHOLD;
-	uint8_t RX_AGC_SSB_speed;
-	uint8_t RX_AGC_CW_speed;
-	uint8_t RX_AGC_Max_gain;
-	uint8_t TX_Compressor_speed_SSB;
-	uint8_t TX_Compressor_maxgain_SSB;
-	uint8_t TX_Compressor_speed_AMFM;
-	uint8_t TX_Compressor_maxgain_AMFM;
-	uint8_t SELFHEAR_Volume;
-	uint8_t LINE_Volume;
-	uint8_t CODEC_Out_Volume;
-	uint8_t FM_Stereo_Modulation;
-	uint8_t TROPO_Region;
-	uint8_t RX_AUDIO_MODE;
-	int8_t MIC_NOISE_GATE;
-	int8_t RX_EQ_P1;
-	int8_t RX_EQ_P2;
-	int8_t RX_EQ_P3;
-	int8_t RX_EQ_P4;
-	int8_t RX_EQ_P5;
-	int8_t RX_EQ_P6;
-	int8_t RX_EQ_P1_WFM;
-	int8_t RX_EQ_P2_WFM;
-	int8_t RX_EQ_P3_WFM;
-	int8_t RX_EQ_P4_WFM;
-	int8_t RX_EQ_P5_WFM;
-	int8_t RX_EQ_P6_WFM;
-	int8_t MIC_EQ_P1_SSB;
-	int8_t MIC_EQ_P2_SSB;
-	int8_t MIC_EQ_P3_SSB;
-	int8_t MIC_EQ_P4_SSB;
-	int8_t MIC_EQ_P5_SSB;
-	int8_t MIC_EQ_P6_SSB;
-	int8_t MIC_EQ_P1_AMFM;
-	int8_t MIC_EQ_P2_AMFM;
-	int8_t MIC_EQ_P3_AMFM;
-	int8_t MIC_EQ_P4_AMFM;
-	int8_t MIC_EQ_P5_AMFM;
-	int8_t MIC_EQ_P6_AMFM;
-	int8_t AGC_GAIN_TARGET;
-	int8_t VOX_THRESHOLD;
 	bool Mute;
 	bool AFAmp_Mute;
 	bool MIC_Boost;
@@ -658,47 +707,11 @@ extern struct TRX_SETTINGS {
 	bool VOX;
 	bool TX_CESSB;
 	bool AGC_Spectral;
-	// CW
-	float32_t CW_DotToDashRate;
-	uint16_t CW_Pitch;
-	uint16_t CW_Key_timeout;
-	uint16_t CW_SelfHear;
-	uint16_t CW_KEYER_WPM;
-	CW_PTT_TYPE CW_PTT_Type;
 	bool CW_KEYER;
 	bool CW_OneSymbolMemory;
 	bool CW_GaussFilter;
 	bool CW_Iambic;
-	uint8_t CW_Iambic_Type;
 	bool CW_Invert;
-	char CW_Macros_1[MAX_CW_MACROS_LENGTH + 1];
-	char CW_Macros_2[MAX_CW_MACROS_LENGTH + 1];
-	char CW_Macros_3[MAX_CW_MACROS_LENGTH + 1];
-	char CW_Macros_4[MAX_CW_MACROS_LENGTH + 1];
-	char CW_Macros_5[MAX_CW_MACROS_LENGTH + 1];
-	// SCREEN
-	int16_t FFT_ManualBottom;
-	int16_t FFT_ManualTop;
-	uint16_t LCD_SleepTimeout;
-	int8_t FFT_FreqGrid;
-	uint8_t ColorThemeId;
-	uint8_t LayoutThemeId;
-	uint8_t FFT_Zoom;
-	uint8_t FFT_ZoomCW;
-	uint8_t LCD_Brightness;
-	uint8_t FFT_Sensitivity;
-	uint8_t FFT_Speed;
-	uint8_t FFT_Averaging;
-	uint8_t FFT_Window;
-	uint8_t FFT_Height;
-	uint8_t FFT_Style;
-	uint8_t FFT_BW_Style;
-	uint8_t FFT_Color;
-	uint8_t WTF_Color;
-	uint8_t FFT_3D;
-	uint8_t FFT_DXCluster_Timeout;
-	uint8_t FFT_Scale_Type;
-	uint8_t FuncButtons[(FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE)];
 	bool FFT_Enabled;
 	bool WTF_Moving;
 	bool FFT_Automatic;
@@ -712,29 +725,14 @@ extern struct TRX_SETTINGS {
 	bool Show_Sec_VFO;
 	bool AnalogMeterShowPWR;
 	bool EnableBottomNavigationButtons;
-	// DECODERS
-	uint16_t RTTY_Speed;
-	uint16_t RTTY_Shift;
-	uint16_t RTTY_Freq;
-	uint8_t RTTY_StopBits;
-	uint8_t CW_Decoder_Threshold;
 	bool CW_Decoder;
 	bool RDS_Decoder;
 	bool RTTY_InvertBits;
-	// ADC
 	bool ADC_Driver;
 	bool ADC_PGA;
 	bool ADC_RAND;
 	bool ADC_SHDN;
 	bool ADC_DITH;
-	// SERVICES
-	uint32_t SWR_CUSTOM_Begin;
-	uint32_t SWR_CUSTOM_End;
-	uint32_t SPEC_Begin;
-	uint32_t SPEC_End;
-	int16_t SPEC_TopDBM;
-	int16_t SPEC_BottomDBM;
-	int16_t WSPR_FREQ_OFFSET;
 	bool WSPR_BANDS_160;
 	bool WSPR_BANDS_80;
 	bool WSPR_BANDS_40;
@@ -746,18 +744,26 @@ extern struct TRX_SETTINGS {
 	bool WSPR_BANDS_10;
 	bool WSPR_BANDS_6;
 	bool WSPR_BANDS_2;
-	// Shadow variables
-	uint8_t FRONTPANEL_funcbuttons_page;
-	ENC2_FUNC_MODE ENC2_func_mode;
-	uint8_t DNR_shadow;
-	int8_t FM_SQL_threshold_dbm_shadow;
 	bool SQL_shadow;
 	bool AGC_shadow;
 	bool Notch_on_shadow;
 	bool RepeaterMode_shadow;
-	// Memory
+	bool WOLF_Cluster;
+#if HRDW_HAS_DUAL_RX
+	bool Dual_RX;
+#endif
+
+	char CALLSIGN[MAX_CALLSIGN_LENGTH + 1];
+	char LOCATOR[MAX_CALLSIGN_LENGTH + 1];
+	char URSI_CODE[MAX_CALLSIGN_LENGTH + 1];
+	char CW_Macros_1[MAX_CW_MACROS_LENGTH + 1];
+	char CW_Macros_2[MAX_CW_MACROS_LENGTH + 1];
+	char CW_Macros_3[MAX_CW_MACROS_LENGTH + 1];
+	char CW_Macros_4[MAX_CW_MACROS_LENGTH + 1];
+	char CW_Macros_5[MAX_CW_MACROS_LENGTH + 1];
+
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
-	//
+
 	uint8_t csum;   // check sum
 	uint8_t ENDBit; // end bit
 } TRX;
@@ -796,12 +802,12 @@ extern struct TRX_CALIBRATE {
 	uint32_t RFU_BPF_8_END;
 	int16_t RTC_Calibration;
 	int16_t VCXO_correction;
+	int16_t smeter_calibration_hf;
+	int16_t smeter_calibration_vhf;
 	uint16_t TCXO_frequency;
 	uint16_t MAX_ChargePump_Freq;
 	uint16_t TX_StartDelay;
 	uint16_t INA226_Shunt_mOhm;
-	int16_t smeter_calibration_hf;
-	int16_t smeter_calibration_vhf;
 	uint16_t Transverter_Custom_Offset_Mhz;
 	uint16_t Transverter_70cm_RF_Mhz;
 	uint16_t Transverter_70cm_IF_Mhz;
@@ -822,6 +828,7 @@ extern struct TRX_CALIBRATE {
 	uint16_t TOUCHPAD_CLICK_TIMEOUT;
 	uint16_t TOUCHPAD_HOLD_TIMEOUT;
 	uint16_t TOUCHPAD_SWIPE_THRESHOLD_PX;
+	int8_t LNA_compensation;
 	uint8_t DAC_driver_mode;
 	uint8_t rf_out_power_2200m;
 	uint8_t rf_out_power_160m;
@@ -893,7 +900,6 @@ extern struct TRX_CALIBRATE {
 	uint8_t IF_GAIN_MIN;
 	uint8_t IF_GAIN_MAX;
 	uint8_t FAN_Medium_speed;
-	int8_t LNA_compensation;
 	TRX_RF_UNIT_TYPE RF_unit_type;
 	TRX_TANGENT_TYPE TangentType;
 	CAT_TYPE CAT_Type;

@@ -16,12 +16,20 @@
 #define WIFI_FOUNDED_AP_MAXCOUNT 16
 #define WIFI_DXCLUSTER_MAX_RECORDS 70
 #define WIFI_DXCLUSTER_MAX_CALL_LEN 23
+#define WIFI_WOLFCLUSTER_MAX_RECORDS 50
+#define WIFI_WOLFCLUSTER_MAX_CALL_LEN 10
 
 typedef struct {
 	uint32_t Freq;
 	char Callsign[WIFI_DXCLUSTER_MAX_CALL_LEN];
 	uint16_t Azimuth;
 } DXCLUSTER_ENTRY;
+
+typedef struct {
+	uint64_t Freq;
+	char Callsign[WIFI_WOLFCLUSTER_MAX_CALL_LEN];
+	uint16_t Azimuth;
+} WOLFCLUSTER_ENTRY;
 
 typedef enum {
 	WIFI_UNDEFINED,
@@ -67,7 +75,9 @@ extern bool WIFI_NewFW_FPGA;
 extern bool WIFI_download_inprogress;
 extern bool WIFI_downloadFileToSD_compleated;
 extern DXCLUSTER_ENTRY WIFI_DXCLUSTER_list[WIFI_DXCLUSTER_MAX_RECORDS];
+extern WOLFCLUSTER_ENTRY WIFI_WOLFCLUSTER_list[WIFI_WOLFCLUSTER_MAX_RECORDS];
 extern uint16_t WIFI_DXCLUSTER_list_count;
+extern uint16_t WIFI_WOLFCLUSTER_list_count;
 extern bool WIFI_maySendIQ;
 
 extern void WIFI_Init(void);
@@ -91,6 +101,7 @@ extern bool WIFI_SW_Restart(void (*callback)(void));
 extern void WIFI_checkFWUpdates(void);
 extern void WIFI_downloadFileToSD(char *url, char *filename);
 extern bool WIFI_getDXCluster_background(void);
+extern bool WIFI_getWOLFCluster_background(void);
 extern bool WIFI_SendIQData(uint8_t *data, uint32_t size);
 extern bool WIFI_AbortCallback();
 extern void WIFI_postQSOtoAllQSO(char *call, char *note, char *date, char *time, char *rsts, char *rstr, char *mode, char *band, char *name, char *qth);

@@ -58,6 +58,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_70CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_QO100(int8_t direction);
 static void SYSMENU_HANDL_TRX_XIT_INTERVAL(int8_t direction);
+static void SYSMENU_HANDL_TRX_WOLF_Cluster(int8_t direction);
 
 static void SYSMENU_HANDL_FILTER_AMFM_LPF_Stages(int8_t direction);
 static void SYSMENU_HANDL_FILTER_CW_GaussFilter(int8_t direction);
@@ -654,6 +655,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Tropo Region", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.TROPO_Region, SYSMENU_HANDL_TRX_TROPO_Region,
      (const enumerate_item[23]){"EEU", "EUR", "NWE", "NCA", "MID", "SEA", "NEA", "WAM", "EAM", "NSA", "SAM", "EAS",
                                 "OCE", "INO", "AFI", "ENP", "ESP", "CAR", "SAT", "NAT", "ENT", "AUS", "WNP"}},
+    {"WOLF Cluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WOLF_Cluster, SYSMENU_HANDL_TRX_WOLF_Cluster},
 #endif
 };
 
@@ -1539,6 +1541,15 @@ static void SYSMENU_HANDL_TRX_Split_Mode_Sync_Freq(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.Split_Mode_Sync_Freq = false;
+	}
+}
+
+static void SYSMENU_HANDL_TRX_WOLF_Cluster(int8_t direction) {
+	if (direction > 0) {
+		TRX.WOLF_Cluster = true;
+	}
+	if (direction < 0) {
+		TRX.WOLF_Cluster = false;
 	}
 }
 

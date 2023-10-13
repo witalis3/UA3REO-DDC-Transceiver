@@ -203,6 +203,7 @@ void LoadSettings(bool clear) {
 		TRX.FT8_Auto_CQ = false;                   // Auto-CQ mode for FT8
 		TRX.DXCluster_Type = DX_CLUSTER_DX_SUMMIT; // DX cluster type
 		TRX.REPEATER_Offset = 600;                 // repeater mode custom offset
+		TRX.WOLF_Cluster = true;                   // Enable WOLF cluster
 		// AUDIO
 		TRX.Volume = 25;                    // AF Volume
 		TRX.Volume_Step = 5;                // AF Volume step by sec encoder

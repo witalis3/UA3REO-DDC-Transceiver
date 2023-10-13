@@ -493,6 +493,14 @@ void EVENTS_do_EVERY_1000ms(void) // 1 hz
 			}
 			maySendIQ = false;
 		}
+		if (TRX.WOLF_Cluster && ((HAL_GetTick() - TRX_WOLF_Cluster_UpdateTime) > WOLF_CLUSTER_UPDATE_TIME || TRX_WOLF_Cluster_UpdateTime == 0) &&
+		    !SYSMENU_FT8_DECODER_opened) // get and show WOLF cluster
+		{
+			if (WIFI_getWOLFCluster_background()) {
+				TRX_WOLF_Cluster_UpdateTime = HAL_GetTick();
+			}
+			maySendIQ = false;
+		}
 		WIFI_maySendIQ = maySendIQ;
 	}
 #endif
