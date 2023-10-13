@@ -452,9 +452,10 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 
 	int64_t freq_diff = _freq - vfo->Freq;
 	vfo->Freq = _freq;
+	vfo->SpectrumCenterFreq = _freq;
 
 	// get settings and fpga freq phrase
-	int64_t vfoa_freq = CurrentVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
+	int64_t vfoa_freq = CurrentVFO->SpectrumCenterFreq + (TRX.RIT_Enabled ? TRX_RIT : 0);
 	if (TRX.Transverter_70cm && getBandFromFreq(vfoa_freq, true) == BANDID_70cm) {
 		vfoa_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * 1000000);
 	}
@@ -474,7 +475,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		vfoa_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_kHz * 1000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
 	}
 
-	CurrentVFO->RealRXFreq = vfoa_freq;
+	CurrentVFO->RXFreqAfterTransverters = vfoa_freq;
 	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
 
 	int64_t vfob_freq = SecondaryVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
@@ -497,7 +498,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		vfob_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_kHz * 1000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
 	}
 
-	SecondaryVFO->RealRXFreq = vfob_freq;
+	SecondaryVFO->RXFreqAfterTransverters = vfob_freq;
 	TRX_freq_phrase2 = getRXPhraseFromFrequency(vfob_freq, 2);
 
 	int64_t vfo_tx_freq = CurrentVFO->Freq + (TRX.XIT_Enabled ? TRX_XIT : 0);
@@ -2209,7 +2210,7 @@ void BUTTONHANDLER_SET_TX_BW(uint32_t parameter) {
 void BUTTONHANDLER_SETRF_POWER(uint32_t parameter) {
 	TRX.RF_Gain = parameter;
 
-	int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].RF_Gain = TRX.RF_Gain;
 	}

@@ -3011,7 +3011,7 @@ static void SYSMENU_HANDL_TX_RFPower(int8_t direction) {
 		TRX.RF_Gain = 100;
 	}
 
-	int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].RF_Gain = TRX.RF_Gain;
 	}

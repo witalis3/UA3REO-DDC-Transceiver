@@ -45,7 +45,7 @@ static uint8_t getBPFByFreq(uint32_t freq) {
 
 void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 {
-	if (TRX_Tune && CurrentVFO->RealRXFreq <= 70000000) {
+	if (TRX_Tune && CurrentVFO->RXFreqAfterTransverters <= 70000000) {
 		ATU_Process();
 	}
 
@@ -78,20 +78,20 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 	uint8_t bpf = getBPFByFreq(CurrentVFO->Freq);
 
-	uint8_t lpf_index = 6;                   // 12-10m
-	if (CurrentVFO->RealRXFreq <= 2000000) { // 160m
+	uint8_t lpf_index = 6;                                // 12-10m
+	if (CurrentVFO->RXFreqAfterTransverters <= 2000000) { // 160m
 		lpf_index = 1;
 	}
-	if (CurrentVFO->RealRXFreq > 2000000 && CurrentVFO->RealRXFreq <= 5000000) { // 80m
+	if (CurrentVFO->RXFreqAfterTransverters > 2000000 && CurrentVFO->RXFreqAfterTransverters <= 5000000) { // 80m
 		lpf_index = 2;
 	}
-	if (CurrentVFO->RealRXFreq > 5000000 && CurrentVFO->RealRXFreq <= 9000000) { // 40m
+	if (CurrentVFO->RXFreqAfterTransverters > 5000000 && CurrentVFO->RXFreqAfterTransverters <= 9000000) { // 40m
 		lpf_index = 3;
 	}
-	if (CurrentVFO->RealRXFreq > 9000000 && CurrentVFO->RealRXFreq <= 16000000) { // 30m,20m
+	if (CurrentVFO->RXFreqAfterTransverters > 9000000 && CurrentVFO->RXFreqAfterTransverters <= 16000000) { // 30m,20m
 		lpf_index = 4;
 	}
-	if (CurrentVFO->RealRXFreq > 16000000 && CurrentVFO->RealRXFreq <= 22000000) { // 17m,15m
+	if (CurrentVFO->RXFreqAfterTransverters > 16000000 && CurrentVFO->RXFreqAfterTransverters <= 22000000) { // 17m,15m
 		lpf_index = 5;
 	}
 

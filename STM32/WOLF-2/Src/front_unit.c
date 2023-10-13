@@ -1006,7 +1006,7 @@ static void FRONTPANEL_ENCODER3_Rotated(int8_t direction) // rotated encoder, ha
 		TRX.RF_Gain = 100;
 	}
 
-	int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].RF_Gain = TRX.RF_Gain;
 	}

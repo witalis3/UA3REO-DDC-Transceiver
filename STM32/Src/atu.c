@@ -51,7 +51,7 @@ void ATU_Process(void) {
 	}
 
 	if (!ATU_BestValsProbed) {
-		int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 		if (band >= 0) {
 			if (!TRX.ANT_selected) {
 				TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
@@ -98,7 +98,7 @@ void ATU_Process(void) {
 			delay_stages_count = 0;
 			BUTTONHANDLER_TUNE(0);
 
-			int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
+			int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 			if (band >= 0) {
 				if (!TRX.ANT_selected) {
 					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I = TRX.ATU_I;
@@ -268,7 +268,7 @@ void ATU_Process(void) {
 			LCD_showTooltip(buff);
 			delay_stages_count = 0;
 
-			int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
+			int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 			if (band >= 0) {
 				if (!TRX.ANT_selected) {
 					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I = TRX.ATU_I;

@@ -2943,7 +2943,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		}
 	}
 
-	int8_t band = getBandFromFreq(CurrentVFO->RealRXFreq, true);
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
 		if (!TRX.ANT_selected) {
 			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
