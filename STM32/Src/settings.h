@@ -18,7 +18,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 115        // Settings config version
+#define SETT_VERSION 116        // Settings config version
 #define CALIB_VERSION 79        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -343,6 +343,7 @@ typedef struct {
 	uint64_t Freq;
 	uint64_t SpectrumCenterFreq;
 	uint64_t RXFreqAfterTransverters;
+	int64_t SpectrumAndRXDiff;
 	uint_fast16_t HPF_RX_Filter_Width;
 	uint_fast16_t HPF_TX_Filter_Width;
 	uint_fast16_t LPF_RX_Filter_Width;

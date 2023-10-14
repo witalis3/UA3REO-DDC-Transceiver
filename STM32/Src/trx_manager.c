@@ -468,10 +468,11 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		if (vfo->LPF_RX_Filter_Width == 0) {
 			vfo->SpectrumCenterFreq = vfo->Freq;
 		}
-
+		vfo->SpectrumAndRXDiff = (int64_t)CurrentVFO->SpectrumCenterFreq - (int64_t)CurrentVFO->Freq;
 		NeedWTFRedraw = true;
 	} else {
 		vfo->SpectrumCenterFreq = vfo->Freq;
+		vfo->SpectrumAndRXDiff = 0;
 	}
 
 	// get settings and fpga freq phrase

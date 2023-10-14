@@ -154,11 +154,8 @@ void preProcessRxAudio(void) {
 	}
 
 	// Free Tune frequency transition
-	if (TRX.FREE_Tune && CurrentVFO->Mode != TRX_MODE_WFM) {
-		int64_t freq_diff = (int64_t)CurrentVFO->SpectrumCenterFreq - (int64_t)CurrentVFO->Freq;
-		if (freq_diff != 0) {
-			doRX_RXFreqTransition(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, FPGA_RX_IQ_BUFFER_HALF_SIZE, freq_diff, TRX_GetRXSampleRate);
-		}
+	if (TRX.FREE_Tune && CurrentVFO->Mode != TRX_MODE_WFM && CurrentVFO->SpectrumAndRXDiff != 0) {
+		doRX_RXFreqTransition(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->SpectrumAndRXDiff / 2, TRX_GetRXSampleRate);
 	}
 
 	// Decimation to 48kHz
