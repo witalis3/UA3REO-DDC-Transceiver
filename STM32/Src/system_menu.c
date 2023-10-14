@@ -59,7 +59,6 @@ static void SYSMENU_HANDL_TRX_TRANSV_70CM(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction);
 static void SYSMENU_HANDL_TRX_TRANSV_QO100(int8_t direction);
 static void SYSMENU_HANDL_TRX_XIT_INTERVAL(int8_t direction);
-static void SYSMENU_HANDL_TRX_WOLF_Cluster(int8_t direction);
 
 static void SYSMENU_HANDL_FILTER_AMFM_LPF_Stages(int8_t direction);
 static void SYSMENU_HANDL_FILTER_CW_GaussFilter(int8_t direction);
@@ -120,6 +119,7 @@ static void SYSMENU_HANDL_RX_Volume_Step(int8_t direction);
 static void SYSMENU_HANDL_RX_CODEC_Out_Volume(int8_t direction);
 static void SYSMENU_HANDL_RX_BluetoothAudio_Enabled(int8_t direction);
 static void SYSMENU_HANDL_RX_AUDIO_MODE(int8_t direction);
+static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction);
 
 static void SYSMENU_HANDL_TX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TX_ATU_Enabled(int8_t direction);
@@ -218,6 +218,7 @@ static void SYSMENU_HANDL_SCREEN_DXCluster_Type(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_WOLF_Cluster(int8_t direction);
 #endif
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON1(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FUNC_BUTTON2(int8_t direction);
@@ -659,7 +660,6 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Tropo Region", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.TROPO_Region, SYSMENU_HANDL_TRX_TROPO_Region,
      (const enumerate_item[23]){"EEU", "EUR", "NWE", "NCA", "MID", "SEA", "NEA", "WAM", "EAM", "NSA", "SAM", "EAS",
                                 "OCE", "INO", "AFI", "ENP", "ESP", "CAR", "SAT", "NAT", "ENT", "AUS", "WNP"}},
-    {"WOLF Cluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WOLF_Cluster, SYSMENU_HANDL_TRX_WOLF_Cluster},
 #endif
 };
 
@@ -727,6 +727,7 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 #else
     {"FM Squelch level, dBm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
 #endif
+    // {"Free tune", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FREE_Tune, SYSMENU_HANDL_RX_FREE_Tune},
     {"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_RX_NOISE_BLANKER},
     {"NB Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD},
 #if !defined(FRONTPANEL_LITE)
@@ -872,6 +873,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
     {"FFT DXClus Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
     {"FFT DXClus Timeout", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_DXCluster_Timeout, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Timeout},
+    {"WOLF Cluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WOLF_Cluster, SYSMENU_HANDL_SCREEN_WOLF_Cluster},
 #endif
     {"FFT Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Enabled, SYSMENU_HANDL_SCREEN_FFT_Enabled},
     {"FFT Freq Grid", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_FreqGrid, SYSMENU_HANDL_SCREEN_FFT_FreqGrid, (const enumerate_item[4]){"NO", "Top", "All", "Bott"}},
@@ -1546,15 +1548,6 @@ static void SYSMENU_HANDL_TRX_Split_Mode_Sync_Freq(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.Split_Mode_Sync_Freq = false;
-	}
-}
-
-static void SYSMENU_HANDL_TRX_WOLF_Cluster(int8_t direction) {
-	if (direction > 0) {
-		TRX.WOLF_Cluster = true;
-	}
-	if (direction < 0) {
-		TRX.WOLF_Cluster = false;
 	}
 }
 
@@ -2438,6 +2431,15 @@ static void SYSMENU_HANDL_RX_NOISE_BLANKER(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.NOISE_BLANKER = false;
+	}
+}
+
+static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction) {
+	if (direction > 0) {
+		TRX.FREE_Tune = true;
+	}
+	if (direction < 0) {
+		TRX.FREE_Tune = false;
 	}
 }
 
@@ -3876,6 +3878,15 @@ static void SYSMENU_HANDL_SCREEN_FFT_DXCluster(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.FFT_DXCluster = false;
+	}
+}
+
+static void SYSMENU_HANDL_SCREEN_WOLF_Cluster(int8_t direction) {
+	if (direction > 0) {
+		TRX.WOLF_Cluster = true;
+	}
+	if (direction < 0) {
+		TRX.WOLF_Cluster = false;
 	}
 }
 

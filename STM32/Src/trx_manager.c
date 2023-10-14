@@ -452,7 +452,27 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 
 	int64_t freq_diff = _freq - vfo->Freq;
 	vfo->Freq = _freq;
-	vfo->SpectrumCenterFreq = _freq;
+
+	if (TRX.FREE_Tune) {
+		uint64_t half_spectum_width = FFT_current_spectrum_width_Hz / 2 * 0.8 - vfo->LPF_RX_Filter_Width;
+
+		if (llabs((int64_t)vfo->SpectrumCenterFreq - (int64_t)vfo->Freq) > (half_spectum_width * 2)) {
+			vfo->SpectrumCenterFreq = vfo->Freq;
+		}
+		if ((vfo->SpectrumCenterFreq + half_spectum_width) < vfo->Freq) {
+			vfo->SpectrumCenterFreq = vfo->Freq - half_spectum_width;
+		}
+		if ((vfo->SpectrumCenterFreq - half_spectum_width) > vfo->Freq) {
+			vfo->SpectrumCenterFreq = vfo->Freq + half_spectum_width;
+		}
+		if (vfo->LPF_RX_Filter_Width == 0) {
+			vfo->SpectrumCenterFreq = vfo->Freq;
+		}
+
+		NeedWTFRedraw = true;
+	} else {
+		vfo->SpectrumCenterFreq = vfo->Freq;
+	}
 
 	// get settings and fpga freq phrase
 	int64_t vfoa_freq = CurrentVFO->SpectrumCenterFreq + (TRX.RIT_Enabled ? TRX_RIT : 0);

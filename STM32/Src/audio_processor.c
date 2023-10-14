@@ -101,7 +101,8 @@ static void doVAD(AUDIO_PROC_RX_NUM rx_id, uint16_t size);       // voice activi
 static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size); // IF gain
 static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size,
                                uint8_t factor); // decimate RX samplerate input stream
-static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_t freq_diff);
+static void doRX_RXFreqTransition(float32_t *in_i, float32_t *in_q, uint16_t size, float64_t freq_diff, float64_t samplerate);
+static void doRX_CWFreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_t freq_diff);
 static void APROC_SD_Play(void);
 static bool APROC_SD_PlayTX(void);
 static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize);
@@ -152,6 +153,15 @@ void preProcessRxAudio(void) {
 		audio_buffer_in_index = 0;
 	}
 
+	// Free Tune frequency transition
+	if (TRX.FREE_Tune && CurrentVFO->Mode != TRX_MODE_WFM) {
+		int64_t freq_diff = (int64_t)CurrentVFO->SpectrumCenterFreq - (int64_t)CurrentVFO->Freq;
+		if (freq_diff != 0) {
+			doRX_RXFreqTransition(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, FPGA_RX_IQ_BUFFER_HALF_SIZE, freq_diff, TRX_GetRXSampleRate);
+		}
+	}
+
+	// Decimation to 48kHz
 	if (CurrentVFO->Mode == TRX_MODE_WFM) {
 		// calc s-meter
 		doRX_SMETER(AUDIO_RX1, FPGA_Audio_Buffer_RX1_I_current, FPGA_RX_IQ_BUFFER_HALF_SIZE, false);
@@ -269,9 +279,9 @@ void processRxAudio(void) {
 	{
 	case TRX_MODE_CW:
 		doRX_LPF_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_FreqTransition(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, TRX.CW_Pitch);
-		arm_sub_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I,
-		            FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
+		doRX_CWFreqTransition(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, TRX.CW_Pitch);
+		// difference of I and Q - LSB
+		arm_sub_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_GAUSS_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_NOTCH(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -284,8 +294,8 @@ void processRxAudio(void) {
 		break;
 	case TRX_MODE_LSB:
 		doRX_HILBERT(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		arm_sub_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I,
-		            FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
+		// difference of I and Q - LSB
+		arm_sub_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_HPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_LPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -299,8 +309,7 @@ void processRxAudio(void) {
 		break;
 	case TRX_MODE_DIGI_L:
 		doRX_HILBERT(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		arm_sub_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I,
-		            FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
+		arm_sub_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 		doRX_LPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 		DECODER_PutSamples(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -310,8 +319,7 @@ void processRxAudio(void) {
 		break;
 	case TRX_MODE_USB:
 		doRX_HILBERT(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		arm_add_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I,
-		            FPGA_RX_IQ_BUFFER_HALF_SIZE); // sum of I and Q - USB
+		arm_add_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // sum of I and Q - USB
 		doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_HPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_LPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -326,8 +334,7 @@ void processRxAudio(void) {
 	case TRX_MODE_RTTY:
 	case TRX_MODE_DIGI_U:
 		doRX_HILBERT(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		arm_add_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I,
-		            FPGA_RX_IQ_BUFFER_HALF_SIZE); // sum of I and Q - USB
+		arm_add_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // sum of I and Q - USB
 		doRX_LPF_I(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 		DECODER_PutSamples(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -405,9 +412,9 @@ void processRxAudio(void) {
 		{
 		case TRX_MODE_CW:
 			doRX_LPF_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-			doRX_FreqTransition(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, TRX.CW_Pitch);
-			arm_sub_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I,
-			            FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
+			doRX_CWFreqTransition(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, TRX.CW_Pitch);
+			// difference of I and Q - LSB
+			arm_sub_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_GAUSS_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_NOTCH(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_NoiseBlanker(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -418,8 +425,8 @@ void processRxAudio(void) {
 			break;
 		case TRX_MODE_LSB:
 			doRX_HILBERT(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-			arm_sub_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I,
-			            FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
+			// difference of I and Q - LSB
+			arm_sub_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_NoiseBlanker(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_HPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_LPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -431,8 +438,7 @@ void processRxAudio(void) {
 			break;
 		case TRX_MODE_DIGI_L:
 			doRX_HILBERT(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-			arm_sub_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I,
-			            FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
+			arm_sub_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // difference of I and Q - LSB
 			doRX_LPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 			doRX_DNR(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
@@ -440,8 +446,7 @@ void processRxAudio(void) {
 			break;
 		case TRX_MODE_USB:
 			doRX_HILBERT(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-			arm_add_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I,
-			            FPGA_RX_IQ_BUFFER_HALF_SIZE); // sum of I and Q - USB
+			arm_add_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // sum of I and Q - USB
 			doRX_NoiseBlanker(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_HPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_LPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -454,8 +459,7 @@ void processRxAudio(void) {
 		case TRX_MODE_RTTY:
 		case TRX_MODE_DIGI_U:
 			doRX_HILBERT(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-			arm_add_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I,
-			            FPGA_RX_IQ_BUFFER_HALF_SIZE); // sum of I and Q - USB
+			arm_add_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE); // sum of I and Q - USB
 			doRX_LPF_I(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 			doRX_DNR(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
@@ -2225,7 +2229,24 @@ static bool APROC_SD_PlayTX(void) {
 }
 #endif
 
-static void doRX_FreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_t freq_diff) {
+static void doRX_RXFreqTransition(float32_t *in_i, float32_t *in_q, uint16_t size, float64_t freq_diff, float64_t samplerate) {
+	static float64_t gen_position = 0.0;
+
+	for (uint16_t i = 0; i < size; i++) {
+		float64_t coeff_sin = sin(gen_position * D_2PI);
+		float64_t coeff_cos = cos(gen_position * D_2PI);
+
+		in_i[i] *= coeff_sin;
+		in_q[i] *= coeff_cos;
+
+		gen_position += freq_diff / samplerate;
+		while (gen_position >= 1.0) {
+			gen_position -= 1.0;
+		}
+	}
+}
+
+static void doRX_CWFreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_t freq_diff) {
 	static float32_t gen_position_rx1 = 0.0f;
 	static float32_t gen_position_rx2 = 0.0f;
 
