@@ -414,6 +414,9 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	}
 
 	if (TRX_on_TX) {
+		               // erase place after RX 
+			LCDDriver_printTextFont("RX", LAYOUT->STATUS_TXRX_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_TXRX_Y_OFFSET), BG_COLOR, BG_COLOR, LAYOUT->STATUS_TXRX_FONT);		
+
 		if (TRX_Tune) {
 			LCDDriver_printTextFont("TU", LAYOUT->STATUS_TXRX_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_TXRX_Y_OFFSET), COLOR->STATUS_TU, BG_COLOR, LAYOUT->STATUS_TXRX_FONT);
 		} else {
