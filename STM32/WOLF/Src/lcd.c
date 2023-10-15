@@ -1516,6 +1516,11 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		addSymbols(ctmp, ctmp, 6, " ", true);
 		LCDDriver_printTextFont(ctmp, LAYOUT->STATUS_LABEL_S_VAL_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_S_VAL_Y_OFFSET, COLOR->STATUS_LABEL_S_VAL, BG_COLOR,
 		                        LAYOUT->STATUS_LABEL_S_VAL_FONT);
+
+		// Tuner status
+		if (CN_Theme && SYSMENU_HANDL_CHECK_HAS_ATU()) {
+			LCDDriver_printText(!TRX.TUNER_Enabled ? "TUN OFF" : "       ", LAYOUT->STATUS_ATU_I_X, LAYOUT->STATUS_ATU_I_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		}
 	} else {
 		// ATU
 		if (SYSMENU_HANDL_CHECK_HAS_ATU() && LAYOUT->STATUS_ATU_I_Y > 0) {
