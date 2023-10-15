@@ -1146,31 +1146,22 @@ static void getTS2000Mode(uint8_t VFO_Mode, char *out) {
 	if (VFO_Mode == TRX_MODE_USB) {
 		strcpy(out, "2");
 	}
-	if (VFO_Mode == TRX_MODE_IQ) {
-		strcpy(out, "0");
-	}
 	if (VFO_Mode == TRX_MODE_CW) {
 		strcpy(out, "3");
 	}
-	if (VFO_Mode == TRX_MODE_DIGI_L) {
-		strcpy(out, "9");
+	if (VFO_Mode == TRX_MODE_NFM || VFO_Mode == TRX_MODE_WFM) {
+		strcpy(out, "4");
 	}
-	if (VFO_Mode == TRX_MODE_DIGI_U || VFO_Mode == TRX_MODE_RTTY) {
+	if (VFO_Mode == TRX_MODE_AM || VFO_Mode == TRX_MODE_SAM) {
+		strcpy(out, "5");
+	}
+	if (VFO_Mode == TRX_MODE_DIGI_L) {
 		strcpy(out, "6");
 	}
-	if (VFO_Mode == TRX_MODE_NFM) {
-		strcpy(out, "4");
+	if (VFO_Mode == TRX_MODE_DIGI_U || VFO_Mode == TRX_MODE_RTTY) {
+		strcpy(out, "9");
 	}
-	if (VFO_Mode == TRX_MODE_WFM) {
-		strcpy(out, "4");
-	}
-	if (VFO_Mode == TRX_MODE_AM) {
-		strcpy(out, "5");
-	}
-	if (VFO_Mode == TRX_MODE_SAM) {
-		strcpy(out, "5");
-	}
-	if (VFO_Mode == TRX_MODE_LOOPBACK) {
+	if (VFO_Mode == TRX_MODE_IQ || VFO_Mode == TRX_MODE_LOOPBACK) {
 		strcpy(out, "0");
 	}
 }
@@ -1214,23 +1205,23 @@ static uint8_t setTS2000Mode(char *TS2000_Mode) {
 	if (strcmp(TS2000_Mode, "2") == 0) {
 		return TRX_MODE_USB;
 	}
-	if (strcmp(TS2000_Mode, "8") == 0) {
-		return TRX_MODE_IQ;
-	}
 	if (strcmp(TS2000_Mode, "3") == 0) {
 		return TRX_MODE_CW;
-	}
-	if (strcmp(TS2000_Mode, "9") == 0) {
-		return TRX_MODE_DIGI_L;
-	}
-	if (strcmp(TS2000_Mode, "6") == 0 || strcmp(TS2000_Mode, "D") == 0) {
-		return TRX_MODE_DIGI_U;
 	}
 	if (strcmp(TS2000_Mode, "4") == 0) {
 		return TRX_MODE_NFM;
 	}
 	if (strcmp(TS2000_Mode, "5") == 0) {
 		return TRX_MODE_SAM;
+	}
+	if (strcmp(TS2000_Mode, "6") == 0) {
+		return TRX_MODE_DIGI_L;
+	}
+	if (strcmp(TS2000_Mode, "8") == 0) {
+		return TRX_MODE_IQ;
+	}
+	if (strcmp(TS2000_Mode, "9") == 0 || strcmp(TS2000_Mode, "D") == 0) {
+		return TRX_MODE_DIGI_U;
 	}
 	println("Unknown mode ", TS2000_Mode);
 	return TRX_MODE_USB;
