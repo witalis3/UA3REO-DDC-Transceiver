@@ -101,7 +101,7 @@ static void doVAD(AUDIO_PROC_RX_NUM rx_id, uint16_t size);       // voice activi
 static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size); // IF gain
 static void doRX_DecimateInput(AUDIO_PROC_RX_NUM rx_id, float32_t *in_i, float32_t *in_q, float32_t *out_i, float32_t *out_q, uint16_t size,
                                uint8_t factor); // decimate RX samplerate input stream
-static void doRX_RXFreqTransition(float32_t *in_i, float32_t *in_q, uint16_t size, float64_t freq_diff, float64_t samplerate);
+static void doRX_RXFreqTransition(float32_t *in_i, float32_t *in_q, uint16_t size, int32_t freq_diff);
 static void doRX_CWFreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_t freq_diff);
 static void APROC_SD_Play(void);
 static bool APROC_SD_PlayTX(void);
@@ -155,7 +155,7 @@ void preProcessRxAudio(void) {
 
 	// Free Tune frequency transition
 	if (TRX.FREE_Tune && CurrentVFO->Mode != TRX_MODE_WFM && CurrentVFO->SpectrumAndRXDiff != 0) {
-		doRX_RXFreqTransition(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->SpectrumAndRXDiff, TRX_GetRXSampleRate);
+		doRX_RXFreqTransition(FPGA_Audio_Buffer_RX1_I_current, FPGA_Audio_Buffer_RX1_Q_current, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->SpectrumAndRXDiff);
 	}
 
 	// Decimation to 48kHz
@@ -2226,19 +2226,28 @@ static bool APROC_SD_PlayTX(void) {
 }
 #endif
 
-static void doRX_RXFreqTransition(float32_t *in_i, float32_t *in_q, uint16_t size, float64_t freq_diff, float64_t samplerate) {
-	static float64_t gen_position = 0.0;
+static void doRX_RXFreqTransition(float32_t *in_i, float32_t *in_q, uint16_t size, int32_t freq_diff) {
+	static float32_t gen_position_fft = 0.0;
+	float32_t step = (float32_t)freq_diff / (float32_t)TRX_GetRXSampleRate;
 
 	for (uint16_t i = 0; i < size; i++) {
-		float64_t coeff_sin = sin(gen_position * D_2PI);
-		float64_t coeff_cos = cos(gen_position * D_2PI);
+		float32_t position = gen_position_fft * F_2PI;
 
-		in_i[i] *= coeff_sin;
-		in_q[i] *= coeff_sin;
+		float32_t coeff_sin = sinf(position);
+		float32_t coeff_cos = cosf(position);
 
-		gen_position += freq_diff / samplerate;
-		while (gen_position >= 1.0) {
-			gen_position -= 1.0;
+		float32_t sample_i = in_i[i];
+		float32_t sample_q = in_q[i];
+
+		in_i[i] = (sample_i * coeff_cos - sample_q * coeff_sin) * 2.0f;
+		in_q[i] = (sample_i * coeff_sin + sample_q * coeff_cos) * 2.0f;
+
+		gen_position_fft += step;
+		if (gen_position_fft >= 1.0f) {
+			gen_position_fft -= 1.0f;
+		}
+		if (gen_position_fft <= -1.0f) {
+			gen_position_fft += 1.0f;
 		}
 	}
 }
@@ -2249,11 +2258,11 @@ static void doRX_CWFreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float3
 
 	if (rx_id == AUDIO_RX1) {
 		for (uint16_t i = 0; i < size; i++) {
-			APROC_Audio_Buffer_RX1_I[i] *= arm_sin_f32(gen_position_rx1 * F_2PI);
-			APROC_Audio_Buffer_RX1_Q[i] *= arm_cos_f32(gen_position_rx1 * F_2PI);
+			APROC_Audio_Buffer_RX1_I[i] *= sinf(gen_position_rx1 * F_2PI);
+			APROC_Audio_Buffer_RX1_Q[i] *= cosf(gen_position_rx1 * F_2PI);
 
-			gen_position_rx1 += (freq_diff / (float32_t)TRX_SAMPLERATE);
-			while (gen_position_rx1 >= 1.0f) {
+			gen_position_rx1 += freq_diff / (float32_t)TRX_SAMPLERATE;
+			if (gen_position_rx1 >= 1.0f) {
 				gen_position_rx1 -= 1.0f;
 			}
 		}
@@ -2261,11 +2270,11 @@ static void doRX_CWFreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float3
 #if HRDW_HAS_DUAL_RX
 	else {
 		for (uint16_t i = 0; i < size; i++) {
-			APROC_Audio_Buffer_RX2_I[i] *= arm_sin_f32(gen_position_rx2 * F_2PI);
-			APROC_Audio_Buffer_RX2_Q[i] *= arm_cos_f32(gen_position_rx2 * F_2PI);
+			APROC_Audio_Buffer_RX2_I[i] *= sinf(gen_position_rx2 * F_2PI);
+			APROC_Audio_Buffer_RX2_Q[i] *= cosf(gen_position_rx2 * F_2PI);
 
-			gen_position_rx2 += (freq_diff / (float32_t)TRX_SAMPLERATE);
-			while (gen_position_rx2 >= 1.0f) {
+			gen_position_rx2 += freq_diff / (float32_t)TRX_SAMPLERATE;
+			if (gen_position_rx2 >= 1.0f) {
 				gen_position_rx2 -= 1.0f;
 			}
 		}

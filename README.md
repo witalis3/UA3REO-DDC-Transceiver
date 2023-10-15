@@ -190,6 +190,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **FM Squelch level** - FM squelch level
 * **IF Gain, dB** - IF gain
 * **NB Threshold** - Threshold of Noise blanker
+* **Free tune** - Allows you to move the reception frequency across the spectrum without changing the center frequency of the spectrum itself
 * **Noise Blanker** - Activating the Surge Suppressor
 * **RX AUDIO Mode** - Audio lines control: Stereo\Left\Right
 * **RX AGC Hold time** - Time before release of AGC gain in signal peaks, ms
