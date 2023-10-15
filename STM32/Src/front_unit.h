@@ -21,7 +21,7 @@ typedef enum {
 
 typedef struct {
 	bool work_in_menu;
-	char name[16];
+	char *name;
 	uint32_t parameter;
 	void (*clickHandler)(uint32_t parameter);
 	void (*holdHandler)(uint32_t parameter);

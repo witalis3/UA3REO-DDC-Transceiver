@@ -1518,8 +1518,16 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		                        LAYOUT->STATUS_LABEL_S_VAL_FONT);
 
 		// Tuner status
-		if (CN_Theme && SYSMENU_HANDL_CHECK_HAS_ATU()) {
-			LCDDriver_printText(!TRX.TUNER_Enabled ? "TUN OFF" : "       ", LAYOUT->STATUS_ATU_I_X, LAYOUT->STATUS_ATU_I_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		if (CN_Theme) {
+			if (!TRX.TUNER_Enabled && SYSMENU_HANDL_CHECK_HAS_ATU()) {
+				strcpy(ctmp, "TUN OFF");
+			} else {
+				strcpy(ctmp, "       ");
+			}
+			if (CurrentVFO->Mode == TRX_MODE_CW) {
+				sprintf(ctmp, "WPM: %2d", TRX.CW_KEYER_WPM);
+			}
+			LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_I_X, LAYOUT->STATUS_ATU_I_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 		}
 	} else {
 		// ATU

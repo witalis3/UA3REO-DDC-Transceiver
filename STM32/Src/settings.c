@@ -169,8 +169,6 @@ void LoadSettings(bool clear) {
 		TRX.InputType_DIGI = TRX_INPUT_USB; // type of input to transfer (DIGI)
 #ifdef FRONTPANEL_X1
 		TRX.AutoGain = true; // auto-control preamp and attenuator
-#elif defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
-		TRX.AutoGain = false;                          // auto-control preamp and attenuator
 #else
 		TRX.AutoGain = true;                           // auto-control preamp and attenuator
 #endif
@@ -297,6 +295,7 @@ void LoadSettings(bool clear) {
 		TRX.VOX_THRESHOLD = -27;                                       // VOX threshold in dbFS
 		TRX.RX_AUDIO_MODE = RX_AUDIO_MODE_STEREO;                      // OUT Lines mode stereo/left/right
 		TRX.AGC_Threshold = true;                                      // Disable AGC on noise signals
+		TRX.SAM_Mode = SAM_MODE_STEREO;                                // Select SAM mode (Stereo/LSB/USB)
 		// CW
 		TRX.CW_Pitch = 600;                                             // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key
@@ -315,6 +314,11 @@ void LoadSettings(bool clear) {
 		strcpy(TRX.CW_Macros_3, "TNX RST 599 599 NAME QTH K");          // CW Macros 3
 		strcpy(TRX.CW_Macros_4, "73 73 SK K");                          // CW Macros 4
 		strcpy(TRX.CW_Macros_5, "TNX FOR NICE QSO DR OM CU AGN GL 73"); // CW Macros 5
+		strcpy(TRX.CW_Macros_Name_1, "MACR1");                          // CW Macros 1 name
+		strcpy(TRX.CW_Macros_Name_2, "MACR2");                          // CW Macros 2 name
+		strcpy(TRX.CW_Macros_Name_3, "MACR3");                          // CW Macros 3 name
+		strcpy(TRX.CW_Macros_Name_4, "MACR4");                          // CW Macros 4 name
+		strcpy(TRX.CW_Macros_Name_5, "MACR5");                          // CW Macros 5 name
 		// SCREEN
 		TRX.ColorThemeId = 0;  // Selected Color theme
 		TRX.LayoutThemeId = 0; // Selected Layout theme
@@ -907,8 +911,6 @@ void LoadCalibration(bool clear) {
 #endif
 #if defined(FRONTPANEL_MINI)
 		CALIBRATE.TCXO_frequency = 20000; // TCXO Frequency x1000
-#elif defined(FRONTPANEL_LITE_V2_MINI)
-		CALIBRATE.TCXO_frequency = 10000;              // TCXO Frequency x1000
 #else
 		CALIBRATE.TCXO_frequency = 12288;              // TCXO Frequency x1000
 #endif
