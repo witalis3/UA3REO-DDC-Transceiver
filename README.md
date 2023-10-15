@@ -254,6 +254,8 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **PTT Type** - RX/TX switch type for CW: by key or external PTT (tangent, etc.)
 * **Pitch** - Detuning the receive generator from the transmit frequency
 * **Self Hear** - Self-control CW (key press is heard)
+* **Macros x** - Setting up macros for CW transmission
+* **Macros x name** - Setting the macro name to be displayed in the interface
 
 ### SCREEN Settings
 

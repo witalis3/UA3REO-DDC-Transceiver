@@ -183,6 +183,11 @@ static void SYSMENU_HANDL_CW_SetCWMacros2(int8_t direction);
 static void SYSMENU_HANDL_CW_SetCWMacros3(int8_t direction);
 static void SYSMENU_HANDL_CW_SetCWMacros4(int8_t direction);
 static void SYSMENU_HANDL_CW_SetCWMacros5(int8_t direction);
+static void SYSMENU_HANDL_CW_SetCWMacrosName1(int8_t direction);
+static void SYSMENU_HANDL_CW_SetCWMacrosName2(int8_t direction);
+static void SYSMENU_HANDL_CW_SetCWMacrosName3(int8_t direction);
+static void SYSMENU_HANDL_CW_SetCWMacrosName4(int8_t direction);
+static void SYSMENU_HANDL_CW_SetCWMacrosName5(int8_t direction);
 
 static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction);
@@ -820,6 +825,8 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
     {"DotToDash Rate", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CW_DotToDashRate, SYSMENU_HANDL_CW_DotToDashRate},
+    {"Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
+    {"Iambic Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_Iambic_Type, SYSMENU_HANDL_CW_Iambic_Type, (const enumerate_item[2]){"A", "B"}},
     {"Key Invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Invert, SYSMENU_HANDL_CW_Invert},
     {"Key timeout", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_Key_timeout, SYSMENU_HANDL_CW_Key_timeout},
     {"Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_KEYER, SYSMENU_HANDL_CW_Keyer},
@@ -828,13 +835,16 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
     {"PTT Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_PTT_Type, SYSMENU_HANDL_CW_PTT_Type, (const enumerate_item[3]){"Key", "PTT", "KEY+PTT"}},
     {"Pitch", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_Pitch, SYSMENU_HANDL_CW_Pitch},
     {"Self Hear", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_SelfHear, SYSMENU_HANDL_CW_SelfHear},
-    {"Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
-    {"Iambic Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_Iambic_Type, SYSMENU_HANDL_CW_Iambic_Type, (const enumerate_item[2]){"A", "B"}},
 #if !defined(FRONTPANEL_SMALL_V1)
+    {"Macros 1 name", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacrosName1},
     {"Macros 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros1},
+    {"Macros 2 name", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacrosName2},
     {"Macros 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros2},
+    {"Macros 3 name", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacrosName3},
     {"Macros 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros3},
+    {"Macros 4 name", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacrosName4},
     {"Macros 4", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros4},
+    {"Macros 5 name", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacrosName5},
     {"Macros 5", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_CW_SetCWMacros5},
 #endif
 };
@@ -1448,6 +1458,11 @@ static void SYSMENU_TRX_DrawCWMacros2Menu(bool full_redraw);
 static void SYSMENU_TRX_DrawCWMacros3Menu(bool full_redraw);
 static void SYSMENU_TRX_DrawCWMacros4Menu(bool full_redraw);
 static void SYSMENU_TRX_DrawCWMacros5Menu(bool full_redraw);
+static void SYSMENU_TRX_DrawCWMacrosName1Menu(bool full_redraw);
+static void SYSMENU_TRX_DrawCWMacrosName2Menu(bool full_redraw);
+static void SYSMENU_TRX_DrawCWMacrosName3Menu(bool full_redraw);
+static void SYSMENU_TRX_DrawCWMacrosName4Menu(bool full_redraw);
+static void SYSMENU_TRX_DrawCWMacrosName5Menu(bool full_redraw);
 static uint8_t SYSTMENU_getVisibleIdFromReal(uint8_t realIndex);
 static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex);
 static uint8_t SYSTMENU_getRealIdFromVisible(uint8_t visibleIndex);
@@ -1490,6 +1505,11 @@ static bool sysmenu_trx_setCWMacros2_menu_opened = false;
 static bool sysmenu_trx_setCWMacros3_menu_opened = false;
 static bool sysmenu_trx_setCWMacros4_menu_opened = false;
 static bool sysmenu_trx_setCWMacros5_menu_opened = false;
+static bool sysmenu_trx_setCWMacrosName1_menu_opened = false;
+static bool sysmenu_trx_setCWMacrosName2_menu_opened = false;
+static bool sysmenu_trx_setCWMacrosName3_menu_opened = false;
+static bool sysmenu_trx_setCWMacrosName4_menu_opened = false;
+static bool sysmenu_trx_setCWMacrosName5_menu_opened = false;
 static uint8_t sysmenu_wifi_selected_ap_index = 0;
 static uint8_t sysmenu_selected_char_index = 0;
 
@@ -3573,6 +3593,41 @@ static void SYSMENU_HANDL_CW_SetCWMacros5(int8_t direction) {
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
+static void SYSMENU_HANDL_CW_SetCWMacrosName1(int8_t direction) {
+	sysmenu_selected_char_index = 0;
+	sysmenu_trx_setCWMacrosName1_menu_opened = true;
+	SYSMENU_TRX_DrawCWMacrosName1Menu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_CW_SetCWMacrosName2(int8_t direction) {
+	sysmenu_selected_char_index = 0;
+	sysmenu_trx_setCWMacrosName2_menu_opened = true;
+	SYSMENU_TRX_DrawCWMacrosName2Menu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_CW_SetCWMacrosName3(int8_t direction) {
+	sysmenu_selected_char_index = 0;
+	sysmenu_trx_setCWMacrosName3_menu_opened = true;
+	SYSMENU_TRX_DrawCWMacrosName3Menu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_CW_SetCWMacrosName4(int8_t direction) {
+	sysmenu_selected_char_index = 0;
+	sysmenu_trx_setCWMacrosName4_menu_opened = true;
+	SYSMENU_TRX_DrawCWMacrosName4Menu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_CW_SetCWMacrosName5(int8_t direction) {
+	sysmenu_selected_char_index = 0;
+	sysmenu_trx_setCWMacrosName5_menu_opened = true;
+	SYSMENU_TRX_DrawCWMacrosName5Menu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
 static void SYSMENU_TRX_DrawCWMacros1Menu(bool full_redraw) {
 	if (full_redraw) {
 		LCDDriver_Fill(BG_COLOR);
@@ -3640,6 +3695,76 @@ static void SYSMENU_TRX_DrawCWMacros5Menu(bool full_redraw) {
 
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
 	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.CW_Macros_5, MAX_CW_MACROS_LENGTH - 1, false);
+#endif
+}
+
+static void SYSMENU_TRX_DrawCWMacrosName1Menu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("MACROS 1 NAME:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.CW_Macros_Name_1, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.CW_Macros_Name_1, MAX_CW_MACROS_NAME_LENGTH - 1, false);
+#endif
+}
+
+static void SYSMENU_TRX_DrawCWMacrosName2Menu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("MACROS 2 NAME:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.CW_Macros_Name_2, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.CW_Macros_Name_2, MAX_CW_MACROS_NAME_LENGTH - 1, false);
+#endif
+}
+
+static void SYSMENU_TRX_DrawCWMacrosName3Menu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("MACROS 3 NAME:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.CW_Macros_Name_3, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.CW_Macros_Name_3, MAX_CW_MACROS_NAME_LENGTH - 1, false);
+#endif
+}
+
+static void SYSMENU_TRX_DrawCWMacrosName4Menu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("MACROS 4 NAME:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.CW_Macros_Name_4, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.CW_Macros_Name_4, MAX_CW_MACROS_NAME_LENGTH - 1, false);
+#endif
+}
+
+static void SYSMENU_TRX_DrawCWMacrosName5Menu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("MACROS 5 NAME:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.CW_Macros_Name_5, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.CW_Macros_Name_5, MAX_CW_MACROS_NAME_LENGTH - 1, false);
 #endif
 }
 
@@ -7941,6 +8066,31 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 			return;
 		}
 		SYSMENU_TRX_DrawCWMacros5Menu(draw_background);
+	} else if (sysmenu_trx_setCWMacrosName1_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_TRX_DrawCWMacrosName1Menu(draw_background);
+	} else if (sysmenu_trx_setCWMacrosName2_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_TRX_DrawCWMacrosName2Menu(draw_background);
+	} else if (sysmenu_trx_setCWMacrosName3_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_TRX_DrawCWMacrosName3Menu(draw_background);
+	} else if (sysmenu_trx_setCWMacrosName4_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_TRX_DrawCWMacrosName4Menu(draw_background);
+	} else if (sysmenu_trx_setCWMacrosName5_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_TRX_DrawCWMacrosName5Menu(draw_background);
 	} else if (SYSMENU_spectrum_opened) {
 		if (only_infolines) {
 			return;
@@ -8216,6 +8366,26 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction) {
 		SYSMENU_RotateChar(TRX.CW_Macros_5, direction);
 		return;
 	}
+	if (sysmenu_trx_setCWMacrosName1_menu_opened) {
+		SYSMENU_RotateChar(TRX.CW_Macros_Name_1, direction);
+		return;
+	}
+	if (sysmenu_trx_setCWMacrosName2_menu_opened) {
+		SYSMENU_RotateChar(TRX.CW_Macros_Name_2, direction);
+		return;
+	}
+	if (sysmenu_trx_setCWMacrosName3_menu_opened) {
+		SYSMENU_RotateChar(TRX.CW_Macros_Name_3, direction);
+		return;
+	}
+	if (sysmenu_trx_setCWMacrosName4_menu_opened) {
+		SYSMENU_RotateChar(TRX.CW_Macros_Name_4, direction);
+		return;
+	}
+	if (sysmenu_trx_setCWMacrosName5_menu_opened) {
+		SYSMENU_RotateChar(TRX.CW_Macros_Name_5, direction);
+		return;
+	}
 	if (sysmenu_timeMenuOpened) {
 		SYSMENU_HANDL_SETTIME(direction);
 		LCD_UpdateQuery.SystemMenu = true;
@@ -8308,6 +8478,21 @@ void SYSMENU_eventCloseSystemMenu(void) {
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	} else if (sysmenu_trx_setCWMacros5_menu_opened) {
 		sysmenu_trx_setCWMacros5_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setCWMacrosName1_menu_opened) {
+		sysmenu_trx_setCWMacrosName1_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setCWMacrosName2_menu_opened) {
+		sysmenu_trx_setCWMacrosName2_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setCWMacrosName3_menu_opened) {
+		sysmenu_trx_setCWMacrosName3_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setCWMacrosName4_menu_opened) {
+		sysmenu_trx_setCWMacrosName4_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setCWMacrosName5_menu_opened) {
+		sysmenu_trx_setCWMacrosName5_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	} else if (SYSMENU_spectrum_opened) {
 		SYSMENU_spectrum_opened = false;
@@ -8580,6 +8765,16 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 		}
 		return;
 	}
+	if (sysmenu_trx_setCWMacrosName1_menu_opened) {
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
+			SYSMENU_TRX_DrawCWMacrosName1Menu(true);
+		} else if (sysmenu_selected_char_index < (MAX_CW_MACROS_NAME_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
+			SYSMENU_TRX_DrawCWMacrosName1Menu(true);
+		}
+		return;
+	}
 	// CW Macros 2 menu
 	if (sysmenu_trx_setCWMacros2_menu_opened) {
 		if (direction < 0 && sysmenu_selected_char_index > 0) {
@@ -8588,6 +8783,16 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 		} else if (sysmenu_selected_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
 			sysmenu_selected_char_index++;
 			SYSMENU_TRX_DrawCWMacros2Menu(true);
+		}
+		return;
+	}
+	if (sysmenu_trx_setCWMacrosName2_menu_opened) {
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
+			SYSMENU_TRX_DrawCWMacrosName2Menu(true);
+		} else if (sysmenu_selected_char_index < (MAX_CW_MACROS_NAME_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
+			SYSMENU_TRX_DrawCWMacrosName2Menu(true);
 		}
 		return;
 	}
@@ -8602,6 +8807,16 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 		}
 		return;
 	}
+	if (sysmenu_trx_setCWMacrosName3_menu_opened) {
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
+			SYSMENU_TRX_DrawCWMacrosName3Menu(true);
+		} else if (sysmenu_selected_char_index < (MAX_CW_MACROS_NAME_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
+			SYSMENU_TRX_DrawCWMacrosName3Menu(true);
+		}
+		return;
+	}
 	// CW Macros 4 menu
 	if (sysmenu_trx_setCWMacros4_menu_opened) {
 		if (direction < 0 && sysmenu_selected_char_index > 0) {
@@ -8610,6 +8825,16 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 		} else if (sysmenu_selected_char_index < (MAX_CW_MACROS_LENGTH - 1)) {
 			sysmenu_selected_char_index++;
 			SYSMENU_TRX_DrawCWMacros4Menu(true);
+		}
+		return;
+	}
+	if (sysmenu_trx_setCWMacrosName4_menu_opened) {
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
+			SYSMENU_TRX_DrawCWMacrosName4Menu(true);
+		} else if (sysmenu_selected_char_index < (MAX_CW_MACROS_NAME_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
+			SYSMENU_TRX_DrawCWMacrosName4Menu(true);
 		}
 		return;
 	}
@@ -8624,6 +8849,17 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 		}
 		return;
 	}
+	if (sysmenu_trx_setCWMacrosName5_menu_opened) {
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
+			SYSMENU_TRX_DrawCWMacrosName5Menu(true);
+		} else if (sysmenu_selected_char_index < (MAX_CW_MACROS_NAME_LENGTH - 1)) {
+			sysmenu_selected_char_index++;
+			SYSMENU_TRX_DrawCWMacrosName5Menu(true);
+		}
+		return;
+	}
+
 	if (SYSMENU_spectrum_opened) {
 		SPEC_Stop();
 		SYSMENU_spectrum_opened = false;

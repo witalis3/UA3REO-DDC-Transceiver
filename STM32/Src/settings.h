@@ -18,7 +18,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 117        // Settings config version
+#define SETT_VERSION 118        // Settings config version
 #define CALIB_VERSION 79        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -67,6 +67,7 @@
 #define MAX_WIFIPASS_LENGTH 32
 #define MAX_CALLSIGN_LENGTH 16
 #define MAX_CW_MACROS_LENGTH 61
+#define MAX_CW_MACROS_NAME_LENGTH 6
 #define ALLQSO_TOKEN_SIZE 16
 
 #define W25Q16_COMMAND_Write_Disable 0x04
@@ -196,7 +197,7 @@ static char ota_config_frontpanel[] = "WOLF-2";
 #define MAX_VOLUME_VALUE 100.0f
 #define FUNCBUTTONS_ON_PAGE 4
 #define FUNCBUTTONS_PAGES 9
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 2)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 3)
 static char ota_config_frontpanel[] = "X1";
 #define ATU_MAXPOS ATU_0x0_MAXPOS
 #endif
@@ -206,7 +207,7 @@ static char ota_config_frontpanel[] = "X1";
 #define MAX_VOLUME_VALUE 100.0f
 #define FUNCBUTTONS_ON_PAGE 4
 #define FUNCBUTTONS_PAGES 9
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 2)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 3)
 static char ota_config_frontpanel[] = "Mini";
 #define ATU_MAXPOS ATU_6x6_MAXPOS
 #endif
@@ -773,6 +774,11 @@ extern struct TRX_SETTINGS {
 	char CW_Macros_3[MAX_CW_MACROS_LENGTH + 1];
 	char CW_Macros_4[MAX_CW_MACROS_LENGTH + 1];
 	char CW_Macros_5[MAX_CW_MACROS_LENGTH + 1];
+	char CW_Macros_Name_1[MAX_CW_MACROS_NAME_LENGTH + 1];
+	char CW_Macros_Name_2[MAX_CW_MACROS_NAME_LENGTH + 1];
+	char CW_Macros_Name_3[MAX_CW_MACROS_NAME_LENGTH + 1];
+	char CW_Macros_Name_4[MAX_CW_MACROS_NAME_LENGTH + 1];
+	char CW_Macros_Name_5[MAX_CW_MACROS_NAME_LENGTH + 1];
 
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 
