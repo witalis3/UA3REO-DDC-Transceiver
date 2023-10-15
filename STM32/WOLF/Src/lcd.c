@@ -828,12 +828,13 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 		//  LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_MODE_IQ_X, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET), &MODE_ICO_IQ,
 		//  COLOR_BLACK, BG_COLOR);
 		// }
-		if (TRX.VFO_A.Mode == TRX_MODE_LOOPBACK) {
-			LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_MODE_LOOP_X, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET), &MODE_ICO_LOOP, COLOR_BLACK, BG_COLOR);
-		}
+		// if (TRX.VFO_A.Mode == TRX_MODE_LOOPBACK) {
+		//	LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_MODE_LOOP_X, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET), &MODE_ICO_LOOP, COLOR_BLACK, BG_COLOR);
+		//}
 		if (TRX.VFO_A.Mode == TRX_MODE_RTTY) {
 			LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_MODE_RTTY_X, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET), &MODE_ICO_RTTY, COLOR_BLACK, BG_COLOR);
 		}
+		LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_MODE_SELECT_X, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET), &MODE_ICO_SELECT, COLOR_BLACK, BG_COLOR);
 
 		// VFO B
 		LCDDriver_Fill_RectWH(LAYOUT->STATUS_MODE_B_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_B_Y_OFFSET), MODE_ICO_DIGL.width, MODE_ICO_DIGL.height, BG_COLOR);
@@ -2348,19 +2349,18 @@ void LCD_processTouch(uint16_t x, uint16_t y) {
 				return;
 			}
 			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_USB_X && x < LAYOUT->STATUS_MODE_RTTY_X) {
-				BUTTONHANDLER_SETMODE(TRX_MODE_USB); // set mode RTTY;
+				BUTTONHANDLER_SETMODE(TRX_MODE_USB); // set mode USB;
 				return;
 			}
-			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_RTTY_X && x < LAYOUT->STATUS_MODE_LOOP_X) {
-				BUTTONHANDLER_SETMODE(TRX_MODE_RTTY); // set mode USB;
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_RTTY_X && x < LAYOUT->STATUS_MODE_SELECT_X) {
+				BUTTONHANDLER_SETMODE(TRX_MODE_RTTY); // set mode RTTY;
 				return;
 			}
-			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_LOOP_X && x < LAYOUT->STATUS_MODE_LOOP_X + 34) {
-				BUTTONHANDLER_SETMODE(TRX_MODE_LOOPBACK); // set mode LOOP;
-				return;
-			}
-			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_LOOP_X + 34 && x < LAYOUT->STATUS_MODE_LOOP_X + 34 + 34) // select main mode
-			{
+			// if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_LOOP_X && x < LAYOUT->STATUS_MODE_LOOP_X + 34) {
+			//	BUTTONHANDLER_SETMODE(TRX_MODE_LOOPBACK); // set mode LOOP;
+			//	return;
+			// }
+			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_SELECT_X && x < LAYOUT->STATUS_MODE_SELECT_X + 35) {
 				LCD_showModeWindow(false);
 				return;
 			}

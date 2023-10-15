@@ -51,5 +51,6 @@ extern const tIMAGE MODE_ICO_USB;
 extern const tIMAGE MODE_ICO_LOOP;
 extern const tIMAGE MODE_ICO_RTTY;
 extern const tIMAGE MODE_ICO_IQ;
+extern const tIMAGE MODE_ICO_SELECT;
 
 #endif

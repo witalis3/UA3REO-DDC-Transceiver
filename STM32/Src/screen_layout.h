@@ -211,7 +211,8 @@ typedef const struct {
 	const uint16_t STATUS_MODE_USB_X;
 	const uint16_t STATUS_MODE_RTTY_X;
 	// const uint16_t STATUS_MODE_IQ_X;
-	const uint16_t STATUS_MODE_LOOP_X;
+	// const uint16_t STATUS_MODE_LOOP_X;
+	const uint16_t STATUS_MODE_SELECT_X;
 	const uint16_t STATUS_MODE_X_OFFSET;
 	const int16_t STATUS_MODE_Y_OFFSET;
 	const uint16_t STATUS_MODE_BLOCK_WIDTH;
