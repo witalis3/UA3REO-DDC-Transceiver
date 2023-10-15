@@ -169,8 +169,6 @@ void LoadSettings(bool clear) {
 		TRX.InputType_DIGI = TRX_INPUT_USB; // type of input to transfer (DIGI)
 #ifdef FRONTPANEL_X1
 		TRX.AutoGain = true; // auto-control preamp and attenuator
-#elif defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
-		TRX.AutoGain = false;                          // auto-control preamp and attenuator
 #else
 		TRX.AutoGain = true;                           // auto-control preamp and attenuator
 #endif
@@ -913,8 +911,6 @@ void LoadCalibration(bool clear) {
 #endif
 #if defined(FRONTPANEL_MINI)
 		CALIBRATE.TCXO_frequency = 20000; // TCXO Frequency x1000
-#elif defined(FRONTPANEL_LITE_V2_MINI)
-		CALIBRATE.TCXO_frequency = 10000;              // TCXO Frequency x1000
 #else
 		CALIBRATE.TCXO_frequency = 12288;              // TCXO Frequency x1000
 #endif

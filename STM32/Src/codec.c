@@ -63,19 +63,7 @@ void CODEC_UnMute(void) {
 		CODEC_UnMute_AF_AMP();
 	}
 }
-#if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_LITE_V2_BIG) || defined(FRONTPANEL_LITE_V2_MICRO)
-void CODEC_Mute_AF_AMP(void) {
-#ifdef AF_AMP_MUTE_Pin
-	HAL_GPIO_WritePin(AF_AMP_MUTE_GPIO_Port, AF_AMP_MUTE_Pin, GPIO_PIN_SET);
-#endif
-}
 
-void CODEC_UnMute_AF_AMP(void) {
-#ifdef AF_AMP_MUTE_Pin
-	HAL_GPIO_WritePin(AF_AMP_MUTE_GPIO_Port, AF_AMP_MUTE_Pin, GPIO_PIN_RESET);
-#endif
-}
-#else
 void CODEC_Mute_AF_AMP(void) {
 #ifdef AF_AMP_MUTE_Pin
 	HAL_GPIO_WritePin(AF_AMP_MUTE_GPIO_Port, AF_AMP_MUTE_Pin, GPIO_PIN_RESET);
@@ -87,7 +75,6 @@ void CODEC_UnMute_AF_AMP(void) {
 	HAL_GPIO_WritePin(AF_AMP_MUTE_GPIO_Port, AF_AMP_MUTE_Pin, GPIO_PIN_SET);
 #endif
 }
-#endif
 
 void CODEC_Beep(void) {
 	if (TRX.Beeper) {

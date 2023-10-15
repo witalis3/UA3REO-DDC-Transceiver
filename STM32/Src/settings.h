@@ -10,7 +10,7 @@
 
 #define STM32_VERSION_STR "8.4.0-dev" // current STM32 version
 
-#if defined(FRONTPANEL_LITE_V2_MINI) || defined(FRONTPANEL_MINI)
+#if defined(FRONTPANEL_MINI)
 #define FPGA_VERSION_STR "6.8.0" // needed FPGA version Wolf-Mini
 #elif defined(FRONTPANEL_LITE)
 #define FPGA_VERSION_STR "8.0.0" // needed FPGA version Wolf-Lite
@@ -210,16 +210,6 @@ static char ota_config_frontpanel[] = "X1";
 #define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 3)
 static char ota_config_frontpanel[] = "Mini";
 #define ATU_MAXPOS ATU_6x6_MAXPOS
-#endif
-
-#ifdef FRONTPANEL_LITE_V2_MINI
-#define HRDW_HAS_FUNCBUTTONS true
-#define MAX_VOLUME_VALUE 100.0f
-#define FUNCBUTTONS_ON_PAGE 4
-#define FUNCBUTTONS_PAGES 8
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 2)
-static char ota_config_frontpanel[] = "LiteV2-Mini";
-#define ATU_MAXPOS ATU_0x0_MAXPOS
 #endif
 
 // LCDs
