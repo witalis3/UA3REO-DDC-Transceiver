@@ -18,7 +18,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 116        // Settings config version
+#define SETT_VERSION 117        // Settings config version
 #define CALIB_VERSION 79        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -458,6 +458,13 @@ typedef enum {
 	RX_AUDIO_MODE_RIGHT,
 } RX_AUDIO_MODE;
 
+// SAM mode
+typedef enum {
+	SAM_MODE_STEREO,
+	SAM_MODE_LSB,
+	SAM_MODE_USB,
+} SAM_MODE;
+
 // Save settings by band
 typedef struct {
 	uint64_t Freq;
@@ -659,6 +666,7 @@ extern struct TRX_SETTINGS {
 	TRX_INPUT_TYPE InputType_DIGI;
 	CW_PTT_TYPE CW_PTT_Type;
 	ENC2_FUNC_MODE ENC2_func_mode;
+	SAM_MODE SAM_Mode;
 #if HRDW_HAS_DUAL_RX
 	DUAL_RX_TYPE Dual_RX_Type;
 #endif

@@ -120,6 +120,7 @@ static void SYSMENU_HANDL_RX_CODEC_Out_Volume(int8_t direction);
 static void SYSMENU_HANDL_RX_BluetoothAudio_Enabled(int8_t direction);
 static void SYSMENU_HANDL_RX_AUDIO_MODE(int8_t direction);
 static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction);
+static void SYSMENU_HANDL_RX_SAM_Mode(int8_t direction);
 
 static void SYSMENU_HANDL_TX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TX_ATU_Enabled(int8_t direction);
@@ -753,9 +754,10 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"RX WFM EQ 5.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4_WFM, SYSMENU_HANDL_RX_EQ_P4_WFM},
     {"RX WFM EQ 8.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5_WFM, SYSMENU_HANDL_RX_EQ_P5_WFM},
     {"RX WFM EQ 12.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P6_WFM, SYSMENU_HANDL_RX_EQ_P6_WFM},
-    {"VAD Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_HANDL_RX_VAD_THRESHOLD},
+    {"SAM Mode", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAM_Mode, SYSMENU_HANDL_RX_SAM_Mode, (const enumerate_item[3]){"STEREO", "LSB", "USB"}},
     {"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_RX_SAMPLERATE_MAIN, (const enumerate_item[4]){"48kHz", "96kHz", "192kHz", "384kHz"}},
     {"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_RX_SAMPLERATE_FM, (const enumerate_item[4]){"48kHz", "96kHz", "192kHz", "384kHz"}},
+    {"VAD Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_HANDL_RX_VAD_THRESHOLD},
 #if !defined(STM32F407xx)
     {"WFM Stereo", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FM_Stereo, SYSMENU_HANDL_RX_FM_Stereo},
     {"WFM Stereo Modul", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FM_Stereo_Modulation, SYSMENU_HANDL_RX_FM_Stereo_Modulation},
@@ -2666,6 +2668,15 @@ static void SYSMENU_HANDL_RX_AUDIO_MODE(int8_t direction) {
 	}
 	if (TRX.RX_AUDIO_MODE > 2) {
 		TRX.RX_AUDIO_MODE = 2;
+	}
+}
+
+static void SYSMENU_HANDL_RX_SAM_Mode(int8_t direction) {
+	if (TRX.SAM_Mode > 0 || direction > 0) {
+		TRX.SAM_Mode += direction;
+	}
+	if (TRX.SAM_Mode > 2) {
+		TRX.SAM_Mode = 2;
 	}
 }
 

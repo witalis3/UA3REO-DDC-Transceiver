@@ -2379,6 +2379,13 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 		out_buffer_l[i] = (ai_ps + bi_ps) - (aq_ps - bq_ps);
 		out_buffer_r[i] = (ai_ps - bi_ps) + (aq_ps + bq_ps);
 
+		if (TRX.SAM_Mode == SAM_MODE_LSB) {
+			out_buffer_r[i] = out_buffer_l[i];
+		}
+		if (TRX.SAM_Mode == SAM_MODE_USB) {
+			out_buffer_l[i] = out_buffer_r[i];
+		}
+
 		// fade leveler
 		static float32_t dc27_l = 0;
 		static float32_t dc27_r = 0;
