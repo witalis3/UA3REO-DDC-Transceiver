@@ -1515,6 +1515,11 @@ bool WIFI_getWOLFCluster_background(void) {
 		return false;
 	}
 
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, false);
+	if (band < 0 || BANDS[band].broadcast) {
+		return true;
+	}
+
 	char url[150];
 	sprintf(url, "/trx_services/wolf_cluster.php?background&freq=%llu&callsign=%s&timeout=%d", CurrentVFO->Freq, TRX.CALLSIGN, TRX.FFT_DXCluster_Timeout);
 	WIFI_getHTTPpage("wolf-sdr.com", url, WIFI_getWOLFCluster_background_callback, false, false);
