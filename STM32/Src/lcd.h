@@ -4,6 +4,7 @@
 #include "hardware.h"
 #include "lcd_driver.h"
 #include "screen_layout.h"
+#include "system_menu.h"
 #include "touchpad.h"
 #include "trx_manager.h"
 
@@ -73,7 +74,7 @@ extern void LCD_cleanTouchpadButtons(void);
 #if (defined(LAY_800x480))
 void printSystemMenuButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, char *value, bool selected, bool active, uint32_t parameter,
                            void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter), uint16_t active_color, uint16_t inactive_color, uint16_t border_color,
-                           uint16_t back_color);
+                           uint16_t back_color, SystemMenuType type);
 #endif
 
 volatile extern DEF_LCD_UpdateQuery LCD_UpdateQuery;

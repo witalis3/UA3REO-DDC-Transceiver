@@ -35,6 +35,7 @@ typedef enum {
 	SYSMENU_ATU_I,
 	SYSMENU_ATU_C,
 	SYSMENU_TIMEZONE,
+	SYSMENU_NAVBUTTON,
 } SystemMenuType;
 
 typedef char enumerate_item[ENUM_MAX_LENGTH];

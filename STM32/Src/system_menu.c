@@ -8219,7 +8219,7 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 		if (current_selected_page == 0) {
 			printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN, LAYOUT->SYSMENU_BUTTON_MARGIN + sysmenu_button_lines * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN),
 			                      LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT, "Close", "x", false, true, 0, SYSMENU_HANDL_BackTouch, SYSMENU_HANDL_BackTouch,
-			                      COLOR->DENY_BUTTON_TEXT, COLOR->DENY_BUTTON_TEXT, COLOR->DENY_BUTTON_TEXT, COLOR->DENY_BUTTON_BACKGROUND);
+			                      COLOR->DENY_BUTTON_TEXT, COLOR->DENY_BUTTON_TEXT, COLOR->DENY_BUTTON_TEXT, COLOR->DENY_BUTTON_BACKGROUND, SYSMENU_NAVBUTTON);
 		}
 
 		// prev button
@@ -8228,7 +8228,7 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 			sprintf(ctmp, "%d / %d", current_selected_page, current_page + 1);
 			printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN, LAYOUT->SYSMENU_BUTTON_MARGIN + sysmenu_button_lines * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN),
 			                      LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT, "Prev page", ctmp, false, true, 0, SYSMENU_HANDL_PrevPageTouch, SYSMENU_HANDL_PrevPageTouch,
-			                      COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_BACKGROUND);
+			                      COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_BACKGROUND, SYSMENU_NAVBUTTON);
 		}
 
 		// next button
@@ -8237,7 +8237,7 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 			printSystemMenuButton(LAYOUT->SYSMENU_BUTTON_MARGIN + 3 * (LAYOUT->SYSMENU_BUTTON_WIDTH + LAYOUT->SYSMENU_BUTTON_MARGIN),
 			                      LAYOUT->SYSMENU_BUTTON_MARGIN + sysmenu_button_lines * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN), LAYOUT->SYSMENU_BUTTON_WIDTH,
 			                      LAYOUT->SYSMENU_BUTTON_HEIGHT, "Next page", ctmp, false, true, 0, SYSMENU_HANDL_NextPageTouch, SYSMENU_HANDL_NextPageTouch, COLOR->NORMAL_BUTTON_TEXT,
-			                      COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_BACKGROUND);
+			                      COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_TEXT, COLOR->NORMAL_BUTTON_BACKGROUND, SYSMENU_NAVBUTTON);
 		}
 
 		sysmenu_draw_index++;
@@ -9080,6 +9080,7 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 		sprintf(ctmp, "->");
 		break;
 	case SYSMENU_INFOLINE:
+	case SYSMENU_NAVBUTTON:
 		break;
 	case SYSMENU_FUNCBUTTON:
 #if HRDW_HAS_FUNCBUTTONS
@@ -9134,7 +9135,7 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 	                      LAYOUT->SYSMENU_BUTTON_MARGIN + y * (LAYOUT->SYSMENU_BUTTON_HEIGHT + LAYOUT->SYSMENU_BUTTON_MARGIN), LAYOUT->SYSMENU_BUTTON_WIDTH, LAYOUT->SYSMENU_BUTTON_HEIGHT,
 	                      (char *)menuElement->title, ctmp, !isInfoline && !redrawAsUnselected && selected, !isInfoline && !redrawAsUnselected && sysmenu_item_selected_by_enc2 && selected,
 	                      elementIndex, BUTTONHANDLER_CHOOSE_MENU_ELEMENT, BUTTONHANDLER_CHOOSE_MENU_ELEMENT, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER,
-	                      COLOR->BUTTON_SWITCH_BACKGROUND);
+	                      COLOR->BUTTON_SWITCH_BACKGROUND, menuElement->type);
 
 	sysmenu_draw_index++;
 #else // old style

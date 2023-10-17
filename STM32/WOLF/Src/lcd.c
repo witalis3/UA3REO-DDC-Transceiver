@@ -2153,17 +2153,39 @@ static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 
 void printSystemMenuButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *title, char *value, bool selected, bool active, uint32_t parameter,
                            void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter), uint16_t active_color, uint16_t inactive_color, uint16_t border_color,
-                           uint16_t back_color) {
+                           uint16_t back_color, SystemMenuType type) {
 	uint16_t x1_title, y1_title, w_title, h_title;
 	uint16_t x1_value, y1_value, w_value, h_value;
 
-	LCDDriver_drawRoundedRectWH(x, y, width, height, active ? active_color : border_color, 2, false);
-	LCDDriver_Fill_RectWH(x + 1, y + 1, width - 2, height - 2, back_color);                                        // button body
-	LCDDriver_getTextBoundsFont(title, x, y, &x1_title, &y1_title, &w_title, &h_title, (GFXfont *)&FreeSans9pt7b); // get title bounds
-	LCDDriver_getTextBoundsFont(value, x, y, &x1_value, &y1_value, &w_value, &h_value, (GFXfont *)&FreeSans7pt7b); // get value bounds
+	uint16_t title_back_color = mixColors(back_color, selected ? active_color : inactive_color, 0.2f);
+	uint16_t value_back_color = mixColors(back_color, selected ? border_color : back_color, 0.3f);
+	if (type == SYSMENU_NAVBUTTON) {
+		title_back_color = back_color;
+	}
 
-	LCDDriver_printTextFont(title, x + (width - w_title) / 2, y + h_title + 11, selected ? active_color : inactive_color, back_color, &FreeSans9pt7b); // title
-	LCDDriver_printTextFont(value, x + (width - w_value) / 2, y + (height / 2) + h_value + 10, inactive_color, back_color, &FreeSans7pt7b);            // value
+	LCDDriver_drawRoundedRectWH(x, y, width, height, active ? active_color : border_color, 2, false);
+
+	if (type == SYSMENU_RUN || type == SYSMENU_MENU || type == SYSMENU_MENU) {
+		LCDDriver_Fill_RectWH(x + 1, y + 1, width - 2, (height - 2), title_back_color);
+		LCDDriver_getTextBoundsFont(title, x, y, &x1_title, &y1_title, &w_title, &h_title, (GFXfont *)&FreeSans9pt7b); // get title bounds
+		LCDDriver_getTextBoundsFont(value, x, y, &x1_value, &y1_value, &w_value, &h_value, (GFXfont *)&FreeSans7pt7b); // get value bounds
+
+		LCDDriver_printTextFont(title, x + (width - w_title) / 2, y + h_title + 11, selected ? active_color : inactive_color, title_back_color, &FreeSans9pt7b); // title
+		LCDDriver_printTextFont(value, x + (width - w_value) / 2, y + (height / 2) + h_value + 10, inactive_color, title_back_color, &FreeSans7pt7b);            // value
+	} else if (type == SYSMENU_INFOLINE) {
+		LCDDriver_Fill_RectWH(x + 1, y + 1, width - 2, (height - 2), value_back_color);
+		LCDDriver_getTextBoundsFont(title, x, y, &x1_title, &y1_title, &w_title, &h_title, (GFXfont *)&FreeSans7pt7b); // get title bounds
+		LCDDriver_printTextFont(title, x + (width - w_title) / 2, y + h_title + 11 + 11, selected ? active_color : inactive_color, value_back_color,
+		                        &FreeSans7pt7b); // title
+	} else {
+		LCDDriver_Fill_RectWH(x + 1, y + 1, width - 2, (height - 2) / 2 + 2, title_back_color); // button body
+		LCDDriver_Fill_RectWH(x + 1, y + 4 + (height - 2) / 2, width - 2, (height - 2) / 2 - 3, value_back_color);
+		LCDDriver_getTextBoundsFont(title, x, y, &x1_title, &y1_title, &w_title, &h_title, (GFXfont *)&FreeSans9pt7b); // get title bounds
+		LCDDriver_getTextBoundsFont(value, x, y, &x1_value, &y1_value, &w_value, &h_value, (GFXfont *)&FreeSans7pt7b); // get value bounds
+
+		LCDDriver_printTextFont(title, x + (width - w_title) / 2, y + h_title + 11, selected ? active_color : inactive_color, title_back_color, &FreeSans9pt7b); // title
+		LCDDriver_printTextFont(value, x + (width - w_value) / 2, y + (height / 2) + h_value + 10, inactive_color, value_back_color, &FreeSans7pt7b);            // value
+	}
 
 	// add handler
 	bool exist = false;

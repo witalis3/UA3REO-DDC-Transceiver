@@ -799,6 +799,7 @@ static bool SD_WRITE_SETT_LINE(char *name, uint64_t *value, SystemMenuType type)
 	case SYSMENU_UINT32R:
 	case SYSMENU_MENU:
 	case SYSMENU_INFOLINE:
+	case SYSMENU_NAVBUTTON:
 		break;
 	}
 	strcat((char *)SD_workbuffer_A, valbuff);
