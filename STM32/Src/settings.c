@@ -86,54 +86,76 @@ void LoadSettings(bool clear) {
 		TRX.flash_id = SETT_VERSION; // Firmware ID in SRAM, if it doesn't match, use the default
 		TRX.NeedGoToBootloader = false;
 		// TRX
-		TRX.selected_vfo = false;                      // current VFO (false - A)
-		TRX.VFO_A.Freq = 7100000;                      // stored VFO-A frequency
-		TRX.VFO_A.SpectrumCenterFreq = TRX.VFO_A.Freq; // FFT spectrum center frequency
-		TRX.VFO_A.Mode = TRX_MODE_LSB;                 // saved VFO-A mode
-		TRX.VFO_A.LPF_RX_Filter_Width = 2700;          // saved bandwidth for VFO-A
-		TRX.VFO_A.LPF_TX_Filter_Width = 2700;          // saved bandwidth for VFO-A
-		TRX.VFO_A.HPF_RX_Filter_Width = 200;           // saved bandwidth for VFO-A
-		TRX.VFO_A.HPF_TX_Filter_Width = 200;           // saved bandwidth for VFO-A
-		TRX.VFO_A.ManualNotchFilter = false;           // notch filter to cut out noise
-		TRX.VFO_A.AutoNotchFilter = false;             // notch filter to cut out noise
-		TRX.VFO_A.NotchFC = 1000;                      // cutoff frequency of the notch filter
-		TRX.VFO_A.DNR_Type = 0;                        // digital noise reduction
-		TRX.VFO_A.AGC = true;                          // AGC
-		TRX.VFO_A.SQL = false;                         // SSB/FM Squelch
-		TRX.VFO_A.RepeaterMode = false;                // Repeater mode
-		TRX.VFO_A.FM_SQL_threshold_dBm = -90;          // FM noise squelch
-		TRX.VFO_B.Freq = 14150000;                     // stored VFO-B frequency
-		TRX.VFO_B.SpectrumCenterFreq = TRX.VFO_B.Freq; // FFT spectrum center frequency
-		TRX.VFO_B.Mode = TRX_MODE_USB;                 // saved VFO-B mode
-		TRX.VFO_B.LPF_RX_Filter_Width = 2700;          // saved bandwidth for VFO-B
-		TRX.VFO_B.LPF_TX_Filter_Width = 2700;          // saved bandwidth for VFO-B
-		TRX.VFO_B.HPF_RX_Filter_Width = 200;           // saved bandwidth for VFO-B
-		TRX.VFO_B.HPF_TX_Filter_Width = 200;           // saved bandwidth for VFO-B
-		TRX.VFO_B.ManualNotchFilter = false;           // notch filter to cut out noise
-		TRX.VFO_B.AutoNotchFilter = false;             // notch filter to cut out noise
-		TRX.VFO_B.NotchFC = 1000;                      // cutoff frequency of the notch filter
-		TRX.VFO_B.DNR_Type = 0;                        // digital noise reduction
-		TRX.VFO_B.AGC = true;                          // AGC
-		TRX.VFO_B.SQL = false;                         // SSB/FM Squelch
-		TRX.VFO_B.FM_SQL_threshold_dBm = -90;          // FM noise squelch
-		TRX.VFO_B.RepeaterMode = false;                // Repeater mode
-		TRX.Fast = true;                               // accelerated frequency change when the encoder rotates
-		TRX.LNA = false;                               // LNA (Low Noise Amplifier)
-		TRX.ATT = false;                               // attenuator
-		TRX.ATT_DB = 12.0f;                            // suppress the attenuator
-		TRX.ATT_STEP = 6.0f;                           // step of tuning the attenuator
-		TRX.RF_Filters = true;                         // LPF / HPF / BPF
-		TRX.ANT_selected = false;                      // ANT-1
-		TRX.ANT_mode = false;                          // RX=TX
-		TRX.RF_Gain = 20;                              // output power (%)
-		TRX.RF_Gain_For_Each_Band = false;             // save RF Gain for each band separatly
-		TRX.RF_Gain_For_Each_Mode = false;             // save RF Gain for each mode separatly
-		TRX.ChannelMode = false;                       // enable channel mode on VFO
-		TRX.RIT_Enabled = false;                       // activate the SHIFT mode
-		TRX.XIT_Enabled = false;                       // activate the SPLIT mode
-		TRX.RIT_INTERVAL = 1000;                       // Detune range with the SHIFT knob (5000 = -5000Hz / + 5000Hz)
-		TRX.XIT_INTERVAL = 1000;                       // Detune range with the SPLIT knob (5000 = -5000Hz / + 5000Hz)
-		TRX.TWO_SIGNAL_TUNE = false;                   // Two-signal generator in TUNE mode (1 + 2kHz)
+		TRX.selected_vfo = false;                                        // current VFO (false - A)
+		TRX.VFO_A.Freq = 7100000;                                        // stored VFO-A frequency
+		TRX.VFO_A.SpectrumCenterFreq = TRX.VFO_A.Freq;                   // FFT spectrum center frequency
+		TRX.VFO_A.Mode = TRX_MODE_LSB;                                   // saved VFO-A mode
+		TRX.VFO_A.LPF_RX_Filter_Width = 2700;                            // saved bandwidth for VFO-A
+		TRX.VFO_A.LPF_TX_Filter_Width = 2700;                            // saved bandwidth for VFO-A
+		TRX.VFO_A.HPF_RX_Filter_Width = 200;                             // saved bandwidth for VFO-A
+		TRX.VFO_A.HPF_TX_Filter_Width = 200;                             // saved bandwidth for VFO-A
+		TRX.VFO_A.ManualNotchFilter = false;                             // notch filter to cut out noise
+		TRX.VFO_A.AutoNotchFilter = false;                               // notch filter to cut out noise
+		TRX.VFO_A.NotchFC = 1000;                                        // cutoff frequency of the notch filter
+		TRX.VFO_A.DNR_Type = 0;                                          // digital noise reduction
+		TRX.VFO_A.AGC = true;                                            // AGC
+		TRX.VFO_A.SQL = false;                                           // SSB/FM Squelch
+		TRX.VFO_A.RepeaterMode = false;                                  // Repeater mode
+		TRX.VFO_A.FM_SQL_threshold_dBm = -90;                            // FM noise squelch
+		TRX.VFO_A.CW_LPF_Filter = 600;                                   // default value of CW filter width
+		TRX.VFO_A.DIGI_LPF_Filter = 3000;                                // default value of DIGI filter width
+		TRX.VFO_A.SSB_LPF_RX_Filter = 2700;                              // default value of SSB filter width
+		TRX.VFO_A.SSB_LPF_TX_Filter = 2700;                              // default value of SSB filter width
+		TRX.VFO_A.SSB_HPF_RX_Filter = 200;                               // default value of SSB filter width
+		TRX.VFO_A.SSB_HPF_TX_Filter = 200;                               // default value of SSB filter width
+		TRX.VFO_A.AM_LPF_RX_Filter = 8000;                               // default value of AM filter width
+		TRX.VFO_A.AM_LPF_TX_Filter = 8000;                               // default value of AM filter width
+		TRX.VFO_A.FM_LPF_RX_Filter = 8000;                               // default value of the FM filter width
+		TRX.VFO_A.FM_LPF_TX_Filter = 8000;                               // default value of the FM filter width
+		TRX.VFO_A.FM_HPF_RX_Filter = 0;                                  // default value of the FM filter width
+		TRX.VFO_B.Freq = 14150000;                                       // stored VFO-B frequency
+		TRX.VFO_B.SpectrumCenterFreq = TRX.VFO_B.Freq;                   // FFT spectrum center frequency
+		TRX.VFO_B.Mode = TRX_MODE_USB;                                   // saved VFO-B mode
+		TRX.VFO_B.LPF_RX_Filter_Width = TRX.VFO_A.LPF_RX_Filter_Width;   // saved bandwidth for VFO-B
+		TRX.VFO_B.LPF_TX_Filter_Width = TRX.VFO_A.LPF_TX_Filter_Width;   // saved bandwidth for VFO-B
+		TRX.VFO_B.HPF_RX_Filter_Width = TRX.VFO_A.HPF_RX_Filter_Width;   // saved bandwidth for VFO-B
+		TRX.VFO_B.HPF_TX_Filter_Width = TRX.VFO_A.HPF_TX_Filter_Width;   // saved bandwidth for VFO-B
+		TRX.VFO_B.ManualNotchFilter = TRX.VFO_A.ManualNotchFilter;       // notch filter to cut out noise
+		TRX.VFO_B.AutoNotchFilter = TRX.VFO_A.AutoNotchFilter;           // notch filter to cut out noise
+		TRX.VFO_B.NotchFC = TRX.VFO_A.NotchFC;                           // cutoff frequency of the notch filter
+		TRX.VFO_B.DNR_Type = TRX.VFO_A.DNR_Type;                         // digital noise reduction
+		TRX.VFO_B.AGC = TRX.VFO_A.AGC;                                   // AGC
+		TRX.VFO_B.SQL = TRX.VFO_A.SQL;                                   // SSB/FM Squelch
+		TRX.VFO_B.FM_SQL_threshold_dBm = TRX.VFO_A.FM_SQL_threshold_dBm; // FM noise squelch
+		TRX.VFO_B.RepeaterMode = TRX.VFO_A.RepeaterMode;                 // Repeater mode
+		TRX.VFO_B.CW_LPF_Filter = TRX.VFO_A.CW_LPF_Filter;               // default value of CW filter width
+		TRX.VFO_B.DIGI_LPF_Filter = TRX.VFO_A.DIGI_LPF_Filter;           // default value of DIGI filter width
+		TRX.VFO_B.SSB_LPF_RX_Filter = TRX.VFO_A.SSB_LPF_RX_Filter;       // default value of SSB filter width
+		TRX.VFO_B.SSB_LPF_TX_Filter = TRX.VFO_A.SSB_LPF_TX_Filter;       // default value of SSB filter width
+		TRX.VFO_B.SSB_HPF_RX_Filter = TRX.VFO_A.SSB_HPF_RX_Filter;       // default value of SSB filter width
+		TRX.VFO_B.SSB_HPF_TX_Filter = TRX.VFO_A.SSB_HPF_TX_Filter;       // default value of SSB filter width
+		TRX.VFO_B.AM_LPF_RX_Filter = TRX.VFO_A.AM_LPF_RX_Filter;         // default value of AM filter width
+		TRX.VFO_B.AM_LPF_TX_Filter = TRX.VFO_A.AM_LPF_TX_Filter;         // default value of AM filter width
+		TRX.VFO_B.FM_LPF_RX_Filter = TRX.VFO_A.FM_LPF_RX_Filter;         // default value of the FM filter width
+		TRX.VFO_B.FM_LPF_TX_Filter = TRX.VFO_A.FM_LPF_TX_Filter;         // default value of the FM filter width
+		TRX.VFO_B.FM_HPF_RX_Filter = TRX.VFO_A.FM_HPF_RX_Filter;         // default value of the FM filter width
+		TRX.Fast = true;                                                 // accelerated frequency change when the encoder rotates
+		TRX.LNA = false;                                                 // LNA (Low Noise Amplifier)
+		TRX.ATT = false;                                                 // attenuator
+		TRX.ATT_DB = 12.0f;                                              // suppress the attenuator
+		TRX.ATT_STEP = 6.0f;                                             // step of tuning the attenuator
+		TRX.RF_Filters = true;                                           // LPF / HPF / BPF
+		TRX.ANT_selected = false;                                        // ANT-1
+		TRX.ANT_mode = false;                                            // RX=TX
+		TRX.RF_Gain = 20;                                                // output power (%)
+		TRX.RF_Gain_For_Each_Band = false;                               // save RF Gain for each band separatly
+		TRX.RF_Gain_For_Each_Mode = false;                               // save RF Gain for each mode separatly
+		TRX.ChannelMode = false;                                         // enable channel mode on VFO
+		TRX.RIT_Enabled = false;                                         // activate the SHIFT mode
+		TRX.XIT_Enabled = false;                                         // activate the SPLIT mode
+		TRX.RIT_INTERVAL = 1000;                                         // Detune range with the SHIFT knob (5000 = -5000Hz / + 5000Hz)
+		TRX.XIT_INTERVAL = 1000;                                         // Detune range with the SPLIT knob (5000 = -5000Hz / + 5000Hz)
+		TRX.TWO_SIGNAL_TUNE = false;                                     // Two-signal generator in TUNE mode (1 + 2kHz)
 #ifdef LAY_160x128
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; // Samplerate for ssb/cw/digi/nfm/etc modes
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K192;  // Samplerate for FM mode
@@ -270,17 +292,6 @@ void LoadSettings(bool clear) {
 		TRX.TX_Compressor_maxgain_SSB = 10;                            // TX compressor max gain SSB
 		TRX.TX_Compressor_speed_AMFM = 3;                              // TX compressor speed AM/FM
 		TRX.TX_Compressor_maxgain_AMFM = 10;                           // TX compressor max gain AM/FM
-		TRX.CW_LPF_Filter = 600;                                       // default value of CW filter width
-		TRX.DIGI_LPF_Filter = 3000;                                    // default value of DIGI filter width
-		TRX.SSB_LPF_RX_Filter = 2700;                                  // default value of SSB filter width
-		TRX.SSB_LPF_TX_Filter = 2700;                                  // default value of SSB filter width
-		TRX.SSB_HPF_RX_Filter = 200;                                   // default value of SSB filter width
-		TRX.SSB_HPF_TX_Filter = 200;                                   // default value of SSB filter width
-		TRX.AM_LPF_RX_Filter = 8000;                                   // default value of AM filter width
-		TRX.AM_LPF_TX_Filter = 8000;                                   // default value of AM filter width
-		TRX.FM_LPF_RX_Filter = 8000;                                   // default value of the FM filter width
-		TRX.FM_LPF_TX_Filter = 8000;                                   // default value of the FM filter width
-		TRX.FM_HPF_RX_Filter = 0;                                      // default value of the FM filter width
 		TRX.CW_LPF_Stages = IIR_LPF_STAGES < 10 ? IIR_LPF_STAGES : 10; // stages for CW LPF filter
 		TRX.SSB_LPF_Stages = IIR_LPF_STAGES;                           // stages for SSB LPF filter
 		TRX.AMFM_LPF_Stages = 3;                                       // stages for NFM LPF filter
@@ -474,10 +485,14 @@ void LoadSettings(bool clear) {
 				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_C = TRX.ATU_C;
 				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_T = TRX.ATU_T;
 			}
-			TRX.BANDS_SAVED_SETTINGS[i].CW_LPF_Filter = TRX.CW_LPF_Filter;
-			TRX.BANDS_SAVED_SETTINGS[i].SSB_LPF_RX_Filter = TRX.SSB_LPF_RX_Filter;
-			TRX.BANDS_SAVED_SETTINGS[i].AM_LPF_RX_Filter = TRX.AM_LPF_RX_Filter;
-			TRX.BANDS_SAVED_SETTINGS[i].FM_LPF_RX_Filter = TRX.FM_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_CW_LPF_Filter = TRX.VFO_A.CW_LPF_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_SSB_LPF_RX_Filter = TRX.VFO_A.SSB_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_AM_LPF_RX_Filter = TRX.VFO_A.AM_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_FM_LPF_RX_Filter = TRX.VFO_A.FM_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].VFO_B_CW_LPF_Filter = TRX.VFO_B.CW_LPF_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].VFO_B_SSB_LPF_RX_Filter = TRX.VFO_B.SSB_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].VFO_B_AM_LPF_RX_Filter = TRX.VFO_B.AM_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[i].VFO_B_FM_LPF_RX_Filter = TRX.VFO_B.FM_LPF_RX_Filter;
 		}
 
 #if defined(FRONTPANEL_MINI)
@@ -497,6 +512,17 @@ void LoadSettings(bool clear) {
 		TRX.FM_SQL_threshold_dBm_shadow = TRX.VFO_A.FM_SQL_threshold_dBm;
 		TRX.FRONTPANEL_funcbuttons_page = 0;
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+		TRX.CW_LPF_Filter_shadow = TRX.VFO_A.CW_LPF_Filter;
+		TRX.DIGI_LPF_Filter_shadow = TRX.VFO_A.DIGI_LPF_Filter;
+		TRX.SSB_LPF_RX_Filter_shadow = TRX.VFO_A.SSB_LPF_RX_Filter;
+		TRX.SSB_LPF_TX_Filter_shadow = TRX.VFO_A.SSB_LPF_TX_Filter;
+		TRX.SSB_HPF_RX_Filter_shadow = TRX.VFO_A.SSB_HPF_RX_Filter;
+		TRX.SSB_HPF_TX_Filter_shadow = TRX.VFO_A.SSB_HPF_TX_Filter;
+		TRX.AM_LPF_RX_Filter_shadow = TRX.VFO_A.AM_LPF_RX_Filter;
+		TRX.AM_LPF_TX_Filter_shadow = TRX.VFO_A.AM_LPF_TX_Filter;
+		TRX.FM_LPF_RX_Filter_shadow = TRX.VFO_A.FM_LPF_RX_Filter;
+		TRX.FM_LPF_TX_Filter_shadow = TRX.VFO_A.FM_LPF_TX_Filter;
+		TRX.FM_HPF_RX_Filter_shadow = TRX.VFO_A.FM_HPF_RX_Filter;
 
 		LCD_showError("Loaded default settings", true);
 		SaveSettings(); // save to primary bank

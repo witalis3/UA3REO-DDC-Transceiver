@@ -610,8 +610,8 @@ void TRX_setTXFrequencyFloat(float64_t _freq, VFO *vfo) {
 	FPGA_NeedSendParams = true;
 }
 
-void TRX_setMode(uint_fast8_t _mode, VFO *vfo) {
-	uint_fast8_t old_mode = vfo->Mode;
+void TRX_setMode(TRX_MODE _mode, VFO *vfo) {
+	TRX_MODE old_mode = vfo->Mode;
 
 	// save old mode data
 	int_fast8_t bandFromFreq = getBandFromFreq(vfo->Freq, false);
@@ -627,39 +627,41 @@ void TRX_setMode(uint_fast8_t _mode, VFO *vfo) {
 	switch (_mode) {
 	case TRX_MODE_AM:
 	case TRX_MODE_SAM:
-		vfo->LPF_RX_Filter_Width = TRX.AM_LPF_RX_Filter;
-		vfo->LPF_TX_Filter_Width = TRX.AM_LPF_TX_Filter;
+		vfo->LPF_RX_Filter_Width = vfo->AM_LPF_RX_Filter;
+		vfo->LPF_TX_Filter_Width = vfo->AM_LPF_TX_Filter;
 		vfo->HPF_RX_Filter_Width = 0;
 		vfo->HPF_TX_Filter_Width = 0;
 		break;
 	case TRX_MODE_LSB:
 	case TRX_MODE_USB:
-		vfo->LPF_RX_Filter_Width = TRX.SSB_LPF_RX_Filter;
-		vfo->LPF_TX_Filter_Width = TRX.SSB_LPF_TX_Filter;
-		vfo->HPF_RX_Filter_Width = TRX.SSB_HPF_RX_Filter;
-		vfo->HPF_TX_Filter_Width = TRX.SSB_HPF_TX_Filter;
+		vfo->LPF_RX_Filter_Width = vfo->SSB_LPF_RX_Filter;
+		vfo->LPF_TX_Filter_Width = vfo->SSB_LPF_TX_Filter;
+		vfo->HPF_RX_Filter_Width = vfo->SSB_HPF_RX_Filter;
+		vfo->HPF_TX_Filter_Width = vfo->SSB_HPF_TX_Filter;
 		break;
 	case TRX_MODE_DIGI_L:
 	case TRX_MODE_DIGI_U:
 	case TRX_MODE_RTTY:
-		vfo->LPF_RX_Filter_Width = TRX.DIGI_LPF_Filter;
-		vfo->LPF_TX_Filter_Width = TRX.DIGI_LPF_Filter;
+		vfo->LPF_RX_Filter_Width = vfo->DIGI_LPF_Filter;
+		vfo->LPF_TX_Filter_Width = vfo->DIGI_LPF_Filter;
 		vfo->HPF_RX_Filter_Width = 0;
 		vfo->HPF_TX_Filter_Width = 0;
 		break;
 	case TRX_MODE_CW:
-		vfo->LPF_RX_Filter_Width = TRX.CW_LPF_Filter;
-		vfo->LPF_TX_Filter_Width = TRX.CW_LPF_Filter;
+		vfo->LPF_RX_Filter_Width = vfo->CW_LPF_Filter;
+		vfo->LPF_TX_Filter_Width = vfo->CW_LPF_Filter;
 		vfo->HPF_RX_Filter_Width = 0;
 		vfo->HPF_TX_Filter_Width = 0;
 		LCD_UpdateQuery.TextBar = true;
 		break;
 	case TRX_MODE_NFM:
-		vfo->LPF_RX_Filter_Width = TRX.FM_LPF_RX_Filter;
-		vfo->LPF_TX_Filter_Width = TRX.FM_LPF_TX_Filter;
-		vfo->HPF_RX_Filter_Width = TRX.FM_HPF_RX_Filter;
+		vfo->LPF_RX_Filter_Width = vfo->FM_LPF_RX_Filter;
+		vfo->LPF_TX_Filter_Width = vfo->FM_LPF_TX_Filter;
+		vfo->HPF_RX_Filter_Width = vfo->FM_HPF_RX_Filter;
 		vfo->HPF_TX_Filter_Width = 0;
 		break;
+	case TRX_MODE_LOOPBACK:
+	case TRX_MODE_IQ:
 	case TRX_MODE_WFM:
 		vfo->LPF_RX_Filter_Width = 16000;
 		vfo->LPF_TX_Filter_Width = 16000;
@@ -841,10 +843,18 @@ void TRX_RestoreBandSettings(int8_t band) {
 		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
 		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
 	}
-	TRX.CW_LPF_Filter = TRX.BANDS_SAVED_SETTINGS[band].CW_LPF_Filter;
-	TRX.SSB_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].SSB_LPF_RX_Filter;
-	TRX.AM_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].AM_LPF_RX_Filter;
-	TRX.FM_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].FM_LPF_RX_Filter;
+
+	if (CurrentVFO == &TRX.VFO_A) {
+		CurrentVFO->CW_LPF_Filter = TRX.BANDS_SAVED_SETTINGS[band].VFO_A_CW_LPF_Filter;
+		CurrentVFO->SSB_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].VFO_A_SSB_LPF_RX_Filter;
+		CurrentVFO->AM_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].VFO_A_AM_LPF_RX_Filter;
+		CurrentVFO->FM_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].VFO_A_FM_LPF_RX_Filter;
+	} else {
+		CurrentVFO->CW_LPF_Filter = TRX.BANDS_SAVED_SETTINGS[band].VFO_B_CW_LPF_Filter;
+		CurrentVFO->SSB_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].VFO_B_SSB_LPF_RX_Filter;
+		CurrentVFO->AM_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].VFO_B_AM_LPF_RX_Filter;
+		CurrentVFO->FM_LPF_RX_Filter = TRX.BANDS_SAVED_SETTINGS[band].VFO_B_FM_LPF_RX_Filter;
+	}
 
 	CurrentVFO->FM_SQL_threshold_dBm = TRX.BANDS_SAVED_SETTINGS[band].FM_SQL_threshold_dBm;
 	CurrentVFO->DNR_Type = TRX.BANDS_SAVED_SETTINGS[band].DNR_Type;
@@ -856,6 +866,17 @@ void TRX_RestoreBandSettings(int8_t band) {
 	TRX.SQL_shadow = TRX.BANDS_SAVED_SETTINGS[band].SQL;
 	TRX.AGC_shadow = TRX.BANDS_SAVED_SETTINGS[band].AGC;
 	TRX.RepeaterMode_shadow = TRX.BANDS_SAVED_SETTINGS[band].RepeaterMode;
+	TRX.CW_LPF_Filter_shadow = CurrentVFO->CW_LPF_Filter;
+	TRX.DIGI_LPF_Filter_shadow = CurrentVFO->DIGI_LPF_Filter;
+	TRX.SSB_LPF_RX_Filter_shadow = CurrentVFO->SSB_LPF_RX_Filter;
+	TRX.SSB_LPF_TX_Filter_shadow = CurrentVFO->SSB_LPF_TX_Filter;
+	TRX.SSB_HPF_RX_Filter_shadow = CurrentVFO->SSB_HPF_RX_Filter;
+	TRX.SSB_HPF_TX_Filter_shadow = CurrentVFO->SSB_HPF_TX_Filter;
+	TRX.AM_LPF_RX_Filter_shadow = CurrentVFO->AM_LPF_RX_Filter;
+	TRX.AM_LPF_TX_Filter_shadow = CurrentVFO->AM_LPF_TX_Filter;
+	TRX.FM_LPF_RX_Filter_shadow = CurrentVFO->FM_LPF_RX_Filter;
+	TRX.FM_LPF_TX_Filter_shadow = CurrentVFO->FM_LPF_TX_Filter;
+	TRX.FM_HPF_RX_Filter_shadow = CurrentVFO->FM_HPF_RX_Filter;
 
 	TRX_Temporary_Stop_BandMap = false;
 	TRX_DXCluster_UpdateTime = 0;
@@ -2208,28 +2229,40 @@ void BUTTONHANDLER_SETSECMODE(uint32_t parameter) {
 
 void BUTTONHANDLER_SET_RX_BW(uint32_t parameter) {
 	if (CurrentVFO->Mode == TRX_MODE_CW) {
-		TRX.CW_LPF_Filter = parameter;
+		CurrentVFO->CW_LPF_Filter = parameter;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB) {
-		TRX.SSB_LPF_RX_Filter = parameter;
+		CurrentVFO->SSB_LPF_RX_Filter = parameter;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
-		TRX.DIGI_LPF_Filter = parameter;
+		CurrentVFO->DIGI_LPF_Filter = parameter;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
-		TRX.AM_LPF_RX_Filter = parameter;
+		CurrentVFO->AM_LPF_RX_Filter = parameter;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_NFM) {
-		TRX.FM_LPF_RX_Filter = parameter;
+		CurrentVFO->FM_LPF_RX_Filter = parameter;
 	}
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].CW_LPF_Filter = TRX.CW_LPF_Filter;
-		TRX.BANDS_SAVED_SETTINGS[band].SSB_LPF_RX_Filter = TRX.SSB_LPF_RX_Filter;
-		TRX.BANDS_SAVED_SETTINGS[band].AM_LPF_RX_Filter = TRX.AM_LPF_RX_Filter;
-		TRX.BANDS_SAVED_SETTINGS[band].FM_LPF_RX_Filter = TRX.FM_LPF_RX_Filter;
+		if (CurrentVFO == &TRX.VFO_A) {
+			TRX.BANDS_SAVED_SETTINGS[band].VFO_A_CW_LPF_Filter = CurrentVFO->CW_LPF_Filter;
+			TRX.BANDS_SAVED_SETTINGS[band].VFO_A_SSB_LPF_RX_Filter = CurrentVFO->SSB_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[band].VFO_A_AM_LPF_RX_Filter = CurrentVFO->AM_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[band].VFO_A_FM_LPF_RX_Filter = CurrentVFO->FM_LPF_RX_Filter;
+		} else {
+			TRX.BANDS_SAVED_SETTINGS[band].VFO_B_CW_LPF_Filter = CurrentVFO->CW_LPF_Filter;
+			TRX.BANDS_SAVED_SETTINGS[band].VFO_B_SSB_LPF_RX_Filter = CurrentVFO->SSB_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[band].VFO_B_AM_LPF_RX_Filter = CurrentVFO->AM_LPF_RX_Filter;
+			TRX.BANDS_SAVED_SETTINGS[band].VFO_B_FM_LPF_RX_Filter = CurrentVFO->FM_LPF_RX_Filter;
+		}
 	}
+
+	TRX.CW_LPF_Filter_shadow = CurrentVFO->CW_LPF_Filter;
+	TRX.SSB_LPF_RX_Filter_shadow = CurrentVFO->SSB_LPF_RX_Filter;
+	TRX.AM_LPF_RX_Filter_shadow = CurrentVFO->AM_LPF_RX_Filter;
+	TRX.FM_LPF_RX_Filter_shadow = CurrentVFO->FM_LPF_RX_Filter;
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
@@ -2239,19 +2272,19 @@ void BUTTONHANDLER_SET_RX_BW(uint32_t parameter) {
 
 void BUTTONHANDLER_SET_TX_BW(uint32_t parameter) {
 	if (CurrentVFO->Mode == TRX_MODE_CW) {
-		TRX.CW_LPF_Filter = parameter;
+		CurrentVFO->CW_LPF_Filter = parameter;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB) {
-		TRX.SSB_LPF_TX_Filter = parameter;
+		CurrentVFO->SSB_LPF_TX_Filter = parameter;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
-		TRX.DIGI_LPF_Filter = parameter;
+		CurrentVFO->DIGI_LPF_Filter = parameter;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
-		TRX.AM_LPF_TX_Filter = parameter;
+		CurrentVFO->AM_LPF_TX_Filter = parameter;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_NFM) {
-		TRX.FM_LPF_TX_Filter = parameter;
+		CurrentVFO->FM_LPF_TX_Filter = parameter;
 	}
 
 	TRX_setMode(SecondaryVFO->Mode, SecondaryVFO);

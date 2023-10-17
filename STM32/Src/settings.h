@@ -18,7 +18,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 119        // Settings config version
+#define SETT_VERSION 120        // Settings config version
 #define CALIB_VERSION 79        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -330,26 +330,6 @@ typedef enum {
 } TRX_MODE;
 #define TRX_MODE_COUNT 12
 
-typedef struct {
-	uint64_t Freq;
-	uint64_t SpectrumCenterFreq;
-	uint64_t RXFreqAfterTransverters;
-	int64_t SpectrumAndRXDiff;
-	uint_fast16_t HPF_RX_Filter_Width;
-	uint_fast16_t HPF_TX_Filter_Width;
-	uint_fast16_t LPF_RX_Filter_Width;
-	uint_fast16_t LPF_TX_Filter_Width;
-	uint_fast8_t Mode;
-	uint_fast16_t NotchFC;
-	uint8_t DNR_Type; // 0-disabled 1-dnr 2-dnr2
-	int8_t FM_SQL_threshold_dBm;
-	bool ManualNotchFilter;
-	bool AutoNotchFilter;
-	bool AGC;
-	bool SQL;
-	bool RepeaterMode;
-} VFO;
-
 #if HRDW_HAS_DUAL_RX
 // dual receiver operating mode
 typedef enum {
@@ -460,10 +440,14 @@ typedef enum {
 typedef struct {
 	uint64_t Freq;
 	float32_t ATT_DB;
-	uint16_t CW_LPF_Filter;
-	uint16_t SSB_LPF_RX_Filter;
-	uint16_t AM_LPF_RX_Filter;
-	uint16_t FM_LPF_RX_Filter;
+	uint16_t VFO_A_CW_LPF_Filter;
+	uint16_t VFO_A_SSB_LPF_RX_Filter;
+	uint16_t VFO_A_AM_LPF_RX_Filter;
+	uint16_t VFO_A_FM_LPF_RX_Filter;
+	uint16_t VFO_B_CW_LPF_Filter;
+	uint16_t VFO_B_SSB_LPF_RX_Filter;
+	uint16_t VFO_B_AM_LPF_RX_Filter;
+	uint16_t VFO_B_FM_LPF_RX_Filter;
 	int8_t FM_SQL_threshold_dBm;
 	uint8_t Mode;
 	uint8_t DNR_Type;
@@ -498,6 +482,38 @@ typedef struct {
 	uint64_t Freq;
 	uint8_t Mode;
 } CHANNEL_SAVED_SETTINGS_TYPE;
+
+// VFO structure
+typedef struct {
+	uint64_t Freq;
+	uint64_t SpectrumCenterFreq;
+	uint64_t RXFreqAfterTransverters;
+	int64_t SpectrumAndRXDiff;
+	uint16_t HPF_RX_Filter_Width; // current width
+	uint16_t HPF_TX_Filter_Width; // current width
+	uint16_t LPF_RX_Filter_Width; // current width
+	uint16_t LPF_TX_Filter_Width; // current width
+	uint16_t CW_LPF_Filter;
+	uint16_t DIGI_LPF_Filter;
+	uint16_t SSB_LPF_RX_Filter;
+	uint16_t SSB_LPF_TX_Filter;
+	uint16_t SSB_HPF_RX_Filter;
+	uint16_t SSB_HPF_TX_Filter;
+	uint16_t AM_LPF_RX_Filter;
+	uint16_t AM_LPF_TX_Filter;
+	uint16_t FM_LPF_RX_Filter;
+	uint16_t FM_LPF_TX_Filter;
+	uint16_t FM_HPF_RX_Filter;
+	uint16_t NotchFC;
+	int8_t FM_SQL_threshold_dBm;
+	uint8_t DNR_Type; // 0-disabled 1-dnr 2-dnr2
+	TRX_MODE Mode;
+	bool ManualNotchFilter;
+	bool AutoNotchFilter;
+	bool AGC;
+	bool SQL;
+	bool RepeaterMode;
+} VFO;
 
 extern struct TRX_SETTINGS {
 	uint8_t flash_id; // version check
@@ -539,17 +555,6 @@ extern struct TRX_SETTINGS {
 	uint16_t RX_AGC_Hold_Limiter;
 	uint16_t RX_AGC_Hold_Step_Up;
 	uint16_t RX_AGC_Hold_Step_Down;
-	uint16_t CW_LPF_Filter;
-	uint16_t DIGI_LPF_Filter;
-	uint16_t SSB_LPF_RX_Filter;
-	uint16_t SSB_LPF_TX_Filter;
-	uint16_t SSB_HPF_RX_Filter;
-	uint16_t SSB_HPF_TX_Filter;
-	uint16_t AM_LPF_RX_Filter;
-	uint16_t AM_LPF_TX_Filter;
-	uint16_t FM_LPF_RX_Filter;
-	uint16_t FM_LPF_TX_Filter;
-	uint16_t FM_HPF_RX_Filter;
 	uint16_t VOX_TIMEOUT;
 	uint16_t CW_Pitch;
 	uint16_t CW_Key_timeout;
@@ -559,6 +564,17 @@ extern struct TRX_SETTINGS {
 	uint16_t RTTY_Speed;
 	uint16_t RTTY_Shift;
 	uint16_t RTTY_Freq;
+	uint16_t CW_LPF_Filter_shadow;
+	uint16_t DIGI_LPF_Filter_shadow;
+	uint16_t SSB_LPF_RX_Filter_shadow;
+	uint16_t SSB_LPF_TX_Filter_shadow;
+	uint16_t SSB_HPF_RX_Filter_shadow;
+	uint16_t SSB_HPF_TX_Filter_shadow;
+	uint16_t AM_LPF_RX_Filter_shadow;
+	uint16_t AM_LPF_TX_Filter_shadow;
+	uint16_t FM_LPF_RX_Filter_shadow;
+	uint16_t FM_LPF_TX_Filter_shadow;
+	uint16_t FM_HPF_RX_Filter_shadow;
 
 	int8_t MIC_NOISE_GATE;
 	int8_t RX_EQ_P1;

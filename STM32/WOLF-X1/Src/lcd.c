@@ -788,27 +788,15 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	// BW HPF-LPF
 	float32_t lpf_width = 0;
 	if (CurrentVFO->Mode == TRX_MODE_CW) {
-		lpf_width = TRX.CW_LPF_Filter;
+		lpf_width = CurrentVFO->CW_LPF_Filter;
 	} else if ((CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)) {
-		lpf_width = TRX.DIGI_LPF_Filter;
+		lpf_width = CurrentVFO->DIGI_LPF_Filter;
 	} else if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB) {
-		if (TRX_on_TX) {
-			lpf_width = TRX.SSB_LPF_TX_Filter;
-		} else {
-			lpf_width = TRX.SSB_LPF_RX_Filter;
-		}
+		lpf_width = TRX_on_TX ? CurrentVFO->SSB_LPF_TX_Filter : CurrentVFO->SSB_LPF_RX_Filter;
 	} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
-		if (TRX_on_TX) {
-			lpf_width = TRX.AM_LPF_TX_Filter;
-		} else {
-			lpf_width = TRX.AM_LPF_RX_Filter;
-		}
+		lpf_width = TRX_on_TX ? CurrentVFO->AM_LPF_TX_Filter : CurrentVFO->AM_LPF_RX_Filter;
 	} else if (CurrentVFO->Mode == TRX_MODE_NFM) {
-		if (TRX_on_TX) {
-			lpf_width = TRX.FM_LPF_TX_Filter;
-		} else {
-			lpf_width = TRX.FM_LPF_RX_Filter;
-		}
+		lpf_width = TRX_on_TX ? CurrentVFO->FM_LPF_TX_Filter : CurrentVFO->FM_LPF_RX_Filter;
 	}
 
 	if (lpf_width == 0) {

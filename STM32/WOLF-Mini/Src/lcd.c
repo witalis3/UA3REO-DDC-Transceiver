@@ -929,26 +929,26 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	char buff[32] = "";
 	// BW HPF-LPF
 	if (CurrentVFO->Mode == TRX_MODE_CW) {
-		sprintf(buff, "%.1f", (float64_t)TRX.CW_LPF_Filter / 1000.0);
+		sprintf(buff, "%.1f", (float64_t)CurrentVFO->CW_LPF_Filter / 1000.0);
 	} else if ((CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)) {
-		sprintf(buff, "%.1f", (float64_t)TRX.DIGI_LPF_Filter / 1000.0);
+		sprintf(buff, "%.1f", (float64_t)CurrentVFO->DIGI_LPF_Filter / 1000.0);
 	} else if ((CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB)) {
 		if (TRX_on_TX) {
-			sprintf(buff, "%.1f", (float64_t)TRX.SSB_LPF_TX_Filter / 1000.0);
+			sprintf(buff, "%.1f", (float64_t)CurrentVFO->SSB_LPF_TX_Filter / 1000.0);
 		} else {
-			sprintf(buff, "%.1f", (float64_t)TRX.SSB_LPF_RX_Filter / 1000.0);
+			sprintf(buff, "%.1f", (float64_t)CurrentVFO->SSB_LPF_RX_Filter / 1000.0);
 		}
 	} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
 		if (TRX_on_TX) {
-			sprintf(buff, "%.1f", (float64_t)TRX.AM_LPF_TX_Filter / 1000.0);
+			sprintf(buff, "%.1f", (float64_t)CurrentVFO->AM_LPF_TX_Filter / 1000.0);
 		} else {
-			sprintf(buff, "%.1f", (float64_t)TRX.AM_LPF_RX_Filter / 1000.0);
+			sprintf(buff, "%.1f", (float64_t)CurrentVFO->AM_LPF_RX_Filter / 1000.0);
 		}
 	} else if (CurrentVFO->Mode == TRX_MODE_NFM) {
 		if (TRX_on_TX) {
-			sprintf(buff, "%.1f", (float64_t)TRX.FM_LPF_TX_Filter / 1000.0);
+			sprintf(buff, "%.1f", (float64_t)CurrentVFO->FM_LPF_TX_Filter / 1000.0);
 		} else {
-			sprintf(buff, "%.1f", (float64_t)TRX.FM_LPF_RX_Filter / 1000.0);
+			sprintf(buff, "%.1f", (float64_t)CurrentVFO->FM_LPF_RX_Filter / 1000.0);
 		}
 	} else {
 		sprintf(buff, "%d", TRX_GetRXSampleRate / 1000);

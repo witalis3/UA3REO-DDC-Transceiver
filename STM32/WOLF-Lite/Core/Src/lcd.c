@@ -572,55 +572,39 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	float32_t bw_trapez_bw_hpf_margin = 0.0f;
 	switch (CurrentVFO->Mode) {
 	case TRX_MODE_LSB:
-		if (TRX_on_TX) {
-			bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_HPF_TX_Filter;
-			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_TX_Filter;
-		} else {
-			bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_HPF_RX_Filter;
-			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_RX_Filter;
-		}
+		bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * (TRX_on_TX ? CurrentVFO->SSB_HPF_TX_Filter : CurrentVFO->SSB_HPF_RX_Filter);
+		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * (TRX_on_TX ? CurrentVFO->SSB_LPF_TX_Filter : CurrentVFO->SSB_LPF_RX_Filter);
 		bw_trapez_bw_right_width = 0.0f;
 		break;
 	case TRX_MODE_DIGI_L:
-		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.DIGI_LPF_Filter;
+		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * CurrentVFO->DIGI_LPF_Filter;
 		bw_trapez_bw_right_width = 0.0f;
 		break;
+	case TRX_MODE_LOOPBACK:
 	case TRX_MODE_USB:
 		bw_trapez_bw_left_width = 0.0f;
-		if (TRX_on_TX) {
-			bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_HPF_TX_Filter;
-			bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_TX_Filter;
-		} else {
-			bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_HPF_RX_Filter;
-			bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.SSB_LPF_RX_Filter;
-		}
+		bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * (TRX_on_TX ? CurrentVFO->SSB_HPF_TX_Filter : CurrentVFO->SSB_HPF_RX_Filter);
+		bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * (TRX_on_TX ? CurrentVFO->SSB_LPF_TX_Filter : CurrentVFO->SSB_LPF_RX_Filter);
 		break;
 	case TRX_MODE_RTTY:
 	case TRX_MODE_DIGI_U:
 		bw_trapez_bw_left_width = 0.0f;
-		bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * TRX.DIGI_LPF_Filter;
+		bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * CurrentVFO->DIGI_LPF_Filter;
 		break;
 	case TRX_MODE_CW:
-		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_CW * TRX.CW_LPF_Filter;
+		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_CW * CurrentVFO->CW_LPF_Filter;
 		bw_trapez_bw_right_width = bw_trapez_bw_left_width;
 		break;
 	case TRX_MODE_NFM:
-		if (TRX_on_TX) {
-			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_NFM * TRX.FM_LPF_TX_Filter;
-		} else {
-			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_NFM * TRX.FM_LPF_RX_Filter;
-		}
+		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_NFM * (TRX_on_TX ? CurrentVFO->FM_LPF_TX_Filter : CurrentVFO->FM_LPF_RX_Filter);
 		bw_trapez_bw_right_width = bw_trapez_bw_left_width;
 		break;
 	case TRX_MODE_AM:
 	case TRX_MODE_SAM:
-		if (TRX_on_TX) {
-			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_AM * TRX.AM_LPF_TX_Filter;
-		} else {
-			bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_AM * TRX.AM_LPF_RX_Filter;
-		}
+		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_AM * (TRX_on_TX ? CurrentVFO->AM_LPF_TX_Filter : CurrentVFO->AM_LPF_RX_Filter);
 		bw_trapez_bw_right_width = bw_trapez_bw_left_width;
 		break;
+	case TRX_MODE_IQ:
 	case TRX_MODE_WFM:
 		bw_trapez_bw_left_width = 1.0f;
 		bw_trapez_bw_right_width = 1.0f;
@@ -1196,26 +1180,26 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	char buff[32] = "";
 	// BW HPF-LPF
 	if (CurrentVFO->Mode == TRX_MODE_CW) {
-		sprintf(buff, "BW:%d", TRX.CW_LPF_Filter);
+		sprintf(buff, "BW:%d", CurrentVFO->CW_LPF_Filter);
 	} else if ((CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)) {
-		sprintf(buff, "BW:%d", TRX.DIGI_LPF_Filter);
+		sprintf(buff, "BW:%d", CurrentVFO->DIGI_LPF_Filter);
 	} else if ((CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB)) {
 		if (TRX_on_TX) {
-			sprintf(buff, "BW:%d-%d", TRX.SSB_HPF_TX_Filter, TRX.SSB_LPF_TX_Filter);
+			sprintf(buff, "BW:%d-%d", CurrentVFO->SSB_HPF_TX_Filter, CurrentVFO->SSB_LPF_TX_Filter);
 		} else {
-			sprintf(buff, "BW:%d-%d", TRX.SSB_HPF_RX_Filter, TRX.SSB_LPF_RX_Filter);
+			sprintf(buff, "BW:%d-%d", CurrentVFO->SSB_HPF_RX_Filter, CurrentVFO->SSB_LPF_RX_Filter);
 		}
 	} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
 		if (TRX_on_TX) {
-			sprintf(buff, "BW:%d", TRX.AM_LPF_TX_Filter);
+			sprintf(buff, "BW:%d", CurrentVFO->AM_LPF_TX_Filter);
 		} else {
-			sprintf(buff, "BW:%d", TRX.AM_LPF_RX_Filter);
+			sprintf(buff, "BW:%d", CurrentVFO->AM_LPF_RX_Filter);
 		}
 	} else if (CurrentVFO->Mode == TRX_MODE_NFM) {
 		if (TRX_on_TX) {
-			sprintf(buff, "BW:%d", TRX.FM_LPF_TX_Filter);
+			sprintf(buff, "BW:%d", CurrentVFO->FM_LPF_TX_Filter);
 		} else {
-			sprintf(buff, "BW:%d", TRX.FM_LPF_RX_Filter);
+			sprintf(buff, "BW:%d", CurrentVFO->FM_LPF_RX_Filter);
 		}
 	} else {
 		sprintf(buff, "BW:FULL");
