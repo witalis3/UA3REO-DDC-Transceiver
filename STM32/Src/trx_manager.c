@@ -1797,6 +1797,22 @@ void BUTTONHANDLER_NOTCH_MANUAL(uint32_t parameter) {
 	NeedSaveSettings = true;
 }
 
+void BUTTONHANDLER_NOTCH_SWITCH(uint32_t parameter) {
+	if (!CurrentVFO->AutoNotchFilter && !CurrentVFO->ManualNotchFilter) {
+		BUTTONHANDLER_NOTCH(parameter);
+		return;
+	}
+	if (CurrentVFO->AutoNotchFilter) {
+		BUTTONHANDLER_NOTCH(parameter);
+		BUTTONHANDLER_NOTCH_MANUAL(parameter);
+		return;
+	}
+	if (CurrentVFO->ManualNotchFilter) {
+		BUTTONHANDLER_NOTCH_MANUAL(parameter);
+		return;
+	}
+}
+
 void BUTTONHANDLER_RIT(uint32_t parameter) {
 	TRX.RIT_Enabled = !TRX.RIT_Enabled;
 	if (TRX.RIT_Enabled) {
@@ -1828,6 +1844,22 @@ void BUTTONHANDLER_XIT(uint32_t parameter) {
 	LCD_UpdateQuery.TopButtons = true;
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
+}
+
+void BUTTONHANDLER_RITXIT(uint32_t parameter) {
+	if (!TRX.RIT_Enabled && !TRX.XIT_Enabled) {
+		BUTTONHANDLER_RIT(parameter);
+		return;
+	}
+	if (TRX.RIT_Enabled) {
+		BUTTONHANDLER_RIT(parameter);
+		BUTTONHANDLER_XIT(parameter);
+		return;
+	}
+	if (TRX.XIT_Enabled) {
+		BUTTONHANDLER_XIT(parameter);
+		return;
+	}
 }
 
 void BUTTONHANDLER_SPLIT(uint32_t parameter) {

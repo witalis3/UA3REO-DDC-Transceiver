@@ -204,7 +204,7 @@ void LoadSettings(bool clear) {
 		TRX.FT8_Auto_CQ = false;                   // Auto-CQ mode for FT8
 		TRX.DXCluster_Type = DX_CLUSTER_DX_SUMMIT; // DX cluster type
 		TRX.REPEATER_Offset = 600;                 // repeater mode custom offset
-		TRX.WOLF_Cluster = true;                   // Enable WOLF cluster
+		TRX.WOLF_Cluster = false;                  // Enable WOLF cluster
 		TRX.FREE_Tune = false;                     // Enable free tune on spectrum bandwidth
 		// AUDIO
 		TRX.Volume = 25;                    // AF Volume
