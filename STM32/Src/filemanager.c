@@ -6,6 +6,7 @@
 #include "lcd_driver.h"
 #include "sd.h"
 #include "system_menu.h"
+#include "vocoder.h"
 #include "wifi.h"
 
 static bool first_start = true;
@@ -189,6 +190,7 @@ static void FILEMANAGER_OpenDialog(void) {
 	bool allow_flash_bin = false;
 	bool allow_flash_jic = false;
 	uint8_t max_buttons_index = 1; // cancel+delete
+	char ctmp[64] = {0};
 
 	// check play wav
 	char *istr = strstr(FILEMANAGER_LISTING[current_index - 1], ".wav");
@@ -259,7 +261,7 @@ static void FILEMANAGER_OpenDialog(void) {
 		button_active = (FILEMANAGER_dialog_button_index == print_index);
 		LCDDriver_Fill_RectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? FG_COLOR : BG_COLOR);
 		LCDDriver_drawRectXY(button_x, button_y, LCD_WIDTH - margin * 2, button_y + button_h, button_active ? BG_COLOR : FG_COLOR);
-		if (!SD_PlayInProcess) {
+		if (!SD_PlayInProcess || SD_PlayCQMessageInProcess) {
 #ifdef LCD_SMALL_INTERFACE
 			LCDDriver_getTextBounds("Play WAV", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
 			LCDDriver_printText("Play WAV", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
@@ -270,12 +272,14 @@ static void FILEMANAGER_OpenDialog(void) {
 #endif
 		} else {
 #ifdef LCD_SMALL_INTERFACE
-			LCDDriver_getTextBounds("Playing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
-			LCDDriver_printText("Playing...", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+			sprintf(ctmp, "P %u/%u sec", VOCODER_SecondsElapsed, VOCODER_SecondsTotal);
+			LCDDriver_getTextBounds(ctmp, button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+			LCDDriver_printText(ctmp, button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
 #else
-			LCDDriver_getTextBoundsFont("Playing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-			LCDDriver_printTextFont("Playing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
-			                        button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			sprintf(ctmp, "Playing %u/%u sec", VOCODER_SecondsElapsed, VOCODER_SecondsTotal);
+			LCDDriver_getTextBoundsFont(ctmp, button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+			LCDDriver_printTextFont(ctmp, button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR,
+			                        &FreeSans9pt7b);
 #endif
 		}
 		button_y += button_h + margin;
@@ -299,12 +303,14 @@ static void FILEMANAGER_OpenDialog(void) {
 #endif
 		} else {
 #ifdef LCD_SMALL_INTERFACE
-			LCDDriver_getTextBounds("TXing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
-			LCDDriver_printText("TXing...", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+			sprintf(ctmp, "T %u/%u sec", VOCODER_SecondsElapsed, VOCODER_SecondsTotal);
+			LCDDriver_getTextBounds(ctmp, button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+			LCDDriver_printText(ctmp, button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
 #else
-			LCDDriver_getTextBoundsFont("TXing...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-			LCDDriver_printTextFont("TXing...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
-			                        button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			sprintf(ctmp, "TXing %u/%u sec", VOCODER_SecondsElapsed, VOCODER_SecondsTotal);
+			LCDDriver_getTextBoundsFont(ctmp, button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+			LCDDriver_printTextFont(ctmp, button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR,
+			                        &FreeSans9pt7b);
 #endif
 		}
 		button_y += button_h + margin;
@@ -329,12 +335,14 @@ static void FILEMANAGER_OpenDialog(void) {
 #endif
 		} else {
 #ifdef LCD_SMALL_INTERFACE
-			LCDDriver_getTextBounds("Recording...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
-			LCDDriver_printText("Recording...", button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
+			sprintf(ctmp, "REC %u sec", VOCODER_SecondsElapsed);
+			LCDDriver_getTextBounds(ctmp, button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, 1);
+			LCDDriver_printText(ctmp, button_x + button_w / 2 - bounds_w / 2, button_y + 1, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR, 1);
 #else
-			LCDDriver_getTextBoundsFont("Recording...", button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
-			LCDDriver_printTextFont("Recording...", button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR,
-			                        button_active ? FG_COLOR : BG_COLOR, &FreeSans9pt7b);
+			sprintf(ctmp, "Recording %u sec", VOCODER_SecondsElapsed);
+			LCDDriver_getTextBoundsFont(ctmp, button_x, button_y, &bounds_x, &bounds_y, &bounds_w, &bounds_h, &FreeSans9pt7b);
+			LCDDriver_printTextFont(ctmp, button_x + button_w / 2 - bounds_w / 2, button_y + button_h / 2 + bounds_h / 2, button_active ? BG_COLOR : FG_COLOR, button_active ? FG_COLOR : BG_COLOR,
+			                        &FreeSans9pt7b);
 #endif
 		}
 		button_y += button_h + margin;

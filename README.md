@@ -317,6 +317,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 ### SD Card
 
 * **File Manager** - Show SD Card file manager, support WAV playback and deleteing files, listening and broadcasting recordings, as well as updating firmware from a memory card
+* **Record CQ message** - Record a short message for quick broadcast
 * **USB SD Card Reader** - Enable USB SD Card reader
 * **Export Settings** - Export settings and calibration data to SD card
 * **Import Settings** - Import settings and calibration data from SD card
@@ -450,10 +451,6 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 ### RDA Statistics 
 
 * Print statistics from RDA award (from internet)
-
-### Record CQ message
-
-* Record a short message for quick broadcast
 
 ### FT8
 

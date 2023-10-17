@@ -3,11 +3,16 @@
 #if HRDW_HAS_SD
 
 #include "functions.h"
+#include "lcd.h"
 #include "sd.h"
 #include "vocoder.h"
 
 IRAM2 int16_t VOCODER_Buffer[SIZE_ADPCM_BLOCK] = {0};
 uint16_t VOCODER_Buffer_Index = 0;
+uint32_t VOCODER_ProcessedSamples = 0;
+uint32_t VOCODER_SecondsElapsedPrev = 0;
+uint32_t VOCODER_SecondsElapsed = 0;
+uint32_t VOCODER_SecondsTotal = 0;
 void *ADPCM_cnxt = NULL;
 
 void ADPCM_Init(void) {
@@ -24,6 +29,13 @@ void VOCODER_Process(void) {
 		adpcm_encode_block(ADPCM_cnxt, (uint8_t *)&SD_workbuffer_B[SD_RecordBufferIndex], &outbuff_size, VOCODER_Buffer, SIZE_ADPCM_BLOCK);
 	}
 	SD_RecordBufferIndex += SIZE_ADPCM_COMPRESSED_BLOCK; // outbuff_size;
+
+	VOCODER_ProcessedSamples += SIZE_ADPCM_BLOCK;
+	VOCODER_SecondsElapsed = VOCODER_ProcessedSamples / TRX_SAMPLERATE;
+	if (VOCODER_SecondsElapsedPrev != VOCODER_SecondsElapsed) {
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+	VOCODER_SecondsElapsedPrev = VOCODER_SecondsElapsed;
 
 	if (SD_RecordBufferIndex == FF_MAX_SS) {
 		SD_RecordBufferIndex = 0;
@@ -53,6 +65,14 @@ bool VODECODER_Process(void) {
 		if (VOCODER_PLAYER_SD_BUFFER_INDEX >= FF_MAX_SS) {
 			VOCODER_PLAYER_SD_BUFFER_INDEX = 0;
 		}
+
+		VOCODER_ProcessedSamples += SIZE_ADPCM_BLOCK;
+		VOCODER_SecondsElapsed = VOCODER_ProcessedSamples / TRX_SAMPLERATE;
+		if (VOCODER_SecondsElapsedPrev != VOCODER_SecondsElapsed) {
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+		}
+		VOCODER_SecondsElapsedPrev = VOCODER_SecondsElapsed;
+
 		return true;
 	}
 	if (!SD_CommandInProcess) {

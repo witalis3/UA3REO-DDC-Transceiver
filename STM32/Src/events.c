@@ -421,7 +421,7 @@ void EVENTS_do_EVERY_100ms(void) // 10 Hz
 	}
 	if (fpga_stuck_errors > 5 && TRX_on_RX && !TRX.ADC_SHDN && !FPGA_bus_stop && CurrentVFO->Mode != TRX_MODE_WFM) // && !SD_PlayInProcess
 	{
-		println("[ERR] IQ stuck error, restart disabled");
+		// println("[ERR] IQ stuck error, restart disabled");
 		fpga_stuck_errors = 0;
 		// FPGA_NeedRestart_RX = true;
 	}

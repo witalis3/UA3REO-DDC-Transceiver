@@ -360,6 +360,11 @@ static bool SDCOMM_CREATE_RECORD_FILE_main(char *filename, bool audio_rec) {
 		uint32_t byteswritten;
 		f_write(&File, &wav_hdr, sizeof(wav_hdr), &byteswritten);
 
+		VOCODER_SecondsTotal = 0;
+		VOCODER_ProcessedSamples = 0;
+		VOCODER_SecondsElapsedPrev = 0;
+		VOCODER_SecondsElapsed = 0;
+
 		if (audio_rec) {
 			SD_RecordInProcess = true;
 			LCD_UpdateQuery.StatusInfoBar = true;
@@ -701,6 +706,11 @@ static bool SDCOMM_OPEN_PLAY_FILE_handler(void) {
 		FRESULT res = f_read(&File, &wav_hdr, sizeof(wav_hdr), &bytesreaded);
 		// println((TCHAR*)SD_workbuffer_A);
 		// println(bytesreaded, " ", res);
+
+		VOCODER_SecondsTotal = wav_hdr.datasize / SIZE_ADPCM_COMPRESSED_BLOCK * SIZE_ADPCM_BLOCK / TRX_SAMPLERATE;
+		VOCODER_ProcessedSamples = 0;
+		VOCODER_SecondsElapsedPrev = 0;
+		VOCODER_SecondsElapsed = 0;
 
 		SD_PlayInProcess = true;
 		LCD_UpdateQuery.SystemMenuRedraw = true;

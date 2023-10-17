@@ -1028,11 +1028,14 @@ const static struct sysmenu_item_handler sysmenu_wifi_handlers[] = {
 
 #if HRDW_HAS_SD
 const static struct sysmenu_item_handler sysmenu_sd_handlers[] = {
-    {"File Manager", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_Filemanager},          {"USB SD Card Reader", SYSMENU_BOOLEAN, NULL, (uint32_t *)&SD_USBCardReader, SYSMENU_HANDL_SD_USB},
+    {"File Manager", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_Filemanager},
+    {"Record CQ message", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RECORD_CQ_WAV},
+    {"USB SD Card Reader", SYSMENU_BOOLEAN, NULL, (uint32_t *)&SD_USBCardReader, SYSMENU_HANDL_SD_USB},
 #ifdef LAY_320x240
-    {"Export to SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettingsDialog}, {"Import from SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettingsDialog},
+    {"Export to SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettingsDialog},
+    {"Import from SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettingsDialog},
 #else
-		{"Export Settings to SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettingsDialog},
+    {"Export Settings to SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettingsDialog},
     {"Import Settings frm SD", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettingsDialog},
 #endif
     {"Format SD card", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_FormatDialog},
@@ -1387,9 +1390,6 @@ const static struct sysmenu_item_handler sysmenu_services_handlers[] = {
     {"Spectrum Analyzer", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SPECTRUMMENU},
 #ifndef STM32F407xx
     {"WSPR Beacon", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_WSPRMENU},
-#endif
-#if HRDW_HAS_SD
-    {"Record CQ message", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_RECORD_CQ_WAV},
 #endif
 #if FT8_SUPPORT
     {"FT-8", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_FT8_Decoder},

@@ -2165,7 +2165,7 @@ void printSystemMenuButton(uint16_t x, uint16_t y, uint16_t width, uint16_t heig
 
 	LCDDriver_drawRoundedRectWH(x, y, width, height, active ? active_color : border_color, 2, false);
 
-	if (type == SYSMENU_RUN || type == SYSMENU_MENU || type == SYSMENU_MENU) {
+	if (type == SYSMENU_RUN || type == SYSMENU_MENU || type == SYSMENU_NAVBUTTON) {
 		LCDDriver_Fill_RectWH(x + 1, y + 1, width - 2, (height - 2), title_back_color);
 		LCDDriver_getTextBoundsFont(title, x, y, &x1_title, &y1_title, &w_title, &h_title, (GFXfont *)&FreeSans9pt7b); // get title bounds
 		LCDDriver_getTextBoundsFont(value, x, y, &x1_value, &y1_value, &w_value, &h_value, (GFXfont *)&FreeSans7pt7b); // get value bounds

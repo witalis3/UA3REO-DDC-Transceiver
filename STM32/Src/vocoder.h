@@ -13,6 +13,10 @@
 extern int16_t VOCODER_Buffer[SIZE_ADPCM_BLOCK];
 extern uint16_t VOCODER_Buffer_Index;
 extern void *ADPCM_cnxt;
+extern uint32_t VOCODER_ProcessedSamples;
+extern uint32_t VOCODER_SecondsElapsedPrev;
+extern uint32_t VOCODER_SecondsElapsed;
+extern uint32_t VOCODER_SecondsTotal;
 
 extern void ADPCM_Init(void);
 extern void VOCODER_Process(void);
