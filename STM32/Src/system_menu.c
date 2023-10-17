@@ -1021,9 +1021,7 @@ const static struct sysmenu_item_handler sysmenu_wifi_handlers[] = {
     {"ALLQSO.RU Token", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetALLQSO_TOKEN},
     {"ALLQSO.RU LogId", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WIFI_SetALLQSO_LOGID},
 #endif
-    {"NET:", SYSMENU_INFOLINE, 0, 0},
     {WIFI_AP, SYSMENU_INFOLINE, 0, 0},
-    {"IP:", SYSMENU_INFOLINE, 0, 0},
     {WIFI_IP, SYSMENU_INFOLINE, 0, 0},
 };
 #endif
