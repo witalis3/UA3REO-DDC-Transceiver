@@ -18,7 +18,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 118        // Settings config version
+#define SETT_VERSION 119        // Settings config version
 #define CALIB_VERSION 79        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -752,6 +752,7 @@ extern struct TRX_SETTINGS {
 	bool RepeaterMode_shadow;
 	bool WOLF_Cluster;
 	bool FREE_Tune;
+	bool Auto_CW;
 #if HRDW_HAS_DUAL_RX
 	bool Dual_RX;
 #endif
