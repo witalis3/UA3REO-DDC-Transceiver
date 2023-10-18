@@ -1809,15 +1809,12 @@ void FFT_ShortBufferPrintFFT(void) {
 	uint16_t grid_color = palette_fft[fftHeight * 3 / 4];
 	static uint32_t fft_output_printed = 0;
 	static uint32_t fft_output_prepared = 0;
-	uint32_t fft_y;
-  uint32_t fft_y_prev = 0;
- 
-	
+
 	while (fft_output_printed < (fftHeight + wtfHeight - decoder_offset)) {
 		fft_output_prepared = 0;
 
 		for (uint32_t buff_idx = 0; buff_idx < FFT_SHORT_BUFFER_SIZE; buff_idx++) {
-			fft_y = fft_output_printed + fft_output_prepared;
+			uint32_t fft_y = fft_output_printed + fft_output_prepared;
 			if (fft_y >= (fftHeight + wtfHeight - decoder_offset)) {
 				break;
 			}
@@ -1837,89 +1834,90 @@ void FFT_ShortBufferPrintFFT(void) {
 
 				if (TRX.FFT_Style == 1) // gradient
 				{
+					uint16_t color = palette_fft[fft_y];
 					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
-						if (fft_y < (fftHeight - fft_header[fft_x])) {
-							continue;
+						if (fft_y >= (fftHeight - fft_header[fft_x])) {
+							print_output_short_buffer[buff_idx][fft_x] = color;
 						}
-
-						print_output_short_buffer[buff_idx][fft_x] = palette_fft[fft_y];
 					}
 				}
 
 				if (TRX.FFT_Style == 2) // fill
 				{
+					uint16_t color = palette_fft[fftHeight / 2];
 					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
-						if (fft_y < (fftHeight - fft_header[fft_x])) {
-							continue;
+						if (fft_y >= (fftHeight - fft_header[fft_x])) {
+							print_output_short_buffer[buff_idx][fft_x] = color;
 						}
-
-						print_output_short_buffer[buff_idx][fft_x] = palette_fft[fftHeight / 2];
 					}
 				}
 
 				if (TRX.FFT_Style == 3) // dots
 				{
+					uint16_t color = palette_fft[fftHeight / 2];
 					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
-						if (fft_y != fftHeight - fft_header[fft_x]) {
-							continue;
+						if (fft_y == (fftHeight - fft_header[fft_x])) {
+							print_output_short_buffer[buff_idx][fft_x] = color;
 						}
-				if ((buff_idx-1) >1 && (fft_x-1)>1) {
-						print_output_short_buffer[buff_idx-1][fft_x-1] = palette_fft[fftHeight / 2];
-						print_output_short_buffer[buff_idx][fft_x] = palette_fft[fftHeight / 2];					
-				}
 					}
 				}
 
-
-		    if (TRX.FFT_Style == 4) // contour
+				if (TRX.FFT_Style == 4) // contour
 				{
-					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
-					int32_t y_diff = (int32_t)fft_header[fft_x] - (int32_t)fft_header[fft_x-1];	
-						if (fft_y != fftHeight - fft_header[fft_x]) {
-							continue;
-						}
-						for (uint32_t l = 0 ; (l <(abs(y_diff )+1)); (l++)){ // draw line		
+					uint16_t contour_color = palette_fft[fftHeight / 2];
 
-						if ((buff_idx-l) >1 && (buff_idx+l) < FFT_SHORT_BUFFER_SIZE-1) 
-							  {
-						print_output_short_buffer[buff_idx+l-1][fft_x-1] = palette_fft[fftHeight / 2];
-						print_output_short_buffer[buff_idx+l][fft_x] = palette_fft[fftHeight / 2];
-						    }
-					                                                 }						
+					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
+						uint32_t current_signal_y = fftHeight - fft_header[fft_x];
+
+						// dot on top
+						if (fft_y == current_signal_y) {
+							print_output_short_buffer[buff_idx][fft_x] = contour_color;
 						}
-			fft_y_prev = fft_y; 						
+
+						// contour
+						if (fft_x > 0 && fft_x < (LAYOUT->FFT_PRINT_SIZE - 1) && fft_y > current_signal_y) {
+							uint16_t left_signal_y = fftHeight - fft_header[fft_x - 1];
+							uint16_t right_signal_y = fftHeight - fft_header[fft_x + 1];
+
+							if (current_signal_y < right_signal_y && fft_y < right_signal_y) {
+								print_output_short_buffer[buff_idx][fft_x] = contour_color;
+							}
+							if (current_signal_y < left_signal_y && fft_y < left_signal_y) {
+								print_output_short_buffer[buff_idx][fft_x] = contour_color;
+							}
+						}
+					}
 				}
-				
-				
 
-		if (TRX.FFT_Style == 5) // gradient + contour
+				if (TRX.FFT_Style == 5) // gradient + contour
 				{
-					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
-					int32_t y_diff = (int32_t)fft_header[fft_x] - (int32_t)fft_header[fft_x-1];	
-						if (fft_y != fftHeight - fft_header[fft_x]) {
-							continue;
-						}
-						for (uint32_t l = 0 ; (l <(abs(y_diff )+1)); (l++)){ // draw line		
-
-						if ((buff_idx-l) >1 && (buff_idx+l) < FFT_SHORT_BUFFER_SIZE-1) 
-							  {
-						print_output_short_buffer[buff_idx+l-1][fft_x-1] = palette_fft[fftHeight / 2];
-						print_output_short_buffer[buff_idx+l][fft_x] = palette_fft[fftHeight / 2];
-						    }
-					                                                 }						
-						}
-
-
+					uint16_t contour_color = palette_fft[fftHeight / 2];
+					uint16_t gradient_color = palette_fft[fft_y];
 
 					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
-						if (fft_y < (fftHeight - fft_header[fft_x])) {
-							continue;
-						}
+						uint16_t current_signal_y = fftHeight - fft_header[fft_x];
 
-						print_output_short_buffer[buff_idx][fft_x] = palette_fft[fft_y];
-					}	
-					
-			fft_y_prev = fft_y; 					
+						// gradient
+						if (fft_y > current_signal_y) {
+							print_output_short_buffer[buff_idx][fft_x] = gradient_color;
+						}
+						// dot on top
+						if (fft_y == current_signal_y) {
+							print_output_short_buffer[buff_idx][fft_x] = contour_color;
+						}
+						// contour
+						if (fft_x > 0 && fft_x < (LAYOUT->FFT_PRINT_SIZE - 1) && fft_y > current_signal_y) {
+							uint16_t left_signal_y = fftHeight - fft_header[fft_x - 1];
+							uint16_t right_signal_y = fftHeight - fft_header[fft_x + 1];
+
+							if (current_signal_y < right_signal_y && fft_y < right_signal_y) {
+								print_output_short_buffer[buff_idx][fft_x] = contour_color;
+							}
+							if (current_signal_y < left_signal_y && fft_y < left_signal_y) {
+								print_output_short_buffer[buff_idx][fft_x] = contour_color;
+							}
+						}
+					}
 				}
 			}
 

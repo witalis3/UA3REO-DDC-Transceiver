@@ -369,11 +369,8 @@ void LoadSettings(bool clear) {
 #ifdef STM32F407xx
 		TRX.FFT_Averaging = 6;
 #endif
-		TRX.FFT_Window = 1; // FFT Window
-		TRX.FFT_Style = 5;  // FFT style
-#if !HRDW_HAS_FULL_FFT_BUFFER
-		TRX.FFT_Style = 1;
-#endif
+		TRX.FFT_Window = 1;        // FFT Window
+		TRX.FFT_Style = 5;         // FFT style
 		TRX.FFT_BW_Style = 2;      // FFT BW style
 		TRX.FFT_Color = 0;         // FFT display color
 		TRX.WTF_Color = 1;         // WTF display color

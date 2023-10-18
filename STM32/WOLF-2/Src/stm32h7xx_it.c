@@ -495,7 +495,11 @@ void DMA2_Stream5_IRQHandler(void) {
 	/* USER CODE END DMA2_Stream5_IRQn 0 */
 	HAL_DMA_IRQHandler(&hdma_memtomem_dma2_stream5);
 	/* USER CODE BEGIN DMA2_Stream5_IRQn 1 */
+#if HRDW_HAS_FULL_FFT_BUFFER
 	FFT_afterPrintFFT();
+#else
+	FFT_ShortBufferPrintFFT();
+#endif
 	/* USER CODE END DMA2_Stream5_IRQn 1 */
 }
 

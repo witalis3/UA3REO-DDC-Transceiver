@@ -9,9 +9,10 @@
 #include <stdbool.h>
 
 #ifdef STM32H743xx
-#define FFT_SIZE 1024       // specify the size of the calculated FFT
-#define FFT_USEFUL_SIZE 960 // size after FFT cropping
-#define FFT_MAX_MEANS 10    // store old fft data for meaning
+#define FFT_SIZE 1024            // specify the size of the calculated FFT
+#define FFT_USEFUL_SIZE 960      // size after FFT cropping
+#define FFT_MAX_MEANS 10         // store old fft data for meaning
+#define FFT_SHORT_BUFFER_SIZE 20 // lines in small buffer for painting (for test, dont use on production version)
 #endif
 
 #ifdef STM32F407xx

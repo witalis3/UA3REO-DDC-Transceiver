@@ -1055,6 +1055,8 @@ void *alloc_to_wtf(uint32_t size, bool reset) {
 	allocated += size;
 	return p;
 }
+#else
+void *alloc_to_wtf(uint32_t size, bool reset) { return NULL; }
 #endif
 
 float fast_sqrt(const float x) {
