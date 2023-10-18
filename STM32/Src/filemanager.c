@@ -164,7 +164,12 @@ void FILEMANAGER_EventSecondaryRotate(int8_t direction) {
 	LCD_UpdateQuery.SystemMenu = true;
 }
 
-void FILEMANAGER_Closing(void) { first_start = true; }
+void FILEMANAGER_Closing(void) {
+	first_start = true;
+	current_index = 0;
+	FILEMANAGER_dialog_opened = false;
+	FILEMANAGER_dialog_button_index = 0;
+}
 
 static void FILEMANAGER_Refresh(void) {
 	if (!SD_doCommand(SDCOMM_LIST_DIRECTORY, false)) {
