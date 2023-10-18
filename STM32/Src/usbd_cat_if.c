@@ -258,17 +258,21 @@ static SRAM uint8_t CAT_temp_buff[CAT_TX_FIFO_BUFFER_SIZE] = {0};
 void CAT_Transmit_FIFO(uint8_t *data, uint16_t length) {
 	if (length <= CAT_TX_FIFO_BUFFER_SIZE) {
 		for (uint16_t i = 0; i < length; i++) {
-			CAT_tx_fifo[CAT_tx_fifo_head] = data[i];
-			CAT_tx_fifo_head++;
-			if (CAT_tx_fifo_head == CAT_tx_fifo_tail) {
+			// buffer full
+			if ((CAT_tx_fifo_head + 1) == CAT_tx_fifo_tail) {
 				uint_fast16_t tryes = 0;
-				while (CAT_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512) {
+				while (CAT_Transmit_FIFO_Events() != USBD_OK && tryes < 512) {
 					tryes++;
 				}
-				if (CAT_Transmit_FIFO_Events() == USBD_BUSY) {
-					break;
+				if (tryes >= 512) {
+					return;
 				}
 			}
+
+			// assign char buffer
+			CAT_tx_fifo[CAT_tx_fifo_head] = data[i];
+			CAT_tx_fifo_head++;
+
 			if (CAT_tx_fifo_head >= CAT_TX_FIFO_BUFFER_SIZE) {
 				CAT_tx_fifo_head = 0;
 			}
@@ -280,41 +284,46 @@ uint8_t CAT_Transmit_FIFO_Events(void) {
 	if (FIFO_Events_busy) {
 		return USBD_FAIL;
 	}
+
 	if (CAT_tx_fifo_head == CAT_tx_fifo_tail) {
 		return USBD_OK;
 	}
-	USBD_CAT_HandleTypeDef *hcdc = (USBD_CAT_HandleTypeDef *)hUsbDeviceFS.pClassDataDEBUG;
+
+	USBD_CAT_HandleTypeDef *hcdc = (USBD_CAT_HandleTypeDef *)hUsbDeviceFS.pClassDataCAT;
 	if (hcdc->TxState != 0) {
 		return USBD_FAIL;
 	}
+
 	FIFO_Events_busy = true;
-	uint16_t indx = 0;
+	uint16_t count = 0;
 	dma_memset(CAT_temp_buff, 0x00, CAT_TX_FIFO_BUFFER_SIZE);
 
 	if (CAT_tx_fifo_tail > CAT_tx_fifo_head) {
 		for (uint16_t i = CAT_tx_fifo_tail; i < CAT_TX_FIFO_BUFFER_SIZE; i++) {
-			CAT_temp_buff[indx] = CAT_tx_fifo[i];
-			indx++;
+			CAT_temp_buff[count] = CAT_tx_fifo[i];
+			count++;
 			CAT_tx_fifo_tail++;
-			if (indx == CAT_APP_TX_DATA_SIZE) {
+			if (count == CAT_APP_TX_DATA_SIZE) {
 				break;
 			}
 		}
 		if (CAT_tx_fifo_tail == CAT_TX_FIFO_BUFFER_SIZE) {
 			CAT_tx_fifo_tail = 0;
 		}
-	} else if (CAT_tx_fifo_tail < CAT_tx_fifo_head) {
+	}
+
+	if (CAT_tx_fifo_tail < CAT_tx_fifo_head && count < CAT_APP_TX_DATA_SIZE) {
 		for (uint16_t i = CAT_tx_fifo_tail; i < CAT_tx_fifo_head; i++) {
-			CAT_temp_buff[indx] = CAT_tx_fifo[i];
-			indx++;
+			CAT_temp_buff[count] = CAT_tx_fifo[i];
+			count++;
 			CAT_tx_fifo_tail++;
-			if (indx == CAT_APP_TX_DATA_SIZE) {
+			if (count == CAT_APP_TX_DATA_SIZE) {
 				break;
 			}
 		}
 	}
 
-	CAT_Transmit_FS(CAT_temp_buff, indx);
+	CAT_Transmit_FS(CAT_temp_buff, count);
 	FIFO_Events_busy = false;
 	return USBD_BUSY;
 }

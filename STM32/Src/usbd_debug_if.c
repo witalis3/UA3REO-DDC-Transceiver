@@ -17,9 +17,9 @@
 
 static uint8_t DEBUG_UserRxBufferFS[DEBUG_APP_RX_DATA_SIZE];
 static uint8_t DEBUG_UserTxBufferFS[DEBUG_APP_TX_DATA_SIZE];
-static SRAM uint8_t debug_tx_fifo[DEBUG_TX_FIFO_BUFFER_SIZE] = {0};
-static uint16_t debug_tx_fifo_head = 0;
-static uint16_t debug_tx_fifo_tail = 0;
+static SRAM uint8_t DEBUG_tx_fifo[DEBUG_TX_FIFO_BUFFER_SIZE] = {0};
+static uint16_t DEBUG_tx_fifo_head = 0;
+static uint16_t DEBUG_tx_fifo_tail = 0;
 static uint8_t lineCoding[7] = {0x00, 0xC2, 0x01, 0x00, 0x00, 0x00, 0x08}; // 115200bps, 1stop, no parity, 8bit
 
 // extern USBD_HandleTypeDef hUsbDeviceFS;
@@ -200,65 +200,74 @@ uint8_t DEBUG_Transmit_FS(uint8_t *Buf, uint16_t Len) {
 void DEBUG_Transmit_FIFO(uint8_t *data, uint16_t length) {
 	if (length <= DEBUG_TX_FIFO_BUFFER_SIZE) {
 		for (uint16_t i = 0; i < length; i++) {
-			debug_tx_fifo[debug_tx_fifo_head] = data[i];
-			debug_tx_fifo_head++;
-			if (debug_tx_fifo_head == debug_tx_fifo_tail) {
+			// buffer full
+			if ((DEBUG_tx_fifo_head + 1) == DEBUG_tx_fifo_tail) {
 				uint_fast16_t tryes = 0;
-				while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512) {
+				while (DEBUG_Transmit_FIFO_Events() != USBD_OK && tryes < 512) {
 					tryes++;
 				}
-				if (DEBUG_Transmit_FIFO_Events() == USBD_BUSY) {
-					break;
+				if (tryes >= 512) {
+					return;
 				}
 			}
-			if (debug_tx_fifo_head >= DEBUG_TX_FIFO_BUFFER_SIZE) {
-				debug_tx_fifo_head = 0;
+
+			// assign char buffer
+			DEBUG_tx_fifo[DEBUG_tx_fifo_head] = data[i];
+			DEBUG_tx_fifo_head++;
+
+			if (DEBUG_tx_fifo_head >= DEBUG_TX_FIFO_BUFFER_SIZE) {
+				DEBUG_tx_fifo_head = 0;
 			}
 		}
 	}
 }
 
-SRAM static uint8_t temp_buff[DEBUG_TX_FIFO_BUFFER_SIZE] = {0};
+SRAM static uint8_t DEBUG_temp_buff[DEBUG_TX_FIFO_BUFFER_SIZE] = {0};
 static bool FIFO_Events_busy = false;
 uint8_t DEBUG_Transmit_FIFO_Events(void) {
 	if (FIFO_Events_busy) {
 		return USBD_FAIL;
 	}
-	if (debug_tx_fifo_head == debug_tx_fifo_tail) {
+
+	if (DEBUG_tx_fifo_head == DEBUG_tx_fifo_tail) {
 		return USBD_OK;
 	}
+
 	USBD_DEBUG_HandleTypeDef *hcdc = (USBD_DEBUG_HandleTypeDef *)hUsbDeviceFS.pClassDataDEBUG;
 	if (hcdc->TxState != 0) {
 		return USBD_FAIL;
 	}
-	FIFO_Events_busy = true;
-	uint16_t indx = 0;
-	dma_memset(temp_buff, 0x00, DEBUG_TX_FIFO_BUFFER_SIZE);
 
-	if (debug_tx_fifo_tail > debug_tx_fifo_head) {
-		for (uint16_t i = debug_tx_fifo_tail; i < DEBUG_TX_FIFO_BUFFER_SIZE; i++) {
-			temp_buff[indx] = debug_tx_fifo[i];
-			indx++;
-			debug_tx_fifo_tail++;
-			if (indx == DEBUG_APP_TX_DATA_SIZE) {
+	FIFO_Events_busy = true;
+	uint16_t count = 0;
+	dma_memset(DEBUG_temp_buff, 0x00, DEBUG_TX_FIFO_BUFFER_SIZE);
+
+	if (DEBUG_tx_fifo_tail > DEBUG_tx_fifo_head) {
+		for (uint16_t i = DEBUG_tx_fifo_tail; i < DEBUG_TX_FIFO_BUFFER_SIZE; i++) {
+			DEBUG_temp_buff[count] = DEBUG_tx_fifo[i];
+			count++;
+			DEBUG_tx_fifo_tail++;
+			if (count == DEBUG_APP_TX_DATA_SIZE) {
 				break;
 			}
 		}
-		if (debug_tx_fifo_tail == DEBUG_TX_FIFO_BUFFER_SIZE) {
-			debug_tx_fifo_tail = 0;
+		if (DEBUG_tx_fifo_tail == DEBUG_TX_FIFO_BUFFER_SIZE) {
+			DEBUG_tx_fifo_tail = 0;
 		}
-	} else if (debug_tx_fifo_tail < debug_tx_fifo_head) {
-		for (uint16_t i = debug_tx_fifo_tail; i < debug_tx_fifo_head; i++) {
-			temp_buff[indx] = debug_tx_fifo[i];
-			indx++;
-			debug_tx_fifo_tail++;
-			if (indx == DEBUG_APP_TX_DATA_SIZE) {
+	}
+
+	if (DEBUG_tx_fifo_tail < DEBUG_tx_fifo_head && count < DEBUG_APP_TX_DATA_SIZE) {
+		for (uint16_t i = DEBUG_tx_fifo_tail; i < DEBUG_tx_fifo_head; i++) {
+			DEBUG_temp_buff[count] = DEBUG_tx_fifo[i];
+			count++;
+			DEBUG_tx_fifo_tail++;
+			if (count == DEBUG_APP_TX_DATA_SIZE) {
 				break;
 			}
 		}
 	}
 
-	DEBUG_Transmit_FS(temp_buff, indx);
+	DEBUG_Transmit_FS(DEBUG_temp_buff, count);
 	FIFO_Events_busy = false;
 	return USBD_BUSY;
 }

@@ -24,6 +24,8 @@
 #define HRDW_HAS_LNA_HF false
 #define HRDW_HAS_LNA_VHF true
 
+#define HRDW_DEBUG_ON_CAT_PORT false
+
 // settings
 #define ADC_CLOCK 122880000                                                 // ADC generator frequency
 #define DAC_CLOCK (HRDW_DAC_PLL_selected ? DAC_CLOCK_PLL2 : DAC_CLOCK_PLL1) // DAC generator frequency

@@ -91,15 +91,15 @@ void print_chr_LCDOnly(char chr) {
 
 void print_flush(void) {
 #if HRDW_HAS_USB_DEBUG
-	uint_fast16_t tryes = 0;
-	while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512) {
-		tryes++;
+	uint_fast16_t debug_tryes = 0;
+	while (DEBUG_Transmit_FIFO_Events() == USBD_BUSY && debug_tryes < 512) {
+		debug_tryes++;
 	}
 #endif
 #if HRDW_DEBUG_ON_CAT_PORT
-	uint_fast16_t tryes = 0;
-	while (CAT_Transmit_FIFO_Events() == USBD_BUSY && tryes < 512) {
-		tryes++;
+	uint_fast16_t cat_tryes = 0;
+	while (CAT_Transmit_FIFO_Events() == USBD_BUSY && cat_tryes < 512) {
+		cat_tryes++;
 	}
 #endif
 }

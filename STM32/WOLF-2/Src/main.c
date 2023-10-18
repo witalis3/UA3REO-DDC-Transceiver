@@ -1696,10 +1696,17 @@ int fputc(int ch, FILE *f) {
 	}
 
 	// USB
+#if HRDW_DEBUG_ON_CAT_PORT
+	if (USB_DEBUG_ENABLED) {
+		char usb_char = (char)ch;
+		CAT_Transmit_FIFO((uint8_t *)&usb_char, 1);
+	}
+#else
 	if (USB_DEBUG_ENABLED) {
 		char usb_char = (char)ch;
 		DEBUG_Transmit_FIFO((uint8_t *)&usb_char, 1);
 	}
+#endif
 
 	// LCD
 	if (LCD_DEBUG_ENABLED) {
