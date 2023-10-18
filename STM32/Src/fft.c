@@ -1810,7 +1810,9 @@ void FFT_ShortBufferPrintFFT(void) {
 	static uint32_t fft_output_printed = 0;
 	static uint32_t fft_output_prepared = 0;
 	uint32_t fft_y;
-
+  uint32_t fft_y_prev = 0;
+ 
+	
 	while (fft_output_printed < (fftHeight + wtfHeight - decoder_offset)) {
 		fft_output_prepared = 0;
 
@@ -1861,9 +1863,63 @@ void FFT_ShortBufferPrintFFT(void) {
 						if (fft_y != fftHeight - fft_header[fft_x]) {
 							continue;
 						}
-
-						print_output_short_buffer[buff_idx][fft_x] = palette_fft[fftHeight / 2];
+				if ((buff_idx-1) >1 && (fft_x-1)>1) {
+						print_output_short_buffer[buff_idx-1][fft_x-1] = palette_fft[fftHeight / 2];
+						print_output_short_buffer[buff_idx][fft_x] = palette_fft[fftHeight / 2];					
+				}
 					}
+				}
+
+
+		    if (TRX.FFT_Style == 4) // contour
+				{
+					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
+					int32_t y_diff = (int32_t)fft_header[fft_x] - (int32_t)fft_header[fft_x-1];	
+						if (fft_y != fftHeight - fft_header[fft_x]) {
+							continue;
+						}
+						for (uint32_t l = 0 ; (l <(abs(y_diff )+1)); (l++)){ // draw line		
+
+						if ((buff_idx-l) >1 && (buff_idx+l) < FFT_SHORT_BUFFER_SIZE-1) 
+							  {
+						print_output_short_buffer[buff_idx+l-1][fft_x-1] = palette_fft[fftHeight / 2];
+						print_output_short_buffer[buff_idx+l][fft_x] = palette_fft[fftHeight / 2];
+						    }
+					                                                 }						
+						}
+			fft_y_prev = fft_y; 						
+				}
+				
+				
+
+		if (TRX.FFT_Style == 5) // gradient + contour
+				{
+					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
+					int32_t y_diff = (int32_t)fft_header[fft_x] - (int32_t)fft_header[fft_x-1];	
+						if (fft_y != fftHeight - fft_header[fft_x]) {
+							continue;
+						}
+						for (uint32_t l = 0 ; (l <(abs(y_diff )+1)); (l++)){ // draw line		
+
+						if ((buff_idx-l) >1 && (buff_idx+l) < FFT_SHORT_BUFFER_SIZE-1) 
+							  {
+						print_output_short_buffer[buff_idx+l-1][fft_x-1] = palette_fft[fftHeight / 2];
+						print_output_short_buffer[buff_idx+l][fft_x] = palette_fft[fftHeight / 2];
+						    }
+					                                                 }						
+						}
+
+
+
+					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
+						if (fft_y < (fftHeight - fft_header[fft_x])) {
+							continue;
+						}
+
+						print_output_short_buffer[buff_idx][fft_x] = palette_fft[fft_y];
+					}	
+					
+			fft_y_prev = fft_y; 					
 				}
 			}
 
