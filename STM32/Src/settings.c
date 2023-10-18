@@ -189,8 +189,8 @@ void LoadSettings(bool clear) {
 		TRX.BandMapEnabled = true;          // automatic change of mode according to the range map
 		TRX.InputType_MAIN = TRX_INPUT_MIC; // type of input to transfer (SSB/FM/AM)
 		TRX.InputType_DIGI = TRX_INPUT_USB; // type of input to transfer (DIGI)
-#ifdef FRONTPANEL_X1
-		TRX.AutoGain = true; // auto-control preamp and attenuator
+#ifdef FRONTPANEL_KT_100S
+		TRX.AutoGain = false; // auto-control preamp and attenuator
 #else
 		TRX.AutoGain = true;                           // auto-control preamp and attenuator
 #endif

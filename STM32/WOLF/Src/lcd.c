@@ -3391,8 +3391,15 @@ void LCD_hideKeyboard(void) {
 
 void LCD_showATTWindow(uint32_t parameter) {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+#ifdef FRONTPANEL_KT_100S
+	const uint8_t buttons_in_line = 3;
+	const uint8_t buttons_lines = 1;
+	uint8_t dB = 6;
+#else
 	const uint8_t buttons_in_line = 5;
 	const uint8_t buttons_lines = 2;
+	uint8_t dB = 3;
+#endif
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
 	while (LCD_busy) {
@@ -3400,7 +3407,6 @@ void LCD_showATTWindow(uint32_t parameter) {
 	}
 	LCD_openWindow(window_width, window_height);
 	LCD_busy = true;
-	uint8_t dB = 3;
 	for (uint8_t yi = 0; yi < buttons_lines; yi++) {
 		for (uint8_t xi = 0; xi < buttons_in_line; xi++) {
 			char str[8];
@@ -3409,10 +3415,15 @@ void LCD_showATTWindow(uint32_t parameter) {
 			            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, str,
 			            (TRX.ATT_DB == dB), true, true, dB, BUTTONHANDLER_SET_ATT_DB, BUTTONHANDLER_SET_ATT_DB, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER,
 			            COLOR->BUTTON_SWITCH_BACKGROUND);
+
+#ifdef FRONTPANEL_KT_100S
+			dB += 6;
+#else
 			dB += 3;
 			if (dB > 31) {
 				dB = 31;
 			}
+#endif
 		}
 	}
 	LCD_busy = false;

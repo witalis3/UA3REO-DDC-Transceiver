@@ -1206,14 +1206,14 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		shift_array[38] = bitRead(band_out, 0);                               // 3-1 EXT BAND OUT 0
 		shift_array[39] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // 3-0 EXT TX PTT OUT
 
-		shift_array[40] = CurrentVFO->RXFreqAfterTransverters >= 70000000;                         // 2-7 HF-VHF-SELECT
-		shift_array[41] = false;                                                                   // 2-6 UNUSED
-		shift_array[42] = false;                                                                   // 2-5 UNUSED
-		shift_array[43] = false;                                                                   // 2-4 UNUSED
-		shift_array[44] = false;                                                                   // 2-3 UNUSED
-		shift_array[45] = !(TRX.ATT && TRX.ATT_DB > 6);                                            // 2-2 ATT_ON_12
-		shift_array[46] = !(TRX.ATT && ((TRX.ATT_DB > 0 && TRX.ATT_DB <= 6) || TRX.ATT_DB >= 18)); // 2-1 ATT_ON_6
-		shift_array[47] = !(!TRX_on_TX && TRX.LNA);                                                // 2-0 LNA_ON
+		shift_array[40] = CurrentVFO->RXFreqAfterTransverters >= 70000000;                        // 2-7 HF-VHF-SELECT
+		shift_array[41] = false;                                                                  // 2-6 UNUSED
+		shift_array[42] = false;                                                                  // 2-5 UNUSED
+		shift_array[43] = false;                                                                  // 2-4 UNUSED
+		shift_array[44] = false;                                                                  // 2-3 UNUSED
+		shift_array[45] = (TRX.ATT && TRX.ATT_DB > 6);                                            // 2-2 ATT_ON_12
+		shift_array[46] = (TRX.ATT && ((TRX.ATT_DB > 0 && TRX.ATT_DB <= 6) || TRX.ATT_DB >= 18)); // 2-1 ATT_ON_6
+		shift_array[47] = !(!TRX_on_TX && TRX.LNA);                                               // 2-0 LNA_ON
 
 		shift_array[48] = CurrentVFO->RXFreqAfterTransverters >= 70000000;                                                                      // 1-7 HF-VHF-SELECT
 		shift_array[49] = TRX.RF_Filters && CurrentVFO->RXFreqAfterTransverters >= 23000000 && CurrentVFO->RXFreqAfterTransverters <= 60000000; // 1-6 BPF - 21-60 MHz
