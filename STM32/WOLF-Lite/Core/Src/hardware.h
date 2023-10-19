@@ -22,7 +22,7 @@
 #define HRDW_HAS_LNA_HF false
 #define HRDW_HAS_LNA_VHF false
 
-#define HRDW_DEBUG_ON_CAT_PORT true
+#define HRDW_DEBUG_ON_CAT_PORT false
 
 // settings
 #define ADC_CLOCK 61440000             // ADC generator frequency
