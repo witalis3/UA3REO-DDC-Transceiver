@@ -318,8 +318,12 @@ static float32_t getMaxDBMFromFreq(uint64_t freq, uint8_t span);
 
 // FFT initialization
 void FFT_PreInit(void) {
-	// Windowing
+	// Mag coeffs
+	iir_filter_t *mag_filter = biquad_create(ZOOMFFT_DECIM_STAGES_IIR);
+	biquad_init_lowpass(mag_filter, TRX_SAMPLERATE, TRX_SAMPLERATE / 64);
+	fill_biquad_coeffs(mag_filter, FFT_mag_coeffs_x32, ZOOMFFT_DECIM_STAGES_IIR);
 
+	// Windowing
 	// Optimizaed GAP (Generalized adaptive polynomial) Nuttall
 	if (TRX.FFT_Window == 1) {
 		float32_t a0 = 1.0f;
@@ -444,10 +448,6 @@ void FFT_Init(void) {
 			mag_coeffs = (float32_t *)FFT_mag_coeffs_x16;
 		}
 		if (fft_zoom == 32) {
-			iir_filter_t *filter = biquad_create(ZOOMFFT_DECIM_STAGES_IIR);
-			biquad_init_lowpass(filter, TRX_GetRXSampleRate, TRX_GetRXSampleRate / 64);
-			fill_biquad_coeffs(filter, FFT_mag_coeffs_x32, ZOOMFFT_DECIM_STAGES_IIR);
-
 			mag_coeffs = (float32_t *)FFT_mag_coeffs_x32;
 		}
 
@@ -2038,6 +2038,9 @@ void FFT_ShortBufferPrintFFT(void) {
 		}
 
 		// Lets print line to LCD
+#ifdef STM32H743xx
+		Aligned_CleanDCache_by_Addr(print_output_short_buffer, sizeof(print_output_short_buffer));
+#endif
 		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fft_output_printed, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fft_output_printed + fft_output_prepared);
 		HAL_DMA_Start(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_short_buffer[0][0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE * fft_output_prepared);
 		SLEEPING_DMA_PollForTransfer(&HRDW_LCD_FSMC_COPY_DMA);
