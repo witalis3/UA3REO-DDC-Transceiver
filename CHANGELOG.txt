@@ -19,6 +19,7 @@
 +STM32: Добавлена функция Auto CW, переключающая моду на CW при работе ключом, Tnx SP7MFR
 +STM32: Разделены настройки фильтров VFO-A и VFO-B, Tnx SP7MFR
 +STM32: Wolf-Lite: Поддержка стилей FFT контур и градиент+контур, Tnx RA3RBE
++STM32: Wolf-Lite: Различные оптимизации, Tnx RA3RBE
 +STM32: Устранение ошибок, Tnx RC3RF, ats52, R3RM, RA3RBE, Alex, Гена, R7KBI
 
 ----Version 8.3.1----

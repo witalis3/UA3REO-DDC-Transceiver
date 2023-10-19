@@ -116,187 +116,201 @@ static arm_biquad_cascade_df2T_instance_f32 IIR_biquad_Zoom_FFT_Q = {
     .numStages = ZOOMFFT_DECIM_STAGES_IIR, .pCoeffs = (float32_t *)(float32_t[ZOOMFFT_DECIM_STAGES_IIR * 5]){0}, .pState = (float32_t *)(float32_t[ZOOMFFT_DECIM_STAGES_IIR * 2]){0}};
 
 // 2x/4x/8x/16x/32x magnify lpf iir
-static const float32_t FFT_mag_coeffs_x2[ZOOMFFT_DECIM_STAGES_IIR * 5] = {0.8384843639921,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          1,
-                                                                          0.5130084793341,
-                                                                          1,
-                                                                          0.1784114407685,
-                                                                          -0.6967733943344,
-                                                                          0.8744089756375,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          1,
-                                                                          1.046379755684,
-                                                                          1,
-                                                                          0.3420998857106,
-                                                                          -0.3982809814397,
-                                                                          1.83222755502,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          1,
-                                                                          1.831496024383,
-                                                                          1,
-                                                                          0.5072844084012,
-                                                                          -0.1179052535088,
-                                                                          0.01953722920982,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          1,
-                                                                          0.3029841730578,
-                                                                          1,
-                                                                          0.09694668293684,
-                                                                          -0.9095549467394,
-                                                                          1,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0};
-static const float32_t FFT_mag_coeffs_x4[ZOOMFFT_DECIM_STAGES_IIR * 5] = {0.6737499659657,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          1,
-                                                                          -1.102065194995,
-                                                                          1,
-                                                                          1.353694541279,
-                                                                          -0.7896377861467,
-                                                                          0.53324811147,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          1,
-                                                                          -0.5853766477218,
-                                                                          1,
-                                                                          1.289175897987,
-                                                                          -0.5882714065646,
-                                                                          0.6143152247695,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          1,
-                                                                          1.182778527244,
-                                                                          1,
-                                                                          1.236309127239,
-                                                                          -0.4063767082903,
-                                                                          0.01708381580242,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          1,
-                                                                          -1.245590418009,
-                                                                          1,
-                                                                          1.418191929315,
-                                                                          -0.9374008035325,
-                                                                          1,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0};
-static const float32_t FFT_mag_coeffs_x8[ZOOMFFT_DECIM_STAGES_IIR * 5] = {0.6469981129046,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          1,
-                                                                          -1.750671284068,
-                                                                          1,
-                                                                          1.766710155669,
-                                                                          -0.8829517893283,
-                                                                          0.4645312725883,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          1,
-                                                                          -1.553480572725,
-                                                                          1,
-                                                                          1.681513354365,
-                                                                          -0.7637556184482,
-                                                                          0.2925692260954,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          1,
-                                                                          -0.1114766808264,
-                                                                          1,
-                                                                          1.601891439147,
-                                                                          -0.6499504503566,
-                                                                          0.01652325734055,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          1,
-                                                                          -1.797298202754,
-                                                                          1,
-                                                                          1.831125104215,
-                                                                          -0.9660534813317,
-                                                                          1,
-                                                                          0,
-                                                                          0,
-                                                                          0,
-                                                                          0};
-static const float32_t FFT_mag_coeffs_x16[ZOOMFFT_DECIM_STAGES_IIR * 5] = {0.6500044972642,
-                                                                           0,
-                                                                           0,
-                                                                           0,
-                                                                           0,
-                                                                           1,
-                                                                           -1.935616780918,
-                                                                           1,
-                                                                           1.908632776595,
-                                                                           -0.9387888949475,
-                                                                           0.4599444315799,
-                                                                           0,
-                                                                           0,
-                                                                           0,
-                                                                           0,
-                                                                           1,
-                                                                           -1.880017827578,
-                                                                           1,
-                                                                           1.851418291083,
-                                                                           -0.8732990221737,
-                                                                           0.2087317940803,
-                                                                           0,
-                                                                           0,
-                                                                           0,
-                                                                           0,
-                                                                           1,
-                                                                           -1.278402634611,
-                                                                           1,
-                                                                           1.794539349192,
-                                                                           -0.80764043772,
-                                                                           0.01645106748385,
-                                                                           0,
-                                                                           0,
-                                                                           0,
-                                                                           0,
-                                                                           1,
-                                                                           -1.948135342532,
-                                                                           1,
-                                                                           1.948194658987,
-                                                                           -0.9825675157696,
-                                                                           1,
-                                                                           0,
-                                                                           0,
-                                                                           0,
-                                                                           0};
-static float32_t FFT_mag_coeffs_x32[ZOOMFFT_DECIM_STAGES_IIR * 5] = {}; // calculated coeffs
+static const float32_t FFT_mag_coeffs_x2[ZOOMFFT_DECIM_STAGES_IIR * 5] = {
+    0.8384843639921,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0.5130084793341,
+    1,
+    0.1784114407685,
+    -0.6967733943344,
+    0.8744089756375,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1.046379755684,
+    1,
+    0.3420998857106,
+    -0.3982809814397,
+    1.83222755502,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1.831496024383,
+    1,
+    0.5072844084012,
+    -0.1179052535088,
+    0.01953722920982,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0.3029841730578,
+    1,
+    0.09694668293684,
+    -0.9095549467394,
+    1,
+    0,
+    0,
+    0,
+    0,
+};
+static const float32_t FFT_mag_coeffs_x4[ZOOMFFT_DECIM_STAGES_IIR * 5] = {
+    0.6737499659657,
+    0,
+    0,
+    0,
+    0,
+    1,
+    -1.102065194995,
+    1,
+    1.353694541279,
+    -0.7896377861467,
+    0.53324811147,
+    0,
+    0,
+    0,
+    0,
+    1,
+    -0.5853766477218,
+    1,
+    1.289175897987,
+    -0.5882714065646,
+    0.6143152247695,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1.182778527244,
+    1,
+    1.236309127239,
+    -0.4063767082903,
+    0.01708381580242,
+    0,
+    0,
+    0,
+    0,
+    1,
+    -1.245590418009,
+    1,
+    1.418191929315,
+    -0.9374008035325,
+    1,
+    0,
+    0,
+    0,
+    0,
+};
+static const float32_t FFT_mag_coeffs_x8[ZOOMFFT_DECIM_STAGES_IIR * 5] = {
+    0.6469981129046,
+    0,
+    0,
+    0,
+    0,
+    1,
+    -1.750671284068,
+    1,
+    1.766710155669,
+    -0.8829517893283,
+    0.4645312725883,
+    0,
+    0,
+    0,
+    0,
+    1,
+    -1.553480572725,
+    1,
+    1.681513354365,
+    -0.7637556184482,
+    0.2925692260954,
+    0,
+    0,
+    0,
+    0,
+    1,
+    -0.1114766808264,
+    1,
+    1.601891439147,
+    -0.6499504503566,
+    0.01652325734055,
+    0,
+    0,
+    0,
+    0,
+    1,
+    -1.797298202754,
+    1,
+    1.831125104215,
+    -0.9660534813317,
+    1,
+    0,
+    0,
+    0,
+    0,
+};
+static const float32_t FFT_mag_coeffs_x16[ZOOMFFT_DECIM_STAGES_IIR * 5] = {
+    0.6500044972642,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    -1.935616780918,
+    1.0,
+    1.908632776595,
+    -0.9387888949475,
+    0.4599444315799,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    -1.880017827578,
+    1.0,
+    1.851418291083,
+    -0.8732990221737,
+    0.2087317940803,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    -1.278402634611,
+    1.0,
+    1.794539349192,
+    -0.80764043772,
+    0.01645106748385,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0,
+    -1.948135342532,
+    1.0,
+    1.948194658987,
+    -0.9825675157696,
+    1.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+};
+static const float32_t FFT_mag_coeffs_x32[ZOOMFFT_DECIM_STAGES_IIR * 5] = {
+    0.0023872430902,  0.0047744861804,  0.0023872430902,  1.9735102653503,  -0.9830592274666, 0.0023480691016,  0.0046961382031,  0.0023480691016,  1.9411256313324,
+    -0.9505178928375, 0.0023118702229,  0.0046237404458,  0.0023118702229,  1.9112001657486,  -0.9204477071762, 0.0022794834804,  0.0045589669608,  0.0022794834804,
+    1.8844263553619,  -0.8935443162918, 0.0022515826859,  0.0045031653717,  0.0022515826859,  1.8613611459732,  -0.8703674674034, 0.0022286928724,  0.0044573857449,
+    0.0022286928724,  1.8424383401871,  -0.8513531088829, 0.0022112070583,  0.0044224141166,  0.0022112070583,  1.8279830217361,  -0.8368278145790, 0.0021994032431,
+    0.0043988064863,  0.0021994032431,  1.8182249069214,  -0.8270224928856, 0.0021934583783,  0.0043869167566,  0.0021934583783,  1.8133102655411,  -0.8220841288567,
+};
 
 // magnify decimate fir
 static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate = {
@@ -318,11 +332,6 @@ static float32_t getMaxDBMFromFreq(uint64_t freq, uint8_t span);
 
 // FFT initialization
 void FFT_PreInit(void) {
-	// Mag coeffs
-	iir_filter_t *mag_filter = biquad_create(ZOOMFFT_DECIM_STAGES_IIR);
-	biquad_init_lowpass(mag_filter, TRX_SAMPLERATE, TRX_SAMPLERATE / 64);
-	fill_biquad_coeffs(mag_filter, FFT_mag_coeffs_x32, ZOOMFFT_DECIM_STAGES_IIR);
-
 	// Windowing
 	// Optimizaed GAP (Generalized adaptive polynomial) Nuttall
 	if (TRX.FFT_Window == 1) {
@@ -1800,13 +1809,14 @@ bool FFT_printFFT(void) {
 #if !HRDW_HAS_FULL_FFT_BUFFER
 void FFT_ShortBufferPrintFFT(void) {
 	// Short buffer version
-	uint16_t fftHeight = GET_FFTHeight;
-	uint16_t wtfHeight = GET_WTFHeight;
+	uint32_t fftHeight = GET_FFTHeight;
+	uint32_t wtfHeight = GET_WTFHeight;
 	uint_fast8_t decoder_offset = 0;
 	if (NeedProcessDecoder) {
 		decoder_offset = LAYOUT->FFT_CWDECODER_OFFSET;
 	}
 	uint16_t grid_color = palette_fft[fftHeight * 3 / 4];
+	uint16_t contour_color = palette_fft[fftHeight / 2];
 	static uint32_t fft_output_printed = 0;
 	static uint32_t fft_output_prepared = 0;
 
@@ -1834,38 +1844,34 @@ void FFT_ShortBufferPrintFFT(void) {
 
 				if (TRX.FFT_Style == 1) // gradient
 				{
-					uint16_t color = palette_fft[fft_y];
+					uint16_t gradient_color = palette_fft[fft_y];
 					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
 						if (fft_y >= (fftHeight - fft_header[fft_x])) {
-							print_output_short_buffer[buff_idx][fft_x] = color;
+							print_output_short_buffer[buff_idx][fft_x] = gradient_color;
 						}
 					}
 				}
 
 				if (TRX.FFT_Style == 2) // fill
 				{
-					uint16_t color = palette_fft[fftHeight / 2];
 					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
 						if (fft_y >= (fftHeight - fft_header[fft_x])) {
-							print_output_short_buffer[buff_idx][fft_x] = color;
+							print_output_short_buffer[buff_idx][fft_x] = contour_color;
 						}
 					}
 				}
 
 				if (TRX.FFT_Style == 3) // dots
 				{
-					uint16_t color = palette_fft[fftHeight / 2];
 					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
 						if (fft_y == (fftHeight - fft_header[fft_x])) {
-							print_output_short_buffer[buff_idx][fft_x] = color;
+							print_output_short_buffer[buff_idx][fft_x] = contour_color;
 						}
 					}
 				}
 
 				if (TRX.FFT_Style == 4) // contour
 				{
-					uint32_t contour_color = palette_fft[fftHeight / 2];
-
 					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
 						uint32_t current_signal_y = fftHeight - fft_header[fft_x];
 
@@ -1891,8 +1897,7 @@ void FFT_ShortBufferPrintFFT(void) {
 
 				if (TRX.FFT_Style == 5) // gradient + contour
 				{
-					uint32_t contour_color = palette_fft[fftHeight / 2];
-					uint32_t gradient_color = palette_fft[fft_y];
+					uint16_t gradient_color = palette_fft[fft_y];
 
 					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
 						uint32_t current_signal_y = fftHeight - fft_header[fft_x];
@@ -2004,17 +2009,15 @@ void FFT_ShortBufferPrintFFT(void) {
 
 			// Gauss filter center
 			if (TRX.CW_GaussFilter && CurrentVFO->Mode == TRX_MODE_CW) {
-				uint16_t color = palette_fft[fftHeight / 2];
-				print_output_short_buffer[buff_idx][bw_rx1_line_center] = color;
+				print_output_short_buffer[buff_idx][bw_rx1_line_center] = contour_color;
 			}
 
 			// RTTY center frequency
 			if (CurrentVFO->Mode == TRX_MODE_RTTY) {
-				uint16_t color = palette_fft[fftHeight / 2];
 				uint16_t x1 = rx1_line_pos + (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) / Hz_in_pixel * fft_zoom;
 				uint16_t x2 = rx1_line_pos + (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) / Hz_in_pixel * fft_zoom;
-				print_output_short_buffer[buff_idx][x1] = color;
-				print_output_short_buffer[buff_idx][x2] = color;
+				print_output_short_buffer[buff_idx][x1] = contour_color;
+				print_output_short_buffer[buff_idx][x2] = contour_color;
 			}
 
 			// Show manual Notch filter line
@@ -2024,14 +2027,12 @@ void FFT_ShortBufferPrintFFT(void) {
 			}
 
 			// Draw RX1 center line
-			uint16_t color = palette_fft[fftHeight / 2];
-			print_output_short_buffer[buff_idx][rx1_line_pos] = color;
+			print_output_short_buffer[buff_idx][rx1_line_pos] = contour_color;
 
 			// Draw BW lines
-			uint16_t color_bw = palette_fft[fftHeight / 2];
 			uint16_t color_center = palette_fft[0];
-			print_output_short_buffer[buff_idx][bw_rx1_line_start] = color_bw;
-			print_output_short_buffer[buff_idx][bw_rx1_line_end] = color_bw;
+			print_output_short_buffer[buff_idx][bw_rx1_line_start] = contour_color;
+			print_output_short_buffer[buff_idx][bw_rx1_line_end] = contour_color;
 			print_output_short_buffer[buff_idx][rx1_line_pos] = color_center;
 
 			fft_output_prepared++;
@@ -2042,10 +2043,10 @@ void FFT_ShortBufferPrintFFT(void) {
 		Aligned_CleanDCache_by_Addr(print_output_short_buffer, sizeof(print_output_short_buffer));
 #endif
 		LCDDriver_SetCursorAreaPosition(0, LAYOUT->FFT_FFTWTF_POS_Y + fft_output_printed, LAYOUT->FFT_PRINT_SIZE - 1, LAYOUT->FFT_FFTWTF_POS_Y + fft_output_printed + fft_output_prepared);
-		HAL_DMA_Start(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_short_buffer[0][0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE * fft_output_prepared);
-		SLEEPING_DMA_PollForTransfer(&HRDW_LCD_FSMC_COPY_DMA);
+		HAL_DMA_Start_IT(&HRDW_LCD_FSMC_COPY_DMA, (uint32_t)&print_output_short_buffer[0][0], LCD_FSMC_DATA_ADDR, LAYOUT->FFT_PRINT_SIZE * fft_output_prepared);
 
 		fft_output_printed += fft_output_prepared;
+		return;
 	}
 
 	fft_output_printed = 0;
