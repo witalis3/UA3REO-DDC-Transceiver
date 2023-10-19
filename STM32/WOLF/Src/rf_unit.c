@@ -1165,10 +1165,10 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		shift_array[1] = false;                                                                // 7-6 UNUSED
 		shift_array[2] = false;                                                                // 7-5 UNUSED
 		shift_array[3] = false;                                                                // 7-4 UNUSED
-		shift_array[4] = CurrentVFO->RXFreqAfterTransverters >= 70000000 && !TRX.ANT_selected; // 7-3 ANT4
-		shift_array[5] = CurrentVFO->RXFreqAfterTransverters >= 70000000 && TRX.ANT_selected;  // 7-2 ANT3
-		shift_array[6] = CurrentVFO->RXFreqAfterTransverters < 70000000 && !TRX.ANT_selected;  // 7-1 ANT2
-		shift_array[7] = CurrentVFO->RXFreqAfterTransverters < 70000000 && TRX.ANT_selected;   // 7-0 ANT1
+		shift_array[4] = CurrentVFO->RXFreqAfterTransverters >= 70000000 && TRX.ANT_selected; // 7-3 ANT4
+		shift_array[5] = CurrentVFO->RXFreqAfterTransverters >= 70000000 && !TRX.ANT_selected;  // 7-2 ANT3
+		shift_array[6] = CurrentVFO->RXFreqAfterTransverters < 70000000 && TRX.ANT_selected;  // 7-1 ANT2
+		shift_array[7] = CurrentVFO->RXFreqAfterTransverters < 70000000 && !TRX.ANT_selected;   // 7-0 ANT1
 
 		shift_array[8] = false;                                       // 6-7 UNUSED
 		shift_array[9] = false;                                       // 6-6 UNUSED
