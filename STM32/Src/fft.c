@@ -1864,7 +1864,7 @@ void FFT_ShortBufferPrintFFT(void) {
 
 				if (TRX.FFT_Style == 4) // contour
 				{
-					uint16_t contour_color = palette_fft[fftHeight / 2];
+					uint32_t contour_color = palette_fft[fftHeight / 2];
 
 					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
 						uint32_t current_signal_y = fftHeight - fft_header[fft_x];
@@ -1875,14 +1875,14 @@ void FFT_ShortBufferPrintFFT(void) {
 						}
 
 						// contour
-						if (fft_x > 0 && fft_x < (LAYOUT->FFT_PRINT_SIZE - 1) && fft_y > current_signal_y) {
-							uint16_t left_signal_y = fftHeight - fft_header[fft_x - 1];
-							uint16_t right_signal_y = fftHeight - fft_header[fft_x + 1];
+						if (fft_x > 0 && fft_x < (LAYOUT->FFT_PRINT_SIZE - 1) && fft_y >= current_signal_y) {
+							uint32_t left_signal_y = fftHeight - fft_header[fft_x - 1];
+							uint32_t right_signal_y = fftHeight - fft_header[fft_x + 1];
 
-							if (current_signal_y < right_signal_y && fft_y < right_signal_y) {
+							if (current_signal_y <= right_signal_y && fft_y <= right_signal_y) {
 								print_output_short_buffer[buff_idx][fft_x] = contour_color;
 							}
-							if (current_signal_y < left_signal_y && fft_y < left_signal_y) {
+							if (current_signal_y <= left_signal_y && fft_y <= left_signal_y) {
 								print_output_short_buffer[buff_idx][fft_x] = contour_color;
 							}
 						}
@@ -1891,11 +1891,11 @@ void FFT_ShortBufferPrintFFT(void) {
 
 				if (TRX.FFT_Style == 5) // gradient + contour
 				{
-					uint16_t contour_color = palette_fft[fftHeight / 2];
-					uint16_t gradient_color = palette_fft[fft_y];
+					uint32_t contour_color = palette_fft[fftHeight / 2];
+					uint32_t gradient_color = palette_fft[fft_y];
 
 					for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
-						uint16_t current_signal_y = fftHeight - fft_header[fft_x];
+						uint32_t current_signal_y = fftHeight - fft_header[fft_x];
 
 						// gradient
 						if (fft_y > current_signal_y) {
@@ -1906,14 +1906,14 @@ void FFT_ShortBufferPrintFFT(void) {
 							print_output_short_buffer[buff_idx][fft_x] = contour_color;
 						}
 						// contour
-						if (fft_x > 0 && fft_x < (LAYOUT->FFT_PRINT_SIZE - 1) && fft_y > current_signal_y) {
-							uint16_t left_signal_y = fftHeight - fft_header[fft_x - 1];
-							uint16_t right_signal_y = fftHeight - fft_header[fft_x + 1];
+						if (fft_x > 0 && fft_x < (LAYOUT->FFT_PRINT_SIZE - 1) && fft_y >= current_signal_y) {
+							uint32_t left_signal_y = fftHeight - fft_header[fft_x - 1];
+							uint32_t right_signal_y = fftHeight - fft_header[fft_x + 1];
 
-							if (current_signal_y < right_signal_y && fft_y < right_signal_y) {
+							if (current_signal_y <= right_signal_y && fft_y <= right_signal_y) {
 								print_output_short_buffer[buff_idx][fft_x] = contour_color;
 							}
-							if (current_signal_y < left_signal_y && fft_y < left_signal_y) {
+							if (current_signal_y <= left_signal_y && fft_y <= left_signal_y) {
 								print_output_short_buffer[buff_idx][fft_x] = contour_color;
 							}
 						}
