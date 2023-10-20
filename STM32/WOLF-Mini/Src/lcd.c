@@ -644,7 +644,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
 			s_width = LCD_last_s_meter * 0.5f + LCD_GetSMeterValPosition(TRX_RX1_dBm_lowrate, true) * 0.5f; // smooth CW faster!
 		} else {
-			s_width = LCD_last_s_meter * 0.75f + LCD_GetSMeterValPosition(TRX_RX1_dBm_lowrate, true) * 0.25f; // smooth the movement of the S-meter
+			s_width = LCD_last_s_meter * 0.8f + LCD_GetSMeterValPosition(TRX_RX1_dBm_lowrate, true) * 0.2f; // smooth the movement of the S-meter
 		}
 		// println(LCD_last_s_meter, " ", s_width, " ", TRX_RX1_dBm, " ", LCD_GetSMeterValPosition(TRX_RX1_dBm, true));
 
