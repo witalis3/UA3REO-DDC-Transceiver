@@ -39,11 +39,12 @@ typedef struct {
 	uint8_t i2c_tx_buf[WIRE_BUFSIZ]; /* transmit buffer */
 	uint8_t i2c_tx_buf_idx;          /* next idx available in tx_buf, -1 overflow */
 	bool i2c_tx_buf_overflow;
+	bool locked;
 } I2C_DEVICE;
 
 extern I2C_DEVICE I2C_CODEC;
 #ifdef HAS_TOUCHPAD
-extern I2C_DEVICE I2C_TOUCHPAD;
+extern I2C_DEVICE I2C_SHARED_BUS;
 #endif
 
 #define SDA_SET HAL_GPIO_WritePin(dev->SDA_PORT, dev->SDA_PIN, GPIO_PIN_SET)

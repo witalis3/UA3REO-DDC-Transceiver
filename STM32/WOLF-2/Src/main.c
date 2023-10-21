@@ -1526,7 +1526,7 @@ static void MX_GPIO_Init(void) {
 	                  GPIO_PIN_RESET);
 
 	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOB, W25Q16_CS_Pin | SD_CS_Pin | T_I2C_SDA_Pin | RFUNIT_OE_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GPIOB, W25Q16_CS_Pin | RFMIXER_CS_Pin | SD_CS_Pin | T_I2C_SDA_Pin | RFUNIT_OE_Pin, GPIO_PIN_SET);
 
 	/*Configure GPIO pin Output Level */
 	HAL_GPIO_WritePin(PWR_HOLD_GPIO_Port, PWR_HOLD_Pin, GPIO_PIN_SET);
@@ -1589,18 +1589,12 @@ static void MX_GPIO_Init(void) {
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	HAL_GPIO_Init(PTT_IN_GPIO_Port, &GPIO_InitStruct);
 
-	/*Configure GPIO pins : W25Q16_CS_Pin SD_CS_Pin T_I2C_SDA_Pin RFUNIT_RCLK_Pin
-	                         RFUNIT_CLK_Pin RFUNIT_DATA_Pin RFUNIT_OE_Pin */
-	GPIO_InitStruct.Pin = W25Q16_CS_Pin | SD_CS_Pin | T_I2C_SDA_Pin | RFUNIT_RCLK_Pin | RFUNIT_CLK_Pin | RFUNIT_DATA_Pin | RFUNIT_OE_Pin;
+	/*Configure GPIO pins : W25Q16_CS_Pin RFMIXER_CS_Pin SD_CS_Pin T_I2C_SDA_Pin
+	                         RFUNIT_RCLK_Pin RFUNIT_CLK_Pin RFUNIT_DATA_Pin RFUNIT_OE_Pin */
+	GPIO_InitStruct.Pin = W25Q16_CS_Pin | RFMIXER_CS_Pin | SD_CS_Pin | T_I2C_SDA_Pin | RFUNIT_RCLK_Pin | RFUNIT_CLK_Pin | RFUNIT_DATA_Pin | RFUNIT_OE_Pin;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-	/*Configure GPIO pin : PB2 */
-	GPIO_InitStruct.Pin = GPIO_PIN_2;
-	GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 	/*Configure GPIO pin : AUDIO_48K_CLOCK_Pin */

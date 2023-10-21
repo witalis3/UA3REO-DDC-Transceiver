@@ -17,10 +17,11 @@ I2C_DEVICE I2C_CODEC = {
     .i2c_tx_buf = {0},
     .i2c_tx_buf_idx = 0,
     .i2c_tx_buf_overflow = false,
+    .locked = false,
 };
 
 #ifdef HAS_TOUCHPAD
-I2C_DEVICE I2C_TOUCHPAD = {
+I2C_DEVICE I2C_SHARED_BUS = {
     .SDA_PORT = T_I2C_SDA_GPIO_Port,
     .SDA_PIN = T_I2C_SDA_Pin,
     .SCK_PORT = T_I2C_SCL_GPIO_Port,
@@ -29,6 +30,7 @@ I2C_DEVICE I2C_TOUCHPAD = {
     .i2c_tx_buf = {0},
     .i2c_tx_buf_idx = 0,
     .i2c_tx_buf_overflow = false,
+    .locked = false,
 };
 #endif
 
