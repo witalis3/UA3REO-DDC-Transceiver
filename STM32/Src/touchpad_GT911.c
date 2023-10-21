@@ -16,13 +16,13 @@ static uint8_t GT911_Config[186] = {
 };
 
 uint8_t GT911_WR_Reg(uint16_t reg, uint8_t *buf, uint8_t len) {
-	i2c_beginTransmission_u8(&I2C_TOUCHPAD, gt911_i2c_addr);
-	i2c_write_u8(&I2C_TOUCHPAD, (reg >> 8) & 0xFF);
-	i2c_write_u8(&I2C_TOUCHPAD, reg & 0xFF);
+	i2c_beginTransmission_u8(&I2C_SHARED_BUS, gt911_i2c_addr);
+	i2c_write_u8(&I2C_SHARED_BUS, (reg >> 8) & 0xFF);
+	i2c_write_u8(&I2C_SHARED_BUS, reg & 0xFF);
 	for (uint8_t i = 0; i < len; i++) {
-		i2c_write_u8(&I2C_TOUCHPAD, buf[i]);
+		i2c_write_u8(&I2C_SHARED_BUS, buf[i]);
 	}
-	uint8_t ret = i2c_endTransmission(&I2C_TOUCHPAD);
+	uint8_t ret = i2c_endTransmission(&I2C_SHARED_BUS);
 	if (ret != SUCCESS && TRX.Debug_Type == TRX_DEBUG_I2C) {
 		println("I2C GT911 Write error: ", ret);
 	}
@@ -30,14 +30,14 @@ uint8_t GT911_WR_Reg(uint16_t reg, uint8_t *buf, uint8_t len) {
 }
 
 void GT911_RD_RegOneByte(uint16_t reg, uint8_t *buf) {
-	i2c_beginTransmission_u8(&I2C_TOUCHPAD, gt911_i2c_addr);
-	i2c_write_u8(&I2C_TOUCHPAD, (reg >> 8) & 0xFF);
-	i2c_write_u8(&I2C_TOUCHPAD, reg & 0xFF);
-	uint8_t res = i2c_endTransmission(&I2C_TOUCHPAD);
+	i2c_beginTransmission_u8(&I2C_SHARED_BUS, gt911_i2c_addr);
+	i2c_write_u8(&I2C_SHARED_BUS, (reg >> 8) & 0xFF);
+	i2c_write_u8(&I2C_SHARED_BUS, reg & 0xFF);
+	uint8_t res = i2c_endTransmission(&I2C_SHARED_BUS);
 	if (res == 0) {
-		if (i2c_beginReceive_u8(&I2C_TOUCHPAD, gt911_i2c_addr)) {
-			*buf = i2c_Read_Byte(&I2C_TOUCHPAD, 0);
-			i2c_stop(&I2C_TOUCHPAD);
+		if (i2c_beginReceive_u8(&I2C_SHARED_BUS, gt911_i2c_addr)) {
+			*buf = i2c_Read_Byte(&I2C_SHARED_BUS, 0);
+			i2c_stop(&I2C_SHARED_BUS);
 		}
 	} else {
 		println("[ERR] No touchpad found on i2c bus");
@@ -58,6 +58,11 @@ void GT911_RD_Reg(uint16_t reg, uint8_t *buf, uint8_t len) {
 }
 
 void GT911_ReadStatus(void) {
+	if (I2C_SHARED_BUS.locked) {
+		return;
+	}
+	I2C_SHARED_BUS.locked = true;
+
 	uint8_t buf[4] = {0};
 	GT911_RD_Reg(GT911_PRODUCT_ID_REG, (uint8_t *)&buf[0], 3);
 	GT911_RD_Reg(GT911_CONFIG_REG, (uint8_t *)&buf[3], 1);
@@ -65,18 +70,32 @@ void GT911_ReadStatus(void) {
 	static IRAM2 char str[64] = {0};
 	sprintf(str, "TouchPad_ID:%d,%d,%d\r\nTouchPad_Config_Version:%2x", buf[0], buf[1], buf[2], buf[3]);
 	println(str);
+
+	I2C_SHARED_BUS.locked = false;
 }
 
 void GT911_ReadFirmwareVersion(void) {
+	if (I2C_SHARED_BUS.locked) {
+		return;
+	}
+	I2C_SHARED_BUS.locked = true;
+
 	uint8_t buf[2] = {0};
 	GT911_RD_Reg(GT911_FIRMWARE_VERSION_REG, buf, 2);
 
 	static IRAM2 char str[128] = {0};
 	sprintf(str, "FirmwareVersion:%2x", (((uint16_t)buf[1] << 8) + buf[0]));
 	println(str);
+
+	I2C_SHARED_BUS.locked = false;
 }
 
 void GT911_Init(void) {
+	if (I2C_SHARED_BUS.locked) {
+		return;
+	}
+	I2C_SHARED_BUS.locked = true;
+
 	uint8_t buf[1] = {0};
 	buf[0] = GOODIX_CMD_BASEUPDATE;
 	GT911_WR_Reg(GT911_COMMAND_REG, buf, 1);
@@ -86,9 +105,16 @@ void GT911_Init(void) {
 	HAL_Delay(100);
 
 	println("Touchpad calibrated");
+
+	I2C_SHARED_BUS.locked = false;
 }
 
 bool GT911_Flash(void) {
+	if (I2C_SHARED_BUS.locked) {
+		return false;
+	}
+	I2C_SHARED_BUS.locked = true;
+
 	uint8_t config_Checksum = 0;
 	uint8_t i = 0;
 	uint16_t X_OUTPUT_MAX = LCD_WIDTH;
@@ -156,15 +182,23 @@ bool GT911_Flash(void) {
 			printf("config_Checksum=0x%2X\r\n", ((~config_Checksum) + 1) & 0xff);
 			printf("%d*%d\r\n", GT911_Config[2] << 8 | GT911_Config[1], GT911_Config[4] << 8 | GT911_Config[3]);
 
+			I2C_SHARED_BUS.locked = false;
 			return true;
 		}
+		I2C_SHARED_BUS.locked = false;
 		return true;
 	}
 
+	I2C_SHARED_BUS.locked = false;
 	return false;
 }
 
 void GT911_Scan(void) {
+	if (I2C_SHARED_BUS.locked) {
+		return;
+	}
+	I2C_SHARED_BUS.locked = true;
+
 	uint8_t buf[41] = {0};
 	uint8_t Clearbuf = 0;
 
@@ -186,6 +220,7 @@ void GT911_Scan(void) {
 			GT911.TouchCount = buf[0] & 0x0f;
 			if (GT911.TouchCount > GT911_MAX_TOUCH || GT911.TouchCount == 0) {
 				GT911_WR_Reg(GT911_READ_XY_REG, (uint8_t *)&Clearbuf, 1);
+				I2C_SHARED_BUS.locked = false;
 				return;
 			}
 			GT911_RD_Reg(GT911_READ_XY_REG + 1, &buf[1], GT911.TouchCount * 8);
@@ -263,6 +298,7 @@ void GT911_Scan(void) {
 			}
 		}
 	}
+	I2C_SHARED_BUS.locked = false;
 }
 
 #endif

@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "8.4.1-dev" // current STM32 version
+#define STM32_VERSION_STR "8.5.0-dev" // current STM32 version
 
 #if defined(FRONTPANEL_MINI)
 #define FPGA_VERSION_STR "6.8.0" // needed FPGA version Wolf-Mini
@@ -768,7 +768,7 @@ extern struct TRX_SETTINGS {
 	bool RepeaterMode_shadow;
 	bool WOLF_Cluster;
 	bool FREE_Tune;
-	bool Auto_CW;
+	bool Auto_CW_Mode;
 #if HRDW_HAS_DUAL_RX
 	bool Dual_RX;
 #endif

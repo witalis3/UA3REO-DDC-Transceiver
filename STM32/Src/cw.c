@@ -63,7 +63,7 @@ void CW_key_change(void) {
 	if (CW_key_dot_hard != TRX_new_key_dot_hard) {
 		CW_key_dot_hard = TRX_new_key_dot_hard;
 
-		if (CW_key_dot_hard && CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited && TRX.Auto_CW) {
+		if (CW_key_dot_hard && CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited && TRX.Auto_CW_Mode) {
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
 			LCD_UpdateQuery.FreqInfoRedraw = true;
 			LCD_UpdateQuery.TopButtons = true;
@@ -97,7 +97,7 @@ void CW_key_change(void) {
 	if (CW_key_dash_hard != TRX_new_key_dash_hard) {
 		CW_key_dash_hard = TRX_new_key_dash_hard;
 
-		if (CW_key_dash_hard && CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited && TRX.Auto_CW) {
+		if (CW_key_dash_hard && CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited && TRX.Auto_CW_Mode) {
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
 			LCD_UpdateQuery.FreqInfoRedraw = true;
 			LCD_UpdateQuery.TopButtons = true;

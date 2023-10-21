@@ -1504,15 +1504,20 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 
 		// Tuner status
 		if (CN_Theme) {
-			if (!TRX.TUNER_Enabled && SYSMENU_HANDL_CHECK_HAS_ATU()) {
-				strcpy(ctmp, "TUN OFF");
+			bool tun_off = !TRX.TUNER_Enabled && SYSMENU_HANDL_CHECK_HAS_ATU();
+			if (tun_off) {
+				strcpy(ctmp, "   TUN OFF    ");
 			} else {
-				strcpy(ctmp, "       ");
+				strcpy(ctmp, "              ");
 			}
 			if (CurrentVFO->Mode == TRX_MODE_CW) {
-				sprintf(ctmp, "WPM: %2d", TRX.CW_KEYER_WPM);
+				if (tun_off) {
+					sprintf(ctmp, "WPM:%2d TUN OFF", TRX.CW_KEYER_WPM);
+				} else {
+					sprintf(ctmp, "   WPM: %2d    ", TRX.CW_KEYER_WPM);
+				}
 			}
-			LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_I_X, LAYOUT->STATUS_ATU_I_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+			LCDDriver_printText(ctmp, LAYOUT->STATUS_ATU_I_X - RASTR_FONT_W * 3, LAYOUT->STATUS_ATU_I_Y, FG_COLOR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
 		}
 	} else {
 		// ATU
@@ -2647,7 +2652,7 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 			step = 1.0;
 		}
 
-		uint64_t newfreq = getFreqOnFFTPosition(LAYOUT->FFT_PRINT_SIZE / 2 - dx / slowler);
+		uint64_t newfreq = getFreqOnFFTPosition(getFreqPositionOnFFT(CurrentVFO->Freq, true) - dx / slowler);
 		if (dx < 0.0f) {
 			newfreq = ceill(newfreq / step) * step;
 		}

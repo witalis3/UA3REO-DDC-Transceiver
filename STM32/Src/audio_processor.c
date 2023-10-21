@@ -2239,8 +2239,8 @@ static void doRX_RXFreqTransition(float32_t *in_i, float32_t *in_q, uint16_t siz
 		float32_t sample_i = in_i[i];
 		float32_t sample_q = in_q[i];
 
-		in_i[i] = (sample_i * coeff_cos - sample_q * coeff_sin) * 2.0f;
-		in_q[i] = (sample_i * coeff_sin + sample_q * coeff_cos) * 2.0f;
+		in_i[i] = (sample_i * coeff_cos - sample_q * coeff_sin);
+		in_q[i] = (sample_i * coeff_sin + sample_q * coeff_cos);
 
 		gen_position_fft += step;
 		if (gen_position_fft >= 1.0f) {

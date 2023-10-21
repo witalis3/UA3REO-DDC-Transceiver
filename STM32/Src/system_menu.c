@@ -171,7 +171,7 @@ static void SYSMENU_HANDL_CW_DotToDashRate(int8_t direction);
 static void SYSMENU_HANDL_CW_Iambic(int8_t direction);
 static void SYSMENU_HANDL_CW_Iambic_Type(int8_t direction);
 static void SYSMENU_HANDL_CW_Invert(int8_t direction);
-static void SYSMENU_HANDL_CW_Auto_CW(int8_t direction);
+static void SYSMENU_HANDL_CW_Auto_CW_Mode(int8_t direction);
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
 static void SYSMENU_HANDL_CW_OneSymbolMemory(int8_t direction);
@@ -825,7 +825,7 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
 };
 
 const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
-    {"Auto CW", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_CW, SYSMENU_HANDL_CW_Auto_CW},
+    {"Auto CW Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_CW_Mode, SYSMENU_HANDL_CW_Auto_CW_Mode},
     {"DotToDash Rate", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CW_DotToDashRate, SYSMENU_HANDL_CW_DotToDashRate},
     {"Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
     {"Iambic Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_Iambic_Type, SYSMENU_HANDL_CW_Iambic_Type, (const enumerate_item[2]){"A", "B"}},
@@ -3558,12 +3558,12 @@ static void SYSMENU_HANDL_CW_Invert(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_CW_Auto_CW(int8_t direction) {
+static void SYSMENU_HANDL_CW_Auto_CW_Mode(int8_t direction) {
 	if (direction > 0) {
-		TRX.Auto_CW = true;
+		TRX.Auto_CW_Mode = true;
 	}
 	if (direction < 0) {
-		TRX.Auto_CW = false;
+		TRX.Auto_CW_Mode = false;
 	}
 }
 
@@ -5185,7 +5185,7 @@ static void SYSMENU_HANDL_SD_Format(int8_t direction) {
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 	if (!sysmenu_timeMenuOpened) {
-	  sysmenu_timeMenuOpened = true	;
+		sysmenu_timeMenuOpened = true;
 		direction = 0;
 		LCDDriver_Fill(BG_COLOR);
 	}
@@ -8648,17 +8648,17 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		return;
 	}
 #endif
-	
-	if (sysmenu_timeMenuOpened) {       
-    SYSMENU_eventRotateSystemMenu(0);
+
+	if (sysmenu_timeMenuOpened) {
+		SYSMENU_eventRotateSystemMenu(0);
 		return;
-	}		
-	
+	}
+
 	if (SYSMENU_auto_calibration_opened) {
 		AUTO_CALIBRATION_Enc2Click();
 		return;
 	}
-	
+
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN ||
 	    sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE) {
 		sysmenu_item_selected_by_enc2 = false;
@@ -8667,7 +8667,6 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		sysmenu_item_selected_by_enc2 = !sysmenu_item_selected_by_enc2;
 		LCD_UpdateQuery.SystemMenuCurrent = true;
 	}
-	
 }
 
 // secondary encoder rotate

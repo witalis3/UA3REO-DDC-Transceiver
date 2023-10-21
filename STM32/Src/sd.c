@@ -1045,7 +1045,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.CW_Iambic", (uint64_t *)&TRX.CW_Iambic, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_Iambic_Type", (uint64_t *)&TRX.CW_Iambic_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.CW_Invert", (uint64_t *)&TRX.CW_Invert, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.Auto_CW", (uint64_t *)&TRX.Auto_CW, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.Auto_CW_Mode", (uint64_t *)&TRX.Auto_CW_Mode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_PTT_Type", (uint64_t *)&TRX.CW_PTT_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_STRING("TRX.CW_Macros_1", TRX.CW_Macros_1);
 			SD_WRITE_SETT_STRING("TRX.CW_Macros_2", TRX.CW_Macros_2);
@@ -1238,7 +1238,7 @@ static void SDCOMM_EXPORT_CALIBRATIONS_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_SLOW_RATE", (uint64_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ON_FALLING", (uint64_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ACCELERATION", (uint64_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("CALIBRATE.RF_unit_type", (uint64_t *)&CALIBRATE.RF_unit_type, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.RF_unit_type_2", (uint64_t *)&CALIBRATE.RF_unit_type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.TangentType", (uint64_t *)&CALIBRATE.TangentType, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.CICFIR_GAINER_48K_3", (uint64_t *)&CALIBRATE.CICFIR_GAINER_48K_val, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.CICFIR_GAINER_96K_3", (uint64_t *)&CALIBRATE.CICFIR_GAINER_96K_val, SYSMENU_UINT8);
@@ -2047,8 +2047,8 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.CW_Invert") == 0) {
 		TRX.CW_Invert = bval;
 	}
-	if (strcmp(name, "TRX.Auto_CW") == 0) {
-		TRX.Auto_CW = bval;
+	if (strcmp(name, "TRX.Auto_CW_Mode") == 0) {
+		TRX.Auto_CW_Mode = bval;
 	}
 	if (strcmp(name, "TRX.CW_PTT_Type") == 0) {
 		TRX.CW_PTT_Type = (uint8_t)uintval;
@@ -2385,7 +2385,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "CALIBRATE.ENCODER_ACCELERATION") == 0) {
 		CALIBRATE.ENCODER_ACCELERATION = (uint8_t)uintval;
 	}
-	if (strcmp(name, "CALIBRATE.RF_unit_type") == 0) {
+	if (strcmp(name, "CALIBRATE.RF_unit_type_2") == 0) {
 		CALIBRATE.RF_unit_type = (uint8_t)uintval;
 	}
 	if (strcmp(name, "CALIBRATE.TangentType") == 0) {
