@@ -1,4 +1,5 @@
 #include "hardware.h"
+#include "RFFC2072.h"
 #include "functions.h"
 #include "main.h"
 
@@ -75,6 +76,9 @@ void HRDW_Init(void) {
 	HAL_ADCEx_InjectedStart(&hadc2); // ADC Tangent (some versions)
 #endif
 	HAL_ADCEx_InjectedStart(&hadc3); // ADC CPU temperature
+#if HRDW_HAS_VHF_MIXER
+	RFMIXER_Init();
+#endif
 }
 
 float32_t HRDW_getCPUTemperature(void) {

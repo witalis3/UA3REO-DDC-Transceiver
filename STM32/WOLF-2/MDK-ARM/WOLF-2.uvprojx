@@ -1060,6 +1060,16 @@
               <FilePath>..\..\Src\rf_unit.h</FilePath>
             </File>
             <File>
+              <FileName>RFFC2072.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\RFFC2072.c</FilePath>
+            </File>
+            <File>
+              <FileName>RFFC2072.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\RFFC2072.h</FilePath>
+            </File>
+            <File>
               <FileName>rtty_decoder.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\rtty_decoder.c</FilePath>

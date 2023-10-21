@@ -15,7 +15,7 @@ uint16_t INA226_Read2Byte(uint8_t reg_addr) {
 
 	if (res == 0) {
 		if (i2c_beginReceive_u8(&I2C_SHARED_BUS, INA226_ADDR)) {
-			reg_data = i2c_Read_Word(&I2C_SHARED_BUS);
+			reg_data = i2c_Read_HalfWord(&I2C_SHARED_BUS);
 			i2c_stop(&I2C_SHARED_BUS);
 		}
 	} else if (TRX.Debug_Type == TRX_DEBUG_I2C) {
