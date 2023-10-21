@@ -2647,7 +2647,7 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 			step = 1.0;
 		}
 
-		uint64_t newfreq = getFreqOnFFTPosition(LAYOUT->FFT_PRINT_SIZE / 2 - dx / slowler);
+		uint64_t newfreq = getFreqOnFFTPosition(getFreqPositionOnFFT(CurrentVFO->Freq, true) - dx / slowler);
 		if (dx < 0.0f) {
 			newfreq = ceill(newfreq / step) * step;
 		}

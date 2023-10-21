@@ -319,9 +319,8 @@ static const arm_fir_decimate_instance_f32 FirZoomFFTDecimate = {
     .pState = NULL};
 
 // Prototypes
-static uint16_t getFFTColor(uint_fast8_t height, bool type);       // Get FFT color warmth (blue to red) , type 0 - fft, type 1 - wtf
-static void FFT_fill_color_palette(void);                          // prepare the color palette
-static int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos); // get the position on the FFT for a given frequency
+static uint16_t getFFTColor(uint_fast8_t height, bool type); // Get FFT color warmth (blue to red) , type 0 - fft, type 1 - wtf
+static void FFT_fill_color_palette(void);                    // prepare the color palette
 static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center);
 #if HRDW_HAS_FULL_FFT_BUFFER
 static void FFT_3DPrintFFT(void);
@@ -1540,7 +1539,7 @@ bool FFT_printFFT(void) {
 	// Draw grids
 	if (TRX.FFT_FreqGrid == 1 || TRX.FFT_FreqGrid == 2) {
 		for (int32_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++) {
-			if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2)) {
+			if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE) {
 				for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++) {
 					print_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = grid_color;
 				}
@@ -1549,7 +1548,7 @@ bool FFT_printFFT(void) {
 	}
 	if (TRX.FFT_FreqGrid >= 2) {
 		for (int8_t grid_line_index = 0; grid_line_index < FFT_MAX_GRID_NUMBER; grid_line_index++) {
-			if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE && grid_lines_pos[grid_line_index] != (LAYOUT->FFT_PRINT_SIZE / 2)) {
+			if (grid_lines_pos[grid_line_index] > 0 && grid_lines_pos[grid_line_index] < LAYOUT->FFT_PRINT_SIZE) {
 				for (uint32_t fft_y = fftHeight; fft_y < (fftHeight + wtfHeight); fft_y++) {
 					print_output_buffer[fft_y][grid_lines_pos[grid_line_index]] = grid_color;
 				}
@@ -2755,7 +2754,7 @@ static float32_t getMaxDBMFromFreq(uint64_t freq, uint8_t span) {
 	return result;
 }
 
-static inline int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos) {
+inline int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos) {
 	int32_t pos = (int32_t)((float64_t)LAYOUT->FFT_PRINT_SIZE / 2.0 + (float64_t)((float64_t)freq - (float64_t)CurrentVFO->SpectrumCenterFreq) / (float64_t)Hz_in_pixel * (float64_t)fft_zoom);
 	if (!full_pos && (pos < 0 || pos >= LAYOUT->FFT_PRINT_SIZE)) {
 		return -1;

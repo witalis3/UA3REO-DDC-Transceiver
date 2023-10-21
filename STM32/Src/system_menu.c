@@ -5185,7 +5185,7 @@ static void SYSMENU_HANDL_SD_Format(int8_t direction) {
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 	if (!sysmenu_timeMenuOpened) {
-	  sysmenu_timeMenuOpened = true	;
+		sysmenu_timeMenuOpened = true;
 		direction = 0;
 		LCDDriver_Fill(BG_COLOR);
 	}
@@ -8640,17 +8640,17 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		return;
 	}
 #endif
-	
-	if (sysmenu_timeMenuOpened) {       
-    SYSMENU_eventRotateSystemMenu(0);
+
+	if (sysmenu_timeMenuOpened) {
+		SYSMENU_eventRotateSystemMenu(0);
 		return;
-	}		
-	
+	}
+
 	if (SYSMENU_auto_calibration_opened) {
 		AUTO_CALIBRATION_Enc2Click();
 		return;
 	}
-	
+
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN ||
 	    sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE) {
 		sysmenu_item_selected_by_enc2 = false;
@@ -8659,7 +8659,6 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		sysmenu_item_selected_by_enc2 = !sysmenu_item_selected_by_enc2;
 		LCD_UpdateQuery.SystemMenuCurrent = true;
 	}
-	
 }
 
 // secondary encoder rotate

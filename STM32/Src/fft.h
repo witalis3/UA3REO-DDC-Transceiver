@@ -87,13 +87,14 @@ extern uint16_t print_output_buffer[FFT_AND_WTF_HEIGHT][MAX_FFT_PRINT_SIZE]; // 
 #endif
 
 // Public methods
-extern void FFT_Init(void);                              // FFT initialization
-extern void FFT_PreInit(void);                           // FFT precalculation
-extern void FFT_bufferPrepare(void);                     // FFT Buffer process
-extern void FFT_doFFT(void);                             // FFT calculation
-extern bool FFT_printFFT(void);                          // FFT output
-extern void FFT_afterPrintFFT(void);                     // FFT output after callback
-extern uint64_t getFreqOnFFTPosition(uint16_t position); // get frequency from pixel X position
+extern void FFT_Init(void);                                        // FFT initialization
+extern void FFT_PreInit(void);                                     // FFT precalculation
+extern void FFT_bufferPrepare(void);                               // FFT Buffer process
+extern void FFT_doFFT(void);                                       // FFT calculation
+extern bool FFT_printFFT(void);                                    // FFT output
+extern void FFT_afterPrintFFT(void);                               // FFT output after callback
+extern uint64_t getFreqOnFFTPosition(uint16_t position);           // get frequency from pixel X position
+extern int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos); // get the position on the FFT for a given frequency
 extern void FFT_ShortBufferPrintFFT(void);
 
 #endif
