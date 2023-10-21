@@ -768,7 +768,7 @@ extern struct TRX_SETTINGS {
 	bool RepeaterMode_shadow;
 	bool WOLF_Cluster;
 	bool FREE_Tune;
-	bool Auto_CW;
+	bool Auto_CW_Mode;
 #if HRDW_HAS_DUAL_RX
 	bool Dual_RX;
 #endif

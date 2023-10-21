@@ -171,7 +171,7 @@ static void SYSMENU_HANDL_CW_DotToDashRate(int8_t direction);
 static void SYSMENU_HANDL_CW_Iambic(int8_t direction);
 static void SYSMENU_HANDL_CW_Iambic_Type(int8_t direction);
 static void SYSMENU_HANDL_CW_Invert(int8_t direction);
-static void SYSMENU_HANDL_CW_Auto_CW(int8_t direction);
+static void SYSMENU_HANDL_CW_Auto_CW_Mode(int8_t direction);
 static void SYSMENU_HANDL_CW_Key_timeout(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
 static void SYSMENU_HANDL_CW_OneSymbolMemory(int8_t direction);
@@ -825,7 +825,7 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
 };
 
 const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
-    {"Auto CW", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_CW, SYSMENU_HANDL_CW_Auto_CW},
+    {"Auto CW Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_CW_Mode, SYSMENU_HANDL_CW_Auto_CW_Mode},
     {"DotToDash Rate", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CW_DotToDashRate, SYSMENU_HANDL_CW_DotToDashRate},
     {"Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
     {"Iambic Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_Iambic_Type, SYSMENU_HANDL_CW_Iambic_Type, (const enumerate_item[2]){"A", "B"}},
@@ -3558,12 +3558,12 @@ static void SYSMENU_HANDL_CW_Invert(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_CW_Auto_CW(int8_t direction) {
+static void SYSMENU_HANDL_CW_Auto_CW_Mode(int8_t direction) {
 	if (direction > 0) {
-		TRX.Auto_CW = true;
+		TRX.Auto_CW_Mode = true;
 	}
 	if (direction < 0) {
-		TRX.Auto_CW = false;
+		TRX.Auto_CW_Mode = false;
 	}
 }
 
