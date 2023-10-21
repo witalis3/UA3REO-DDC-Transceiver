@@ -5189,6 +5189,7 @@ static void SYSMENU_HANDL_SETTIME(int8_t direction) {
 		direction = 0;
 		LCDDriver_Fill(BG_COLOR);
 	}
+
 	sysmenu_timeMenuOpened = true;
 	static uint8_t Hours, Minutes, Seconds, Day, Month;
 	static uint16_t Year;
@@ -8418,13 +8419,20 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction) {
 	if (sysmenu_infowindow_opened) {
 		return;
 	}
-
+	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN) {
+		return;
+	}
+	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU) {
+		return;
+	}
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type != SYSMENU_INFOLINE) {
 		sysmenu_handlers_selected[getCurrentMenuIndex()].menuHandler(direction);
 	}
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type != SYSMENU_RUN) {
 		LCD_UpdateQuery.SystemMenuCurrent = true;
 	}
+
+	
 }
 
 void SYSMENU_eventCloseSystemMenu(void) {
@@ -8654,7 +8662,7 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN ||
 	    sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE) {
 		sysmenu_item_selected_by_enc2 = false;
-		SYSMENU_eventRotateSystemMenu(1);
+    sysmenu_handlers_selected[getCurrentMenuIndex()].menuHandler(1);
 	} else {
 		sysmenu_item_selected_by_enc2 = !sysmenu_item_selected_by_enc2;
 		LCD_UpdateQuery.SystemMenuCurrent = true;
