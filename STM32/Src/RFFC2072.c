@@ -42,7 +42,7 @@ uint16_t RFFC2072_reg[RFFC2072_REGS_NUM] = {
     0xc840, /* 1C TEMPC_CTRL – Temperature compensation control */
     0x1000, /* 1D DEV_CTRL - Readback register and RSM Control */
     0x0005, /* 1E TEST - Test register */
-    // 0x0000  /* 1F READBACK – Readback Register */
+            // 0x0000  /* 1F READBACK – Readback Register */
 };
 
 void RFMIXER_Init(void) {
@@ -66,7 +66,7 @@ void RFMIXER_Init(void) {
 
 	RFMIXER_enable();
 
-	RFMIXER_Freq_Set(145);
+	RFMIXER_Freq_Set(145000000);
 
 	I2C_SHARED_BUS.locked = false;
 }
@@ -77,9 +77,9 @@ void RFMIXER_disable(void) {
 	RFFC2072_Write_HalfWord(0x15, RFFC2072_reg[0x15]);
 }
 
-uint64_t RFMIXER_Freq_Set(uint64_t lo_MHz) {
+uint64_t RFMIXER_Freq_Set(uint64_t lo_freq_Hz) {
 	RFMIXER_disable();
-	uint64_t set_freq = RFFC2072_freq_calc(lo_MHz);
+	uint64_t set_freq = RFFC2072_freq_calc(lo_freq_Hz);
 	RFMIXER_enable();
 
 	println("RFMixer LO Freq: ", set_freq);
@@ -92,29 +92,13 @@ void RFMIXER_enable(void) {
 	RFFC2072_Write_HalfWord(0x15, RFFC2072_reg[0x15]);
 }
 
-static uint64_t RFFC2072_freq_calc(uint64_t lo_MHz) {
-	char lodiv;
-	int fvco;
-	char fbkdiv;
-	int n;
-	long long tune_freq_hz;
-	long long tmp1, tmp2;
-	int p1nmsb;
-	char p1nlsb;
-	/* Calculate n_lo */
-	char n_lo = 0;
-	uint64_t x = RFFC2072_LO_MAX / lo_MHz;
-	while ((x > 1) && (n_lo < 5)) {
-		n_lo++;
-		x >>= 1;
-	}
-	lodiv = 1 << n_lo;
-	fvco = lodiv * lo_MHz;
+static uint64_t RFFC2072_freq_calc(uint64_t lo_freq_Hz) {
+	uint8_t n_lo = log2(RFFC2072_LO_MAX / lo_freq_Hz);
+	uint8_t lodiv = 1 << n_lo; // 2^n_lo
+	uint64_t fvco = lodiv * lo_freq_Hz;
+	uint8_t fbkdiv;
 
-	/* higher divider and charge pump current required above 3.2GHz. Programming guide says these values (fbkdiv, n, maybe pump?) can be changed back after enable in order to
-	 * improve phase noise, since the VCO will already be stable	and will be unaffected. */
-
-	if (fvco > 3200) {
+	if (fvco > 3200000000) {
 		fbkdiv = 4;
 		RFFC2072_reg[0x0] &= ~(7);
 		RFFC2072_reg[0x0] |= 3;
@@ -126,14 +110,26 @@ static uint64_t RFFC2072_freq_calc(uint64_t lo_MHz) {
 		RFFC2072_Write_HalfWord(0x0, RFFC2072_reg[0x0]);
 	}
 
-	long long tmp_n = ((long long)fvco << 29ULL) / (fbkdiv * RFFC2072_REF_FREQ);
-	n = tmp_n >> 29ULL;
-	p1nmsb = (tmp_n >> 13ULL) & 0xffff;
-	p1nlsb = (tmp_n >> 5ULL) & 0xff;
+	float64_t n_div = (float64_t)fvco / (float64_t)fbkdiv / RFFC2072_REF_FREQ;
+	uint8_t n = n_div;
+	uint16_t nummsb = (1 << 16) * (n_div - n);
+	uint8_t numlsb = (1 << 8) * ((1 << 16) * (n_div - n) - nummsb);
+	// println(n_lo, " ", lodiv, " ", fvco, " ", fbkdiv, " ", n_div, " ", n, " ", nummsb, " ", numlsb);
 
-	tmp1 = (RFFC2072_REF_FREQ * (tmp_n >> 5ULL) * fbkdiv * RFFC2072_FREQ_ONE_MHZ);
-	tmp2 = (lodiv * (1ULL << 24ULL));
-	tune_freq_hz = tmp1 / tmp2;
+	/* Path 1 */
+
+	// p1_freq1
+	RFFC2072_reg[0x0C] &= ~(0x3fff << 2);
+	RFFC2072_reg[0x0C] |= (n << 7) + (n_lo << 4) + ((fbkdiv >> 1) << 2);
+	RFFC2072_Write_HalfWord(0x0C, RFFC2072_reg[0x0C]);
+
+	// p1_freq2
+	RFFC2072_reg[0x0D] = nummsb;
+	RFFC2072_Write_HalfWord(0x0D, RFFC2072_reg[0x0D]);
+
+	// p1_freq3
+	RFFC2072_reg[0x0E] = (numlsb << 8);
+	RFFC2072_Write_HalfWord(0x0E, RFFC2072_reg[0x0E]);
 
 	/* Path 2 */
 
@@ -143,13 +139,15 @@ static uint64_t RFFC2072_freq_calc(uint64_t lo_MHz) {
 	RFFC2072_Write_HalfWord(0x0f, RFFC2072_reg[0x0f]);
 
 	// p2_freq2
-	RFFC2072_reg[0x10] = p1nmsb;
+	RFFC2072_reg[0x10] = nummsb;
 	RFFC2072_Write_HalfWord(0x10, RFFC2072_reg[0x10]);
 
 	// p2_freq3
-	RFFC2072_reg[0x11] = (p1nlsb << 8);
+	RFFC2072_reg[0x11] = (numlsb << 8);
 	RFFC2072_Write_HalfWord(0x11, RFFC2072_reg[0x11]);
 
+	// calculate result freq
+	uint64_t tune_freq_hz = RFFC2072_REF_FREQ * fbkdiv * ((float64_t)n + ((float64_t)((nummsb << 8) | numlsb) / (1 << 24))) / lodiv;
 	return tune_freq_hz;
 }
 
