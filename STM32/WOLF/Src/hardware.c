@@ -1,5 +1,4 @@
 #include "hardware.h"
-#include "RFFC2072.h"
 #include "functions.h"
 #include "main.h"
 

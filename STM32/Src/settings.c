@@ -305,7 +305,7 @@ void LoadSettings(bool clear) {
 		TRX.VOX_TIMEOUT = 300;                                         // VOX timeout in ms
 		TRX.VOX_THRESHOLD = -27;                                       // VOX threshold in dbFS
 		TRX.RX_AUDIO_MODE = RX_AUDIO_MODE_STEREO;                      // OUT Lines mode stereo/left/right
-		TRX.AGC_Threshold = true;                                      // Disable AGC on noise signals
+		TRX.AGC_Threshold = false;                                     // Disable AGC on noise signals
 		TRX.SAM_Mode = SAM_MODE_STEREO;                                // Select SAM mode (Stereo/LSB/USB)
 		// CW
 		TRX.CW_Pitch = 600;                                             // LO offset in CW mode

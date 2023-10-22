@@ -3,6 +3,8 @@
 
 #if HRDW_HAS_RFFC2072_MIXER
 
+static uint64_t RFFC2072_lo_freq_Hz_prev = 0;
+
 static void RFFC2072_shift_out(I2C_DEVICE *dev, uint32_t val, uint8_t size);
 static void RFFC2072_SDA_OUT(I2C_DEVICE *dev);
 static void RFFC2072_SDA_IN(I2C_DEVICE *dev);
@@ -64,9 +66,7 @@ void RFMIXER_Init(void) {
 	RFFC2072_reg[0x16] |= (1 << 1) + (1 << 0);
 	RFFC2072_Write_HalfWord(0x16, RFFC2072_reg[0x16]);
 
-	RFMIXER_enable();
-
-	RFMIXER_Freq_Set(145000000);
+	// RFMIXER_enable();
 
 	I2C_SHARED_BUS.locked = false;
 }
@@ -75,13 +75,20 @@ void RFMIXER_disable(void) {
 	// clear ENBL BIT
 	RFFC2072_reg[0x15] &= ~(1 << 14);
 	RFFC2072_Write_HalfWord(0x15, RFFC2072_reg[0x15]);
+
+	RFFC2072_lo_freq_Hz_prev = 0;
 }
 
 uint64_t RFMIXER_Freq_Set(uint64_t lo_freq_Hz) {
+	if (lo_freq_Hz == RFFC2072_lo_freq_Hz_prev) {
+		return lo_freq_Hz;
+	}
+
 	RFMIXER_disable();
 	uint64_t set_freq = RFFC2072_freq_calc(lo_freq_Hz);
 	RFMIXER_enable();
 
+	RFFC2072_lo_freq_Hz_prev = lo_freq_Hz;
 	println("RFMixer LO Freq: ", set_freq);
 	return set_freq;
 }
