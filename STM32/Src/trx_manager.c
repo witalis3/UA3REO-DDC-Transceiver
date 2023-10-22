@@ -478,71 +478,85 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	// get settings and fpga freq phrase
 	int64_t vfoa_freq = CurrentVFO->SpectrumCenterFreq + (TRX.RIT_Enabled ? TRX_RIT : 0);
 	if (TRX.Transverter_70cm && getBandFromFreq(vfoa_freq, true) == BANDID_70cm) {
-		vfoa_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * 1000000);
+		vfoa_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * HZ_IN_MHZ) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_23cm && getBandFromFreq(vfoa_freq, true) == BANDID_23cm) {
-		vfoa_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_MHz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_MHz * 1000000);
+		vfoa_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_MHz * HZ_IN_MHZ) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_13cm && getBandFromFreq(vfoa_freq, true) == BANDID_13cm) {
-		vfoa_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_MHz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_MHz * 1000000);
+		vfoa_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_MHz * HZ_IN_MHZ) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_6cm && getBandFromFreq(vfoa_freq, true) == BANDID_6cm) {
-		vfoa_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_MHz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_MHz * 1000000);
+		vfoa_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_MHz * HZ_IN_MHZ) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_3cm && getBandFromFreq(vfoa_freq, true) == BANDID_3cm) {
-		vfoa_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_MHz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_MHz * 1000000);
+		vfoa_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_MHz * HZ_IN_MHZ) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_QO100 && getBandFromFreq(vfoa_freq, true) == BANDID_QO100) {
 		vfoa_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_kHz * 1000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
 	}
 
-	CurrentVFO->RXFreqAfterTransverters = vfoa_freq;
-	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
-
 	int64_t vfob_freq = SecondaryVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
 	if (TRX.Transverter_70cm && getBandFromFreq(vfob_freq, true) == BANDID_70cm) {
-		vfob_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * 1000000);
+		vfob_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * HZ_IN_MHZ) + (vfob_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_23cm && getBandFromFreq(vfob_freq, true) == BANDID_23cm) {
-		vfob_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_MHz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_MHz * 1000000);
+		vfob_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_MHz * HZ_IN_MHZ) + (vfob_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_13cm && getBandFromFreq(vfob_freq, true) == BANDID_13cm) {
-		vfob_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_MHz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_MHz * 1000000);
+		vfob_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_MHz * HZ_IN_MHZ) + (vfob_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_6cm && getBandFromFreq(vfob_freq, true) == BANDID_6cm) {
-		vfob_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_MHz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_MHz * 1000000);
+		vfob_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_MHz * HZ_IN_MHZ) + (vfob_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_3cm && getBandFromFreq(vfob_freq, true) == BANDID_3cm) {
-		vfob_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_MHz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_MHz * 1000000);
+		vfob_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_MHz * HZ_IN_MHZ) + (vfob_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_QO100 && getBandFromFreq(vfob_freq, true) == BANDID_QO100) {
 		vfob_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_kHz * 1000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
 	}
 
-	SecondaryVFO->RXFreqAfterTransverters = vfob_freq;
-	TRX_freq_phrase2 = getRXPhraseFromFrequency(vfob_freq, 2);
-
 	int64_t vfo_tx_freq = CurrentVFO->Freq + (TRX.XIT_Enabled ? TRX_XIT : 0);
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo_tx_freq);
 
 	if (TRX.Transverter_70cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_70cm) {
-		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * 1000000);
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_23cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_23cm) {
-		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_MHz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_MHz * 1000000);
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_13cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_13cm) {
-		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_MHz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_MHz * 1000000);
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_6cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_6cm) {
-		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_MHz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_MHz * 1000000);
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_3cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_3cm) {
-		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_MHz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_MHz * 1000000);
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_MHz * HZ_IN_MHZ);
 	}
 	if (TRX.Transverter_QO100 && getBandFromFreq(vfo_tx_freq, true) == BANDID_QO100) {
-		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_TX_MHz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_TX_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
 	}
+
+#if HRDW_HAS_VHF_MIXER
+	vfoa_freq = CurrentVFO->SpectrumCenterFreq + (TRX.RIT_Enabled ? TRX_RIT : 0);
+	vfo_tx_freq = CurrentVFO->Freq + (TRX.XIT_Enabled ? TRX_XIT : 0);
+	uint64_t vfoa_freq_mhz = vfoa_freq / HZ_IN_MHZ;
+
+	if (vfoa_freq_mhz >= RFMIXER_MIN_FREQ_MHz && vfoa_freq_mhz <= RFMIXER_MAX_FREQ_MHz) {
+		uint64_t lo_freq = (vfoa_freq_mhz - RFMIXER_IF_FREQ_MHz) * HZ_IN_MHZ;
+		uint64_t result_lo_freq = RFMIXER_Freq_Set(lo_freq);
+		vfoa_freq = ((uint64_t)RFMIXER_IF_FREQ_MHz * HZ_IN_MHZ) + (vfoa_freq - vfoa_freq_mhz * HZ_IN_MHZ);
+		vfo_tx_freq = ((uint64_t)RFMIXER_IF_FREQ_MHz * HZ_IN_MHZ) + (vfo_tx_freq - vfoa_freq_mhz * HZ_IN_MHZ);
+	} else {
+		RFMIXER_disable();
+	}
+#endif
+
+	CurrentVFO->RXFreqAfterTransverters = vfoa_freq;
+	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
+	SecondaryVFO->RXFreqAfterTransverters = vfob_freq;
+	TRX_freq_phrase2 = getRXPhraseFromFrequency(vfob_freq, 2);
 	TRX_freq_phrase_tx = getTXPhraseFromFrequency(vfo_tx_freq);
 
 	// println("RX1: ", CurrentVFO->RealRXFreq, "TX: ", vfo_tx_freq);

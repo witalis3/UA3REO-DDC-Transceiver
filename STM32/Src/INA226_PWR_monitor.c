@@ -47,6 +47,7 @@ uint8_t INA226_Write2Byte(uint8_t reg_addr, uint16_t reg_data) {
 }
 
 void INA226_Init(void) {
+#ifdef HAS_TOUCHPAD
 	if (I2C_SHARED_BUS.locked) {
 		return;
 	}
@@ -74,10 +75,12 @@ void INA226_Init(void) {
 	INA226_Write2Byte(Calib_Reg, (uint16_t)INA226_Calibration);
 
 	I2C_SHARED_BUS.locked = false;
+#endif
 }
 
 // Read the INA226 Voltage and Current data
 void Read_INA226_Data(void) {
+#ifdef HAS_TOUCHPAD
 	if (I2C_SHARED_BUS.locked) {
 		return;
 	}
@@ -97,6 +100,7 @@ void Read_INA226_Data(void) {
 	}
 
 	I2C_SHARED_BUS.locked = false;
+#endif
 }
 
 // Return the INA226 Bus Voltage

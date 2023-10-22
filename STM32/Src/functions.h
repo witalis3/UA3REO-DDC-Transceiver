@@ -87,6 +87,7 @@ __asm(".global __use_no_heap\n\t");
 		__asm("nop");
 
 #define DMA_MAX_BLOCK 65000
+#define HZ_IN_MHZ 1000000
 
 // Example of __DATE__ string: "Jul 27 2012"
 //                              01234567890

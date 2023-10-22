@@ -4,6 +4,10 @@
 #include "hardware.h"
 #if HRDW_HAS_RFFC2072_MIXER
 
+#define RFMIXER_MIN_FREQ_MHz 113  // 85 lo min + 28 if
+#define RFMIXER_MAX_FREQ_MHz 2700 // 4gHz max with loss
+#define RFMIXER_IF_FREQ_MHz 28
+
 #define RFFC2072_REGS_NUM 31
 #define RFFC2072_LO_MAX 5400000000
 #define RFFC2072_REF_FREQ 39000000
