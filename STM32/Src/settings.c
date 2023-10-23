@@ -139,7 +139,7 @@ void LoadSettings(bool clear) {
 		TRX.VFO_B.FM_LPF_RX_Filter = TRX.VFO_A.FM_LPF_RX_Filter;         // default value of the FM filter width
 		TRX.VFO_B.FM_LPF_TX_Filter = TRX.VFO_A.FM_LPF_TX_Filter;         // default value of the FM filter width
 		TRX.VFO_B.FM_HPF_RX_Filter = TRX.VFO_A.FM_HPF_RX_Filter;         // default value of the FM filter width
-		TRX.Fast = true;                                                 // accelerated frequency change when the encoder rotates
+		TRX.Fast = false;                                                 // accelerated frequency change when the encoder rotates
 		TRX.LNA = false;                                                 // LNA (Low Noise Amplifier)
 		TRX.ATT = false;                                                 // attenuator
 		TRX.ATT_DB = 12.0f;                                              // suppress the attenuator
@@ -879,7 +879,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.TUNE_MAX_POWER = 15;             // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;     // Max TRX Power for indication
 #elif defined(FRONTPANEL_LITE)
-		CALIBRATE.ENCODER_SLOW_RATE = 10;
+		CALIBRATE.ENCODER_SLOW_RATE = 1;
 		CALIBRATE.smeter_calibration_hf = 15;
 		CALIBRATE.TUNE_MAX_POWER = 5;         // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 15; // Max TRX Power for indication
