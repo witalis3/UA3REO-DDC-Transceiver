@@ -181,7 +181,7 @@ void LoadSettings(bool clear) {
 		TRX.FRQ_ENC_STEP = 25000;           // frequency tuning step by main add. encoder
 		TRX.FRQ_ENC_FAST_STEP = 50000;      // frequency tuning step by main add. encoder in FAST mode
 		TRX.FRQ_ENC_WFM_STEP_kHz = 20;      // frequency WFM tuning step by the main encoder
-		TRX.FRQ_ENC_FM_STEP_kHz = 1;        // frequency FM tuning step by the main encoder
+		TRX.FRQ_ENC_FM_STEP_kHz = 5;        // frequency FM tuning step by the main encoder
 		TRX.FRQ_ENC_AM_STEP_kHz = 1;        // frequency AM tuning step by the main encoder
 		TRX.NOTCH_STEP_Hz = 50;             // Manual NOTCH tuning step
 		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
