@@ -2803,19 +2803,19 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 	}
 
 	uint8_t selectable_bands_count = 0;
-	uint8_t bradcast_bands_count = 0;
+	uint8_t broadcast_bands_count = 0;
 	for (uint8_t i = 0; i < BANDS_COUNT; i++) {
 		if (BAND_SELECTABLE[i]) {
 			selectable_bands_count++;
 		}
-		if (BANDS[i].broadcast) {
-			bradcast_bands_count++;
+		if (BANDS[i].broadcast && !(i == BANDID_FM && !CALIBRATE.ENABLE_FM_band)) {
+			broadcast_bands_count++;
 		}
 	}
 	selectable_bands_count++; // memory bank
 
 	const uint8_t buttons_lines_selectable = ceilf((float32_t)selectable_bands_count / (float32_t)buttons_in_line);
-	const uint8_t buttons_lines_broadcast = ceilf((float32_t)bradcast_bands_count / (float32_t)buttons_in_line);
+	const uint8_t buttons_lines_broadcast = ceilf((float32_t)broadcast_bands_count / (float32_t)buttons_in_line);
 	const uint8_t divider_height = 30;
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * (buttons_lines_selectable + buttons_lines_broadcast) + divider_height +
@@ -2875,7 +2875,7 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 	// broadcast bands next
 	xi = 0;
 	for (uint8_t bindx = 0; bindx < BANDS_COUNT; bindx++) {
-		if (!BANDS[bindx].broadcast) {
+		if (!BANDS[bindx].broadcast || (bindx == BANDID_FM && !CALIBRATE.ENABLE_FM_band)) {
 			continue;
 		}
 
