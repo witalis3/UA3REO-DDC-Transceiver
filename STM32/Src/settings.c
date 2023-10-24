@@ -145,8 +145,8 @@ void LoadSettings(bool clear) {
 		TRX.ATT_DB = 12.0f;                                              // suppress the attenuator
 		TRX.ATT_STEP = 6.0f;                                             // step of tuning the attenuator
 		TRX.RF_Filters = true;                                           // LPF / HPF / BPF
-		TRX.ANT_selected = false;                                        // ANT-1
-		TRX.ANT_mode = false;                                            // RX=TX
+		TRX.ANT_RX = TRX_ANT_1;                                          // ANT-1 RX
+		TRX.ANT_TX = TRX_ANT_1;                                          // ANT-1 TX
 		TRX.RF_Gain = 20;                                                // output power (%)
 		TRX.RF_Gain_For_Each_Band = false;                               // save RF Gain for each band separatly
 		TRX.RF_Gain_For_Each_Mode = false;                               // save RF Gain for each mode separatly
@@ -462,8 +462,8 @@ void LoadSettings(bool clear) {
 			}
 			TRX.BANDS_SAVED_SETTINGS[i].ATT = TRX.ATT;
 			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = TRX.ATT_DB;
-			TRX.BANDS_SAVED_SETTINGS[i].ANT_selected = TRX.ANT_selected;
-			TRX.BANDS_SAVED_SETTINGS[i].ANT_mode = TRX.ANT_mode;
+			TRX.BANDS_SAVED_SETTINGS[i].ANT_RX = TRX.ANT_RX;
+			TRX.BANDS_SAVED_SETTINGS[i].ANT_TX = TRX.ANT_TX;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
 			TRX.BANDS_SAVED_SETTINGS[i].SQL = false;
 			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm = TRX.VFO_A.FM_SQL_threshold_dBm;
@@ -473,14 +473,10 @@ void LoadSettings(bool clear) {
 			TRX.BANDS_SAVED_SETTINGS[i].RepeaterMode = false;
 			TRX.BANDS_SAVED_SETTINGS[i].Fast = TRX.Fast;
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
-			if (!TRX.ANT_selected) {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_I = TRX.ATU_I;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_C = TRX.ATU_C;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_T = TRX.ATU_T;
-			} else {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_I = TRX.ATU_I;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_C = TRX.ATU_C;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_T = TRX.ATU_T;
+			for (uint8_t a = 0; a < ANT_MAX_COUNT; a++) {
+				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_I[a] = TRX.ATU_I;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_C[a] = TRX.ATU_C;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_T[a] = TRX.ATU_T;
 			}
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_CW_LPF_Filter = TRX.VFO_A.CW_LPF_Filter;
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_SSB_LPF_RX_Filter = TRX.VFO_A.SSB_LPF_RX_Filter;

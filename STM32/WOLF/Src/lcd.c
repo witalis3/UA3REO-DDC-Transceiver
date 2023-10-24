@@ -904,17 +904,34 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 		LCD_UpdateQuery.TextBar = true;
 	}
 	// ANT indicator
+	uint8_t currentAnt = TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX;
 	if (CN_Theme) {
-		if (TRX.ANT_mode && !TRX_on_TX) {
+		if (TRX.ANT_RX != TRX.ANT_TX && !TRX_on_TX) {
 			LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET), &ANT1_2_ICO, COLOR_BLACK, BG_COLOR);
-		} else if (TRX.ANT_selected) {
-			LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET), &ANT2_ICO, COLOR_BLACK, BG_COLOR);
 		} else {
-			LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET), &ANT1_ICO, COLOR_BLACK, BG_COLOR);
+			const tIMAGE *icon = &ANT1_ICO;
+			if (currentAnt == TRX_ANT_2) {
+				icon = &ANT2_ICO;
+			}
+			if (currentAnt == TRX_ANT_3) {
+				icon = &ANT3_ICO;
+			}
+			if (currentAnt == TRX_ANT_4) {
+				icon = &ANT4_ICO;
+			}
+			LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET), icon, COLOR_BLACK, BG_COLOR);
 		}
 	} else {
-		printInfoSmall(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET), LAYOUT->STATUS_ANT_BLOCK_WIDTH, LAYOUT->STATUS_ANT_BLOCK_HEIGHT,
-		               (TRX.ANT_mode && !TRX_on_TX) ? ("1+2") : (TRX.ANT_selected ? "ANT2" : "ANT1"), BG_COLOR, COLOR->STATUS_RX, COLOR->STATUS_RX, true);
+		char ctmp[10];
+		if (TRX.ANT_RX != TRX.ANT_TX && !TRX_on_TX) {
+			sprintf(ctmp, "%d+%d", TRX.ANT_RX + 1, TRX.ANT_TX + 1);
+			printInfoSmall(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET), LAYOUT->STATUS_ANT_BLOCK_WIDTH, LAYOUT->STATUS_ANT_BLOCK_HEIGHT, ctmp, BG_COLOR,
+			               COLOR->STATUS_RX, COLOR->STATUS_RX, true);
+		} else {
+			sprintf(ctmp, "ANT%d", currentAnt + 1);
+			printInfoSmall(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET), LAYOUT->STATUS_ANT_BLOCK_WIDTH, LAYOUT->STATUS_ANT_BLOCK_HEIGHT, ctmp, BG_COLOR,
+			               COLOR->STATUS_RX, COLOR->STATUS_RX, true);
+		}
 	}
 
 	// WIFI indicator

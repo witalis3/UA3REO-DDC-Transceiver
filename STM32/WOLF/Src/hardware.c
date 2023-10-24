@@ -269,3 +269,23 @@ void HRDW_GoToInternalSPIClock(void) {
 		Error_Handler();
 	}
 }
+
+uint8_t HARDW_GetAntCount(void) {
+#ifdef FRONTPANEL_WOLF_2
+	return 2;
+#endif
+
+	switch (CALIBRATE.RF_unit_type) {
+	case RF_UNIT_NONE:
+	case RF_UNIT_RU4PN:
+	case RF_UNIT_QRP:
+	case RF_UNIT_WF_100D:
+	case RF_UNIT_BIG:
+	case RF_UNIT_SPLIT:
+		return 2;
+	case RF_UNIT_KT_100S:
+		return 4;
+	}
+
+	return 1;
+}
