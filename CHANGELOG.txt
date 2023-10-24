@@ -1,7 +1,7 @@
 ----Version 8.5.0----
 +STM32: Доработки по работе основного энкодера в системном меню, Tnx RA3RBE
 +STM32: Уменьшен шаг калибровки шунта INA226, Tnx R5ZX
-+STM32: Устранение ошибок, Tnx RA3RBE, R3TKS
++STM32: Устранение ошибок, Tnx RA3RBE, R3TKS, UR8IP
 
 ----Version 8.4.2----
 +STM32: Устранение ошибок, Tnx R3RM, SP7MFR, RA3RBE, R7KBI
