@@ -633,17 +633,7 @@ void ReinitAudioFilters(void) {
 
 	// Decimator filters
 	uint32_t decim_iir_filter_stages = IIR_DECIMATOR_FILTER_STAGES;
-	uint32_t decim_iir_filter_width = 20000;
-
-#if HRDW_HAS_DUAL_RX
-	if (lpf_rx1_width > 0 && lpf_rx1_width < 5000 && (!TRX.Dual_RX || (lpf_rx2_width > 0 && lpf_rx2_width < 5000))) {
-		decim_iir_filter_width = 5000;
-	}
-#else
-	if (lpf_rx1_width > 0 && lpf_rx1_width < 5000 && (true || (lpf_rx2_width > 0 && lpf_rx2_width < 5000))) {
-		decim_iir_filter_width = 5000;
-	}
-#endif
+	uint32_t decim_iir_filter_width = 23000;
 
 	if (TRX_GetRXSampleRateENUM == TRX_SAMPLERATE_K192) {
 		decim_iir_filter_stages = 5;
