@@ -19,7 +19,7 @@
 #endif
 
 #define SETT_VERSION 120        // Settings config version
-#define CALIB_VERSION 79        // Calibration config version
+#define CALIB_VERSION 80        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -803,6 +803,7 @@ extern struct TRX_CALIBRATE {
 	float32_t SWR_FWD_Calibration_VHF;
 	float32_t SWR_BWD_Calibration_VHF;
 	float32_t INA226_VoltageOffset;
+	float32_t INA226_Shunt_mOhm;
 	float32_t PWR_VLT_Calibration;
 	float32_t PWR_CUR_Calibration;
 	uint32_t RFU_LPF_END;
@@ -832,7 +833,6 @@ extern struct TRX_CALIBRATE {
 	uint16_t TCXO_frequency;
 	uint16_t MAX_ChargePump_Freq;
 	uint16_t TX_StartDelay;
-	uint16_t INA226_Shunt_mOhm;
 	uint16_t Transverter_Custom_Offset_MHz;
 	uint16_t Transverter_70cm_RF_MHz;
 	uint16_t Transverter_70cm_IF_MHz;

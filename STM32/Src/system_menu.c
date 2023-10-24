@@ -1185,7 +1185,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"IF Gain MAX", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.IF_GAIN_MAX, SYSMENU_HANDL_CALIB_IF_GAIN_MAX},
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_KT_100S) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
     {"INA226 Pwr Mon", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.INA226_EN, SYSMENU_HANDL_CALIB_INA226_PWR_MON},
-    {"INA226 Shunt mOhm", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.INA226_Shunt_mOhm, SYSMENU_HANDL_CALIB_INA226_Shunt_mOhm},
+    {"INA226 Shunt mOhm", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_Shunt_mOhm, SYSMENU_HANDL_CALIB_INA226_Shunt_mOhm},
     {"INA226 Voltage", SYSMENU_FLOAT32, NULL, (uint32_t *)&CALIBRATE.INA226_VoltageOffset, SYSMENU_HANDL_CALIB_INA226_VoltageOffset},
 #endif
 #if !defined(FRONTPANEL_MINI) && !defined(FRONTPANEL_X1) && !defined(FRONTPANEL_LITE)
@@ -7352,7 +7352,7 @@ static void SYSMENU_HANDL_CALIB_INA226_PWR_MON(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_INA226_Shunt_mOhm(int8_t direction) {
-	CALIBRATE.INA226_Shunt_mOhm += direction;
+	CALIBRATE.INA226_Shunt_mOhm += (float32_t)direction * 0.1f;
 	if (CALIBRATE.INA226_Shunt_mOhm < 1) {
 		CALIBRATE.INA226_Shunt_mOhm = 1;
 	}

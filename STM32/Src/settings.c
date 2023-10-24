@@ -1032,11 +1032,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.TX_StartDelay = 5;           // Relay switch delay before RF signal ON, ms
 		CALIBRATE.LCD_Rotate = false;          // LCD 180 degree rotation
 		CALIBRATE.INA226_EN = false;           // INA226 enabled
-		CALIBRATE.INA226_Shunt_mOhm = 100;     // INA226 current shunt (mOhms)
+		CALIBRATE.INA226_Shunt_mOhm = 100.0f;  // INA226 current shunt (mOhms)
 		CALIBRATE.INA226_VoltageOffset = 0.0f; // INA226 voltage offset
 #ifdef FRONTPANEL_WOLF_2
 		CALIBRATE.INA226_EN = true;
-		CALIBRATE.INA226_Shunt_mOhm = 25;
+		CALIBRATE.INA226_Shunt_mOhm = 25.0f;
 #endif
 		CALIBRATE.PWR_CUR_Calibration = 2.5f; // CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;          // Tuner averaging stages
