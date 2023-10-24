@@ -49,6 +49,7 @@
 #define FFT_DBM_GRID_INTERVAL 24                                                      // interval between dBm grids
 #define FFT_DBM_COMPENSATION 6.0f                                                     // for amplitude conversion
 #define FFT_SCALE_TYPE (TRX_on_TX ? (SHOW_RX_FFT_ON_TX ? 2 : 0) : TRX.FFT_Scale_Type) // set scale type to dBm for Duplex TX and Ampl for Simplex TX
+#define FFT_SEC_BW_BRIGHTNESS -2
 
 #define GET_FFTHeight                                                         \
 	((TRX.FFT_Height == 1) ? LAYOUT->FFT_HEIGHT_STYLE1                          \
