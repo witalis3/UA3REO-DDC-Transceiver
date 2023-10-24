@@ -126,6 +126,7 @@ typedef const struct {
 	const GFXfont *STATUS_TXRX_FONT;
 	const uint16_t STATUS_VFO_X_OFFSET;
 	const int16_t STATUS_VFO_Y_OFFSET;
+	const int16_t STATUS_VFO_B_Y_OFFSET;	
 	const uint16_t STATUS_VFO_BLOCK_WIDTH;
 	const uint16_t STATUS_VFO_BLOCK_HEIGHT;
 	const uint16_t STATUS_ANT_X_OFFSET;
