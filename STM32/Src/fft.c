@@ -1156,12 +1156,12 @@ bool FFT_printFFT(void) {
 	switch (CurrentVFO->Mode) {
 	case TRX_MODE_LSB:
 	case TRX_MODE_DIGI_L:
-		bw_rx1_line_width = (int32_t)(cur_lpf_width / Hz_in_pixel * fft_zoom);
+		bw_rx1_line_width = (int32_t)((cur_lpf_width - cur_hpf_width) / Hz_in_pixel * fft_zoom);
 		if (bw_rx1_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
 			bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
-		bw_rx1_line_start = rx1_line_pos - bw_rx1_line_width;
-		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width - (cur_hpf_width / Hz_in_pixel * fft_zoom);
+		bw_rx1_line_start = rx1_line_pos - bw_rx1_line_width - (cur_hpf_width / Hz_in_pixel * fft_zoom);
+		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
 		rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 
 		bw_rx2_line_width = (int32_t)(SecondaryVFO->LPF_RX_Filter_Width / Hz_in_pixel * fft_zoom);
@@ -1172,11 +1172,11 @@ bool FFT_printFFT(void) {
 	case TRX_MODE_USB:
 	case TRX_MODE_RTTY:
 	case TRX_MODE_DIGI_U:
-		bw_rx1_line_width = (int32_t)(cur_lpf_width / Hz_in_pixel * fft_zoom);
+		bw_rx1_line_width = (int32_t)((cur_lpf_width - cur_hpf_width) / Hz_in_pixel * fft_zoom);
 		if (bw_rx1_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
 			bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
-		bw_rx1_line_start = rx1_line_pos;
+		bw_rx1_line_start = rx1_line_pos + (cur_hpf_width / Hz_in_pixel * fft_zoom);
 		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
 		rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;

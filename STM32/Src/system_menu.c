@@ -4677,6 +4677,8 @@ static void SYSMENU_HANDL_DECODERS_RTTY_Shift(int8_t direction) {
 	}
 
 	RTTYDecoder_Init();
+
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_DECODERS_RTTY_Freq(int8_t direction) {
@@ -4688,6 +4690,8 @@ static void SYSMENU_HANDL_DECODERS_RTTY_Freq(int8_t direction) {
 	}
 
 	RTTYDecoder_Init();
+
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_DECODERS_RTTY_StopBits(int8_t direction) {
