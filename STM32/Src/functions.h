@@ -143,7 +143,7 @@ __asm(".global __use_no_heap\n\t");
 
 volatile extern bool SPI_DMA_TXRX_ready_callback;
 
-extern uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num);
+extern uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num, bool invert_iq_by_mixer);
 extern uint32_t getTXPhraseFromFrequency(float64_t freq);
 extern void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool toEnd);
 extern void print_chr_LCDOnly(char chr);

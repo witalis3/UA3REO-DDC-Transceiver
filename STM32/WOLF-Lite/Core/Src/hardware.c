@@ -173,3 +173,5 @@ void dma_memcpy(void *dest, void *src, uint32_t size) { memcpy(dest, src, size);
 void SCB_CleanDCache_by_Addr(uint32_t *addr, uint32_t size) {}
 void SCB_InvalidateDCache_by_Addr(uint32_t *addr, uint32_t size) {}
 void SCB_CleanInvalidateDCache_by_Addr(uint32_t *addr, uint32_t size) {}
+
+uint8_t HARDW_GetAntCount(void) { return 1; }

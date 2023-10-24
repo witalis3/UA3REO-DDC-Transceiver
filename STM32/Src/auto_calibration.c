@@ -119,7 +119,8 @@ void AUTO_CALIBRATION_Draw(void) {
 
 			TRX_setFrequency(14000000, CurrentVFO);
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
-			TRX.ANT_selected = false;
+			TRX.ANT_RX = TRX_ANT_1;
+			TRX.ANT_TX = TRX_ANT_1;
 			TRX.RF_Gain = 30;
 
 			LCDDriver_printText("Plug HF dummy load", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
@@ -136,7 +137,8 @@ void AUTO_CALIBRATION_Draw(void) {
 
 			TRX_setFrequency(14000000, CurrentVFO);
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
-			TRX.ANT_selected = false;
+			TRX.ANT_RX = TRX_ANT_1;
+			TRX.ANT_TX = TRX_ANT_1;
 			TRX.RF_Gain = 30;
 
 			LCDDriver_printText("14MHz, 30% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
@@ -171,7 +173,8 @@ void AUTO_CALIBRATION_Draw(void) {
 
 			TRX_setFrequency(14000000, CurrentVFO);
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
-			TRX.ANT_selected = false;
+			TRX.ANT_RX = TRX_ANT_1;
+			TRX.ANT_TX = TRX_ANT_1;
 			TRX.RF_Gain = 30;
 
 			LCDDriver_printText("14MHz, 30% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
@@ -206,7 +209,8 @@ void AUTO_CALIBRATION_Draw(void) {
 
 			TRX_setFrequency(52000000, CurrentVFO);
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
-			TRX.ANT_selected = false;
+			TRX.ANT_RX = TRX_ANT_1;
+			TRX.ANT_TX = TRX_ANT_1;
 			TRX.RF_Gain = 30;
 
 			LCDDriver_printText("Plug 6M dummy load", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
@@ -223,7 +227,8 @@ void AUTO_CALIBRATION_Draw(void) {
 
 			TRX_setFrequency(52000000, CurrentVFO);
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
-			TRX.ANT_selected = false;
+			TRX.ANT_RX = TRX_ANT_1;
+			TRX.ANT_TX = TRX_ANT_1;
 			TRX.RF_Gain = 30;
 
 			LCDDriver_printText("52MHz, 30% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
@@ -258,7 +263,8 @@ void AUTO_CALIBRATION_Draw(void) {
 
 			TRX_setFrequency(52000000, CurrentVFO);
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
-			TRX.ANT_selected = false;
+			TRX.ANT_RX = TRX_ANT_1;
+			TRX.ANT_TX = TRX_ANT_1;
 			TRX.RF_Gain = 30;
 
 			LCDDriver_printText("52MHz, 30% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
@@ -293,7 +299,8 @@ void AUTO_CALIBRATION_Draw(void) {
 
 			TRX_setFrequency(145000000, CurrentVFO);
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
-			TRX.ANT_selected = false;
+			TRX.ANT_RX = TRX_ANT_1;
+			TRX.ANT_TX = TRX_ANT_1;
 			TRX.RF_Gain = 100;
 
 			LCDDriver_printText("Plug VHF dummy load", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
@@ -310,7 +317,8 @@ void AUTO_CALIBRATION_Draw(void) {
 
 			TRX_setFrequency(145000000, CurrentVFO);
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
-			TRX.ANT_selected = false;
+			TRX.ANT_RX = TRX_ANT_1;
+			TRX.ANT_TX = TRX_ANT_1;
 			TRX.RF_Gain = 100;
 
 			LCDDriver_printText("145MHz, 100% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
@@ -345,7 +353,8 @@ void AUTO_CALIBRATION_Draw(void) {
 
 			TRX_setFrequency(145000000, CurrentVFO);
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
-			TRX.ANT_selected = false;
+			TRX.ANT_RX = TRX_ANT_1;
+			TRX.ANT_TX = TRX_ANT_1;
 			TRX.RF_Gain = 100;
 
 			LCDDriver_printText("145MHz, 100% power", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
@@ -604,7 +613,8 @@ static void AUTO_CALIBRATION_DoPowerCalibration(uint8_t *calibration_parameter, 
 	char str[64] = {0};
 	TRX_setFrequency(freq, CurrentVFO);
 	TRX_setMode(TRX_MODE_CW, CurrentVFO);
-	TRX.ANT_selected = false;
+	TRX.ANT_RX = TRX_ANT_1;
+	TRX.ANT_TX = TRX_ANT_1;
 	TRX.RF_Gain = 100;
 	TRX.TUNER_Enabled = false;
 	TRX.ATU_Enabled = false;

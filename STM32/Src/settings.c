@@ -139,14 +139,14 @@ void LoadSettings(bool clear) {
 		TRX.VFO_B.FM_LPF_RX_Filter = TRX.VFO_A.FM_LPF_RX_Filter;         // default value of the FM filter width
 		TRX.VFO_B.FM_LPF_TX_Filter = TRX.VFO_A.FM_LPF_TX_Filter;         // default value of the FM filter width
 		TRX.VFO_B.FM_HPF_RX_Filter = TRX.VFO_A.FM_HPF_RX_Filter;         // default value of the FM filter width
-		TRX.Fast = false;                                                 // accelerated frequency change when the encoder rotates
+		TRX.Fast = false;                                                // accelerated frequency change when the encoder rotates
 		TRX.LNA = false;                                                 // LNA (Low Noise Amplifier)
 		TRX.ATT = false;                                                 // attenuator
 		TRX.ATT_DB = 12.0f;                                              // suppress the attenuator
 		TRX.ATT_STEP = 6.0f;                                             // step of tuning the attenuator
 		TRX.RF_Filters = true;                                           // LPF / HPF / BPF
-		TRX.ANT_selected = false;                                        // ANT-1
-		TRX.ANT_mode = false;                                            // RX=TX
+		TRX.ANT_RX = TRX_ANT_1;                                          // ANT-1 RX
+		TRX.ANT_TX = TRX_ANT_1;                                          // ANT-1 TX
 		TRX.RF_Gain = 20;                                                // output power (%)
 		TRX.RF_Gain_For_Each_Band = false;                               // save RF Gain for each band separatly
 		TRX.RF_Gain_For_Each_Mode = false;                               // save RF Gain for each mode separatly
@@ -181,7 +181,7 @@ void LoadSettings(bool clear) {
 		TRX.FRQ_ENC_STEP = 25000;           // frequency tuning step by main add. encoder
 		TRX.FRQ_ENC_FAST_STEP = 50000;      // frequency tuning step by main add. encoder in FAST mode
 		TRX.FRQ_ENC_WFM_STEP_kHz = 20;      // frequency WFM tuning step by the main encoder
-		TRX.FRQ_ENC_FM_STEP_kHz = 1;        // frequency FM tuning step by the main encoder
+		TRX.FRQ_ENC_FM_STEP_kHz = 5;        // frequency FM tuning step by the main encoder
 		TRX.FRQ_ENC_AM_STEP_kHz = 1;        // frequency AM tuning step by the main encoder
 		TRX.NOTCH_STEP_Hz = 50;             // Manual NOTCH tuning step
 		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
@@ -462,8 +462,8 @@ void LoadSettings(bool clear) {
 			}
 			TRX.BANDS_SAVED_SETTINGS[i].ATT = TRX.ATT;
 			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = TRX.ATT_DB;
-			TRX.BANDS_SAVED_SETTINGS[i].ANT_selected = TRX.ANT_selected;
-			TRX.BANDS_SAVED_SETTINGS[i].ANT_mode = TRX.ANT_mode;
+			TRX.BANDS_SAVED_SETTINGS[i].ANT_RX = TRX.ANT_RX;
+			TRX.BANDS_SAVED_SETTINGS[i].ANT_TX = TRX.ANT_TX;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
 			TRX.BANDS_SAVED_SETTINGS[i].SQL = false;
 			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm = TRX.VFO_A.FM_SQL_threshold_dBm;
@@ -473,14 +473,10 @@ void LoadSettings(bool clear) {
 			TRX.BANDS_SAVED_SETTINGS[i].RepeaterMode = false;
 			TRX.BANDS_SAVED_SETTINGS[i].Fast = TRX.Fast;
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
-			if (!TRX.ANT_selected) {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_I = TRX.ATU_I;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_C = TRX.ATU_C;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_T = TRX.ATU_T;
-			} else {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_I = TRX.ATU_I;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_C = TRX.ATU_C;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_T = TRX.ATU_T;
+			for (uint8_t a = 0; a < ANT_MAX_COUNT; a++) {
+				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_I[a] = TRX.ATU_I;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_C[a] = TRX.ATU_C;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_T[a] = TRX.ATU_T;
 			}
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_CW_LPF_Filter = TRX.VFO_A.CW_LPF_Filter;
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_SSB_LPF_RX_Filter = TRX.VFO_A.SSB_LPF_RX_Filter;
@@ -1032,11 +1028,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.TX_StartDelay = 5;           // Relay switch delay before RF signal ON, ms
 		CALIBRATE.LCD_Rotate = false;          // LCD 180 degree rotation
 		CALIBRATE.INA226_EN = false;           // INA226 enabled
-		CALIBRATE.INA226_Shunt_mOhm = 100;     // INA226 current shunt (mOhms)
+		CALIBRATE.INA226_Shunt_mOhm = 100.0f;  // INA226 current shunt (mOhms)
 		CALIBRATE.INA226_VoltageOffset = 0.0f; // INA226 voltage offset
 #ifdef FRONTPANEL_WOLF_2
 		CALIBRATE.INA226_EN = true;
-		CALIBRATE.INA226_Shunt_mOhm = 25;
+		CALIBRATE.INA226_Shunt_mOhm = 25.0f;
 #endif
 		CALIBRATE.PWR_CUR_Calibration = 2.5f; // CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;          // Tuner averaging stages

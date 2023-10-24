@@ -369,7 +369,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **MAX SWR** - Maximum VSWR before protection operation
 * **NOTX xxx** - Disable TX on selected bands
 * **OTA Update** - Enable OTA firmware update over WiFi
-* **RF GAIN xxx** - Calibration of the maximum output power for each range. RF GAIN 0-100% - 50% driver bias, 101-200% - 75% driver bias, 201-300% - 100% driver bias.
+* **RF GAIN xxx** - Calibration of the maximum TX output power for each range
 * **RF-Unit Type** - RF-Unit Type (QRP / BIG)
 * **RTC COARSE CALIBR** - Very coarse clock crystal calibration
 * **RTC FINE CALIBR** - Clock crystal calibration, one division is 0.954 ppm

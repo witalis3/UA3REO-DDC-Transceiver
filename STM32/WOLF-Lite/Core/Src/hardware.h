@@ -106,4 +106,6 @@ extern bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, boo
 extern void SCB_CleanDCache_by_Addr(uint32_t *addr, uint32_t size);
 extern void SCB_InvalidateDCache_by_Addr(uint32_t *addr, uint32_t size);
 extern void SCB_CleanInvalidateDCache_by_Addr(uint32_t *addr, uint32_t size);
+extern uint8_t HARDW_GetAntCount(void);
+
 #endif

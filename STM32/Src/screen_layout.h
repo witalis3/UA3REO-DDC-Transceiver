@@ -50,6 +50,8 @@ typedef const struct {
 	const uint16_t TOPBUTTONS_MUTE_Y;
 	const float32_t TOPBUTTONS_LOCK_X;
 	const uint16_t TOPBUTTONS_LOCK_Y;
+	const uint8_t TOPBUTTONS_ROUND;
+	const GFXfont *TOPBUTTONS_FONT;
 	// Clock
 	const uint16_t CLOCK_POS_Y;
 	const uint16_t CLOCK_POS_HRS_X;

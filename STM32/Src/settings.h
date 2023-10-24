@@ -18,8 +18,8 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 120        // Settings config version
-#define CALIB_VERSION 79        // Calibration config version
+#define SETT_VERSION 121        // Settings config version
+#define CALIB_VERSION 80        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -93,6 +93,7 @@
 
 #define MEMORY_CHANNELS_COUNT 35
 #define BANDS_MEMORIES_COUNT 3
+#define ANT_MAX_COUNT 4
 
 #define ATU_MAXLENGTH 7
 #define ATU_0x0_MAXPOS B8(00000000)
@@ -436,6 +437,14 @@ typedef enum {
 	SAM_MODE_USB,
 } SAM_MODE;
 
+// SAM mode
+typedef enum {
+	TRX_ANT_1,
+	TRX_ANT_2,
+	TRX_ANT_3,
+	TRX_ANT_4,
+} TRX_ANT;
+
 // Save settings by band
 typedef struct {
 	uint64_t Freq;
@@ -449,12 +458,12 @@ typedef struct {
 	uint16_t VFO_B_AM_LPF_RX_Filter;
 	uint16_t VFO_B_FM_LPF_RX_Filter;
 	int8_t FM_SQL_threshold_dBm;
+	uint8_t ANT_RX;
+	uint8_t ANT_TX;
 	uint8_t Mode;
 	uint8_t DNR_Type;
-	uint8_t ANT1_ATU_I;
-	uint8_t ANT1_ATU_C;
-	uint8_t ANT2_ATU_I;
-	uint8_t ANT2_ATU_C;
+	uint8_t ANT_ATU_I[ANT_MAX_COUNT];
+	uint8_t ANT_ATU_C[ANT_MAX_COUNT];
 	uint8_t IF_Gain;
 	uint8_t RF_Gain;
 	uint8_t RF_Gain_By_Mode_CW;
@@ -464,16 +473,13 @@ typedef struct {
 	uint8_t RF_Gain_By_Mode_DIGI;
 	bool LNA;
 	bool ATT;
-	bool ANT_selected;
-	bool ANT_mode;
 	bool ADC_Driver;
 	bool ADC_PGA;
 	bool AGC;
 	bool RepeaterMode;
 	bool SQL;
 	bool Fast;
-	bool ANT1_ATU_T;
-	bool ANT2_ATU_T;
+	bool ANT_ATU_T[ANT_MAX_COUNT];
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
 } BAND_SAVED_SETTINGS_TYPE;
 
@@ -663,6 +669,8 @@ extern struct TRX_SETTINGS {
 	uint8_t CW_Decoder_Threshold;
 	uint8_t DNR_shadow;
 	uint8_t FRONTPANEL_funcbuttons_page;
+	uint8_t ANT_RX;
+	uint8_t ANT_TX;
 	uint8_t FuncButtons[(FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE)];
 
 	DX_CLUSTER_TYPE DXCluster_Type;
@@ -686,8 +694,6 @@ extern struct TRX_SETTINGS {
 	bool RF_Filters;
 	bool RF_Gain_For_Each_Band;
 	bool RF_Gain_For_Each_Mode;
-	bool ANT_selected; // false - 1, true - 2
-	bool ANT_mode;     // false - RX=TX, true - 1RX 2TX
 	bool ChannelMode;
 	bool RIT_Enabled;
 	bool XIT_Enabled;
@@ -803,6 +809,7 @@ extern struct TRX_CALIBRATE {
 	float32_t SWR_FWD_Calibration_VHF;
 	float32_t SWR_BWD_Calibration_VHF;
 	float32_t INA226_VoltageOffset;
+	float32_t INA226_Shunt_mOhm;
 	float32_t PWR_VLT_Calibration;
 	float32_t PWR_CUR_Calibration;
 	uint32_t RFU_LPF_END;
@@ -832,7 +839,6 @@ extern struct TRX_CALIBRATE {
 	uint16_t TCXO_frequency;
 	uint16_t MAX_ChargePump_Freq;
 	uint16_t TX_StartDelay;
-	uint16_t INA226_Shunt_mOhm;
 	uint16_t Transverter_Custom_Offset_MHz;
 	uint16_t Transverter_70cm_RF_MHz;
 	uint16_t Transverter_70cm_IF_MHz;

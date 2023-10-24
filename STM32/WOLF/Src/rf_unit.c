@@ -181,6 +181,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		band_out = CALIBRATE.EXT_2200m;
 	}
 
+	uint8_t currentAnt = TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX;
+
 	// QRP Version RF Unit ///////////////////////////////////////////////////////////////////////
 	if (CALIBRATE.RF_unit_type == RF_UNIT_QRP) {
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); // latch
@@ -330,10 +332,10 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 					}
 				}
 				// U3-QA ANT1_TX_OUT
-				if (registerNumber == 23 && !TRX.ANT_selected && TRX_on_TX) { // ANT1
+				if (registerNumber == 23 && currentAnt == TRX_ANT_1 && TRX_on_TX) { // ANT1
 					SET_DATA_PIN;
 				}
-				if (registerNumber == 23 && TRX.ANT_selected && !TRX_on_TX) { // ANT2
+				if (registerNumber == 23 && currentAnt == TRX_ANT_2 && !TRX_on_TX) { // ANT2
 					SET_DATA_PIN;
 				}
 			}
@@ -492,7 +494,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 				}
 
 				// U11-7 ANT1-2_OUT
-				if (registerNumber == 32 && TRX.ANT_selected) {
+				if (registerNumber == 32 && currentAnt == TRX_ANT_2) {
 					SET_DATA_PIN;
 				}
 				// U11-6 FAN_OUT
@@ -594,7 +596,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 			MINI_DELAY
 			if (!clean) {
 				// U5-7 ANT1-2_OUT
-				if (registerNumber == 0 && TRX.ANT_selected) {
+				if (registerNumber == 0 && currentAnt == TRX_ANT_2) {
 					SET_DATA_PIN;
 				}
 				// U5-6 TUN_I_4
@@ -861,8 +863,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		shift_array[14] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3);     // U3-1 TUN_I_4
 		shift_array[15] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4);     // U3-0 TUN_C_5
 
-		shift_array[16] = TRX.ANT_selected; // U11-7 ANT1-2_OUT
-		shift_array[17] = false;            // U11-6 FAN_OUT
+		shift_array[16] = currentAnt == TRX_ANT_2; // U11-7 ANT1-2_OUT
+		shift_array[17] = false;                   // U11-6 FAN_OUT
 		static bool fan_pwm = false;
 		if (FAN_Active && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) { // Temperature at which the fan stops
 			FAN_Active = false;
@@ -1064,7 +1066,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		wf_100d_shift_array[8] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 6);  // U2-7 TUN_I_7
 		wf_100d_shift_array[9] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 5);  // U2-6 TUN_I_6
 		wf_100d_shift_array[10] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4); // U2-5 TUN_I_5
-		wf_100d_shift_array[11] = !TRX.ANT_selected;                          // U2-4 ANT1-2_OUT
+		wf_100d_shift_array[11] = currentAnt == TRX_ANT_1;                    // U2-4 ANT1-2_OUT
 		wf_100d_shift_array[12] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3); // U2-3 TUN_I_4
 		wf_100d_shift_array[13] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 2); // U2-2 TUN_I_3
 		wf_100d_shift_array[14] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 1); // U2-1 TUN_I_2
@@ -1161,14 +1163,14 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		bool shift_array[56];
 		static bool shift_array_old[56];
 
-		shift_array[0] = false;                                                                // 7-7 UNUSED
-		shift_array[1] = false;                                                                // 7-6 UNUSED
-		shift_array[2] = false;                                                                // 7-5 UNUSED
-		shift_array[3] = false;                                                                // 7-4 UNUSED
-		shift_array[4] = CurrentVFO->RXFreqAfterTransverters >= 70000000 && TRX.ANT_selected;  // 7-3 ANT4
-		shift_array[5] = CurrentVFO->RXFreqAfterTransverters >= 70000000 && !TRX.ANT_selected; // 7-2 ANT3
-		shift_array[6] = CurrentVFO->RXFreqAfterTransverters < 70000000 && TRX.ANT_selected;   // 7-1 ANT2
-		shift_array[7] = CurrentVFO->RXFreqAfterTransverters < 70000000 && !TRX.ANT_selected;  // 7-0 ANT1
+		shift_array[0] = false;                   // 7-7 UNUSED
+		shift_array[1] = false;                   // 7-6 UNUSED
+		shift_array[2] = false;                   // 7-5 UNUSED
+		shift_array[3] = false;                   // 7-4 UNUSED
+		shift_array[4] = currentAnt == TRX_ANT_4; // 7-3 ANT4
+		shift_array[5] = currentAnt == TRX_ANT_3; // 7-2 ANT3
+		shift_array[6] = currentAnt == TRX_ANT_2; // 7-1 ANT2
+		shift_array[7] = currentAnt == TRX_ANT_1; // 7-0 ANT1
 
 		shift_array[8] = false;                                       // 6-7 UNUSED
 		shift_array[9] = false;                                       // 6-6 UNUSED
