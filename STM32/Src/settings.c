@@ -139,7 +139,7 @@ void LoadSettings(bool clear) {
 		TRX.VFO_B.FM_LPF_RX_Filter = TRX.VFO_A.FM_LPF_RX_Filter;         // default value of the FM filter width
 		TRX.VFO_B.FM_LPF_TX_Filter = TRX.VFO_A.FM_LPF_TX_Filter;         // default value of the FM filter width
 		TRX.VFO_B.FM_HPF_RX_Filter = TRX.VFO_A.FM_HPF_RX_Filter;         // default value of the FM filter width
-		TRX.Fast = false;                                                 // accelerated frequency change when the encoder rotates
+		TRX.Fast = false;                                                // accelerated frequency change when the encoder rotates
 		TRX.LNA = false;                                                 // LNA (Low Noise Amplifier)
 		TRX.ATT = false;                                                 // attenuator
 		TRX.ATT_DB = 12.0f;                                              // suppress the attenuator
