@@ -130,14 +130,14 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 	} else {
 		sprintf(buff, "ATT");
 	}
-	printInfo(LAYOUT->TOPBUTTONS_ATT_X, LAYOUT->TOPBUTTONS_ATT_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, buff, COLOR->BACKGROUND, COLOR->BUTTON_TEXT,
-	          COLOR->BUTTON_INACTIVE_TEXT, (TRX.ATT && TRX.ATT_DB >= 1.0f));
-	printInfo(LAYOUT->TOPBUTTONS_PGA_X, LAYOUT->TOPBUTTONS_PGA_Y-1, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "SQL", COLOR->BACKGROUND, COLOR->BUTTON_TEXT,
+	printInfo(LAYOUT->TOPBUTTONS_ATT_X, LAYOUT->TOPBUTTONS_ATT_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, buff, COLOR->BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	          (TRX.ATT && TRX.ATT_DB >= 1.0f));
+	printInfo(LAYOUT->TOPBUTTONS_PGA_X, LAYOUT->TOPBUTTONS_PGA_Y - 1, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "SQL", COLOR->BACKGROUND, COLOR->BUTTON_TEXT,
 	          COLOR->BUTTON_INACTIVE_TEXT, CurrentVFO->SQL);
 	printInfo(LAYOUT->TOPBUTTONS_DRV_X, LAYOUT->TOPBUTTONS_DRV_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "RIT", COLOR->BACKGROUND, COLOR->BUTTON_TEXT,
 	          COLOR->BUTTON_INACTIVE_TEXT, TRX.RIT_Enabled || TRX.XIT_Enabled || TRX.SPLIT_Enabled);
-//	printInfo(LAYOUT->TOPBUTTONS_FAST_X, LAYOUT->TOPBUTTONS_FAST_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "FAST", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
-//	          COLOR->BUTTON_INACTIVE_TEXT, TRX.Fast);
+	//	printInfo(LAYOUT->TOPBUTTONS_FAST_X, LAYOUT->TOPBUTTONS_FAST_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "FAST", COLOR->BUTTON_STATUS_BACKGROUND, COLOR->BUTTON_TEXT,
+	//	          COLOR->BUTTON_INACTIVE_TEXT, TRX.Fast);
 	printInfo(LAYOUT->TOPBUTTONS_AGC_X, LAYOUT->TOPBUTTONS_AGC_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "AGC", COLOR->BACKGROUND, COLOR->BUTTON_TEXT,
 	          COLOR->BUTTON_INACTIVE_TEXT, CurrentVFO->AGC);
 	if (CurrentVFO->DNR_Type == 1) {
@@ -150,18 +150,23 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 		printInfo(LAYOUT->TOPBUTTONS_DNR_X, LAYOUT->TOPBUTTONS_DNR_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "DNR", COLOR->BACKGROUND, COLOR->BUTTON_TEXT,
 		          COLOR->BUTTON_INACTIVE_TEXT, false);
 	}
-	printInfo(LAYOUT->TOPBUTTONS_NB_X, LAYOUT->TOPBUTTONS_NB_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "NB", COLOR->BACKGROUND, COLOR->BUTTON_TEXT,
-	          COLOR->BUTTON_INACTIVE_TEXT, TRX.NOISE_BLANKER);
+	printInfo(LAYOUT->TOPBUTTONS_NB_X, LAYOUT->TOPBUTTONS_NB_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "NB", COLOR->BACKGROUND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	          TRX.NOISE_BLANKER);
 	printInfo(LAYOUT->TOPBUTTONS_MUTE_X, LAYOUT->TOPBUTTONS_MUTE_Y, LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "MUTE", COLOR->BACKGROUND, COLOR->BUTTON_TEXT,
 	          COLOR->BUTTON_INACTIVE_TEXT, TRX.Mute);
-	
+
 	if (TRX.Locked) {
-	printInfo(LAYOUT->STATUS_MODE_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET +22), LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "LOCK", COLOR_RED, COLOR_WHITE,
-	          COLOR->BUTTON_INACTIVE_TEXT, TRX.Locked);
+		printInfo(LAYOUT->STATUS_MODE_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET + 22), LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "LOCK", COLOR_RED,
+		          COLOR_WHITE, COLOR->BUTTON_INACTIVE_TEXT, TRX.Locked);
 	} else {
+
 	printInfo(LAYOUT->STATUS_MODE_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET +22), LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "FAST", COLOR->BACKGROUND, COLOR->BUTTON_TEXT,
 	          COLOR->BUTTON_INACTIVE_TEXT, TRX.Fast);
 	
+
+//		printInfo(LAYOUT->STATUS_MODE_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET + 22), LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "FAST", COLOR->BACKGROUND,
+//		          COLOR->BUTTON_TEXT, COLOR->BACKGROUND, TRX.Fast);
+
 	}
 	LCD_UpdateQuery.TopButtons = false;
 	if (redraw) {
@@ -261,11 +266,11 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	}
 
 	if (redraw) {
-		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP-18, LCD_WIDTH - LAYOUT->FREQ_LEFT_MARGIN - LAYOUT->FREQ_RIGHT_MARGIN, LAYOUT->FREQ_BLOCK_HEIGHT, BG_COLOR);
+		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP - 18, LCD_WIDTH - LAYOUT->FREQ_LEFT_MARGIN - LAYOUT->FREQ_RIGHT_MARGIN, LAYOUT->FREQ_BLOCK_HEIGHT, BG_COLOR);
 	}
 
 	if ((MHz_x_offset - LAYOUT->FREQ_LEFT_MARGIN) > 0) {
-		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP-18, MHz_x_offset - LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_BLOCK_HEIGHT, BG_COLOR);
+		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP - 18, MHz_x_offset - LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_BLOCK_HEIGHT, BG_COLOR);
 	}
 
 	// add spaces to output the frequency
@@ -478,14 +483,14 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	}
 
 	// VFO indicator
-	//if (!TRX.selected_vfo) // VFO-A
+	// if (!TRX.selected_vfo) // VFO-A
 	//{
-		printInfo(LAYOUT->STATUS_VFO_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_VFO_Y_OFFSET), LAYOUT->STATUS_VFO_BLOCK_WIDTH, LAYOUT->STATUS_VFO_BLOCK_HEIGHT, "A",
-		          COLOR->STATUS_VFO_BG, COLOR->STATUS_VFO, COLOR->STATUS_VFO, true);
+	printInfo(LAYOUT->STATUS_VFO_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_VFO_Y_OFFSET), LAYOUT->STATUS_VFO_BLOCK_WIDTH, LAYOUT->STATUS_VFO_BLOCK_HEIGHT, "A", COLOR->STATUS_VFO_BG,
+	          COLOR->STATUS_VFO, COLOR->STATUS_VFO, true);
 	//} else // VFO-B
 	//{
-		printInfo(LAYOUT->STATUS_VFO_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_VFO_B_Y_OFFSET), LAYOUT->STATUS_VFO_BLOCK_WIDTH, LAYOUT->STATUS_VFO_BLOCK_HEIGHT, "B",
-		          COLOR->IFGAIN_BAR_BG, COLOR->STATUS_VFO_BG, COLOR->STATUS_VFO, true);
+	printInfo(LAYOUT->STATUS_VFO_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_VFO_B_Y_OFFSET), LAYOUT->STATUS_VFO_BLOCK_WIDTH, LAYOUT->STATUS_VFO_BLOCK_HEIGHT, "B",
+	          COLOR->IFGAIN_BAR_BG, COLOR->STATUS_VFO_BG, COLOR->STATUS_VFO, true);
 	//}
 
 	// Mode indicator
@@ -1186,42 +1191,42 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	char buff[32] = "";
 	// BW HPF-LPF
 	if (CurrentVFO->Mode == TRX_MODE_CW) {
-//		sprintf(buff, "BW:%d", CurrentVFO->CW_LPF_Filter);
+		//		sprintf(buff, "BW:%d", CurrentVFO->CW_LPF_Filter);
 		sprintf(buff, "%d", CurrentVFO->CW_LPF_Filter);
 	} else if ((CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)) {
-//		sprintf(buff, "BW:%d", CurrentVFO->DIGI_LPF_Filter);
+		//		sprintf(buff, "BW:%d", CurrentVFO->DIGI_LPF_Filter);
 		sprintf(buff, "%d", CurrentVFO->DIGI_LPF_Filter);
 	} else if ((CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB)) {
 		if (TRX_on_TX) {
-//			sprintf(buff, "BW:%d-%d", CurrentVFO->SSB_HPF_TX_Filter, CurrentVFO->SSB_LPF_TX_Filter);
+			//			sprintf(buff, "BW:%d-%d", CurrentVFO->SSB_HPF_TX_Filter, CurrentVFO->SSB_LPF_TX_Filter);
 			sprintf(buff, "%d-%d", CurrentVFO->SSB_HPF_TX_Filter, CurrentVFO->SSB_LPF_TX_Filter);
 		} else {
-//			sprintf(buff, "BW:%d-%d", CurrentVFO->SSB_HPF_RX_Filter, CurrentVFO->SSB_LPF_RX_Filter);
+			//			sprintf(buff, "BW:%d-%d", CurrentVFO->SSB_HPF_RX_Filter, CurrentVFO->SSB_LPF_RX_Filter);
 			sprintf(buff, "%d-%d", CurrentVFO->SSB_HPF_RX_Filter, CurrentVFO->SSB_LPF_RX_Filter);
 		}
 	} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
 		if (TRX_on_TX) {
-//			sprintf(buff, "BW:%d", CurrentVFO->AM_LPF_TX_Filter);
+			//			sprintf(buff, "BW:%d", CurrentVFO->AM_LPF_TX_Filter);
 			sprintf(buff, "%d", CurrentVFO->AM_LPF_TX_Filter);
 		} else {
-//			sprintf(buff, "BW:%d", CurrentVFO->AM_LPF_RX_Filter);
+			//			sprintf(buff, "BW:%d", CurrentVFO->AM_LPF_RX_Filter);
 			sprintf(buff, "%d", CurrentVFO->AM_LPF_RX_Filter);
 		}
 	} else if (CurrentVFO->Mode == TRX_MODE_NFM) {
 		if (TRX_on_TX) {
-//			sprintf(buff, "BW:%d", CurrentVFO->FM_LPF_TX_Filter);
+			//			sprintf(buff, "BW:%d", CurrentVFO->FM_LPF_TX_Filter);
 			sprintf(buff, "%d", CurrentVFO->FM_LPF_TX_Filter);
 		} else {
-//			sprintf(buff, "BW:%d", CurrentVFO->FM_LPF_RX_Filter);
+			//			sprintf(buff, "BW:%d", CurrentVFO->FM_LPF_RX_Filter);
 			sprintf(buff, "%d", CurrentVFO->FM_LPF_RX_Filter);
 		}
 	} else {
-//		sprintf(buff, "BW:FULL");		
+		//		sprintf(buff, "BW:FULL");
 		sprintf(buff, "FULL");
 	}
-//	addSymbols(buff, buff, 12, " ", true);
+	//	addSymbols(buff, buff, 12, " ", true);
 	addSymbols(buff, buff, 9, " ", true);
-	
+
 	static char prev_bw_buff[16] = "";
 	if (redraw || strcmp(prev_bw_buff, buff) != 0) {
 		strcpy(prev_bw_buff, buff);
@@ -1679,9 +1684,9 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 			newfreq = ceill(newfreq / step) * step;
 		}
 		if (dx > 0.0f) {
-			newfreq = floorl(newfreq / step) * 
-			
-			;
+			newfreq = floorl(newfreq / step) *
+
+			    ;
 		}
 
 		TRX_setFrequency(newfreq, CurrentVFO);

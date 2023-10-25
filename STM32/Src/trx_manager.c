@@ -660,10 +660,15 @@ void TRX_setMode(TRX_MODE _mode, VFO *vfo) {
 		break;
 	case TRX_MODE_DIGI_L:
 	case TRX_MODE_DIGI_U:
-	case TRX_MODE_RTTY:
 		vfo->LPF_RX_Filter_Width = vfo->DIGI_LPF_Filter;
 		vfo->LPF_TX_Filter_Width = vfo->DIGI_LPF_Filter;
 		vfo->HPF_RX_Filter_Width = 0;
+		vfo->HPF_TX_Filter_Width = 0;
+		break;
+	case TRX_MODE_RTTY:
+		vfo->LPF_RX_Filter_Width = TRX.RTTY_Freq + TRX.RTTY_Shift * 2;
+		vfo->LPF_TX_Filter_Width = vfo->LPF_RX_Filter_Width;
+		vfo->HPF_RX_Filter_Width = TRX.RTTY_Freq - TRX.RTTY_Shift * 2;
 		vfo->HPF_TX_Filter_Width = 0;
 		break;
 	case TRX_MODE_CW:
