@@ -160,7 +160,7 @@ static void LCD_displayTopButtons(bool redraw) { // display the top buttons
 	          COLOR->BUTTON_INACTIVE_TEXT, TRX.Locked);
 	} else {
 	printInfo(LAYOUT->STATUS_MODE_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET +22), LAYOUT->TOPBUTTONS_WIDTH, LAYOUT->TOPBUTTONS_HEIGHT, "FAST", COLOR->BACKGROUND, COLOR->BUTTON_TEXT,
-	          COLOR->BACKGROUND, TRX.Fast);
+	          COLOR->BUTTON_INACTIVE_TEXT, TRX.Fast);
 	
 	}
 	LCD_UpdateQuery.TopButtons = false;
