@@ -6,7 +6,7 @@
 +STM32: Изменён цвет подсветки при отображении второго VFO на спектре, Tnx SP7MFR
 +STM32: Добавлены узкополосные SSB фильтры, Tnx SP7MFR
 +STM32: Для RTTY декодера устанавливается узкая полоса фильтра, Tnx EA7HOG
-+STM32: Устранение ошибок, Tnx RA3RBE, R3TKS, UR8IP
++STM32: Устранение ошибок, Tnx RA3RBE, R3TKS, UR8IP, SP7MFR
 
 ----Version 8.4.2----
 +STM32: Устранение ошибок, Tnx R3RM, SP7MFR, RA3RBE, R7KBI

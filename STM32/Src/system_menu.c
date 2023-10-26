@@ -3432,14 +3432,14 @@ static void SYSMENU_HANDL_CWMENU(int8_t direction) {
 
 void SYSMENU_CW_WPM_HOTKEY(void) {
 	SYSMENU_HANDL_CWMENU(0);
-	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "CW Keyer WPM");
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "Keyer WPM");
 	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
 
 void SYSMENU_CW_KEYER_HOTKEY(void) {
 	SYSMENU_HANDL_CWMENU(0);
-	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "CW Keyer");
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "Keyer");
 	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
