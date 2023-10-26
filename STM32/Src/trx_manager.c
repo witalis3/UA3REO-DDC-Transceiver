@@ -2484,8 +2484,8 @@ void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter) {
 		channel = 0;
 	}
 
-	TRX_setFrequency(CALIBRATE.MEMORY_CHANNELS[channel].Freq, CurrentVFO);
-	TRX_setMode(CALIBRATE.MEMORY_CHANNELS[channel].Mode, CurrentVFO);
+	TRX_setFrequency(CALIBRATE.MEMORY_CHANNELS[channel].freq, CurrentVFO);
+	TRX_setMode(CALIBRATE.MEMORY_CHANNELS[channel].mode, CurrentVFO);
 
 	TRX.SQL_shadow = CurrentVFO->SQL;
 	TRX.FM_SQL_threshold_dBm_shadow = CurrentVFO->FM_SQL_threshold_dBm;
@@ -2509,13 +2509,13 @@ void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
 
 	LCD_closeWindow();
 
-	if (CALIBRATE.MEMORY_CHANNELS[channel].Freq == CurrentVFO->Freq) {
-		CALIBRATE.MEMORY_CHANNELS[channel].Freq = 0;
+	if (CALIBRATE.MEMORY_CHANNELS[channel].freq == CurrentVFO->Freq) {
+		CALIBRATE.MEMORY_CHANNELS[channel].freq = 0;
 
 		LCD_showTooltip("Channel removed");
 	} else {
-		CALIBRATE.MEMORY_CHANNELS[channel].Freq = CurrentVFO->Freq;
-		CALIBRATE.MEMORY_CHANNELS[channel].Mode = CurrentVFO->Mode;
+		CALIBRATE.MEMORY_CHANNELS[channel].freq = CurrentVFO->Freq;
+		CALIBRATE.MEMORY_CHANNELS[channel].mode = CurrentVFO->Mode;
 
 		LCD_showTooltip("Channel saved");
 	}

@@ -1063,8 +1063,9 @@ void LoadCalibration(bool clear) {
 
 		// Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
-			CALIBRATE.MEMORY_CHANNELS[i].Freq = 0;
-			CALIBRATE.MEMORY_CHANNELS[i].Mode = 0;
+			CALIBRATE.MEMORY_CHANNELS[i].freq = 0;
+			CALIBRATE.MEMORY_CHANNELS[i].mode = TRX_MODE_LSB;
+			sprintf(CALIBRATE.MEMORY_CHANNELS[i].name, "Ch %d", i + 1);
 		}
 		for (uint8_t i = 0; i < BANDS_COUNT; i++) {
 			CALIBRATE.BAND_MEMORIES[i][0] = TRX.BANDS_SAVED_SETTINGS[i].Freq;

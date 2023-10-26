@@ -1202,10 +1202,12 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 
 			// Memory channels settings
 			for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
-				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Freq", i);
-				SD_WRITE_SETT_LINE(buff, (uint64_t *)&CALIBRATE.MEMORY_CHANNELS[i].Freq, SYSMENU_UINT64);
-				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Mode", i);
-				SD_WRITE_SETT_LINE(buff, (uint64_t *)&CALIBRATE.MEMORY_CHANNELS[i].Mode, SYSMENU_UINT8);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].freq", i);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&CALIBRATE.MEMORY_CHANNELS[i].freq, SYSMENU_UINT64);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].mode", i);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&CALIBRATE.MEMORY_CHANNELS[i].mode, SYSMENU_UINT8);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].name", i);
+				SD_WRITE_SETT_STRING(buff, CALIBRATE.MEMORY_CHANNELS[i].name);
 			}
 		}
 
@@ -3010,13 +3012,21 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 
 	// Memory channels settings
 	for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
-		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Freq", i);
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].freq", i);
 		if (strcmp(name, buff) == 0) {
-			CALIBRATE.MEMORY_CHANNELS[i].Freq = uint64val;
+			CALIBRATE.MEMORY_CHANNELS[i].freq = uint64val;
 		}
-		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].Mode", i);
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].mode", i);
 		if (strcmp(name, buff) == 0) {
-			CALIBRATE.MEMORY_CHANNELS[i].Mode = (uint8_t)uintval;
+			CALIBRATE.MEMORY_CHANNELS[i].mode = (uint8_t)uintval;
+		}
+		if (strcmp(name, "TRX.MEMORY_CHANNELS[%d].name") == 0) {
+			dma_memset(CALIBRATE.MEMORY_CHANNELS[i].name, 0x00, sizeof(CALIBRATE.MEMORY_CHANNELS[i].name));
+			uint32_t lens = strlen(value);
+			if (lens > sizeof(CALIBRATE.MEMORY_CHANNELS[i].name) - 1) {
+				lens = sizeof(CALIBRATE.MEMORY_CHANNELS[i].name) - 1;
+			}
+			strncpy(CALIBRATE.MEMORY_CHANNELS[i].name, value, lens);
 		}
 	}
 

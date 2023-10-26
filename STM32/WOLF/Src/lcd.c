@@ -3245,8 +3245,8 @@ void LCD_ManualFreqButtonHandler(uint32_t parameter) {
 
 static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter) {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	const uint8_t buttons_in_line = 7;
-	const uint8_t buttons_lines = 5;
+	const uint8_t buttons_in_line = 5;
+	const uint8_t buttons_lines = MEMORY_CHANNELS_COUNT / buttons_in_line;
 	const uint8_t buttons_top_offset = 0;
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
@@ -3257,24 +3257,15 @@ static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter) {
 	char tmp[32] = {0};
 	for (uint8_t y = 0; y < buttons_lines; y++) {
 		for (uint8_t x = 0; x < buttons_in_line; x++) {
-			if (CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq == 0) {
+			if (CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].freq == 0) {
 				sprintf(tmp, "-");
 			} else {
-				uint64_t freq = CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq;
-				if (freq < 1000000) {                             // < 1MHz
-					sprintf(tmp, "%.2f", freq / 1000.0);            // 3k.2h
-				} else if (freq < 100000000) {                    // < 100MHz
-					sprintf(tmp, "%.3f", freq / 1000000.0);         // 2m.3k
-				} else if (freq < 1000000000) {                   // < 1000MHz
-					sprintf(tmp, "%.2f", freq / 1000000.0);         // 3m.2k
-				} else {                                          // >= 1000MHz
-					sprintf(tmp, "%u", (uint32_t)(freq / 1000000)); // 3m
-				}
+				strcpy(tmp, CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].name);
 			}
 
 			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + x * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 			            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + y * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
-			            LAYOUT->WINDOWS_BUTTON_HEIGHT, tmp, (CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].Freq == CurrentVFO->Freq), true, true, (channel_num - 1),
+			            LAYOUT->WINDOWS_BUTTON_HEIGHT, tmp, (CALIBRATE.MEMORY_CHANNELS[(channel_num - 1)].freq == CurrentVFO->Freq), true, true, (channel_num - 1),
 			            BUTTONHANDLER_SelectMemoryChannels, BUTTONHANDLER_SaveMemoryChannels, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER,
 			            COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
 			channel_num++;
