@@ -64,6 +64,7 @@ static void printInfoStatus(uint16_t x, uint16_t y, uint16_t width, uint16_t hei
                             bool active);
 static void printInfo(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, uint16_t back_color, uint16_t text_color, uint16_t in_active_color, bool active);
 static void LCD_displayFreqInfo(bool redraw);
+static void LCD_displayFreqV2(uint64_t freq);
 static void LCD_displayTopButtons(bool redraw);
 static void LCD_displayStatusInfoBar(bool redraw);
 static void LCD_displayStatusInfoGUI(bool redraw);
@@ -209,6 +210,33 @@ static void LCD_displayBottomButtons(bool redraw) {
 	}
 	LCD_busy = false;
 }
+// VFO-B
+static void LCD_displayFreqV2(uint64_t freqV2) {
+	
+	  uint16_t Hz =   (freqV2 % 1000);
+		uint16_t kHz = ((freqV2 / 1000) % 1000);
+		uint16_t MHz = ((freqV2 / 1000000) % 1000);
+		
+		sprintf(LCD_freq_string_Hz, "%d", Hz);
+		sprintf(LCD_freq_string_kHz, "%d", kHz);
+		sprintf(LCD_freq_string_MHz, "%d", MHz);	
+		
+	    char buff[50] = "";	
+			addSymbols(buff, LCD_freq_string_MHz, 3, " ", false);
+		  LCDDriver_printText(buff, LAYOUT->FREQ_DELIMITER_X2_OFFSET-35, LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE,
+		                        BG_COLOR, 2);
+			LCDDriver_printText(".", LAYOUT->FREQ_DELIMITER_X2_OFFSET , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE,
+		                        BG_COLOR, 2);
+			addSymbols(buff, LCD_freq_string_kHz, 3, "0", false);
+			LCDDriver_printText(buff, LAYOUT->FREQ_DELIMITER_X2_OFFSET +10 , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE,
+		                        BG_COLOR, 2);
+			LCDDriver_printText(".", LAYOUT->FREQ_DELIMITER_X2_OFFSET + 45 , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE,
+		                        BG_COLOR, 2);
+			addSymbols(buff, LCD_freq_string_Hz, 3, "0", false);											
+			LCDDriver_printText(buff, LAYOUT->FREQ_DELIMITER_X2_OFFSET +55 , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE,
+		                        BG_COLOR, 2);	
+}
+
 
 static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the screen
 	if (LCD_systemMenuOpened || LCD_window.opened) {
@@ -324,28 +352,9 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 		                        BG_COLOR, LAYOUT->FREQ_FONT);
 
    // VFO-B **************************************
-		uint16_t Hz = (SecondaryVFO->Freq % 1000);
-		uint16_t kHz = ((SecondaryVFO->Freq / 1000) % 1000);
-		uint16_t MHz = ((SecondaryVFO->Freq / 1000000) % 1000);
-		
-		sprintf(LCD_freq_string_Hz, "%d", Hz);
-		sprintf(LCD_freq_string_kHz, "%d", kHz);
-		sprintf(LCD_freq_string_MHz, "%d", MHz);	
-		
-			addSymbols(buff, LCD_freq_string_MHz, 3, " ", false);
-		  LCDDriver_printText(buff, LAYOUT->FREQ_DELIMITER_X2_OFFSET-35, LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE,
-		                        BG_COLOR, 2);
-			LCDDriver_printText(".", LAYOUT->FREQ_DELIMITER_X2_OFFSET , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE,
-		                        BG_COLOR, 2);
-			addSymbols(buff, LCD_freq_string_kHz, 3, "0", false);
-			LCDDriver_printText(buff, LAYOUT->FREQ_DELIMITER_X2_OFFSET +10 , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE,
-		                        BG_COLOR, 2);
-			LCDDriver_printText(".", LAYOUT->FREQ_DELIMITER_X2_OFFSET + 45 , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE,
-		                        BG_COLOR, 2);
-			addSymbols(buff, LCD_freq_string_Hz, 3, "0", false);											
-			LCDDriver_printText(buff, LAYOUT->FREQ_DELIMITER_X2_OFFSET +55 , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE,
-		                        BG_COLOR, 2);
-   // VFO-B **************************************
+		LCD_displayFreqV2(SecondaryVFO->Freq);
+
+	 //		LCDDriver_printText("My_Memory_.01 ", LAYOUT->FREQ_DELIMITER_X2_OFFSET -200 , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, COLOR->FREQ_HZ, BG_COLOR, 2);
 	}
 	
 	NeedSaveSettings = true;
