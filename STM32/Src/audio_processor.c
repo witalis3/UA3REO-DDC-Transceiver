@@ -120,6 +120,7 @@ void initAudioProcessor(void) {
 #endif
 
 	InitAudioFilters();
+	NB_Init();
 	DPD_Init();
 	DECODER_Init();
 	NeedReinitReverber = true;
