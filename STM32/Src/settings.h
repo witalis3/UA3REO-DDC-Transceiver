@@ -19,7 +19,7 @@
 #endif
 
 #define SETT_VERSION 121        // Settings config version
-#define CALIB_VERSION 80        // Calibration config version
+#define CALIB_VERSION 81        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -69,6 +69,7 @@
 #define MAX_CW_MACROS_LENGTH 61
 #define MAX_CW_MACROS_NAME_LENGTH 6
 #define ALLQSO_TOKEN_SIZE 16
+#define MAX_CHANNEL_MEMORY_NAME_LENGTH 10
 
 #define W25Q16_COMMAND_Write_Disable 0x04
 #define W25Q16_COMMAND_Write_Enable 0x06
@@ -91,7 +92,11 @@
 #define EEPROM_SECTOR_DPD 12
 #define EEPROM_REPEAT_TRYES 10 // command tryes
 
-#define MEMORY_CHANNELS_COUNT 35
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
+#define MEMORY_CHANNELS_COUNT 0
+#else
+#define MEMORY_CHANNELS_COUNT 20
+#endif
 #define BANDS_MEMORIES_COUNT 3
 #define ANT_MAX_COUNT 4
 
@@ -485,8 +490,9 @@ typedef struct {
 
 // Save memory channels
 typedef struct {
-	uint64_t Freq;
-	uint8_t Mode;
+	uint64_t freq;
+	uint8_t mode;
+	char name[MAX_CHANNEL_MEMORY_NAME_LENGTH];
 } CHANNEL_SAVED_SETTINGS_TYPE;
 
 // VFO structure

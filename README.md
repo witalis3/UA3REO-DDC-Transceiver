@@ -393,6 +393,10 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Transverter xxx IF, MHz** - Setting the IF frequency of the transverter
 * **Transverter xxx RF, MHz** - Setting the RF frequency of the transceiver to match the IF
 
+### Memory Channels
+
+* Changing names for transceiver memory channels
+
 ### Set Clock Time
 
 * Clock setting
