@@ -6,7 +6,7 @@
 static NB_Instance NB_RX1 = {};
 
 #if HRDW_HAS_DUAL_RX
-// static NB_Instance NB_RX2 = {};
+SRAM4 static NB_Instance NB_RX2 = {};
 #endif
 
 static uint16_t NB_impulse_positions[NB_max_inpulse_count]; // maximum of impulses per frame
@@ -32,8 +32,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 	NB_Instance *instance = &NB_RX1;
 #if HRDW_HAS_DUAL_RX
 	if (rx_id == AUDIO_RX2) {
-		// instance = &NB_RX2;
-		return;
+		instance = &NB_RX2;
 	}
 #endif
 

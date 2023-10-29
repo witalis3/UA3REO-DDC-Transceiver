@@ -1383,7 +1383,7 @@ const static struct sysmenu_item_handler sysmenu_spectrum_handlers[] = {
 };
 
 const static struct sysmenu_item_handler sysmenu_wspr_handlers[] = {
-    {"WSPR Beacon START", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WSPR_Start},
+    {"WSPR Beacon", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_WSPR_Start},
     {"Freq offset", SYSMENU_INT16, NULL, (uint32_t *)&TRX.WSPR_FREQ_OFFSET, SYSMENU_HANDL_WSPR_FREQ_OFFSET},
     {"BAND 160m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WSPR_BANDS_160, SYSMENU_HANDL_WSPR_BAND160},
     {"BAND 80m", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.WSPR_BANDS_80, SYSMENU_HANDL_WSPR_BAND80},
@@ -5901,12 +5901,8 @@ static void SYSMENU_HANDL_CALIBRATIONMENU(int8_t direction) {
 #if FT8_SUPPORT
 static void SYSMENU_HANDL_FT8_Decoder(int8_t direction) // Tisho
 {
-	if (SYSMENU_FT8_DECODER_opened) {
-		FT8_EncRotate(direction);
-	} else {
-		SYSMENU_FT8_DECODER_opened = true;
-		InitFT8_Decoder();
-	}
+	SYSMENU_FT8_DECODER_opened = true;
+	InitFT8_Decoder();
 }
 #endif
 
@@ -7727,13 +7723,9 @@ static void SYSMENU_HANDL_SWR_ANALYSER_MENU(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_SWR_CUSTOM_Start(int8_t direction) {
-	if (SYSMENU_swr_opened) {
-		SWR_EncRotate(direction);
-	} else {
-		SYSMENU_swr_opened = true;
-		SWR_Start(TRX.SWR_CUSTOM_Begin * 1000, TRX.SWR_CUSTOM_End * 1000);
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	}
+	SYSMENU_swr_opened = true;
+	SWR_Start(TRX.SWR_CUSTOM_Begin * 1000, TRX.SWR_CUSTOM_End * 1000);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_SWR_CUSTOM_Begin(int8_t direction) {
@@ -7752,25 +7744,17 @@ static void SYSMENU_HANDL_SWR_CUSTOM_End(int8_t direction) {
 
 // SWR BAND ANALYZER
 static void SYSMENU_HANDL_SWR_BAND_START(int8_t direction) {
-	if (SYSMENU_swr_opened) {
-		SWR_EncRotate(direction);
-	} else {
-		SYSMENU_swr_opened = true;
-		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-		SWR_Start(BANDS[band].startFreq - 100000, BANDS[band].endFreq + 100000);
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	}
+	SYSMENU_swr_opened = true;
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	SWR_Start(BANDS[band].startFreq - 100000, BANDS[band].endFreq + 100000);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 // SWR HF ANALYZER
 static void SYSMENU_HANDL_SWR_HF_START(int8_t direction) {
-	if (SYSMENU_swr_opened) {
-		SWR_EncRotate(direction);
-	} else {
-		SYSMENU_swr_opened = true;
-		SWR_Start(1000000, 60000000);
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	}
+	SYSMENU_swr_opened = true;
+	SWR_Start(1000000, 60000000);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 // SPECTRUM ANALYZER
@@ -7782,13 +7766,9 @@ static void SYSMENU_HANDL_SPECTRUMMENU(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_SPECTRUM_Start(int8_t direction) {
-	if (SYSMENU_spectrum_opened) {
-		SPEC_EncRotate(direction);
-	} else {
-		SYSMENU_spectrum_opened = true;
-		SPEC_Start();
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	}
+	SYSMENU_spectrum_opened = true;
+	SPEC_Start();
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_SPECTRUM_Begin(int8_t direction) {
@@ -7943,13 +7923,9 @@ static void SYSMENU_HANDL_WSPRMENU(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_WSPR_Start(int8_t direction) {
-	if (SYSMENU_wspr_opened) {
-		WSPR_EncRotate(direction);
-	} else {
-		SYSMENU_wspr_opened = true;
-		WSPR_Start();
-		LCD_UpdateQuery.SystemMenuRedraw = true;
-	}
+	SYSMENU_wspr_opened = true;
+	WSPR_Start();
+	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
 static void SYSMENU_HANDL_WSPR_FREQ_OFFSET(int8_t direction) {
@@ -8605,6 +8581,21 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction) {
 		FILEMANAGER_EventRotate(direction);
 		return;
 	}
+	if (SYSMENU_spectrum_opened) {
+		SPEC_EncRotate(direction);
+		return;
+	}
+	if (SYSMENU_swr_opened) {
+		SWR_EncRotate(direction);
+		return;
+	}
+	if (SYSMENU_FT8_DECODER_opened) {
+		FT8_EncRotate(direction);
+		return;
+	}
+	if (SYSMENU_wspr_opened) {
+		WSPR_EncRotate(direction);
+	}
 	if (SYSMENU_auto_calibration_opened) {
 		AUTO_CALIBRATION_EncRotate(direction);
 		return;
@@ -8851,6 +8842,11 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 
 	if (SYSMENU_auto_calibration_opened) {
 		AUTO_CALIBRATION_Enc2Click();
+		return;
+	}
+	
+	if (sysmenu_filemanager_opened) {
+		SYSMENU_eventRotateSystemMenu(1);
 		return;
 	}
 
