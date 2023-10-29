@@ -8712,6 +8712,7 @@ void SYSMENU_eventCloseSystemMenu(void) {
 	} else if (sysmenu_trx_setMemoryChannelName_menu_opened) {
 		sysmenu_trx_setMemoryChannelName_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
+		NeedSaveCalibration = true;
 	} else if (SYSMENU_spectrum_opened) {
 		SYSMENU_spectrum_opened = false;
 		SPEC_Stop();
