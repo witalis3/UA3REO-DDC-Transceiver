@@ -92,6 +92,7 @@ volatile uint_fast16_t CW_Key_Timeout_est = 0;
 uint32_t dbg_FPGA_samples = 0;
 uint8_t TRX_TX_Harmonic = 1;
 uint8_t TRX_TX_sendZeroes = 0;
+int8_t TRX_MemoryChannelSelected;
 
 static uint_fast8_t TRX_TXRXMode = 0; // 0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static bool TRX_SPLIT_Applied = false;
@@ -1356,6 +1357,23 @@ void BUTTONHANDLER_PRE(uint32_t parameter) {
 	NeedSaveSettings = true;
 	resetVAD();
 }
+
+void BUTTONHANDLER_MEMO_WRITE(uint32_t parameter){
+	int8_t channel = TRX_MemoryChannelSelected;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM){
+      BUTTONHANDLER_SaveMemoryChannels(channel);
+		  LCD_UpdateQuery.FreqInfoRedraw = true;
+	}
+}
+void BUTTONHANDLER_MEMO_READ(uint32_t parameter){
+	int8_t channel = TRX_MemoryChannelSelected;	
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM){
+   BUTTONHANDLER_SelectMemoryChannels(channel);
+		LCD_showTooltip("Channel read");
+     LCD_UpdateQuery.FreqInfoRedraw = true;		
+	}	
+}
+
 
 void BUTTONHANDLER_ATT(uint32_t parameter) {
 	if (TRX.ATT && TRX.ATT_DB < 1.0f) {

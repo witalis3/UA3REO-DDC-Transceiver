@@ -538,7 +538,7 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] = {
         .TOOLTIP_TIMEOUT = 1500,
         .TOOLTIP_MARGIN = 5,
         .TOOLTIP_POS_X = (LCD_WIDTH / 2),
-        .TOOLTIP_POS_Y = 70,
+        .TOOLTIP_POS_Y = 50,
         // BW Trapezoid
         .BW_TRAPEZ_POS_X = 420,
         .BW_TRAPEZ_POS_Y = 30,

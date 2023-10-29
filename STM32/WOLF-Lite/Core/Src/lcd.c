@@ -23,6 +23,10 @@
 #include "vad.h"
 #include "wifi.h"
 
+
+char MemoryChanName[MAX_CHANNEL_MEMORY_NAME_LENGTH];
+uint32_t MemoryChanFreq;
+
 volatile bool LCD_busy = false;
 volatile DEF_LCD_UpdateQuery LCD_UpdateQuery = {false};
 volatile bool LCD_systemMenuOpened = false;
@@ -236,7 +240,13 @@ static void LCD_displayFreqV2(uint64_t freqV2) {
 			LCDDriver_printText(buff, LAYOUT->FREQ_DELIMITER_X2_OFFSET +55 , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, !TRX.selected_vfo ? COLOR->FREQ_HZ : COLOR->FREQ_A_INACTIVE,
 		                        BG_COLOR, 2);	
 }
-
+static void MemoryReadChan(uint8_t parameter){
+int8_t channel = parameter;
+	if (channel >= MEMORY_CHANNELS_COUNT) {
+	}
+    MemoryChanFreq = CALIBRATE.MEMORY_CHANNELS[channel].freq; 
+    strcpy( MemoryChanName, CALIBRATE.MEMORY_CHANNELS[channel].name);
+}
 
 static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the screen
 	if (LCD_systemMenuOpened || LCD_window.opened) {
@@ -286,7 +296,7 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	}
 
 	if (redraw) {
-		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP - 21, LCD_WIDTH - LAYOUT->FREQ_LEFT_MARGIN - LAYOUT->FREQ_RIGHT_MARGIN, LAYOUT->FREQ_BLOCK_HEIGHT, BG_COLOR);
+		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP - 21, LCD_WIDTH - LAYOUT->FREQ_LEFT_MARGIN - LAYOUT->FREQ_RIGHT_MARGIN, LAYOUT->FREQ_BLOCK_HEIGHT-5, BG_COLOR);
 	}
 
 	if ((MHz_x_offset - LAYOUT->FREQ_LEFT_MARGIN) > 0) {
@@ -353,10 +363,15 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 		                        BG_COLOR, LAYOUT->FREQ_FONT);
 
 
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
+		MemoryReadChan(TRX_MemoryChannelSelected);
+		addSymbols(buff, MemoryChanName, 10, " ", false);	
+    LCDDriver_printText(buff, LAYOUT->FREQ_DELIMITER_X2_OFFSET -170 , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, COLOR->FREQ_HZ, BG_COLOR, 2);		
+		LCD_displayFreqV2(MemoryChanFreq);		
+		} else{
+    LCDDriver_printText("              ", LAYOUT->FREQ_DELIMITER_X2_OFFSET -170 , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, COLOR->FREQ_HZ, BG_COLOR, 2);
 		LCD_displayFreqV2(SecondaryVFO->Freq);
-
-//	LCDDriver_printText("My_Memory_.01 ", LAYOUT->FREQ_DELIMITER_X2_OFFSET -200 , LAYOUT->FREQ_Y_BASELINE + LAYOUT->FREQ_DELIMITER_Y_OFFSET +8, COLOR->FREQ_HZ, BG_COLOR, 2);
-
+		}
 	}
 
 	NeedSaveSettings = true;
@@ -550,11 +565,13 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_IF) {
 		sprintf(enc2_state_str, " IF");
 	}
-
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
+		sprintf(enc2_state_str, "MEMO");
+	}
 	LCDDriver_Fill_RectWH(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET) + 49, 54, 23, COLOR_WHITE);     // clear back
 	LCDDriver_Fill_RectWH(LAYOUT->STATUS_ANT_X_OFFSET + 1, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET) + 50, 52, 21, COLOR_BLACK); // clear back
 
-	if ((TRX.ENC2_func_mode == ENC_FUNC_PAGER) || (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP) || (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH) || (TRX.ENC2_func_mode == ENC_FUNC_SET_IF)) {
+	if ((TRX.ENC2_func_mode == ENC_FUNC_PAGER) || (TRX.ENC2_func_mode == ENC_FUNC_FAST_STEP) || (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH) || (TRX.ENC2_func_mode == ENC_FUNC_SET_IF) || (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM)) {
 		LCDDriver_printText(enc2_state_str, LAYOUT->STATUS_ANT_X_OFFSET + 4, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET + 54), COLOR_WHITE, BG_COLOR, 2);
 	} else {
 		LCDDriver_printText(enc2_state_str, LAYOUT->STATUS_ANT_X_OFFSET + 11, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET + 54), COLOR_WHITE, BG_COLOR, 2);
