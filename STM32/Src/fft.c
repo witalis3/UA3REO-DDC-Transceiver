@@ -1285,33 +1285,28 @@ bool FFT_printFFT(void) {
 	uint16_t grid_color = palette_fft[fftHeight * 3 / 4];
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++) // Background
 	{
-		bool dBm_grid = false;
 		if (TRX.FFT_Background) {
 			background = palette_bg_gradient[fft_y];
-		} else {
-			background = BG_COLOR;
 		}
+		
+		memset16(print_output_buffer[fft_y], background, LAYOUT->FFT_PRINT_SIZE);
 
-		if (TRX.FFT_dBmGrid) {
-			for (uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL) {
-				if (y == fft_y) {
-					background = grid_color;
-					dBm_grid = true;
+		uint16_t bw_color = palette_bw_bg_colors[fft_y];
+
+		if (TRX.Show_Sec_VFO && TRX.FFT_BW_Style != 3) {
+			for (int32_t fft_x = bw_rx2_line_start; fft_x <= bw_rx2_line_end; fft_x++) {
+				if (fft_x < 0 || fft_x > LAYOUT->FFT_PRINT_SIZE) {
+					continue;
 				}
+				print_output_buffer[fft_y][fft_x] = addColor(bw_color, FFT_SEC_BW_BRIGHTNESS, -FFT_SEC_BW_BRIGHTNESS, FFT_SEC_BW_BRIGHTNESS);
 			}
 		}
-
-		uint16_t color = palette_bw_bg_colors[fft_y];
-		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
-			if ((int32_t)fft_x >= bw_rx1_line_start && (int32_t)fft_x <= bw_rx1_line_end) // bw rx1 bar
-			{
-				print_output_buffer[fft_y][fft_x] = dBm_grid ? background : color;
-			} else if (TRX.Show_Sec_VFO && TRX.FFT_BW_Style != 3 && (int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end) { // bw rx2 bar
-				print_output_buffer[fft_y][fft_x] = dBm_grid ? addColor(background, FFT_SEC_BW_BRIGHTNESS, -FFT_SEC_BW_BRIGHTNESS, FFT_SEC_BW_BRIGHTNESS)
-				                                             : addColor(color, FFT_SEC_BW_BRIGHTNESS, -FFT_SEC_BW_BRIGHTNESS, FFT_SEC_BW_BRIGHTNESS);
-			} else {
-				print_output_buffer[fft_y][fft_x] = background;
+		
+		for (int32_t fft_x = bw_rx1_line_start; fft_x <= bw_rx1_line_end; fft_x++) {
+			if (fft_x < 0 || fft_x > LAYOUT->FFT_PRINT_SIZE) {
+				continue;
 			}
+			print_output_buffer[fft_y][fft_x] = bw_color;
 		}
 	}
 
