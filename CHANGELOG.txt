@@ -7,6 +7,7 @@
 +STM32: Добавлены узкополосные SSB фильтры, Tnx SP7MFR
 +STM32: Для RTTY декодера устанавливается узкая полоса фильтра, Tnx EA7HOG
 +STM32: Добавлено меню редактирования названий каналов памяти, Tnx Martin AD
++STM32: Записи эфира складываются в отдельную директорию Recordings, Tnx Martin AD
 +STM32: Устранение ошибок, Tnx RA3RBE, R3TKS, UR8IP, SP7MFR, Papandupolo
 
 ----Version 8.4.2----

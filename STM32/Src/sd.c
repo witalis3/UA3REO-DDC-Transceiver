@@ -317,7 +317,9 @@ static bool SDCOMM_CREATE_RECORD_FILE_handler(void) {
 	RTC_TimeTypeDef sTime = {0};
 	RTC_DateTypeDef sDate = {0};
 	getLocalDateTime(&sDate, &sTime);
-	sprintf(filename, "rec-%02d.%02d.%02d-%02d.%02d.%02d-%llu.wav", sDate.Date, sDate.Month, sDate.Year, sTime.Hours, sTime.Minutes, sTime.Seconds, CurrentVFO->Freq);
+	
+	f_mkdir("Recordings");
+	sprintf(filename, "Recordings/rec-%02d.%02d.%02d-%02d.%02d.%02d-%llu.wav", sDate.Date, sDate.Month, sDate.Year, sTime.Hours, sTime.Minutes, sTime.Seconds, CurrentVFO->Freq);
 	println(filename);
 	return SDCOMM_CREATE_RECORD_FILE_main(filename, true);
 }
