@@ -390,7 +390,8 @@ void FRONTPANEL_ENCODER_checkRotate(void) {
 	static bool ENCfirst = true;
 	uint8_t ENCODER_DTVal = HAL_GPIO_ReadPin(ENC_DT_GPIO_Port, ENC_DT_Pin);
 	uint8_t ENCODER_CLKVal = HAL_GPIO_ReadPin(ENC_CLK_GPIO_Port, ENC_CLK_Pin);
-
+	static uint32_t ENCODER_RATE = 0;
+	
 	if (ENCfirst) {
 		ENClastClkVal = ENCODER_CLKVal;
 		ENCfirst = false;
@@ -398,12 +399,17 @@ void FRONTPANEL_ENCODER_checkRotate(void) {
 	if ((HAL_GetTick() - ENCODER_AValDeb) < CALIBRATE.ENCODER_DEBOUNCE) {
 		return;
 	}
+  if(LCD_systemMenuOpened) { 
+	ENCODER_RATE = CALIBRATE.ENCODER_SLOW_RATE * 10; 
+	} else {
+	ENCODER_RATE = CALIBRATE.ENCODER_SLOW_RATE;	
+	}
 
 	if (ENClastClkVal != ENCODER_CLKVal) {
 		if (!CALIBRATE.ENCODER_ON_FALLING || ENCODER_CLKVal == 0) {
 			if (ENCODER_DTVal != ENCODER_CLKVal) { // If pin A changed first - clockwise rotation
 				ENCODER_slowler--;
-				if (ENCODER_slowler <= -CALIBRATE.ENCODER_SLOW_RATE) {
+				if (ENCODER_slowler <= -ENCODER_RATE) {
 					// acceleration
 					ENCticksInInterval++;
 					if ((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION) {
@@ -418,7 +424,7 @@ void FRONTPANEL_ENCODER_checkRotate(void) {
 				}
 			} else { // otherwise B changed its state first - counterclockwise rotation
 				ENCODER_slowler++;
-				if (ENCODER_slowler >= CALIBRATE.ENCODER_SLOW_RATE) {
+				if (ENCODER_slowler >= ENCODER_RATE) {
 					// acceleration
 					ENCticksInInterval++;
 					if ((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION) {
