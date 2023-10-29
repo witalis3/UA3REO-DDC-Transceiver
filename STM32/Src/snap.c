@@ -4,8 +4,8 @@
 #include "trx_manager.h"
 
 static arm_sort_instance_f32 SNAP_SortInstance;
-SRAM_ON_F407 static float32_t SNAP_buffer[FFT_SIZE] = {0};
-SRAM_ON_H743 static float32_t SNAP_buffer_tmp[FFT_SIZE] = {0};
+SRAM_ON_F407 SRAM4_ON_H743 static float32_t SNAP_buffer[FFT_SIZE] = {0};
+SRAM4_ON_H743 static float32_t SNAP_buffer_tmp[FFT_SIZE] = {0};
 static bool SNAP_need_buffer = false;
 static bool SNAP_process_from_auto = false;
 static uint8_t SNAP_process_mode = 0; // mode 0 - unidirectional, 1 - left, 2 - right

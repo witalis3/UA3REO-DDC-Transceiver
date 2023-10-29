@@ -22,6 +22,7 @@ __asm(".global __use_no_heap\n\t");
 #define IRAM2_ON_F407
 #define SRAM_ON_F407
 #define SRAM_ON_H743 SRAM
+#define SRAM4_ON_H743 SRAM4
 #endif
 
 #ifdef STM32F407xx
@@ -36,6 +37,7 @@ __asm(".global __use_no_heap\n\t");
 #define IRAM2_ON_F407 IRAM2
 #define SRAM_ON_F407 SRAM
 #define SRAM_ON_H743
+#define SRAM4_ON_H743
 #endif
 
 // #define ALIGN_32BIT __attribute__((aligned(32)))

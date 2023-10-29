@@ -22,9 +22,9 @@ IRAM2 static uint8_t Get_Status = W25Q16_COMMAND_GetStatus;
 IRAM2 static uint8_t Power_Up = W25Q16_COMMAND_Power_Up;
 
 IRAM2 static uint8_t Address[3] = {0x00};
-struct TRX_SETTINGS TRX;
-struct TRX_CALIBRATE CALIBRATE = {0};
-struct TRX_WIFI WIFI = {0};
+IRAM2_ON_F407 struct TRX_SETTINGS TRX;
+IRAM2_ON_F407 struct TRX_CALIBRATE CALIBRATE = {0};
+IRAM2_ON_F407 struct TRX_WIFI WIFI = {0};
 bool EEPROM_Enabled = true;
 
 #define MAX_CLONE_SIZE sizeof(CALIBRATE) > sizeof(TRX) ? sizeof(CALIBRATE) : sizeof(TRX)
@@ -32,8 +32,6 @@ bool EEPROM_Enabled = true;
 static_assert(sizeof(TRX) < W25Q16_SECTOR_SIZE, "TRX Data structure doesn't match page size");
 static_assert(sizeof(CALIBRATE) < W25Q16_SECTOR_SIZE, "CALIBRATE Data structure doesn't match page size");
 
-IRAM2 static uint8_t write_clone[MAX_CLONE_SIZE] = {0};
-IRAM2_ON_F407 static uint8_t read_clone[MAX_CLONE_SIZE] = {0};
 IRAM2 static uint8_t verify_clone[MAX_CLONE_SIZE] = {0};
 
 volatile bool NeedSaveSettings = false;
@@ -1352,13 +1350,12 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 	} else {
 		HRDW_SPI_Locked = true;
 	}
-	if (size > sizeof(write_clone)) {
+	if (size > sizeof(verify_clone)) {
 		println("EEPROM WR buffer error");
 		HRDW_SPI_Locked = false;
 		return false;
 	}
-	memcpy(write_clone, Buffer, size);
-	Aligned_CleanDCache_by_Addr((uint32_t *)write_clone, sizeof(write_clone));
+	Aligned_CleanDCache_by_Addr((uint32_t *)Buffer, size);
 
 	for (uint16_t page = 0; page <= (size / W25Q16_PAGE_SIZE); page++) {
 		uint32_t BigAddress = (page * W25Q16_PAGE_SIZE) + (sector * W25Q16_SECTOR_SIZE);
@@ -1372,7 +1369,7 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false);                                          // Write Enable Command
 		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);                                           // Write Command
 		HRDW_EEPROM_SPI(Address, NULL, 3, true);                                                 // Write Address ( The first address of flash module is 0x00000000 )
-		HRDW_EEPROM_SPI((uint8_t *)(write_clone + W25Q16_PAGE_SIZE * page), NULL, bsize, false); // Write Data
+		HRDW_EEPROM_SPI((uint8_t *)(Buffer + W25Q16_PAGE_SIZE * page), NULL, bsize, false); // Write Data
 		EEPROM_WaitWrite();
 	}
 
@@ -1386,11 +1383,11 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 			verify_succ = true;
 			EEPROM_Read_Data(verify_clone, size, sector, false, true);
 			for (uint16_t i = 0; i < size; i++) {
-				if (verify_clone[i] != write_clone[i]) {
+				if (verify_clone[i] != Buffer[i]) {
 					verify_tryes++;
 					prev_verified_err = last_verified_err;
 					last_verified_err = i;
-					println("EEROM Verify error, pos:", i, " mem:", write_clone[i], " fla:", verify_clone[i]);
+					println("EEROM Verify error, pos:", i, " mem:", Buffer[i], " fla:", verify_clone[i]);
 					print_flush();
 					verify_succ = false;
 					break;
@@ -1419,7 +1416,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		HRDW_SPI_Locked = true;
 	}
 
-	if (size > sizeof(read_clone)) {
+	if (size > sizeof(verify_clone)) {
 		println("EEPROM RD buffer error");
 		HRDW_SPI_Locked = false;
 		return false;
@@ -1455,7 +1452,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 
 	// verify
 	if (verify) {
-		Aligned_CleanDCache_by_Addr((uint32_t *)read_clone, size);
+		Aligned_CleanDCache_by_Addr((uint32_t *)verify_clone, size);
 
 		BigAddress = sector * W25Q16_SECTOR_SIZE;
 		Address[2] = (BigAddress >> 16) & 0xFF;
@@ -1474,13 +1471,13 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		}
 
 		HRDW_EEPROM_SPI(Address, NULL, 3, true);                     // Write Address
-		HRDW_EEPROM_SPI(NULL, (uint8_t *)(read_clone), size, false); // Read
+		HRDW_EEPROM_SPI(NULL, (uint8_t *)verify_clone, size, false); // Read
 
-		Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)read_clone, size);
+		Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)verify_clone, size);
 
 		for (uint16_t i = 0; i < size; i++) {
-			if (read_clone[i] != Buffer[i]) {
-				// println("read err", read_clone[i]);
+			if (verify_clone[i] != Buffer[i]) {
+				// println("read err", verify_clone[i]);
 				HRDW_SPI_Locked = false;
 				return false;
 			}
