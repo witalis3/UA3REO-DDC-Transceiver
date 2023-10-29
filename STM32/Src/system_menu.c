@@ -8589,10 +8589,12 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction) {
 		SWR_EncRotate(direction);
 		return;
 	}
+#if FT8_SUPPORT
 	if (SYSMENU_FT8_DECODER_opened) {
 		FT8_EncRotate(direction);
 		return;
 	}
+#endif
 	if (SYSMENU_wspr_opened) {
 		WSPR_EncRotate(direction);
 	}
