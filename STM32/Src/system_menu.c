@@ -815,7 +815,9 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"Compr. Speed SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_SSB, SYSMENU_HANDL_TX_CompressorSpeed_SSB},
     {"CTCSS Frequency", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CTCSS_Freq, SYSMENU_HANDL_TX_CTCSS_Freq},
     {"Auto Input Switch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Input_Switch, SYSMENU_HANDL_TX_Auto_Input_Switch},
+#if FT8_SUPPORT
     {"FT8 Auto CQ", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FT8_Auto_CQ, SYSMENU_HANDL_TX_FT8_Auto_CQ},
+#endif
     {"Input Type MAIN", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_MAIN, SYSMENU_HANDL_TX_INPUT_TYPE_MAIN, (const enumerate_item[3]){"MIC", "LINE", "USB"}},
     {"Input Type DIGI", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.InputType_DIGI, SYSMENU_HANDL_TX_INPUT_TYPE_DIGI, (const enumerate_item[3]){"MIC", "LINE", "USB"}},
     {"TUNER Enabled", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.TUNER_Enabled, SYSMENU_HANDL_TX_TUNER_Enabled},
@@ -8710,6 +8712,7 @@ void SYSMENU_eventCloseSystemMenu(void) {
 	} else if (sysmenu_trx_setMemoryChannelName_menu_opened) {
 		sysmenu_trx_setMemoryChannelName_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
+		NeedSaveCalibration = true;
 	} else if (SYSMENU_spectrum_opened) {
 		SYSMENU_spectrum_opened = false;
 		SPEC_Stop();
