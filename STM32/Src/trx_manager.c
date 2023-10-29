@@ -1361,14 +1361,15 @@ void BUTTONHANDLER_PRE(uint32_t parameter) {
 void BUTTONHANDLER_MEMO_WRITE(uint32_t parameter){
 	int8_t channel = TRX_MemoryChannelSelected;
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM){
-		CALIBRATE.MEMORY_CHANNELS[channel].freq = CurrentVFO->Freq;		
+      BUTTONHANDLER_SaveMemoryChannels(channel);
 		  LCD_UpdateQuery.FreqInfoRedraw = true;
 	}
 }
 void BUTTONHANDLER_MEMO_READ(uint32_t parameter){
 	int8_t channel = TRX_MemoryChannelSelected;	
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM){
-   TRX_setFrequency(CALIBRATE.MEMORY_CHANNELS[channel].freq, CurrentVFO);	
+   BUTTONHANDLER_SelectMemoryChannels(channel);
+		LCD_showTooltip("Channel read");
      LCD_UpdateQuery.FreqInfoRedraw = true;		
 	}	
 }
