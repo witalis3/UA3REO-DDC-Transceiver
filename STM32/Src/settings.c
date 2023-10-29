@@ -277,7 +277,7 @@ void LoadSettings(bool clear) {
 #else
 		TRX.AGC_Spectral = true;                       // Spectral AGC mode
 #endif
-		TRX.NOISE_BLANKER_THRESHOLD = 15;                              // threshold for noise blanker
+		TRX.NOISE_BLANKER_THRESHOLD = 10;                              // threshold for noise blanker
 		TRX.TX_CESSB = true;                                           // Controlled-envelope single-sideband modulation
 		TRX.TX_CESSB_COMPRESS_DB = 1.0f;                               // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;                                     // AGC receive rate on SSB

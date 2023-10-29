@@ -9,11 +9,11 @@
 
 #define NB_BLOCK_SIZE (AUDIO_BUFFER_HALF_SIZE / 3) // size of the NB filter processing block
 
-#define NB_impulse_length 41                // has to be odd !
+#define NB_impulse_length 11                // has to be odd !
 #define NB_PL ((NB_impulse_length - 1) / 2) // has to be (impulse_length-1) / 2
-#define NB_order 20                         // lpc's order
+#define NB_order 10                         // lpc's order
 #define NB_FIR_SIZE 64                      // filter buffer size
-#define NB_max_inpulse_count 20             // maximum impulses in the block for suppression
+#define NB_max_inpulse_count 10             // maximum impulses in the block for suppression
 
 typedef struct {
 	uint16_t NR_InputBuffer_index;
