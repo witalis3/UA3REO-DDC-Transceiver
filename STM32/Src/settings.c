@@ -501,7 +501,7 @@ void LoadSettings(bool clear) {
 		TRX.Notch_on_shadow = false;
 		TRX.FM_SQL_threshold_dBm_shadow = TRX.VFO_A.FM_SQL_threshold_dBm;
 		TRX.FRONTPANEL_funcbuttons_page = 0;
-		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+		TRX.ENC2_func_mode = ENC_FUNC_SET_VOLUME;
 		TRX.CW_LPF_Filter_shadow = TRX.VFO_A.CW_LPF_Filter;
 		TRX.DIGI_LPF_Filter_shadow = TRX.VFO_A.DIGI_LPF_Filter;
 		TRX.SSB_LPF_RX_Filter_shadow = TRX.VFO_A.SSB_LPF_RX_Filter;
