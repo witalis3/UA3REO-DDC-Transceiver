@@ -937,12 +937,11 @@ void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f
 	float32_t *pOut = pDst;
 
 	for (uint32_t stage = 0; stage < S->numStages; stage++) {
-		float32_t b0 = pCoeffs[0];
-		float32_t b1 = pCoeffs[1];
-		float32_t b2 = pCoeffs[2];
-		float32_t a1 = pCoeffs[3];
-		float32_t a2 = pCoeffs[4];
-		pCoeffs += 5U;
+		float32_t b0 = *pCoeffs++;
+		float32_t b1 = *pCoeffs++;
+		float32_t b2 = *pCoeffs++;
+		float32_t a1 = *pCoeffs++;
+		float32_t a2 = *pCoeffs++;
 
 		float32_t d1 = pState[0];
 		float32_t d2 = pState[1];
@@ -957,9 +956,8 @@ void arm_biquad_cascade_df2T_f32_single(const arm_biquad_cascade_df2T_instance_f
 			*pOut++ = acc1;
 		}
 
-		pState[0] = d1;
-		pState[1] = d2;
-		pState += 2U;
+		*pState++ = d1;
+		*pState++ = d2;
 
 		pIn = pDst;
 		pOut = pDst;
@@ -975,55 +973,136 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 	const float32_t *pIn_Q = pSrc_Q;
 	float32_t *pOut_I = pDst_I;
 	float32_t *pOut_Q = pDst_Q;
-
 	uint32_t stage = I->numStages;
+
 	while (stage > 0) {
-		float32_t b0 = pCoeffs[0];
-		float32_t b1 = pCoeffs[1];
-		float32_t b2 = pCoeffs[2];
-		float32_t a1 = pCoeffs[3];
-		float32_t a2 = pCoeffs[4];
-		pCoeffs += 5U;
+	  float32_t b0 = *pCoeffs++;
+	  float32_t b1 = *pCoeffs++;
+	  float32_t b2 = *pCoeffs++;
+	  float32_t a1 = *pCoeffs++;
+	  float32_t a2 = *pCoeffs++;
 
-		float32_t d1_I = pState_I[0];
-		float32_t d2_I = pState_I[1];
-		float32_t d1_Q = pState_Q[0];
-		float32_t d2_Q = pState_Q[1];
+	  float32_t d1_I = pState_I[0];
+	  float32_t d2_I = pState_I[1];
+	  float32_t d1_Q = pState_Q[0];
+	  float32_t d2_Q = pState_Q[1];
 
-		uint32_t sample = blockSize;
-		while (sample > 0) {
-			float32_t Xn1_I = *pIn_I++;
-			float32_t Xn1_Q = *pIn_Q++;
+	  uint32_t sample = blockSize;
+	  while (sample > 0) {
+	    float32_t Xn1_I = *pIn_I++;
+	    float32_t Xn1_Q = *pIn_Q++;
 
-			float32_t acc1_I = b0 * Xn1_I + d1_I;
-			float32_t acc1_Q = b0 * Xn1_Q + d1_Q;
+	    float32_t acc1_I = b0 * Xn1_I + d1_I;
+	    float32_t acc1_Q = b0 * Xn1_Q + d1_Q;
 
-			d1_I = b1 * Xn1_I + d2_I + a1 * acc1_I;
-			d1_Q = b1 * Xn1_Q + d2_Q + a1 * acc1_Q;
+	    d1_I = b1 * Xn1_I + d2_I + a1 * acc1_I;
+	    d1_Q = b1 * Xn1_Q + d2_Q + a1 * acc1_Q;
 
-			d2_I = b2 * Xn1_I + a2 * acc1_I;
-			d2_Q = b2 * Xn1_Q + a2 * acc1_Q;
+	    d2_I = b2 * Xn1_I + a2 * acc1_I;
+	    d2_Q = b2 * Xn1_Q + a2 * acc1_Q;
 
-			*pOut_I++ = acc1_I;
-			*pOut_Q++ = acc1_Q;
+	    *pOut_I++ = acc1_I;
+	    *pOut_Q++ = acc1_Q;
 
-			sample--;
-		}
+	    sample--;
+	  }
 
-		pState_I[0] = d1_I;
-		pState_I[1] = d2_I;
-		pState_Q[0] = d1_Q;
-		pState_Q[1] = d2_Q;
-		pState_I += 2U;
-		pState_Q += 2U;
+	  *pState_I++ = d1_I;
+	  *pState_I++ = d2_I;
+	  *pState_Q++ = d1_Q;
+	  *pState_Q++ = d2_Q;
 
-		pIn_I = pDst_I;
-		pIn_Q = pDst_Q;
-		pOut_I = pDst_I;
-		pOut_Q = pDst_Q;
+	  pIn_I = pDst_I;
+	  pIn_Q = pDst_Q;
+	  pOut_I = pDst_I;
+	  pOut_Q = pDst_Q;
 
-		stage--;
+	  stage--;
 	}
+
+	/* __asm volatile(
+	    // -------- START STAGES WHILE LOOP
+	    "1: \n"
+	    // float32_t b0 = pCoeffs[0];
+	    // float32_t b1 = pCoeffs[1];
+	    // float32_t b2 = pCoeffs[2];
+	    // float32_t a1 = pCoeffs[3];
+	    // float32_t a2 = pCoeffs[4];
+	    // pCoeffs += 5U;
+	    "VLDMIA.F32 %[pCoeffs]!, {s8-s12} \n"
+	    // float32_t d1_I = pState_I[0];
+	    // float32_t d2_I = pState_I[1];
+	    // float32_t d1_Q = pState_Q[0];
+	    // float32_t d2_Q = pState_Q[1];
+	    "VLDMIA.F32 %[pState_I], {s4-s5} \n"
+	    "VLDMIA.F32 %[pState_Q], {s6-s7} \n"
+	    // uint32_t sample = blockSize;
+	    "MOV r0, %[blockSize] \n"
+	    // -------- START SAMPLES WHILE LOOP
+	    "2: \n"
+	    // float32_t Xn1_I = *pIn_I++;
+	    // float32_t Xn1_Q = *pIn_Q++;
+	    "VLDMIA.F32 %[pIn_I]!, {s0} \n"
+	    "VLDMIA.F32 %[pIn_Q]!, {s1} \n"
+	    // float32_t acc1_I = b0 * Xn1_I + d1_I;
+	    // float32_t acc1_Q = b0 * Xn1_Q + d1_Q;
+	    "VMOV.F32 s2, s4 \n"
+	    "VMOV.F32 s3, s6 \n"
+	    "VMLA.F32 s2, s8, s0 \n"
+	    "VMLA.F32 s3, s8, s1 \n"
+	    // d1_I = b1 * Xn1_I + d2_I + a1 * acc1_I;
+	    // d1_Q = b1 * Xn1_Q + d2_Q + a1 * acc1_Q;
+	    "VMOV.F32 s4, s5 \n"
+	    "VMOV.F32 s6, s7 \n"
+	    "VMLA.F32 s4, s9, s0 \n"
+	    "VMLA.F32 s6, s9, s1 \n"
+	    "VMLA.F32 s4, s11, s2 \n"
+	    "VMLA.F32 s6, s11, s3 \n"
+	    // d2_I = b2 * Xn1_I + a2 * acc1_I;
+	    // d2_Q = b2 * Xn1_Q + a2 * acc1_Q;
+	    "VMUL.F32 s5, s10, s0 \n"
+	    "VMUL.F32 s7, s10, s1 \n"
+	    "VMLA.F32 s5, s12, s2 \n"
+	    "VMLA.F32 s7, s12, s3 \n"
+	    // *pOut_I++ = acc1_I;
+	    // *pOut_Q++ = acc1_Q;
+	    "VSTMIA.F32 %[pOut_I]!, {s2} \n"
+	    "VSTMIA.F32 %[pOut_Q]!, {s3} \n"
+	    // sample--;
+	    "SUB r0, r0, #1 \n"
+	    // while (sample > 0) {
+	    "CMP r0, #0 \n"
+	    "IT GT \n"
+	    "BGT 2b \n"
+	    // -------- END SAMPLES WHILE LOOP
+	    // pState_I[0] = d1_I;
+	    // pState_I[1] = d2_I;
+	    // pState_I += 2U;
+	    "VSTMIA.F32 %[pState_I]!, {s4-s5} \n"
+	    // pState_Q[0] = d1_Q;
+	    // pState_Q[1] = d2_Q;
+	    // pState_Q += 2U;
+	    "VSTMIA.F32 %[pState_Q]!, {s6-s7} \n"
+	    // pIn_I = pDst_I;
+	    // pIn_Q = pDst_Q;
+	    // pOut_I = pDst_I;
+	    // pOut_Q = pDst_Q;
+	    "MOV %[pIn_I], %[pDst_I] \n"
+	    "MOV %[pIn_Q], %[pDst_Q] \n"
+	    "MOV %[pOut_I], %[pDst_I] \n"
+	    "MOV %[pOut_Q], %[pDst_Q] \n"
+	    // stage--;
+	    "SUB %[stage], %[stage], #1 \n"
+	    // 	while (stage > 0) {
+	    "CMP %[stage], #0 \n"
+	    "IT GT \n"
+	    "BGT 1b \n"
+	    // -------- END SAMPLES WHILE LOOP
+	    : [pCoeffs] "+r"(pCoeffs), [pIn_I] "+r"(pIn_I), [pIn_Q] "+r"(pIn_Q), [pOut_I] "+r"(pOut_I), [pOut_Q] "+r"(pOut_Q), [pState_I] "+r"(pState_I), [pState_Q] "+r"(pState_Q),
+	      [pDst_I] "+r"(pDst_I), [pDst_Q] "+r"(pDst_Q), [stage] "+r"(stage)
+	    : [blockSize] "r"(blockSize)
+	    : "r0", "s0", "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11", "s12" // "memory", "cc",
+	); */
 }
 
 char cleanASCIIgarbage(char chr) {
