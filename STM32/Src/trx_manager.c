@@ -1577,6 +1577,7 @@ void BUTTONHANDLER_MODE_N(uint32_t parameter) {
 
 void BUTTONHANDLER_BAND_P(uint32_t parameter) {
 	// TX block
+	TRX.SPLIT_Enabled = false;
 	if (TRX_on_TX) {
 		return;
 	}
@@ -1606,6 +1607,7 @@ void BUTTONHANDLER_BAND_P(uint32_t parameter) {
 
 void BUTTONHANDLER_BAND_N(uint32_t parameter) {
 	// TX block
+	TRX.SPLIT_Enabled = false;	
 	if (TRX_on_TX) {
 		return;
 	}
