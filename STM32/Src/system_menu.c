@@ -8846,7 +8846,7 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		AUTO_CALIBRATION_Enc2Click();
 		return;
 	}
-	
+
 	if (sysmenu_filemanager_opened) {
 		SYSMENU_eventRotateSystemMenu(1);
 		return;

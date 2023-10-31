@@ -184,7 +184,7 @@ void LoadSettings(bool clear) {
 		TRX.NOTCH_STEP_Hz = 50;             // Manual NOTCH tuning step
 		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
 		TRX.Debug_Type = TRX_DEBUG_OFF;     // Debug output to DEBUG / UART port
-		TRX.BandMapEnabled = false;          // automatic change of mode according to the range map
+		TRX.BandMapEnabled = false;         // automatic change of mode according to the range map
 		TRX.InputType_MAIN = TRX_INPUT_MIC; // type of input to transfer (SSB/FM/AM)
 		TRX.InputType_DIGI = TRX_INPUT_USB; // type of input to transfer (DIGI)
 #ifdef FRONTPANEL_KT_100S
@@ -1366,9 +1366,9 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		if (bsize > W25Q16_PAGE_SIZE) {
 			bsize = W25Q16_PAGE_SIZE;
 		}
-		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false);                                          // Write Enable Command
-		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);                                           // Write Command
-		HRDW_EEPROM_SPI(Address, NULL, 3, true);                                                 // Write Address ( The first address of flash module is 0x00000000 )
+		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false);                                     // Write Enable Command
+		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);                                      // Write Command
+		HRDW_EEPROM_SPI(Address, NULL, 3, true);                                            // Write Address ( The first address of flash module is 0x00000000 )
 		HRDW_EEPROM_SPI((uint8_t *)(Buffer + W25Q16_PAGE_SIZE * page), NULL, bsize, false); // Write Data
 		EEPROM_WaitWrite();
 	}

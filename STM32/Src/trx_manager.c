@@ -1358,22 +1358,21 @@ void BUTTONHANDLER_PRE(uint32_t parameter) {
 	resetVAD();
 }
 
-void BUTTONHANDLER_MEMO_WRITE(uint32_t parameter){
+void BUTTONHANDLER_MEMO_WRITE(uint32_t parameter) {
 	int8_t channel = TRX_MemoryChannelSelected;
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM){
-      BUTTONHANDLER_SaveMemoryChannels(channel);
-		  LCD_UpdateQuery.FreqInfoRedraw = true;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
+		BUTTONHANDLER_SaveMemoryChannels(channel);
+		LCD_UpdateQuery.FreqInfoRedraw = true;
 	}
 }
-void BUTTONHANDLER_MEMO_READ(uint32_t parameter){
-	int8_t channel = TRX_MemoryChannelSelected;	
-	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM){
-   BUTTONHANDLER_SelectMemoryChannels(channel);
+void BUTTONHANDLER_MEMO_READ(uint32_t parameter) {
+	int8_t channel = TRX_MemoryChannelSelected;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
+		BUTTONHANDLER_SelectMemoryChannels(channel);
 		LCD_showTooltip("Channel read");
-     LCD_UpdateQuery.FreqInfoRedraw = true;		
-	}	
+		LCD_UpdateQuery.FreqInfoRedraw = true;
+	}
 }
-
 
 void BUTTONHANDLER_ATT(uint32_t parameter) {
 	if (TRX.ATT && TRX.ATT_DB < 1.0f) {
@@ -1607,7 +1606,7 @@ void BUTTONHANDLER_BAND_P(uint32_t parameter) {
 
 void BUTTONHANDLER_BAND_N(uint32_t parameter) {
 	// TX block
-	TRX.SPLIT_Enabled = false;	
+	TRX.SPLIT_Enabled = false;
 	if (TRX_on_TX) {
 		return;
 	}

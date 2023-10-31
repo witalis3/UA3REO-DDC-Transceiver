@@ -18,7 +18,6 @@
 int8_t FRONTPANEL_ProcessEncoder1 = 0;
 int8_t FRONTPANEL_ProcessEncoder2 = 0;
 
-
 #ifdef HRDW_MCP3008_1
 bool FRONTPanel_MCP3008_1_Enabled = true;
 #endif
@@ -28,8 +27,6 @@ bool FRONTPanel_MCP3008_2_Enabled = true;
 #ifdef HRDW_MCP3008_3
 bool FRONTPanel_MCP3008_3_Enabled = true;
 #endif
-
-
 
 static void FRONTPANEL_ENCODER_Rotated(float32_t direction);
 static void FRONTPANEL_ENCODER2_Rotated(int8_t direction);
@@ -43,7 +40,7 @@ static void BUTTONHANDLER_W_LITE_MENU_HOLD(uint32_t parameter);
 static int32_t ENCODER_slowler = 0;
 static uint32_t ENCODER_AValDeb = 0;
 static uint32_t ENCODER2_AValDeb = 0;
- 
+
 #if !FRONTPANEL_LITE_ALEX
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     // buttons
@@ -309,7 +306,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
 
     //		{.name = "BAND-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
     //    {.name = "BAND+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
-    //    {.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},  
+    //    {.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
 
 };
 
@@ -391,7 +388,7 @@ void FRONTPANEL_ENCODER_checkRotate(void) {
 	uint8_t ENCODER_DTVal = HAL_GPIO_ReadPin(ENC_DT_GPIO_Port, ENC_DT_Pin);
 	uint8_t ENCODER_CLKVal = HAL_GPIO_ReadPin(ENC_CLK_GPIO_Port, ENC_CLK_Pin);
 	static uint32_t ENCODER_RATE = 0;
-	
+
 	if (ENCfirst) {
 		ENClastClkVal = ENCODER_CLKVal;
 		ENCfirst = false;
@@ -399,10 +396,10 @@ void FRONTPANEL_ENCODER_checkRotate(void) {
 	if ((HAL_GetTick() - ENCODER_AValDeb) < CALIBRATE.ENCODER_DEBOUNCE) {
 		return;
 	}
-  if(LCD_systemMenuOpened) { 
-	ENCODER_RATE = CALIBRATE.ENCODER_SLOW_RATE * 10; 
+	if (LCD_systemMenuOpened) {
+		ENCODER_RATE = CALIBRATE.ENCODER_SLOW_RATE * 10;
 	} else {
-	ENCODER_RATE = CALIBRATE.ENCODER_SLOW_RATE;	
+		ENCODER_RATE = CALIBRATE.ENCODER_SLOW_RATE;
 	}
 
 	if (ENClastClkVal != ENCODER_CLKVal) {
@@ -719,17 +716,21 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
-	
+
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) // Memory
 	{
-		if ( direction > 0)  {
-					TRX_MemoryChannelSelected++;
-			if (TRX_MemoryChannelSelected>19) TRX_MemoryChannelSelected=0;
+		if (direction > 0) {
+			TRX_MemoryChannelSelected++;
+			if (TRX_MemoryChannelSelected > 19) {
+				TRX_MemoryChannelSelected = 0;
+			}
 		} else {
-					TRX_MemoryChannelSelected--;
-			if (TRX_MemoryChannelSelected<0) TRX_MemoryChannelSelected=19;			
+			TRX_MemoryChannelSelected--;
+			if (TRX_MemoryChannelSelected < 0) {
+				TRX_MemoryChannelSelected = 19;
+			}
 		}
-     LCD_UpdateQuery.FreqInfoRedraw = true;
+		LCD_UpdateQuery.FreqInfoRedraw = true;
 	}
 }
 
@@ -850,7 +851,7 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
 			LCD_showTooltip("MEMORY");
-		}	
+		}
 	} else {
 		if (LCD_systemMenuOpened) {
 			// navigate in menu

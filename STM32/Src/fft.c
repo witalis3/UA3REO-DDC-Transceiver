@@ -1288,7 +1288,7 @@ bool FFT_printFFT(void) {
 		if (TRX.FFT_Background) {
 			background = palette_bg_gradient[fft_y];
 		}
-		
+
 		memset16(print_output_buffer[fft_y], background, LAYOUT->FFT_PRINT_SIZE);
 
 		uint16_t bw_color = palette_bw_bg_colors[fft_y];
@@ -1301,7 +1301,7 @@ bool FFT_printFFT(void) {
 				print_output_buffer[fft_y][fft_x] = addColor(bw_color, FFT_SEC_BW_BRIGHTNESS, -FFT_SEC_BW_BRIGHTNESS, FFT_SEC_BW_BRIGHTNESS);
 			}
 		}
-		
+
 		for (int32_t fft_x = bw_rx1_line_start; fft_x <= bw_rx1_line_end; fft_x++) {
 			if (fft_x < 0 || fft_x > LAYOUT->FFT_PRINT_SIZE) {
 				continue;
