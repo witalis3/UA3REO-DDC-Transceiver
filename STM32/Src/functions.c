@@ -976,48 +976,48 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 	uint32_t stage = I->numStages;
 
 	while (stage > 0) {
-	  float32_t b0 = *pCoeffs++;
-	  float32_t b1 = *pCoeffs++;
-	  float32_t b2 = *pCoeffs++;
-	  float32_t a1 = *pCoeffs++;
-	  float32_t a2 = *pCoeffs++;
+		float32_t b0 = *pCoeffs++;
+		float32_t b1 = *pCoeffs++;
+		float32_t b2 = *pCoeffs++;
+		float32_t a1 = *pCoeffs++;
+		float32_t a2 = *pCoeffs++;
 
-	  float32_t d1_I = pState_I[0];
-	  float32_t d2_I = pState_I[1];
-	  float32_t d1_Q = pState_Q[0];
-	  float32_t d2_Q = pState_Q[1];
+		float32_t d1_I = pState_I[0];
+		float32_t d2_I = pState_I[1];
+		float32_t d1_Q = pState_Q[0];
+		float32_t d2_Q = pState_Q[1];
 
-	  uint32_t sample = blockSize;
-	  while (sample > 0) {
-	    float32_t Xn1_I = *pIn_I++;
-	    float32_t Xn1_Q = *pIn_Q++;
+		uint32_t sample = blockSize;
+		while (sample > 0) {
+			float32_t Xn1_I = *pIn_I++;
+			float32_t Xn1_Q = *pIn_Q++;
 
-	    float32_t acc1_I = b0 * Xn1_I + d1_I;
-	    float32_t acc1_Q = b0 * Xn1_Q + d1_Q;
+			float32_t acc1_I = b0 * Xn1_I + d1_I;
+			float32_t acc1_Q = b0 * Xn1_Q + d1_Q;
 
-	    d1_I = b1 * Xn1_I + d2_I + a1 * acc1_I;
-	    d1_Q = b1 * Xn1_Q + d2_Q + a1 * acc1_Q;
+			d1_I = b1 * Xn1_I + d2_I + a1 * acc1_I;
+			d1_Q = b1 * Xn1_Q + d2_Q + a1 * acc1_Q;
 
-	    d2_I = b2 * Xn1_I + a2 * acc1_I;
-	    d2_Q = b2 * Xn1_Q + a2 * acc1_Q;
+			d2_I = b2 * Xn1_I + a2 * acc1_I;
+			d2_Q = b2 * Xn1_Q + a2 * acc1_Q;
 
-	    *pOut_I++ = acc1_I;
-	    *pOut_Q++ = acc1_Q;
+			*pOut_I++ = acc1_I;
+			*pOut_Q++ = acc1_Q;
 
-	    sample--;
-	  }
+			sample--;
+		}
 
-	  *pState_I++ = d1_I;
-	  *pState_I++ = d2_I;
-	  *pState_Q++ = d1_Q;
-	  *pState_Q++ = d2_Q;
+		*pState_I++ = d1_I;
+		*pState_I++ = d2_I;
+		*pState_Q++ = d1_Q;
+		*pState_Q++ = d2_Q;
 
-	  pIn_I = pDst_I;
-	  pIn_Q = pDst_Q;
-	  pOut_I = pDst_I;
-	  pOut_Q = pDst_Q;
+		pIn_I = pDst_I;
+		pIn_Q = pDst_Q;
+		pOut_I = pDst_I;
+		pOut_Q = pDst_Q;
 
-	  stage--;
+		stage--;
 	}
 
 	/* __asm volatile(
