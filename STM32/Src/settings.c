@@ -184,7 +184,7 @@ void LoadSettings(bool clear) {
 		TRX.NOTCH_STEP_Hz = 50;             // Manual NOTCH tuning step
 		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
 		TRX.Debug_Type = TRX_DEBUG_OFF;     // Debug output to DEBUG / UART port
-		TRX.BandMapEnabled = true;          // automatic change of mode according to the range map
+		TRX.BandMapEnabled = false;          // automatic change of mode according to the range map
 		TRX.InputType_MAIN = TRX_INPUT_MIC; // type of input to transfer (SSB/FM/AM)
 		TRX.InputType_DIGI = TRX_INPUT_USB; // type of input to transfer (DIGI)
 #ifdef FRONTPANEL_KT_100S
@@ -572,7 +572,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER_DEBOUNCE = 0;        // time to eliminate contact bounce at the main encoder, ms
 		CALIBRATE.ENCODER2_DEBOUNCE = 10;      // time to eliminate contact bounce at the additional encoder, ms
 		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
-		CALIBRATE.ENCODER_ON_FALLING = true;   // encoder only triggers when level A falls
+		CALIBRATE.ENCODER_ON_FALLING = false;  // encoder only triggers when level A falls
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
 		CALIBRATE.RF_unit_type = RF_UNIT_NONE; // RF-unit type

@@ -293,8 +293,8 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "SNAP>", .work_in_menu = true, .clickHandler = BUTTONHANDLER_SNAP_RIGHT, .holdHandler = BUTTONHANDLER_AUTO_SNAP, .checkBool = (uint32_t *)&TRX.Auto_Snap},
     {.name = "FAST", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FAST, .holdHandler = BUTTONHANDLER_STEP, .checkBool = (uint32_t *)&TRX.Fast},
     //
-    {.name = "Mem->Fr", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MEMO_READ, .holdHandler = BUTTONHANDLER_MEMO_READ, .checkBool = NULL},
-    {.name = "Fr->Mem", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MEMO_WRITE, .holdHandler = BUTTONHANDLER_MEMO_WRITE, .checkBool = NULL},
+    {.name = "M>VFO", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MEMO_READ, .holdHandler = BUTTONHANDLER_MEMO_READ, .checkBool = NULL},
+    {.name = "VFO>M", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MEMO_WRITE, .holdHandler = BUTTONHANDLER_MEMO_WRITE, .checkBool = NULL},
     {.name = "MODE-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
     {.name = "MODE+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
     {.name = "FAST", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FAST, .holdHandler = BUTTONHANDLER_STEP, .checkBool = (uint32_t *)&TRX.Fast},
