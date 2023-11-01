@@ -584,13 +584,15 @@ void ReinitAudioFilters(void) {
 	if (lpf_rx1_width < hpf_rx1_width && CurrentVFO->HPF_RX_Filter_Width > 0) {
 		lpf_rx1_width = hpf_rx1_width + 100;
 	}
-	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW) {
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB ||
+	    CurrentVFO->Mode == TRX_MODE_SAM_USB || CurrentVFO->Mode == TRX_MODE_CW) {
 		lpf_rx1_width /= 2;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_CW) {
 		lpf_rx1_filter_stages = TRX.CW_LPF_Stages;
 	}
-	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB ||
+	    CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 		lpf_rx1_filter_stages = TRX.AMFM_LPF_Stages;
 	}
 	uint32_t hpf_rx1_filter_stages = IIR_HPF_STAGES;
@@ -605,13 +607,15 @@ void ReinitAudioFilters(void) {
 	if (lpf_rx2_width < hpf_rx2_width && SecondaryVFO->HPF_RX_Filter_Width > 0) {
 		lpf_rx2_width = hpf_rx2_width + 100;
 	}
-	if (SecondaryVFO->Mode == TRX_MODE_NFM || SecondaryVFO->Mode == TRX_MODE_AM || SecondaryVFO->Mode == TRX_MODE_SAM || SecondaryVFO->Mode == TRX_MODE_CW) {
+	if (SecondaryVFO->Mode == TRX_MODE_NFM || SecondaryVFO->Mode == TRX_MODE_AM || SecondaryVFO->Mode == TRX_MODE_SAM_STEREO || SecondaryVFO->Mode == TRX_MODE_SAM_LSB ||
+	    SecondaryVFO->Mode == TRX_MODE_SAM_USB || SecondaryVFO->Mode == TRX_MODE_CW) {
 		lpf_rx2_width /= 2;
 	}
 	if (SecondaryVFO->Mode == TRX_MODE_CW) {
 		lpf_rx2_filter_stages = TRX.CW_LPF_Stages;
 	}
-	if (SecondaryVFO->Mode == TRX_MODE_NFM || SecondaryVFO->Mode == TRX_MODE_AM || SecondaryVFO->Mode == TRX_MODE_SAM) {
+	if (SecondaryVFO->Mode == TRX_MODE_NFM || SecondaryVFO->Mode == TRX_MODE_AM || SecondaryVFO->Mode == TRX_MODE_SAM_STEREO || SecondaryVFO->Mode == TRX_MODE_SAM_LSB ||
+	    SecondaryVFO->Mode == TRX_MODE_SAM_USB) {
 		lpf_rx2_filter_stages = TRX.AMFM_LPF_Stages;
 	}
 	uint32_t hpf_rx2_filter_stages = IIR_HPF_STAGES;
@@ -626,7 +630,8 @@ void ReinitAudioFilters(void) {
 	if (lpf_tx_width < hpf_tx_width) {
 		lpf_tx_width = hpf_tx_width + 100;
 	}
-	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW) {
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB ||
+	    CurrentVFO->Mode == TRX_MODE_SAM_USB || CurrentVFO->Mode == TRX_MODE_CW) {
 		lpf_tx_width /= 2;
 	}
 	//

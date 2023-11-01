@@ -493,7 +493,9 @@ void FFT_Init(void) {
 	dma_memset(FFTInput_Q_B, 0x00, sizeof(FFTInput_Q_B));
 	dma_memset(FFTOutput_mean, 0x00, sizeof(FFTOutput_mean));
 	dma_memset(FFTInput_tmp, 0x00, sizeof(FFTInput_tmp));
+#if HRDW_HAS_FULL_FFT_BUFFER
 	dma_memset(fft_peaks, 0x00, sizeof(fft_peaks));
+#endif
 	NeedWTFRedraw = true;
 	FFT_new_buffer_ready = false;
 
@@ -1157,23 +1159,26 @@ bool FFT_printFFT(void) {
 	switch (CurrentVFO->Mode) {
 	case TRX_MODE_LSB:
 	case TRX_MODE_DIGI_L:
+	case TRX_MODE_SAM_LSB:
 		bw_rx1_line_width = (int32_t)((cur_lpf_width - cur_hpf_width) / Hz_in_pixel * fft_zoom);
+		if (CurrentVFO->Mode == TRX_MODE_SAM_LSB) {
+			bw_rx1_line_width /= 2;
+		}
 		if (bw_rx1_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
 			bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
 		bw_rx1_line_start = rx1_line_pos - bw_rx1_line_width - (cur_hpf_width / Hz_in_pixel * fft_zoom);
 		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
 		rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
-
-		bw_rx2_line_width = (int32_t)(SecondaryVFO->LPF_RX_Filter_Width / Hz_in_pixel * fft_zoom);
-		if (bw_rx2_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
-			bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
-		}
 		break;
 	case TRX_MODE_USB:
 	case TRX_MODE_RTTY:
 	case TRX_MODE_DIGI_U:
+	case TRX_MODE_SAM_USB:
 		bw_rx1_line_width = (int32_t)((cur_lpf_width - cur_hpf_width) / Hz_in_pixel * fft_zoom);
+		if (CurrentVFO->Mode == TRX_MODE_SAM_USB) {
+			bw_rx1_line_width /= 2;
+		}
 		if (bw_rx1_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
 			bw_rx1_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
@@ -1183,7 +1188,7 @@ bool FFT_printFFT(void) {
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
-	case TRX_MODE_SAM:
+	case TRX_MODE_SAM_STEREO:
 	case TRX_MODE_CW:
 		bw_rx1_line_width = (int32_t)(cur_lpf_width / Hz_in_pixel * fft_zoom);
 		if (bw_rx1_line_width > LAYOUT->FFT_PRINT_SIZE) {
@@ -1210,7 +1215,11 @@ bool FFT_printFFT(void) {
 	switch (SecondaryVFO->Mode) {
 	case TRX_MODE_LSB:
 	case TRX_MODE_DIGI_L:
+	case TRX_MODE_SAM_LSB:
 		bw_rx2_line_width = (int32_t)(SecondaryVFO->LPF_RX_Filter_Width / Hz_in_pixel * fft_zoom);
+		if (SecondaryVFO->Mode == TRX_MODE_SAM_LSB) {
+			bw_rx2_line_width /= 2;
+		}
 		if (bw_rx2_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
 			bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
@@ -1221,7 +1230,11 @@ bool FFT_printFFT(void) {
 	case TRX_MODE_USB:
 	case TRX_MODE_RTTY:
 	case TRX_MODE_DIGI_U:
+	case TRX_MODE_SAM_USB:
 		bw_rx2_line_width = (int32_t)(SecondaryVFO->LPF_RX_Filter_Width / Hz_in_pixel * fft_zoom);
+		if (SecondaryVFO->Mode == TRX_MODE_SAM_USB) {
+			bw_rx2_line_width /= 2;
+		}
 		if (bw_rx2_line_width > (LAYOUT->FFT_PRINT_SIZE / 2)) {
 			bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE / 2;
 		}
@@ -1231,7 +1244,7 @@ bool FFT_printFFT(void) {
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
-	case TRX_MODE_SAM:
+	case TRX_MODE_SAM_STEREO:
 	case TRX_MODE_CW:
 		bw_rx2_line_width = (int32_t)(SecondaryVFO->LPF_RX_Filter_Width / Hz_in_pixel * fft_zoom);
 		if (bw_rx2_line_width > LAYOUT->FFT_PRINT_SIZE) {
@@ -1805,7 +1818,7 @@ bool FFT_printFFT(void) {
 	}
 
 	// Print SAM Carrier offset
-	if (CurrentVFO->Mode == TRX_MODE_SAM) {
+	if (CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 		char tmp[32] = {0};
 		sprintf(tmp, "%.2fHz", (double)SAM_Carrier_offset);
 		LCDDriver_printTextInMemory(tmp, 5, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
@@ -2328,7 +2341,8 @@ void FFT_afterPrintFFT(void) {
 					region_color = 3;
 				} else if (BANDS[band].regions[region].mode == TRX_MODE_NFM || BANDS[band].regions[region].mode == TRX_MODE_WFM) {
 					region_color = 4;
-				} else if (BANDS[band].regions[region].mode == TRX_MODE_AM || BANDS[band].regions[region].mode == TRX_MODE_SAM) {
+				} else if (BANDS[band].regions[region].mode == TRX_MODE_AM || BANDS[band].regions[region].mode == TRX_MODE_SAM_STEREO || BANDS[band].regions[region].mode == TRX_MODE_SAM_LSB ||
+				           BANDS[band].regions[region].mode == TRX_MODE_SAM_USB) {
 					region_color = 5;
 				}
 

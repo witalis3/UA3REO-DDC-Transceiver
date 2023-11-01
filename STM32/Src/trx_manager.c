@@ -659,7 +659,9 @@ void TRX_setMode(TRX_MODE _mode, VFO *vfo) {
 	// get new mode filters
 	switch (_mode) {
 	case TRX_MODE_AM:
-	case TRX_MODE_SAM:
+	case TRX_MODE_SAM_STEREO:
+	case TRX_MODE_SAM_LSB:
+	case TRX_MODE_SAM_USB:
 		vfo->LPF_RX_Filter_Width = vfo->AM_LPF_RX_Filter;
 		vfo->LPF_TX_Filter_Width = vfo->AM_LPF_TX_Filter;
 		vfo->HPF_RX_Filter_Width = 0;
@@ -745,14 +747,17 @@ void TRX_setMode(TRX_MODE _mode, VFO *vfo) {
 	NeedWTFRedraw = true;
 }
 
-void TRX_SaveRFGain_Data(uint8_t mode, int8_t band) {
+void TRX_SaveRFGain_Data(TRX_MODE mode, int8_t band) {
 	switch (mode) {
 	case TRX_MODE_AM:
-	case TRX_MODE_SAM:
+	case TRX_MODE_SAM_STEREO:
+	case TRX_MODE_SAM_LSB:
+	case TRX_MODE_SAM_USB:
 		TRX.RF_Gain_By_Mode_AM = TRX.RF_Gain;
 		break;
 	case TRX_MODE_LSB:
 	case TRX_MODE_USB:
+	case TRX_MODE_LOOPBACK:
 		TRX.RF_Gain_By_Mode_SSB = TRX.RF_Gain;
 		break;
 	case TRX_MODE_DIGI_L:
@@ -775,11 +780,14 @@ void TRX_SaveRFGain_Data(uint8_t mode, int8_t band) {
 
 		switch (mode) {
 		case TRX_MODE_AM:
-		case TRX_MODE_SAM:
+		case TRX_MODE_SAM_STEREO:
+		case TRX_MODE_SAM_LSB:
+		case TRX_MODE_SAM_USB:
 			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_AM = TRX.RF_Gain;
 			break;
 		case TRX_MODE_LSB:
 		case TRX_MODE_USB:
+		case TRX_MODE_LOOPBACK:
 			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_SSB = TRX.RF_Gain;
 			break;
 		case TRX_MODE_DIGI_L:
@@ -799,15 +807,18 @@ void TRX_SaveRFGain_Data(uint8_t mode, int8_t band) {
 	}
 }
 
-void TRX_LoadRFGain_Data(uint8_t mode, int8_t band) {
+void TRX_LoadRFGain_Data(TRX_MODE mode, int8_t band) {
 	if (TRX.RF_Gain_For_Each_Mode) {
 		switch (mode) {
 		case TRX_MODE_AM:
-		case TRX_MODE_SAM:
+		case TRX_MODE_SAM_STEREO:
+		case TRX_MODE_SAM_LSB:
+		case TRX_MODE_SAM_USB:
 			TRX.RF_Gain = TRX.RF_Gain_By_Mode_AM;
 			break;
 		case TRX_MODE_LSB:
 		case TRX_MODE_USB:
+		case TRX_MODE_LOOPBACK:
 			TRX.RF_Gain = TRX.RF_Gain_By_Mode_SSB;
 			break;
 		case TRX_MODE_DIGI_L:
@@ -833,11 +844,14 @@ void TRX_LoadRFGain_Data(uint8_t mode, int8_t band) {
 	if (TRX.RF_Gain_For_Each_Mode && TRX.RF_Gain_For_Each_Band && band >= 0) {
 		switch (mode) {
 		case TRX_MODE_AM:
-		case TRX_MODE_SAM:
+		case TRX_MODE_SAM_STEREO:
+		case TRX_MODE_SAM_LSB:
+		case TRX_MODE_SAM_USB:
 			TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_AM;
 			break;
 		case TRX_MODE_LSB:
 		case TRX_MODE_USB:
+		case TRX_MODE_LOOPBACK:
 			TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_SSB;
 			break;
 		case TRX_MODE_DIGI_L:
@@ -1122,7 +1136,7 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		if (CurrentVFO->Mode == TRX_MODE_NFM) {
 			step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0;
 		}
-		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 			step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0;
 		}
 
@@ -1134,7 +1148,7 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
 				step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0 * 10.0;
 			}
-			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 				step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0 * 10.0;
 			}
 			if (CurrentVFO->Mode == TRX_MODE_CW) {
@@ -1179,7 +1193,7 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		if (CurrentVFO->Mode == TRX_MODE_NFM) {
 			step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0 / 10.0;
 		}
-		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 			step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0 / 10.0;
 		}
 
@@ -1191,7 +1205,7 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
 				step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0;
 			}
-			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 				step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0;
 			}
 			if (CurrentVFO->Mode == TRX_MODE_CW) {
@@ -1533,8 +1547,12 @@ void BUTTONHANDLER_MODE_P(uint32_t parameter) {
 	} else if (mode == TRX_MODE_RTTY) {
 		mode = TRX_MODE_DIGI_L;
 	} else if (mode == TRX_MODE_AM) {
-		mode = TRX_MODE_SAM;
-	} else if (mode == TRX_MODE_SAM) {
+		mode = TRX_MODE_SAM_STEREO;
+	} else if (mode == TRX_MODE_SAM_STEREO) {
+		mode = TRX_MODE_SAM_LSB;
+	} else if (mode == TRX_MODE_SAM_LSB) {
+		mode = TRX_MODE_SAM_USB;
+	} else if (mode == TRX_MODE_SAM_USB) {
 		mode = TRX_MODE_IQ;
 	} else if (mode == TRX_MODE_IQ) {
 		mode = TRX_MODE_LOOPBACK;
@@ -1787,7 +1805,7 @@ void BUTTONHANDLER_BW(uint32_t parameter) {
 			SYSMENU_FILTER_BW_CW_HOTKEY();
 		} else if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM) {
 			SYSMENU_FILTER_BW_FM_HOTKEY();
-		} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+		} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 			SYSMENU_FILTER_BW_AM_HOTKEY();
 		} else {
 			SYSMENU_FILTER_BW_SSB_HOTKEY();
@@ -2280,7 +2298,7 @@ void BUTTONHANDLER_SET_RX_BW(uint32_t parameter) {
 	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
 		CurrentVFO->DIGI_LPF_Filter = parameter;
 	}
-	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 		CurrentVFO->AM_LPF_RX_Filter = parameter;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_NFM) {
@@ -2323,7 +2341,7 @@ void BUTTONHANDLER_SET_TX_BW(uint32_t parameter) {
 	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
 		CurrentVFO->DIGI_LPF_Filter = parameter;
 	}
-	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 		CurrentVFO->AM_LPF_TX_Filter = parameter;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_NFM) {

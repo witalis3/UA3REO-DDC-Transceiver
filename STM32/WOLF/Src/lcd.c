@@ -812,7 +812,7 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 		if (TRX.VFO_A.Mode == TRX_MODE_AM) {
 			LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_MODE_AM_X, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET), &MODE_ICO_AM, COLOR_BLACK, BG_COLOR);
 		}
-		if (TRX.VFO_A.Mode == TRX_MODE_SAM) {
+		if (TRX.VFO_A.Mode == TRX_MODE_SAM_STEREO) {
 			LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_MODE_SAM_X, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_Y_OFFSET), &MODE_ICO_SAM, COLOR_BLACK, BG_COLOR);
 		}
 		if (TRX.VFO_A.Mode == TRX_MODE_CW) {
@@ -854,7 +854,7 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 		if (TRX.VFO_B.Mode == TRX_MODE_AM) {
 			LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_MODE_B_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_B_Y_OFFSET), &MODE_ICO_AM, COLOR_BLACK, BG_COLOR);
 		}
-		if (TRX.VFO_B.Mode == TRX_MODE_SAM) {
+		if (TRX.VFO_B.Mode == TRX_MODE_SAM_STEREO || TRX.VFO_B.Mode == TRX_MODE_SAM_LSB || TRX.VFO_B.Mode == TRX_MODE_SAM_USB) {
 			LCDDriver_printImage_RLECompressed(LAYOUT->STATUS_MODE_B_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_MODE_B_Y_OFFSET), &MODE_ICO_SAM, COLOR_BLACK, BG_COLOR);
 		}
 		if (TRX.VFO_B.Mode == TRX_MODE_CW) {
@@ -1016,7 +1016,9 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 		bw_trapez_bw_right_width = bw_trapez_bw_left_width;
 		break;
 	case TRX_MODE_AM:
-	case TRX_MODE_SAM:
+	case TRX_MODE_SAM_STEREO:
+	case TRX_MODE_SAM_LSB:
+	case TRX_MODE_SAM_USB:
 		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_AM * (TRX_on_TX ? CurrentVFO->LPF_TX_Filter_Width : CurrentVFO->LPF_RX_Filter_Width);
 		bw_trapez_bw_right_width = bw_trapez_bw_left_width;
 		break;
@@ -2341,7 +2343,7 @@ void LCD_processTouch(uint16_t x, uint16_t y) {
 				return;
 			}
 			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_SAM_X && x < LAYOUT->STATUS_MODE_CW_X) {
-				BUTTONHANDLER_SETMODE(TRX_MODE_SAM); // set mode SAM;
+				BUTTONHANDLER_SETMODE(TRX_MODE_SAM_STEREO); // set mode SAM;
 				return;
 			}
 			if (y >= 0 && y <= 30 && x > LAYOUT->STATUS_MODE_CW_X && x < LAYOUT->STATUS_MODE_DIGL_X) {
@@ -2913,7 +2915,7 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 
 static void LCD_showModeWindow(bool secondary_vfo) {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	const uint8_t buttons_in_line = 4;
+	const uint8_t buttons_in_line = 5;
 	const uint8_t buttons_lines = ceilf((float32_t)TRX_MODE_COUNT / (float32_t)buttons_in_line);
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
@@ -2960,7 +2962,7 @@ static void LCD_showBWWindow(void) {
 	    CurrentVFO->Mode == TRX_MODE_RTTY) {
 		filters_count = SSB_LPF_COUNT;
 	}
-	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 		filters_count = AM_LPF_COUNT;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_NFM) {
@@ -2987,7 +2989,7 @@ static void LCD_showBWWindow(void) {
 			    CurrentVFO->Mode == TRX_MODE_RTTY) {
 				width = AUTIO_FILTERS_LPF_SSB_LIST[index];
 			}
-			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 				width = AUTIO_FILTERS_LPF_AM_LIST[index];
 			}
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {

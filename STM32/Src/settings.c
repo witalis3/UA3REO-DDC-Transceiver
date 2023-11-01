@@ -53,7 +53,7 @@ static uint8_t calculateCSUM_EEPROM(void);
 static uint8_t calculateCSUM_WIFI(void);
 
 const char *MODE_DESCR[TRX_MODE_COUNT] = {
-    "LSB", "USB", "CW", "NFM", "WFM", "AM", "SAM", "DIGL", "DIGU", "IQ", "LOOP", "RTTY",
+    "LSB", "USB", "CW", "NFM", "WFM", "AM", "SAM", "AM-L", "AM-U", "DIGL", "DIGU", "IQ", "LOOP", "RTTY",
 };
 
 void LoadSettings(bool clear) {
@@ -137,7 +137,7 @@ void LoadSettings(bool clear) {
 		TRX.VFO_B.FM_LPF_RX_Filter = TRX.VFO_A.FM_LPF_RX_Filter;         // default value of the FM filter width
 		TRX.VFO_B.FM_LPF_TX_Filter = TRX.VFO_A.FM_LPF_TX_Filter;         // default value of the FM filter width
 		TRX.VFO_B.FM_HPF_RX_Filter = TRX.VFO_A.FM_HPF_RX_Filter;         // default value of the FM filter width
-		TRX.Fast = false;                                                // accelerated frequency change when the encoder rotates
+		TRX.Fast = true;                                                 // accelerated frequency change when the encoder rotates
 		TRX.LNA = false;                                                 // LNA (Low Noise Amplifier)
 		TRX.ATT = false;                                                 // attenuator
 		TRX.ATT_DB = 12.0f;                                              // suppress the attenuator
@@ -184,13 +184,13 @@ void LoadSettings(bool clear) {
 		TRX.NOTCH_STEP_Hz = 50;             // Manual NOTCH tuning step
 		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
 		TRX.Debug_Type = TRX_DEBUG_OFF;     // Debug output to DEBUG / UART port
-		TRX.BandMapEnabled = false;         // automatic change of mode according to the range map
+		TRX.BandMapEnabled = true;          // automatic change of mode according to the range map
 		TRX.InputType_MAIN = TRX_INPUT_MIC; // type of input to transfer (SSB/FM/AM)
 		TRX.InputType_DIGI = TRX_INPUT_USB; // type of input to transfer (DIGI)
 #ifdef FRONTPANEL_KT_100S
 		TRX.AutoGain = false; // auto-control preamp and attenuator
 #else
-		TRX.AutoGain = true;                           // auto-control preamp and attenuator
+		TRX.AutoGain = true;     // auto-control preamp and attenuator
 #endif
 		TRX.Locked = false;        // Lock control
 		TRX.SPLIT_Enabled = false; // Split frequency mode (receive one VFO, transmit another)
@@ -273,7 +273,7 @@ void LoadSettings(bool clear) {
 #ifdef STM32F407xx
 		TRX.AGC_Spectral = false; // Spectral AGC mode
 #else
-		TRX.AGC_Spectral = true;                       // Spectral AGC mode
+		TRX.AGC_Spectral = true; // Spectral AGC mode
 #endif
 		TRX.NOISE_BLANKER_THRESHOLD = 10;                              // threshold for noise blanker
 		TRX.TX_CESSB = true;                                           // Controlled-envelope single-sideband modulation
@@ -303,7 +303,6 @@ void LoadSettings(bool clear) {
 		TRX.VOX_THRESHOLD = -27;                                       // VOX threshold in dbFS
 		TRX.RX_AUDIO_MODE = RX_AUDIO_MODE_STEREO;                      // OUT Lines mode stereo/left/right
 		TRX.AGC_Threshold = false;                                     // Disable AGC on noise signals
-		TRX.SAM_Mode = SAM_MODE_STEREO;                                // Select SAM mode (Stereo/LSB/USB)
 		// CW
 		TRX.CW_Pitch = 600;                                             // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key
@@ -379,8 +378,8 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Height = 4;         // FFT display height
 		TRX.FFT_Background = false; // FFT gradient background
 #elif defined LAY_320x240
-		TRX.FFT_FreqGrid = 0;                          // FFT freq grid style
-		TRX.FFT_Height = 3;                            // FFT display height
+		TRX.FFT_FreqGrid = 0;    // FFT freq grid style
+		TRX.FFT_Height = 3;      // FFT display height
 #else
 		TRX.FFT_FreqGrid = 1;                          // FFT freq grid style
 		TRX.FFT_Height = 2;                            // FFT display height
@@ -407,7 +406,7 @@ void LoadSettings(bool clear) {
 #ifdef STM32F407xx
 		TRX.RDS_Decoder = false; // RDS Decoder panel
 #else
-		TRX.RDS_Decoder = true;                        // RDS Decoder panel
+		TRX.RDS_Decoder = true;  // RDS Decoder panel
 #endif
 		TRX.RTTY_Speed = 45;         // RTTY decoder speed
 		TRX.RTTY_Shift = 170;        // RTTY decoder shift
@@ -502,7 +501,11 @@ void LoadSettings(bool clear) {
 		TRX.Notch_on_shadow = false;
 		TRX.FM_SQL_threshold_dBm_shadow = TRX.VFO_A.FM_SQL_threshold_dBm;
 		TRX.FRONTPANEL_funcbuttons_page = 0;
+#if defined(FRONTPANEL_LITE)
 		TRX.ENC2_func_mode = ENC_FUNC_SET_VOLUME;
+#else
+		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+#endif
 		TRX.CW_LPF_Filter_shadow = TRX.VFO_A.CW_LPF_Filter;
 		TRX.DIGI_LPF_Filter_shadow = TRX.VFO_A.DIGI_LPF_Filter;
 		TRX.SSB_LPF_RX_Filter_shadow = TRX.VFO_A.SSB_LPF_RX_Filter;

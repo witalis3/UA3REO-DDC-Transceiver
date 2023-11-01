@@ -120,7 +120,6 @@ static void SYSMENU_HANDL_RX_CODEC_Out_Volume(int8_t direction);
 static void SYSMENU_HANDL_RX_BluetoothAudio_Enabled(int8_t direction);
 static void SYSMENU_HANDL_RX_AUDIO_MODE(int8_t direction);
 static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction);
-static void SYSMENU_HANDL_RX_SAM_Mode(int8_t direction);
 
 static void SYSMENU_HANDL_TX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TX_ATU_Enabled(int8_t direction);
@@ -658,7 +657,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Beeper", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_TRX_Beeper},
     {"Callsign", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCallsign},
     {"Channel Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ChannelMode, SYSMENU_HANDL_TRX_ChannelMode},
-#if HRDW_HAS_USB_DEBUG
+#if HRDW_HAS_USB_DEBUG || HRDW_DEBUG_ON_CAT_PORT
     {"Debug console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, (const enumerate_item[7]){"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH", "CAT", "I2C"}},
 #endif
     {"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
@@ -796,7 +795,6 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"RX WFM EQ 5.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P4_WFM, SYSMENU_HANDL_RX_EQ_P4_WFM},
     {"RX WFM EQ 8.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P5_WFM, SYSMENU_HANDL_RX_EQ_P5_WFM},
     {"RX WFM EQ 12.0k", SYSMENU_INT8, NULL, (uint32_t *)&TRX.RX_EQ_P6_WFM, SYSMENU_HANDL_RX_EQ_P6_WFM},
-    {"SAM Mode", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAM_Mode, SYSMENU_HANDL_RX_SAM_Mode, (const enumerate_item[3]){"STEREO", "LSB", "USB"}},
     {"TRX Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_HANDL_RX_SAMPLERATE_MAIN, (const enumerate_item[4]){"48kHz", "96kHz", "192kHz", "384kHz"}},
     {"FM Samplerate", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.SAMPLERATE_FM, SYSMENU_HANDL_RX_SAMPLERATE_FM, (const enumerate_item[4]){"48kHz", "96kHz", "192kHz", "384kHz"}},
     {"VAD Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.VAD_THRESHOLD, SYSMENU_HANDL_RX_VAD_THRESHOLD},
@@ -2769,15 +2767,6 @@ static void SYSMENU_HANDL_RX_AUDIO_MODE(int8_t direction) {
 	}
 	if (TRX.RX_AUDIO_MODE > 2) {
 		TRX.RX_AUDIO_MODE = 2;
-	}
-}
-
-static void SYSMENU_HANDL_RX_SAM_Mode(int8_t direction) {
-	if (TRX.SAM_Mode > 0 || direction > 0) {
-		TRX.SAM_Mode += direction;
-	}
-	if (TRX.SAM_Mode > 2) {
-		TRX.SAM_Mode = 2;
 	}
 }
 
@@ -7858,72 +7847,72 @@ static void SYSMENU_HANDL_TIME_BEACON(int8_t direction) {
 
 static void SYSMENU_HANDL_TIME_BEACON_40kHz(int8_t direction) {
 	TRX_setFrequency(40000, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_50kHz(int8_t direction) {
 	TRX_setFrequency(50000, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_60kHz(int8_t direction) {
 	TRX_setFrequency(60000, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_66_66kHz(int8_t direction) {
 	TRX_setFrequency(66660, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_75kHz(int8_t direction) {
 	TRX_setFrequency(75000, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_77_5kHz(int8_t direction) {
 	TRX_setFrequency(77500, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_2_5MHz(int8_t direction) {
 	TRX_setFrequency(2500000, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_4_996MHz(int8_t direction) {
 	TRX_setFrequency(4996000, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_5MHz(int8_t direction) {
 	TRX_setFrequency(5000000, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_9_996MHz(int8_t direction) {
 	TRX_setFrequency(9996000, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_10MHz(int8_t direction) {
 	TRX_setFrequency(10000000, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_14_996MHz(int8_t direction) {
 	TRX_setFrequency(14996000, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_15MHz(int8_t direction) {
 	TRX_setFrequency(15000000, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 static void SYSMENU_HANDL_TIME_BEACON_20MHz(int8_t direction) {
 	TRX_setFrequency(20000000, CurrentVFO);
-	TRX_setMode(TRX_MODE_SAM, CurrentVFO);
+	TRX_setMode(TRX_MODE_SAM_STEREO, CurrentVFO);
 	SYSMENU_eventCloseAllSystemMenu();
 }
 

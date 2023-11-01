@@ -105,7 +105,7 @@ static void doRX_RXFreqTransition(float32_t *in_i, float32_t *in_q, uint16_t siz
 static void doRX_CWFreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float32_t freq_diff);
 static void APROC_SD_Play(void);
 static bool APROC_SD_PlayTX(void);
-static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize);
+static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize, TRX_MODE mode);
 static void doTX_HILBERT(bool swap_iq, uint16_t size);
 static void doTX_CESSB(uint16_t size);
 static void APROC_ProcessCodecMuting(void);
@@ -359,9 +359,11 @@ void processRxAudio(void) {
 		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode, false);
 		doRX_COPYCHANNEL(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		break;
-	case TRX_MODE_SAM:
+	case TRX_MODE_SAM_STEREO:
+	case TRX_MODE_SAM_LSB:
+	case TRX_MODE_SAM_USB:
 		doRX_LPF_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_DemodSAM(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		doRX_DemodSAM(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode);
 		doRX_LPF2_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		// doRX_NOTCH(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		// doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -481,9 +483,11 @@ void processRxAudio(void) {
 			doRX_DNR(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
 			doRX_AGC(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
 			break;
-		case TRX_MODE_SAM:
+		case TRX_MODE_SAM_STEREO:
+		case TRX_MODE_SAM_LSB:
+		case TRX_MODE_SAM_USB:
 			doRX_LPF_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-			doRX_DemodSAM(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			doRX_DemodSAM(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode);
 			doRX_LPF2_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			// doRX_NOTCH(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			// doRX_NoiseBlanker(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
@@ -765,7 +769,7 @@ void processTxAudio(void) {
 
 	// stuff
 	AUDIOPROC_samples++;
-	uint_fast8_t mode = CurrentVFO->Mode;
+	TRX_MODE mode = CurrentVFO->Mode;
 
 	if (getInputType() == TRX_INPUT_USB) // USB AUDIO
 	{
@@ -931,7 +935,7 @@ void processTxAudio(void) {
 			if (getInputType() == TRX_INPUT_MIC) {
 				// Mic Gain
 				float32_t mic_gain = rate2dbP(TRX.MIC_Gain_SSB_DB);
-				if (mode == TRX_MODE_AM || mode == TRX_MODE_SAM || mode == TRX_MODE_NFM || mode == TRX_MODE_WFM) {
+				if (mode == TRX_MODE_AM || mode == TRX_MODE_SAM_STEREO || mode == TRX_MODE_SAM_LSB || mode == TRX_MODE_SAM_USB || mode == TRX_MODE_NFM || mode == TRX_MODE_WFM) {
 					mic_gain = rate2dbP(TRX.MIC_Gain_AMFM_DB);
 				}
 				arm_scale_f32(APROC_Audio_Buffer_TX_I, mic_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
@@ -966,7 +970,7 @@ void processTxAudio(void) {
 		}
 
 		// TX AGC (compressor)
-		if (mode == TRX_MODE_AM || mode == TRX_MODE_SAM) {
+		if (mode == TRX_MODE_AM || mode == TRX_MODE_SAM_STEREO || mode == TRX_MODE_SAM_LSB || mode == TRX_MODE_SAM_USB) {
 			DoTxAGC(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE, 0.7f, mode);
 			arm_scale_f32(APROC_Audio_Buffer_TX_I, ((float32_t)CALIBRATE.AM_MODULATION_INDEX / 200.0f) * APROC_TX_clip_gain, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
 		} else if (mode != TRX_MODE_DIGI_L && mode != TRX_MODE_DIGI_U) { // disable AGC on DIGI
@@ -1016,7 +1020,9 @@ void processTxAudio(void) {
 			}
 			break;
 		case TRX_MODE_AM:
-		case TRX_MODE_SAM:
+		case TRX_MODE_SAM_STEREO:
+		case TRX_MODE_SAM_LSB:
+		case TRX_MODE_SAM_USB:
 			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
 			for (size_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 				float32_t i_am = ((APROC_Audio_Buffer_TX_I[i] - APROC_Audio_Buffer_TX_Q[i]) + 1.0f * APROC_TX_clip_gain);
@@ -1228,7 +1234,7 @@ void processTxAudio(void) {
 	if (RFpower_amplitude < 0.0f || TRX.RF_Gain == 0) {
 		RFpower_amplitude = 0.0f;
 	}
-	if ((mode == TRX_MODE_AM || mode == TRX_MODE_SAM) && !TRX_Tune) {
+	if ((mode == TRX_MODE_AM || mode == TRX_MODE_SAM_STEREO || mode == TRX_MODE_SAM_LSB || mode == TRX_MODE_SAM_USB) && !TRX_Tune) {
 		RFpower_amplitude = RFpower_amplitude * 0.7f;
 	}
 	if (RFpower_amplitude > 1.0f) {
@@ -1685,7 +1691,9 @@ static void doMIC_EQ(uint16_t size, uint8_t mode) {
 	case TRX_MODE_NFM:
 	case TRX_MODE_WFM:
 	case TRX_MODE_AM:
-	case TRX_MODE_SAM:
+	case TRX_MODE_SAM_STEREO:
+	case TRX_MODE_SAM_LSB:
+	case TRX_MODE_SAM_USB:
 		if (TRX.MIC_EQ_P1_AMFM != 0) {
 			arm_biquad_cascade_df2T_f32_single(&EQ_MIC_P1_FILTER_AMFM, APROC_Audio_Buffer_TX_I, APROC_Audio_Buffer_TX_I, size);
 		}
@@ -2283,7 +2291,7 @@ static void doRX_CWFreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float3
 #endif
 }
 
-static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize) {
+static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize, TRX_MODE mode) {
 	// part of UHSDR project https://github.com/df8oe/UHSDR/blob/active-devel/mchf-eclipse/drivers/audio/audio_driver.c
 	demod_sam_data_t *sam_data = &sam_data_rx1;
 #if HRDW_HAS_DUAL_RX
@@ -2380,10 +2388,10 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 		out_buffer_l[i] = (ai_ps + bi_ps) - (aq_ps - bq_ps);
 		out_buffer_r[i] = (ai_ps - bi_ps) + (aq_ps + bq_ps);
 
-		if (TRX.SAM_Mode == SAM_MODE_LSB) {
+		if (mode == TRX_MODE_SAM_LSB) {
 			out_buffer_r[i] = out_buffer_l[i];
 		}
-		if (TRX.SAM_Mode == SAM_MODE_USB) {
+		if (mode == TRX_MODE_SAM_USB) {
 			out_buffer_l[i] = out_buffer_r[i];
 		}
 

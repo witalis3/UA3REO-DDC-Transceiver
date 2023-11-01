@@ -200,7 +200,6 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **RX AGC Max gain** - Limit of AGC gain, dB
 * **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
 * **RX EQ xxx** - Receiver equalizer levels
-* **SAM Mode** - Select SAM mode type (Stereo/LSB/USB)
 * **TRX Samplerate** - Max FFT/samplerate on CW/SSB/NFM/DIGI/etc modes
 * **FM Samplerate** - Max FFT/samplerate on NFM/WFM mode
 * **VAD Threshold** - VAD voice detector threshold (noise suppressor for SSB mode and SCAN mode)

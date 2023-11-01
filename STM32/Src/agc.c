@@ -15,7 +15,7 @@ float32_t AGC_SCREEN_maxGain = 1.0f;
 float32_t AGC_SCREEN_currentGain = 0.0f;
 
 // Run AGC on data block
-void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id, uint8_t nr_type, uint_fast8_t mode, bool stereo) {
+void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t blockSize, AUDIO_PROC_RX_NUM rx_id, uint8_t nr_type, TRX_MODE mode, bool stereo) {
 	// RX1 or RX2
 	AGC_RX_Instance *AGC = &AGC_RX1;
 	bool VAD_Muting = VAD_RX1_Muting;
@@ -203,7 +203,7 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 }
 
 // Run TX AGC on data block
-void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_rate, uint_fast8_t mode) {
+void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_rate, TRX_MODE mode) {
 	// higher speed in settings - higher speed of AGC processing
 	float32_t TX_AGC_STEPSIZE_UP = 0.0f;
 	float32_t TX_AGC_STEPSIZE_DOWN = 0.0f;
@@ -211,7 +211,9 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_r
 	case TRX_MODE_NFM:
 	case TRX_MODE_WFM:
 	case TRX_MODE_AM:
-	case TRX_MODE_SAM:
+	case TRX_MODE_SAM_STEREO:
+	case TRX_MODE_SAM_LSB:
+	case TRX_MODE_SAM_USB:
 		TX_AGC_STEPSIZE_UP = 200.0f / (float32_t)TRX.TX_Compressor_speed_AMFM;
 		TX_AGC_STEPSIZE_DOWN = 20.0f / (float32_t)TRX.TX_Compressor_speed_AMFM;
 		break;
@@ -300,7 +302,9 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_r
 	case TRX_MODE_NFM:
 	case TRX_MODE_WFM:
 	case TRX_MODE_AM:
-	case TRX_MODE_SAM:
+	case TRX_MODE_SAM_STEREO:
+	case TRX_MODE_SAM_LSB:
+	case TRX_MODE_SAM_USB:
 		if (AGC_TX.need_gain_dB > TRX.TX_Compressor_maxgain_AMFM) {
 			AGC_TX.need_gain_dB = TRX.TX_Compressor_maxgain_AMFM;
 		}

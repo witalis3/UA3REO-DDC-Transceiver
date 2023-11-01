@@ -654,7 +654,9 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 		bw_trapez_bw_right_width = bw_trapez_bw_left_width;
 		break;
 	case TRX_MODE_AM:
-	case TRX_MODE_SAM:
+	case TRX_MODE_SAM_STEREO:
+	case TRX_MODE_SAM_LSB:
+	case TRX_MODE_SAM_USB:
 		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_AM * (TRX_on_TX ? CurrentVFO->AM_LPF_TX_Filter : CurrentVFO->AM_LPF_RX_Filter);
 		bw_trapez_bw_right_width = bw_trapez_bw_left_width;
 		break;
@@ -1242,7 +1244,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		} else {
 			sprintf(buff, "%d-%d", CurrentVFO->SSB_HPF_RX_Filter, CurrentVFO->SSB_LPF_RX_Filter);
 		}
-	} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+	} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 		if (TRX_on_TX) {
 			sprintf(buff, "%d", CurrentVFO->AM_LPF_TX_Filter);
 		} else {
@@ -1289,7 +1291,8 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	}
 
 	// IN-OUT
-	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM) {
+	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB ||
+	    CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM) {
 		sprintf(buff, "MIC:%d", (uint32_t)TRX.MIC_Gain_AMFM_DB);
 	} else {
 		sprintf(buff, "MIC:%d", (uint32_t)TRX.MIC_Gain_SSB_DB);

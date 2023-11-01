@@ -71,7 +71,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 200000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 148500, .endFreq = 283500, .mode = TRX_MODE_SAM},
+                {.startFreq = 148500, .endFreq = 283500, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -86,7 +86,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 1500000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 526500, .endFreq = 1606500, .mode = TRX_MODE_SAM},
+                {.startFreq = 526500, .endFreq = 1606500, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -118,7 +118,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 2400000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 2300000, .endFreq = 2500000, .mode = TRX_MODE_SAM},
+                {.startFreq = 2300000, .endFreq = 2500000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -133,7 +133,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 3300000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 3200000, .endFreq = 3400000, .mode = TRX_MODE_SAM},
+                {.startFreq = 3200000, .endFreq = 3400000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -165,7 +165,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 3950000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 3900000, .endFreq = 4000000, .mode = TRX_MODE_SAM},
+                {.startFreq = 3900000, .endFreq = 4000000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -180,7 +180,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 5000000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 4700000, .endFreq = 5100000, .mode = TRX_MODE_SAM},
+                {.startFreq = 4700000, .endFreq = 5100000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -212,7 +212,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 6000000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 5800000, .endFreq = 6300000, .mode = TRX_MODE_SAM},
+                {.startFreq = 5800000, .endFreq = 6300000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -246,7 +246,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 7300000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 7200000, .endFreq = 7600000, .mode = TRX_MODE_SAM},
+                {.startFreq = 7200000, .endFreq = 7600000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -261,7 +261,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 9600000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 9300000, .endFreq = 9995000, .mode = TRX_MODE_SAM},
+                {.startFreq = 9300000, .endFreq = 9995000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -292,7 +292,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 11900000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 11500000, .endFreq = 12200000, .mode = TRX_MODE_SAM},
+                {.startFreq = 11500000, .endFreq = 12200000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -307,7 +307,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 13700000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 13500000, .endFreq = 13900000, .mode = TRX_MODE_SAM},
+                {.startFreq = 13500000, .endFreq = 13900000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -339,7 +339,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 15600000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 15000000, .endFreq = 15900000, .mode = TRX_MODE_SAM},
+                {.startFreq = 15000000, .endFreq = 15900000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -354,7 +354,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 17600000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 17400000, .endFreq = 17995000, .mode = TRX_MODE_SAM},
+                {.startFreq = 17400000, .endFreq = 17995000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -386,7 +386,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 19000000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 18800000, .endFreq = 19100000, .mode = TRX_MODE_SAM},
+                {.startFreq = 18800000, .endFreq = 19100000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -418,7 +418,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 21600000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 21450000, .endFreq = 21995000, .mode = TRX_MODE_SAM},
+                {.startFreq = 21450000, .endFreq = 21995000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -450,7 +450,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .defaultFreq = 25800000,
         .regions =
             (const REGION_MAP[1]){
-                {.startFreq = 25500000, .endFreq = 26200000, .mode = TRX_MODE_SAM},
+                {.startFreq = 25500000, .endFreq = 26200000, .mode = TRX_MODE_SAM_STEREO},
             },
         .regionsCount = 1,
         .channels = NULL,
