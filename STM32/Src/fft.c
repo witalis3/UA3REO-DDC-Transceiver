@@ -493,6 +493,7 @@ void FFT_Init(void) {
 	dma_memset(FFTInput_Q_B, 0x00, sizeof(FFTInput_Q_B));
 	dma_memset(FFTOutput_mean, 0x00, sizeof(FFTOutput_mean));
 	dma_memset(FFTInput_tmp, 0x00, sizeof(FFTInput_tmp));
+	dma_memset(fft_peaks, 0x00, sizeof(fft_peaks));
 	NeedWTFRedraw = true;
 	FFT_new_buffer_ready = false;
 

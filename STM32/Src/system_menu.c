@@ -3274,9 +3274,8 @@ static void SYSMENU_HANDL_TX_CompressorSpeed_AMFM(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TX_CompressorMaxGain_SSB(int8_t direction) {
-	TRX.TX_Compressor_maxgain_SSB += direction;
-	if (TRX.TX_Compressor_maxgain_SSB < 1) {
-		TRX.TX_Compressor_maxgain_SSB = 1;
+	if (TRX.TX_Compressor_maxgain_SSB > 0 || direction > 0) {
+		TRX.TX_Compressor_maxgain_SSB += direction;
 	}
 	if (TRX.TX_Compressor_maxgain_SSB > 30) {
 		TRX.TX_Compressor_maxgain_SSB = 30;
@@ -3284,9 +3283,8 @@ static void SYSMENU_HANDL_TX_CompressorMaxGain_SSB(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TX_CompressorMaxGain_AMFM(int8_t direction) {
-	TRX.TX_Compressor_maxgain_AMFM += direction;
-	if (TRX.TX_Compressor_maxgain_AMFM < 1) {
-		TRX.TX_Compressor_maxgain_AMFM = 1;
+	if (TRX.TX_Compressor_maxgain_AMFM > 0 || direction > 0) {
+		TRX.TX_Compressor_maxgain_AMFM += direction;
 	}
 	if (TRX.TX_Compressor_maxgain_AMFM > 30) {
 		TRX.TX_Compressor_maxgain_AMFM = 30;
@@ -4131,6 +4129,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_Lens(int8_t direction) {
 	if (direction < 0) {
 		TRX.FFT_Lens = false;
 	}
+
+	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_HoldPeaks(int8_t direction) {
@@ -4140,6 +4140,8 @@ static void SYSMENU_HANDL_SCREEN_FFT_HoldPeaks(int8_t direction) {
 	if (direction < 0) {
 		TRX.FFT_HoldPeaks = false;
 	}
+
+	FFT_Init();
 }
 
 static void SYSMENU_HANDL_SCREEN_LCD_Brightness(int8_t direction) {

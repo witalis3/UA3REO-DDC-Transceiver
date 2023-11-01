@@ -342,6 +342,8 @@ void LogQSO(void) {
 	}
 
 	float64_t QSO_Freq = ((float64_t)FT8_BND_Freq + (float64_t)cursor_freq / 1000) / 1000; // Calculate the QSO Frequency in MHz (for example 7.075500)
+	char sQSO_Freq[12];
+	sprintf(sQSO_Freq, "%1.6f", (float64_t)QSO_Freq);
 
 	GetQSODate();  // Get the date to be able to put it in the Log later
 	GetQSOTime(0); // End Time
@@ -360,9 +362,9 @@ void LogQSO(void) {
 	if (SD_Present) {
 		sprintf(StrToLog,
 		        "<call:%d>%s <gridsquare:4>%s <mode:3>FT8 <rst_sent:3>%3i <rst_rcvd:%d>%s <qso_date:8>%s <time_on:6>%s <qso_date_off:8>%s "
-		        "<time_off:6>%s <band:3>%s <freq:8>%1.6f <station_callsign:5>%s <my_gridsquare:6>%s <eor>\r\n",
-		        strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, cBND, (float64_t)QSO_Freq,
-		        TRX.CALLSIGN, TRX.LOCATOR);
+		        "<time_off:6>%s <band:%d>%s <freq:%d>%s <station_callsign:%d>%s <my_gridsquare:6>%s <eor>\r\n",
+		        strlen(Target_Call), Target_Call, Target_Grid, Target_RSL, strlen(RapRcv_RSL_filtered), RapRcv_RSL_filtered, QSODate, QSOOnTime, QSODate, QSOOffTime, strlen(cBND), cBND,
+		        strlen(sQSO_Freq), sQSO_Freq, strlen(TRX.CALLSIGN), TRX.CALLSIGN, TRX.LOCATOR);
 
 		strcpy((char *)SD_workbuffer_A, "FT8_QSO_Log.adi"); // File name
 		strcpy((char *)SD_workbuffer_B, (char *)StrToLog);  // Data to write
