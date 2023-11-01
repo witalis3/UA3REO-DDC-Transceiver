@@ -1048,6 +1048,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.CW_Iambic_Type", (uint64_t *)&TRX.CW_Iambic_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.CW_Invert", (uint64_t *)&TRX.CW_Invert, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Auto_CW_Mode", (uint64_t *)&TRX.Auto_CW_Mode, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.CW_In_SSB", (uint64_t *)&TRX.CW_In_SSB, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.CW_PTT_Type", (uint64_t *)&TRX.CW_PTT_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_STRING("TRX.CW_Macros_1", TRX.CW_Macros_1);
 			SD_WRITE_SETT_STRING("TRX.CW_Macros_2", TRX.CW_Macros_2);
@@ -2049,6 +2050,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.Auto_CW_Mode") == 0) {
 		TRX.Auto_CW_Mode = bval;
+	}
+	if (strcmp(name, "TRX.CW_In_SSB") == 0) {
+		TRX.CW_In_SSB = bval;
 	}
 	if (strcmp(name, "TRX.CW_PTT_Type") == 0) {
 		TRX.CW_PTT_Type = (uint8_t)uintval;

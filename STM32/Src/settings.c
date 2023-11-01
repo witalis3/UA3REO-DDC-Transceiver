@@ -317,6 +317,7 @@ void LoadSettings(bool clear) {
 		TRX.CW_Iambic_Type = 1;                                         // CW Iambic Keyer type 0 - A, 1 - B
 		TRX.CW_Invert = false;                                          // CW dash/dot inversion
 		TRX.Auto_CW_Mode = false;                                       // Switch to CW mode if key pressed
+		TRX.CW_In_SSB = false;                                          // CW manipulation on SSB mode
 		TRX.CW_PTT_Type = KEY_AND_EXT_PTT;                              // CW PTT type (Key / External tangent ptt)
 		strcpy(TRX.CW_Macros_1, "CQ CQ CQ");                            // CW Macros 1
 		strcpy(TRX.CW_Macros_2, "CQ TEST");                             // CW Macros 2

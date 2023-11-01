@@ -175,6 +175,19 @@ void TRX_Restart_Mode() {
 		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
 	}
 
+	// CW_In_SSB
+	if (CW_In_SSB_applyed == 1 && !TRX_on_TX) { // return to LSB
+		CW_In_SSB_applyed = 0;
+		TRX_setMode(TRX_MODE_LSB, CurrentVFO);
+		TRX_setFrequency(CurrentVFO->Freq + TRX.CW_Pitch, CurrentVFO);
+	}
+	if (CW_In_SSB_applyed == 2 && !TRX_on_TX) { // return to USB
+		CW_In_SSB_applyed = 0;
+		TRX_setMode(TRX_MODE_USB, CurrentVFO);
+		TRX_setFrequency(CurrentVFO->Freq - TRX.CW_Pitch, CurrentVFO);
+	}
+
+	// XIT
 	if (TRX.XIT_Enabled) {
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 	}
