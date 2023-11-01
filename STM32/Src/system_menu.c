@@ -4165,7 +4165,9 @@ static void SYSMENU_HANDL_SCREEN_LCD_SleepTimeout(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction) {
-	TRX.FFT_3D += direction;
+	if (TRX.FFT_3D > 0 || direction > 0) {
+		TRX.FFT_3D += direction;
+	}
 	if (TRX.FFT_3D > 2) {
 		TRX.FFT_3D = 2;
 	}

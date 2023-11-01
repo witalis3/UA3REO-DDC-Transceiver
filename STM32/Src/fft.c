@@ -429,6 +429,8 @@ void FFT_PreInit(void) {
 			window_multipliers[i] = 1.0f;
 		}
 	}
+
+	dma_memset(indexed_wtf_buffer, GET_FFTHeight, sizeof(indexed_wtf_buffer));
 }
 
 void FFT_Init(void) {
@@ -2132,7 +2134,7 @@ static void FFT_3DPrintFFT(void) {
 				continue;
 			}
 			uint32_t print_x = x_left_offset + (uint32_t)roundf((float32_t)wtf_x * x_compress);
-			if (prev_x == print_x) {
+			if (prev_x == print_x || print_x >= LAYOUT->FFT_PRINT_SIZE) {
 				continue;
 			}
 			prev_x = print_x;
@@ -2145,14 +2147,14 @@ static void FFT_3DPrintFFT(void) {
 				}
 
 				for (uint16_t h = 0; h < line_max; h++) {
-					if (print_output_buffer[print_bin_height + h][print_x] != palette_wtf[fftHeight]) {
+					if (print_output_buffer[print_bin_height + h][print_x] != palette_wtf[fftHeight]) { // if not bg - stop
 						break;
 					}
 					print_output_buffer[print_bin_height + h][print_x] = palette_wtf[indexed_wtf_buffer[wtf_yindex][wtf_x] + h];
 				}
 			}
-			if (TRX.FFT_3D == 2) { // pixel mode
-				if (print_output_buffer[print_bin_height][print_x] == palette_wtf[fftHeight]) {
+			if (TRX.FFT_3D == 2) {                                                            // pixel mode
+				if (print_output_buffer[print_bin_height][print_x] == palette_wtf[fftHeight]) { // print if bg
 					print_output_buffer[print_bin_height][print_x] = palette_wtf[indexed_wtf_buffer[wtf_yindex][wtf_x]];
 				}
 			}
@@ -2161,35 +2163,38 @@ static void FFT_3DPrintFFT(void) {
 
 	// draw front fft
 	for (uint32_t fft_y = 0; fft_y < fftHeight; fft_y++) {
-		for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
+		int32_t buff_y = wtfHeight - decoder_offset + fft_y;
+		for (int32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
 			// bg
 			if (fft_y > (fftHeight - fft_header[fft_x])) {
 				if (fft_x >= bw_rx1_line_start && fft_x <= bw_rx1_line_end) { // rx1
-					print_output_buffer[wtfHeight - decoder_offset + fft_y][fft_x] = palette_bw_fft_colors[fft_y];
-				} else if (TRX.Show_Sec_VFO && TRX.FFT_BW_Style != 3 && (int32_t)fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end) { // rx2
-					print_output_buffer[wtfHeight - decoder_offset + fft_y][fft_x] = addColor(palette_bw_fft_colors[fft_y], FFT_SEC_BW_BRIGHTNESS, -FFT_SEC_BW_BRIGHTNESS, FFT_SEC_BW_BRIGHTNESS);
+					print_output_buffer[buff_y][fft_x] = palette_bw_fft_colors[fft_y];
+				} else if (TRX.Show_Sec_VFO && TRX.FFT_BW_Style != 3 && fft_x >= bw_rx2_line_start && (int32_t)fft_x <= bw_rx2_line_end) { // rx2
+					print_output_buffer[buff_y][fft_x] = addColor(palette_bw_fft_colors[fft_y], FFT_SEC_BW_BRIGHTNESS, -FFT_SEC_BW_BRIGHTNESS, FFT_SEC_BW_BRIGHTNESS);
 				} else {
-					print_output_buffer[wtfHeight - decoder_offset + fft_y][fft_x] = palette_fft[fft_y];
+					print_output_buffer[buff_y][fft_x] = palette_fft[fft_y];
 				}
 			}
 		}
 	}
 
 	// draw contour
-	uint32_t fft_y_prev = 0;
+	int32_t buff_y_prev = 0;
+	uint16_t color = palette_fft[fftHeight / 2];
 	for (uint32_t fft_x = 0; fft_x < LAYOUT->FFT_PRINT_SIZE; fft_x++) {
-		uint32_t fft_y = fftHeight - fft_header[fft_x];
-		int32_t y_diff = (int32_t)fft_y - (int32_t)fft_y_prev;
+		int32_t fft_y = fftHeight - fft_header[fft_x];
+		int32_t buff_y = wtfHeight - decoder_offset - 1 + fft_y;
+		int32_t y_diff = buff_y - buff_y_prev;
 		if (fft_x == 0 || (y_diff <= 1 && y_diff >= -1)) {
-			print_output_buffer[wtfHeight - decoder_offset - 1 + fft_y][fft_x] = palette_fft[fftHeight];
+			print_output_buffer[buff_y][fft_x] = color;
 		} else {
 			for (uint32_t l = 0; l < (abs(y_diff / 2) + 1); l++) // draw line
 			{
-				print_output_buffer[wtfHeight - decoder_offset - 1 + fft_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = palette_fft[fftHeight];
-				print_output_buffer[wtfHeight - decoder_offset - 1 + fft_y + ((y_diff > 0) ? -l : l)][fft_x] = palette_fft[fftHeight];
+				print_output_buffer[buff_y_prev + ((y_diff > 0) ? l : -l)][fft_x - 1] = color;
+				print_output_buffer[buff_y + ((y_diff > 0) ? -l : l)][fft_x] = color;
 			}
 		}
-		fft_y_prev = fft_y;
+		buff_y_prev = buff_y;
 	}
 
 // DXCluster labels
