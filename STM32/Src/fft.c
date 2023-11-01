@@ -2139,22 +2139,25 @@ static void FFT_3DPrintFFT(void) {
 			}
 			prev_x = print_x;
 
+			uint16_t bg_color = palette_wtf[fftHeight];
+
 			if (TRX.FFT_3D == 1) // line mode
 			{
-				int32_t line_max = (fftHeight - indexed_wtf_buffer[wtf_yindex][wtf_x] - 1);
+				int32_t line_max = fftHeight - indexed_wtf_buffer[wtf_yindex][wtf_x] - 1;
 				if ((print_bin_height + line_max) >= FFT_AND_WTF_HEIGHT) {
 					line_max = FFT_AND_WTF_HEIGHT - print_bin_height - 1;
 				}
 
 				for (uint16_t h = 0; h < line_max; h++) {
-					if (print_output_buffer[print_bin_height + h][print_x] != palette_wtf[fftHeight]) { // if not bg - stop
+					uint32_t buff_y = print_bin_height + h;
+					if (print_output_buffer[buff_y][print_x] != bg_color) {
 						break;
 					}
-					print_output_buffer[print_bin_height + h][print_x] = palette_wtf[indexed_wtf_buffer[wtf_yindex][wtf_x] + h];
+					print_output_buffer[buff_y][print_x] = palette_wtf[indexed_wtf_buffer[wtf_yindex][wtf_x] + h];
 				}
 			}
-			if (TRX.FFT_3D == 2) {                                                            // pixel mode
-				if (print_output_buffer[print_bin_height][print_x] == palette_wtf[fftHeight]) { // print if bg
+			if (TRX.FFT_3D == 2) { // pixel mode
+				if (print_output_buffer[print_bin_height][print_x] == bg_color) {
 					print_output_buffer[print_bin_height][print_x] = palette_wtf[indexed_wtf_buffer[wtf_yindex][wtf_x]];
 				}
 			}

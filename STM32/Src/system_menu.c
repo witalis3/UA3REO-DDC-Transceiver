@@ -8486,18 +8486,6 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction) {
 	}
 
 #if HRDW_HAS_WIFI
-	if (sysmenu_wifi_selectap1_menu_opened) {
-		SYSMENU_WIFI_SelectAP1MenuMove(0);
-		return;
-	}
-	if (sysmenu_wifi_selectap2_menu_opened) {
-		SYSMENU_WIFI_SelectAP2MenuMove(0);
-		return;
-	}
-	if (sysmenu_wifi_selectap3_menu_opened) {
-		SYSMENU_WIFI_SelectAP3MenuMove(0);
-		return;
-	}
 	if (sysmenu_wifi_setAP1password_menu_opened) {
 		SYSMENU_RotateChar(WIFI.Password_1, direction);
 		return;
@@ -8845,14 +8833,24 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		SYSMENU_eventRotateSystemMenu(0);
 		return;
 	}
-
 	if (SYSMENU_auto_calibration_opened) {
 		AUTO_CALIBRATION_Enc2Click();
 		return;
 	}
-
 	if (sysmenu_filemanager_opened) {
 		SYSMENU_eventRotateSystemMenu(1);
+		return;
+	}
+	if (sysmenu_wifi_selectap1_menu_opened) {
+		SYSMENU_WIFI_SelectAP1MenuMove(0);
+		return;
+	}
+	if (sysmenu_wifi_selectap2_menu_opened) {
+		SYSMENU_WIFI_SelectAP2MenuMove(0);
+		return;
+	}
+	if (sysmenu_wifi_selectap3_menu_opened) {
+		SYSMENU_WIFI_SelectAP3MenuMove(0);
 		return;
 	}
 
