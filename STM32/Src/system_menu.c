@@ -8848,6 +8848,8 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		SYSMENU_eventRotateSystemMenu(1);
 		return;
 	}
+	
+#if HRDW_HAS_WIFI
 	if (sysmenu_wifi_selectap1_menu_opened) {
 		SYSMENU_WIFI_SelectAP1MenuMove(0);
 		return;
@@ -8860,7 +8862,8 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		SYSMENU_WIFI_SelectAP3MenuMove(0);
 		return;
 	}
-
+#endif
+	
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN ||
 	    sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE) {
 		sysmenu_item_selected_by_enc2 = false;
