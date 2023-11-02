@@ -169,7 +169,7 @@ void SELF_TEST_Draw(void) {
 		static int8_t prev_adc_state[16] = {0};
 
 		TRX_setFrequency(SELF_TEST_frequency_HF, CurrentVFO);
-		LCDDriver_printText("Insert ANT 14MHz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		LCDDriver_printText("Connect ANT 14MHz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		pos_y += margin_bottom;
 
 		LCDDriver_printText("ADC RAW Data", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
@@ -226,11 +226,11 @@ void SELF_TEST_Draw(void) {
 
 		if (SELF_TEST_current_page == 3) {
 			TRX_setFrequency(SELF_TEST_frequency_HF, CurrentVFO);
-			LCDDriver_printText("Insert ANT 14MHz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("Connect ANT 14MHz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		}
 		if (SELF_TEST_current_page == 4) {
 			TRX_setFrequency(SELF_TEST_frequency_VHF, CurrentVFO);
-			LCDDriver_printText("Insert ANT 145MHz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+			LCDDriver_printText("Connect ANT 145MHz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		}
 		pos_y += margin_bottom;
 
@@ -381,7 +381,7 @@ void SELF_TEST_Draw(void) {
 		static uint32_t current_test_start_time = 0;
 
 		TRX_setFrequency(SELF_TEST_frequency_HF, CurrentVFO);
-		LCDDriver_printText("Insert ANT 14MHz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		LCDDriver_printText("Connect ANT 14MHz", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
 		pos_y += margin_bottom;
 
 		// predefine

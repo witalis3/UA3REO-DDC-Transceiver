@@ -53,15 +53,9 @@ void ATU_Process(void) {
 	if (!ATU_BestValsProbed) {
 		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 		if (band >= 0) {
-			if (!TRX.ANT_selected) {
-				TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
-				TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
-				TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
-			} else {
-				TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
-				TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
-				TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
-			}
+			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
+			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
+			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
 		}
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
@@ -100,15 +94,9 @@ void ATU_Process(void) {
 
 			int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 			if (band >= 0) {
-				if (!TRX.ANT_selected) {
-					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I = TRX.ATU_I;
-					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C = TRX.ATU_C;
-					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T = TRX.ATU_T;
-				} else {
-					TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I = TRX.ATU_I;
-					TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C = TRX.ATU_C;
-					TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T = TRX.ATU_T;
-				}
+				TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_I;
+				TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_C;
+				TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_T;
 			}
 			return;
 		}
@@ -270,15 +258,9 @@ void ATU_Process(void) {
 
 			int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 			if (band >= 0) {
-				if (!TRX.ANT_selected) {
-					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I = TRX.ATU_I;
-					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C = TRX.ATU_C;
-					TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T = TRX.ATU_T;
-				} else {
-					TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I = TRX.ATU_I;
-					TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C = TRX.ATU_C;
-					TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T = TRX.ATU_T;
-				}
+				TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_I;
+				TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_C;
+				TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_T;
 			}
 
 			BUTTONHANDLER_TUNE(0);

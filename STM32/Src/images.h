@@ -37,6 +37,8 @@ extern const tIMAGE VFO_A_B_ICO;
 extern const tIMAGE VFO_B_A_ICO;
 extern const tIMAGE ANT1_ICO;
 extern const tIMAGE ANT2_ICO;
+extern const tIMAGE ANT3_ICO;
+extern const tIMAGE ANT4_ICO;
 extern const tIMAGE ANT1_2_ICO;
 extern const tIMAGE MODE_ALL;
 extern const tIMAGE MODE_ICO_AM;

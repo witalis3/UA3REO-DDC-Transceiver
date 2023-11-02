@@ -288,6 +288,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		BPF2_A0 = false;
 	}
 
+	uint8_t currentAnt = TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX;
+
 	// VHF_RX
 	bool wideband = CurrentVFO->RXFreqAfterTransverters > 60000000 && band != BANDID_FM && band != BANDID_2m && band != BANDID_70cm && band != BANDID_23cm;
 	bool VHF_RXA = band == BANDID_70cm || band == BANDID_23cm || band == BANDID_FM;
@@ -317,7 +319,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	shift_array[49] = TRX.ATT && att_val_16;                                                                                // U20	VHF_ATT16
 	shift_array[48] = false;                                                                                                // U20	FAN (code in bottom)
 
-	shift_array[47] = TRX.ANT_selected;               // U21 STPIC6C595TTR	ANT
+	shift_array[47] = currentAnt == TRX_ANT_2;        // U21 STPIC6C595TTR	ANT
 	shift_array[46] = TRX.TUNER_Enabled && TRX.ATU_T; // U21	TUNE T
 	shift_array[45] = false;                          // U21	Reserved
 	shift_array[44] = false;                          // U21	Reserved

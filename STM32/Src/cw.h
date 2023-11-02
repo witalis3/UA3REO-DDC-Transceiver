@@ -23,5 +23,6 @@ volatile extern bool CW_key_dot_hard;
 volatile extern bool CW_key_dash_hard;
 volatile extern uint_fast8_t KEYER_symbol_status;
 volatile extern bool CW_Process_Macros;
+volatile extern uint8_t CW_In_SSB_applyed;
 
 #endif

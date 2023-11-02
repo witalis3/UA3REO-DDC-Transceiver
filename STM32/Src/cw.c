@@ -23,6 +23,7 @@ volatile bool CW_key_dot_hard = false;
 volatile bool CW_key_dash_hard = false;
 volatile uint_fast8_t KEYER_symbol_status = 0; // status (signal or period) of the automatic key symbol
 volatile bool CW_Process_Macros = false;
+volatile uint8_t CW_In_SSB_applyed = 0; // 0 - unapplied, 1 - old LSB, 2 - old USB
 
 static uint32_t KEYER_symbol_start_time = 0; // start time of the automatic key character
 
@@ -63,8 +64,17 @@ void CW_key_change(void) {
 	if (CW_key_dot_hard != TRX_new_key_dot_hard) {
 		CW_key_dot_hard = TRX_new_key_dot_hard;
 
-		if (CW_key_dot_hard && CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited && TRX.Auto_CW_Mode) {
+		if (CW_key_dot_hard && (TRX.Auto_CW_Mode || TRX.CW_In_SSB) && CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited) {
+			if (TRX.CW_In_SSB && CurrentVFO->Mode == TRX_MODE_LSB) {
+				TRX_setFrequency(CurrentVFO->Freq - TRX.CW_Pitch, CurrentVFO);
+				CW_In_SSB_applyed = 1;
+			}
+			if (TRX.CW_In_SSB && CurrentVFO->Mode == TRX_MODE_USB) {
+				TRX_setFrequency(CurrentVFO->Freq + TRX.CW_Pitch, CurrentVFO);
+				CW_In_SSB_applyed = 2;
+			}
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
+
 			LCD_UpdateQuery.FreqInfoRedraw = true;
 			LCD_UpdateQuery.TopButtons = true;
 			LCD_UpdateQuery.StatusInfoGUIRedraw = true;
@@ -97,8 +107,17 @@ void CW_key_change(void) {
 	if (CW_key_dash_hard != TRX_new_key_dash_hard) {
 		CW_key_dash_hard = TRX_new_key_dash_hard;
 
-		if (CW_key_dash_hard && CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited && TRX.Auto_CW_Mode) {
+		if (CW_key_dash_hard && (TRX.Auto_CW_Mode || TRX.CW_In_SSB) && CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited) {
+			if (TRX.CW_In_SSB && CurrentVFO->Mode == TRX_MODE_LSB) {
+				TRX_setFrequency(CurrentVFO->Freq - TRX.CW_Pitch, CurrentVFO);
+				CW_In_SSB_applyed = 1;
+			}
+			if (TRX.CW_In_SSB && CurrentVFO->Mode == TRX_MODE_USB) {
+				TRX_setFrequency(CurrentVFO->Freq + TRX.CW_Pitch, CurrentVFO);
+				CW_In_SSB_applyed = 2;
+			}
 			TRX_setMode(TRX_MODE_CW, CurrentVFO);
+
 			LCD_UpdateQuery.FreqInfoRedraw = true;
 			LCD_UpdateQuery.TopButtons = true;
 			LCD_UpdateQuery.StatusInfoGUIRedraw = true;

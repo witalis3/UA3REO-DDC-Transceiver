@@ -1137,10 +1137,7 @@ static void getFT450Mode(uint8_t VFO_Mode, char *out) {
 	if (VFO_Mode == TRX_MODE_WFM) {
 		strcpy(out, "4");
 	}
-	if (VFO_Mode == TRX_MODE_AM) {
-		strcpy(out, "5");
-	}
-	if (VFO_Mode == TRX_MODE_SAM) {
+	if (VFO_Mode == TRX_MODE_AM || VFO_Mode == TRX_MODE_SAM_STEREO || VFO_Mode == TRX_MODE_SAM_LSB || VFO_Mode == TRX_MODE_SAM_USB) {
 		strcpy(out, "5");
 	}
 	if (VFO_Mode == TRX_MODE_LOOPBACK) {
@@ -1161,7 +1158,7 @@ static void getTS2000Mode(uint8_t VFO_Mode, char *out) {
 	if (VFO_Mode == TRX_MODE_NFM || VFO_Mode == TRX_MODE_WFM) {
 		strcpy(out, "4");
 	}
-	if (VFO_Mode == TRX_MODE_AM || VFO_Mode == TRX_MODE_SAM) {
+	if (VFO_Mode == TRX_MODE_AM || VFO_Mode == TRX_MODE_SAM_STEREO || VFO_Mode == TRX_MODE_SAM_LSB || VFO_Mode == TRX_MODE_SAM_USB) {
 		strcpy(out, "5");
 	}
 	if (VFO_Mode == TRX_MODE_DIGI_L) {
@@ -1201,7 +1198,7 @@ static uint8_t setFT450Mode(char *FT450_Mode) {
 		return TRX_MODE_NFM;
 	}
 	if (strcmp(FT450_Mode, "05") == 0 || strcmp(FT450_Mode, "5") == 0) {
-		return TRX_MODE_SAM;
+		return TRX_MODE_SAM_STEREO;
 	}
 	println("Unknown mode ", FT450_Mode);
 	return TRX_MODE_USB;
@@ -1221,7 +1218,7 @@ static uint8_t setTS2000Mode(char *TS2000_Mode) {
 		return TRX_MODE_NFM;
 	}
 	if (strcmp(TS2000_Mode, "5") == 0) {
-		return TRX_MODE_SAM;
+		return TRX_MODE_SAM_STEREO;
 	}
 	if (strcmp(TS2000_Mode, "6") == 0) {
 		return TRX_MODE_DIGI_L;

@@ -856,7 +856,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) { // mem channels select
 		int8_t currentMemIndex = 0;
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
-			if (CurrentVFO->Freq == CALIBRATE.MEMORY_CHANNELS[i].Freq) {
+			if (CurrentVFO->Freq == CALIBRATE.MEMORY_CHANNELS[i].freq) {
 				currentMemIndex = i;
 			}
 		}
@@ -869,7 +869,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 			currentMemIndex = 0;
 		}
 
-		while (currentMemIndex < MEMORY_CHANNELS_COUNT && currentMemIndex > 0 && CALIBRATE.MEMORY_CHANNELS[currentMemIndex].Freq == 0) {
+		while (currentMemIndex < MEMORY_CHANNELS_COUNT && currentMemIndex > 0 && CALIBRATE.MEMORY_CHANNELS[currentMemIndex].freq == 0) {
 			currentMemIndex += direction * 1;
 		}
 
@@ -920,7 +920,7 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) { // mem channels adjust
 			bool has_mem_channels = false;
 			for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
-				if (CALIBRATE.MEMORY_CHANNELS[i].Freq > 0) {
+				if (CALIBRATE.MEMORY_CHANNELS[i].freq > 0) {
 					has_mem_channels = true;
 				}
 			}
@@ -1063,7 +1063,7 @@ static void FRONTPANEL_ENCODER4_Rotated(int8_t direction) // rotated encoder, ha
 			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
 				SYSMENU_HANDL_FILTER_SSB_LPF_RX_pass(direction);
 			}
-			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 				SYSMENU_HANDL_FILTER_AM_LPF_RX_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
@@ -1079,7 +1079,7 @@ static void FRONTPANEL_ENCODER4_Rotated(int8_t direction) // rotated encoder, ha
 			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
 				SYSMENU_HANDL_FILTER_SSB_LPF_TX_pass(direction);
 			}
-			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 				SYSMENU_HANDL_FILTER_AM_LPF_TX_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
@@ -1144,7 +1144,7 @@ void FRONTPANEL_ENC2SW_validate() {
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) { // mem channels adjust
 		bool has_mem_channels = false;
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
-			if (CALIBRATE.MEMORY_CHANNELS[i].Freq > 0) {
+			if (CALIBRATE.MEMORY_CHANNELS[i].freq > 0) {
 				has_mem_channels = true;
 			}
 		}

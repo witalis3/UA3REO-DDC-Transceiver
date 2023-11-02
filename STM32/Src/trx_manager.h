@@ -70,6 +70,7 @@ extern void BUTTONHANDLER_PGA_ONLY(uint32_t parameter);
 extern void BUTTONHANDLER_DRV_ONLY(uint32_t parameter);
 extern void BUTTONHANDLER_AGC(uint32_t parameter);
 extern void BUTTONHANDLER_AGC_SPEED(uint32_t parameter);
+extern void BUTTONHANDLER_AGC_MaxGain(uint32_t parameter);
 extern void BUTTONHANDLER_REPEATER_MODE(uint32_t parameter);
 extern void BUTTONHANDLER_DNR(uint32_t parameter);
 extern void BUTTONHANDLER_DNR_HOLD(uint32_t parameter);
@@ -124,6 +125,8 @@ extern void BUTTONHANDLER_SCREENSHOT(uint32_t parameter);
 extern void BUTTONHANDLER_CW_MACROS(uint32_t parameter);
 extern void BUTTONHANDLER_DPD(uint32_t parameter);
 extern void BUTTONHANDLER_DPD_CALIBRATE(uint32_t parameter);
+extern void BUTTONHANDLER_MEMO_WRITE(uint32_t parameter);
+extern void BUTTONHANDLER_MEMO_READ(uint32_t parameter);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_soft;
@@ -191,5 +194,6 @@ volatile extern uint_fast16_t CW_Key_Timeout_est;
 extern uint32_t dbg_FPGA_samples;
 extern uint8_t TRX_TX_Harmonic;
 extern uint8_t TRX_TX_sendZeroes;
+extern int8_t TRX_MemoryChannelSelected;
 
 #endif

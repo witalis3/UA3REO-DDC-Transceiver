@@ -83,6 +83,7 @@ extern void SYSMENU_RX_IF_HOTKEY(void);
 extern void SYSMENU_RX_SQUELCH_HOTKEY(void);
 extern void SYSMENU_RX_DNR_HOTKEY(void);
 extern void SYSMENU_RX_AGC_HOTKEY(void);
+extern void SYSMENU_RX_AGC_MaxGain_HOTKEY(void);
 extern void SYSMENU_RX_NB_HOTKEY(void);
 extern void SYSMENU_TX_RFPOWER_HOTKEY(void);
 extern void SYSMEUN_CALLSIGN_HOTKEY(void);

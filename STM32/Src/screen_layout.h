@@ -50,6 +50,8 @@ typedef const struct {
 	const uint16_t TOPBUTTONS_MUTE_Y;
 	const float32_t TOPBUTTONS_LOCK_X;
 	const uint16_t TOPBUTTONS_LOCK_Y;
+	const uint8_t TOPBUTTONS_ROUND;
+	const GFXfont *TOPBUTTONS_FONT;
 	// Clock
 	const uint16_t CLOCK_POS_Y;
 	const uint16_t CLOCK_POS_HRS_X;
@@ -124,6 +126,7 @@ typedef const struct {
 	const GFXfont *STATUS_TXRX_FONT;
 	const uint16_t STATUS_VFO_X_OFFSET;
 	const int16_t STATUS_VFO_Y_OFFSET;
+	const int16_t STATUS_VFO_B_Y_OFFSET;
 	const uint16_t STATUS_VFO_BLOCK_WIDTH;
 	const uint16_t STATUS_VFO_BLOCK_HEIGHT;
 	const uint16_t STATUS_ANT_X_OFFSET;

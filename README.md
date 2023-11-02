@@ -200,7 +200,6 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **RX AGC Max gain** - Limit of AGC gain, dB
 * **RX AGC Speed** - AGC (automatic signal level control) response speed for reception (more-faster)
 * **RX EQ xxx** - Receiver equalizer levels
-* **SAM Mode** - Select SAM mode type (Stereo/LSB/USB)
 * **TRX Samplerate** - Max FFT/samplerate on CW/SSB/NFM/DIGI/etc modes
 * **FM Samplerate** - Max FFT/samplerate on NFM/WFM mode
 * **VAD Threshold** - VAD voice detector threshold (noise suppressor for SSB mode and SCAN mode)
@@ -244,6 +243,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 ### CW Settings
 
 * **Auto CW Mode** - Automatic transition to CW mode when the key is pressed
+* **CW In SSB** - Allow CW TX manipulation in SSB mode
 * **DotToDash Rate** - Keyer dash to dot length rate
 * **Iambic Keyer** - Enable Iambic mode keyer
 * **Iambic Type** - Type of Iambic keyer (A/B)
@@ -369,7 +369,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **MAX SWR** - Maximum VSWR before protection operation
 * **NOTX xxx** - Disable TX on selected bands
 * **OTA Update** - Enable OTA firmware update over WiFi
-* **RF GAIN xxx** - Calibration of the maximum output power for each range. RF GAIN 0-100% - 50% driver bias, 101-200% - 75% driver bias, 201-300% - 100% driver bias.
+* **RF GAIN xxx** - Calibration of the maximum TX output power for each range
 * **RF-Unit Type** - RF-Unit Type (QRP / BIG)
 * **RTC COARSE CALIBR** - Very coarse clock crystal calibration
 * **RTC FINE CALIBR** - Clock crystal calibration, one division is 0.954 ppm
@@ -392,6 +392,10 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Transverter Offset, MHz** - Offset frequency shown on the display (for custom transverters)
 * **Transverter xxx IF, MHz** - Setting the IF frequency of the transverter
 * **Transverter xxx RF, MHz** - Setting the RF frequency of the transceiver to match the IF
+
+### Memory Channels
+
+* Changing names for transceiver memory channels
 
 ### Set Clock Time
 

@@ -9,14 +9,14 @@ uint16_t INA226_Read2Byte(uint8_t reg_addr) {
 #ifdef HAS_TOUCHPAD
 	uint16_t reg_data = 0;
 
-	i2c_beginTransmission_u8(&I2C_TOUCHPAD, INA226_ADDR);
-	i2c_write_u8(&I2C_TOUCHPAD, reg_addr);
-	uint8_t res = i2c_endTransmission(&I2C_TOUCHPAD);
+	i2c_beginTransmission_u8(&I2C_SHARED_BUS, INA226_ADDR);
+	i2c_write_u8(&I2C_SHARED_BUS, reg_addr);
+	uint8_t res = i2c_endTransmission(&I2C_SHARED_BUS);
 
 	if (res == 0) {
-		if (i2c_beginReceive_u8(&I2C_TOUCHPAD, INA226_ADDR)) {
-			reg_data = i2c_Read_Word(&I2C_TOUCHPAD);
-			i2c_stop(&I2C_TOUCHPAD);
+		if (i2c_beginReceive_u8(&I2C_SHARED_BUS, INA226_ADDR)) {
+			reg_data = i2c_Read_HalfWord(&I2C_SHARED_BUS);
+			i2c_stop(&I2C_SHARED_BUS);
 		}
 	} else if (TRX.Debug_Type == TRX_DEBUG_I2C) {
 		println("I2C INA226 error: ", res);
@@ -33,12 +33,12 @@ uint8_t INA226_Write2Byte(uint8_t reg_addr, uint16_t reg_data) {
 	uint8_t data_high = (uint8_t)((reg_data & 0xFF00) >> 8);
 	uint8_t data_low = (uint8_t)reg_data & 0x00FF;
 
-	i2c_beginTransmission_u8(&I2C_TOUCHPAD, INA226_ADDR);
-	i2c_write_u8(&I2C_TOUCHPAD, reg_addr);
-	i2c_write_u8(&I2C_TOUCHPAD, data_high);
-	i2c_write_u8(&I2C_TOUCHPAD, data_low);
+	i2c_beginTransmission_u8(&I2C_SHARED_BUS, INA226_ADDR);
+	i2c_write_u8(&I2C_SHARED_BUS, reg_addr);
+	i2c_write_u8(&I2C_SHARED_BUS, data_high);
+	i2c_write_u8(&I2C_SHARED_BUS, data_low);
 
-	uint8_t res = i2c_endTransmission(&I2C_TOUCHPAD);
+	uint8_t res = i2c_endTransmission(&I2C_SHARED_BUS);
 
 	return res;
 #else
@@ -47,6 +47,12 @@ uint8_t INA226_Write2Byte(uint8_t reg_addr, uint16_t reg_data) {
 }
 
 void INA226_Init(void) {
+#ifdef HAS_TOUCHPAD
+	if (I2C_SHARED_BUS.locked) {
+		return;
+	}
+	I2C_SHARED_BUS.locked = true;
+
 	// 16 times average, 1.1ms, 1.1ms, continuous measurement of shunt voltage and bus voltage
 	// INA226_Write2Byte(Config_Reg, 0x4527);//0100_010_100_100_111
 
@@ -67,11 +73,20 @@ void INA226_Init(void) {
 
 	// Write the calibration bytes (used for the current calculation)
 	INA226_Write2Byte(Calib_Reg, (uint16_t)INA226_Calibration);
+
+	I2C_SHARED_BUS.locked = false;
+#endif
 }
 
 // Read the INA226 Voltage and Current data
 void Read_INA226_Data(void) {
-#define INA226_Read_Tm 6
+#ifdef HAS_TOUCHPAD
+	if (I2C_SHARED_BUS.locked) {
+		return;
+	}
+	I2C_SHARED_BUS.locked = true;
+
+	const uint8_t INA226_Read_Tm = 6;
 	static uint8_t Rd_Count;
 
 	Rd_Count++;
@@ -83,6 +98,9 @@ void Read_INA226_Data(void) {
 		Voltage = INA226_Read2Byte(Bus_V_Reg) * 0.00125f + CALIBRATE.INA226_VoltageOffset;
 		Current = INA226_Read2Byte(Current_Reg) * 0.001f; // multiply the Current register value with the calibration coefficient (mA/Bit)
 	}
+
+	I2C_SHARED_BUS.locked = false;
+#endif
 }
 
 // Return the INA226 Bus Voltage

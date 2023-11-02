@@ -22,6 +22,7 @@ __asm(".global __use_no_heap\n\t");
 #define IRAM2_ON_F407
 #define SRAM_ON_F407
 #define SRAM_ON_H743 SRAM
+#define SRAM4_ON_H743 SRAM4
 #endif
 
 #ifdef STM32F407xx
@@ -36,6 +37,7 @@ __asm(".global __use_no_heap\n\t");
 #define IRAM2_ON_F407 IRAM2
 #define SRAM_ON_F407 SRAM
 #define SRAM_ON_H743
+#define SRAM4_ON_H743
 #endif
 
 // #define ALIGN_32BIT __attribute__((aligned(32)))
@@ -87,6 +89,7 @@ __asm(".global __use_no_heap\n\t");
 		__asm("nop");
 
 #define DMA_MAX_BLOCK 65000
+#define HZ_IN_MHZ 1000000
 
 // Example of __DATE__ string: "Jul 27 2012"
 //                              01234567890
@@ -142,7 +145,7 @@ __asm(".global __use_no_heap\n\t");
 
 volatile extern bool SPI_DMA_TXRX_ready_callback;
 
-extern uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num);
+extern uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num, bool invert_iq_by_mixer);
 extern uint32_t getTXPhraseFromFrequency(float64_t freq);
 extern void addSymbols(char *dest, char *str, uint_fast8_t length, char *symbol, bool toEnd);
 extern void print_chr_LCDOnly(char chr);

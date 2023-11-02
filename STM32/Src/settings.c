@@ -22,9 +22,9 @@ IRAM2 static uint8_t Get_Status = W25Q16_COMMAND_GetStatus;
 IRAM2 static uint8_t Power_Up = W25Q16_COMMAND_Power_Up;
 
 IRAM2 static uint8_t Address[3] = {0x00};
-struct TRX_SETTINGS TRX;
-struct TRX_CALIBRATE CALIBRATE = {0};
-struct TRX_WIFI WIFI = {0};
+IRAM2_ON_F407 struct TRX_SETTINGS TRX;
+IRAM2_ON_F407 struct TRX_CALIBRATE CALIBRATE = {0};
+IRAM2_ON_F407 struct TRX_WIFI WIFI = {0};
 bool EEPROM_Enabled = true;
 
 #define MAX_CLONE_SIZE sizeof(CALIBRATE) > sizeof(TRX) ? sizeof(CALIBRATE) : sizeof(TRX)
@@ -32,8 +32,6 @@ bool EEPROM_Enabled = true;
 static_assert(sizeof(TRX) < W25Q16_SECTOR_SIZE, "TRX Data structure doesn't match page size");
 static_assert(sizeof(CALIBRATE) < W25Q16_SECTOR_SIZE, "CALIBRATE Data structure doesn't match page size");
 
-IRAM2 static uint8_t write_clone[MAX_CLONE_SIZE] = {0};
-IRAM2_ON_F407 static uint8_t read_clone[MAX_CLONE_SIZE] = {0};
 IRAM2 static uint8_t verify_clone[MAX_CLONE_SIZE] = {0};
 
 volatile bool NeedSaveSettings = false;
@@ -55,7 +53,7 @@ static uint8_t calculateCSUM_EEPROM(void);
 static uint8_t calculateCSUM_WIFI(void);
 
 const char *MODE_DESCR[TRX_MODE_COUNT] = {
-    "LSB", "USB", "CW", "NFM", "WFM", "AM", "SAM", "DIGL", "DIGU", "IQ", "LOOP", "RTTY",
+    "LSB", "USB", "CW", "NFM", "WFM", "AM", "SAM", "AM-L", "AM-U", "DIGL", "DIGU", "IQ", "LOOP", "RTTY",
 };
 
 void LoadSettings(bool clear) {
@@ -145,8 +143,8 @@ void LoadSettings(bool clear) {
 		TRX.ATT_DB = 12.0f;                                              // suppress the attenuator
 		TRX.ATT_STEP = 6.0f;                                             // step of tuning the attenuator
 		TRX.RF_Filters = true;                                           // LPF / HPF / BPF
-		TRX.ANT_selected = false;                                        // ANT-1
-		TRX.ANT_mode = false;                                            // RX=TX
+		TRX.ANT_RX = TRX_ANT_1;                                          // ANT-1 RX
+		TRX.ANT_TX = TRX_ANT_1;                                          // ANT-1 TX
 		TRX.RF_Gain = 20;                                                // output power (%)
 		TRX.RF_Gain_For_Each_Band = false;                               // save RF Gain for each band separatly
 		TRX.RF_Gain_For_Each_Mode = false;                               // save RF Gain for each mode separatly
@@ -181,7 +179,7 @@ void LoadSettings(bool clear) {
 		TRX.FRQ_ENC_STEP = 25000;           // frequency tuning step by main add. encoder
 		TRX.FRQ_ENC_FAST_STEP = 50000;      // frequency tuning step by main add. encoder in FAST mode
 		TRX.FRQ_ENC_WFM_STEP_kHz = 20;      // frequency WFM tuning step by the main encoder
-		TRX.FRQ_ENC_FM_STEP_kHz = 1;        // frequency FM tuning step by the main encoder
+		TRX.FRQ_ENC_FM_STEP_kHz = 5;        // frequency FM tuning step by the main encoder
 		TRX.FRQ_ENC_AM_STEP_kHz = 1;        // frequency AM tuning step by the main encoder
 		TRX.NOTCH_STEP_Hz = 50;             // Manual NOTCH tuning step
 		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
@@ -192,7 +190,7 @@ void LoadSettings(bool clear) {
 #ifdef FRONTPANEL_KT_100S
 		TRX.AutoGain = false; // auto-control preamp and attenuator
 #else
-		TRX.AutoGain = true;                           // auto-control preamp and attenuator
+		TRX.AutoGain = true;     // auto-control preamp and attenuator
 #endif
 		TRX.Locked = false;        // Lock control
 		TRX.SPLIT_Enabled = false; // Split frequency mode (receive one VFO, transmit another)
@@ -226,7 +224,7 @@ void LoadSettings(bool clear) {
 		TRX.FT8_Auto_CQ = false;                   // Auto-CQ mode for FT8
 		TRX.DXCluster_Type = DX_CLUSTER_DX_SUMMIT; // DX cluster type
 		TRX.REPEATER_Offset = 600;                 // repeater mode custom offset
-		TRX.WOLF_Cluster = false;                  // Enable WOLF cluster
+		TRX.WOLF_Cluster = true;                   // Enable WOLF cluster
 		TRX.FREE_Tune = false;                     // Enable free tune on spectrum bandwidth
 		// AUDIO
 		TRX.Volume = 25;                    // AF Volume
@@ -271,12 +269,11 @@ void LoadSettings(bool clear) {
 		TRX.DNR2_SNR_THRESHOLD = 35;        // Digital noise reduction 2 level
 		TRX.DNR_AVERAGE = 2;                // DNR averaging when looking for average magnitude
 		TRX.DNR_MINIMAL = 99;               // DNR averaging when searching for minimum magnitude
+		TRX.NOISE_BLANKER = false;          // suppressor of short impulse noise NOISE BLANKER
 #ifdef STM32F407xx
-		TRX.NOISE_BLANKER = false; // suppressor of short impulse noise NOISE BLANKER
-		TRX.AGC_Spectral = false;  // Spectral AGC mode
+		TRX.AGC_Spectral = false; // Spectral AGC mode
 #else
-		TRX.NOISE_BLANKER = false;                     // suppressor of short impulse noise NOISE BLANKER
-		TRX.AGC_Spectral = true;                       // Spectral AGC mode
+		TRX.AGC_Spectral = true; // Spectral AGC mode
 #endif
 		TRX.NOISE_BLANKER_THRESHOLD = 10;                              // threshold for noise blanker
 		TRX.TX_CESSB = true;                                           // Controlled-envelope single-sideband modulation
@@ -305,8 +302,7 @@ void LoadSettings(bool clear) {
 		TRX.VOX_TIMEOUT = 300;                                         // VOX timeout in ms
 		TRX.VOX_THRESHOLD = -27;                                       // VOX threshold in dbFS
 		TRX.RX_AUDIO_MODE = RX_AUDIO_MODE_STEREO;                      // OUT Lines mode stereo/left/right
-		TRX.AGC_Threshold = true;                                      // Disable AGC on noise signals
-		TRX.SAM_Mode = SAM_MODE_STEREO;                                // Select SAM mode (Stereo/LSB/USB)
+		TRX.AGC_Threshold = false;                                     // Disable AGC on noise signals
 		// CW
 		TRX.CW_Pitch = 600;                                             // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key
@@ -320,6 +316,7 @@ void LoadSettings(bool clear) {
 		TRX.CW_Iambic_Type = 1;                                         // CW Iambic Keyer type 0 - A, 1 - B
 		TRX.CW_Invert = false;                                          // CW dash/dot inversion
 		TRX.Auto_CW_Mode = false;                                       // Switch to CW mode if key pressed
+		TRX.CW_In_SSB = false;                                          // CW manipulation on SSB mode
 		TRX.CW_PTT_Type = KEY_AND_EXT_PTT;                              // CW PTT type (Key / External tangent ptt)
 		strcpy(TRX.CW_Macros_1, "CQ CQ CQ");                            // CW Macros 1
 		strcpy(TRX.CW_Macros_2, "CQ TEST");                             // CW Macros 2
@@ -381,8 +378,8 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Height = 4;         // FFT display height
 		TRX.FFT_Background = false; // FFT gradient background
 #elif defined LAY_320x240
-		TRX.FFT_FreqGrid = 0;                          // FFT freq grid style
-		TRX.FFT_Height = 3;                            // FFT display height
+		TRX.FFT_FreqGrid = 0;    // FFT freq grid style
+		TRX.FFT_Height = 3;      // FFT display height
 #else
 		TRX.FFT_FreqGrid = 1;                          // FFT freq grid style
 		TRX.FFT_Height = 2;                            // FFT display height
@@ -409,7 +406,7 @@ void LoadSettings(bool clear) {
 #ifdef STM32F407xx
 		TRX.RDS_Decoder = false; // RDS Decoder panel
 #else
-		TRX.RDS_Decoder = true;                        // RDS Decoder panel
+		TRX.RDS_Decoder = true;  // RDS Decoder panel
 #endif
 		TRX.RTTY_Speed = 45;         // RTTY decoder speed
 		TRX.RTTY_Shift = 170;        // RTTY decoder shift
@@ -462,8 +459,8 @@ void LoadSettings(bool clear) {
 			}
 			TRX.BANDS_SAVED_SETTINGS[i].ATT = TRX.ATT;
 			TRX.BANDS_SAVED_SETTINGS[i].ATT_DB = TRX.ATT_DB;
-			TRX.BANDS_SAVED_SETTINGS[i].ANT_selected = TRX.ANT_selected;
-			TRX.BANDS_SAVED_SETTINGS[i].ANT_mode = TRX.ANT_mode;
+			TRX.BANDS_SAVED_SETTINGS[i].ANT_RX = TRX.ANT_RX;
+			TRX.BANDS_SAVED_SETTINGS[i].ANT_TX = TRX.ANT_TX;
 			TRX.BANDS_SAVED_SETTINGS[i].ADC_Driver = TRX.ADC_Driver;
 			TRX.BANDS_SAVED_SETTINGS[i].SQL = false;
 			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm = TRX.VFO_A.FM_SQL_threshold_dBm;
@@ -473,14 +470,10 @@ void LoadSettings(bool clear) {
 			TRX.BANDS_SAVED_SETTINGS[i].RepeaterMode = false;
 			TRX.BANDS_SAVED_SETTINGS[i].Fast = TRX.Fast;
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
-			if (!TRX.ANT_selected) {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_I = TRX.ATU_I;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_C = TRX.ATU_C;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT1_ATU_T = TRX.ATU_T;
-			} else {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_I = TRX.ATU_I;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_C = TRX.ATU_C;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT2_ATU_T = TRX.ATU_T;
+			for (uint8_t a = 0; a < ANT_MAX_COUNT; a++) {
+				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_I[a] = TRX.ATU_I;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_C[a] = TRX.ATU_C;
+				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_T[a] = TRX.ATU_T;
 			}
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_CW_LPF_Filter = TRX.VFO_A.CW_LPF_Filter;
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_SSB_LPF_RX_Filter = TRX.VFO_A.SSB_LPF_RX_Filter;
@@ -508,7 +501,11 @@ void LoadSettings(bool clear) {
 		TRX.Notch_on_shadow = false;
 		TRX.FM_SQL_threshold_dBm_shadow = TRX.VFO_A.FM_SQL_threshold_dBm;
 		TRX.FRONTPANEL_funcbuttons_page = 0;
+#if defined(FRONTPANEL_LITE)
+		TRX.ENC2_func_mode = ENC_FUNC_SET_VOLUME;
+#else
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
+#endif
 		TRX.CW_LPF_Filter_shadow = TRX.VFO_A.CW_LPF_Filter;
 		TRX.DIGI_LPF_Filter_shadow = TRX.VFO_A.DIGI_LPF_Filter;
 		TRX.SSB_LPF_RX_Filter_shadow = TRX.VFO_A.SSB_LPF_RX_Filter;
@@ -579,7 +576,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER_DEBOUNCE = 0;        // time to eliminate contact bounce at the main encoder, ms
 		CALIBRATE.ENCODER2_DEBOUNCE = 10;      // time to eliminate contact bounce at the additional encoder, ms
 		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
-		CALIBRATE.ENCODER_ON_FALLING = true;   // encoder only triggers when level A falls
+		CALIBRATE.ENCODER_ON_FALLING = false;  // encoder only triggers when level A falls
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
 		CALIBRATE.RF_unit_type = RF_UNIT_NONE; // RF-unit type
@@ -879,7 +876,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.TUNE_MAX_POWER = 15;             // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;     // Max TRX Power for indication
 #elif defined(FRONTPANEL_LITE)
-		CALIBRATE.ENCODER_SLOW_RATE = 10;
+		CALIBRATE.ENCODER_SLOW_RATE = 1;
 		CALIBRATE.smeter_calibration_hf = 15;
 		CALIBRATE.TUNE_MAX_POWER = 5;         // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 15; // Max TRX Power for indication
@@ -1032,11 +1029,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.TX_StartDelay = 5;           // Relay switch delay before RF signal ON, ms
 		CALIBRATE.LCD_Rotate = false;          // LCD 180 degree rotation
 		CALIBRATE.INA226_EN = false;           // INA226 enabled
-		CALIBRATE.INA226_Shunt_mOhm = 100;     // INA226 current shunt (mOhms)
+		CALIBRATE.INA226_Shunt_mOhm = 100.0f;  // INA226 current shunt (mOhms)
 		CALIBRATE.INA226_VoltageOffset = 0.0f; // INA226 voltage offset
 #ifdef FRONTPANEL_WOLF_2
 		CALIBRATE.INA226_EN = true;
-		CALIBRATE.INA226_Shunt_mOhm = 25;
+		CALIBRATE.INA226_Shunt_mOhm = 25.0f;
 #endif
 		CALIBRATE.PWR_CUR_Calibration = 2.5f; // CUR meter calibration
 		CALIBRATE.ATU_AVERAGING = 3;          // Tuner averaging stages
@@ -1067,8 +1064,9 @@ void LoadCalibration(bool clear) {
 
 		// Default memory channels
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
-			CALIBRATE.MEMORY_CHANNELS[i].Freq = 0;
-			CALIBRATE.MEMORY_CHANNELS[i].Mode = 0;
+			CALIBRATE.MEMORY_CHANNELS[i].freq = 0;
+			CALIBRATE.MEMORY_CHANNELS[i].mode = TRX_MODE_LSB;
+			sprintf(CALIBRATE.MEMORY_CHANNELS[i].name, "Ch %d", i + 1);
 		}
 		for (uint8_t i = 0; i < BANDS_COUNT; i++) {
 			CALIBRATE.BAND_MEMORIES[i][0] = TRX.BANDS_SAVED_SETTINGS[i].Freq;
@@ -1356,13 +1354,12 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 	} else {
 		HRDW_SPI_Locked = true;
 	}
-	if (size > sizeof(write_clone)) {
+	if (size > sizeof(verify_clone)) {
 		println("EEPROM WR buffer error");
 		HRDW_SPI_Locked = false;
 		return false;
 	}
-	memcpy(write_clone, Buffer, size);
-	Aligned_CleanDCache_by_Addr((uint32_t *)write_clone, sizeof(write_clone));
+	Aligned_CleanDCache_by_Addr((uint32_t *)Buffer, size);
 
 	for (uint16_t page = 0; page <= (size / W25Q16_PAGE_SIZE); page++) {
 		uint32_t BigAddress = (page * W25Q16_PAGE_SIZE) + (sector * W25Q16_SECTOR_SIZE);
@@ -1373,10 +1370,10 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 		if (bsize > W25Q16_PAGE_SIZE) {
 			bsize = W25Q16_PAGE_SIZE;
 		}
-		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false);                                          // Write Enable Command
-		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);                                           // Write Command
-		HRDW_EEPROM_SPI(Address, NULL, 3, true);                                                 // Write Address ( The first address of flash module is 0x00000000 )
-		HRDW_EEPROM_SPI((uint8_t *)(write_clone + W25Q16_PAGE_SIZE * page), NULL, bsize, false); // Write Data
+		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false);                                     // Write Enable Command
+		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);                                      // Write Command
+		HRDW_EEPROM_SPI(Address, NULL, 3, true);                                            // Write Address ( The first address of flash module is 0x00000000 )
+		HRDW_EEPROM_SPI((uint8_t *)(Buffer + W25Q16_PAGE_SIZE * page), NULL, bsize, false); // Write Data
 		EEPROM_WaitWrite();
 	}
 
@@ -1390,11 +1387,11 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 			verify_succ = true;
 			EEPROM_Read_Data(verify_clone, size, sector, false, true);
 			for (uint16_t i = 0; i < size; i++) {
-				if (verify_clone[i] != write_clone[i]) {
+				if (verify_clone[i] != Buffer[i]) {
 					verify_tryes++;
 					prev_verified_err = last_verified_err;
 					last_verified_err = i;
-					println("EEROM Verify error, pos:", i, " mem:", write_clone[i], " fla:", verify_clone[i]);
+					println("EEROM Verify error, pos:", i, " mem:", Buffer[i], " fla:", verify_clone[i]);
 					print_flush();
 					verify_succ = false;
 					break;
@@ -1423,7 +1420,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		HRDW_SPI_Locked = true;
 	}
 
-	if (size > sizeof(read_clone)) {
+	if (size > sizeof(verify_clone)) {
 		println("EEPROM RD buffer error");
 		HRDW_SPI_Locked = false;
 		return false;
@@ -1459,7 +1456,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 
 	// verify
 	if (verify) {
-		Aligned_CleanDCache_by_Addr((uint32_t *)read_clone, size);
+		Aligned_CleanDCache_by_Addr((uint32_t *)verify_clone, size);
 
 		BigAddress = sector * W25Q16_SECTOR_SIZE;
 		Address[2] = (BigAddress >> 16) & 0xFF;
@@ -1478,13 +1475,13 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		}
 
 		HRDW_EEPROM_SPI(Address, NULL, 3, true);                     // Write Address
-		HRDW_EEPROM_SPI(NULL, (uint8_t *)(read_clone), size, false); // Read
+		HRDW_EEPROM_SPI(NULL, (uint8_t *)verify_clone, size, false); // Read
 
-		Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)read_clone, size);
+		Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)verify_clone, size);
 
 		for (uint16_t i = 0; i < size; i++) {
-			if (read_clone[i] != Buffer[i]) {
-				// println("read err", read_clone[i]);
+			if (verify_clone[i] != Buffer[i]) {
+				// println("read err", verify_clone[i]);
 				HRDW_SPI_Locked = false;
 				return false;
 			}

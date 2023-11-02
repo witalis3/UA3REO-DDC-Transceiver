@@ -23,8 +23,13 @@
 #define HRDW_HAS_ENC4 true
 #define HRDW_HAS_LNA_HF false
 #define HRDW_HAS_LNA_VHF true
+#define HRDW_HAS_RFFC2071_MIXER false
+#define HRDW_HAS_VHF_MIXER HRDW_HAS_RFFC2071_MIXER
 
 #define HRDW_DEBUG_ON_CAT_PORT false
+
+// hardware includes
+#include "RFFC2071.h"
 
 // settings
 #define ADC_CLOCK 122880000                                                 // ADC generator frequency
@@ -112,5 +117,6 @@ extern bool HRDW_FrontUnit3_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t co
 extern bool HRDW_EEPROM_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs);
 extern bool HRDW_SD_SPI(uint8_t *out_data, uint8_t *in_data, uint32_t count, bool hold_cs);
 extern void HRDW_GoToInternalSPIClock(void);
+extern uint8_t HARDW_GetAntCount(void);
 
 #endif

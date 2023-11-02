@@ -42,6 +42,11 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 void RF_UNIT_ProcessSensors(void) {
 #define B12_RANGE 4096.0f
+	static float32_t SW1_Voltage = 0.0f;
+	static float32_t SW2_Voltage = 0.0f;
+	static float32_t SW1_Voltage_new = 0.0f;
+	static float32_t SW2_Voltage_new = 0.0f;
+	static float32_t k = 0.0f; // averaging ratio
 
 	HAL_ADCEx_InjectedPollForConversion(&hadc3, 100); // wait if prev conversion not ended
 
@@ -155,9 +160,11 @@ void RF_UNIT_ProcessSensors(void) {
 	TRX_SWR_SMOOTHED = TRX_SWR_SMOOTHED * (1.0f - smooth_down_coeff) + TRX_SWR * smooth_down_coeff;
 
 	// TANGENT
-	float32_t SW1_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_3) * TRX_STM32_VREF / B12_RANGE * 1000.0f;
-	float32_t SW2_Voltage = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / B12_RANGE * 1000.0f;
-	// println(SW1_Voltage, " ", SW2_Voltage);
+	SW1_Voltage_new = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_3) * TRX_STM32_VREF / B12_RANGE * 1000.0f;
+	SW2_Voltage_new = (float32_t)HAL_ADCEx_InjectedGetValue(&hadc2, ADC_INJECTED_RANK_4) * TRX_STM32_VREF / B12_RANGE * 1000.0f;
+
+	SW1_Voltage = (SW1_Voltage * k + SW1_Voltage_new * (1.0f - k));
+	SW2_Voltage = (SW2_Voltage * k + SW2_Voltage_new * (1.0f - k));
 
 	// Yaesu MH-48
 	for (uint16_t tb = 0; tb < (sizeof(PERIPH_FrontPanel_TANGENT_MH48) / sizeof(PERIPH_FrontPanel_Button)); tb++) {

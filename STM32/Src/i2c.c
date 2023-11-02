@@ -17,10 +17,11 @@ I2C_DEVICE I2C_CODEC = {
     .i2c_tx_buf = {0},
     .i2c_tx_buf_idx = 0,
     .i2c_tx_buf_overflow = false,
+    .locked = false,
 };
 
 #ifdef HAS_TOUCHPAD
-I2C_DEVICE I2C_TOUCHPAD = {
+I2C_DEVICE I2C_SHARED_BUS = {
     .SDA_PORT = T_I2C_SDA_GPIO_Port,
     .SDA_PIN = T_I2C_SDA_Pin,
     .SCK_PORT = T_I2C_SCL_GPIO_Port,
@@ -29,6 +30,7 @@ I2C_DEVICE I2C_TOUCHPAD = {
     .i2c_tx_buf = {0},
     .i2c_tx_buf_idx = 0,
     .i2c_tx_buf_overflow = false,
+    .locked = false,
 };
 #endif
 
@@ -266,13 +268,7 @@ uint8_t i2c_Read_Byte(I2C_DEVICE *dev, uint8_t ack) {
 	return receive;
 }
 
-// Tisho
-/*After the first Byte is recieved the master sends "ACK"
- *After the second Byte is recieved the master sends "NACK"
- *
- */
-
-uint16_t i2c_Read_Word(I2C_DEVICE *dev) {
+uint16_t i2c_Read_HalfWord(I2C_DEVICE *dev) {
 	unsigned char i;
 	uint16_t receive = 0;
 
@@ -303,12 +299,6 @@ uint16_t i2c_Read_Word(I2C_DEVICE *dev) {
 	SDA_IN(dev);
 
 	// Second byte
-	// Strange efect was observed when reading the second byte of data from INA226:
-	// if the interypts are not disabled the data is not read corect (offen the INA is pulling down the SDA for the complete byte)
-	// most strange part is that the first byte is read witout a problem (witout the "__disable_irq()" help)
-	// it is good to investigate the efect further!
-
-	__disable_irq(); // Disable all interrupts
 	for (i = 0; i < 8; i++) {
 		SCK_CLR;
 		I2C_DELAY
@@ -319,7 +309,6 @@ uint16_t i2c_Read_Word(I2C_DEVICE *dev) {
 		}
 		I2C_DELAY
 	}
-	__enable_irq(); // Re-enable all interrupts
 
 	// NAck
 	SCK_CLR;

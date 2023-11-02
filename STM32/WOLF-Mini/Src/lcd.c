@@ -938,7 +938,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 		} else {
 			sprintf(buff, "%.1f", (float64_t)CurrentVFO->SSB_LPF_RX_Filter / 1000.0);
 		}
-	} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+	} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 		if (TRX_on_TX) {
 			sprintf(buff, "%.1f", (float64_t)CurrentVFO->AM_LPF_TX_Filter / 1000.0);
 		} else {

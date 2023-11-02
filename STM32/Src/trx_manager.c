@@ -92,11 +92,11 @@ volatile uint_fast16_t CW_Key_Timeout_est = 0;
 uint32_t dbg_FPGA_samples = 0;
 uint8_t TRX_TX_Harmonic = 1;
 uint8_t TRX_TX_sendZeroes = 0;
+int8_t TRX_MemoryChannelSelected;
 
 static uint_fast8_t TRX_TXRXMode = 0; // 0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static bool TRX_SPLIT_Applied = false;
 static bool TRX_REPEATER_Applied = false;
-static bool TRX_ANT_swap_applyed = false;
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
 static void TRX_Start_TXRX(void);
@@ -144,7 +144,8 @@ void TRX_Restart_Mode() {
 		TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 
 		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-		TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
+		TRX.ANT_RX = TRX.BANDS_SAVED_SETTINGS[band].ANT_RX;
+		TRX.ANT_TX = TRX.BANDS_SAVED_SETTINGS[band].ANT_TX;
 
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 		LCD_UpdateQuery.TopButtons = true;
@@ -167,24 +168,26 @@ void TRX_Restart_Mode() {
 	}
 
 	// Ant swap for mode 1RX/2TX and others
-	if (TRX.ANT_mode && !TRX_ANT_swap_applyed) {
-		TRX_ANT_swap_applyed = true;
-		TRX.ANT_selected = !TRX.ANT_selected;
-
-		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-		if (band >= 0) {
-			if (!TRX.ANT_selected) {
-				TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
-				TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
-				TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
-			} else {
-				TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
-				TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
-				TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
-			}
-		}
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (band >= 0) {
+		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
+		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
+		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
 	}
 
+	// CW_In_SSB
+	if (CW_In_SSB_applyed == 1 && !TRX_on_TX) { // return to LSB
+		CW_In_SSB_applyed = 0;
+		TRX_setMode(TRX_MODE_LSB, CurrentVFO);
+		TRX_setFrequency(CurrentVFO->Freq + TRX.CW_Pitch, CurrentVFO);
+	}
+	if (CW_In_SSB_applyed == 2 && !TRX_on_TX) { // return to USB
+		CW_In_SSB_applyed = 0;
+		TRX_setMode(TRX_MODE_USB, CurrentVFO);
+		TRX_setFrequency(CurrentVFO->Freq - TRX.CW_Pitch, CurrentVFO);
+	}
+
+	// XIT
 	if (TRX.XIT_Enabled) {
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 	}
@@ -203,7 +206,6 @@ static void TRX_Start_RX() {
 	CODEC_DMA_state = true;
 	TRX_SPLIT_Applied = false;
 	TRX_REPEATER_Applied = false;
-	TRX_ANT_swap_applyed = false;
 	TRX_TXRXMode = 1;
 
 	// clean TX buffer
@@ -227,7 +229,6 @@ static void TRX_Start_TX() {
 	TRX_TX_StartTime = HAL_GetTick();
 	TRX_SPLIT_Applied = false;
 	TRX_REPEATER_Applied = false;
-	TRX_ANT_swap_applyed = false;
 	TRX_TXRXMode = 2;
 
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
@@ -245,7 +246,6 @@ static void TRX_Start_TXRX() {
 	TRX_TX_StartTime = HAL_GetTick();
 	TRX_SPLIT_Applied = false;
 	TRX_REPEATER_Applied = false;
-	TRX_ANT_swap_applyed = false;
 	TRX_TXRXMode = 3;
 
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
@@ -476,89 +476,122 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 
 	// get settings and fpga freq phrase
-	int64_t vfoa_freq = CurrentVFO->SpectrumCenterFreq + (TRX.RIT_Enabled ? TRX_RIT : 0);
-	if (TRX.Transverter_70cm && getBandFromFreq(vfoa_freq, true) == BANDID_70cm) {
-		vfoa_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * 1000000);
+	int64_t cur_vfo_freq = CurrentVFO->SpectrumCenterFreq + (TRX.RIT_Enabled ? TRX_RIT : 0);
+	int8_t cur_vfo_band = getBandFromFreq(cur_vfo_freq, true);
+
+	if (TRX.Transverter_70cm && cur_vfo_band == BANDID_70cm) {
+		cur_vfo_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * HZ_IN_MHZ) + (cur_vfo_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_23cm && getBandFromFreq(vfoa_freq, true) == BANDID_23cm) {
-		vfoa_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_MHz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_MHz * 1000000);
+	if (TRX.Transverter_23cm && cur_vfo_band == BANDID_23cm) {
+		cur_vfo_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_MHz * HZ_IN_MHZ) + (cur_vfo_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_13cm && getBandFromFreq(vfoa_freq, true) == BANDID_13cm) {
-		vfoa_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_MHz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_MHz * 1000000);
+	if (TRX.Transverter_13cm && cur_vfo_band == BANDID_13cm) {
+		cur_vfo_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_MHz * HZ_IN_MHZ) + (cur_vfo_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_6cm && getBandFromFreq(vfoa_freq, true) == BANDID_6cm) {
-		vfoa_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_MHz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_MHz * 1000000);
+	if (TRX.Transverter_6cm && cur_vfo_band == BANDID_6cm) {
+		cur_vfo_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_MHz * HZ_IN_MHZ) + (cur_vfo_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_3cm && getBandFromFreq(vfoa_freq, true) == BANDID_3cm) {
-		vfoa_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_MHz * 1000000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_MHz * 1000000);
+	if (TRX.Transverter_3cm && cur_vfo_band == BANDID_3cm) {
+		cur_vfo_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_MHz * HZ_IN_MHZ) + (cur_vfo_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_QO100 && getBandFromFreq(vfoa_freq, true) == BANDID_QO100) {
-		vfoa_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_kHz * 1000) + (vfoa_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
+	if (TRX.Transverter_QO100 && cur_vfo_band == BANDID_QO100) {
+		cur_vfo_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_kHz * 1000) + (cur_vfo_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
 	}
 
-	CurrentVFO->RXFreqAfterTransverters = vfoa_freq;
-	TRX_freq_phrase = getRXPhraseFromFrequency(vfoa_freq, 1);
+	int64_t sec_vfo_freq = SecondaryVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
+	int8_t sec_vfo_band = getBandFromFreq(sec_vfo_freq, true);
 
-	int64_t vfob_freq = SecondaryVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
-	if (TRX.Transverter_70cm && getBandFromFreq(vfob_freq, true) == BANDID_70cm) {
-		vfob_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * 1000000);
+	if (TRX.Transverter_70cm && sec_vfo_band == BANDID_70cm) {
+		sec_vfo_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * HZ_IN_MHZ) + (sec_vfo_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_23cm && getBandFromFreq(vfob_freq, true) == BANDID_23cm) {
-		vfob_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_MHz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_MHz * 1000000);
+	if (TRX.Transverter_23cm && sec_vfo_band == BANDID_23cm) {
+		sec_vfo_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_MHz * HZ_IN_MHZ) + (sec_vfo_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_13cm && getBandFromFreq(vfob_freq, true) == BANDID_13cm) {
-		vfob_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_MHz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_MHz * 1000000);
+	if (TRX.Transverter_13cm && sec_vfo_band == BANDID_13cm) {
+		sec_vfo_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_MHz * HZ_IN_MHZ) + (sec_vfo_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_6cm && getBandFromFreq(vfob_freq, true) == BANDID_6cm) {
-		vfob_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_MHz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_MHz * 1000000);
+	if (TRX.Transverter_6cm && sec_vfo_band == BANDID_6cm) {
+		sec_vfo_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_MHz * HZ_IN_MHZ) + (sec_vfo_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_3cm && getBandFromFreq(vfob_freq, true) == BANDID_3cm) {
-		vfob_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_MHz * 1000000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_MHz * 1000000);
+	if (TRX.Transverter_3cm && sec_vfo_band == BANDID_3cm) {
+		sec_vfo_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_MHz * HZ_IN_MHZ) + (sec_vfo_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_QO100 && getBandFromFreq(vfob_freq, true) == BANDID_QO100) {
-		vfob_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_kHz * 1000) + (vfob_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
+	if (TRX.Transverter_QO100 && sec_vfo_band == BANDID_QO100) {
+		sec_vfo_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_kHz * 1000) + (sec_vfo_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
 	}
-
-	SecondaryVFO->RXFreqAfterTransverters = vfob_freq;
-	TRX_freq_phrase2 = getRXPhraseFromFrequency(vfob_freq, 2);
 
 	int64_t vfo_tx_freq = CurrentVFO->Freq + (TRX.XIT_Enabled ? TRX_XIT : 0);
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo_tx_freq);
+	int8_t tx_vfo_band = getBandFromFreq(vfo_tx_freq, true);
 
-	if (TRX.Transverter_70cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_70cm) {
-		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * 1000000);
+	if (TRX.Transverter_70cm && tx_vfo_band == BANDID_70cm) {
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_23cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_23cm) {
-		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_MHz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_MHz * 1000000);
+	if (TRX.Transverter_23cm && tx_vfo_band == BANDID_23cm) {
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_23cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_23cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_13cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_13cm) {
-		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_MHz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_MHz * 1000000);
+	if (TRX.Transverter_13cm && tx_vfo_band == BANDID_13cm) {
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_13cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_13cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_6cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_6cm) {
-		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_MHz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_MHz * 1000000);
+	if (TRX.Transverter_6cm && tx_vfo_band == BANDID_6cm) {
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_6cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_6cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_3cm && getBandFromFreq(vfo_tx_freq, true) == BANDID_3cm) {
-		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_MHz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_MHz * 1000000);
+	if (TRX.Transverter_3cm && tx_vfo_band == BANDID_3cm) {
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_3cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_3cm_RF_MHz * HZ_IN_MHZ);
 	}
-	if (TRX.Transverter_QO100 && getBandFromFreq(vfo_tx_freq, true) == BANDID_QO100) {
-		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_TX_MHz * 1000000) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
+	if (TRX.Transverter_QO100 && tx_vfo_band == BANDID_QO100) {
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_TX_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
 	}
+
+	bool rx1_invert_iq_by_mixer = false;
+	bool rx2_invert_iq_by_mixer = false;
+
+#if HRDW_HAS_VHF_MIXER
+	// delete if transverter chain needed in future
+	cur_vfo_freq = CurrentVFO->SpectrumCenterFreq + (TRX.RIT_Enabled ? TRX_RIT : 0);
+	vfo_tx_freq = CurrentVFO->Freq + (TRX.XIT_Enabled ? TRX_XIT : 0);
+	sec_vfo_freq = SecondaryVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
+	//
+
+	uint64_t cur_vfo_freq_mhz = cur_vfo_freq / HZ_IN_MHZ;
+	uint64_t sec_vfo_freq_mhz = sec_vfo_freq / HZ_IN_MHZ;
+
+	if (cur_vfo_freq_mhz >= RFMIXER_MIN_FREQ_MHz && cur_vfo_freq_mhz <= RFMIXER_MAX_FREQ_MHz) {
+		int64_t lo_freq = cur_vfo_freq + RFMIXER_IF_FREQ;
+		int64_t result_lo_freq = RFMIXER_Freq_Set(lo_freq);
+		int64_t lo_freq_diff = result_lo_freq - lo_freq;
+		cur_vfo_freq = RFMIXER_IF_FREQ + lo_freq_diff;
+		vfo_tx_freq = cur_vfo_freq;
+		rx1_invert_iq_by_mixer = true;
+	} else {
+		RFMIXER_disable();
+	}
+
+	if (sec_vfo_freq_mhz >= RFMIXER_MIN_FREQ_MHz && sec_vfo_freq_mhz <= RFMIXER_MAX_FREQ_MHz) {
+		rx2_invert_iq_by_mixer = true;
+	}
+#endif
+
+	CurrentVFO->RXFreqAfterTransverters = cur_vfo_freq;
+	TRX_freq_phrase = getRXPhraseFromFrequency(cur_vfo_freq, 1, rx1_invert_iq_by_mixer);
+	SecondaryVFO->RXFreqAfterTransverters = sec_vfo_freq;
+	TRX_freq_phrase2 = getRXPhraseFromFrequency(sec_vfo_freq, 2, rx2_invert_iq_by_mixer);
 	TRX_freq_phrase_tx = getTXPhraseFromFrequency(vfo_tx_freq);
 
 	// println("RX1: ", CurrentVFO->RealRXFreq, "TX: ", vfo_tx_freq);
 	FPGA_NeedSendParams = true;
 
 	// set DC-DC Sync freq
-	uint64_t dcdc_0_harmonic_num = vfoa_freq / DCDC_FREQ_0;
-	uint64_t dcdc_1_harmonic_num = vfoa_freq / DCDC_FREQ_1;
+	uint64_t dcdc_0_harmonic_num = cur_vfo_freq / DCDC_FREQ_0;
+	uint64_t dcdc_1_harmonic_num = cur_vfo_freq / DCDC_FREQ_1;
 	uint64_t dcdc_0_harmonic_1ow = dcdc_0_harmonic_num * DCDC_FREQ_0;
 	uint64_t dcdc_0_harmonic_high = (dcdc_0_harmonic_num + 1) * DCDC_FREQ_0;
 	uint64_t dcdc_1_harmonic_1ow = dcdc_1_harmonic_num * DCDC_FREQ_1;
 	uint64_t dcdc_1_harmonic_high = (dcdc_1_harmonic_num + 1) * DCDC_FREQ_1;
-	uint64_t dcdc_0_harmonic_1ow_diff = llabs((int64_t)dcdc_0_harmonic_1ow - (int64_t)vfoa_freq);
-	uint64_t dcdc_0_harmonic_high_diff = llabs((int64_t)dcdc_0_harmonic_high - (int64_t)vfoa_freq);
-	uint64_t dcdc_1_harmonic_1ow_diff = llabs((int64_t)dcdc_1_harmonic_1ow - (int64_t)vfoa_freq);
-	uint64_t dcdc_1_harmonic_high_diff = llabs((int64_t)dcdc_1_harmonic_high - (int64_t)vfoa_freq);
+	uint64_t dcdc_0_harmonic_1ow_diff = llabs((int64_t)dcdc_0_harmonic_1ow - (int64_t)cur_vfo_freq);
+	uint64_t dcdc_0_harmonic_high_diff = llabs((int64_t)dcdc_0_harmonic_high - (int64_t)cur_vfo_freq);
+	uint64_t dcdc_1_harmonic_1ow_diff = llabs((int64_t)dcdc_1_harmonic_1ow - (int64_t)cur_vfo_freq);
+	uint64_t dcdc_1_harmonic_high_diff = llabs((int64_t)dcdc_1_harmonic_high - (int64_t)cur_vfo_freq);
 	uint64_t dcdc_0_harmonic_nearest = dcdc_0_harmonic_1ow_diff < dcdc_0_harmonic_high_diff ? dcdc_0_harmonic_1ow_diff : dcdc_0_harmonic_high_diff;
 	uint64_t dcdc_1_harmonic_nearest = dcdc_1_harmonic_1ow_diff < dcdc_1_harmonic_high_diff ? dcdc_1_harmonic_1ow_diff : dcdc_1_harmonic_high_diff;
 
@@ -626,7 +659,9 @@ void TRX_setMode(TRX_MODE _mode, VFO *vfo) {
 	// get new mode filters
 	switch (_mode) {
 	case TRX_MODE_AM:
-	case TRX_MODE_SAM:
+	case TRX_MODE_SAM_STEREO:
+	case TRX_MODE_SAM_LSB:
+	case TRX_MODE_SAM_USB:
 		vfo->LPF_RX_Filter_Width = vfo->AM_LPF_RX_Filter;
 		vfo->LPF_TX_Filter_Width = vfo->AM_LPF_TX_Filter;
 		vfo->HPF_RX_Filter_Width = 0;
@@ -641,10 +676,15 @@ void TRX_setMode(TRX_MODE _mode, VFO *vfo) {
 		break;
 	case TRX_MODE_DIGI_L:
 	case TRX_MODE_DIGI_U:
-	case TRX_MODE_RTTY:
 		vfo->LPF_RX_Filter_Width = vfo->DIGI_LPF_Filter;
 		vfo->LPF_TX_Filter_Width = vfo->DIGI_LPF_Filter;
 		vfo->HPF_RX_Filter_Width = 0;
+		vfo->HPF_TX_Filter_Width = 0;
+		break;
+	case TRX_MODE_RTTY:
+		vfo->LPF_RX_Filter_Width = TRX.RTTY_Freq + TRX.RTTY_Shift * 2;
+		vfo->LPF_TX_Filter_Width = vfo->LPF_RX_Filter_Width;
+		vfo->HPF_RX_Filter_Width = TRX.RTTY_Freq - TRX.RTTY_Shift * 2;
 		vfo->HPF_TX_Filter_Width = 0;
 		break;
 	case TRX_MODE_CW:
@@ -707,14 +747,17 @@ void TRX_setMode(TRX_MODE _mode, VFO *vfo) {
 	NeedWTFRedraw = true;
 }
 
-void TRX_SaveRFGain_Data(uint8_t mode, int8_t band) {
+void TRX_SaveRFGain_Data(TRX_MODE mode, int8_t band) {
 	switch (mode) {
 	case TRX_MODE_AM:
-	case TRX_MODE_SAM:
+	case TRX_MODE_SAM_STEREO:
+	case TRX_MODE_SAM_LSB:
+	case TRX_MODE_SAM_USB:
 		TRX.RF_Gain_By_Mode_AM = TRX.RF_Gain;
 		break;
 	case TRX_MODE_LSB:
 	case TRX_MODE_USB:
+	case TRX_MODE_LOOPBACK:
 		TRX.RF_Gain_By_Mode_SSB = TRX.RF_Gain;
 		break;
 	case TRX_MODE_DIGI_L:
@@ -737,11 +780,14 @@ void TRX_SaveRFGain_Data(uint8_t mode, int8_t band) {
 
 		switch (mode) {
 		case TRX_MODE_AM:
-		case TRX_MODE_SAM:
+		case TRX_MODE_SAM_STEREO:
+		case TRX_MODE_SAM_LSB:
+		case TRX_MODE_SAM_USB:
 			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_AM = TRX.RF_Gain;
 			break;
 		case TRX_MODE_LSB:
 		case TRX_MODE_USB:
+		case TRX_MODE_LOOPBACK:
 			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_SSB = TRX.RF_Gain;
 			break;
 		case TRX_MODE_DIGI_L:
@@ -761,15 +807,18 @@ void TRX_SaveRFGain_Data(uint8_t mode, int8_t band) {
 	}
 }
 
-void TRX_LoadRFGain_Data(uint8_t mode, int8_t band) {
+void TRX_LoadRFGain_Data(TRX_MODE mode, int8_t band) {
 	if (TRX.RF_Gain_For_Each_Mode) {
 		switch (mode) {
 		case TRX_MODE_AM:
-		case TRX_MODE_SAM:
+		case TRX_MODE_SAM_STEREO:
+		case TRX_MODE_SAM_LSB:
+		case TRX_MODE_SAM_USB:
 			TRX.RF_Gain = TRX.RF_Gain_By_Mode_AM;
 			break;
 		case TRX_MODE_LSB:
 		case TRX_MODE_USB:
+		case TRX_MODE_LOOPBACK:
 			TRX.RF_Gain = TRX.RF_Gain_By_Mode_SSB;
 			break;
 		case TRX_MODE_DIGI_L:
@@ -795,11 +844,14 @@ void TRX_LoadRFGain_Data(uint8_t mode, int8_t band) {
 	if (TRX.RF_Gain_For_Each_Mode && TRX.RF_Gain_For_Each_Band && band >= 0) {
 		switch (mode) {
 		case TRX_MODE_AM:
-		case TRX_MODE_SAM:
+		case TRX_MODE_SAM_STEREO:
+		case TRX_MODE_SAM_LSB:
+		case TRX_MODE_SAM_USB:
 			TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_AM;
 			break;
 		case TRX_MODE_LSB:
 		case TRX_MODE_USB:
+		case TRX_MODE_LOOPBACK:
 			TRX.RF_Gain = TRX.BANDS_SAVED_SETTINGS[band].RF_Gain_By_Mode_SSB;
 			break;
 		case TRX_MODE_DIGI_L:
@@ -825,24 +877,18 @@ void TRX_RestoreBandSettings(int8_t band) {
 	TRX.IF_Gain = TRX.BANDS_SAVED_SETTINGS[band].IF_Gain;
 	TRX.LNA = TRX.BANDS_SAVED_SETTINGS[band].LNA;
 	TRX.ATT = TRX.BANDS_SAVED_SETTINGS[band].ATT;
-	if (TRX.ANT_selected != TRX.BANDS_SAVED_SETTINGS[band].ANT_selected || TRX.ANT_mode != TRX.BANDS_SAVED_SETTINGS[band].ANT_mode) {
+	if (TRX.ANT_RX != TRX.BANDS_SAVED_SETTINGS[band].ANT_RX || TRX.ANT_TX != TRX.BANDS_SAVED_SETTINGS[band].ANT_TX) {
 		LCD_UpdateQuery.StatusInfoGUI = true;
 	}
-	TRX.ANT_selected = TRX.BANDS_SAVED_SETTINGS[band].ANT_selected;
-	TRX.ANT_mode = TRX.BANDS_SAVED_SETTINGS[band].ANT_mode;
+	TRX.ANT_RX = TRX.BANDS_SAVED_SETTINGS[band].ANT_RX;
+	TRX.ANT_TX = TRX.BANDS_SAVED_SETTINGS[band].ANT_TX;
 	TRX.ATT_DB = TRX.BANDS_SAVED_SETTINGS[band].ATT_DB;
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
 	TRX.Fast = TRX.BANDS_SAVED_SETTINGS[band].Fast;
-	if (!TRX.ANT_selected) {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
-	} else {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
-	}
+	TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
+	TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
+	TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
 
 	if (CurrentVFO == &TRX.VFO_A) {
 		CurrentVFO->CW_LPF_Filter = TRX.BANDS_SAVED_SETTINGS[band].VFO_A_CW_LPF_Filter;
@@ -1011,7 +1057,7 @@ void TRX_ProcessScanMode(void) {
 		{
 			for (uint8_t region_id = 0; region_id < BANDS[band].regionsCount; region_id++) {
 				if ((BANDS[band].regions[region_id].startFreq <= CurrentVFO->Freq) && (BANDS[band].regions[region_id].endFreq > CurrentVFO->Freq)) {
-					uint32_t step = SCANNER_FREQ_STEP_OTHER;
+					float64_t step = SCANNER_FREQ_STEP_OTHER;
 					if (CurrentVFO->Mode == TRX_MODE_WFM) {
 						step = SCANNER_FREQ_STEP_WFM;
 					}
@@ -1019,7 +1065,7 @@ void TRX_ProcessScanMode(void) {
 						step = SCANNER_FREQ_STEP_NFM;
 					}
 
-					uint32_t new_freq = (CurrentVFO->Freq + step) / step * step;
+					float64_t new_freq = (float64_t)(CurrentVFO->Freq + step) / step * step;
 					if (new_freq >= BANDS[band].regions[region_id].endFreq) {
 						new_freq = BANDS[band].regions[region_id].startFreq;
 					}
@@ -1090,7 +1136,7 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		if (CurrentVFO->Mode == TRX_MODE_NFM) {
 			step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0;
 		}
-		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 			step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0;
 		}
 
@@ -1100,10 +1146,10 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 				step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0 * 5.0;
 			}
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
-				step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0 * 5.0;
+				step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0 * 10.0;
 			}
-			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
-				step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0 * 5.0;
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
+				step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0 * 10.0;
 			}
 			if (CurrentVFO->Mode == TRX_MODE_CW) {
 				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
@@ -1147,7 +1193,7 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		if (CurrentVFO->Mode == TRX_MODE_NFM) {
 			step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0 / 10.0;
 		}
-		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 			step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0 / 10.0;
 		}
 
@@ -1159,7 +1205,7 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
 				step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0;
 			}
-			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 				step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0;
 			}
 			if (CurrentVFO->Mode == TRX_MODE_CW) {
@@ -1281,23 +1327,23 @@ void BUTTONHANDLER_TUNE(uint32_t parameter) {
 		return;
 	}
 
-	if (!TRX_Tune) {
+	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+	if (!TRX_Tune) { // go TUNE
 		APROC_TX_tune_power = 0.0f;
-		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 		if (band >= 0) {
-			if (!TRX.ANT_selected) {
-				TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
-				TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
-				TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
-			} else {
-				TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
-				TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
-				TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
-			}
+			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX.ANT_TX];
+			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX.ANT_TX];
+			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX.ANT_TX];
 		}
 		ATU_Invalidate();
 		ATU_TunePowerStabilized = false;
 		LCD_UpdateQuery.StatusInfoBar = true;
+	} else { // go RX
+		if (band >= 0) {
+			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX.ANT_RX];
+			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX.ANT_RX];
+			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX.ANT_RX];
+		}
 	}
 
 	TRX_Tune = !TRX_Tune;
@@ -1337,6 +1383,22 @@ void BUTTONHANDLER_PRE(uint32_t parameter) {
 	FPGA_NeedSendParams = true;
 	NeedSaveSettings = true;
 	resetVAD();
+}
+
+void BUTTONHANDLER_MEMO_WRITE(uint32_t parameter) {
+	int8_t channel = TRX_MemoryChannelSelected;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
+		BUTTONHANDLER_SaveMemoryChannels(channel);
+		LCD_UpdateQuery.FreqInfoRedraw = true;
+	}
+}
+void BUTTONHANDLER_MEMO_READ(uint32_t parameter) {
+	int8_t channel = TRX_MemoryChannelSelected;
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
+		BUTTONHANDLER_SelectMemoryChannels(channel);
+		LCD_showTooltip("Channel read");
+		LCD_UpdateQuery.FreqInfoRedraw = true;
+	}
 }
 
 void BUTTONHANDLER_ATT(uint32_t parameter) {
@@ -1379,33 +1441,26 @@ void BUTTONHANDLER_ATTHOLD(uint32_t parameter) {
 }
 
 void BUTTONHANDLER_ANT(uint32_t parameter) {
-	if (!TRX.ANT_mode && !TRX.ANT_selected) // ANT1->ANT2
-	{
-		TRX.ANT_selected = true;
-		TRX.ANT_mode = false;
-	} else if (!TRX.ANT_mode && TRX.ANT_selected) // ANT2->1T2
-	{
-		TRX.ANT_selected = false;
-		TRX.ANT_mode = true;
-	} else if (TRX.ANT_mode) // 1T2->ANT1
-	{
-		TRX.ANT_selected = false;
-		TRX.ANT_mode = false;
+	if (TRX.ANT_RX != TRX.ANT_TX) {
+		TRX.ANT_RX = TRX_ANT_1;
+		TRX.ANT_TX = TRX.ANT_RX;
+	} else {
+		TRX.ANT_RX++;
+		TRX.ANT_TX = TRX.ANT_RX;
+
+		if (TRX.ANT_RX >= HARDW_GetAntCount()) {
+			TRX.ANT_RX = TRX_ANT_1;
+			TRX.ANT_TX = TRX_ANT_2;
+		}
 	}
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_selected = TRX.ANT_selected;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_mode = TRX.ANT_mode;
-		if (!TRX.ANT_selected) {
-			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_I;
-			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_C;
-			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT1_ATU_T;
-		} else {
-			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_I;
-			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_C;
-			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT2_ATU_T;
-		}
+		TRX.BANDS_SAVED_SETTINGS[band].ANT_RX = TRX.ANT_RX;
+		TRX.BANDS_SAVED_SETTINGS[band].ANT_TX = TRX.ANT_TX;
+		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
+		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
+		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
 	}
 
 	LCD_UpdateQuery.StatusInfoGUI = true;
@@ -1492,8 +1547,12 @@ void BUTTONHANDLER_MODE_P(uint32_t parameter) {
 	} else if (mode == TRX_MODE_RTTY) {
 		mode = TRX_MODE_DIGI_L;
 	} else if (mode == TRX_MODE_AM) {
-		mode = TRX_MODE_SAM;
-	} else if (mode == TRX_MODE_SAM) {
+		mode = TRX_MODE_SAM_STEREO;
+	} else if (mode == TRX_MODE_SAM_STEREO) {
+		mode = TRX_MODE_SAM_LSB;
+	} else if (mode == TRX_MODE_SAM_LSB) {
+		mode = TRX_MODE_SAM_USB;
+	} else if (mode == TRX_MODE_SAM_USB) {
 		mode = TRX_MODE_IQ;
 	} else if (mode == TRX_MODE_IQ) {
 		mode = TRX_MODE_LOOPBACK;
@@ -1548,6 +1607,7 @@ void BUTTONHANDLER_MODE_N(uint32_t parameter) {
 
 void BUTTONHANDLER_BAND_P(uint32_t parameter) {
 	// TX block
+	TRX.SPLIT_Enabled = false;
 	if (TRX_on_TX) {
 		return;
 	}
@@ -1577,6 +1637,7 @@ void BUTTONHANDLER_BAND_P(uint32_t parameter) {
 
 void BUTTONHANDLER_BAND_N(uint32_t parameter) {
 	// TX block
+	TRX.SPLIT_Enabled = false;
 	if (TRX_on_TX) {
 		return;
 	}
@@ -1632,6 +1693,15 @@ void BUTTONHANDLER_AGC_SPEED(uint32_t parameter) {
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
 		SYSMENU_RX_AGC_HOTKEY();
+	} else {
+		SYSMENU_eventCloseAllSystemMenu();
+	}
+}
+
+void BUTTONHANDLER_AGC_MaxGain(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
+		LCD_systemMenuOpened = true;
+		SYSMENU_RX_AGC_MaxGain_HOTKEY();
 	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
@@ -1744,7 +1814,7 @@ void BUTTONHANDLER_BW(uint32_t parameter) {
 			SYSMENU_FILTER_BW_CW_HOTKEY();
 		} else if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM) {
 			SYSMENU_FILTER_BW_FM_HOTKEY();
-		} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+		} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 			SYSMENU_FILTER_BW_AM_HOTKEY();
 		} else {
 			SYSMENU_FILTER_BW_SSB_HOTKEY();
@@ -2237,7 +2307,7 @@ void BUTTONHANDLER_SET_RX_BW(uint32_t parameter) {
 	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
 		CurrentVFO->DIGI_LPF_Filter = parameter;
 	}
-	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 		CurrentVFO->AM_LPF_RX_Filter = parameter;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_NFM) {
@@ -2280,7 +2350,7 @@ void BUTTONHANDLER_SET_TX_BW(uint32_t parameter) {
 	if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
 		CurrentVFO->DIGI_LPF_Filter = parameter;
 	}
-	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 		CurrentVFO->AM_LPF_TX_Filter = parameter;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_NFM) {
@@ -2473,8 +2543,8 @@ void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter) {
 		channel = 0;
 	}
 
-	TRX_setFrequency(CALIBRATE.MEMORY_CHANNELS[channel].Freq, CurrentVFO);
-	TRX_setMode(CALIBRATE.MEMORY_CHANNELS[channel].Mode, CurrentVFO);
+	TRX_setFrequency(CALIBRATE.MEMORY_CHANNELS[channel].freq, CurrentVFO);
+	TRX_setMode(CALIBRATE.MEMORY_CHANNELS[channel].mode, CurrentVFO);
 
 	TRX.SQL_shadow = CurrentVFO->SQL;
 	TRX.FM_SQL_threshold_dBm_shadow = CurrentVFO->FM_SQL_threshold_dBm;
@@ -2498,13 +2568,13 @@ void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
 
 	LCD_closeWindow();
 
-	if (CALIBRATE.MEMORY_CHANNELS[channel].Freq == CurrentVFO->Freq) {
-		CALIBRATE.MEMORY_CHANNELS[channel].Freq = 0;
+	if (CALIBRATE.MEMORY_CHANNELS[channel].freq == CurrentVFO->Freq) {
+		CALIBRATE.MEMORY_CHANNELS[channel].freq = 0;
 
 		LCD_showTooltip("Channel removed");
 	} else {
-		CALIBRATE.MEMORY_CHANNELS[channel].Freq = CurrentVFO->Freq;
-		CALIBRATE.MEMORY_CHANNELS[channel].Mode = CurrentVFO->Mode;
+		CALIBRATE.MEMORY_CHANNELS[channel].freq = CurrentVFO->Freq;
+		CALIBRATE.MEMORY_CHANNELS[channel].mode = CurrentVFO->Mode;
 
 		LCD_showTooltip("Channel saved");
 	}

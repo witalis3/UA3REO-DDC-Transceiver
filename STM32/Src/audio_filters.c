@@ -454,7 +454,7 @@ float32_t CTCSS_Freqs[CTCSS_FREQS_COUNT] = {0.0,   33.0,  35.4,  36.6,  37.9,  3
 // Public variables
 // const uint32_t AUTIO_FILTERS_HPF_LIST[CW_HPF_COUNT] = {0, 60, 100, 200, 300, 400, 500, 600};
 const uint32_t AUTIO_FILTERS_LPF_CW_LIST[CW_LPF_COUNT] = {50, 100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1100, 1200, 1500, 2000};
-const uint32_t AUTIO_FILTERS_LPF_SSB_LIST[SSB_LPF_COUNT] = {1400, 1600, 1800, 2100, 2300, 2500, 2700, 2900, 3000, 3200, 3400};
+const uint32_t AUTIO_FILTERS_LPF_SSB_LIST[SSB_LPF_COUNT] = {600, 1200, 1600, 1800, 2100, 2300, 2500, 2700, 2900, 3000, 3200, 3400};
 const uint32_t AUTIO_FILTERS_LPF_AM_LIST[AM_LPF_COUNT] = {2100, 2300, 2500, 2700, 2900, 3000, 3200, 3400, 3600, 3800, 4000, 4500, 5000, 6000, 8000, 9000, 10000, 12000, 15000, 20000};
 const uint32_t AUTIO_FILTERS_LPF_NFM_LIST[NFM_LPF_COUNT] = {5000, 6000, 7000, 8000, 9000, 10000, 12000, 15000, 20000, 24000, 30000, 44000};
 
@@ -584,13 +584,15 @@ void ReinitAudioFilters(void) {
 	if (lpf_rx1_width < hpf_rx1_width && CurrentVFO->HPF_RX_Filter_Width > 0) {
 		lpf_rx1_width = hpf_rx1_width + 100;
 	}
-	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW) {
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB ||
+	    CurrentVFO->Mode == TRX_MODE_SAM_USB || CurrentVFO->Mode == TRX_MODE_CW) {
 		lpf_rx1_width /= 2;
 	}
 	if (CurrentVFO->Mode == TRX_MODE_CW) {
 		lpf_rx1_filter_stages = TRX.CW_LPF_Stages;
 	}
-	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM) {
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB ||
+	    CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 		lpf_rx1_filter_stages = TRX.AMFM_LPF_Stages;
 	}
 	uint32_t hpf_rx1_filter_stages = IIR_HPF_STAGES;
@@ -605,13 +607,15 @@ void ReinitAudioFilters(void) {
 	if (lpf_rx2_width < hpf_rx2_width && SecondaryVFO->HPF_RX_Filter_Width > 0) {
 		lpf_rx2_width = hpf_rx2_width + 100;
 	}
-	if (SecondaryVFO->Mode == TRX_MODE_NFM || SecondaryVFO->Mode == TRX_MODE_AM || SecondaryVFO->Mode == TRX_MODE_SAM || SecondaryVFO->Mode == TRX_MODE_CW) {
+	if (SecondaryVFO->Mode == TRX_MODE_NFM || SecondaryVFO->Mode == TRX_MODE_AM || SecondaryVFO->Mode == TRX_MODE_SAM_STEREO || SecondaryVFO->Mode == TRX_MODE_SAM_LSB ||
+	    SecondaryVFO->Mode == TRX_MODE_SAM_USB || SecondaryVFO->Mode == TRX_MODE_CW) {
 		lpf_rx2_width /= 2;
 	}
 	if (SecondaryVFO->Mode == TRX_MODE_CW) {
 		lpf_rx2_filter_stages = TRX.CW_LPF_Stages;
 	}
-	if (SecondaryVFO->Mode == TRX_MODE_NFM || SecondaryVFO->Mode == TRX_MODE_AM || SecondaryVFO->Mode == TRX_MODE_SAM) {
+	if (SecondaryVFO->Mode == TRX_MODE_NFM || SecondaryVFO->Mode == TRX_MODE_AM || SecondaryVFO->Mode == TRX_MODE_SAM_STEREO || SecondaryVFO->Mode == TRX_MODE_SAM_LSB ||
+	    SecondaryVFO->Mode == TRX_MODE_SAM_USB) {
 		lpf_rx2_filter_stages = TRX.AMFM_LPF_Stages;
 	}
 	uint32_t hpf_rx2_filter_stages = IIR_HPF_STAGES;
@@ -626,24 +630,15 @@ void ReinitAudioFilters(void) {
 	if (lpf_tx_width < hpf_tx_width) {
 		lpf_tx_width = hpf_tx_width + 100;
 	}
-	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM || CurrentVFO->Mode == TRX_MODE_CW) {
+	if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB ||
+	    CurrentVFO->Mode == TRX_MODE_SAM_USB || CurrentVFO->Mode == TRX_MODE_CW) {
 		lpf_tx_width /= 2;
 	}
 	//
 
 	// Decimator filters
 	uint32_t decim_iir_filter_stages = IIR_DECIMATOR_FILTER_STAGES;
-	uint32_t decim_iir_filter_width = 20000;
-
-#if HRDW_HAS_DUAL_RX
-	if (lpf_rx1_width > 0 && lpf_rx1_width < 5000 && (!TRX.Dual_RX || (lpf_rx2_width > 0 && lpf_rx2_width < 5000))) {
-		decim_iir_filter_width = 5000;
-	}
-#else
-	if (lpf_rx1_width > 0 && lpf_rx1_width < 5000 && (true || (lpf_rx2_width > 0 && lpf_rx2_width < 5000))) {
-		decim_iir_filter_width = 5000;
-	}
-#endif
+	uint32_t decim_iir_filter_width = 23000;
 
 	if (TRX_GetRXSampleRateENUM == TRX_SAMPLERATE_K192) {
 		decim_iir_filter_stages = 5;
