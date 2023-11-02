@@ -1698,6 +1698,15 @@ void BUTTONHANDLER_AGC_SPEED(uint32_t parameter) {
 	}
 }
 
+void BUTTONHANDLER_AGC_MaxGain(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
+		LCD_systemMenuOpened = true;
+		SYSMENU_RX_AGC_MaxGain_HOTKEY();
+	} else {
+		SYSMENU_eventCloseAllSystemMenu();
+	}
+}
+
 void BUTTONHANDLER_REPEATER_MODE(uint32_t parameter) {
 	CurrentVFO->RepeaterMode = !CurrentVFO->RepeaterMode;
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
