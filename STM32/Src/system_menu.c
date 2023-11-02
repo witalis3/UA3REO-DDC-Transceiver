@@ -657,7 +657,7 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Beeper", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Beeper, SYSMENU_HANDL_TRX_Beeper},
     {"Callsign", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetCallsign},
     {"Channel Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ChannelMode, SYSMENU_HANDL_TRX_ChannelMode},
-#if HRDW_HAS_USB_DEBUG
+#if HRDW_HAS_USB_DEBUG || HRDW_DEBUG_ON_CAT_PORT
     {"Debug console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, (const enumerate_item[7]){"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH", "CAT", "I2C"}},
 #endif
     {"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
@@ -2463,6 +2463,13 @@ void SYSMENU_RX_DNR_HOTKEY(void) {
 void SYSMENU_RX_AGC_HOTKEY(void) {
 	SYSMENU_HANDL_RXMENU(0);
 	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "AGC");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+}
+
+void SYSMENU_RX_AGC_MaxGain_HOTKEY(void) {
+	SYSMENU_HANDL_RXMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "RX AGC Max gain");
 	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }

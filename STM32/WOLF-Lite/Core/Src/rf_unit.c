@@ -46,8 +46,7 @@ static float32_t SW1_Voltage=0.0f;
 static float32_t SW2_Voltage=0.0f;
 static float32_t SW1_Voltage_new=0.0f;
 static float32_t SW2_Voltage_new=0.0f;
-static uint16_t	cnt=0;
-static float32_t	k=0.7f;	
+static float32_t	k=0.0f;	   // averaging ratio
 	
 	HAL_ADCEx_InjectedPollForConversion(&hadc3, 100); // wait if prev conversion not ended
 
@@ -166,13 +165,7 @@ static float32_t	k=0.7f;
 
 	SW1_Voltage = (SW1_Voltage  * k + SW1_Voltage_new * (1.0f-k));
   SW2_Voltage = (SW2_Voltage  * k + SW2_Voltage_new * (1.0f-k));
-	
-//  cnt ++ ;
-//	if (cnt == 100) {
-//	println((double)SW1_Voltage, " ", (double)SW2_Voltage);
-//		cnt=0;
-//	}
-	
+
 	// Yaesu MH-48
 	for (uint16_t tb = 0; tb < (sizeof(PERIPH_FrontPanel_TANGENT_MH48) / sizeof(PERIPH_FrontPanel_Button)); tb++) {
 		if ((SW2_Voltage < 500.0f || SW2_Voltage > 3100.0f) && PERIPH_FrontPanel_TANGENT_MH48[tb].channel == 1) {
