@@ -1131,19 +1131,19 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_WFM) {
-			step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0;
+			step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0 * 5.0;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_NFM) {
-			step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0;
+			step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0 * 5.0;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
-			step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0;
+			step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0 * 5.0;
 		}
 
 		if (secondary_encoder) {
 			step = TRX.FRQ_ENC_FAST_STEP;
 			if (CurrentVFO->Mode == TRX_MODE_WFM) {
-				step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0 * 5.0;
+				step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0 * 10.0;
 			}
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
 				step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0 * 10.0;
@@ -1160,7 +1160,7 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		if (step < 1.0) {
 			step = 1.0;
 		}
-		bool air_step = (step == 8333 || step == 8333 * 5);
+		bool air_step = (step == 8333 * 5 || step == 8333 * 10);
 		if (air_step) {
 			step = 8333;
 		}
@@ -1188,25 +1188,25 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_WFM) {
-			step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0 / 10.0;
+			step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_NFM) {
-			step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0 / 10.0;
+			step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
-			step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0 / 10.0;
+			step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0;
 		}
 
 		if (secondary_encoder) {
 			step = TRX.FRQ_ENC_STEP;
 			if (CurrentVFO->Mode == TRX_MODE_WFM) {
-				step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0;
+				step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0 * 5.0;
 			}
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
-				step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0;
+				step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0 * 5.0;
 			}
 			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
-				step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0;
+				step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0 * 5.0;
 			}
 			if (CurrentVFO->Mode == TRX_MODE_CW) {
 				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
@@ -1217,7 +1217,7 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		if (step < 1.0) {
 			step = 1.0;
 		}
-		bool air_step = (step == 833.3 || step == 8.333);
+		bool air_step = (step == 8333 * 1 || step == 8333 * 5);
 		if (air_step) {
 			step = 8333;
 		}

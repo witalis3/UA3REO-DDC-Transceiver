@@ -1054,6 +1054,11 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_STRING("TRX.CW_Macros_3", TRX.CW_Macros_3);
 			SD_WRITE_SETT_STRING("TRX.CW_Macros_4", TRX.CW_Macros_4);
 			SD_WRITE_SETT_STRING("TRX.CW_Macros_5", TRX.CW_Macros_5);
+			SD_WRITE_SETT_STRING("TRX.CW_Macros_Name_1", TRX.CW_Macros_Name_1);
+			SD_WRITE_SETT_STRING("TRX.CW_Macros_Name_2", TRX.CW_Macros_Name_2);
+			SD_WRITE_SETT_STRING("TRX.CW_Macros_Name_3", TRX.CW_Macros_Name_3);
+			SD_WRITE_SETT_STRING("TRX.CW_Macros_Name_4", TRX.CW_Macros_Name_4);
+			SD_WRITE_SETT_STRING("TRX.CW_Macros_Name_5", TRX.CW_Macros_Name_5);
 			// SCREEN
 			SD_WRITE_SETT_LINE("TRX.ColorThemeId", (uint64_t *)&TRX.ColorThemeId, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.LayoutThemeId", (uint64_t *)&TRX.LayoutThemeId, SYSMENU_UINT8);
@@ -2092,6 +2097,46 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 			lens = sizeof(TRX.CW_Macros_5) - 1;
 		}
 		strncpy(TRX.CW_Macros_5, value, lens);
+	}
+	if (strcmp(name, "TRX.CW_Macros_Name_1") == 0) {
+		dma_memset(TRX.CW_Macros_Name_1, 0x00, sizeof(TRX.CW_Macros_Name_1));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(TRX.CW_Macros_Name_1) - 1) {
+			lens = sizeof(TRX.CW_Macros_Name_1) - 1;
+		}
+		strncpy(TRX.CW_Macros_Name_1, value, lens);
+	}
+	if (strcmp(name, "TRX.CW_Macros_Name_2") == 0) {
+		dma_memset(TRX.CW_Macros_Name_2, 0x00, sizeof(TRX.CW_Macros_Name_2));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(TRX.CW_Macros_Name_2) - 1) {
+			lens = sizeof(TRX.CW_Macros_Name_2) - 1;
+		}
+		strncpy(TRX.CW_Macros_Name_2, value, lens);
+	}
+	if (strcmp(name, "TRX.CW_Macros_Name_3") == 0) {
+		dma_memset(TRX.CW_Macros_Name_3, 0x00, sizeof(TRX.CW_Macros_Name_3));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(TRX.CW_Macros_Name_3) - 1) {
+			lens = sizeof(TRX.CW_Macros_Name_3) - 1;
+		}
+		strncpy(TRX.CW_Macros_Name_3, value, lens);
+	}
+	if (strcmp(name, "TRX.CW_Macros_Name_4") == 0) {
+		dma_memset(TRX.CW_Macros_Name_4, 0x00, sizeof(TRX.CW_Macros_Name_4));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(TRX.CW_Macros_Name_4) - 1) {
+			lens = sizeof(TRX.CW_Macros_Name_4) - 1;
+		}
+		strncpy(TRX.CW_Macros_Name_4, value, lens);
+	}
+	if (strcmp(name, "TRX.CW_Macros_Name_5") == 0) {
+		dma_memset(TRX.CW_Macros_Name_5, 0x00, sizeof(TRX.CW_Macros_Name_5));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(TRX.CW_Macros_Name_5) - 1) {
+			lens = sizeof(TRX.CW_Macros_Name_5) - 1;
+		}
+		strncpy(TRX.CW_Macros_Name_5, value, lens);
 	}
 	// SCREEN
 	if (strcmp(name, "TRX.ColorThemeId") == 0) {

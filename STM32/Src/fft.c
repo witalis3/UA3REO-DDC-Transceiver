@@ -1305,16 +1305,27 @@ bool FFT_printFFT(void) {
 			background = palette_bg_gradient[fft_y];
 		}
 
-		memset16(print_output_buffer[fft_y], background, LAYOUT->FFT_PRINT_SIZE);
+		bool dBm_grid = false;
+		if (TRX.FFT_dBmGrid) {
+			for (uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL) {
+				if (y == fft_y) {
+					dBm_grid = true;
+				}
+			}
+		}
 
-		uint16_t bw_color = palette_bw_bg_colors[fft_y];
+		memset16(print_output_buffer[fft_y], dBm_grid ? grid_color : background, LAYOUT->FFT_PRINT_SIZE);
+
+		uint16_t bw_color = dBm_grid ? grid_color : palette_bw_bg_colors[fft_y];
 
 		if (TRX.Show_Sec_VFO && TRX.FFT_BW_Style != 3) {
+			uint16_t sec_bw_color = dBm_grid ? grid_color : addColor(bw_color, FFT_SEC_BW_BRIGHTNESS, -FFT_SEC_BW_BRIGHTNESS, FFT_SEC_BW_BRIGHTNESS);
+
 			for (int32_t fft_x = bw_rx2_line_start; fft_x <= bw_rx2_line_end; fft_x++) {
 				if (fft_x < 0 || fft_x > LAYOUT->FFT_PRINT_SIZE) {
 					continue;
 				}
-				print_output_buffer[fft_y][fft_x] = addColor(bw_color, FFT_SEC_BW_BRIGHTNESS, -FFT_SEC_BW_BRIGHTNESS, FFT_SEC_BW_BRIGHTNESS);
+				print_output_buffer[fft_y][fft_x] = sec_bw_color;
 			}
 		}
 
