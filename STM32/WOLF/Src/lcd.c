@@ -2195,7 +2195,7 @@ void printSystemMenuButton(uint16_t x, uint16_t y, uint16_t width, uint16_t heig
 			break;
 		}
 	}
-	if (!exist) {
+	if (!exist && type != SYSMENU_INFOLINE) {
 		TouchpadButton_handlers[TouchpadButton_handlers_count].x1 = x;
 		TouchpadButton_handlers[TouchpadButton_handlers_count].y1 = y;
 		TouchpadButton_handlers[TouchpadButton_handlers_count].x2 = x + width;

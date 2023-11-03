@@ -67,13 +67,17 @@ void CW_key_change(void) {
 		if (CW_key_dot_hard && (TRX.Auto_CW_Mode || TRX.CW_In_SSB) && CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited) {
 			if (TRX.CW_In_SSB && CurrentVFO->Mode == TRX_MODE_LSB) {
 				TRX_setFrequency(CurrentVFO->Freq - TRX.CW_Pitch, CurrentVFO);
+				TRX_setMode(TRX_MODE_CW, CurrentVFO);
 				CW_In_SSB_applyed = 1;
 			}
 			if (TRX.CW_In_SSB && CurrentVFO->Mode == TRX_MODE_USB) {
 				TRX_setFrequency(CurrentVFO->Freq + TRX.CW_Pitch, CurrentVFO);
+				TRX_setMode(TRX_MODE_CW, CurrentVFO);
 				CW_In_SSB_applyed = 2;
 			}
-			TRX_setMode(TRX_MODE_CW, CurrentVFO);
+			if (TRX.Auto_CW_Mode) {
+				TRX_setMode(TRX_MODE_CW, CurrentVFO);
+			}
 
 			LCD_UpdateQuery.FreqInfoRedraw = true;
 			LCD_UpdateQuery.TopButtons = true;
@@ -110,13 +114,17 @@ void CW_key_change(void) {
 		if (CW_key_dash_hard && (TRX.Auto_CW_Mode || TRX.CW_In_SSB) && CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited) {
 			if (TRX.CW_In_SSB && CurrentVFO->Mode == TRX_MODE_LSB) {
 				TRX_setFrequency(CurrentVFO->Freq - TRX.CW_Pitch, CurrentVFO);
+				TRX_setMode(TRX_MODE_CW, CurrentVFO);
 				CW_In_SSB_applyed = 1;
 			}
 			if (TRX.CW_In_SSB && CurrentVFO->Mode == TRX_MODE_USB) {
 				TRX_setFrequency(CurrentVFO->Freq + TRX.CW_Pitch, CurrentVFO);
+				TRX_setMode(TRX_MODE_CW, CurrentVFO);
 				CW_In_SSB_applyed = 2;
 			}
-			TRX_setMode(TRX_MODE_CW, CurrentVFO);
+			if (TRX.Auto_CW_Mode) {
+				TRX_setMode(TRX_MODE_CW, CurrentVFO);
+			}
 
 			LCD_UpdateQuery.FreqInfoRedraw = true;
 			LCD_UpdateQuery.TopButtons = true;
