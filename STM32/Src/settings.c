@@ -234,8 +234,8 @@ void LoadSettings(bool clear) {
 		TRX.IF_Gain = 20;                   // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;          // Maximum (target) AGC gain
 		TRX.MIC_Gain_SSB_DB = 9.0f;         // Microphone gain, dB SSB modes
-		TRX.MIC_Gain_AM_DB = 9.0f;        // Microphone gain, dB AM mode
-		TRX.MIC_Gain_FM_DB = 9.0f;        // Microphone gain, dB FM mode
+		TRX.MIC_Gain_AM_DB = 9.0f;          // Microphone gain, dB AM mode
+		TRX.MIC_Gain_FM_DB = 9.0f;          // Microphone gain, dB FM mode
 		TRX.MIC_Boost = false;              // +20dB mic amplifier
 		TRX.LINE_Volume = 23;               // Line input level
 		TRX.CODEC_Out_Volume = 121;         // Codec headphone level
@@ -577,7 +577,6 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER_DEBOUNCE = 0;        // time to eliminate contact bounce at the main encoder, ms
 		CALIBRATE.ENCODER2_DEBOUNCE = 10;      // time to eliminate contact bounce at the additional encoder, ms
 		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
-		CALIBRATE.ENCODER_ON_FALLING = true;   // encoder only triggers when level A falls
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
 		CALIBRATE.RF_unit_type = RF_UNIT_NONE; // RF-unit type
@@ -623,7 +622,6 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.PWR_VLT_Calibration = 1000.0f;  // VLT meter calibration
 #if defined(FRONTPANEL_X1)
 		CALIBRATE.ENCODER_INVERT = true;
-		CALIBRATE.ENCODER_ON_FALLING = true;
 		CALIBRATE.ENCODER_SLOW_RATE = 10;
 		CALIBRATE.RFU_HPF_START = 32000 * 1000; // HPF
 		CALIBRATE.RFU_BPF_0_START = 1500 * 1000;

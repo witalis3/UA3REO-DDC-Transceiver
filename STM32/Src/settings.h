@@ -19,7 +19,7 @@
 #endif
 
 #define SETT_VERSION 125        // Settings config version
-#define CALIB_VERSION 82        // Calibration config version
+#define CALIB_VERSION 83        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -942,7 +942,6 @@ extern struct TRX_CALIBRATE {
 	COM_LINE_MODE COM_DEBUG_RTS_Mode;
 	bool ENCODER_INVERT;
 	bool ENCODER2_INVERT;
-	bool ENCODER_ON_FALLING;
 	bool NOTX_NOTHAM;
 	bool NOTX_2200m;
 	bool NOTX_160m;

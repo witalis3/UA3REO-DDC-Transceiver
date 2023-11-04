@@ -1291,9 +1291,10 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	}
 
 	// IN-OUT
-	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB ||
-	    CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM) {
-		sprintf(buff, "MIC:%d", (uint32_t)TRX.MIC_Gain_AMFM_DB);
+	if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
+		sprintf(buff, "MIC:%d", (uint32_t)TRX.MIC_Gain_AM_DB);
+	} else if (CurrentVFO->Mode == TRX_MODE_NFM || CurrentVFO->Mode == TRX_MODE_WFM) {
+		sprintf(buff, "MIC:%d", (uint32_t)TRX.MIC_Gain_FM_DB);
 	} else {
 		sprintf(buff, "MIC:%d", (uint32_t)TRX.MIC_Gain_SSB_DB);
 	}

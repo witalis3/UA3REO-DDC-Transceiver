@@ -368,7 +368,6 @@ static void SYSMENU_HANDL_CALIB_ENCODER2_INVERT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_DEBOUNCE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_INVERT(int8_t direction);
-static void SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_10m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_12m(int8_t direction);
@@ -830,7 +829,7 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"MIC Boost", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.MIC_Boost, SYSMENU_HANDL_TX_MIC_Boost},
     {"MIC Gain SSB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_Gain_SSB_DB, SYSMENU_HANDL_TX_MIC_Gain_SSB_DB},
     {"MIC Gain AM", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_Gain_AM_DB, SYSMENU_HANDL_TX_MIC_Gain_AM_DB},
-		{"MIC Gain FM", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_Gain_FM_DB, SYSMENU_HANDL_TX_MIC_Gain_FM_DB},
+    {"MIC Gain FM", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_Gain_FM_DB, SYSMENU_HANDL_TX_MIC_Gain_FM_DB},
     {"MIC Noise Gate", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_NOISE_GATE, SYSMENU_HANDL_TX_MIC_NOISE_GATE},
     {"MIC EQ 0.3k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P1_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P1_AMFM},
     {"MIC EQ 0.7k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P2_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P2_AMFM},
@@ -1205,7 +1204,6 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
     {"Encoder debounce", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_DEBOUNCE, SYSMENU_HANDL_CALIB_ENCODER_DEBOUNCE},
     {"Encoder invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER_INVERT, SYSMENU_HANDL_CALIB_ENCODER_INVERT},
-    {"Encoder on falling", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},
     {"Encoder slow rate", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
     {"Encoder2 debounce", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER2_DEBOUNCE, SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE},
     {"Encoder2 invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER2_INVERT, SYSMENU_HANDL_CALIB_ENCODER2_INVERT},
@@ -5693,15 +5691,6 @@ static void SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE(int8_t direction) {
 	}
 	if (CALIBRATE.ENCODER_SLOW_RATE > 100) {
 		CALIBRATE.ENCODER_SLOW_RATE = 100;
-	}
-}
-
-static void SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING(int8_t direction) {
-	if (direction > 0) {
-		CALIBRATE.ENCODER_ON_FALLING = true;
-	}
-	if (direction < 0) {
-		CALIBRATE.ENCODER_ON_FALLING = false;
 	}
 }
 
