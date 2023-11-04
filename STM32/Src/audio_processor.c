@@ -2419,6 +2419,7 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 		float32_t carrier = 0.1f * (sam_data->omega2 * (float32_t)TRX_SAMPLERATE) / (2.0f * F_PI);
 		carrier = carrier + 0.9f * sam_data->lowpass;
 		SAM_Carrier_offset = carrier;
+		println("SAM_Carrier_offset ", (double)SAM_Carrier_offset);
 		sam_data->count = 0;
 		sam_data->lowpass = carrier;
 	}

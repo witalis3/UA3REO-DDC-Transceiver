@@ -1320,9 +1320,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
 #if !defined(FRONTPANEL_LITE)
     {"TCXO Freq, kHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
-#else
-    {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 #endif
+    {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 #ifdef TOUCHPAD_GT911
     {"Touchpad horiz flip", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_horizontal_flip, SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip},
     {"Touchpad verti flip", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_vertical_flip, SYSMENU_HANDL_CALIB_TOUCHPAD_vertical_flip},
@@ -6659,6 +6658,8 @@ static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction) {
 	if (CALIBRATE.VCXO_correction > 32750) {
 		CALIBRATE.VCXO_correction = 32750;
 	}
+	
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq(int8_t direction) {
@@ -8848,7 +8849,7 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		SYSMENU_eventRotateSystemMenu(1);
 		return;
 	}
-	
+
 #if HRDW_HAS_WIFI
 	if (sysmenu_wifi_selectap1_menu_opened) {
 		SYSMENU_WIFI_SelectAP1MenuMove(0);
@@ -8863,7 +8864,7 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		return;
 	}
 #endif
-	
+
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN ||
 	    sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE) {
 		sysmenu_item_selected_by_enc2 = false;
