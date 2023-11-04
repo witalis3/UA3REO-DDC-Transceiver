@@ -263,8 +263,9 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "DRV", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DRV_ONLY, .holdHandler = BUTTONHANDLER_DRV_ONLY, .checkBool = (uint32_t *)&TRX.LNA},
     {.name = "ATT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ATT, .holdHandler = BUTTONHANDLER_ATTHOLD, .checkBool = (uint32_t *)&TRX.ATT},
     {.name = "SCAN", .work_in_menu = false, .clickHandler = BUTTONHANDLER_SCAN, .holdHandler = BUTTONHANDLER_SCAN, .checkBool = (uint32_t *)&TRX_ScanMode},
-    {.name = "MUTE", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MUTE, .holdHandler = BUTTONHANDLER_MUTE_AFAMP, .checkBool = (uint32_t *)&TRX.AutoGain},
-    {.name = "FAST", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FAST, .holdHandler = BUTTONHANDLER_STEP, .checkBool = (uint32_t *)&TRX.Fast},
+		{.name = "BAND-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
+    {.name = "BAND+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
+
     //
     {.name = "POWER", .work_in_menu = true, .clickHandler = BUTTONHANDLER_RF_POWER, .holdHandler = BUTTONHANDLER_RF_POWER, .checkBool = NULL},
     {.name = "BW", .work_in_menu = true, .clickHandler = BUTTONHANDLER_BW, .holdHandler = BUTTONHANDLER_BW, .checkBool = NULL},
@@ -276,7 +277,7 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "ZOOM-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_N, .holdHandler = BUTTONHANDLER_ZOOM_N, .checkBool = NULL},
     {.name = "ZOOM+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_ZOOM_P, .holdHandler = BUTTONHANDLER_ZOOM_P, .checkBool = NULL},
     {.name = "TUNE", .work_in_menu = true, .clickHandler = BUTTONHANDLER_TUNE, .holdHandler = BUTTONHANDLER_TUNE, .checkBool = (uint32_t *)&TRX_Tune},
-    {.name = "FAST", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FAST, .holdHandler = BUTTONHANDLER_STEP, .checkBool = (uint32_t *)&TRX.Fast},
+    {.name = "NB", .work_in_menu = false, .clickHandler = BUTTONHANDLER_NB, .holdHandler = BUTTONHANDLER_NB_HOLD, .checkBool = NULL},
     //
     {.name = "NOTCH", .work_in_menu = false, .clickHandler = BUTTONHANDLER_NOTCH, .holdHandler = BUTTONHANDLER_NOTCH_MANUAL, .checkBool = (uint32_t *)&TRX.Notch_on_shadow},
     {.name = "DNR", .work_in_menu = false, .clickHandler = BUTTONHANDLER_DNR, .holdHandler = BUTTONHANDLER_DNR, .checkBool = NULL},
@@ -294,20 +295,19 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = "VFO>M", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MEMO_WRITE, .holdHandler = BUTTONHANDLER_MEMO_WRITE, .checkBool = NULL},
     {.name = "MODE-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
     {.name = "MODE+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MODE_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
-    {.name = "FAST", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FAST, .holdHandler = BUTTONHANDLER_STEP, .checkBool = (uint32_t *)&TRX.Fast},
+    {.name = "MUTE", .work_in_menu = false, .clickHandler = BUTTONHANDLER_MUTE, .holdHandler = BUTTONHANDLER_MUTE_AFAMP, .checkBool = (uint32_t *)&TRX.AutoGain},
     //
     {.name = TRX.CW_Macros_Name_1, .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 1},
     {.name = TRX.CW_Macros_Name_2, .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 2},
     {.name = TRX.CW_Macros_Name_3, .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 3},
     {.name = TRX.CW_Macros_Name_4, .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 4},
     {.name = TRX.CW_Macros_Name_5, .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 5},
+    //
     // hidden entry for menu editor
     {.name = "NONE", .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL, .checkBool = NULL},
 
-    //		{.name = "BAND-", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_N, .holdHandler = BUTTONHANDLER_MODE_N, .checkBool = NULL},
-    //    {.name = "BAND+", .work_in_menu = false, .clickHandler = BUTTONHANDLER_BAND_P, .holdHandler = BUTTONHANDLER_MODE_P, .checkBool = NULL},
     //    {.name = "LOCK", .work_in_menu = true, .clickHandler = BUTTONHANDLER_LOCK, .holdHandler = BUTTONHANDLER_LOCK, .checkBool = (uint32_t *)&TRX.Locked},
-
+// 
 };
 
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_TANGENT_MH48[6] = {
