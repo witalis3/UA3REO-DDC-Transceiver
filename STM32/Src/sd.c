@@ -969,7 +969,8 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.IF_Gain", (uint64_t *)&TRX.IF_Gain, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AGC_GAIN_TARGET2", (uint64_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_Gain_SSB_DB", (uint64_t *)&TRX.MIC_Gain_SSB_DB, SYSMENU_FLOAT32);
-			SD_WRITE_SETT_LINE("TRX.MIC_Gain_AMFM_DB", (uint64_t *)&TRX.MIC_Gain_AMFM_DB, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("TRX.MIC_Gain_AM_DB", (uint64_t *)&TRX.MIC_Gain_AM_DB, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("TRX.MIC_Gain_FM_DB", (uint64_t *)&TRX.MIC_Gain_FM_DB, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.MIC_Boost", (uint64_t *)&TRX.MIC_Boost, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.LINE_Volume", (uint64_t *)&TRX.LINE_Volume, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.CODEC_Out_Volume", (uint64_t *)&TRX.CODEC_Out_Volume, SYSMENU_UINT8);
@@ -1820,8 +1821,11 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.MIC_Gain_SSB_DB") == 0) {
 		TRX.MIC_Gain_SSB_DB = floatval;
 	}
-	if (strcmp(name, "TRX.MIC_Gain_AMFM_DB") == 0) {
-		TRX.MIC_Gain_AMFM_DB = floatval;
+	if (strcmp(name, "TRX.MIC_Gain_AM_DB") == 0) {
+		TRX.MIC_Gain_AM_DB = floatval;
+	}
+	if (strcmp(name, "TRX.MIC_Gain_FM_DB") == 0) {
+		TRX.MIC_Gain_FM_DB = floatval;
 	}
 	if (strcmp(name, "TRX.MIC_Boost") == 0) {
 		TRX.MIC_Boost = bval;

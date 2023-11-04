@@ -234,7 +234,8 @@ void LoadSettings(bool clear) {
 		TRX.IF_Gain = 20;                   // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;          // Maximum (target) AGC gain
 		TRX.MIC_Gain_SSB_DB = 9.0f;         // Microphone gain, dB SSB modes
-		TRX.MIC_Gain_AMFM_DB = 9.0f;        // Microphone gain, dB AM/FM modes
+		TRX.MIC_Gain_AM_DB = 9.0f;        // Microphone gain, dB AM mode
+		TRX.MIC_Gain_FM_DB = 9.0f;        // Microphone gain, dB FM mode
 		TRX.MIC_Boost = false;              // +20dB mic amplifier
 		TRX.LINE_Volume = 23;               // Line input level
 		TRX.CODEC_Out_Volume = 121;         // Codec headphone level
