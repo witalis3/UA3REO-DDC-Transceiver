@@ -142,19 +142,21 @@ void EVENTS_do_PERIPHERAL(void) // 1000 Hz
 
 static int8_t EVENTS_get_encoderDirection(uint8_t state) {
 	switch (state) {
+	// base process
 	case 0b0001:
 	case 0b1000:
 	case 0b0111:
 	case 0b1110:
-
+	// for fast interrupts
 	case 0b0110:
 	case 0b1001:
 		return -1;
+	// base process
 	case 0b0010:
 	case 0b1011:
 	case 0b0100:
 	case 0b1101:
-
+	// for fast interrupts
 	case 0b1100:
 	case 0b0011:
 		return 1;
