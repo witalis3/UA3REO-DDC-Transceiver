@@ -379,6 +379,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Swap USB IQ** - Swap USB IQ output
 * **Settings reset** - Reset all settings to defaults
 * **TCXO Frequency, kHz** - Frequency adjustment of the reference oscillator
+* **VCXO Correction** - Correction for main generator frequency offset
 * **Touchpad flip** - Flip the touchpad operation horizontally/vertically
 * **Touchpad timeout** - Minimum time between taps (protection against false trigger), ms
 * **Touchpad click threshold** - Minimum time for triggering a short click, ms
