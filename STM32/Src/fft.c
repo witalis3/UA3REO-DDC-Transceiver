@@ -1808,6 +1808,7 @@ bool FFT_printFFT(void) {
 	return true;
 }
 
+#if HRDW_HAS_FULL_FFT_BUFFER
 static void FFT_clearMarkers() {
 	FFT_Markers_Index = 0;
 	dma_memset(FFT_Markers, 0x00, sizeof(FFT_Markers));
@@ -1847,6 +1848,7 @@ static void FFT_printMarker(uint64_t frequency, char *label, uint16_t baseline, 
 		}
 	}
 }
+#endif
 
 #if !HRDW_HAS_FULL_FFT_BUFFER
 void FFT_ShortBufferPrintFFT(void) {
