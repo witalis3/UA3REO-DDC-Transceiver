@@ -142,15 +142,21 @@ void EVENTS_do_PERIPHERAL(void) // 1000 Hz
 
 static int8_t EVENTS_get_encoderDirection(uint8_t state) {
 	switch (state) {
-	case 0b00000001:
-	case 0b00001000:
-	case 0b00000111:
-	case 0b00001110:
+	case 0b0001:
+	case 0b1000:
+	case 0b0111:
+	case 0b1110:
+
+	case 0b0110:
+	case 0b1001:
 		return -1;
-	case 0b00000010:
-	case 0b00001011:
-	case 0b00000100:
-	case 0b00001101:
+	case 0b0010:
+	case 0b1011:
+	case 0b0100:
+	case 0b1101:
+
+	case 0b1100:
+	case 0b0011:
 		return 1;
 	}
 
@@ -159,15 +165,15 @@ static int8_t EVENTS_get_encoderDirection(uint8_t state) {
 
 static int8_t EVENTS_get_encoder2Direction(uint8_t state) {
 	switch (state) {
-	// case 0b00000001:
-	// case 0b00001000:
-	case 0b00000111:
-		// case 0b00001110:
+	// case 0b0001:
+	// case 0b1000:
+	// case 0b1110:
+	case 0b0111:
 		return CALIBRATE.ENCODER2_INVERT ? 1 : -1;
-	// case 0b00000010:
-	case 0b00001011:
-		// case 0b00000100:
-		// case 0b00001101:
+	// case 0b0010:
+	// case 0b0100:
+	// case 0b1101:
+	case 0b1011:
 		return CALIBRATE.ENCODER2_INVERT ? -1 : 1;
 	}
 
@@ -198,7 +204,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 		ENCODER_state = ((ENCODER_state << 2) | (ENCODER_DTVal << 1) | ENCODER_CLKVal) & 0xF;
 		int8_t direction = EVENTS_get_encoderDirection(ENCODER_state);
 		uint8_t ENCODER_SLOW_RATE = LCD_systemMenuOpened ? (CALIBRATE.ENCODER_SLOW_RATE * 5) : CALIBRATE.ENCODER_SLOW_RATE;
-		
+
 		if (direction < 0) {
 			ENCODER_slowler--;
 			if (ENCODER_slowler <= -ENCODER_SLOW_RATE) {
