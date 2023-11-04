@@ -102,6 +102,8 @@ static uint8_t FFTOutput_mean_count[FFT_SIZE] = {0};
 static float32_t minAmplValue_averaged = 0;
 static float32_t FFT_minDBM = 0;
 static float32_t FFT_maxDBM = 0;
+static uint8_t FFT_Markers_Index = 0;
+static FFT_Marker FFT_Markers[FFT_MARKERS_COUNT];
 // Decimator for Zoom FFT
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_I;
 static arm_fir_decimate_instance_f32 DECIMATE_ZOOM_FFT_Q;
@@ -328,6 +330,8 @@ static void FFT_3DPrintFFT(void);
 static float32_t getDBFromFFTAmpl(float32_t ampl);
 static float32_t getFFTAmplFromDB(float32_t ampl);
 static float32_t getMaxDBMFromFreq(uint64_t freq, uint8_t span);
+static void FFT_clearMarkers();
+static void FFT_printMarker(uint64_t frequency, char *label, uint16_t baseline, bool direction, uint32_t max_height);
 
 // FFT initialization
 void FFT_PreInit(void) {
@@ -1677,102 +1681,44 @@ bool FFT_printFFT(void) {
 		}
 	}
 
+	FFT_clearMarkers();
+
 // DXCluster labels
 #if HRDW_HAS_WIFI
-	int32_t prev_pos = -999;
-	int32_t prev_w = 0;
-	uint16_t prev_y = 5;
-
 	if (TRX.FFT_DXCluster) {
 		for (uint16_t i = 0; i < WIFI_DXCLUSTER_list_count; i++) {
-			int32_t pos = getFreqPositionOnFFT(WIFI_DXCLUSTER_list[i].Freq, true);
-			if (pos >= -50 && pos < LAYOUT->FFT_PRINT_SIZE) {
-				uint16_t y = 5;
-				if ((pos - prev_pos) < prev_w) {
-					y = prev_y + 10;
-				}
-				if (y < (fftHeight - 10)) {
-					prev_y = y;
-					prev_w = strlen(WIFI_DXCLUSTER_list[i].Callsign) * 6 + 4;
-
-					char str[64] = {0};
-					strcat(str, WIFI_DXCLUSTER_list[i].Callsign);
-					if (TRX.FFT_DXCluster_Azimuth) {
-						sprintf(str, "%s %u^o", WIFI_DXCLUSTER_list[i].Callsign, WIFI_DXCLUSTER_list[i].Azimuth);
-						prev_w += 5 * 6;
-					}
-
-					LCDDriver_printTextInMemory(str, pos + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
-					// vertical line
-					if (pos >= 0) {
-						for (uint8_t y_line = 0; y_line < 8; y_line++) {
-							print_output_buffer[y + y_line][pos] = COLOR_RED;
-						}
-					}
-				}
+			char str[64] = {0};
+			strcat(str, WIFI_DXCLUSTER_list[i].Callsign);
+			if (TRX.FFT_DXCluster_Azimuth) {
+				sprintf(str, "%s %u^o", WIFI_DXCLUSTER_list[i].Callsign, WIFI_DXCLUSTER_list[i].Azimuth);
 			}
-			prev_pos = pos;
+			FFT_printMarker(WIFI_DXCLUSTER_list[i].Freq, str, 5, true, fftHeight);
 		}
 	}
 
 	if (TRX.WOLF_Cluster) {
 		for (uint16_t i = 0; i < WIFI_WOLFCLUSTER_list_count; i++) {
-			int32_t pos = getFreqPositionOnFFT(WIFI_WOLFCLUSTER_list[i].Freq, true);
-			if (pos >= -50 && pos < LAYOUT->FFT_PRINT_SIZE) {
-				uint16_t y = 5;
-				if ((pos - prev_pos) < prev_w) {
-					y = prev_y + 10;
-				}
-				if (y < (fftHeight - 10)) {
-					prev_y = y;
-					prev_w = strlen(WIFI_WOLFCLUSTER_list[i].Callsign) * 6 + 4;
-
-					char str[64] = "*";
-					strcat(str, WIFI_WOLFCLUSTER_list[i].Callsign);
-					if (TRX.FFT_DXCluster_Azimuth) {
-						sprintf(str, "%s %u^o", WIFI_WOLFCLUSTER_list[i].Callsign, WIFI_WOLFCLUSTER_list[i].Azimuth);
-						prev_w += 5 * 6;
-					}
-
-					LCDDriver_printTextInMemory(str, pos + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
-					// vertical line
-					if (pos >= 0) {
-						for (uint8_t y_line = 0; y_line < 8; y_line++) {
-							print_output_buffer[y + y_line][pos] = COLOR_RED;
-						}
-					}
-				}
+			char str[64] = "*";
+			strcat(str, WIFI_WOLFCLUSTER_list[i].Callsign);
+			if (TRX.FFT_DXCluster_Azimuth) {
+				sprintf(str, "%s %u^o", WIFI_WOLFCLUSTER_list[i].Callsign, WIFI_WOLFCLUSTER_list[i].Azimuth);
 			}
-			prev_pos = pos;
+			FFT_printMarker(WIFI_WOLFCLUSTER_list[i].Freq, str, 5, true, fftHeight);
 		}
 	}
 #endif
 
 	// Time beacons
 	for (uint16_t i = 0; i < TIME_BEACONS_COUNT; i++) {
-		int32_t pos = getFreqPositionOnFFT(TIME_BEACONS[i].frequency, true);
-		if (pos >= -50 && pos < LAYOUT->FFT_PRINT_SIZE) {
-			uint16_t y = 5;
-			if ((pos - prev_pos) < prev_w) {
-				y = prev_y + 10;
-			}
-			if (y < (fftHeight - 10)) {
-				prev_y = y;
-				prev_w = strlen(TIME_BEACONS[i].name) * 6 + 4;
+		FFT_printMarker(TIME_BEACONS[i].frequency, (char *)TIME_BEACONS[i].name, 5, true, fftHeight);
+	}
 
-				char str[64] = {0};
-				strcat(str, TIME_BEACONS[i].name);
-
-				LCDDriver_printTextInMemory(str, pos + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
-				// vertical line
-				if (pos >= 0) {
-					for (uint8_t y_line = 0; y_line < 8; y_line++) {
-						print_output_buffer[y + y_line][pos] = COLOR_RED;
-					}
-				}
-			}
+	// Memory channels
+	for (uint16_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
+		if (CALIBRATE.MEMORY_CHANNELS[i].freq == 0) {
+			continue;
 		}
-		prev_pos = pos;
+		FFT_printMarker(CALIBRATE.MEMORY_CHANNELS[i].freq, (char *)CALIBRATE.MEMORY_CHANNELS[i].name, 5, true, fftHeight);
 	}
 
 	// Print DBM grid (LOG Scale)
@@ -1860,6 +1806,46 @@ bool FFT_printFFT(void) {
 #endif
 
 	return true;
+}
+
+static void FFT_clearMarkers() {
+	FFT_Markers_Index = 0;
+	dma_memset(FFT_Markers, 0x00, sizeof(FFT_Markers));
+}
+
+static void FFT_printMarker(uint64_t frequency, char *label, uint16_t baseline, bool direction, uint32_t max_height) {
+
+	int32_t x = getFreqPositionOnFFT(frequency, true);
+	if (x >= -50 && x < LAYOUT->FFT_PRINT_SIZE) {
+		uint16_t y = baseline;
+		uint16_t width = strlen(label) * 6 + 3;
+
+		for (int16_t index = 0; index < FFT_Markers_Index; index++) {
+			bool a = x <= (FFT_Markers[index].x + FFT_Markers[index].width);
+			bool b = (x + width) >= FFT_Markers[index].x;
+			bool c = y == FFT_Markers[index].y;
+
+			if (a && b && c) {
+				y += direction ? 10 : -10;
+				index = -1; // repeat find circle
+			}
+		}
+
+		if (y > 0 && y < (max_height - 10) && x < LAYOUT->FFT_PRINT_SIZE) {
+			FFT_Markers[FFT_Markers_Index].x = x;
+			FFT_Markers[FFT_Markers_Index].y = y;
+			FFT_Markers[FFT_Markers_Index].width = width;
+			FFT_Markers_Index++;
+
+			LCDDriver_printTextInMemory(label, x + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+			// vertical line
+			if (x >= 0) {
+				for (uint8_t y_line = 0; y_line < 8; y_line++) {
+					print_output_buffer[y + y_line][x] = COLOR_RED;
+				}
+			}
+		}
+	}
 }
 
 #if !HRDW_HAS_FULL_FFT_BUFFER
@@ -2211,6 +2197,8 @@ static void FFT_3DPrintFFT(void) {
 		buff_y_prev = buff_y;
 	}
 
+	FFT_clearMarkers();
+
 // DXCluster labels
 #if HRDW_HAS_WIFI
 	int32_t prev_pos = -999;
@@ -2219,68 +2207,39 @@ static void FFT_3DPrintFFT(void) {
 
 	if (TRX.FFT_DXCluster) {
 		for (uint16_t i = 0; i < WIFI_DXCLUSTER_list_count; i++) {
-			int32_t pos = getFreqPositionOnFFT(WIFI_DXCLUSTER_list[i].Freq, true);
-			if (pos >= -50 && pos < LAYOUT->FFT_PRINT_SIZE) {
-				uint16_t y = FFT_AND_WTF_HEIGHT - 50;
-				if ((pos - prev_pos) < prev_w) {
-					y = prev_y - 10;
-				}
-				if (y > 0) {
-					prev_y = y;
-					prev_w = strlen(WIFI_DXCLUSTER_list[i].Callsign) * 6 + 4;
-
-					char str[64] = {0};
-					strcat(str, WIFI_DXCLUSTER_list[i].Callsign);
-					if (TRX.FFT_DXCluster_Azimuth) {
-						sprintf(str, "%s %u^o", WIFI_DXCLUSTER_list[i].Callsign, WIFI_DXCLUSTER_list[i].Azimuth);
-						prev_w += 5 * 6;
-					}
-
-					LCDDriver_printTextInMemory(str, pos + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
-					// vertical line
-					if (pos >= 0) {
-						for (uint8_t y_line = 0; y_line < 8; y_line++) {
-							print_output_buffer[y + y_line][pos] = COLOR_RED;
-						}
-					}
-				}
+			char str[64] = {0};
+			strcat(str, WIFI_DXCLUSTER_list[i].Callsign);
+			if (TRX.FFT_DXCluster_Azimuth) {
+				sprintf(str, "%s %u^o", WIFI_DXCLUSTER_list[i].Callsign, WIFI_DXCLUSTER_list[i].Azimuth);
 			}
-			prev_pos = pos;
+			FFT_printMarker(WIFI_DXCLUSTER_list[i].Freq, str, FFT_AND_WTF_HEIGHT - 50, false, FFT_AND_WTF_HEIGHT);
 		}
 	}
 
 	if (TRX.WOLF_Cluster) {
 		for (uint16_t i = 0; i < WIFI_WOLFCLUSTER_list_count; i++) {
-			int32_t pos = getFreqPositionOnFFT(WIFI_WOLFCLUSTER_list[i].Freq, true);
-			if (pos >= -50 && pos < LAYOUT->FFT_PRINT_SIZE) {
-				uint16_t y = FFT_AND_WTF_HEIGHT - 50;
-				if ((pos - prev_pos) < prev_w) {
-					y = prev_y - 10;
-				}
-				if (y > 0) {
-					prev_y = y;
-					prev_w = strlen(WIFI_WOLFCLUSTER_list[i].Callsign) * 6 + 4;
-
-					char str[64] = "*";
-					strcat(str, WIFI_WOLFCLUSTER_list[i].Callsign);
-					if (TRX.FFT_DXCluster_Azimuth) {
-						sprintf(str, "%s %u^o", WIFI_WOLFCLUSTER_list[i].Callsign, WIFI_WOLFCLUSTER_list[i].Azimuth);
-						prev_w += 5 * 6;
-					}
-
-					LCDDriver_printTextInMemory(str, pos + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
-					// vertical line
-					if (pos >= 0) {
-						for (uint8_t y_line = 0; y_line < 8; y_line++) {
-							print_output_buffer[y + y_line][pos] = COLOR_RED;
-						}
-					}
-				}
+			char str[64] = "*";
+			strcat(str, WIFI_WOLFCLUSTER_list[i].Callsign);
+			if (TRX.FFT_DXCluster_Azimuth) {
+				sprintf(str, "%s %u^o", WIFI_WOLFCLUSTER_list[i].Callsign, WIFI_WOLFCLUSTER_list[i].Azimuth);
 			}
-			prev_pos = pos;
+			FFT_printMarker(WIFI_WOLFCLUSTER_list[i].Freq, str, FFT_AND_WTF_HEIGHT - 50, false, FFT_AND_WTF_HEIGHT);
 		}
 	}
 #endif
+
+	// Time beacons
+	for (uint16_t i = 0; i < TIME_BEACONS_COUNT; i++) {
+		FFT_printMarker(TIME_BEACONS[i].frequency, (char *)TIME_BEACONS[i].name, FFT_AND_WTF_HEIGHT - 50, false, FFT_AND_WTF_HEIGHT);
+	}
+
+	// Memory channels
+	for (uint16_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
+		if (CALIBRATE.MEMORY_CHANNELS[i].freq == 0) {
+			continue;
+		}
+		FFT_printMarker(CALIBRATE.MEMORY_CHANNELS[i].freq, (char *)CALIBRATE.MEMORY_CHANNELS[i].name, FFT_AND_WTF_HEIGHT - 50, false, FFT_AND_WTF_HEIGHT);
+	}
 
 	// Сenter line
 	for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
