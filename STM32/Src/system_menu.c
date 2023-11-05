@@ -196,6 +196,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Automatic(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_BW_Style(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_BW_Position(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Background(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Compressor(int8_t direction);
@@ -913,6 +914,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"FFT Averaging", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 #if !defined(FRONTPANEL_LITE)
     {"FFT BW Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_BW_Style, SYSMENU_HANDL_SCREEN_FFT_BW_Style, (const enumerate_item[4]){"", "Fill", "LowOp", "Line"}},
+    {"FFT BW Position", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_BW_Position, SYSMENU_HANDL_SCREEN_FFT_BW_Position, (const enumerate_item[4]){"All", "Top+Line", "Top", "Delay"}},
 #endif
     {"FFT Background", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Background, SYSMENU_HANDL_SCREEN_FFT_Background},
     {"FFT Color", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Color, SYSMENU_HANDL_SCREEN_FFT_Color,
@@ -4016,6 +4018,17 @@ static void SYSMENU_HANDL_SCREEN_FFT_BW_Style(int8_t direction) {
 	}
 	if (TRX.FFT_BW_Style > 3) {
 		TRX.FFT_BW_Style = 3;
+	}
+
+	FFT_Init();
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_BW_Position(int8_t direction) {
+	if (TRX.FFT_BW_Position > 0 || direction > 0) {
+		TRX.FFT_BW_Position += direction;
+	}
+	if (TRX.FFT_BW_Position > 3) {
+		TRX.FFT_BW_Position = 3;
 	}
 
 	FFT_Init();

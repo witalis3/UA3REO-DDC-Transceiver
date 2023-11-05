@@ -367,6 +367,7 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Window = 1;        // FFT Window
 		TRX.FFT_Style = 5;         // FFT style
 		TRX.FFT_BW_Style = 2;      // FFT BW style
+		TRX.FFT_BW_Position = 0;   // FFT BW position
 		TRX.FFT_Color = 0;         // FFT display color
 		TRX.WTF_Color = 1;         // WTF display color
 		TRX.FFT_Compressor = true; // Compress FFT Peaks

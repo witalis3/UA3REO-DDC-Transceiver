@@ -268,6 +268,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **FFT Automatic** - Automatic FFT scale
 * **FFT Averaging** - FFT burst averaging level
 * **FFT BW Style** - FFT bandwidth style: high opacity, low opacity, lines
+* **FFT BW Position** - Position of the receiving band on FFT/WTF (everywhere \ at the top \ at the top + lines \ top + bottom with time delay)
 * **FFT Background** - Gradient FFT background
 * **FFT Color** - FFT colors: 1(blue -> yellow -> red), 2(black -> yellow -> red), 3(black -> yellow -> green), 4(black -> red), 5(black -> green), 6(black -> blue), 7(black -> white)
 * **FFT Compressor** - Enable FFT peak comressor

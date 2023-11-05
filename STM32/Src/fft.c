@@ -1513,6 +1513,22 @@ bool FFT_printFFT(void) {
 	}
 #endif
 
+	// show BW on WTF
+	bool showBWonWTF = TRX.FFT_BW_Position == 0;
+	static bool redrawOnBwHide_state = false;
+	if (TRX.FFT_BW_Position == 3) {
+		if (TRX_Inactive_Time < 2) {
+			showBWonWTF = true;
+			redrawOnBwHide_state = false;
+		} else {
+			showBWonWTF = false;
+			if (!redrawOnBwHide_state) {
+				redrawOnBwHide_state = true;
+				NeedWTFRedraw = true;
+			}
+		}
+	}
+
 	uint16_t wtf_printed_lines = 0;
 	uint16_t print_wtf_yindex = fftHeight;
 #ifdef HAS_BTE
@@ -1558,9 +1574,9 @@ bool FFT_printFFT(void) {
 			if (margin_left == 0 && margin_right == 0) // print full line
 			{
 				for (uint32_t wtf_x = 0; wtf_x < LAYOUT->FFT_PRINT_SIZE; wtf_x++) {
-					if (wtf_x >= bw_rx1_line_start && wtf_x <= bw_rx1_line_end) { // print rx1 bw bar
+					if (showBWonWTF && wtf_x >= bw_rx1_line_start && wtf_x <= bw_rx1_line_end) { // print rx1 bw bar
 						print_output_buffer[print_wtf_yindex][wtf_x] = palette_bw_wtf_colors[indexed_wtf_buffer[wtf_y_index][wtf_x]];
-					} else if (TRX.Show_Sec_VFO && TRX.FFT_BW_Style != 3 && (int32_t)wtf_x >= bw_rx2_line_start && (int32_t)wtf_x <= bw_rx2_line_end) { // print rx2 bw bar
+					} else if (TRX.Show_Sec_VFO && showBWonWTF && TRX.FFT_BW_Style != 3 && (int32_t)wtf_x >= bw_rx2_line_start && (int32_t)wtf_x <= bw_rx2_line_end) { // print rx2 bw bar
 						print_output_buffer[print_wtf_yindex][wtf_x] =
 						    addColor(palette_bw_wtf_colors[indexed_wtf_buffer[wtf_y_index][wtf_x]], FFT_SEC_BW_BRIGHTNESS, -FFT_SEC_BW_BRIGHTNESS, FFT_SEC_BW_BRIGHTNESS);
 					} else {
@@ -1569,9 +1585,9 @@ bool FFT_printFFT(void) {
 				}
 			} else if (margin_left > 0) {
 				for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_left); wtf_x++) {
-					if ((margin_left + wtf_x) >= bw_rx1_line_start && (margin_left + wtf_x) <= bw_rx1_line_end) { // print rx1 bw bar
+					if (showBWonWTF && (margin_left + wtf_x) >= bw_rx1_line_start && (margin_left + wtf_x) <= bw_rx1_line_end) { // print rx1 bw bar
 						print_output_buffer[print_wtf_yindex][margin_left + wtf_x] = palette_bw_wtf_colors[indexed_wtf_buffer[wtf_y_index][wtf_x]];
-					} else if (TRX.Show_Sec_VFO && TRX.FFT_BW_Style != 3 && (int32_t)(margin_left + wtf_x) >= bw_rx2_line_start &&
+					} else if (TRX.Show_Sec_VFO && showBWonWTF && TRX.FFT_BW_Style != 3 && (int32_t)(margin_left + wtf_x) >= bw_rx2_line_start &&
 					           (int32_t)(margin_left + wtf_x) <= bw_rx2_line_end) { // print rx2 bw bar
 						print_output_buffer[print_wtf_yindex][margin_left + wtf_x] =
 						    addColor(palette_bw_wtf_colors[indexed_wtf_buffer[wtf_y_index][wtf_x]], FFT_SEC_BW_BRIGHTNESS, -FFT_SEC_BW_BRIGHTNESS, FFT_SEC_BW_BRIGHTNESS);
@@ -1582,9 +1598,9 @@ bool FFT_printFFT(void) {
 			}
 			if (margin_right > 0) {
 				for (uint32_t wtf_x = 0; wtf_x < (LAYOUT->FFT_PRINT_SIZE - margin_right); wtf_x++) {
-					if (wtf_x >= bw_rx1_line_start && wtf_x <= bw_rx1_line_end) { // print rx1 bw bar
+					if (showBWonWTF && wtf_x >= bw_rx1_line_start && wtf_x <= bw_rx1_line_end) { // print rx1 bw bar
 						print_output_buffer[print_wtf_yindex][wtf_x] = palette_bw_wtf_colors[indexed_wtf_buffer[wtf_y_index][wtf_x + margin_right]];
-					} else if (TRX.Show_Sec_VFO && TRX.FFT_BW_Style != 3 && (int32_t)wtf_x >= bw_rx2_line_start && (int32_t)wtf_x <= bw_rx2_line_end) { // print rx2 bw bar
+					} else if (TRX.Show_Sec_VFO && showBWonWTF && TRX.FFT_BW_Style != 3 && (int32_t)wtf_x >= bw_rx2_line_start && (int32_t)wtf_x <= bw_rx2_line_end) { // print rx2 bw bar
 						print_output_buffer[print_wtf_yindex][wtf_x] =
 						    addColor(palette_bw_wtf_colors[indexed_wtf_buffer[wtf_y_index][wtf_x + margin_right]], FFT_SEC_BW_BRIGHTNESS, -FFT_SEC_BW_BRIGHTNESS, FFT_SEC_BW_BRIGHTNESS);
 					} else {
@@ -1618,16 +1634,18 @@ bool FFT_printFFT(void) {
 		}
 	}
 
+	uint16_t BWLinesHeight = (showBWonWTF || TRX.FFT_BW_Position == 1) ? FFT_AND_WTF_HEIGHT : fftHeight;
+
 	// Gauss filter center
 	if (TRX.CW_GaussFilter && CurrentVFO->Mode == TRX_MODE_CW && bw_rx1_line_center >= 0 && bw_rx1_line_center < LAYOUT->FFT_PRINT_SIZE) {
 		uint16_t color = palette_fft[fftHeight / 2];
-		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
+		for (uint32_t fft_y = 0; fft_y < BWLinesHeight; fft_y++) {
 			print_output_buffer[fft_y][bw_rx1_line_center] = color;
 		}
 	}
 	if (TRX.CW_GaussFilter && SecondaryVFO->Mode == TRX_MODE_CW && TRX.Show_Sec_VFO && bw_rx2_line_center >= 0 && bw_rx2_line_center < LAYOUT->FFT_PRINT_SIZE) {
 		uint16_t color = palette_fft[fftHeight / 2];
-		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
+		for (uint32_t fft_y = 0; fft_y < BWLinesHeight; fft_y++) {
 			print_output_buffer[fft_y][bw_rx2_line_center] = color;
 		}
 	}
@@ -1637,7 +1655,7 @@ bool FFT_printFFT(void) {
 		uint16_t color = palette_fft[fftHeight / 2];
 		uint16_t x1 = rx1_line_pos + (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) / Hz_in_pixel * fft_zoom;
 		uint16_t x2 = rx1_line_pos + (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) / Hz_in_pixel * fft_zoom;
-		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
+		for (uint32_t fft_y = 0; fft_y < BWLinesHeight; fft_y++) {
 			print_output_buffer[fft_y][x1] = color;
 			print_output_buffer[fft_y][x2] = color;
 		}
@@ -1646,27 +1664,27 @@ bool FFT_printFFT(void) {
 	// Show manual Notch filter line
 	if (CurrentVFO->ManualNotchFilter && TRX_on_RX && rx1_notch_line_pos >= 0 && rx1_notch_line_pos < LAYOUT->FFT_PRINT_SIZE) {
 		uint16_t color = palette_fft[fftHeight * 1 / 4];
-		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
+		for (uint32_t fft_y = 0; fft_y < BWLinesHeight; fft_y++) {
 			print_output_buffer[fft_y][rx1_notch_line_pos] = color;
 		}
 	}
 	if (SecondaryVFO->ManualNotchFilter && TRX_on_RX && TRX.Show_Sec_VFO && rx2_notch_line_pos >= 0 && rx2_notch_line_pos < LAYOUT->FFT_PRINT_SIZE) {
 		uint16_t color = palette_fft[fftHeight * 1 / 4];
-		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
+		for (uint32_t fft_y = 0; fft_y < BWLinesHeight; fft_y++) {
 			print_output_buffer[fft_y][rx2_notch_line_pos] = color;
 		}
 	}
 
 	// Draw RX2 center line
 	if (TRX.Show_Sec_VFO && rx2_line_pos >= 0 && rx2_line_pos < LAYOUT->FFT_PRINT_SIZE) {
-		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
+		for (uint32_t fft_y = 0; fft_y < BWLinesHeight; fft_y++) {
 			print_output_buffer[fft_y][rx2_line_pos] = COLOR_GREEN;
 		}
 	}
 
 	// Draw RX1 center line
 	uint16_t color = palette_fft[fftHeight / 2];
-	for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
+	for (uint32_t fft_y = 0; fft_y < BWLinesHeight; fft_y++) {
 		print_output_buffer[fft_y][rx1_line_pos] = color;
 	}
 
@@ -1674,7 +1692,7 @@ bool FFT_printFFT(void) {
 	if (TRX.FFT_BW_Style == 3) {
 		uint16_t color_bw = palette_fft[fftHeight / 2];
 		uint16_t color_center = palette_fft[0];
-		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
+		for (uint32_t fft_y = 0; fft_y < BWLinesHeight; fft_y++) {
 			print_output_buffer[fft_y][bw_rx1_line_start] = color_bw;
 			print_output_buffer[fft_y][bw_rx1_line_end] = color_bw;
 			print_output_buffer[fft_y][rx1_line_pos] = color_center;

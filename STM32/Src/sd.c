@@ -1075,6 +1075,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.FFT_Height", (uint64_t *)&TRX.FFT_Height, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_Style", (uint64_t *)&TRX.FFT_Style, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_BW_Style", (uint64_t *)&TRX.FFT_BW_Style, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.FFT_BW_Position", (uint64_t *)&TRX.FFT_BW_Position, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_Color", (uint64_t *)&TRX.FFT_Color, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.WTF_Color", (uint64_t *)&TRX.WTF_Color, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_Compressor", (uint64_t *)&TRX.FFT_Compressor, SYSMENU_BOOLEAN);
@@ -2183,6 +2184,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.FFT_BW_Style") == 0) {
 		TRX.FFT_BW_Style = (uint8_t)uintval;
+	}
+	if (strcmp(name, "TRX.FFT_BW_Position") == 0) {
+		TRX.FFT_BW_Position = (uint8_t)uintval;
 	}
 	if (strcmp(name, "TRX.FFT_Color") == 0) {
 		TRX.FFT_Color = (uint8_t)uintval;
