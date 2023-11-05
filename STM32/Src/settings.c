@@ -14,14 +14,11 @@
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
-IRAM2 static uint8_t Sector_Erase = W25Q16_COMMAND_Sector_Erase;
-IRAM2 static uint8_t Page_Program = W25Q16_COMMAND_Page_Program;
-IRAM2 static uint8_t Read_Data = W25Q16_COMMAND_Read_Data;
 IRAM2 static uint8_t Power_Down = W25Q16_COMMAND_Power_Down;
 IRAM2 static uint8_t Get_Status = W25Q16_COMMAND_GetStatus;
 IRAM2 static uint8_t Power_Up = W25Q16_COMMAND_Power_Up;
 
-IRAM2 static uint8_t Address[3] = {0x00};
+IRAM2 static uint8_t CmdAddress[4];
 IRAM2_ON_F407 struct TRX_SETTINGS TRX;
 IRAM2_ON_F407 struct TRX_CALIBRATE CALIBRATE = {0};
 IRAM2_ON_F407 struct TRX_WIFI WIFI = {0};
@@ -1331,13 +1328,13 @@ static bool EEPROM_Sector_Erase(uint8_t sector, bool force) {
 	}
 
 	uint32_t BigAddress = sector * W25Q16_SECTOR_SIZE;
-	Address[2] = (BigAddress >> 16) & 0xFF;
-	Address[1] = (BigAddress >> 8) & 0xFF;
-	Address[0] = BigAddress & 0xFF;
+	CmdAddress[0] = W25Q16_COMMAND_Sector_Erase;
+	CmdAddress[1] = (BigAddress >> 16) & 0xFF;
+	CmdAddress[2] = (BigAddress >> 8) & 0xFF;
+	CmdAddress[3] = BigAddress & 0xFF;
 
 	HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false); // Write Enable Command
-	HRDW_EEPROM_SPI(&Sector_Erase, NULL, 1, true);  // Erase Command
-	HRDW_EEPROM_SPI(Address, NULL, 3, false);       // Write Address ( The first address of flash module is 0x00000000 )
+	HRDW_EEPROM_SPI(CmdAddress, NULL, 4, false);    // Erase Command + Write Address ( The first address of flash module is 0x00000000 )
 	EEPROM_WaitWrite();
 
 	HRDW_SPI_Locked = false;
@@ -1362,16 +1359,19 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 
 	for (uint16_t page = 0; page <= (size / W25Q16_PAGE_SIZE); page++) {
 		uint32_t BigAddress = (page * W25Q16_PAGE_SIZE) + (sector * W25Q16_SECTOR_SIZE);
-		Address[2] = (BigAddress >> 16) & 0xFF;
-		Address[1] = (BigAddress >> 8) & 0xFF;
-		Address[0] = BigAddress & 0xFF;
+		CmdAddress[0] = W25Q16_COMMAND_Page_Program;
+		CmdAddress[1] = (BigAddress >> 16) & 0xFF;
+		CmdAddress[2] = (BigAddress >> 8) & 0xFF;
+		CmdAddress[3] = BigAddress & 0xFF;
 		uint16_t bsize = size - W25Q16_PAGE_SIZE * page;
 		if (bsize > W25Q16_PAGE_SIZE) {
 			bsize = W25Q16_PAGE_SIZE;
 		}
+		if (bsize == 0) {
+			continue;
+		}
 		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false);                                     // Write Enable Command
-		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);                                      // Write Command
-		HRDW_EEPROM_SPI(Address, NULL, 3, true);                                            // Write Address ( The first address of flash module is 0x00000000 )
+		HRDW_EEPROM_SPI(CmdAddress, NULL, 4, true);                                         // Write Command + Write Address ( The first address of flash module is 0x00000000 )
 		HRDW_EEPROM_SPI((uint8_t *)(Buffer + W25Q16_PAGE_SIZE * page), NULL, bsize, false); // Write Data
 		EEPROM_WaitWrite();
 	}
@@ -1428,14 +1428,15 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 	Aligned_CleanDCache_by_Addr((uint32_t *)Buffer, size);
 
 	uint32_t BigAddress = sector * W25Q16_SECTOR_SIZE;
-	Address[2] = (BigAddress >> 16) & 0xFF;
-	Address[1] = (BigAddress >> 8) & 0xFF;
-	Address[0] = BigAddress & 0xFF;
+	CmdAddress[0] = W25Q16_COMMAND_Read_Data;
+	CmdAddress[1] = (BigAddress >> 16) & 0xFF;
+	CmdAddress[2] = (BigAddress >> 8) & 0xFF;
+	CmdAddress[3] = BigAddress & 0xFF;
 
 	bool read_ok = false;
 	int8_t tryes = 0;
 	while (!read_ok && tryes < 5) {
-		bool res = HRDW_EEPROM_SPI(&Read_Data, NULL, 1, true); // Read Command
+		bool res = HRDW_EEPROM_SPI(CmdAddress, NULL, 4, true); // Read Command + Write Address
 		if (!res) {
 			EEPROM_Enabled = false;
 			println("[ERR] EEPROM not found...");
@@ -1446,8 +1447,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 			return true;
 		}
 
-		HRDW_EEPROM_SPI(Address, NULL, 3, true);                           // Write Address
-		read_ok = HRDW_EEPROM_SPI(NULL, (uint8_t *)(Buffer), size, false); // Read
+		read_ok = HRDW_EEPROM_SPI(NULL, (uint8_t *)(Buffer), size, false); // Read data
 		tryes++;
 	}
 
@@ -1458,11 +1458,12 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		Aligned_CleanDCache_by_Addr((uint32_t *)verify_clone, size);
 
 		BigAddress = sector * W25Q16_SECTOR_SIZE;
-		Address[2] = (BigAddress >> 16) & 0xFF;
-		Address[1] = (BigAddress >> 8) & 0xFF;
-		Address[0] = BigAddress & 0xFF;
+		CmdAddress[0] = W25Q16_COMMAND_Read_Data;
+		CmdAddress[1] = (BigAddress >> 16) & 0xFF;
+		CmdAddress[2] = (BigAddress >> 8) & 0xFF;
+		CmdAddress[3] = BigAddress & 0xFF;
 
-		bool res = HRDW_EEPROM_SPI(&Read_Data, NULL, 1, true); // Read Command
+		bool res = HRDW_EEPROM_SPI(CmdAddress, NULL, 4, true); // Read Command + Write Address
 		if (!res) {
 			EEPROM_Enabled = false;
 			println("[ERR] EEPROM not found...");
@@ -1473,8 +1474,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 			return true;
 		}
 
-		HRDW_EEPROM_SPI(Address, NULL, 3, true);                     // Write Address
-		HRDW_EEPROM_SPI(NULL, (uint8_t *)verify_clone, size, false); // Read
+		HRDW_EEPROM_SPI(NULL, (uint8_t *)verify_clone, size, false); // Read data
 
 		Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)verify_clone, size);
 
