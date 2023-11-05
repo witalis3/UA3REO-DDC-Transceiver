@@ -1808,7 +1808,6 @@ bool FFT_printFFT(void) {
 	return true;
 }
 
-#if HRDW_HAS_FULL_FFT_BUFFER
 static void FFT_clearMarkers() {
 	FFT_Markers_Index = 0;
 	dma_memset(FFT_Markers, 0x00, sizeof(FFT_Markers));
@@ -1832,23 +1831,31 @@ static void FFT_printMarker(uint64_t frequency, char *label, uint16_t baseline, 
 			}
 		}
 
-		if (y > 0 && y < (max_height - 10) && x < LAYOUT->FFT_PRINT_SIZE) {
+		if (y > 0 && y < (max_height - 10)) {
 			FFT_Markers[FFT_Markers_Index].x = x;
 			FFT_Markers[FFT_Markers_Index].y = y;
 			FFT_Markers[FFT_Markers_Index].width = width;
 			FFT_Markers_Index++;
 
+#if HRDW_HAS_FULL_FFT_BUFFER
 			LCDDriver_printTextInMemory(label, x + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+#else
+			LCDDriver_printTextInMemory(label, x + 2, y, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_short_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+#endif
+
 			// vertical line
 			if (x >= 0) {
 				for (uint8_t y_line = 0; y_line < 8; y_line++) {
+#if HRDW_HAS_FULL_FFT_BUFFER
 					print_output_buffer[y + y_line][x] = COLOR_RED;
+#else
+					print_output_short_buffer[y + y_line][x] = COLOR_RED;
+#endif
 				}
 			}
 		}
 	}
 }
-#endif
 
 #if !HRDW_HAS_FULL_FFT_BUFFER
 void FFT_ShortBufferPrintFFT(void) {
@@ -2079,7 +2086,32 @@ void FFT_ShortBufferPrintFFT(void) {
 			print_output_short_buffer[buff_idx][bw_rx1_line_end] = contour_color;
 			print_output_short_buffer[buff_idx][rx1_line_pos] = color_center;
 
+			// well done
 			fft_output_prepared++;
+
+			if (fft_output_prepared == FFT_SHORT_BUFFER_SIZE && fft_output_printed == 0) { // last line, first block
+				FFT_clearMarkers();
+
+				// Time beacons
+				for (uint16_t i = 0; i < TIME_BEACONS_COUNT; i++) {
+					FFT_printMarker(TIME_BEACONS[i].frequency, (char *)TIME_BEACONS[i].name, 5, true, FFT_SHORT_BUFFER_SIZE);
+				}
+
+				// Memory channels
+				for (uint16_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
+					if (CALIBRATE.MEMORY_CHANNELS[i].freq == 0) {
+						continue;
+					}
+					FFT_printMarker(CALIBRATE.MEMORY_CHANNELS[i].freq, (char *)CALIBRATE.MEMORY_CHANNELS[i].name, 5, true, FFT_SHORT_BUFFER_SIZE);
+				}
+
+				// SAM Carrier
+				if (CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
+					char tmp[32] = {0};
+					sprintf(tmp, "%.2fHz", (double)SAM_Carrier_offset);
+					LCDDriver_printTextInMemory(tmp, 5, 5, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_short_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_SHORT_BUFFER_SIZE);
+				}
+			}
 		}
 
 		// Lets print line to LCD
