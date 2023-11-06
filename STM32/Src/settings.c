@@ -574,7 +574,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER2_INVERT = false;     // invert left-right rotation of the optional encoder
 		CALIBRATE.ENCODER_DEBOUNCE = 0;        // time to eliminate contact bounce at the main encoder, ms
 		CALIBRATE.ENCODER2_DEBOUNCE = 10;      // time to eliminate contact bounce at the additional encoder, ms
-		CALIBRATE.ENCODER_SLOW_RATE = 30;      // slow down the encoder for high resolutions
+		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
 		CALIBRATE.RF_unit_type = RF_UNIT_NONE; // RF-unit type

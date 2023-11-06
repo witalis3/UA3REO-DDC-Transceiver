@@ -149,7 +149,7 @@ static int8_t EVENTS_get_encoderDirection(uint8_t state) {
 	case 0b1110:
 	// for fast interrupts
 	case 0b0110:
-	case 0b1001:
+	// case 0b1001:
 		return -1;
 	// base process
 	case 0b0010:
@@ -158,7 +158,7 @@ static int8_t EVENTS_get_encoderDirection(uint8_t state) {
 	case 0b1101:
 	// for fast interrupts
 	case 0b1100:
-	case 0b0011:
+	// case 0b0011:
 		return 1;
 	}
 
@@ -243,7 +243,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 		}
 	}
 
-	// ENC
+	// ENC2
 	static uint8_t ENCODER2_state = 0;
 	static uint32_t ENCODER2_AValDeb = 0;
 
