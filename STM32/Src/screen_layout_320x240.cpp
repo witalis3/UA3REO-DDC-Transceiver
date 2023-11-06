@@ -44,8 +44,8 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] = {
         .CLOCK_POS_SEC_X = (uint16_t)(LAYOUT_THEMES[0].CLOCK_POS_MIN_X + 25),
         .CLOCK_FONT = &FreeSans9pt7b,
         // WIFI
-        .STATUS_WIFI_ICON_X = 0,
-        .STATUS_WIFI_ICON_Y = 0,
+        .STATUS_WIFI_ICON_X = 317,
+        .STATUS_WIFI_ICON_Y = 112,
         // SD
         .STATUS_SD_ICON_X = 0,
         .STATUS_SD_ICON_Y = 0,

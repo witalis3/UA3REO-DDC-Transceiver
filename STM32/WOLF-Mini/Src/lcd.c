@@ -505,6 +505,13 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 		LCD_UpdateQuery.TextBar = true;
 	}
 
+	// WIFI indicator
+	if (WIFI_connected) {
+		LCDDriver_drawPixel(LAYOUT->STATUS_WIFI_ICON_X, LAYOUT->STATUS_WIFI_ICON_Y, COLOR_GREEN);
+	} else {
+		LCDDriver_drawPixel(LAYOUT->STATUS_WIFI_ICON_X, LAYOUT->STATUS_WIFI_ICON_Y, COLOR_RED);
+	}
+
 	// ENC2 State indicator
 	char enc2_state_str[5] = {0};
 	if (TRX.ENC2_func_mode == ENC_FUNC_PAGER) {
