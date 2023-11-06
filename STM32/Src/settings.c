@@ -1,4 +1,5 @@
 #include "settings.h"
+#include "atu.h"
 #include "audio_filters.h"
 #include "bands.h"
 #include "fpga.h"
@@ -24,10 +25,12 @@ IRAM2_ON_F407 struct TRX_CALIBRATE CALIBRATE = {0};
 IRAM2_ON_F407 struct TRX_WIFI WIFI = {0};
 bool EEPROM_Enabled = true;
 
-#define MAX_CLONE_SIZE sizeof(CALIBRATE) > sizeof(TRX) ? sizeof(CALIBRATE) : sizeof(TRX)
+#define MAX_CLONE_SIZE_SETTINGS sizeof(CALIBRATE) > sizeof(TRX) ? sizeof(CALIBRATE) : sizeof(TRX)
+#define MAX_CLONE_SIZE sizeof(ATU_MEMORY_TYPE) > MAX_CLONE_SIZE_SETTINGS ? sizeof(ATU_MEMORY_TYPE) : MAX_CLONE_SIZE_SETTINGS
 
 static_assert(sizeof(TRX) < W25Q16_SECTOR_SIZE, "TRX Data structure doesn't match page size");
 static_assert(sizeof(CALIBRATE) < W25Q16_SECTOR_SIZE, "CALIBRATE Data structure doesn't match page size");
+static_assert(sizeof(ATU_MEMORY_TYPE) < W25Q16_SECTOR_SIZE, "ATU_MEMORY_TYPE Data structure doesn't match page size");
 
 IRAM2 static uint8_t verify_clone[MAX_CLONE_SIZE] = {0};
 
@@ -38,6 +41,7 @@ volatile bool EEPROM_Busy = false;
 VFO *CurrentVFO = &TRX.VFO_A;
 VFO *SecondaryVFO = &TRX.VFO_B;
 
+static void ResetATUSettings(void);
 static void LoadSettingsFromEEPROM(void);
 static bool EEPROM_Sector_Erase(uint8_t sector, bool force);
 static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bool verify, bool force);
@@ -469,11 +473,6 @@ void LoadSettings(bool clear) {
 			TRX.BANDS_SAVED_SETTINGS[i].RepeaterMode = false;
 			TRX.BANDS_SAVED_SETTINGS[i].Fast = TRX.Fast;
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
-			for (uint8_t a = 0; a < ANT_MAX_COUNT; a++) {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_I[a] = TRX.ATU_I;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_C[a] = TRX.ATU_C;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_T[a] = TRX.ATU_T;
-			}
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_CW_LPF_Filter = TRX.VFO_A.CW_LPF_Filter;
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_SSB_LPF_RX_Filter = TRX.VFO_A.SSB_LPF_RX_Filter;
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_AM_LPF_RX_Filter = TRX.VFO_A.AM_LPF_RX_Filter;
@@ -1096,6 +1095,11 @@ void LoadCalibration(bool clear) {
 
 	// load WiFi settings after calibrations
 	LoadWiFiSettings(false);
+
+	// reset ATU on Hard Reset
+	if (clear) {
+		ResetATUSettings();
+	}
 }
 
 void LoadWiFiSettings(bool clear) {
@@ -1312,6 +1316,54 @@ bool SaveDPDSettings(uint8_t *in, uint32_t size, uint32_t sector_offset) {
 	}
 	if (tryes >= EEPROM_REPEAT_TRYES) {
 		println("[ERR] Write EEPROM DPD multiple errors");
+		return false;
+	}
+	EEPROM_PowerDown();
+	return true;
+}
+
+void ResetATUSettings(void) {
+	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_1, false);
+	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_2, false);
+	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_3, false);
+	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_4, false);
+	println("[OK] Erase ATU EEPROM settings");
+}
+
+bool LoadATUSettings(uint8_t *out, uint32_t size, uint32_t sector) {
+	EEPROM_PowerUp();
+
+	uint8_t tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data(out, size, sector, true, false)) {
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES) {
+		println("[ERR] Load EEPROM ATU multiple errors");
+		return false;
+	}
+
+	EEPROM_PowerDown();
+	return true;
+}
+
+bool SaveATUSettings(uint8_t *in, uint32_t size, uint32_t sector) {
+	EEPROM_PowerUp();
+
+	uint8_t tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(sector, false)) {
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES) {
+		println("[ERR] Erase EEPROM ATU multiple errors");
+		return false;
+	}
+
+	tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data(in, size, sector, true, false)) {
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES) {
+		println("[ERR] Write EEPROM ATU multiple errors");
 		return false;
 	}
 	EEPROM_PowerDown();

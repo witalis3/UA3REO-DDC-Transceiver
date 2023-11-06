@@ -18,8 +18,8 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 126        // Settings config version
-#define CALIB_VERSION 83        // Calibration config version
+#define SETT_VERSION 127        // Settings config version
+#define CALIB_VERSION 84        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -71,6 +71,10 @@
 #define ALLQSO_TOKEN_SIZE 16
 #define MAX_CHANNEL_MEMORY_NAME_LENGTH 10
 
+#define ATU_MAX_FREQ_KHZ 60000
+#define ATU_MEM_STEP_KHZ 50
+#define ATU_MEM_COUNT (ATU_MAX_FREQ_KHZ / ATU_MEM_STEP_KHZ) // 1200 positions * 3byte = 3600 bytes for each ANT
+
 #define W25Q16_COMMAND_Write_Disable 0x04
 #define W25Q16_COMMAND_Write_Enable 0x06
 #define W25Q16_COMMAND_Erase_Chip 0xC7
@@ -89,7 +93,11 @@
 #define EEPROM_SECTOR_CALIBRATION 0
 #define EEPROM_SECTOR_SETTINGS 4
 #define EEPROM_SECTOR_WIFI 8
-#define EEPROM_SECTOR_DPD 12
+#define EEPROM_SECTOR_ATU_1 10
+#define EEPROM_SECTOR_ATU_2 11
+#define EEPROM_SECTOR_ATU_3 12
+#define EEPROM_SECTOR_ATU_4 13
+#define EEPROM_SECTOR_DPD 16   // + BANDS_COUNT sectors
 #define EEPROM_REPEAT_TRYES 10 // command tryes
 
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
@@ -462,8 +470,6 @@ typedef struct {
 	uint8_t ANT_TX;
 	uint8_t Mode;
 	uint8_t DNR_Type;
-	uint8_t ANT_ATU_I[ANT_MAX_COUNT];
-	uint8_t ANT_ATU_C[ANT_MAX_COUNT];
 	uint8_t IF_Gain;
 	uint8_t RF_Gain;
 	uint8_t RF_Gain_By_Mode_CW;
@@ -479,7 +485,6 @@ typedef struct {
 	bool RepeaterMode;
 	bool SQL;
 	bool Fast;
-	bool ANT_ATU_T[ANT_MAX_COUNT];
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
 } BAND_SAVED_SETTINGS_TYPE;
 
@@ -1025,5 +1030,7 @@ extern void BKPSRAM_Disable(void);
 extern void RTC_Calibration(void);
 extern bool LoadDPDSettings(uint8_t *out, uint32_t size, uint32_t sector_offset);
 extern bool SaveDPDSettings(uint8_t *in, uint32_t size, uint32_t sector_offset);
+extern bool LoadATUSettings(uint8_t *out, uint32_t size, uint32_t sector);
+extern bool SaveATUSettings(uint8_t *in, uint32_t size, uint32_t sector);
 
 #endif

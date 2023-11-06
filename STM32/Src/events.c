@@ -2,6 +2,7 @@
 #include "FT8/FT8_main.h"
 #include "INA226_PWR_monitor.h"
 #include "agc.h"
+#include "atu.h"
 #include "audio_filters.h"
 #include "audio_processor.h"
 #include "bootloader.h"
@@ -340,6 +341,7 @@ void EVENTS_do_EVERY_10ms(void) // 100 Hz
 		LCD_busy = true;
 		SaveSettings();
 		SaveSettingsToEEPROM();
+		ATU_Flush_Memory();
 		TRX_Inited = false;
 		CODEC_Mute();
 		CODEC_CleanBuffer();

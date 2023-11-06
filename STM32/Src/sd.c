@@ -1183,14 +1183,6 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].RepeaterMode, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE, SYSMENU_UINT8);
-				for (uint8_t a = 0; a < ANT_MAX_COUNT; a++) {
-					sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_ATU_I[%d]", i, a);
-					SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_I[a], SYSMENU_UINT8);
-					sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_ATU_C[%d]", i, a);
-					SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_C[a], SYSMENU_UINT8);
-					sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_ATU_T[%d]", i, a);
-					SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_T[a], SYSMENU_BOOLEAN);
-				}
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].VFO_A_CW_LPF_Filter", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].VFO_A_CW_LPF_Filter, SYSMENU_UINT16);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].VFO_A_SSB_LPF_RX_Filter", i);
@@ -3012,21 +3004,6 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		if (strcmp(name, buff) == 0) {
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = (uint8_t)uintval;
 		}
-
-		for (uint8_t a = 0; a < ANT_MAX_COUNT; a++) {
-			sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_ATU_I[%d]", i, a);
-			if (strcmp(name, buff) == 0) {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_I[a] = (uint8_t)uintval;
-			}
-			sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_ATU_C[%d]", i, a);
-			if (strcmp(name, buff) == 0) {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_C[a] = (uint8_t)uintval;
-			}
-			sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_ATU_T[%d]", i, a);
-			if (strcmp(name, buff) == 0) {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_T[a] = bval;
-			}
-		}
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].VFO_A_CW_LPF_Filter", i);
 		if (strcmp(name, buff) == 0) {
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_CW_LPF_Filter = uintval;
@@ -3085,9 +3062,6 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (band >= 0) {
 		TRX.ANT_RX = TRX.BANDS_SAVED_SETTINGS[band].ANT_RX;
 		TRX.ANT_TX = TRX.BANDS_SAVED_SETTINGS[band].ANT_TX;
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX.ANT_RX];
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX.ANT_RX];
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX.ANT_RX];
 	}
 }
 

@@ -3009,12 +3009,7 @@ static void SYSMENU_HANDL_TX_ATU_I(int8_t direction) {
 		TRX.ATU_I = ATU_MAXPOS;
 	}
 
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_I;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_C;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_T;
-	}
+	ATU_Save_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq, TRX.ATU_I, TRX.ATU_C, TRX.ATU_T);
 }
 
 static void SYSMENU_HANDL_TX_ATU_C(int8_t direction) {
@@ -3026,11 +3021,7 @@ static void SYSMENU_HANDL_TX_ATU_C(int8_t direction) {
 	}
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_I;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_C;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_T;
-	}
+	ATU_Save_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq, TRX.ATU_I, TRX.ATU_C, TRX.ATU_T);
 }
 
 static void SYSMENU_HANDL_TX_ATU_T(int8_t direction) {
@@ -3041,12 +3032,7 @@ static void SYSMENU_HANDL_TX_ATU_T(int8_t direction) {
 		TRX.ATU_T = false;
 	}
 
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_I;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_C;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_T;
-	}
+	ATU_Save_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq, TRX.ATU_I, TRX.ATU_C, TRX.ATU_T);
 }
 
 static void SYSMENU_HANDL_TX_ATU_Enabled(int8_t direction) {

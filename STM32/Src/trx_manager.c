@@ -168,12 +168,7 @@ void TRX_Restart_Mode() {
 	}
 
 	// Ant swap for mode 1RX/2TX and others
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-	}
+	ATU_Load_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq);
 
 	// CW_In_SSB
 	if (CW_In_SSB_applyed == 1 && !TRX_on_TX) { // return to LSB
@@ -629,6 +624,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		TRX_RestoreBandSettings(bandFromFreq);
 	}
 
+	// Get ATU settings
+	ATU_Load_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq);
+
 	// SPLIT freq secondary VFO sync
 	if (TRX.Split_Mode_Sync_Freq && TRX.SPLIT_Enabled && vfo == CurrentVFO) {
 		TRX_setFrequency(SecondaryVFO->Freq + freq_diff, SecondaryVFO);
@@ -886,9 +884,7 @@ void TRX_RestoreBandSettings(int8_t band) {
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
 	TRX.Fast = TRX.BANDS_SAVED_SETTINGS[band].Fast;
-	TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-	TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-	TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
+	ATU_Load_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq);
 
 	if (CurrentVFO == &TRX.VFO_A) {
 		CurrentVFO->CW_LPF_Filter = TRX.BANDS_SAVED_SETTINGS[band].VFO_A_CW_LPF_Filter;
@@ -1327,23 +1323,14 @@ void BUTTONHANDLER_TUNE(uint32_t parameter) {
 		return;
 	}
 
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (!TRX_Tune) { // go TUNE
 		APROC_TX_tune_power = 0.0f;
-		if (band >= 0) {
-			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX.ANT_TX];
-			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX.ANT_TX];
-			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX.ANT_TX];
-		}
+		ATU_Load_Memory(TRX.ANT_TX, CurrentVFO->Freq);
 		ATU_Invalidate();
 		ATU_TunePowerStabilized = false;
 		LCD_UpdateQuery.StatusInfoBar = true;
 	} else { // go RX
-		if (band >= 0) {
-			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX.ANT_RX];
-			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX.ANT_RX];
-			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX.ANT_RX];
-		}
+		ATU_Load_Memory(TRX.ANT_RX, CurrentVFO->Freq);
 	}
 
 	TRX_Tune = !TRX_Tune;
@@ -1458,10 +1445,8 @@ void BUTTONHANDLER_ANT(uint32_t parameter) {
 	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].ANT_RX = TRX.ANT_RX;
 		TRX.BANDS_SAVED_SETTINGS[band].ANT_TX = TRX.ANT_TX;
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
 	}
+	ATU_Load_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq);
 
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
