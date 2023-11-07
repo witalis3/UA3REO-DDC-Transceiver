@@ -282,8 +282,8 @@ void ATU_Flush_Memory() {
 
 void ATU_Load_ANT_Banks(void) {
 #if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
-	for(uint8_t ant = 0; ant < ANT_MAX_COUNT; ant++) {
-		
+	for (uint8_t ant = 0; ant < ANT_MAX_COUNT; ant++) {
+
 		ATU_MEMORY_TYPE *memory = &ATU_MEMORY_1;
 		uint8_t sector = EEPROM_SECTOR_ATU_1;
 		if (ant == 1) {
@@ -298,7 +298,7 @@ void ATU_Load_ANT_Banks(void) {
 			memory = &ATU_MEMORY_4;
 			sector = EEPROM_SECTOR_ATU_4;
 		}
-		
+
 		if (memory->loaded_ant != ant) {
 			LoadATUSettings((uint8_t *)memory, sizeof(ATU_MEMORY_TYPE), sector);
 			memory->saved = true;
@@ -324,7 +324,7 @@ void ATU_Save_Memory(uint8_t ant, uint64_t frequency, uint8_t I, uint8_t C, bool
 	if (blockIndex >= ATU_MEM_COUNT) {
 		return;
 	}
-	
+
 	ATU_MEMORY_TYPE *memory = &ATU_MEMORY_1;
 	if (ant == 1) {
 		memory = &ATU_MEMORY_2;
@@ -363,7 +363,7 @@ ATU_MEMORY_STATE ATU_Get_State(uint8_t ant, uint64_t frequency) {
 		};
 		return emptyState;
 	}
-	
+
 	ATU_MEMORY_TYPE *memory = &ATU_MEMORY_1;
 	if (ant == 1) {
 		memory = &ATU_MEMORY_2;

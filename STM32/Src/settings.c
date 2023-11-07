@@ -1100,7 +1100,7 @@ void LoadCalibration(bool clear) {
 	if (clear) {
 		ResetATUSettings();
 	}
-	
+
 	// load ATU
 	ATU_Load_ANT_Banks();
 }

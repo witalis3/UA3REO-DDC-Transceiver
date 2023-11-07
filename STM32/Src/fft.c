@@ -1326,7 +1326,7 @@ bool FFT_printFFT(void) {
 			uint16_t sec_bw_color = dBm_grid ? grid_color : addColor(bw_color, FFT_SEC_BW_BRIGHTNESS, -FFT_SEC_BW_BRIGHTNESS, FFT_SEC_BW_BRIGHTNESS);
 
 			for (int32_t fft_x = bw_rx2_line_start; fft_x <= bw_rx2_line_end; fft_x++) {
-				if (fft_x < 0 || fft_x > LAYOUT->FFT_PRINT_SIZE) {
+				if (fft_x < 0 || fft_x >= LAYOUT->FFT_PRINT_SIZE) {
 					continue;
 				}
 				print_output_buffer[fft_y][fft_x] = sec_bw_color;
@@ -1334,7 +1334,7 @@ bool FFT_printFFT(void) {
 		}
 
 		for (int32_t fft_x = bw_rx1_line_start; fft_x <= bw_rx1_line_end; fft_x++) {
-			if (fft_x < 0 || fft_x > LAYOUT->FFT_PRINT_SIZE) {
+			if (fft_x < 0 || fft_x >= LAYOUT->FFT_PRINT_SIZE) {
 				continue;
 			}
 			print_output_buffer[fft_y][fft_x] = bw_color;
@@ -1683,9 +1683,11 @@ bool FFT_printFFT(void) {
 	}
 
 	// Draw RX1 center line
-	uint16_t color = palette_fft[fftHeight / 2];
-	for (uint32_t fft_y = 0; fft_y < BWLinesHeight; fft_y++) {
-		print_output_buffer[fft_y][rx1_line_pos] = color;
+	if (rx1_line_pos >= 0 && rx1_line_pos < LAYOUT->FFT_PRINT_SIZE) {
+		uint16_t color = palette_fft[fftHeight / 2];
+		for (uint32_t fft_y = 0; fft_y < BWLinesHeight; fft_y++) {
+			print_output_buffer[fft_y][rx1_line_pos] = color;
+		}
 	}
 
 	// Draw BW lines
@@ -1693,9 +1695,15 @@ bool FFT_printFFT(void) {
 		uint16_t color_bw = palette_fft[fftHeight / 2];
 		uint16_t color_center = palette_fft[0];
 		for (uint32_t fft_y = 0; fft_y < BWLinesHeight; fft_y++) {
-			print_output_buffer[fft_y][bw_rx1_line_start] = color_bw;
-			print_output_buffer[fft_y][bw_rx1_line_end] = color_bw;
-			print_output_buffer[fft_y][rx1_line_pos] = color_center;
+			if (bw_rx1_line_start >= 0 && bw_rx1_line_start < LAYOUT->FFT_PRINT_SIZE) {
+				print_output_buffer[fft_y][bw_rx1_line_start] = color_bw;
+			}
+			if (bw_rx1_line_end >= 0 && bw_rx1_line_end < LAYOUT->FFT_PRINT_SIZE) {
+				print_output_buffer[fft_y][bw_rx1_line_end] = color_bw;
+			}
+			if (rx1_line_pos >= 0 && rx1_line_pos < LAYOUT->FFT_PRINT_SIZE) {
+				print_output_buffer[fft_y][rx1_line_pos] = color_center;
+			}
 		}
 	}
 
@@ -2077,7 +2085,7 @@ void FFT_ShortBufferPrintFFT(void) {
 			}
 
 			// Gauss filter center
-			if (TRX.CW_GaussFilter && CurrentVFO->Mode == TRX_MODE_CW) {
+			if (TRX.CW_GaussFilter && CurrentVFO->Mode == TRX_MODE_CW && bw_rx1_line_center >= 0 && bw_rx1_line_center < LAYOUT->FFT_PRINT_SIZE) {
 				print_output_short_buffer[buff_idx][bw_rx1_line_center] = contour_color;
 			}
 
@@ -2085,8 +2093,12 @@ void FFT_ShortBufferPrintFFT(void) {
 			if (CurrentVFO->Mode == TRX_MODE_RTTY) {
 				uint16_t x1 = rx1_line_pos + (TRX.RTTY_Freq - TRX.RTTY_Shift / 2) / Hz_in_pixel * fft_zoom;
 				uint16_t x2 = rx1_line_pos + (TRX.RTTY_Freq + TRX.RTTY_Shift / 2) / Hz_in_pixel * fft_zoom;
-				print_output_short_buffer[buff_idx][x1] = contour_color;
-				print_output_short_buffer[buff_idx][x2] = contour_color;
+				if (x1 >= 0 && x1 < LAYOUT->FFT_PRINT_SIZE) {
+					print_output_short_buffer[buff_idx][x1] = contour_color;
+				}
+				if (x2 >= 0 && x2 < LAYOUT->FFT_PRINT_SIZE) {
+					print_output_short_buffer[buff_idx][x2] = contour_color;
+				}
 			}
 
 			// Show manual Notch filter line
@@ -2096,13 +2108,21 @@ void FFT_ShortBufferPrintFFT(void) {
 			}
 
 			// Draw RX1 center line
-			print_output_short_buffer[buff_idx][rx1_line_pos] = contour_color;
+			if (rx1_line_pos >= 0 && rx1_line_pos < LAYOUT->FFT_PRINT_SIZE) {
+				print_output_short_buffer[buff_idx][rx1_line_pos] = contour_color;
+			}
 
 			// Draw BW lines
 			uint16_t color_center = palette_fft[0];
-			print_output_short_buffer[buff_idx][bw_rx1_line_start] = contour_color;
-			print_output_short_buffer[buff_idx][bw_rx1_line_end] = contour_color;
-			print_output_short_buffer[buff_idx][rx1_line_pos] = color_center;
+			if (bw_rx1_line_start >= 0 && bw_rx1_line_start < LAYOUT->FFT_PRINT_SIZE) {
+				print_output_short_buffer[buff_idx][bw_rx1_line_start] = contour_color;
+			}
+			if (bw_rx1_line_end >= 0 && bw_rx1_line_end < LAYOUT->FFT_PRINT_SIZE) {
+				print_output_short_buffer[buff_idx][bw_rx1_line_end] = contour_color;
+			}
+			if (rx1_line_pos >= 0 && rx1_line_pos < LAYOUT->FFT_PRINT_SIZE) {
+				print_output_short_buffer[buff_idx][rx1_line_pos] = color_center;
+			}
 
 			// well done
 			fft_output_prepared++;
@@ -2294,8 +2314,10 @@ static void FFT_3DPrintFFT(void) {
 	}
 
 	// Сenter line
-	for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
-		print_output_buffer[fft_y][rx1_line_pos] = palette_fft[fftHeight / 2];
+	if (rx1_line_pos >= 0 && rx1_line_pos < LAYOUT->FFT_PRINT_SIZE) {
+		for (uint32_t fft_y = 0; fft_y < FFT_AND_WTF_HEIGHT; fft_y++) {
+			print_output_buffer[fft_y][rx1_line_pos] = palette_fft[fftHeight / 2];
+		}
 	}
 
 	// Init print 3D FFT

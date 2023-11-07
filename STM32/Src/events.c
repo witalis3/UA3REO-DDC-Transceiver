@@ -687,7 +687,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 Hz
 	if (NeedSaveSettings && (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, PWR_ON_Pin) == GPIO_PIN_SET)) {
 		SaveSettings();
 	}
-	
+
 	// ATU memory flush
 	if (!HRDW_SPI_Locked) {
 		ATU_Flush_Memory();
