@@ -3048,7 +3048,8 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		if (strcmp(name, buff) == 0) {
 			CALIBRATE.MEMORY_CHANNELS[i].mode = (uint8_t)uintval;
 		}
-		if (strcmp(name, "TRX.MEMORY_CHANNELS[%d].name") == 0) {
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].name", i);
+		if (strcmp(name, buff) == 0) {
 			dma_memset(CALIBRATE.MEMORY_CHANNELS[i].name, 0x00, sizeof(CALIBRATE.MEMORY_CHANNELS[i].name));
 			uint32_t lens = strlen(value);
 			if (lens > sizeof(CALIBRATE.MEMORY_CHANNELS[i].name) - 1) {
