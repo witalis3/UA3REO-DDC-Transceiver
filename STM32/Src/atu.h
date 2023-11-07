@@ -23,6 +23,7 @@ extern void ATU_Invalidate(void);
 extern void ATU_SetCompleted(void);
 
 extern void ATU_Flush_Memory();
+extern void ATU_Load_ANT_Banks(void);
 extern void ATU_Save_Memory(uint8_t ant, uint64_t frequency, uint8_t I, uint8_t C, bool T);
 extern void ATU_Load_Memory(uint8_t ant, uint64_t frequency);
 

@@ -14,7 +14,10 @@ static uint8_t ATU_Stage = 0;
 bool ATU_TunePowerStabilized = false;
 
 #if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
-ATU_MEMORY_TYPE ATU_MEMORY = {.loaded_ant = 99, .saved = true};
+SRAM4 ATU_MEMORY_TYPE ATU_MEMORY_1 = {.loaded_ant = 99, .saved = true};
+SRAM4 ATU_MEMORY_TYPE ATU_MEMORY_2 = {.loaded_ant = 99, .saved = true};
+SRAM4 ATU_MEMORY_TYPE ATU_MEMORY_3 = {.loaded_ant = 99, .saved = true};
+SRAM4 ATU_MEMORY_TYPE ATU_MEMORY_4 = {.loaded_ant = 99, .saved = true};
 #endif
 
 void ATU_Invalidate(void) {
@@ -262,46 +265,50 @@ void ATU_Process(void) {
 
 void ATU_Flush_Memory() {
 #if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
-	if (ATU_MEMORY.loaded_ant < ANT_MAX_COUNT && !ATU_MEMORY.saved) {
-		uint8_t sector = EEPROM_SECTOR_ATU_1;
-		if (ATU_MEMORY.loaded_ant == 1) {
-			sector = EEPROM_SECTOR_ATU_2;
-		}
-		if (ATU_MEMORY.loaded_ant == 2) {
-			sector = EEPROM_SECTOR_ATU_3;
-		}
-		if (ATU_MEMORY.loaded_ant == 3) {
-			sector = EEPROM_SECTOR_ATU_4;
-		}
-
-		ATU_MEMORY.saved = SaveATUSettings((uint8_t *)&ATU_MEMORY, sizeof(ATU_MEMORY), sector);
+	if (!ATU_MEMORY_1.saved && ATU_MEMORY_1.loaded_ant == 0) {
+		ATU_MEMORY_1.saved = SaveATUSettings((uint8_t *)&ATU_MEMORY_1, sizeof(ATU_MEMORY_1), EEPROM_SECTOR_ATU_1);
+	}
+	if (!ATU_MEMORY_2.saved && ATU_MEMORY_2.loaded_ant == 1) {
+		ATU_MEMORY_2.saved = SaveATUSettings((uint8_t *)&ATU_MEMORY_2, sizeof(ATU_MEMORY_2), EEPROM_SECTOR_ATU_2);
+	}
+	if (!ATU_MEMORY_3.saved && ATU_MEMORY_3.loaded_ant == 2) {
+		ATU_MEMORY_3.saved = SaveATUSettings((uint8_t *)&ATU_MEMORY_3, sizeof(ATU_MEMORY_3), EEPROM_SECTOR_ATU_3);
+	}
+	if (!ATU_MEMORY_4.saved && ATU_MEMORY_4.loaded_ant == 3) {
+		ATU_MEMORY_4.saved = SaveATUSettings((uint8_t *)&ATU_MEMORY_4, sizeof(ATU_MEMORY_4), EEPROM_SECTOR_ATU_4);
 	}
 #endif
 }
 
-void ATU_Load_ANT_Bank(uint8_t ant) {
+void ATU_Load_ANT_Banks(void) {
 #if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
-	if (ATU_MEMORY.loaded_ant != ant) {
-		ATU_Flush_Memory();
-
+	for(uint8_t ant = 0; ant < ANT_MAX_COUNT; ant++) {
+		
+		ATU_MEMORY_TYPE *memory = &ATU_MEMORY_1;
 		uint8_t sector = EEPROM_SECTOR_ATU_1;
 		if (ant == 1) {
+			memory = &ATU_MEMORY_2;
 			sector = EEPROM_SECTOR_ATU_2;
 		}
 		if (ant == 2) {
+			memory = &ATU_MEMORY_3;
 			sector = EEPROM_SECTOR_ATU_3;
 		}
 		if (ant == 3) {
+			memory = &ATU_MEMORY_4;
 			sector = EEPROM_SECTOR_ATU_4;
 		}
-		LoadATUSettings((uint8_t *)&ATU_MEMORY, sizeof(ATU_MEMORY), sector);
-		ATU_MEMORY.saved = true;
+		
+		if (memory->loaded_ant != ant) {
+			LoadATUSettings((uint8_t *)memory, sizeof(ATU_MEMORY_TYPE), sector);
+			memory->saved = true;
 
-		if (ATU_MEMORY.loaded_ant != ant) {
-			dma_memset(&ATU_MEMORY, 0x00, sizeof(ATU_MEMORY));
-			ATU_MEMORY.loaded_ant = ant;
-			ATU_MEMORY.saved = false;
-			ATU_Flush_Memory();
+			if (memory->loaded_ant != ant) {
+				dma_memset(memory, 0x00, sizeof(ATU_MEMORY_TYPE));
+				memory->loaded_ant = ant;
+				memory->saved = false;
+				ATU_Flush_Memory();
+			}
 		}
 	}
 #endif
@@ -312,17 +319,27 @@ void ATU_Save_Memory(uint8_t ant, uint64_t frequency, uint8_t I, uint8_t C, bool
 	if (frequency >= (ATU_MAX_FREQ_KHZ * 1000)) {
 		return;
 	}
-	ATU_Load_ANT_Bank(ant);
 
 	uint32_t blockIndex = frequency / (ATU_MEM_STEP_KHZ * 1000);
 	if (blockIndex >= ATU_MEM_COUNT) {
 		return;
 	}
+	
+	ATU_MEMORY_TYPE *memory = &ATU_MEMORY_1;
+	if (ant == 1) {
+		memory = &ATU_MEMORY_2;
+	}
+	if (ant == 2) {
+		memory = &ATU_MEMORY_3;
+	}
+	if (ant == 3) {
+		memory = &ATU_MEMORY_4;
+	}
 
-	ATU_MEMORY.state[blockIndex].I = I;
-	ATU_MEMORY.state[blockIndex].C = C;
-	ATU_MEMORY.state[blockIndex].T = T;
-	ATU_MEMORY.saved = false;
+	memory->state[blockIndex].I = I;
+	memory->state[blockIndex].C = C;
+	memory->state[blockIndex].T = T;
+	memory->saved = false;
 #endif
 }
 
@@ -336,7 +353,6 @@ ATU_MEMORY_STATE ATU_Get_State(uint8_t ant, uint64_t frequency) {
 		};
 		return emptyState;
 	}
-	ATU_Load_ANT_Bank(ant);
 
 	uint32_t blockIndex = frequency / (ATU_MEM_STEP_KHZ * 1000);
 	if (blockIndex >= ATU_MEM_COUNT) {
@@ -347,8 +363,19 @@ ATU_MEMORY_STATE ATU_Get_State(uint8_t ant, uint64_t frequency) {
 		};
 		return emptyState;
 	}
+	
+	ATU_MEMORY_TYPE *memory = &ATU_MEMORY_1;
+	if (ant == 1) {
+		memory = &ATU_MEMORY_2;
+	}
+	if (ant == 2) {
+		memory = &ATU_MEMORY_3;
+	}
+	if (ant == 3) {
+		memory = &ATU_MEMORY_4;
+	}
 
-	return ATU_MEMORY.state[blockIndex];
+	return memory->state[blockIndex];
 #else
 	ATU_MEMORY_STATE emptyState = {
 	    .I = 0,

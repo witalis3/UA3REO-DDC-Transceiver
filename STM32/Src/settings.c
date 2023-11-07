@@ -1100,6 +1100,9 @@ void LoadCalibration(bool clear) {
 	if (clear) {
 		ResetATUSettings();
 	}
+	
+	// load ATU
+	ATU_Load_ANT_Banks();
 }
 
 void LoadWiFiSettings(bool clear) {
@@ -1332,6 +1335,7 @@ void ResetATUSettings(void) {
 
 bool LoadATUSettings(uint8_t *out, uint32_t size, uint32_t sector) {
 	EEPROM_PowerUp();
+	println("Load ATU memory ", sector);
 
 	uint8_t tryes = 0;
 	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data(out, size, sector, true, false)) {
@@ -1348,6 +1352,7 @@ bool LoadATUSettings(uint8_t *out, uint32_t size, uint32_t sector) {
 
 bool SaveATUSettings(uint8_t *in, uint32_t size, uint32_t sector) {
 	EEPROM_PowerUp();
+	println("Save ATU memory ", sector);
 
 	uint8_t tryes = 0;
 	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(sector, false)) {
