@@ -102,9 +102,12 @@
 
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
 #define MEMORY_CHANNELS_COUNT 0
+#elif defined(LCD_RA8875)
+#define MEMORY_CHANNELS_COUNT 35
 #else
 #define MEMORY_CHANNELS_COUNT 20
 #endif
+
 #define BANDS_MEMORIES_COUNT 3
 #define ANT_MAX_COUNT 4
 

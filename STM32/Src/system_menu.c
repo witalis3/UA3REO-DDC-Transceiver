@@ -614,6 +614,25 @@ static void SYSMENU_HANDL_MEMORY_CHANNELS_17(int8_t direction);
 static void SYSMENU_HANDL_MEMORY_CHANNELS_18(int8_t direction);
 static void SYSMENU_HANDL_MEMORY_CHANNELS_19(int8_t direction);
 #endif
+#if MEMORY_CHANNELS_COUNT > 20
+static void SYSMENU_HANDL_MEMORY_CHANNELS_20(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_21(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_22(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_23(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_24(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_25(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_26(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_27(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_28(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_29(int8_t direction);
+#endif
+#if MEMORY_CHANNELS_COUNT > 30
+static void SYSMENU_HANDL_MEMORY_CHANNELS_30(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_31(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_32(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_33(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_34(int8_t direction);
+#endif
 
 #ifdef LCD_SMALL_INTERFACE
 #ifdef LAY_320x240
@@ -1467,6 +1486,25 @@ const static struct sysmenu_item_handler sysmenu_memory_channels_handlers[] = {
     {CALIBRATE.MEMORY_CHANNELS[17].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_17},
     {CALIBRATE.MEMORY_CHANNELS[18].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_18},
     {CALIBRATE.MEMORY_CHANNELS[19].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_19},
+#endif
+#if MEMORY_CHANNELS_COUNT > 20
+    {CALIBRATE.MEMORY_CHANNELS[20].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_20},
+    {CALIBRATE.MEMORY_CHANNELS[21].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_21},
+    {CALIBRATE.MEMORY_CHANNELS[22].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_22},
+    {CALIBRATE.MEMORY_CHANNELS[23].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_23},
+    {CALIBRATE.MEMORY_CHANNELS[24].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_24},
+    {CALIBRATE.MEMORY_CHANNELS[25].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_25},
+    {CALIBRATE.MEMORY_CHANNELS[26].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_26},
+    {CALIBRATE.MEMORY_CHANNELS[27].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_27},
+    {CALIBRATE.MEMORY_CHANNELS[28].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_28},
+    {CALIBRATE.MEMORY_CHANNELS[29].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_29},
+#endif
+#if MEMORY_CHANNELS_COUNT > 30
+    {CALIBRATE.MEMORY_CHANNELS[30].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_30},
+    {CALIBRATE.MEMORY_CHANNELS[31].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_31},
+    {CALIBRATE.MEMORY_CHANNELS[32].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_32},
+    {CALIBRATE.MEMORY_CHANNELS[33].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_33},
+    {CALIBRATE.MEMORY_CHANNELS[34].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_34},
 #endif
 };
 
@@ -5367,6 +5405,81 @@ static void SYSMENU_HANDL_MEMORY_CHANNELS_18(int8_t direction) {
 
 static void SYSMENU_HANDL_MEMORY_CHANNELS_19(int8_t direction) {
 	sysmenu_selected_memory_channel_index = 19;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_20(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 20;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_21(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 21;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_22(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 22;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_23(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 23;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_24(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 24;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_25(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 25;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_26(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 26;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_27(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 27;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_28(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 28;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_29(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 29;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_30(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 30;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_31(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 31;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_32(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 32;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_33(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 33;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_34(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 34;
 	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
 }
 
