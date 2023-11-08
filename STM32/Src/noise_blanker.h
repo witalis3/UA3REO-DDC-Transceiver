@@ -11,8 +11,8 @@
 
 #define NB_impulse_length 11                // has to be odd !
 #define NB_PL ((NB_impulse_length - 1) / 2) // has to be (impulse_length-1) / 2
-#define NB_order 4 //10                         // lpc's order
-#define NB_FIR_SIZE 128 //64                      // filter buffer size
+#define NB_order 4                          // 10                         // lpc's order
+#define NB_FIR_SIZE 128                     // 64                      // filter buffer size
 #define NB_max_inpulse_count 10             // maximum impulses in the block for suppression
 
 typedef struct {
