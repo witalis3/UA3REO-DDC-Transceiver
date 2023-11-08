@@ -254,7 +254,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 		ENCODER2_state = ((ENCODER2_state << 2) | (ENCODER2_DTVal << 1) | ENCODER2_CLKVal) & 0xF;
 		int8_t direction = EVENTS_get_encoder2Direction(ENCODER2_state);
 		if (direction != 0) {
-			FRONTPANEL_ProcessEncoder2 += direction;
+			FRONTPANEL_ProcessEncoder2 = direction;
 			ENCODER2_AValDeb = HAL_GetTick();
 		}
 	}
@@ -269,7 +269,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 		ENCODER3_state = ((ENCODER3_state << 2) | (ENCODER3_DTVal << 1) | ENCODER3_CLKVal) & 0xF;
 		int8_t direction = EVENTS_get_encoder2Direction(ENCODER3_state);
 		if (direction != 0) {
-			FRONTPANEL_ProcessEncoder3 += direction;
+			FRONTPANEL_ProcessEncoder3 = direction;
 			ENCODER3_AValDeb = HAL_GetTick();
 		}
 	}
@@ -285,7 +285,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 		ENCODER4_state = ((ENCODER4_state << 2) | (ENCODER4_DTVal << 1) | ENCODER4_CLKVal) & 0xF;
 		int8_t direction = EVENTS_get_encoder2Direction(ENCODER4_state);
 		if (direction != 0) {
-			FRONTPANEL_ProcessEncoder4 += direction;
+			FRONTPANEL_ProcessEncoder4 = direction;
 			ENCODER4_AValDeb = HAL_GetTick();
 		}
 	}
