@@ -280,11 +280,11 @@ void processRxAudio(void) {
 		doRX_CWFreqTransition(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, TRX.CW_Pitch);
 		// difference of I and Q - LSB
 		arm_sub_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX1_Q, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		DECODER_PutSamples(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_GAUSS_IQ(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_NOTCH(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		doRX_NoiseBlanker(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_SMETER(AUDIO_RX1, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
-		DECODER_PutSamples(APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doVAD(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		doRX_DNR(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode, false);
 		doRX_AGC(AUDIO_RX1, FPGA_RX_IQ_BUFFER_HALF_SIZE, CurrentVFO->Mode, false);
@@ -415,9 +415,9 @@ void processRxAudio(void) {
 			doRX_CWFreqTransition(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, TRX.CW_Pitch);
 			// difference of I and Q - LSB
 			arm_sub_f32(APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX2_Q, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+			doRX_NoiseBlanker(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_GAUSS_IQ(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_NOTCH(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-			doRX_NoiseBlanker(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_SMETER(AUDIO_RX2, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE, true);
 			doVAD(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 			doRX_DNR(AUDIO_RX2, FPGA_RX_IQ_BUFFER_HALF_SIZE, SecondaryVFO->Mode, false);
@@ -2250,11 +2250,11 @@ static void doRX_CWFreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float3
 
 	if (rx_id == AUDIO_RX1) {
 		for (uint16_t i = 0; i < size; i++) {
-			APROC_Audio_Buffer_RX1_I[i] *= sinf(gen_position_rx1 * F_2PI);
-			APROC_Audio_Buffer_RX1_Q[i] *= cosf(gen_position_rx1 * F_2PI);
+			APROC_Audio_Buffer_RX1_I[i] *= arm_sin_f32(gen_position_rx1 * F_2PI);
+			APROC_Audio_Buffer_RX1_Q[i] *= arm_cos_f32(gen_position_rx1 * F_2PI);
 
 			gen_position_rx1 += freq_diff / (float32_t)TRX_SAMPLERATE;
-			if (gen_position_rx1 >= 1.0f) {
+			while (gen_position_rx1 >= 1.0f) {
 				gen_position_rx1 -= 1.0f;
 			}
 		}
@@ -2262,11 +2262,11 @@ static void doRX_CWFreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float3
 #if HRDW_HAS_DUAL_RX
 	else {
 		for (uint16_t i = 0; i < size; i++) {
-			APROC_Audio_Buffer_RX2_I[i] *= sinf(gen_position_rx2 * F_2PI);
-			APROC_Audio_Buffer_RX2_Q[i] *= cosf(gen_position_rx2 * F_2PI);
+			APROC_Audio_Buffer_RX2_I[i] *= arm_sin_f32(gen_position_rx2 * F_2PI);
+			APROC_Audio_Buffer_RX2_Q[i] *= arm_cos_f32(gen_position_rx2 * F_2PI);
 
 			gen_position_rx2 += freq_diff / (float32_t)TRX_SAMPLERATE;
-			if (gen_position_rx2 >= 1.0f) {
+			while (gen_position_rx2 >= 1.0f) {
 				gen_position_rx2 -= 1.0f;
 			}
 		}

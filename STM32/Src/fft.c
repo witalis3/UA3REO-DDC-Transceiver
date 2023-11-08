@@ -641,10 +641,10 @@ void FFT_doFFT(void) {
 	/*dma_memset(FFTInput, 0x00, sizeof(FFTInput));
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
 	{
-	  FFTInput[i] = CWDEC_FFTBuffer_Export[i];
-	  FFTInput[i + CWDECODER_FFTSIZE] = CWDEC_FFTBuffer_Export[i];
-	  FFTInput[i + CWDECODER_FFTSIZE * 2] = CWDEC_FFTBuffer_Export[i];
-	  FFTInput[i + CWDECODER_FFTSIZE * 3] = CWDEC_FFTBuffer_Export[i];
+	  FFTInput[i * 4] = CWDEC_FFTBuffer_Export[i];
+	  FFTInput[i * 4 + 1] = CWDEC_FFTBuffer_Export[i];
+	  FFTInput[i * 4 + 2] = CWDEC_FFTBuffer_Export[i];
+	  FFTInput[i * 4 + 3] = CWDEC_FFTBuffer_Export[i];
 	}*/
 
 	// dBm scale
