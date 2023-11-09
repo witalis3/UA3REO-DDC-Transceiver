@@ -166,6 +166,8 @@ void RF_UNIT_ProcessSensors(void) {
 	SW1_Voltage = (SW1_Voltage * k + SW1_Voltage_new * (1.0f - k));
 	SW2_Voltage = (SW2_Voltage * k + SW2_Voltage_new * (1.0f - k));
 
+//	println("SW1_Voltage - ", (double) SW1_Voltage, "  **  SW2_Voltage - ", (double) SW2_Voltage);
+
 	// Yaesu MH-48
 	for (uint16_t tb = 0; tb < (sizeof(PERIPH_FrontPanel_TANGENT_MH48) / sizeof(PERIPH_FrontPanel_Button)); tb++) {
 		if ((SW2_Voltage < 500.0f || SW2_Voltage > 3100.0f) && PERIPH_FrontPanel_TANGENT_MH48[tb].channel == 1) {

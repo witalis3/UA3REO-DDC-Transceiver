@@ -93,6 +93,7 @@ extern void SYSMEUN_WIFI_HOTKEY(void);
 extern void SYSMENU_SERVICE_FT8_HOTKEY(void);
 extern void SYSMEUN_SD_HOTKEY(void);
 extern void SYSMENU_SD_FILEMANAGER_HOTKEY(void);
+extern void SYSMENU_TX_CESSB_HOTKEY(void);
 
 extern void SYSMENU_HANDL_Back(int8_t direction);
 extern void SYSMENU_HANDL_BackTouch(uint32_t parameter);
