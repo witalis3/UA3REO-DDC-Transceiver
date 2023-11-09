@@ -2698,6 +2698,15 @@ void BUTTONHANDLER_CESSB(uint32_t parameter) {
 	NeedSaveSettings = true;
 }
 
+void BUTTONHANDLER_CESSB_HOLD(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
+		LCD_systemMenuOpened = true;
+		SYSMENU_TX_CESSB_HOTKEY();
+	} else {
+		SYSMENU_eventCloseAllSystemMenu();
+	}
+}
+
 void BUTTONHANDLER_DPD(uint32_t parameter) {
 	TRX.Digital_Pre_Distortion = !TRX.Digital_Pre_Distortion;
 

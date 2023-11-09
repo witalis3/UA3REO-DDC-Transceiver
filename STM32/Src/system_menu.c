@@ -2513,6 +2513,13 @@ void SYSMENU_RX_AGC_MaxGain_HOTKEY(void) {
 	LCD_redraw(false);
 }
 
+void SYSMENU_TX_CESSB_HOTKEY(void) {
+	SYSMENU_HANDL_TXMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "CESSB Compress");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+}
+
 void SYSMENU_RX_NB_HOTKEY(void) {
 	SYSMENU_HANDL_RXMENU(0);
 	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "NB Threshold");
