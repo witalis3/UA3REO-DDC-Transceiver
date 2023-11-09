@@ -2591,7 +2591,9 @@ static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_RX_IFGain(int8_t direction) {
-	TRX.IF_Gain += direction;
+if (TRX.IF_Gain > 0 || direction > 0) {
+			TRX.IF_Gain += direction * 1;
+		}	
 	if (TRX.IF_Gain < CALIBRATE.IF_GAIN_MIN) {
 		TRX.IF_Gain = CALIBRATE.IF_GAIN_MIN;
 	}
