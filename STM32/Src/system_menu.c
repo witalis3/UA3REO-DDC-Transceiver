@@ -774,7 +774,7 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"Auto Snap", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Snap, SYSMENU_HANDL_RX_Auto_Snap},
     {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_RX_AutoGain},
 #if HRDW_HAS_DUAL_RX
-		{"A/B Balance", SYSMENU_INT8, NULL, (uint32_t *)&TRX.Dual_RX_AB_Balance, SYSMENU_HANDL_RX_Dual_RX_AB_Balance},
+    {"A/B Balance", SYSMENU_INT8, NULL, (uint32_t *)&TRX.Dual_RX_AB_Balance, SYSMENU_HANDL_RX_Dual_RX_AB_Balance},
 #endif
 #if HRDW_HAS_BLUETOOTH_AUDIO
     {"Bluetooth Audio", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.BluetoothAudio_Enabled, SYSMENU_HANDL_RX_BluetoothAudio_Enabled},
@@ -2612,9 +2612,9 @@ static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_RX_IFGain(int8_t direction) {
-if (TRX.IF_Gain > 0 || direction > 0) {
-			TRX.IF_Gain += direction * 1;
-		}	
+	if (TRX.IF_Gain > 0 || direction > 0) {
+		TRX.IF_Gain += direction * 1;
+	}
 	if (TRX.IF_Gain < CALIBRATE.IF_GAIN_MIN) {
 		TRX.IF_Gain = CALIBRATE.IF_GAIN_MIN;
 	}
