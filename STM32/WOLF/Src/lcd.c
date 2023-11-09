@@ -2517,6 +2517,7 @@ void LCD_processTouch(uint16_t x, uint16_t y) {
 	if (!LCD_screenKeyboardOpened && !TRX_on_TX) {
 		// fft/wtf tap
 		if (((LAYOUT->FFT_FFTWTF_POS_Y + 50) <= y) && (LAYOUT->FFT_PRINT_SIZE >= x) && ((LAYOUT->FFT_FFTWTF_POS_Y + LAYOUT->FFT_FFTWTF_BOTTOM - 50) >= y)) {
+			TRX_ScanMode = false;
 			// frequency tap
 			uint64_t newfreq = getFreqOnFFTPosition(x);
 			newfreq = newfreq / 500 * 500;
@@ -2650,6 +2651,8 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 		if (TRX_on_TX) {
 			return false;
 		}
+
+		TRX_ScanMode = false;
 
 		const uint8_t slowler = 4;
 		float64_t step = TRX.FRQ_STEP;

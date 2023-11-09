@@ -997,13 +997,15 @@ void TRX_ProcessScanMode(void) {
 	static uint32_t StateChangeTime = 0;
 	bool goSweep = false;
 
+	uint32_t noSignalTime = TRX.ENC2_func_mode == ENC_FUNC_SET_MEM ? SCANNER_NOSIGNAL_TIME_MEM : SCANNER_NOSIGNAL_TIME;
+
 	if (CurrentVFO->Mode == TRX_MODE_WFM || CurrentVFO->Mode == TRX_MODE_NFM) {
 		if (oldState != DFM_RX1.squelched) {
 			oldState = DFM_RX1.squelched;
 			StateChangeTime = HAL_GetTick();
 		}
 
-		if (DFM_RX1.squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME)) {
+		if (DFM_RX1.squelched && ((HAL_GetTick() - StateChangeTime) > noSignalTime)) {
 			goSweep = true;
 		}
 		if (!DFM_RX1.squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_FM)) {
@@ -1015,7 +1017,7 @@ void TRX_ProcessScanMode(void) {
 			StateChangeTime = HAL_GetTick();
 		}
 
-		if (VAD_RX1_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME)) {
+		if (VAD_RX1_Muting && ((HAL_GetTick() - StateChangeTime) > noSignalTime)) {
 			goSweep = true;
 		}
 		if (!VAD_RX1_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_OTHER)) {
@@ -1048,6 +1050,26 @@ void TRX_ProcessScanMode(void) {
 			LCD_UpdateQuery.FreqInfoRedraw = true;
 			// LCD_UpdateQuery.StatusInfoGUI = true;
 			// LCD_UpdateQuery.StatusInfoBarRedraw = true;
+			StateChangeTime = HAL_GetTick();
+		} else if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) { // memory channels mode
+			int8_t currentMemIndex = 0;
+			for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
+				if (CurrentVFO->Freq == CALIBRATE.MEMORY_CHANNELS[i].freq) {
+					currentMemIndex = i;
+				}
+			}
+			currentMemIndex++;
+			if (currentMemIndex >= MEMORY_CHANNELS_COUNT) {
+				currentMemIndex = 0;
+			}
+			while (currentMemIndex < MEMORY_CHANNELS_COUNT && currentMemIndex > 0 && CALIBRATE.MEMORY_CHANNELS[currentMemIndex].freq == 0) {
+				currentMemIndex++;
+			}
+			if (currentMemIndex >= MEMORY_CHANNELS_COUNT) {
+				currentMemIndex = 0;
+			}
+
+			BUTTONHANDLER_SelectMemoryChannels(currentMemIndex);
 			StateChangeTime = HAL_GetTick();
 		} else if (band != -1) // common region mode
 		{
@@ -2539,10 +2561,12 @@ void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter) {
 	LCD_UpdateQuery.FreqInfoRedraw = true;
 
 	resetVAD();
-	TRX_ScanMode = false;
-	LCD_closeWindow();
-	TRX_DXCluster_UpdateTime = 0;
-	TRX_WOLF_Cluster_UpdateTime = 0;
+	if (TRX.ENC2_func_mode != ENC_FUNC_SET_MEM || !TRX_ScanMode) {
+		TRX_ScanMode = false;
+		LCD_closeWindow();
+		TRX_DXCluster_UpdateTime = 0;
+		TRX_WOLF_Cluster_UpdateTime = 0;
+	}
 }
 
 void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
