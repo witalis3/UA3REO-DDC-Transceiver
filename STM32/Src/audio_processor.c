@@ -526,18 +526,24 @@ void processRxAudio(void) {
 #if HRDW_HAS_DUAL_RX
 	// addition of signals in double receive mode
 	if (TRX.Dual_RX && TRX.Dual_RX_Type == VFO_A_PLUS_B) {
+		float32_t balance = (((float32_t)TRX.Dual_RX_AB_Balance + 10.0f) / 20.0f);
+		arm_scale_f32(APROC_Audio_Buffer_RX1_I, 1.0f - balance, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		arm_scale_f32(APROC_Audio_Buffer_RX2_I, balance, APROC_Audio_Buffer_RX2_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 		arm_add_f32(APROC_Audio_Buffer_RX1_I, APROC_Audio_Buffer_RX2_I, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
-		arm_scale_f32(APROC_Audio_Buffer_RX1_I, 0.5f, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 	}
 	if (TRX.Dual_RX && TRX.Dual_RX_Type == VFO_A_AND_B) {
-		dma_memcpy32((uint32_t *)&APROC_Audio_Buffer_RX1_Q[0], (uint32_t *)&APROC_Audio_Buffer_RX2_I[0], FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		float32_t l_balance = TRX.Dual_RX_AB_Balance <= 0 ? 1.0f : 1.0f - ((float32_t)TRX.Dual_RX_AB_Balance / 10.0f);
+		float32_t r_balance = TRX.Dual_RX_AB_Balance >= 0 ? 1.0f : 1.0f - ((float32_t)TRX.Dual_RX_AB_Balance / -10.0f);
+		if (l_balance != 1.0f) {
+			arm_scale_f32(APROC_Audio_Buffer_RX1_I, l_balance, APROC_Audio_Buffer_RX1_I, FPGA_RX_IQ_BUFFER_HALF_SIZE);
+		}
+		arm_scale_f32(APROC_Audio_Buffer_RX2_I, r_balance, APROC_Audio_Buffer_RX1_Q, FPGA_RX_IQ_BUFFER_HALF_SIZE);
 	}
 #endif
 
 	// Recording to SD card
 #if HRDW_HAS_SD
 	if (SD_RecordInProcess) {
-		// FPGA_RX_IQ_BUFFER_HALF_SIZE - 192
 		for (uint_fast16_t i = 0; i < FPGA_RX_IQ_BUFFER_HALF_SIZE; i++) {
 			arm_float_to_q15(&APROC_Audio_Buffer_RX1_I[i], &VOCODER_Buffer[VOCODER_Buffer_Index], 1); // left channel
 			VOCODER_Buffer_Index++;

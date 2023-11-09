@@ -945,6 +945,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 #if HRDW_HAS_DUAL_RX
 			SD_WRITE_SETT_LINE("TRX.Dual_RX", (uint64_t *)&TRX.Dual_RX, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Dual_RX_Type", (uint64_t *)&TRX.Dual_RX_Type, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.Dual_RX_AB_Balance", (uint64_t *)&TRX.Dual_RX_AB_Balance, SYSMENU_INT8);
 #endif
 			SD_WRITE_SETT_LINE("TRX.Encoder_Accelerate", (uint64_t *)&TRX.Encoder_Accelerate, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_STRING("TRX.CALLSIGN", TRX.CALLSIGN);
@@ -1729,6 +1730,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.Dual_RX_Type") == 0) {
 		TRX.Dual_RX_Type = (DUAL_RX_TYPE)uintval;
+	}
+	if (strcmp(name, "TRX.Dual_RX_AB_Balance") == 0) {
+		TRX.Dual_RX_AB_Balance = (int8_t)intval;
 	}
 #endif
 	if (strcmp(name, "TRX.Encoder_Accelerate") == 0) {

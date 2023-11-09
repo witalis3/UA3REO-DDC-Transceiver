@@ -184,6 +184,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Attenuation, dB** - Current attenuation
 * **Auto Snap** - Automaticly track and snap to near signal frequency (CW mode)
 * **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
+* **A/B Balance** - Channels balance in dual RX modes A+B and A&B
 * **CODEC Gain** - Adjusting AF gain in audio codec
 * **DNR xxx** - Digital squelch adjustment
 * **Squelch** - Enable SSB/AM/CW/FM Squelch

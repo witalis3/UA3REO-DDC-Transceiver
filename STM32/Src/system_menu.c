@@ -120,6 +120,7 @@ static void SYSMENU_HANDL_RX_CODEC_Out_Volume(int8_t direction);
 static void SYSMENU_HANDL_RX_BluetoothAudio_Enabled(int8_t direction);
 static void SYSMENU_HANDL_RX_AUDIO_MODE(int8_t direction);
 static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction);
+static void SYSMENU_HANDL_RX_Dual_RX_AB_Balance(int8_t direction);
 
 static void SYSMENU_HANDL_TX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TX_ATU_Enabled(int8_t direction);
@@ -772,6 +773,9 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 #endif
     {"Auto Snap", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Snap, SYSMENU_HANDL_RX_Auto_Snap},
     {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_RX_AutoGain},
+#if HRDW_HAS_DUAL_RX
+		{"A/B Balance", SYSMENU_INT8, NULL, (uint32_t *)&TRX.Dual_RX_AB_Balance, SYSMENU_HANDL_RX_Dual_RX_AB_Balance},
+#endif
 #if HRDW_HAS_BLUETOOTH_AUDIO
     {"Bluetooth Audio", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.BluetoothAudio_Enabled, SYSMENU_HANDL_RX_BluetoothAudio_Enabled},
 #endif
@@ -2465,6 +2469,16 @@ static void SYSMENU_HANDL_RX_ATT_STEP(int8_t direction) {
 	}
 	if (TRX.ATT_STEP > 15) {
 		TRX.ATT_STEP = 15;
+	}
+}
+
+static void SYSMENU_HANDL_RX_Dual_RX_AB_Balance(int8_t direction) {
+	TRX.Dual_RX_AB_Balance += direction;
+	if (TRX.Dual_RX_AB_Balance < -10) {
+		TRX.Dual_RX_AB_Balance = -10;
+	}
+	if (TRX.Dual_RX_AB_Balance > 10) {
+		TRX.Dual_RX_AB_Balance = 10;
 	}
 }
 

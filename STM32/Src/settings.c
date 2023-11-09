@@ -197,7 +197,8 @@ void LoadSettings(bool clear) {
 		TRX.SPLIT_Enabled = false; // Split frequency mode (receive one VFO, transmit another)
 #if HRDW_HAS_DUAL_RX
 		TRX.Dual_RX = false;             // Dual RX feature
-		TRX.Dual_RX_Type = VFO_A_PLUS_B; // dual receiver mode
+		TRX.Dual_RX_Type = VFO_A_AND_B; // dual receiver mode
+		TRX.Dual_RX_AB_Balance = 0;		// A/B Balance
 #endif
 		TRX.Encoder_Accelerate = true;             // Accelerate Encoder on fast rate
 		strcpy(TRX.CALLSIGN, "HamRad");            // Callsign
