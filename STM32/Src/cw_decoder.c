@@ -146,14 +146,19 @@ void CWDecoder_Process(float32_t *bufferIn) {
 		maxValueAvg = maxValue;
 	}
 
+	// Sliding mean
+	static float32_t meanValueAvg = 0;
+	meanValueAvg = meanValueAvg * CWDECODER_MAX_SLIDE + meanValue * (1.0f - CWDECODER_MAX_SLIDE);
+
 	// Normalize the frequency response to one
-	float32_t maxValueNormalized = maxValue;
-	if (maxValueAvg > 0.0f) {
-		maxValueNormalized *= 1.0f / maxValueAvg;
+	if (maxValueAvg <= 0.0f) {
+		return;
 	}
+	float32_t maxValueNormalized = maxValue * (1.0f / maxValueAvg);
+
 	// println((double)maxValueNormalized, " ", (double)maxValue, " ", (double)meanValue);
 
-	if (maxValueNormalized > CWDECODER_MAX_THRES && (maxValue > (meanValue * (float32_t)TRX.CW_Decoder_Threshold * 1.0f))) // signal is active
+	if (maxValueNormalized > CWDECODER_MAX_THRES && (maxValue > (meanValueAvg * (float32_t)TRX.CW_Decoder_Threshold * 1.8f))) // signal is active
 	{
 		// print("s");
 		// println(maxValue / meanValue);
