@@ -9,6 +9,64 @@ static NB_Instance NB_RX1 = {};
 SRAM4 static NB_Instance NB_RX2 = {};
 #endif
 
+#if NB_TYPE == 1
+void NB_Init(void) {
+	NB_RX1.delbuf_inptr = 0;
+	NB_RX1.delbuf_outptr = NB_DELAY_STAGE;
+	NB_RX1.edge_strength = 1.0f;
+
+	NB_RX2.delbuf_inptr = 0;
+	NB_RX2.delbuf_outptr = NB_DELAY_STAGE;
+	NB_RX2.edge_strength = 1.0f;
+}
+
+void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
+	NB_Instance *instance = &NB_RX1;
+#if HRDW_HAS_DUAL_RX
+	if (rx_id == AUDIO_RX2) {
+		instance = &NB_RX2;
+	}
+#endif
+
+	float32_t nb_short_setting = (float32_t)TRX.NOISE_BLANKER_THRESHOLD / 2.0f;
+
+	float32_t nb_sig_filt = NB_SIGNAL_SMOOTH;   // de-linearize and save in "new signal" contribution parameter
+	float32_t nb_agc_filt = 1.0f - nb_sig_filt; // calculate parameter for recyling "old" AGC value
+
+	for (uint32_t i = 0; i < NB_BLOCK_SIZE; i++) // Noise blanker function
+	{
+		float32_t sig = fabsf(buffer[i]);                          // get signal amplitude.  We need only look at one of the two audio channels since they will be the same.
+		instance->delay_buf[instance->delbuf_inptr++] = buffer[i]; // copy first byte into delay buffer
+
+		instance->nb_agc = (nb_agc_filt * instance->nb_agc) + (nb_sig_filt * sig); // IIR-filtered "AGC" of current overall signal level
+
+		// println("SIG: ", (double)sig, " TH: ", (double)(instance->nb_agc * (((NB_MAX_SETTING / 20.0f) + 1.75f) - nb_short_setting)));
+
+		if ((sig > (instance->nb_agc * (((NB_MAX_SETTING / 2.0f) + 1.75f) - nb_short_setting))) && (instance->nb_delay == 0)) // did a pulse exceed the threshold?
+		{
+			instance->nb_delay = NB_DELAY_BUFFER_ITEMS; // yes - set the blanking duration counter
+		}
+
+		if (!instance->nb_delay) // blank counter not active
+		{
+			buffer[i] = instance->delay_buf[instance->delbuf_outptr++] * instance->edge_strength; // pass through delayed audio, unchanged
+			instance->edge_strength = 1.0f * NB_EDGES_SMOOTH + (instance->edge_strength * (1.0f - NB_EDGES_SMOOTH));
+		} else // It is within the blanking pulse period
+		{
+			buffer[i] = instance->edge_strength * buffer[i]; // set the audio buffer to "mute" during the blanking period
+			instance->edge_strength = instance->edge_strength * NB_EDGES_SMOOTH;
+			instance->nb_delay--; // count down the number of samples that we are to blank
+		}
+
+		// RINGBUFFER
+		instance->delbuf_outptr %= NB_DELAY_BUFFER_SIZE;
+		instance->delbuf_inptr %= NB_DELAY_BUFFER_SIZE;
+	}
+}
+#endif
+
+#if NB_TYPE == 2
+
 static uint16_t NB_impulse_positions[NB_max_inpulse_count]; // maximum of impulses per frame
 static float32_t NB_firStateF32[NB_FIR_SIZE + NB_order];
 static float32_t NB_tempsamp[NB_FIR_SIZE];
@@ -108,7 +166,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 
 		arm_var_f32(NB_tempsamp, NB_FIR_SIZE, &sigma2); // calculate sigma2 of the tempsignal
 		// arm_var_f32(&instance->NR_Working_buffer[NB_order + NB_PL], NB_FIR_SIZE, &sigma2); // calculate sigma2 of the original signal
-		arm_power_f32(NB_lpcs, NB_order, &lpc_power);                                      // calculate the sum of the squares (the "power") of the lpc's
+		arm_power_f32(NB_lpcs, NB_order, &lpc_power); // calculate the sum of the squares (the "power") of the lpc's
 
 		float32_t square;
 		arm_sqrt_f32((sigma2 * lpc_power), &square);
@@ -147,7 +205,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 			// copy original data + out bound
 			dma_memcpy(NB_Rfw, &instance->NR_Working_buffer[NB_order + NB_PL + NB_impulse_positions[j]], (NB_order + NB_impulse_length) * sizeof(float32_t));
 			dma_memcpy(NB_Rbw, &instance->NR_Working_buffer[NB_order + NB_PL + NB_impulse_positions[j] + NB_order], (NB_order + NB_impulse_length) * sizeof(float32_t));
-			
+
 			for (uint16_t i = 0; i < NB_impulse_length; i++) // now we calculate the forward and backward predictions
 			{
 				arm_dot_prod_f32(NB_reverse_lpcs, &NB_Rfw[i], NB_order, &NB_Rfw[NB_order + i]);
@@ -189,3 +247,5 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 	}
 	instance->NR_OutputBuffer_index++;
 }
+
+#endif
