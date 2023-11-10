@@ -52,7 +52,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 
 		// working_buffer //we need 128 + 26 floats to work on -//necessary to watch for impulses as close to the frame boundaries as possible
 		// copy incomming samples to the end of our working bufer
-		dma_memcpy(&instance->NR_Working_buffer[2 * NB_PL + 2 * NB_order], &instance->NR_InputBuffer, NB_FIR_SIZE * sizeof(float32_t));
+		dma_memcpy(&instance->NR_Working_buffer[2 * NB_PL + 2 * NB_order], instance->NR_InputBuffer, NB_FIR_SIZE * sizeof(float32_t));
 
 		// calculate the autocorrelation of insamp (moving by max. of #order# samples)
 		for (uint16_t i = 0; i < (NB_order + 1); i++) {
@@ -98,12 +98,14 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 			NB_reverse_lpcs[NB_order - o] = NB_lpcs[o]; // for the matched impulse filter
 		}
 
-		arm_fir_init_f32(&LPC, NB_order + 1, NB_reverse_lpcs, NB_firStateF32, NB_FIR_SIZE);
 		// do the inverse filtering to eliminate voice and enhance the impulses
+		arm_fir_init_f32(&LPC, NB_order + 1, NB_reverse_lpcs, NB_firStateF32, NB_FIR_SIZE);
 		arm_fir_f32(&LPC, &instance->NR_Working_buffer[NB_order + NB_PL], NB_tempsamp, NB_FIR_SIZE);
-		arm_fir_init_f32(&LPC, NB_order + 1, NB_lpcs, NB_firStateF32, NB_FIR_SIZE);
+		
 		// do a matched filtering to detect an impulse in our now voiceless signal
+		arm_fir_init_f32(&LPC, NB_order + 1, NB_lpcs, NB_firStateF32, NB_FIR_SIZE);
 		arm_fir_f32(&LPC, NB_tempsamp, NB_tempsamp, NB_FIR_SIZE);
+		
 		arm_var_f32(NB_tempsamp, NB_FIR_SIZE, &sigma2); // calculate sigma2 of the original signal ? or tempsignal
 		arm_power_f32(NB_lpcs, NB_order, &lpc_power);   // calculate the sum of the squares (the "power") of the lpc's
 
