@@ -8,7 +8,7 @@
 #include <string.h>
 
 #define NB_BLOCK_SIZE (AUDIO_BUFFER_HALF_SIZE / 3) // size of the NB filter processing block
-#define NB_TYPE 1                                  // 1,2
+#define NB_TYPE 2                                  // 1,2,3
 
 // Simple NB with zeroing on impulse
 #if NB_TYPE == 1
@@ -29,8 +29,19 @@ typedef struct {
 } NB_Instance;
 #endif
 
-// NB with LPC prdiction
+// Simple NB with averaging on impulse
 #if NB_TYPE == 2
+#define NB_c1 0.99f          // averaging coefficients
+#define NB_c2 (1.0f - NB_c1) // averaging coefficients
+
+typedef struct {
+	float32_t d_avgsig;
+	float32_t d_avgmag_nb2;
+} NB_Instance;
+#endif
+
+// NB with LPC prdiction
+#if NB_TYPE == 3
 #define NB_impulse_length 11                // has to be odd !
 #define NB_PL ((NB_impulse_length - 1) / 2) // has to be (impulse_length-1) / 2
 #define NB_order 4                          // 10                         // lpc's order

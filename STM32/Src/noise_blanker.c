@@ -66,6 +66,32 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 #endif
 
 #if NB_TYPE == 2
+void NB_Init(void) {}
+
+void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
+	NB_Instance *instance = &NB_RX1;
+#if HRDW_HAS_DUAL_RX
+	if (rx_id == AUDIO_RX2) {
+		instance = &NB_RX2;
+	}
+#endif
+
+	float32_t cmag;
+	float32_t d_thld_nb2 = (float32_t)TRX.NOISE_BLANKER_THRESHOLD / 5.0f;
+
+	for (int i = 0; i < NB_BLOCK_SIZE; i++) {
+		cmag = fabsf(buffer[i]);
+		instance->d_avgsig = NB_c1 * instance->d_avgsig + NB_c2 * buffer[i];
+		instance->d_avgmag_nb2 = 0.999f * instance->d_avgmag_nb2 + 0.001f * cmag;
+
+		if (cmag > d_thld_nb2 * instance->d_avgmag_nb2) {
+			buffer[i] = instance->d_avgsig;
+		}
+	}
+}
+#endif
+
+#if NB_TYPE == 3
 
 static uint16_t NB_impulse_positions[NB_max_inpulse_count]; // maximum of impulses per frame
 static float32_t NB_firStateF32[NB_FIR_SIZE + NB_order];
