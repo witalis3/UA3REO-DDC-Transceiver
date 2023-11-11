@@ -106,8 +106,10 @@ static void SYSMENU_HANDL_RX_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_RX_FM_Stereo(int8_t direction);
 static void SYSMENU_HANDL_RX_FM_Stereo_Modulation(int8_t direction);
 static void SYSMENU_HANDL_RX_IFGain(int8_t direction);
-static void SYSMENU_HANDL_RX_NOISE_BLANKER(int8_t direction);
-static void SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD(int8_t direction);
+static void SYSMENU_HANDL_RX_NOISE_BLANKER1(int8_t direction);
+static void SYSMENU_HANDL_RX_NOISE_BLANKER2(int8_t direction);
+static void SYSMENU_HANDL_RX_NOISE_BLANKER1_THRESHOLD(int8_t direction);
+static void SYSMENU_HANDL_RX_NOISE_BLANKER2_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_RX_RFFilters(int8_t direction);
 static void SYSMENU_HANDL_RX_SAMPLERATE_FM(int8_t direction);
 static void SYSMENU_HANDL_RX_SAMPLERATE_MAIN(int8_t direction);
@@ -794,8 +796,10 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"FM Squelch level, dBm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
 #endif
     {"Free tune", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FREE_Tune, SYSMENU_HANDL_RX_FREE_Tune},
-    {"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_RX_NOISE_BLANKER},
-    {"NB Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD},
+    {"Noise blanker 1", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER1, SYSMENU_HANDL_RX_NOISE_BLANKER1},
+    {"Noise blanker 2", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER2, SYSMENU_HANDL_RX_NOISE_BLANKER2},
+    {"NB1 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER1_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER1_THRESHOLD},
+    {"NB2 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER2_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER2_THRESHOLD},
 #if !defined(FRONTPANEL_LITE)
     {"RF Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_RX_RFFilters},
 #endif
@@ -937,7 +941,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"FFT Averaging", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 #if !defined(FRONTPANEL_LITE)
     {"FFT BW Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_BW_Style, SYSMENU_HANDL_SCREEN_FFT_BW_Style, (const enumerate_item[4]){"", "Fill", "LowOp", "Line"}},
-    {"FFT BW Position", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_BW_Position, SYSMENU_HANDL_SCREEN_FFT_BW_Position, (const enumerate_item[4]){"All", "Top+Line", "Top", "Delay"}},
+    {"FFT BW Position", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_BW_Position, SYSMENU_HANDL_SCREEN_FFT_BW_Position, (const enumerate_item[4]){"All", "Top+Lin", "Top", "Delay"}},
 #endif
     {"FFT Background", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Background, SYSMENU_HANDL_SCREEN_FFT_Background},
     {"FFT Color", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Color, SYSMENU_HANDL_SCREEN_FFT_Color,
@@ -2534,9 +2538,16 @@ void SYSMENU_TX_CESSB_HOTKEY(void) {
 	LCD_redraw(false);
 }
 
-void SYSMENU_RX_NB_HOTKEY(void) {
+void SYSMENU_RX_NB1_HOTKEY(void) {
 	SYSMENU_HANDL_RXMENU(0);
-	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "NB Threshold");
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "NB1 Threshold");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+}
+
+void SYSMENU_RX_NB2_HOTKEY(void) {
+	SYSMENU_HANDL_RXMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "NB2 Threshold");
 	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
@@ -2593,12 +2604,21 @@ static void SYSMENU_HANDL_RX_AGC(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_RX_NOISE_BLANKER(int8_t direction) {
+static void SYSMENU_HANDL_RX_NOISE_BLANKER1(int8_t direction) {
 	if (direction > 0) {
-		TRX.NOISE_BLANKER = true;
+		TRX.NOISE_BLANKER1 = true;
 	}
 	if (direction < 0) {
-		TRX.NOISE_BLANKER = false;
+		TRX.NOISE_BLANKER1 = false;
+	}
+}
+
+static void SYSMENU_HANDL_RX_NOISE_BLANKER2(int8_t direction) {
+	if (direction > 0) {
+		TRX.NOISE_BLANKER2 = true;
+	}
+	if (direction < 0) {
+		TRX.NOISE_BLANKER2 = false;
 	}
 }
 
@@ -2678,13 +2698,23 @@ static void SYSMENU_HANDL_RX_DNR_MINMAL(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD(int8_t direction) {
-	TRX.NOISE_BLANKER_THRESHOLD += direction;
-	if (TRX.NOISE_BLANKER_THRESHOLD < 1) {
-		TRX.NOISE_BLANKER_THRESHOLD = 1;
+static void SYSMENU_HANDL_RX_NOISE_BLANKER1_THRESHOLD(int8_t direction) {
+	TRX.NOISE_BLANKER1_THRESHOLD += direction;
+	if (TRX.NOISE_BLANKER1_THRESHOLD < 1) {
+		TRX.NOISE_BLANKER1_THRESHOLD = 1;
 	}
-	if (TRX.NOISE_BLANKER_THRESHOLD > 20) {
-		TRX.NOISE_BLANKER_THRESHOLD = 20;
+	if (TRX.NOISE_BLANKER1_THRESHOLD > 10) {
+		TRX.NOISE_BLANKER1_THRESHOLD = 10;
+	}
+}
+
+static void SYSMENU_HANDL_RX_NOISE_BLANKER2_THRESHOLD(int8_t direction) {
+	TRX.NOISE_BLANKER2_THRESHOLD += direction;
+	if (TRX.NOISE_BLANKER2_THRESHOLD < 1) {
+		TRX.NOISE_BLANKER2_THRESHOLD = 1;
+	}
+	if (TRX.NOISE_BLANKER2_THRESHOLD > 10) {
+		TRX.NOISE_BLANKER2_THRESHOLD = 10;
 	}
 }
 

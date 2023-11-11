@@ -272,13 +272,15 @@ void LoadSettings(bool clear) {
 		TRX.DNR2_SNR_THRESHOLD = 35;        // Digital noise reduction 2 level
 		TRX.DNR_AVERAGE = 2;                // DNR averaging when looking for average magnitude
 		TRX.DNR_MINIMAL = 99;               // DNR averaging when searching for minimum magnitude
-		TRX.NOISE_BLANKER = false;          // suppressor of short impulse noise NOISE BLANKER
+		TRX.NOISE_BLANKER1 = false;         // suppressor of short impulse noise NOISE BLANKER 1
+		TRX.NOISE_BLANKER2 = false;         // suppressor of short impulse noise NOISE BLANKER 1
 #ifdef STM32F407xx
 		TRX.AGC_Spectral = false; // Spectral AGC mode
 #else
 		TRX.AGC_Spectral = true; // Spectral AGC mode
 #endif
-		TRX.NOISE_BLANKER_THRESHOLD = 10;                              // threshold for noise blanker
+		TRX.NOISE_BLANKER1_THRESHOLD = 5;                              // threshold for noise blanker 1
+		TRX.NOISE_BLANKER2_THRESHOLD = 5;                              // threshold for noise blanker 2
 		TRX.TX_CESSB = true;                                           // Controlled-envelope single-sideband modulation
 		TRX.TX_CESSB_COMPRESS_DB = 1.0f;                               // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;                                     // AGC receive rate on SSB

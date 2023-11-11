@@ -1800,7 +1800,20 @@ void BUTTONHANDLER_DNR_HOLD(uint32_t parameter) {
 }
 
 void BUTTONHANDLER_NB(uint32_t parameter) {
-	TRX.NOISE_BLANKER = !TRX.NOISE_BLANKER;
+	if (!TRX.NOISE_BLANKER1 && !TRX.NOISE_BLANKER2) {
+		TRX.NOISE_BLANKER1 = true;
+		TRX.NOISE_BLANKER2 = false;
+	} else if (TRX.NOISE_BLANKER1 && !TRX.NOISE_BLANKER2) {
+		TRX.NOISE_BLANKER1 = false;
+		TRX.NOISE_BLANKER2 = true;
+	} else if (!TRX.NOISE_BLANKER1 && TRX.NOISE_BLANKER2) {
+		TRX.NOISE_BLANKER1 = true;
+		TRX.NOISE_BLANKER2 = true;
+	} else {
+		TRX.NOISE_BLANKER1 = false;
+		TRX.NOISE_BLANKER2 = false;
+	}
+
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
@@ -1808,7 +1821,11 @@ void BUTTONHANDLER_NB(uint32_t parameter) {
 void BUTTONHANDLER_NB_HOLD(uint32_t parameter) {
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
-		SYSMENU_RX_NB_HOTKEY();
+		if (TRX.NOISE_BLANKER2) {
+			SYSMENU_RX_NB2_HOTKEY();
+		} else {
+			SYSMENU_RX_NB1_HOTKEY();
+		}
 	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}

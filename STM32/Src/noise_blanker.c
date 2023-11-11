@@ -1,7 +1,5 @@
 #include "noise_blanker.h"
 
-// https://github.com/df8oe/UHSDR/wiki/Noise-blanker
-
 // Private variables
 static NB_Instance NB_RX1 = {};
 
@@ -9,7 +7,6 @@ static NB_Instance NB_RX1 = {};
 SRAM4 static NB_Instance NB_RX2 = {};
 #endif
 
-#if NB_TYPE == 1
 void NB_Init(void) {
 	NB_RX1.delbuf_inptr = 0;
 	NB_RX1.delbuf_outptr = NB_DELAY_STAGE;
@@ -30,71 +27,63 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 	}
 #endif
 
-	float32_t nb_short_setting = (float32_t)TRX.NOISE_BLANKER_THRESHOLD / 2.0f;
+	// NB1
+	if (TRX.NOISE_BLANKER1) {
+		float32_t nb_short_setting = (float32_t)TRX.NOISE_BLANKER1_THRESHOLD / 2.0f;
 
-	float32_t nb_sig_filt = NB_SIGNAL_SMOOTH;   // de-linearize and save in "new signal" contribution parameter
-	float32_t nb_agc_filt = 1.0f - nb_sig_filt; // calculate parameter for recyling "old" AGC value
+		float32_t nb_sig_filt = NB_SIGNAL_SMOOTH;   // de-linearize and save in "new signal" contribution parameter
+		float32_t nb_agc_filt = 1.0f - nb_sig_filt; // calculate parameter for recyling "old" AGC value
 
-	for (uint32_t i = 0; i < NB_BLOCK_SIZE; i++) // Noise blanker function
-	{
-		float32_t sig = fabsf(buffer[i]);                          // get signal amplitude.  We need only look at one of the two audio channels since they will be the same.
-		instance->delay_buf[instance->delbuf_inptr++] = buffer[i]; // copy first byte into delay buffer
-
-		instance->nb_agc = (nb_agc_filt * instance->nb_agc) + (nb_sig_filt * sig); // IIR-filtered "AGC" of current overall signal level
-
-		// println("SIG: ", (double)sig, " TH: ", (double)(instance->nb_agc * (((NB_MAX_SETTING / 20.0f) + 1.75f) - nb_short_setting)));
-
-		if ((sig > (instance->nb_agc * (((NB_MAX_SETTING / 2.0f) + 1.75f) - nb_short_setting))) && (instance->nb_delay == 0)) // did a pulse exceed the threshold?
+		for (uint32_t i = 0; i < NB_BLOCK_SIZE; i++) // Noise blanker function
 		{
-			instance->nb_delay = NB_DELAY_BUFFER_ITEMS; // yes - set the blanking duration counter
+			float32_t sig = fabsf(buffer[i]);                          // get signal amplitude.  We need only look at one of the two audio channels since they will be the same.
+			instance->delay_buf[instance->delbuf_inptr++] = buffer[i]; // copy first byte into delay buffer
+
+			instance->nb_agc = (nb_agc_filt * instance->nb_agc) + (nb_sig_filt * sig); // IIR-filtered "AGC" of current overall signal level
+
+			// println("SIG: ", (double)sig, " TH: ", (double)(instance->nb_agc * (((NB_MAX_SETTING / 20.0f) + 1.75f) - nb_short_setting)));
+
+			if ((sig > (instance->nb_agc * (((10.0f / 2.0f) + 1.75f) - nb_short_setting))) && (instance->nb_delay == 0)) // did a pulse exceed the threshold?
+			{
+				instance->nb_delay = NB_DELAY_BUFFER_ITEMS; // yes - set the blanking duration counter
+			}
+
+			if (!instance->nb_delay) // blank counter not active
+			{
+				buffer[i] = instance->delay_buf[instance->delbuf_outptr++] * instance->edge_strength; // pass through delayed audio, unchanged
+				instance->edge_strength = 1.0f * NB_EDGES_SMOOTH + (instance->edge_strength * (1.0f - NB_EDGES_SMOOTH));
+			} else // It is within the blanking pulse period
+			{
+				buffer[i] = instance->edge_strength * buffer[i]; // set the audio buffer to "mute" during the blanking period
+				instance->edge_strength = instance->edge_strength * NB_EDGES_SMOOTH;
+				instance->nb_delay--; // count down the number of samples that we are to blank
+			}
+
+			// RINGBUFFER
+			instance->delbuf_outptr %= NB_DELAY_BUFFER_SIZE;
+			instance->delbuf_inptr %= NB_DELAY_BUFFER_SIZE;
 		}
-
-		if (!instance->nb_delay) // blank counter not active
-		{
-			buffer[i] = instance->delay_buf[instance->delbuf_outptr++] * instance->edge_strength; // pass through delayed audio, unchanged
-			instance->edge_strength = 1.0f * NB_EDGES_SMOOTH + (instance->edge_strength * (1.0f - NB_EDGES_SMOOTH));
-		} else // It is within the blanking pulse period
-		{
-			buffer[i] = instance->edge_strength * buffer[i]; // set the audio buffer to "mute" during the blanking period
-			instance->edge_strength = instance->edge_strength * NB_EDGES_SMOOTH;
-			instance->nb_delay--; // count down the number of samples that we are to blank
-		}
-
-		// RINGBUFFER
-		instance->delbuf_outptr %= NB_DELAY_BUFFER_SIZE;
-		instance->delbuf_inptr %= NB_DELAY_BUFFER_SIZE;
 	}
-}
-#endif
 
-#if NB_TYPE == 2
-void NB_Init(void) {}
+	// NB2
+	if (TRX.NOISE_BLANKER2) {
+		float32_t cmag;
+		float32_t d_thld_nb2 = (float32_t)(20 - TRX.NOISE_BLANKER2_THRESHOLD) / 5.0f;
 
-void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
-	NB_Instance *instance = &NB_RX1;
-#if HRDW_HAS_DUAL_RX
-	if (rx_id == AUDIO_RX2) {
-		instance = &NB_RX2;
-	}
-#endif
+		for (int i = 0; i < NB_BLOCK_SIZE; i++) {
+			cmag = fabsf(buffer[i]);
+			instance->d_avgsig = NB_c1 * instance->d_avgsig + NB_c2 * buffer[i];
+			instance->d_avgmag_nb2 = NB_c3 * instance->d_avgmag_nb2 + NB_c4 * cmag;
 
-	float32_t cmag;
-	float32_t d_thld_nb2 = (float32_t)TRX.NOISE_BLANKER_THRESHOLD / 5.0f;
-
-	for (int i = 0; i < NB_BLOCK_SIZE; i++) {
-		cmag = fabsf(buffer[i]);
-		instance->d_avgsig = NB_c1 * instance->d_avgsig + NB_c2 * buffer[i];
-		instance->d_avgmag_nb2 = 0.999f * instance->d_avgmag_nb2 + 0.001f * cmag;
-
-		if (cmag > d_thld_nb2 * instance->d_avgmag_nb2) {
-			buffer[i] = instance->d_avgsig;
+			if (cmag > d_thld_nb2 * instance->d_avgmag_nb2) {
+				buffer[i] = instance->d_avgsig;
+			}
 		}
 	}
 }
-#endif
 
-#if NB_TYPE == 3
-
+#if false
+// https://github.com/df8oe/UHSDR/wiki/Noise-blanker
 static uint16_t NB_impulse_positions[NB_max_inpulse_count]; // maximum of impulses per frame
 static float32_t NB_firStateF32[NB_FIR_SIZE + NB_order];
 static float32_t NB_tempsamp[NB_FIR_SIZE];

@@ -8,40 +8,34 @@
 #include <string.h>
 
 #define NB_BLOCK_SIZE (AUDIO_BUFFER_HALF_SIZE / 3) // size of the NB filter processing block
-#define NB_TYPE 1                                  // 1,2,3
 
-// Simple NB with zeroing on impulse
-#if NB_TYPE == 1
+// NB1
 #define NB_DELAY_STAGE 2 // buffer blocks count
 #define NB_DELAY_BUFFER_SIZE (NB_BLOCK_SIZE * NB_DELAY_STAGE)
-#define NB_MAX_SETTING 10.0f     // max threshold
-#define NB_SIGNAL_SMOOTH 0.01f   // reaction filter
+#define NB_SIGNAL_SMOOTH 0.5f    // reaction filter
 #define NB_EDGES_SMOOTH 0.7f     // edges smooth filter
-#define NB_DELAY_BUFFER_ITEMS 32 // delay zero samples
+#define NB_DELAY_BUFFER_ITEMS 16 // delay zero samples
+// NB2
+#define NB_c1 0.999f         // averaging coefficients
+#define NB_c2 (1.0f - NB_c1) // averaging coefficients
+#define NB_c3 0.999f         // averaging coefficients
+#define NB_c4 (1.0f - NB_c3) // averaging coefficients
 
 typedef struct {
+	// NB1
 	float32_t delay_buf[NB_DELAY_BUFFER_SIZE];
 	int32_t delbuf_inptr;
 	int32_t delbuf_outptr;
 	float32_t nb_agc;
 	uint32_t nb_delay;
 	float32_t edge_strength;
-} NB_Instance;
-#endif
-
-// Simple NB with averaging on impulse
-#if NB_TYPE == 2
-#define NB_c1 0.99f          // averaging coefficients
-#define NB_c2 (1.0f - NB_c1) // averaging coefficients
-
-typedef struct {
+	// NB2
 	float32_t d_avgsig;
 	float32_t d_avgmag_nb2;
 } NB_Instance;
-#endif
 
+#if false
 // NB with LPC prdiction
-#if NB_TYPE == 3
 #define NB_impulse_length 11                // has to be odd !
 #define NB_PL ((NB_impulse_length - 1) / 2) // has to be (impulse_length-1) / 2
 #define NB_order 4                          // 10                         // lpc's order
