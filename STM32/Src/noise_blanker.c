@@ -15,9 +15,11 @@ void NB_Init(void) {
 	NB_RX1.delbuf_outptr = NB_DELAY_STAGE;
 	NB_RX1.edge_strength = 1.0f;
 
+#if HRDW_HAS_DUAL_RX
 	NB_RX2.delbuf_inptr = 0;
 	NB_RX2.delbuf_outptr = NB_DELAY_STAGE;
 	NB_RX2.edge_strength = 1.0f;
+#endif
 }
 
 void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {

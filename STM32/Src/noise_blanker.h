@@ -8,7 +8,7 @@
 #include <string.h>
 
 #define NB_BLOCK_SIZE (AUDIO_BUFFER_HALF_SIZE / 3) // size of the NB filter processing block
-#define NB_TYPE 2                                  // 1,2,3
+#define NB_TYPE 1                                  // 1,2,3
 
 // Simple NB with zeroing on impulse
 #if NB_TYPE == 1
