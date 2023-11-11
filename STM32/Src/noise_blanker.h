@@ -12,11 +12,11 @@
 // NB1
 #define NB_DELAY_STAGE 2 // buffer blocks count
 #define NB_DELAY_BUFFER_SIZE (NB_BLOCK_SIZE * NB_DELAY_STAGE)
-#define NB_SIGNAL_SMOOTH 0.5f    // reaction filter
-#define NB_EDGES_SMOOTH 0.7f     // edges smooth filter
-#define NB_DELAY_BUFFER_ITEMS 16 // delay zero samples
+#define NB_SIGNAL_SMOOTH TRX.NB1_SIGNAL_SMOOTH    // reaction filter
+#define NB_EDGES_SMOOTH TRX.NB1_EDGES_SMOOTH     // edges smooth filter
+#define NB_DELAY_BUFFER_ITEMS TRX.NB1_DELAY_BUFFER_ITEMS // delay zero samples
 // NB2
-#define NB_c1 0.999f         // averaging coefficients
+#define NB_c1 TRX.NB2_Avg         // averaging coefficients
 #define NB_c2 (1.0f - NB_c1) // averaging coefficients
 #define NB_c3 0.999f         // averaging coefficients
 #define NB_c4 (1.0f - NB_c3) // averaging coefficients

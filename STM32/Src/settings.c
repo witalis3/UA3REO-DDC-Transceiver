@@ -279,8 +279,8 @@ void LoadSettings(bool clear) {
 #else
 		TRX.AGC_Spectral = true; // Spectral AGC mode
 #endif
-		TRX.NOISE_BLANKER1_THRESHOLD = 5;                              // threshold for noise blanker 1
-		TRX.NOISE_BLANKER2_THRESHOLD = 5;                              // threshold for noise blanker 2
+		TRX.NOISE_BLANKER1_THRESHOLD = 8;                              // threshold for noise blanker 1
+		TRX.NOISE_BLANKER2_THRESHOLD = 10;                              // threshold for noise blanker 2
 		TRX.TX_CESSB = true;                                           // Controlled-envelope single-sideband modulation
 		TRX.TX_CESSB_COMPRESS_DB = 1.0f;                               // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;                                     // AGC receive rate on SSB
@@ -518,6 +518,12 @@ void LoadSettings(bool clear) {
 		TRX.FM_LPF_RX_Filter_shadow = TRX.VFO_A.FM_LPF_RX_Filter;
 		TRX.FM_LPF_TX_Filter_shadow = TRX.VFO_A.FM_LPF_TX_Filter;
 		TRX.FM_HPF_RX_Filter_shadow = TRX.VFO_A.FM_HPF_RX_Filter;
+		
+		TRX.NB_afterFilter = false;
+		TRX.NB1_SIGNAL_SMOOTH = 0.3f;
+		TRX.NB1_EDGES_SMOOTH = 0.1f;
+		TRX.NB1_DELAY_BUFFER_ITEMS = 32;
+		TRX.NB2_Avg = 0.99f;
 
 		LCD_showError("Loaded default settings", true);
 		SaveSettings(); // save to primary bank
