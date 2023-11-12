@@ -182,9 +182,9 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 
 			float32_t square;
 			arm_sqrt_f32((sigma2 * lpc_power), &square);
-			float32_t impulse_threshold = ((float32_t)TRX.NOISE_BLANKER3_THRESHOLD / 10.0f) * square; // set a detection level (3 is not really a final setting)
+			float32_t impulse_threshold = ((float32_t)TRX.NOISE_BLANKER3_THRESHOLD / 20.0f) * square; // set a detection level (3 is not really a final setting)
 
-			uint16_t search_pos = NB_order + NB_PL; // lower boundary problem has been solved! - so here we start from 1 or 0?
+			uint16_t search_pos = 0; // lower boundary problem has been solved! - so here we start from 1 or 0?
 			uint16_t impulse_count = 0;
 
 			float32_t max_impulse = 0;
@@ -194,7 +194,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 				}
 
 				if ((NB_tempsamp[search_pos] > impulse_threshold) || (NB_tempsamp[search_pos] < (-impulse_threshold))) {
-					NB_impulse_positions[impulse_count] = search_pos - NB_order; // save the impulse positions and correct it by the filter delay
+					NB_impulse_positions[impulse_count] = search_pos; // save the impulse positions and correct it by the filter delay
 					impulse_count++;
 					search_pos += NB_PL; //  set search_pos a bit away, cause we are already repairing this area later
 					                     //  and the next impulse should not be that close
@@ -213,15 +213,19 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 			arm_negate_f32(&NB_lpcs[1], &NB_lpcs[1], NB_order);
 			arm_negate_f32(NB_reverse_lpcs, NB_reverse_lpcs, NB_order);
 
+			uint16_t max_right_size = (NB_order + NB_PL) * 2 + NB_FIR_SIZE;
 			for (uint16_t j = 0; j < impulse_count; j++) {
 				// copy original data + out bound
-				dma_memcpy(NB_Rfw, &instance->NR_Working_buffer[NB_order + NB_PL + NB_impulse_positions[j]], (NB_order + NB_impulse_length) * sizeof(float32_t));
-				dma_memcpy(NB_Rbw, &instance->NR_Working_buffer[NB_order + NB_PL + NB_impulse_positions[j] + NB_order], (NB_order + NB_impulse_length) * sizeof(float32_t));
+				dma_memcpy(NB_Rfw, &instance->NR_Working_buffer[NB_order + NB_PL + NB_impulse_positions[j] - NB_order], (NB_order + NB_impulse_length) * sizeof(float32_t));
+				dma_memcpy(NB_Rbw, &instance->NR_Working_buffer[NB_order + NB_PL + NB_impulse_positions[j]], (NB_order + NB_impulse_length) * sizeof(float32_t));
 
+				uint16_t right_pos = NB_order + NB_PL + NB_impulse_positions[j] + NB_order + NB_impulse_length;
 				for (uint16_t i = 0; i < NB_impulse_length; i++) // now we calculate the forward and backward predictions
 				{
 					arm_dot_prod_f32(NB_reverse_lpcs, &NB_Rfw[i], NB_order, &NB_Rfw[NB_order + i]); // forward
-					// arm_dot_prod_f32(&NB_lpcs[1], &NB_Rbw[NB_impulse_length - i], NB_order, &NB_Rbw[NB_impulse_length - i - 1]); // backward
+					if(right_pos < max_right_size) {
+						arm_dot_prod_f32(&NB_lpcs[1], &NB_Rbw[NB_impulse_length - i], NB_order, &NB_Rbw[NB_impulse_length - i - 1]); // backward
+					}
 				}
 
 				// do the windowing, or better: weighing
@@ -229,7 +233,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 				arm_mult_f32(NB_Wbw, NB_Rbw, NB_Rbw, NB_impulse_length);
 
 				// finally add the two weighted predictions and insert them into the original signal - thereby eliminating the distortion
-				arm_add_f32(&NB_Rfw[NB_order], NB_Rbw, &instance->NR_Working_buffer[NB_order + NB_impulse_positions[j]], NB_impulse_length);
+				arm_add_f32(&NB_Rfw[NB_order], NB_Rbw, &instance->NR_Working_buffer[NB_order + NB_PL + NB_impulse_positions[j]], NB_impulse_length);
 			}
 
 			// test voiceless signal
