@@ -7,6 +7,7 @@ static NB_Instance NB_RX1 = {};
 SRAM4 static NB_Instance NB_RX2 = {};
 #endif
 
+#if false
 // NB3 with LPC prediction https://github.com/df8oe/UHSDR/wiki/Noise-blanker
 static uint16_t NB_impulse_positions[NB_MAX_impulse_length]; // maximum of impulses per frame
 static float32_t NB_firStateF32[NB_FIR_SIZE + NB_MAX_order];
@@ -16,22 +17,19 @@ static float32_t NB_Wbw[NB_MAX_impulse_length] = {0}; // taking linear windows f
 static float32_t NB_lpcs[NB_MAX_order + 1] = {0};     // we reserve one more than "order" because of a leading "1"
 static float32_t NB_R[NB_MAX_order + 1] = {0};        // takes the autocorrelation results
 static float32_t NB_any[NB_MAX_order + 1] = {0};      // some internal buffers for the levinson durben algorithm
+#endif
 
 void NB_Init(void) {
 	// NB1
 	NB_RX1.delbuf_inptr = 0;
 	NB_RX1.delbuf_outptr = NB_DELAY_STAGE;
 	NB_RX1.edge_strength = 1.0f;
-	// NB2
-	// NB3
 
 #if HRDW_HAS_DUAL_RX
 	// NB1
 	NB_RX2.delbuf_inptr = 0;
 	NB_RX2.delbuf_outptr = NB_DELAY_STAGE;
 	NB_RX2.edge_strength = 1.0f;
-	// NB2
-	// NB3
 #endif
 }
 
@@ -97,6 +95,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 		}
 	}
 
+#if false
 	// NB3
 	if (TRX.NOISE_BLANKER3) {
 		dma_memcpy(&instance->NR_InputBuffer[instance->NR_InputBuffer_index * NB_BLOCK_SIZE], buffer, NB_BLOCK_SIZE * 4);
@@ -263,4 +262,5 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 		}
 		instance->NR_OutputBuffer_index++;
 	}
+#endif
 }

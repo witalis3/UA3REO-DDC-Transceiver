@@ -108,10 +108,8 @@ static void SYSMENU_HANDL_RX_FM_Stereo_Modulation(int8_t direction);
 static void SYSMENU_HANDL_RX_IFGain(int8_t direction);
 static void SYSMENU_HANDL_RX_NOISE_BLANKER1(int8_t direction);
 static void SYSMENU_HANDL_RX_NOISE_BLANKER2(int8_t direction);
-static void SYSMENU_HANDL_RX_NOISE_BLANKER3(int8_t direction);
 static void SYSMENU_HANDL_RX_NOISE_BLANKER1_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_RX_NOISE_BLANKER2_THRESHOLD(int8_t direction);
-static void SYSMENU_HANDL_RX_NOISE_BLANKER3_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_RX_RFFilters(int8_t direction);
 static void SYSMENU_HANDL_RX_SAMPLERATE_FM(int8_t direction);
 static void SYSMENU_HANDL_RX_SAMPLERATE_MAIN(int8_t direction);
@@ -125,14 +123,6 @@ static void SYSMENU_HANDL_RX_BluetoothAudio_Enabled(int8_t direction);
 static void SYSMENU_HANDL_RX_AUDIO_MODE(int8_t direction);
 static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction);
 static void SYSMENU_HANDL_RX_Dual_RX_AB_Balance(int8_t direction);
-static void SYSMENU_HANDL_RX_NB1_SIGNAL_SMOOTH(int8_t direction);
-static void SYSMENU_HANDL_RX_NB1_EDGES_SMOOTH(int8_t direction);
-static void SYSMENU_HANDL_RX_NB1_DELAY_BUFFER_ITEMS(int8_t direction);
-static void SYSMENU_HANDL_RX_NB2_Avg(int8_t direction);
-static void SYSMENU_HANDL_RX_NB_afterFilter(int8_t direction);
-static void SYSMENU_HANDL_RX_NB3_MAX_inpulse_count(int8_t direction);
-static void SYSMENU_HANDL_RX_NB3_order(int8_t direction);
-static void SYSMENU_HANDL_RX_NB3_impulse_length(int8_t direction);
 
 static void SYSMENU_HANDL_TX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TX_ATU_Enabled(int8_t direction);
@@ -806,20 +796,10 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"FM Squelch level, dBm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
 #endif
     {"Free tune", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FREE_Tune, SYSMENU_HANDL_RX_FREE_Tune},
-    {"NB aft filter", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NB_afterFilter, SYSMENU_HANDL_RX_NB_afterFilter},
     {"Noise blanker 1", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER1, SYSMENU_HANDL_RX_NOISE_BLANKER1},
     {"NB1 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER1_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER1_THRESHOLD},
-    {"NB1_SIGNAL_SMO", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.NB1_SIGNAL_SMOOTH, SYSMENU_HANDL_RX_NB1_SIGNAL_SMOOTH},
-    {"NB1_EDGES_SMO", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.NB1_EDGES_SMOOTH, SYSMENU_HANDL_RX_NB1_EDGES_SMOOTH},
-    {"NB1_DELAY_BUF", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NB1_DELAY_BUFFER_ITEMS, SYSMENU_HANDL_RX_NB1_DELAY_BUFFER_ITEMS},
     {"Noise blanker 2", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER2, SYSMENU_HANDL_RX_NOISE_BLANKER2},
     {"NB2 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER2_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER2_THRESHOLD},
-    {"NB2_Avg", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.NB2_Avg, SYSMENU_HANDL_RX_NB2_Avg},
-    {"Noise blanker 3", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER3, SYSMENU_HANDL_RX_NOISE_BLANKER3},
-    {"NB3 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER3_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER3_THRESHOLD},
-    {"NB3_impulse_cnt", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NB3_MAX_inpulse_count, SYSMENU_HANDL_RX_NB3_MAX_inpulse_count},
-    {"NB3_order", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NB3_order, SYSMENU_HANDL_RX_NB3_order},
-    {"NB3_impulse_length", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NB3_impulse_length, SYSMENU_HANDL_RX_NB3_impulse_length},
 #if !defined(FRONTPANEL_LITE)
     {"RF Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_RX_RFFilters},
 #endif
@@ -2642,94 +2622,6 @@ static void SYSMENU_HANDL_RX_NOISE_BLANKER2(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_RX_NOISE_BLANKER3(int8_t direction) {
-	if (direction > 0) {
-		TRX.NOISE_BLANKER3 = true;
-	}
-	if (direction < 0) {
-		TRX.NOISE_BLANKER3 = false;
-	}
-}
-
-static void SYSMENU_HANDL_RX_NB1_SIGNAL_SMOOTH(int8_t direction) {
-	TRX.NB1_SIGNAL_SMOOTH += (float32_t)direction * 0.01f;
-	if (TRX.NB1_SIGNAL_SMOOTH < 0.01f) {
-		TRX.NB1_SIGNAL_SMOOTH = 0.01f;
-	}
-	if (TRX.NB1_SIGNAL_SMOOTH > 1.0f) {
-		TRX.NB1_SIGNAL_SMOOTH = 1.0f;
-	}
-}
-
-static void SYSMENU_HANDL_RX_NB1_EDGES_SMOOTH(int8_t direction) {
-	TRX.NB1_EDGES_SMOOTH += (float32_t)direction * 0.01f;
-	if (TRX.NB1_EDGES_SMOOTH < 0.01f) {
-		TRX.NB1_EDGES_SMOOTH = 0.01f;
-	}
-	if (TRX.NB1_EDGES_SMOOTH > 1.0f) {
-		TRX.NB1_EDGES_SMOOTH = 1.0f;
-	}
-}
-
-static void SYSMENU_HANDL_RX_NB1_DELAY_BUFFER_ITEMS(int8_t direction) {
-	TRX.NB1_DELAY_BUFFER_ITEMS += (float32_t)direction;
-	if (TRX.NB1_DELAY_BUFFER_ITEMS < 1) {
-		TRX.NB1_DELAY_BUFFER_ITEMS = 1;
-	}
-	if (TRX.NB1_DELAY_BUFFER_ITEMS > 64) {
-		TRX.NB1_DELAY_BUFFER_ITEMS = 64;
-	}
-}
-
-static void SYSMENU_HANDL_RX_NB2_Avg(int8_t direction) {
-	TRX.NB2_Avg += (float32_t)direction * 0.01f;
-	if (TRX.NB2_Avg < 0.01f) {
-		TRX.NB2_Avg = 0.01f;
-	}
-	if (TRX.NB2_Avg > 1.0f) {
-		TRX.NB2_Avg = 1.0f;
-	}
-}
-
-static void SYSMENU_HANDL_RX_NB_afterFilter(int8_t direction) {
-	if (direction > 0) {
-		TRX.NB_afterFilter = true;
-	}
-	if (direction < 0) {
-		TRX.NB_afterFilter = false;
-	}
-}
-
-static void SYSMENU_HANDL_RX_NB3_MAX_inpulse_count(int8_t direction) {
-	TRX.NB3_MAX_inpulse_count += (float32_t)direction;
-	if (TRX.NB3_MAX_inpulse_count < 1) {
-		TRX.NB3_MAX_inpulse_count = 1;
-	}
-	if (TRX.NB3_MAX_inpulse_count > 50) {
-		TRX.NB3_MAX_inpulse_count = 50;
-	}
-}
-
-static void SYSMENU_HANDL_RX_NB3_order(int8_t direction) {
-	TRX.NB3_order += (float32_t)direction;
-	if (TRX.NB3_order < 1) {
-		TRX.NB3_order = 1;
-	}
-	if (TRX.NB3_order > 64) {
-		TRX.NB3_order = 64;
-	}
-}
-
-static void SYSMENU_HANDL_RX_NB3_impulse_length(int8_t direction) {
-	TRX.NB3_impulse_length += (float32_t)direction * 2;
-	if (TRX.NB3_impulse_length < 3) {
-		TRX.NB3_impulse_length = 3;
-	}
-	if (TRX.NB3_impulse_length > 31) {
-		TRX.NB3_impulse_length = 31;
-	}
-}
-
 static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction) {
 	if (direction > 0) {
 		TRX.FREE_Tune = true;
@@ -2823,16 +2715,6 @@ static void SYSMENU_HANDL_RX_NOISE_BLANKER2_THRESHOLD(int8_t direction) {
 	}
 	if (TRX.NOISE_BLANKER2_THRESHOLD > 19) {
 		TRX.NOISE_BLANKER2_THRESHOLD = 19;
-	}
-}
-
-static void SYSMENU_HANDL_RX_NOISE_BLANKER3_THRESHOLD(int8_t direction) {
-	TRX.NOISE_BLANKER3_THRESHOLD += direction;
-	if (TRX.NOISE_BLANKER3_THRESHOLD < 1) {
-		TRX.NOISE_BLANKER3_THRESHOLD = 1;
-	}
-	if (TRX.NOISE_BLANKER3_THRESHOLD > 20) {
-		TRX.NOISE_BLANKER3_THRESHOLD = 20;
 	}
 }
 
