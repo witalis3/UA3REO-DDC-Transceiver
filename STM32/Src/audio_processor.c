@@ -1771,7 +1771,7 @@ static void doRX_AGC(AUDIO_PROC_RX_NUM rx_id, uint16_t size, uint_fast8_t mode, 
 
 // impulse noise suppressor
 static void doRX_NoiseBlanker(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
-	if (!TRX.NOISE_BLANKER1 && !TRX.NOISE_BLANKER2) {
+	if (!TRX.NOISE_BLANKER1 && !TRX.NOISE_BLANKER2 && !TRX.NOISE_BLANKER3) {
 		return;
 	}
 
