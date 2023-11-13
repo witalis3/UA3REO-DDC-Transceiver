@@ -3315,8 +3315,8 @@ static void SYSMENU_HANDL_TX_CESSB(int8_t direction) {
 
 static void SYSMENU_HANDL_TX_CESSB_COMPRESS_DB(int8_t direction) {
 	TRX.TX_CESSB_COMPRESS_DB += direction * 0.1f;
-	if (TRX.TX_CESSB_COMPRESS_DB < 1.0f) {
-		TRX.TX_CESSB_COMPRESS_DB = 1.0f;
+	if (TRX.TX_CESSB_COMPRESS_DB < 0.1f) {
+		TRX.TX_CESSB_COMPRESS_DB = 0.1f;
 	}
 	if (TRX.TX_CESSB_COMPRESS_DB > 20.0f) {
 		TRX.TX_CESSB_COMPRESS_DB = 20.0f;
