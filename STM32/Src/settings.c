@@ -284,7 +284,6 @@ void LoadSettings(bool clear) {
 		TRX.NOISE_BLANKER2_THRESHOLD = 10;                             // threshold for noise blanker 2
 		TRX.NOISE_BLANKER3_THRESHOLD = 10;                             // threshold for noise blanker 3
 		TRX.TX_CESSB = true;                                           // Controlled-envelope single-sideband modulation
-		TRX.TX_CESSB_COMPRESS_DB = 1.0f;                               // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;                                     // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;                                       // AGC receive rate on CW
 		TRX.RX_AGC_Max_gain = 30;                                      // Maximum AGC gain
