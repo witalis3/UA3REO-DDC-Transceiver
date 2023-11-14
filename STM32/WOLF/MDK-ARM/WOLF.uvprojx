@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>WOLF\</OutputDirectory>
-          <OutputName>WOLF-ILI9481</OutputName>
+          <OutputName>WOLF-ILI9481-ST7796S</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
