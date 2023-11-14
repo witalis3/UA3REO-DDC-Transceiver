@@ -184,6 +184,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Attenuation, dB** - Current attenuation
 * **Auto Snap** - Automaticly track and snap to near signal frequency (CW mode)
 * **AutoGainer** - Automatic ATT / PREAMP control depending on the signal level on the ADC
+* **A/B Balance** - Channels balance in dual RX modes A+B and A&B
 * **CODEC Gain** - Adjusting AF gain in audio codec
 * **DNR xxx** - Digital squelch adjustment
 * **Squelch** - Enable SSB/AM/CW/FM Squelch
@@ -268,6 +269,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **FFT Automatic** - Automatic FFT scale
 * **FFT Averaging** - FFT burst averaging level
 * **FFT BW Style** - FFT bandwidth style: high opacity, low opacity, lines
+* **FFT BW Position** - Position of the receiving band on FFT/WTF (everywhere \ at the top \ at the top + lines \ top + bottom with time delay)
 * **FFT Background** - Gradient FFT background
 * **FFT Color** - FFT colors: 1(blue -> yellow -> red), 2(black -> yellow -> red), 3(black -> yellow -> green), 4(black -> red), 5(black -> green), 6(black -> blue), 7(black -> white)
 * **FFT Compressor** - Enable FFT peak comressor
@@ -379,6 +381,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Swap USB IQ** - Swap USB IQ output
 * **Settings reset** - Reset all settings to defaults
 * **TCXO Frequency, kHz** - Frequency adjustment of the reference oscillator
+* **VCXO Correction** - Correction for main generator frequency offset
 * **Touchpad flip** - Flip the touchpad operation horizontally/vertically
 * **Touchpad timeout** - Minimum time between taps (protection against false trigger), ms
 * **Touchpad click threshold** - Minimum time for triggering a short click, ms

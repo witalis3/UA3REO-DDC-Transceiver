@@ -945,6 +945,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 #if HRDW_HAS_DUAL_RX
 			SD_WRITE_SETT_LINE("TRX.Dual_RX", (uint64_t *)&TRX.Dual_RX, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Dual_RX_Type", (uint64_t *)&TRX.Dual_RX_Type, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.Dual_RX_AB_Balance", (uint64_t *)&TRX.Dual_RX_AB_Balance, SYSMENU_INT8);
 #endif
 			SD_WRITE_SETT_LINE("TRX.Encoder_Accelerate", (uint64_t *)&TRX.Encoder_Accelerate, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_STRING("TRX.CALLSIGN", TRX.CALLSIGN);
@@ -969,7 +970,8 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.IF_Gain", (uint64_t *)&TRX.IF_Gain, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.AGC_GAIN_TARGET2", (uint64_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_Gain_SSB_DB", (uint64_t *)&TRX.MIC_Gain_SSB_DB, SYSMENU_FLOAT32);
-			SD_WRITE_SETT_LINE("TRX.MIC_Gain_AMFM_DB", (uint64_t *)&TRX.MIC_Gain_AMFM_DB, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("TRX.MIC_Gain_AM_DB", (uint64_t *)&TRX.MIC_Gain_AM_DB, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("TRX.MIC_Gain_FM_DB", (uint64_t *)&TRX.MIC_Gain_FM_DB, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.MIC_Boost", (uint64_t *)&TRX.MIC_Boost, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.LINE_Volume", (uint64_t *)&TRX.LINE_Volume, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.CODEC_Out_Volume", (uint64_t *)&TRX.CODEC_Out_Volume, SYSMENU_UINT8);
@@ -1004,8 +1006,10 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.DNR2_SNR_THRESHOLD", (uint64_t *)&TRX.DNR2_SNR_THRESHOLD, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.DNR_AVERAGE", (uint64_t *)&TRX.DNR_AVERAGE, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.DNR_MINIMAL", (uint64_t *)&TRX.DNR_MINIMAL, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.NOISE_BLANKER_THRESHOLD", (uint64_t *)&TRX.NOISE_BLANKER_THRESHOLD, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.NOISE_BLANKER", (uint64_t *)&TRX.NOISE_BLANKER, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.NOISE_BLANKER1_THRESHOLD", (uint64_t *)&TRX.NOISE_BLANKER1_THRESHOLD, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.NOISE_BLANKER2_THRESHOLD", (uint64_t *)&TRX.NOISE_BLANKER2_THRESHOLD, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.NOISE_BLANKER1", (uint64_t *)&TRX.NOISE_BLANKER1, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.NOISE_BLANKER2", (uint64_t *)&TRX.NOISE_BLANKER2, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RX_AGC_SSB_speed", (uint64_t *)&TRX.RX_AGC_SSB_speed, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.RX_AGC_CW_speed", (uint64_t *)&TRX.RX_AGC_CW_speed, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.RX_AGC_Max_gain", (uint64_t *)&TRX.RX_AGC_Max_gain, SYSMENU_UINT8);
@@ -1028,7 +1032,6 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.AGC_Spectral", (uint64_t *)&TRX.AGC_Spectral, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.AGC_Threshold", (uint64_t *)&TRX.AGC_Threshold, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.TX_CESSB", (uint64_t *)&TRX.TX_CESSB, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.TX_CESSB_COMPRESS_DB", (uint64_t *)&TRX.TX_CESSB_COMPRESS_DB, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.VAD_THRESHOLD", (uint64_t *)&TRX.VAD_THRESHOLD, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VOX", (uint64_t *)&TRX.VOX, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VOX_TIMEOUT", (uint64_t *)&TRX.VOX_TIMEOUT, SYSMENU_UINT16);
@@ -1074,6 +1077,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.FFT_Height", (uint64_t *)&TRX.FFT_Height, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_Style", (uint64_t *)&TRX.FFT_Style, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_BW_Style", (uint64_t *)&TRX.FFT_BW_Style, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.FFT_BW_Position", (uint64_t *)&TRX.FFT_BW_Position, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_Color", (uint64_t *)&TRX.FFT_Color, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.WTF_Color", (uint64_t *)&TRX.WTF_Color, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_Compressor", (uint64_t *)&TRX.FFT_Compressor, SYSMENU_BOOLEAN);
@@ -1181,14 +1185,6 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].RepeaterMode, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SAMPLERATE", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE, SYSMENU_UINT8);
-				for (uint8_t a = 0; a < ANT_MAX_COUNT; a++) {
-					sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_ATU_I[%d]", i, a);
-					SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_I[a], SYSMENU_UINT8);
-					sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_ATU_C[%d]", i, a);
-					SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_C[a], SYSMENU_UINT8);
-					sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_ATU_T[%d]", i, a);
-					SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_T[a], SYSMENU_BOOLEAN);
-				}
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].VFO_A_CW_LPF_Filter", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].VFO_A_CW_LPF_Filter, SYSMENU_UINT16);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].VFO_A_SSB_LPF_RX_Filter", i);
@@ -1241,7 +1237,6 @@ static void SDCOMM_EXPORT_CALIBRATIONS_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_DEBOUNCE", (uint64_t *)&CALIBRATE.ENCODER_DEBOUNCE, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER2_DEBOUNCE", (uint64_t *)&CALIBRATE.ENCODER2_DEBOUNCE, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_SLOW_RATE", (uint64_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ON_FALLING", (uint64_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ACCELERATION", (uint64_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.RF_unit_type_2", (uint64_t *)&CALIBRATE.RF_unit_type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.TangentType", (uint64_t *)&CALIBRATE.TangentType, SYSMENU_UINT8);
@@ -1737,6 +1732,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.Dual_RX_Type") == 0) {
 		TRX.Dual_RX_Type = (DUAL_RX_TYPE)uintval;
 	}
+	if (strcmp(name, "TRX.Dual_RX_AB_Balance") == 0) {
+		TRX.Dual_RX_AB_Balance = (int8_t)intval;
+	}
 #endif
 	if (strcmp(name, "TRX.Encoder_Accelerate") == 0) {
 		TRX.Encoder_Accelerate = bval;
@@ -1820,8 +1818,11 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.MIC_Gain_SSB_DB") == 0) {
 		TRX.MIC_Gain_SSB_DB = floatval;
 	}
-	if (strcmp(name, "TRX.MIC_Gain_AMFM_DB") == 0) {
-		TRX.MIC_Gain_AMFM_DB = floatval;
+	if (strcmp(name, "TRX.MIC_Gain_AM_DB") == 0) {
+		TRX.MIC_Gain_AM_DB = floatval;
+	}
+	if (strcmp(name, "TRX.MIC_Gain_FM_DB") == 0) {
+		TRX.MIC_Gain_FM_DB = floatval;
 	}
 	if (strcmp(name, "TRX.MIC_Boost") == 0) {
 		TRX.MIC_Boost = bval;
@@ -1925,11 +1926,17 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.DNR_MINIMAL") == 0) {
 		TRX.DNR_MINIMAL = (uint8_t)uintval;
 	}
-	if (strcmp(name, "TRX.NOISE_BLANKER_THRESHOLD") == 0) {
-		TRX.NOISE_BLANKER_THRESHOLD = (uint8_t)uintval;
+	if (strcmp(name, "TRX.NOISE_BLANKER1_THRESHOLD") == 0) {
+		TRX.NOISE_BLANKER1_THRESHOLD = (uint8_t)uintval;
 	}
-	if (strcmp(name, "TRX.NOISE_BLANKER") == 0) {
-		TRX.NOISE_BLANKER = uintval;
+	if (strcmp(name, "TRX.NOISE_BLANKER2_THRESHOLD") == 0) {
+		TRX.NOISE_BLANKER2_THRESHOLD = (uint8_t)uintval;
+	}
+	if (strcmp(name, "TRX.NOISE_BLANKER1") == 0) {
+		TRX.NOISE_BLANKER1 = bval;
+	}
+	if (strcmp(name, "TRX.NOISE_BLANKER2") == 0) {
+		TRX.NOISE_BLANKER2 = bval;
 	}
 	if (strcmp(name, "TRX.RX_AGC_SSB_speed") == 0) {
 		TRX.RX_AGC_SSB_speed = (uint8_t)uintval;
@@ -1996,9 +2003,6 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.TX_CESSB") == 0) {
 		TRX.TX_CESSB = bval;
-	}
-	if (strcmp(name, "TRX.TX_CESSB_COMPRESS_DB") == 0) {
-		TRX.TX_CESSB_COMPRESS_DB = floatval;
 	}
 	if (strcmp(name, "TRX.VAD_THRESHOLD") == 0) {
 		TRX.VAD_THRESHOLD = (uint8_t)uintval;
@@ -2180,6 +2184,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.FFT_BW_Style") == 0) {
 		TRX.FFT_BW_Style = (uint8_t)uintval;
+	}
+	if (strcmp(name, "TRX.FFT_BW_Position") == 0) {
+		TRX.FFT_BW_Position = (uint8_t)uintval;
 	}
 	if (strcmp(name, "TRX.FFT_Color") == 0) {
 		TRX.FFT_Color = (uint8_t)uintval;
@@ -2423,9 +2430,6 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "CALIBRATE.ENCODER_SLOW_RATE") == 0) {
 		CALIBRATE.ENCODER_SLOW_RATE = (uint8_t)uintval;
-	}
-	if (strcmp(name, "CALIBRATE.ENCODER_ON_FALLING") == 0) {
-		CALIBRATE.ENCODER_ON_FALLING = bval;
 	}
 	if (strcmp(name, "CALIBRATE.ENCODER_ACCELERATION") == 0) {
 		CALIBRATE.ENCODER_ACCELERATION = (uint8_t)uintval;
@@ -3008,21 +3012,6 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		if (strcmp(name, buff) == 0) {
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = (uint8_t)uintval;
 		}
-
-		for (uint8_t a = 0; a < ANT_MAX_COUNT; a++) {
-			sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_ATU_I[%d]", i, a);
-			if (strcmp(name, buff) == 0) {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_I[a] = (uint8_t)uintval;
-			}
-			sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_ATU_C[%d]", i, a);
-			if (strcmp(name, buff) == 0) {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_C[a] = (uint8_t)uintval;
-			}
-			sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ANT_ATU_T[%d]", i, a);
-			if (strcmp(name, buff) == 0) {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_T[a] = bval;
-			}
-		}
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].VFO_A_CW_LPF_Filter", i);
 		if (strcmp(name, buff) == 0) {
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_CW_LPF_Filter = uintval;
@@ -3067,7 +3056,8 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		if (strcmp(name, buff) == 0) {
 			CALIBRATE.MEMORY_CHANNELS[i].mode = (uint8_t)uintval;
 		}
-		if (strcmp(name, "TRX.MEMORY_CHANNELS[%d].name") == 0) {
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].name", i);
+		if (strcmp(name, buff) == 0) {
 			dma_memset(CALIBRATE.MEMORY_CHANNELS[i].name, 0x00, sizeof(CALIBRATE.MEMORY_CHANNELS[i].name));
 			uint32_t lens = strlen(value);
 			if (lens > sizeof(CALIBRATE.MEMORY_CHANNELS[i].name) - 1) {
@@ -3081,9 +3071,6 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (band >= 0) {
 		TRX.ANT_RX = TRX.BANDS_SAVED_SETTINGS[band].ANT_RX;
 		TRX.ANT_TX = TRX.BANDS_SAVED_SETTINGS[band].ANT_TX;
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX.ANT_RX];
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX.ANT_RX];
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX.ANT_RX];
 	}
 }
 

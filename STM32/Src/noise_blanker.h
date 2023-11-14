@@ -9,18 +9,35 @@
 
 #define NB_BLOCK_SIZE (AUDIO_BUFFER_HALF_SIZE / 3) // size of the NB filter processing block
 
-#define NB_impulse_length 11                // has to be odd !
-#define NB_PL ((NB_impulse_length - 1) / 2) // has to be (impulse_length-1) / 2
-#define NB_order 10                         // lpc's order
-#define NB_FIR_SIZE 64                      // filter buffer size
-#define NB_max_inpulse_count 10             // maximum impulses in the block for suppression
+// NB1
+#define NB1_DELAY_STAGE 2 // buffer blocks count
+#define NB1_DELAY_BUFFER_SIZE (NB_BLOCK_SIZE * NB1_DELAY_STAGE)
+#define NB1_SIGNAL_SMOOTH 0.08f   // reaction filter
+#define NB1_EDGES_SMOOTH 0.5f     // edges smooth filter
+#define NB1_DELAY_BUFFER_ITEMS 30 // delay zero samples
+
+// NB2
+#define NB2_c1 0.92f           // averaging coefficients
+#define NB2_c2 (1.0f - NB2_c1) // averaging coefficients
+#define NB2_c3 0.999f          // averaging coefficients
+#define NB2_c4 (1.0f - NB2_c3) // averaging coefficients
+#define NB2_TAPS 32            // filter order
+#define NB2_STEP 0.05f         // LMS algorithm step
 
 typedef struct {
-	uint16_t NR_InputBuffer_index;
-	uint16_t NR_OutputBuffer_index;
-	float32_t NR_InputBuffer[NB_FIR_SIZE];
-	float32_t NR_OutputBuffer[NB_FIR_SIZE];
-	float32_t NR_Working_buffer[NB_FIR_SIZE + 2 * NB_order + 2 * NB_PL];
+	// NB1
+	float32_t NB1_delay_buf[NB1_DELAY_BUFFER_SIZE];
+	int32_t NB1_delbuf_inptr;
+	int32_t NB1_delbuf_outptr;
+	float32_t NB1_agc;
+	uint32_t NB1_delay;
+	float32_t NB1_edge_strength;
+	// NB2
+	float32_t NB2_d_avgmag_nb2;
+	arm_lms_norm_instance_f32 NB2_lms2_Norm_instance;
+	float32_t NB2_lms2_stateF32[NB2_TAPS + 1];
+	float32_t NB2_lms2_normCoeff_f32[NB2_TAPS];
+	float32_t NB2_lms2_err;
 } NB_Instance;
 
 // Public methods

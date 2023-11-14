@@ -1,4 +1,5 @@
 #include "settings.h"
+#include "atu.h"
 #include "audio_filters.h"
 #include "bands.h"
 #include "fpga.h"
@@ -14,23 +15,22 @@
 
 // W25Q16
 IRAM2 static uint8_t Write_Enable = W25Q16_COMMAND_Write_Enable;
-IRAM2 static uint8_t Sector_Erase = W25Q16_COMMAND_Sector_Erase;
-IRAM2 static uint8_t Page_Program = W25Q16_COMMAND_Page_Program;
-IRAM2 static uint8_t Read_Data = W25Q16_COMMAND_Read_Data;
 IRAM2 static uint8_t Power_Down = W25Q16_COMMAND_Power_Down;
 IRAM2 static uint8_t Get_Status = W25Q16_COMMAND_GetStatus;
 IRAM2 static uint8_t Power_Up = W25Q16_COMMAND_Power_Up;
 
-IRAM2 static uint8_t Address[3] = {0x00};
+IRAM2 static uint8_t CmdAddress[4];
 IRAM2_ON_F407 struct TRX_SETTINGS TRX;
 IRAM2_ON_F407 struct TRX_CALIBRATE CALIBRATE = {0};
 IRAM2_ON_F407 struct TRX_WIFI WIFI = {0};
 bool EEPROM_Enabled = true;
 
-#define MAX_CLONE_SIZE sizeof(CALIBRATE) > sizeof(TRX) ? sizeof(CALIBRATE) : sizeof(TRX)
+#define MAX_CLONE_SIZE_SETTINGS sizeof(CALIBRATE) > sizeof(TRX) ? sizeof(CALIBRATE) : sizeof(TRX)
+#define MAX_CLONE_SIZE sizeof(ATU_MEMORY_TYPE) > MAX_CLONE_SIZE_SETTINGS ? sizeof(ATU_MEMORY_TYPE) : MAX_CLONE_SIZE_SETTINGS
 
 static_assert(sizeof(TRX) < W25Q16_SECTOR_SIZE, "TRX Data structure doesn't match page size");
 static_assert(sizeof(CALIBRATE) < W25Q16_SECTOR_SIZE, "CALIBRATE Data structure doesn't match page size");
+static_assert(sizeof(ATU_MEMORY_TYPE) < W25Q16_SECTOR_SIZE, "ATU_MEMORY_TYPE Data structure doesn't match page size");
 
 IRAM2 static uint8_t verify_clone[MAX_CLONE_SIZE] = {0};
 
@@ -41,6 +41,7 @@ volatile bool EEPROM_Busy = false;
 VFO *CurrentVFO = &TRX.VFO_A;
 VFO *SecondaryVFO = &TRX.VFO_B;
 
+static void ResetATUSettings(void);
 static void LoadSettingsFromEEPROM(void);
 static bool EEPROM_Sector_Erase(uint8_t sector, bool force);
 static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bool verify, bool force);
@@ -179,7 +180,7 @@ void LoadSettings(bool clear) {
 		TRX.FRQ_ENC_STEP = 25000;           // frequency tuning step by main add. encoder
 		TRX.FRQ_ENC_FAST_STEP = 50000;      // frequency tuning step by main add. encoder in FAST mode
 		TRX.FRQ_ENC_WFM_STEP_kHz = 20;      // frequency WFM tuning step by the main encoder
-		TRX.FRQ_ENC_FM_STEP_kHz = 5;        // frequency FM tuning step by the main encoder
+		TRX.FRQ_ENC_FM_STEP_kHz = 1;        // frequency FM tuning step by the main encoder
 		TRX.FRQ_ENC_AM_STEP_kHz = 1;        // frequency AM tuning step by the main encoder
 		TRX.NOTCH_STEP_Hz = 50;             // Manual NOTCH tuning step
 		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
@@ -195,8 +196,9 @@ void LoadSettings(bool clear) {
 		TRX.Locked = false;        // Lock control
 		TRX.SPLIT_Enabled = false; // Split frequency mode (receive one VFO, transmit another)
 #if HRDW_HAS_DUAL_RX
-		TRX.Dual_RX = false;             // Dual RX feature
-		TRX.Dual_RX_Type = VFO_A_PLUS_B; // dual receiver mode
+		TRX.Dual_RX = false;            // Dual RX feature
+		TRX.Dual_RX_Type = VFO_A_AND_B; // dual receiver mode
+		TRX.Dual_RX_AB_Balance = 0;     // A/B Balance
 #endif
 		TRX.Encoder_Accelerate = true;             // Accelerate Encoder on fast rate
 		strcpy(TRX.CALLSIGN, "HamRad");            // Callsign
@@ -234,7 +236,8 @@ void LoadSettings(bool clear) {
 		TRX.IF_Gain = 20;                   // IF gain, dB (before all processing and AGC)
 		TRX.AGC_GAIN_TARGET = -30;          // Maximum (target) AGC gain
 		TRX.MIC_Gain_SSB_DB = 9.0f;         // Microphone gain, dB SSB modes
-		TRX.MIC_Gain_AMFM_DB = 9.0f;        // Microphone gain, dB AM/FM modes
+		TRX.MIC_Gain_AM_DB = 9.0f;          // Microphone gain, dB AM mode
+		TRX.MIC_Gain_FM_DB = 9.0f;          // Microphone gain, dB FM mode
 		TRX.MIC_Boost = false;              // +20dB mic amplifier
 		TRX.LINE_Volume = 23;               // Line input level
 		TRX.CODEC_Out_Volume = 121;         // Codec headphone level
@@ -269,15 +272,16 @@ void LoadSettings(bool clear) {
 		TRX.DNR2_SNR_THRESHOLD = 35;        // Digital noise reduction 2 level
 		TRX.DNR_AVERAGE = 2;                // DNR averaging when looking for average magnitude
 		TRX.DNR_MINIMAL = 99;               // DNR averaging when searching for minimum magnitude
-		TRX.NOISE_BLANKER = false;          // suppressor of short impulse noise NOISE BLANKER
+		TRX.NOISE_BLANKER1 = false;         // suppressor of short impulse noise NOISE BLANKER 1
+		TRX.NOISE_BLANKER2 = false;         // suppressor of short impulse noise NOISE BLANKER 2
 #ifdef STM32F407xx
 		TRX.AGC_Spectral = false; // Spectral AGC mode
 #else
 		TRX.AGC_Spectral = true; // Spectral AGC mode
 #endif
-		TRX.NOISE_BLANKER_THRESHOLD = 10;                              // threshold for noise blanker
+		TRX.NOISE_BLANKER1_THRESHOLD = 6;                              // threshold for noise blanker 1
+		TRX.NOISE_BLANKER2_THRESHOLD = 16;                             // threshold for noise blanker 2
 		TRX.TX_CESSB = true;                                           // Controlled-envelope single-sideband modulation
-		TRX.TX_CESSB_COMPRESS_DB = 1.0f;                               // CSSB additional gain (compress)
 		TRX.RX_AGC_SSB_speed = 10;                                     // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;                                       // AGC receive rate on CW
 		TRX.RX_AGC_Max_gain = 30;                                      // Maximum AGC gain
@@ -369,6 +373,7 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Window = 1;        // FFT Window
 		TRX.FFT_Style = 5;         // FFT style
 		TRX.FFT_BW_Style = 2;      // FFT BW style
+		TRX.FFT_BW_Position = 0;   // FFT BW position
 		TRX.FFT_Color = 0;         // FFT display color
 		TRX.WTF_Color = 1;         // WTF display color
 		TRX.FFT_Compressor = true; // Compress FFT Peaks
@@ -470,11 +475,6 @@ void LoadSettings(bool clear) {
 			TRX.BANDS_SAVED_SETTINGS[i].RepeaterMode = false;
 			TRX.BANDS_SAVED_SETTINGS[i].Fast = TRX.Fast;
 			TRX.BANDS_SAVED_SETTINGS[i].SAMPLERATE = TRX.SAMPLERATE_MAIN;
-			for (uint8_t a = 0; a < ANT_MAX_COUNT; a++) {
-				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_I[a] = TRX.ATU_I;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_C[a] = TRX.ATU_C;
-				TRX.BANDS_SAVED_SETTINGS[i].ANT_ATU_T[a] = TRX.ATU_T;
-			}
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_CW_LPF_Filter = TRX.VFO_A.CW_LPF_Filter;
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_SSB_LPF_RX_Filter = TRX.VFO_A.SSB_LPF_RX_Filter;
 			TRX.BANDS_SAVED_SETTINGS[i].VFO_A_AM_LPF_RX_Filter = TRX.VFO_A.AM_LPF_RX_Filter;
@@ -574,9 +574,8 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER_INVERT = false;      // invert left-right rotation of the main encoder
 		CALIBRATE.ENCODER2_INVERT = false;     // invert left-right rotation of the optional encoder
 		CALIBRATE.ENCODER_DEBOUNCE = 0;        // time to eliminate contact bounce at the main encoder, ms
-		CALIBRATE.ENCODER2_DEBOUNCE = 10;      // time to eliminate contact bounce at the additional encoder, ms
+		CALIBRATE.ENCODER2_DEBOUNCE = 5;       // time to eliminate contact bounce at the additional encoder, ms
 		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
-		CALIBRATE.ENCODER_ON_FALLING = true;   // encoder only triggers when level A falls
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
 		CALIBRATE.RF_unit_type = RF_UNIT_NONE; // RF-unit type
@@ -622,7 +621,6 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.PWR_VLT_Calibration = 1000.0f;  // VLT meter calibration
 #if defined(FRONTPANEL_X1)
 		CALIBRATE.ENCODER_INVERT = true;
-		CALIBRATE.ENCODER_ON_FALLING = true;
 		CALIBRATE.ENCODER_SLOW_RATE = 10;
 		CALIBRATE.RFU_HPF_START = 32000 * 1000; // HPF
 		CALIBRATE.RFU_BPF_0_START = 1500 * 1000;
@@ -1099,6 +1097,14 @@ void LoadCalibration(bool clear) {
 
 	// load WiFi settings after calibrations
 	LoadWiFiSettings(false);
+
+	// reset ATU on Hard Reset
+	if (clear) {
+		ResetATUSettings();
+	}
+
+	// load ATU
+	ATU_Load_ANT_Banks();
 }
 
 void LoadWiFiSettings(bool clear) {
@@ -1321,6 +1327,56 @@ bool SaveDPDSettings(uint8_t *in, uint32_t size, uint32_t sector_offset) {
 	return true;
 }
 
+void ResetATUSettings(void) {
+	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_1, false);
+	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_2, false);
+	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_3, false);
+	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_4, false);
+	println("[OK] Erase ATU EEPROM settings");
+}
+
+bool LoadATUSettings(uint8_t *out, uint32_t size, uint32_t sector) {
+	EEPROM_PowerUp();
+	println("Load ATU memory ", sector);
+
+	uint8_t tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Read_Data(out, size, sector, true, false)) {
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES) {
+		println("[ERR] Load EEPROM ATU multiple errors");
+		return false;
+	}
+
+	EEPROM_PowerDown();
+	return true;
+}
+
+bool SaveATUSettings(uint8_t *in, uint32_t size, uint32_t sector) {
+	EEPROM_PowerUp();
+	println("Save ATU memory ", sector);
+
+	uint8_t tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Sector_Erase(sector, false)) {
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES) {
+		println("[ERR] Erase EEPROM ATU multiple errors");
+		return false;
+	}
+
+	tryes = 0;
+	while (tryes < EEPROM_REPEAT_TRYES && !EEPROM_Write_Data(in, size, sector, true, false)) {
+		tryes++;
+	}
+	if (tryes >= EEPROM_REPEAT_TRYES) {
+		println("[ERR] Write EEPROM ATU multiple errors");
+		return false;
+	}
+	EEPROM_PowerDown();
+	return true;
+}
+
 static bool EEPROM_Sector_Erase(uint8_t sector, bool force) {
 	if (!force && !EEPROM_Enabled) {
 		return true;
@@ -1332,13 +1388,13 @@ static bool EEPROM_Sector_Erase(uint8_t sector, bool force) {
 	}
 
 	uint32_t BigAddress = sector * W25Q16_SECTOR_SIZE;
-	Address[2] = (BigAddress >> 16) & 0xFF;
-	Address[1] = (BigAddress >> 8) & 0xFF;
-	Address[0] = BigAddress & 0xFF;
+	CmdAddress[0] = W25Q16_COMMAND_Sector_Erase;
+	CmdAddress[1] = (BigAddress >> 16) & 0xFF;
+	CmdAddress[2] = (BigAddress >> 8) & 0xFF;
+	CmdAddress[3] = BigAddress & 0xFF;
 
 	HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false); // Write Enable Command
-	HRDW_EEPROM_SPI(&Sector_Erase, NULL, 1, true);  // Erase Command
-	HRDW_EEPROM_SPI(Address, NULL, 3, false);       // Write Address ( The first address of flash module is 0x00000000 )
+	HRDW_EEPROM_SPI(CmdAddress, NULL, 4, false);    // Erase Command + Write Address ( The first address of flash module is 0x00000000 )
 	EEPROM_WaitWrite();
 
 	HRDW_SPI_Locked = false;
@@ -1363,16 +1419,19 @@ static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bo
 
 	for (uint16_t page = 0; page <= (size / W25Q16_PAGE_SIZE); page++) {
 		uint32_t BigAddress = (page * W25Q16_PAGE_SIZE) + (sector * W25Q16_SECTOR_SIZE);
-		Address[2] = (BigAddress >> 16) & 0xFF;
-		Address[1] = (BigAddress >> 8) & 0xFF;
-		Address[0] = BigAddress & 0xFF;
+		CmdAddress[0] = W25Q16_COMMAND_Page_Program;
+		CmdAddress[1] = (BigAddress >> 16) & 0xFF;
+		CmdAddress[2] = (BigAddress >> 8) & 0xFF;
+		CmdAddress[3] = BigAddress & 0xFF;
 		uint16_t bsize = size - W25Q16_PAGE_SIZE * page;
 		if (bsize > W25Q16_PAGE_SIZE) {
 			bsize = W25Q16_PAGE_SIZE;
 		}
+		if (bsize == 0) {
+			continue;
+		}
 		HRDW_EEPROM_SPI(&Write_Enable, NULL, 1, false);                                     // Write Enable Command
-		HRDW_EEPROM_SPI(&Page_Program, NULL, 1, true);                                      // Write Command
-		HRDW_EEPROM_SPI(Address, NULL, 3, true);                                            // Write Address ( The first address of flash module is 0x00000000 )
+		HRDW_EEPROM_SPI(CmdAddress, NULL, 4, true);                                         // Write Command + Write Address ( The first address of flash module is 0x00000000 )
 		HRDW_EEPROM_SPI((uint8_t *)(Buffer + W25Q16_PAGE_SIZE * page), NULL, bsize, false); // Write Data
 		EEPROM_WaitWrite();
 	}
@@ -1429,14 +1488,15 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 	Aligned_CleanDCache_by_Addr((uint32_t *)Buffer, size);
 
 	uint32_t BigAddress = sector * W25Q16_SECTOR_SIZE;
-	Address[2] = (BigAddress >> 16) & 0xFF;
-	Address[1] = (BigAddress >> 8) & 0xFF;
-	Address[0] = BigAddress & 0xFF;
+	CmdAddress[0] = W25Q16_COMMAND_Read_Data;
+	CmdAddress[1] = (BigAddress >> 16) & 0xFF;
+	CmdAddress[2] = (BigAddress >> 8) & 0xFF;
+	CmdAddress[3] = BigAddress & 0xFF;
 
 	bool read_ok = false;
 	int8_t tryes = 0;
 	while (!read_ok && tryes < 5) {
-		bool res = HRDW_EEPROM_SPI(&Read_Data, NULL, 1, true); // Read Command
+		bool res = HRDW_EEPROM_SPI(CmdAddress, NULL, 4, true); // Read Command + Write Address
 		if (!res) {
 			EEPROM_Enabled = false;
 			println("[ERR] EEPROM not found...");
@@ -1447,8 +1507,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 			return true;
 		}
 
-		HRDW_EEPROM_SPI(Address, NULL, 3, true);                           // Write Address
-		read_ok = HRDW_EEPROM_SPI(NULL, (uint8_t *)(Buffer), size, false); // Read
+		read_ok = HRDW_EEPROM_SPI(NULL, (uint8_t *)(Buffer), size, false); // Read data
 		tryes++;
 	}
 
@@ -1459,11 +1518,12 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 		Aligned_CleanDCache_by_Addr((uint32_t *)verify_clone, size);
 
 		BigAddress = sector * W25Q16_SECTOR_SIZE;
-		Address[2] = (BigAddress >> 16) & 0xFF;
-		Address[1] = (BigAddress >> 8) & 0xFF;
-		Address[0] = BigAddress & 0xFF;
+		CmdAddress[0] = W25Q16_COMMAND_Read_Data;
+		CmdAddress[1] = (BigAddress >> 16) & 0xFF;
+		CmdAddress[2] = (BigAddress >> 8) & 0xFF;
+		CmdAddress[3] = BigAddress & 0xFF;
 
-		bool res = HRDW_EEPROM_SPI(&Read_Data, NULL, 1, true); // Read Command
+		bool res = HRDW_EEPROM_SPI(CmdAddress, NULL, 4, true); // Read Command + Write Address
 		if (!res) {
 			EEPROM_Enabled = false;
 			println("[ERR] EEPROM not found...");
@@ -1474,8 +1534,7 @@ static bool EEPROM_Read_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, boo
 			return true;
 		}
 
-		HRDW_EEPROM_SPI(Address, NULL, 3, true);                     // Write Address
-		HRDW_EEPROM_SPI(NULL, (uint8_t *)verify_clone, size, false); // Read
+		HRDW_EEPROM_SPI(NULL, (uint8_t *)verify_clone, size, false); // Read data
 
 		Aligned_CleanInvalidateDCache_by_Addr((uint32_t *)verify_clone, size);
 

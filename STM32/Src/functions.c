@@ -162,10 +162,10 @@ uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num, bool invert_iq_b
 		}
 	}
 	if (rx_num == 1) {
-		TRX_RX1_IQ_swap = invert_iq_by_mixer ? !inverted : invert_iq_by_mixer;
+		TRX_RX1_IQ_swap = invert_iq_by_mixer ? !inverted : inverted;
 	}
 	if (rx_num == 2) {
-		TRX_RX2_IQ_swap = invert_iq_by_mixer ? !inverted : invert_iq_by_mixer;
+		TRX_RX2_IQ_swap = invert_iq_by_mixer ? !inverted : inverted;
 	}
 	float64_t res = round(((float64_t)_freq / (float64_t)ADC_CLOCK) * (float64_t)4294967296); // freq in Hz/oscil in Hz*2^bits (32 now);
 	return (uint32_t)res;

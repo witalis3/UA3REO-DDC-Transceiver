@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "8.5.1" // current STM32 version
+#define STM32_VERSION_STR "8.6.0" // current STM32 version
 
 #if defined(FRONTPANEL_MINI)
 #define FPGA_VERSION_STR "6.8.0" // needed FPGA version Wolf-Mini
@@ -18,8 +18,8 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 124        // Settings config version
-#define CALIB_VERSION 82        // Calibration config version
+#define SETT_VERSION 134        // Settings config version
+#define CALIB_VERSION 84        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -36,6 +36,7 @@
 #define USB_RESTART_TIMEOUT 5000             // time after which USB restart occurs if there are no packets
 #define SNTP_SYNC_INTERVAL (60 * 2)          // Time synchronization interval via NTP, sec
 #define SCANNER_NOSIGNAL_TIME 50             // time to continue sweeping if signal too low
+#define SCANNER_NOSIGNAL_TIME_MEM 500        // time to continue sweeping if signal too low (MEM channels scan mode)
 #define SCANNER_SIGNAL_TIME_FM 5000          // time to continue sweeping if signal founded for FM
 #define SCANNER_SIGNAL_TIME_OTHER 1000       // time to continue sweeping if signal founded for SSB
 #define SCANNER_FREQ_STEP_WFM 100000         // step for freq scanner for WFM
@@ -71,6 +72,10 @@
 #define ALLQSO_TOKEN_SIZE 16
 #define MAX_CHANNEL_MEMORY_NAME_LENGTH 10
 
+#define ATU_MAX_FREQ_KHZ 60000
+#define ATU_MEM_STEP_KHZ 50
+#define ATU_MEM_COUNT (ATU_MAX_FREQ_KHZ / ATU_MEM_STEP_KHZ) // 1200 positions * 3byte = 3600 bytes for each ANT
+
 #define W25Q16_COMMAND_Write_Disable 0x04
 #define W25Q16_COMMAND_Write_Enable 0x06
 #define W25Q16_COMMAND_Erase_Chip 0xC7
@@ -89,14 +94,21 @@
 #define EEPROM_SECTOR_CALIBRATION 0
 #define EEPROM_SECTOR_SETTINGS 4
 #define EEPROM_SECTOR_WIFI 8
-#define EEPROM_SECTOR_DPD 12
+#define EEPROM_SECTOR_ATU_1 10
+#define EEPROM_SECTOR_ATU_2 11
+#define EEPROM_SECTOR_ATU_3 12
+#define EEPROM_SECTOR_ATU_4 13
+#define EEPROM_SECTOR_DPD 16   // + BANDS_COUNT sectors
 #define EEPROM_REPEAT_TRYES 10 // command tryes
 
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
 #define MEMORY_CHANNELS_COUNT 0
+#elif defined(LCD_RA8875)
+#define MEMORY_CHANNELS_COUNT 35
 #else
 #define MEMORY_CHANNELS_COUNT 20
 #endif
+
 #define BANDS_MEMORIES_COUNT 3
 #define ANT_MAX_COUNT 4
 
@@ -256,6 +268,13 @@ static char ota_config_lcd[] = "HX8357C-SLOW";
 
 #if defined(LCD_ILI9486)
 static char ota_config_lcd[] = "ILI9486";
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
+#endif
+#endif
+
+#if defined(LCD_ST7796S)
+static char ota_config_lcd[] = "ST7796S";
 #ifdef STM32H743xx
 #define FT8_SUPPORT true
 #endif
@@ -462,8 +481,6 @@ typedef struct {
 	uint8_t ANT_TX;
 	uint8_t Mode;
 	uint8_t DNR_Type;
-	uint8_t ANT_ATU_I[ANT_MAX_COUNT];
-	uint8_t ANT_ATU_C[ANT_MAX_COUNT];
 	uint8_t IF_Gain;
 	uint8_t RF_Gain;
 	uint8_t RF_Gain_By_Mode_CW;
@@ -479,7 +496,6 @@ typedef struct {
 	bool RepeaterMode;
 	bool SQL;
 	bool Fast;
-	bool ANT_ATU_T[ANT_MAX_COUNT];
 	TRX_IQ_SAMPLERATE_VALUE SAMPLERATE;
 } BAND_SAVED_SETTINGS_TYPE;
 
@@ -534,8 +550,8 @@ extern struct TRX_SETTINGS {
 	float32_t NOTCH_STEP_Hz;
 	float32_t CTCSS_Freq;
 	float32_t MIC_Gain_SSB_DB;
-	float32_t MIC_Gain_AMFM_DB;
-	float32_t TX_CESSB_COMPRESS_DB;
+	float32_t MIC_Gain_AM_DB;
+	float32_t MIC_Gain_FM_DB;
 	float32_t CW_DotToDashRate;
 
 	uint32_t FRQ_STEP;
@@ -611,6 +627,7 @@ extern struct TRX_SETTINGS {
 	int8_t AGC_GAIN_TARGET;
 	int8_t VOX_THRESHOLD;
 	int8_t FFT_FreqGrid;
+	int8_t Dual_RX_AB_Balance;
 	int8_t FM_SQL_threshold_dBm_shadow;
 
 	uint8_t ATT_STEP;
@@ -634,7 +651,8 @@ extern struct TRX_SETTINGS {
 	uint8_t DNR_AVERAGE;
 	uint8_t DNR_MINIMAL;
 	uint8_t VAD_THRESHOLD;
-	uint8_t NOISE_BLANKER_THRESHOLD;
+	uint8_t NOISE_BLANKER1_THRESHOLD;
+	uint8_t NOISE_BLANKER2_THRESHOLD;
 	uint8_t RX_AGC_SSB_speed;
 	uint8_t RX_AGC_CW_speed;
 	uint8_t RX_AGC_Max_gain;
@@ -661,6 +679,7 @@ extern struct TRX_SETTINGS {
 	uint8_t FFT_Height;
 	uint8_t FFT_Style;
 	uint8_t FFT_BW_Style;
+	uint8_t FFT_BW_Position;
 	uint8_t FFT_Color;
 	uint8_t WTF_Color;
 	uint8_t FFT_3D;
@@ -724,7 +743,8 @@ extern struct TRX_SETTINGS {
 	bool AFAmp_Mute;
 	bool MIC_Boost;
 	bool BluetoothAudio_Enabled;
-	bool NOISE_BLANKER;
+	bool NOISE_BLANKER1;
+	bool NOISE_BLANKER2;
 	bool Beeper;
 	bool FM_Stereo;
 	bool AGC_Threshold;
@@ -941,7 +961,6 @@ extern struct TRX_CALIBRATE {
 	COM_LINE_MODE COM_DEBUG_RTS_Mode;
 	bool ENCODER_INVERT;
 	bool ENCODER2_INVERT;
-	bool ENCODER_ON_FALLING;
 	bool NOTX_NOTHAM;
 	bool NOTX_2200m;
 	bool NOTX_160m;
@@ -1024,5 +1043,7 @@ extern void BKPSRAM_Disable(void);
 extern void RTC_Calibration(void);
 extern bool LoadDPDSettings(uint8_t *out, uint32_t size, uint32_t sector_offset);
 extern bool SaveDPDSettings(uint8_t *in, uint32_t size, uint32_t sector_offset);
+extern bool LoadATUSettings(uint8_t *out, uint32_t size, uint32_t sector);
+extern bool SaveATUSettings(uint8_t *in, uint32_t size, uint32_t sector);
 
 #endif

@@ -36,7 +36,8 @@ static uint8_t LastDNR = 0;
 static bool LastRIT = false;
 static bool LastXIT = false;
 static bool LastSPLIT = false;
-static bool LastNB = false;
+static bool LastNB1 = false;
+static bool LastNB2 = false;
 static bool LastMute = false;
 
 // Public variables
@@ -71,7 +72,8 @@ void WSPR_Start(void) {
 	LastRIT = TRX.RIT_Enabled;
 	LastXIT = TRX.XIT_Enabled;
 	LastSPLIT = TRX.SPLIT_Enabled;
-	LastNB = TRX.NOISE_BLANKER;
+	LastNB1 = TRX.NOISE_BLANKER1;
+	LastNB2 = TRX.NOISE_BLANKER2;
 	LastMute = TRX.Mute;
 
 	// prepare trx
@@ -123,7 +125,8 @@ void WSPR_Stop(void) {
 	TRX.RIT_Enabled = LastRIT;
 	TRX.XIT_Enabled = LastXIT;
 	TRX.SPLIT_Enabled = LastSPLIT;
-	TRX.NOISE_BLANKER = LastNB;
+	TRX.NOISE_BLANKER1 = LastNB1;
+	TRX.NOISE_BLANKER2 = LastNB2;
 	TRX.Mute = LastMute;
 	LCD_UpdateQuery.StatusInfoBarRedraw = true;
 }

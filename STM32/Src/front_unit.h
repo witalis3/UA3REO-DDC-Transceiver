@@ -51,20 +51,21 @@ extern const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNC
 extern bool FRONTPanel_MCP3008_1_Enabled;
 extern bool FRONTPanel_MCP3008_2_Enabled;
 extern bool FRONTPanel_MCP3008_3_Enabled;
+extern int8_t FRONTPANEL_ProcessEncoder1;
+extern int8_t FRONTPANEL_ProcessEncoder2;
 
-extern void FRONTPANEL_ENCODER_checkRotate(void);
 extern void FRONTPANEL_Init(void);
 extern void FRONTPANEL_Process(void);
 extern void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_value);
+extern void FRONTPANEL_ENCODER_Rotated(float32_t direction);
 extern void FRONTPANEL_ENC2SW_validate();
-extern void FRONTPANEL_ENCODER2_checkRotate(void);
 extern void FRONTPANEL_check_ENC2SW(bool state);
 #ifdef HRDW_HAS_ENC3
-extern void FRONTPANEL_ENCODER3_checkRotate(void);
+extern int8_t FRONTPANEL_ProcessEncoder3;
 extern void FRONTPANEL_check_ENC3SW(bool state);
 #endif
 #ifdef HRDW_HAS_ENC4
-extern void FRONTPANEL_ENCODER4_checkRotate(void);
+extern int8_t FRONTPANEL_ProcessEncoder4;
 extern void FRONTPANEL_check_ENC4SW(bool state);
 #endif
 

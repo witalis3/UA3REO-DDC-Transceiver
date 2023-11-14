@@ -13,6 +13,13 @@ static bool ATU_MinSWR_T = false;
 static uint8_t ATU_Stage = 0;
 bool ATU_TunePowerStabilized = false;
 
+#if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
+SRAM4 ATU_MEMORY_TYPE ATU_MEMORY_1 = {.loaded_ant = 99, .saved = true};
+SRAM4 ATU_MEMORY_TYPE ATU_MEMORY_2 = {.loaded_ant = 99, .saved = true};
+SRAM4 ATU_MEMORY_TYPE ATU_MEMORY_3 = {.loaded_ant = 99, .saved = true};
+SRAM4 ATU_MEMORY_TYPE ATU_MEMORY_4 = {.loaded_ant = 99, .saved = true};
+#endif
+
 void ATU_Invalidate(void) {
 	ATU_Finished = false;
 	ATU_InProcess = false;
@@ -51,12 +58,7 @@ void ATU_Process(void) {
 	}
 
 	if (!ATU_BestValsProbed) {
-		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-		if (band >= 0) {
-			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-		}
+		ATU_Load_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq);
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 
@@ -92,12 +94,8 @@ void ATU_Process(void) {
 			delay_stages_count = 0;
 			BUTTONHANDLER_TUNE(0);
 
-			int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-			if (band >= 0) {
-				TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_I;
-				TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_C;
-				TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_T;
-			}
+			ATU_Save_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq, TRX.ATU_I, TRX.ATU_C, TRX.ATU_T);
+			ATU_Flush_Memory();
 			return;
 		}
 	}
@@ -256,16 +254,141 @@ void ATU_Process(void) {
 			LCD_showTooltip(buff);
 			delay_stages_count = 0;
 
-			int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-			if (band >= 0) {
-				TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_I;
-				TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_C;
-				TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_T;
-			}
-
+			ATU_Save_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq, TRX.ATU_I, TRX.ATU_C, TRX.ATU_T);
 			BUTTONHANDLER_TUNE(0);
+			ATU_Flush_Memory();
 		}
 
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
+}
+
+void ATU_Flush_Memory() {
+#if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
+	if (!ATU_MEMORY_1.saved && ATU_MEMORY_1.loaded_ant == 0) {
+		ATU_MEMORY_1.saved = SaveATUSettings((uint8_t *)&ATU_MEMORY_1, sizeof(ATU_MEMORY_1), EEPROM_SECTOR_ATU_1);
+	}
+	if (!ATU_MEMORY_2.saved && ATU_MEMORY_2.loaded_ant == 1) {
+		ATU_MEMORY_2.saved = SaveATUSettings((uint8_t *)&ATU_MEMORY_2, sizeof(ATU_MEMORY_2), EEPROM_SECTOR_ATU_2);
+	}
+	if (!ATU_MEMORY_3.saved && ATU_MEMORY_3.loaded_ant == 2) {
+		ATU_MEMORY_3.saved = SaveATUSettings((uint8_t *)&ATU_MEMORY_3, sizeof(ATU_MEMORY_3), EEPROM_SECTOR_ATU_3);
+	}
+	if (!ATU_MEMORY_4.saved && ATU_MEMORY_4.loaded_ant == 3) {
+		ATU_MEMORY_4.saved = SaveATUSettings((uint8_t *)&ATU_MEMORY_4, sizeof(ATU_MEMORY_4), EEPROM_SECTOR_ATU_4);
+	}
+#endif
+}
+
+void ATU_Load_ANT_Banks(void) {
+#if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
+	for (uint8_t ant = 0; ant < ANT_MAX_COUNT; ant++) {
+
+		ATU_MEMORY_TYPE *memory = &ATU_MEMORY_1;
+		uint8_t sector = EEPROM_SECTOR_ATU_1;
+		if (ant == 1) {
+			memory = &ATU_MEMORY_2;
+			sector = EEPROM_SECTOR_ATU_2;
+		}
+		if (ant == 2) {
+			memory = &ATU_MEMORY_3;
+			sector = EEPROM_SECTOR_ATU_3;
+		}
+		if (ant == 3) {
+			memory = &ATU_MEMORY_4;
+			sector = EEPROM_SECTOR_ATU_4;
+		}
+
+		if (memory->loaded_ant != ant) {
+			LoadATUSettings((uint8_t *)memory, sizeof(ATU_MEMORY_TYPE), sector);
+			memory->saved = true;
+
+			if (memory->loaded_ant != ant) {
+				dma_memset(memory, 0x00, sizeof(ATU_MEMORY_TYPE));
+				memory->loaded_ant = ant;
+				memory->saved = false;
+				ATU_Flush_Memory();
+			}
+		}
+	}
+#endif
+}
+
+void ATU_Save_Memory(uint8_t ant, uint64_t frequency, uint8_t I, uint8_t C, bool T) {
+#if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
+	if (frequency >= (ATU_MAX_FREQ_KHZ * 1000)) {
+		return;
+	}
+
+	uint32_t blockIndex = frequency / (ATU_MEM_STEP_KHZ * 1000);
+	if (blockIndex >= ATU_MEM_COUNT) {
+		return;
+	}
+
+	ATU_MEMORY_TYPE *memory = &ATU_MEMORY_1;
+	if (ant == 1) {
+		memory = &ATU_MEMORY_2;
+	}
+	if (ant == 2) {
+		memory = &ATU_MEMORY_3;
+	}
+	if (ant == 3) {
+		memory = &ATU_MEMORY_4;
+	}
+
+	memory->state[blockIndex].I = I;
+	memory->state[blockIndex].C = C;
+	memory->state[blockIndex].T = T;
+	memory->saved = false;
+#endif
+}
+
+ATU_MEMORY_STATE ATU_Get_State(uint8_t ant, uint64_t frequency) {
+#if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
+	if (frequency >= (ATU_MAX_FREQ_KHZ * 1000)) {
+		ATU_MEMORY_STATE emptyState = {
+		    .I = 0,
+		    .C = 0,
+		    .T = false,
+		};
+		return emptyState;
+	}
+
+	uint32_t blockIndex = frequency / (ATU_MEM_STEP_KHZ * 1000);
+	if (blockIndex >= ATU_MEM_COUNT) {
+		ATU_MEMORY_STATE emptyState = {
+		    .I = 0,
+		    .C = 0,
+		    .T = false,
+		};
+		return emptyState;
+	}
+
+	ATU_MEMORY_TYPE *memory = &ATU_MEMORY_1;
+	if (ant == 1) {
+		memory = &ATU_MEMORY_2;
+	}
+	if (ant == 2) {
+		memory = &ATU_MEMORY_3;
+	}
+	if (ant == 3) {
+		memory = &ATU_MEMORY_4;
+	}
+
+	return memory->state[blockIndex];
+#else
+	ATU_MEMORY_STATE emptyState = {
+	    .I = 0,
+	    .C = 0,
+	    .T = false,
+	};
+	return emptyState;
+#endif
+}
+
+void ATU_Load_Memory(uint8_t ant, uint64_t frequency) {
+	ATU_MEMORY_STATE ATU_state = ATU_Get_State(ant, frequency);
+	TRX.ATU_I = ATU_state.I;
+	TRX.ATU_C = ATU_state.C;
+	TRX.ATU_T = ATU_state.T;
 }

@@ -63,6 +63,14 @@
 #define ZOOMFFT_DECIM_STAGES_IIR 9
 #define ZOOMFFT_DECIM_STAGES_FIR 4
 
+#define FFT_MARKERS_COUNT 50
+
+typedef struct {
+	int16_t x;
+	uint16_t y;
+	uint16_t width;
+} FFT_Marker;
+
 // Public variables
 extern uint32_t FFT_buff_index;
 extern bool FFT_buff_current;

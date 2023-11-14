@@ -106,8 +106,10 @@ static void SYSMENU_HANDL_RX_FMSquelch(int8_t direction);
 static void SYSMENU_HANDL_RX_FM_Stereo(int8_t direction);
 static void SYSMENU_HANDL_RX_FM_Stereo_Modulation(int8_t direction);
 static void SYSMENU_HANDL_RX_IFGain(int8_t direction);
-static void SYSMENU_HANDL_RX_NOISE_BLANKER(int8_t direction);
-static void SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD(int8_t direction);
+static void SYSMENU_HANDL_RX_NOISE_BLANKER1(int8_t direction);
+static void SYSMENU_HANDL_RX_NOISE_BLANKER2(int8_t direction);
+static void SYSMENU_HANDL_RX_NOISE_BLANKER1_THRESHOLD(int8_t direction);
+static void SYSMENU_HANDL_RX_NOISE_BLANKER2_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_RX_RFFilters(int8_t direction);
 static void SYSMENU_HANDL_RX_SAMPLERATE_FM(int8_t direction);
 static void SYSMENU_HANDL_RX_SAMPLERATE_MAIN(int8_t direction);
@@ -120,6 +122,7 @@ static void SYSMENU_HANDL_RX_CODEC_Out_Volume(int8_t direction);
 static void SYSMENU_HANDL_RX_BluetoothAudio_Enabled(int8_t direction);
 static void SYSMENU_HANDL_RX_AUDIO_MODE(int8_t direction);
 static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction);
+static void SYSMENU_HANDL_RX_Dual_RX_AB_Balance(int8_t direction);
 
 static void SYSMENU_HANDL_TX_ATU_C(int8_t direction);
 static void SYSMENU_HANDL_TX_ATU_Enabled(int8_t direction);
@@ -127,7 +130,6 @@ static void SYSMENU_HANDL_TX_ATU_I(int8_t direction);
 static void SYSMENU_HANDL_TX_ATU_T(int8_t direction);
 static void SYSMENU_HANDL_TX_Auto_Input_Switch(int8_t direction);
 static void SYSMENU_HANDL_TX_CESSB(int8_t direction);
-static void SYSMENU_HANDL_TX_CESSB_COMPRESS_DB(int8_t direction);
 static void SYSMENU_HANDL_TX_CTCSS_Freq(int8_t direction);
 static void SYSMENU_HANDL_TX_CompressorMaxGain_AMFM(int8_t direction);
 static void SYSMENU_HANDL_TX_CompressorMaxGain_SSB(int8_t direction);
@@ -150,7 +152,8 @@ static void SYSMENU_HANDL_TX_MIC_EQ_P5_SSB(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_EQ_P6_AMFM(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_EQ_P6_SSB(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_Gain_SSB_DB(int8_t direction);
-static void SYSMENU_HANDL_TX_MIC_Gain_AMFM_DB(int8_t direction);
+static void SYSMENU_HANDL_TX_MIC_Gain_AM_DB(int8_t direction);
+static void SYSMENU_HANDL_TX_MIC_Gain_FM_DB(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_NOISE_GATE(int8_t direction);
 static void SYSMENU_HANDL_TX_MIC_REVERBER(int8_t direction);
 static void SYSMENU_HANDL_TX_REPEATER_Offset(int8_t direction);
@@ -195,6 +198,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Automatic(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_BW_Style(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_BW_Position(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Background(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Color(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Compressor(int8_t direction);
@@ -367,7 +371,6 @@ static void SYSMENU_HANDL_CALIB_ENCODER2_INVERT(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_DEBOUNCE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_INVERT(int8_t direction);
-static void SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_10m(int8_t direction);
 static void SYSMENU_HANDL_CALIB_EXT_12m(int8_t direction);
@@ -613,6 +616,25 @@ static void SYSMENU_HANDL_MEMORY_CHANNELS_17(int8_t direction);
 static void SYSMENU_HANDL_MEMORY_CHANNELS_18(int8_t direction);
 static void SYSMENU_HANDL_MEMORY_CHANNELS_19(int8_t direction);
 #endif
+#if MEMORY_CHANNELS_COUNT > 20
+static void SYSMENU_HANDL_MEMORY_CHANNELS_20(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_21(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_22(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_23(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_24(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_25(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_26(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_27(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_28(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_29(int8_t direction);
+#endif
+#if MEMORY_CHANNELS_COUNT > 30
+static void SYSMENU_HANDL_MEMORY_CHANNELS_30(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_31(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_32(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_33(int8_t direction);
+static void SYSMENU_HANDL_MEMORY_CHANNELS_34(int8_t direction);
+#endif
 
 #ifdef LCD_SMALL_INTERFACE
 #ifdef LAY_320x240
@@ -752,6 +774,9 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 #endif
     {"Auto Snap", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_Snap, SYSMENU_HANDL_RX_Auto_Snap},
     {"AutoGainer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AutoGain, SYSMENU_HANDL_RX_AutoGain},
+#if HRDW_HAS_DUAL_RX
+    {"A/B Balance", SYSMENU_INT8, NULL, (uint32_t *)&TRX.Dual_RX_AB_Balance, SYSMENU_HANDL_RX_Dual_RX_AB_Balance},
+#endif
 #if HRDW_HAS_BLUETOOTH_AUDIO
     {"Bluetooth Audio", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.BluetoothAudio_Enabled, SYSMENU_HANDL_RX_BluetoothAudio_Enabled},
 #endif
@@ -770,8 +795,10 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"FM Squelch level, dBm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
 #endif
     {"Free tune", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FREE_Tune, SYSMENU_HANDL_RX_FREE_Tune},
-    {"Noise blanker", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER, SYSMENU_HANDL_RX_NOISE_BLANKER},
-    {"NB Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD},
+    {"Noise blanker 1", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER1, SYSMENU_HANDL_RX_NOISE_BLANKER1},
+    {"NB1 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER1_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER1_THRESHOLD},
+    {"Noise blanker 2", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER2, SYSMENU_HANDL_RX_NOISE_BLANKER2},
+    {"NB2 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER2_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER2_THRESHOLD},
 #if !defined(FRONTPANEL_LITE)
     {"RF Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_RX_RFFilters},
 #endif
@@ -807,7 +834,6 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"RF Power", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RF_Gain, SYSMENU_HANDL_TX_RFPower},
     {"CESSB", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TX_CESSB, SYSMENU_HANDL_TX_CESSB},
-    {"CESSB Compress", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.TX_CESSB_COMPRESS_DB, SYSMENU_HANDL_TX_CESSB_COMPRESS_DB},
     {"Compr. MxGa AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_HANDL_TX_CompressorMaxGain_AMFM},
     {"Compr. Speed AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_HANDL_TX_CompressorSpeed_AMFM},
     {"Compr. MxGa SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_HANDL_TX_CompressorMaxGain_SSB},
@@ -828,7 +854,8 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"LINE Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LINE_Volume, SYSMENU_HANDL_TX_LINE_Volume},
     {"MIC Boost", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.MIC_Boost, SYSMENU_HANDL_TX_MIC_Boost},
     {"MIC Gain SSB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_Gain_SSB_DB, SYSMENU_HANDL_TX_MIC_Gain_SSB_DB},
-    {"MIC Gain AMFM", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_Gain_AMFM_DB, SYSMENU_HANDL_TX_MIC_Gain_AMFM_DB},
+    {"MIC Gain AM", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_Gain_AM_DB, SYSMENU_HANDL_TX_MIC_Gain_AM_DB},
+    {"MIC Gain FM", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_Gain_FM_DB, SYSMENU_HANDL_TX_MIC_Gain_FM_DB},
     {"MIC Noise Gate", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_NOISE_GATE, SYSMENU_HANDL_TX_MIC_NOISE_GATE},
     {"MIC EQ 0.3k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P1_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P1_AMFM},
     {"MIC EQ 0.7k AMFM", SYSMENU_INT8, NULL, (uint32_t *)&TRX.MIC_EQ_P2_AMFM, SYSMENU_HANDL_TX_MIC_EQ_P2_AMFM},
@@ -912,6 +939,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
     {"FFT Averaging", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 #if !defined(FRONTPANEL_LITE)
     {"FFT BW Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_BW_Style, SYSMENU_HANDL_SCREEN_FFT_BW_Style, (const enumerate_item[4]){"", "Fill", "LowOp", "Line"}},
+    {"FFT BW Position", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_BW_Position, SYSMENU_HANDL_SCREEN_FFT_BW_Position, (const enumerate_item[4]){"All", "Top+Lin", "Top", "Delay"}},
 #endif
     {"FFT Background", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Background, SYSMENU_HANDL_SCREEN_FFT_Background},
     {"FFT Color", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_Color, SYSMENU_HANDL_SCREEN_FFT_Color,
@@ -1203,7 +1231,6 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
     {"Encoder debounce", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_DEBOUNCE, SYSMENU_HANDL_CALIB_ENCODER_DEBOUNCE},
     {"Encoder invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER_INVERT, SYSMENU_HANDL_CALIB_ENCODER_INVERT},
-    {"Encoder on falling", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING},
     {"Encoder slow rate", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
     {"Encoder2 debounce", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER2_DEBOUNCE, SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE},
     {"Encoder2 invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER2_INVERT, SYSMENU_HANDL_CALIB_ENCODER2_INVERT},
@@ -1320,9 +1347,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #endif
 #if !defined(FRONTPANEL_LITE)
     {"TCXO Freq, kHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.TCXO_frequency, SYSMENU_HANDL_CALIB_TCXO},
-#else
-    {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 #endif
+    {"VCXO Correction", SYSMENU_INT16, NULL, (uint32_t *)&CALIBRATE.VCXO_correction, SYSMENU_HANDL_CALIB_VCXO},
 #ifdef TOUCHPAD_GT911
     {"Touchpad horiz flip", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_horizontal_flip, SYSMENU_HANDL_CALIB_TOUCHPAD_horizontal_flip},
     {"Touchpad verti flip", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.TOUCHPAD_vertical_flip, SYSMENU_HANDL_CALIB_TOUCHPAD_vertical_flip},
@@ -1466,6 +1492,25 @@ const static struct sysmenu_item_handler sysmenu_memory_channels_handlers[] = {
     {CALIBRATE.MEMORY_CHANNELS[17].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_17},
     {CALIBRATE.MEMORY_CHANNELS[18].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_18},
     {CALIBRATE.MEMORY_CHANNELS[19].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_19},
+#endif
+#if MEMORY_CHANNELS_COUNT > 20
+    {CALIBRATE.MEMORY_CHANNELS[20].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_20},
+    {CALIBRATE.MEMORY_CHANNELS[21].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_21},
+    {CALIBRATE.MEMORY_CHANNELS[22].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_22},
+    {CALIBRATE.MEMORY_CHANNELS[23].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_23},
+    {CALIBRATE.MEMORY_CHANNELS[24].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_24},
+    {CALIBRATE.MEMORY_CHANNELS[25].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_25},
+    {CALIBRATE.MEMORY_CHANNELS[26].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_26},
+    {CALIBRATE.MEMORY_CHANNELS[27].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_27},
+    {CALIBRATE.MEMORY_CHANNELS[28].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_28},
+    {CALIBRATE.MEMORY_CHANNELS[29].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_29},
+#endif
+#if MEMORY_CHANNELS_COUNT > 30
+    {CALIBRATE.MEMORY_CHANNELS[30].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_30},
+    {CALIBRATE.MEMORY_CHANNELS[31].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_31},
+    {CALIBRATE.MEMORY_CHANNELS[32].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_32},
+    {CALIBRATE.MEMORY_CHANNELS[33].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_33},
+    {CALIBRATE.MEMORY_CHANNELS[34].name, SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_34},
 #endif
 };
 
@@ -2429,6 +2474,16 @@ static void SYSMENU_HANDL_RX_ATT_STEP(int8_t direction) {
 	}
 }
 
+static void SYSMENU_HANDL_RX_Dual_RX_AB_Balance(int8_t direction) {
+	TRX.Dual_RX_AB_Balance += direction;
+	if (TRX.Dual_RX_AB_Balance < -10) {
+		TRX.Dual_RX_AB_Balance = -10;
+	}
+	if (TRX.Dual_RX_AB_Balance > 10) {
+		TRX.Dual_RX_AB_Balance = 10;
+	}
+}
+
 static void SYSMENU_HANDL_RX_ATT_DB(int8_t direction) {
 	TRX.ATT_DB += (float32_t)direction * 0.5f;
 	if (TRX.ATT_DB < 0.5f) {
@@ -2474,9 +2529,23 @@ void SYSMENU_RX_AGC_MaxGain_HOTKEY(void) {
 	LCD_redraw(false);
 }
 
-void SYSMENU_RX_NB_HOTKEY(void) {
+void SYSMENU_TX_CESSB_HOTKEY(void) {
+	SYSMENU_HANDL_TXMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "CESSB Compress");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+}
+
+void SYSMENU_RX_NB1_HOTKEY(void) {
 	SYSMENU_HANDL_RXMENU(0);
-	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "NB Threshold");
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "NB1 Threshold");
+	setCurrentMenuIndex(index);
+	LCD_redraw(false);
+}
+
+void SYSMENU_RX_NB2_HOTKEY(void) {
+	SYSMENU_HANDL_RXMENU(0);
+	uint16_t index = getIndexByName(sysmenu_handlers_selected, sysmenu_item_count, "NB2 Threshold");
 	setCurrentMenuIndex(index);
 	LCD_redraw(false);
 }
@@ -2533,12 +2602,21 @@ static void SYSMENU_HANDL_RX_AGC(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_RX_NOISE_BLANKER(int8_t direction) {
+static void SYSMENU_HANDL_RX_NOISE_BLANKER1(int8_t direction) {
 	if (direction > 0) {
-		TRX.NOISE_BLANKER = true;
+		TRX.NOISE_BLANKER1 = true;
 	}
 	if (direction < 0) {
-		TRX.NOISE_BLANKER = false;
+		TRX.NOISE_BLANKER1 = false;
+	}
+}
+
+static void SYSMENU_HANDL_RX_NOISE_BLANKER2(int8_t direction) {
+	if (direction > 0) {
+		TRX.NOISE_BLANKER2 = true;
+	}
+	if (direction < 0) {
+		TRX.NOISE_BLANKER2 = false;
 	}
 }
 
@@ -2552,7 +2630,9 @@ static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_RX_IFGain(int8_t direction) {
-	TRX.IF_Gain += direction;
+	if (TRX.IF_Gain > 0 || direction > 0) {
+		TRX.IF_Gain += direction * 1;
+	}
 	if (TRX.IF_Gain < CALIBRATE.IF_GAIN_MIN) {
 		TRX.IF_Gain = CALIBRATE.IF_GAIN_MIN;
 	}
@@ -2616,13 +2696,23 @@ static void SYSMENU_HANDL_RX_DNR_MINMAL(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_RX_NOISE_BLANKER_THRESHOLD(int8_t direction) {
-	TRX.NOISE_BLANKER_THRESHOLD += direction;
-	if (TRX.NOISE_BLANKER_THRESHOLD < 1) {
-		TRX.NOISE_BLANKER_THRESHOLD = 1;
+static void SYSMENU_HANDL_RX_NOISE_BLANKER1_THRESHOLD(int8_t direction) {
+	TRX.NOISE_BLANKER1_THRESHOLD += direction;
+	if (TRX.NOISE_BLANKER1_THRESHOLD < 1) {
+		TRX.NOISE_BLANKER1_THRESHOLD = 1;
 	}
-	if (TRX.NOISE_BLANKER_THRESHOLD > 20) {
-		TRX.NOISE_BLANKER_THRESHOLD = 20;
+	if (TRX.NOISE_BLANKER1_THRESHOLD > 20) {
+		TRX.NOISE_BLANKER1_THRESHOLD = 20;
+	}
+}
+
+static void SYSMENU_HANDL_RX_NOISE_BLANKER2_THRESHOLD(int8_t direction) {
+	TRX.NOISE_BLANKER2_THRESHOLD += direction;
+	if (TRX.NOISE_BLANKER2_THRESHOLD < 1) {
+		TRX.NOISE_BLANKER2_THRESHOLD = 1;
+	}
+	if (TRX.NOISE_BLANKER2_THRESHOLD > 19) {
+		TRX.NOISE_BLANKER2_THRESHOLD = 19;
 	}
 }
 
@@ -3008,12 +3098,7 @@ static void SYSMENU_HANDL_TX_ATU_I(int8_t direction) {
 		TRX.ATU_I = ATU_MAXPOS;
 	}
 
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_I;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_C;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_T;
-	}
+	ATU_Save_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq, TRX.ATU_I, TRX.ATU_C, TRX.ATU_T);
 }
 
 static void SYSMENU_HANDL_TX_ATU_C(int8_t direction) {
@@ -3025,11 +3110,7 @@ static void SYSMENU_HANDL_TX_ATU_C(int8_t direction) {
 	}
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_I;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_C;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_T;
-	}
+	ATU_Save_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq, TRX.ATU_I, TRX.ATU_C, TRX.ATU_T);
 }
 
 static void SYSMENU_HANDL_TX_ATU_T(int8_t direction) {
@@ -3040,12 +3121,7 @@ static void SYSMENU_HANDL_TX_ATU_T(int8_t direction) {
 		TRX.ATU_T = false;
 	}
 
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_I;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_C;
-		TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX] = TRX.ATU_T;
-	}
+	ATU_Save_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq, TRX.ATU_I, TRX.ATU_C, TRX.ATU_T);
 }
 
 static void SYSMENU_HANDL_TX_ATU_Enabled(int8_t direction) {
@@ -3209,16 +3285,6 @@ static void SYSMENU_HANDL_TX_CESSB(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.TX_CESSB = false;
-	}
-}
-
-static void SYSMENU_HANDL_TX_CESSB_COMPRESS_DB(int8_t direction) {
-	TRX.TX_CESSB_COMPRESS_DB += direction * 0.1f;
-	if (TRX.TX_CESSB_COMPRESS_DB < 1.0f) {
-		TRX.TX_CESSB_COMPRESS_DB = 1.0f;
-	}
-	if (TRX.TX_CESSB_COMPRESS_DB > 20.0f) {
-		TRX.TX_CESSB_COMPRESS_DB = 20.0f;
 	}
 }
 
@@ -3451,13 +3517,23 @@ static void SYSMENU_HANDL_TX_MIC_Gain_SSB_DB(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_TX_MIC_Gain_AMFM_DB(int8_t direction) {
-	TRX.MIC_Gain_AMFM_DB += direction * 0.1f;
-	if (TRX.MIC_Gain_AMFM_DB < 1.0f) {
-		TRX.MIC_Gain_AMFM_DB = 1.0f;
+static void SYSMENU_HANDL_TX_MIC_Gain_AM_DB(int8_t direction) {
+	TRX.MIC_Gain_AM_DB += direction * 0.1f;
+	if (TRX.MIC_Gain_AM_DB < 1.0f) {
+		TRX.MIC_Gain_AM_DB = 1.0f;
 	}
-	if (TRX.MIC_Gain_AMFM_DB > 20.0f) {
-		TRX.MIC_Gain_AMFM_DB = 20.0f;
+	if (TRX.MIC_Gain_AM_DB > 20.0f) {
+		TRX.MIC_Gain_AM_DB = 20.0f;
+	}
+}
+
+static void SYSMENU_HANDL_TX_MIC_Gain_FM_DB(int8_t direction) {
+	TRX.MIC_Gain_FM_DB += direction * 0.1f;
+	if (TRX.MIC_Gain_FM_DB < 1.0f) {
+		TRX.MIC_Gain_FM_DB = 1.0f;
+	}
+	if (TRX.MIC_Gain_FM_DB > 20.0f) {
+		TRX.MIC_Gain_FM_DB = 20.0f;
 	}
 }
 
@@ -4007,6 +4083,17 @@ static void SYSMENU_HANDL_SCREEN_FFT_BW_Style(int8_t direction) {
 	}
 	if (TRX.FFT_BW_Style > 3) {
 		TRX.FFT_BW_Style = 3;
+	}
+
+	FFT_Init();
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_BW_Position(int8_t direction) {
+	if (TRX.FFT_BW_Position > 0 || direction > 0) {
+		TRX.FFT_BW_Position += direction;
+	}
+	if (TRX.FFT_BW_Position > 3) {
+		TRX.FFT_BW_Position = 3;
 	}
 
 	FFT_Init();
@@ -5362,6 +5449,81 @@ static void SYSMENU_HANDL_MEMORY_CHANNELS_19(int8_t direction) {
 	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
 }
 
+static void SYSMENU_HANDL_MEMORY_CHANNELS_20(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 20;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_21(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 21;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_22(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 22;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_23(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 23;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_24(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 24;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_25(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 25;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_26(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 26;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_27(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 27;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_28(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 28;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_29(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 29;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_30(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 30;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_31(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 31;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_32(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 32;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_33(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 33;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
+static void SYSMENU_HANDL_MEMORY_CHANNELS_34(int8_t direction) {
+	sysmenu_selected_memory_channel_index = 34;
+	SYSMENU_HANDL_MEMORY_CHANNELS(direction);
+}
+
 static void SYSMENU_TRX_DrawMemoryChannelNameMenu(bool full_redraw) {
 	if (full_redraw) {
 		LCDDriver_Fill(BG_COLOR);
@@ -5682,15 +5844,6 @@ static void SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE(int8_t direction) {
 	}
 	if (CALIBRATE.ENCODER_SLOW_RATE > 100) {
 		CALIBRATE.ENCODER_SLOW_RATE = 100;
-	}
-}
-
-static void SYSMENU_HANDL_CALIB_ENCODER_ON_FALLING(int8_t direction) {
-	if (direction > 0) {
-		CALIBRATE.ENCODER_ON_FALLING = true;
-	}
-	if (direction < 0) {
-		CALIBRATE.ENCODER_ON_FALLING = false;
 	}
 }
 
@@ -6624,8 +6777,8 @@ static void SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_CALIB_TCXO(int8_t direction) {
-	const uint16_t tcxo_freq_steps[] = {5120,  8000,  9600,  10000, 12000, 12288, 13000, 14000, 14400, 15000, 16000, 16800, 19200, 19440,
-	                                    19680, 20000, 20480, 24000, 25000, 26000, 27000, 28000, 30000, 32000, 38400, 40000, 50000};
+	const uint16_t tcxo_freq_steps[] = {5120,  8000,  9600,  10000, 12000, 12288, 12800, 13000, 14000, 14400, 15000, 16000, 16800, 19200,
+	                                    19440, 19680, 20000, 20480, 24000, 25000, 26000, 27000, 28000, 30000, 32000, 38400, 40000, 50000};
 
 	for (uint8_t i = 0; i < ARRLENTH(tcxo_freq_steps); i++) {
 		if (CALIBRATE.TCXO_frequency == tcxo_freq_steps[i]) {
@@ -6659,6 +6812,8 @@ static void SYSMENU_HANDL_CALIB_VCXO(int8_t direction) {
 	if (CALIBRATE.VCXO_correction > 32750) {
 		CALIBRATE.VCXO_correction = 32750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq(int8_t direction) {
@@ -8848,7 +9003,7 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		SYSMENU_eventRotateSystemMenu(1);
 		return;
 	}
-	
+
 #if HRDW_HAS_WIFI
 	if (sysmenu_wifi_selectap1_menu_opened) {
 		SYSMENU_WIFI_SelectAP1MenuMove(0);
@@ -8863,7 +9018,7 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		return;
 	}
 #endif
-	
+
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN ||
 	    sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE) {
 		sysmenu_item_selected_by_enc2 = false;
@@ -9268,8 +9423,13 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 #if !SYSMENU_TOUCHPAD_STYLE
 	// old style
 	if (!onlyVal) {
+#if defined(FRONTPANEL_MINI)
+		strncpy(ctmp, (char *)menuElement->title, 18);
+#else
+		strncpy(ctmp, (char *)menuElement->title, sizeof(ctmp) - 1);
+#endif
 		LCDDriver_Fill_RectXY(0, sysmenu_draw_y, LAYOUT->SYSMENU_W, sysmenu_draw_y + 17, BG_COLOR);
-		LCDDriver_printText((char *)menuElement->title, LAYOUT->SYSMENU_X1, sysmenu_draw_y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		LCDDriver_printText(ctmp, LAYOUT->SYSMENU_X1, sysmenu_draw_y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 #endif
 

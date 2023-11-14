@@ -301,7 +301,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	bool shift_array[SHIFT_ARRAY_SIZE];
 	static bool shift_array_old[SHIFT_ARRAY_SIZE];
 
-	shift_array[63] = TRX.ATT && att_val_4;             // U19 STPIC6C595TTR	VHF_ATT4
+	shift_array[63] = !(TRX.ATT && att_val_4);          // U19 STPIC6C595TTR	VHF_ATT4
 	shift_array[62] = TRX_on_TX && band == BANDID_23cm; // U19	VHF_TX_1.2G
 	shift_array[61] = VHF_RXC;                          // U19	VHF_RXC
 	shift_array[60] = !TRX_on_TX && TRX.LNA;            // U19	LNA
@@ -315,8 +315,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	shift_array[53] = !tx_lpf_2;                                                                                            // U20	HFAMP_B2
 	shift_array[52] = !tx_lpf_3;                                                                                            // U20	HFAMP_B3
 	shift_array[51] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RXFreqAfterTransverters < 60000000; // U20	HF TX
-	shift_array[50] = TRX.ATT && att_val_8;                                                                                 // U20	VHF_ATT8
-	shift_array[49] = TRX.ATT && att_val_16;                                                                                // U20	VHF_ATT16
+	shift_array[50] = !(TRX.ATT && att_val_8);                                                                              // U20	VHF_ATT8
+	shift_array[49] = !(TRX.ATT && att_val_16);                                                                             // U20	VHF_ATT16
 	shift_array[48] = false;                                                                                                // U20	FAN (code in bottom)
 
 	shift_array[47] = currentAnt == TRX_ANT_2;        // U21 STPIC6C595TTR	ANT

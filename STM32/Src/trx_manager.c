@@ -168,12 +168,7 @@ void TRX_Restart_Mode() {
 	}
 
 	// Ant swap for mode 1RX/2TX and others
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
-	if (band >= 0) {
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-	}
+	ATU_Load_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq);
 
 	// CW_In_SSB
 	if (CW_In_SSB_applyed == 1 && !TRX_on_TX) { // return to LSB
@@ -629,6 +624,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 		TRX_RestoreBandSettings(bandFromFreq);
 	}
 
+	// Get ATU settings
+	ATU_Load_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq);
+
 	// SPLIT freq secondary VFO sync
 	if (TRX.Split_Mode_Sync_Freq && TRX.SPLIT_Enabled && vfo == CurrentVFO) {
 		TRX_setFrequency(SecondaryVFO->Freq + freq_diff, SecondaryVFO);
@@ -886,9 +884,7 @@ void TRX_RestoreBandSettings(int8_t band) {
 	TRX.ADC_Driver = TRX.BANDS_SAVED_SETTINGS[band].ADC_Driver;
 	TRX.ADC_PGA = TRX.BANDS_SAVED_SETTINGS[band].ADC_PGA;
 	TRX.Fast = TRX.BANDS_SAVED_SETTINGS[band].Fast;
-	TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-	TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-	TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
+	ATU_Load_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq);
 
 	if (CurrentVFO == &TRX.VFO_A) {
 		CurrentVFO->CW_LPF_Filter = TRX.BANDS_SAVED_SETTINGS[band].VFO_A_CW_LPF_Filter;
@@ -1001,13 +997,15 @@ void TRX_ProcessScanMode(void) {
 	static uint32_t StateChangeTime = 0;
 	bool goSweep = false;
 
+	uint32_t noSignalTime = TRX.ENC2_func_mode == ENC_FUNC_SET_MEM ? SCANNER_NOSIGNAL_TIME_MEM : SCANNER_NOSIGNAL_TIME;
+
 	if (CurrentVFO->Mode == TRX_MODE_WFM || CurrentVFO->Mode == TRX_MODE_NFM) {
 		if (oldState != DFM_RX1.squelched) {
 			oldState = DFM_RX1.squelched;
 			StateChangeTime = HAL_GetTick();
 		}
 
-		if (DFM_RX1.squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME)) {
+		if (DFM_RX1.squelched && ((HAL_GetTick() - StateChangeTime) > noSignalTime)) {
 			goSweep = true;
 		}
 		if (!DFM_RX1.squelched && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_FM)) {
@@ -1019,7 +1017,7 @@ void TRX_ProcessScanMode(void) {
 			StateChangeTime = HAL_GetTick();
 		}
 
-		if (VAD_RX1_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_NOSIGNAL_TIME)) {
+		if (VAD_RX1_Muting && ((HAL_GetTick() - StateChangeTime) > noSignalTime)) {
 			goSweep = true;
 		}
 		if (!VAD_RX1_Muting && ((HAL_GetTick() - StateChangeTime) > SCANNER_SIGNAL_TIME_OTHER)) {
@@ -1052,6 +1050,26 @@ void TRX_ProcessScanMode(void) {
 			LCD_UpdateQuery.FreqInfoRedraw = true;
 			// LCD_UpdateQuery.StatusInfoGUI = true;
 			// LCD_UpdateQuery.StatusInfoBarRedraw = true;
+			StateChangeTime = HAL_GetTick();
+		} else if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) { // memory channels mode
+			int8_t currentMemIndex = 0;
+			for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
+				if (CurrentVFO->Freq == CALIBRATE.MEMORY_CHANNELS[i].freq) {
+					currentMemIndex = i;
+				}
+			}
+			currentMemIndex++;
+			if (currentMemIndex >= MEMORY_CHANNELS_COUNT) {
+				currentMemIndex = 0;
+			}
+			while (currentMemIndex < MEMORY_CHANNELS_COUNT && currentMemIndex > 0 && CALIBRATE.MEMORY_CHANNELS[currentMemIndex].freq == 0) {
+				currentMemIndex++;
+			}
+			if (currentMemIndex >= MEMORY_CHANNELS_COUNT) {
+				currentMemIndex = 0;
+			}
+
+			BUTTONHANDLER_SelectMemoryChannels(currentMemIndex);
 			StateChangeTime = HAL_GetTick();
 		} else if (band != -1) // common region mode
 		{
@@ -1327,23 +1345,14 @@ void BUTTONHANDLER_TUNE(uint32_t parameter) {
 		return;
 	}
 
-	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 	if (!TRX_Tune) { // go TUNE
 		APROC_TX_tune_power = 0.0f;
-		if (band >= 0) {
-			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX.ANT_TX];
-			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX.ANT_TX];
-			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX.ANT_TX];
-		}
+		ATU_Load_Memory(TRX.ANT_TX, CurrentVFO->Freq);
 		ATU_Invalidate();
 		ATU_TunePowerStabilized = false;
 		LCD_UpdateQuery.StatusInfoBar = true;
 	} else { // go RX
-		if (band >= 0) {
-			TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX.ANT_RX];
-			TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX.ANT_RX];
-			TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX.ANT_RX];
-		}
+		ATU_Load_Memory(TRX.ANT_RX, CurrentVFO->Freq);
 	}
 
 	TRX_Tune = !TRX_Tune;
@@ -1458,10 +1467,8 @@ void BUTTONHANDLER_ANT(uint32_t parameter) {
 	if (band >= 0) {
 		TRX.BANDS_SAVED_SETTINGS[band].ANT_RX = TRX.ANT_RX;
 		TRX.BANDS_SAVED_SETTINGS[band].ANT_TX = TRX.ANT_TX;
-		TRX.ATU_I = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_I[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-		TRX.ATU_C = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_C[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
-		TRX.ATU_T = TRX.BANDS_SAVED_SETTINGS[band].ANT_ATU_T[TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX];
 	}
+	ATU_Load_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq);
 
 	LCD_UpdateQuery.StatusInfoGUI = true;
 	NeedSaveSettings = true;
@@ -1793,7 +1800,20 @@ void BUTTONHANDLER_DNR_HOLD(uint32_t parameter) {
 }
 
 void BUTTONHANDLER_NB(uint32_t parameter) {
-	TRX.NOISE_BLANKER = !TRX.NOISE_BLANKER;
+	if (!TRX.NOISE_BLANKER1 && !TRX.NOISE_BLANKER2) {
+		TRX.NOISE_BLANKER1 = true;
+		TRX.NOISE_BLANKER2 = false;
+	} else if (TRX.NOISE_BLANKER1 && !TRX.NOISE_BLANKER2) {
+		TRX.NOISE_BLANKER1 = false;
+		TRX.NOISE_BLANKER2 = true;
+	} else if (!TRX.NOISE_BLANKER1 && TRX.NOISE_BLANKER2) {
+		TRX.NOISE_BLANKER1 = true;
+		TRX.NOISE_BLANKER2 = true;
+	} else {
+		TRX.NOISE_BLANKER1 = false;
+		TRX.NOISE_BLANKER2 = false;
+	}
+
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
 }
@@ -1801,7 +1821,11 @@ void BUTTONHANDLER_NB(uint32_t parameter) {
 void BUTTONHANDLER_NB_HOLD(uint32_t parameter) {
 	if (!LCD_systemMenuOpened) {
 		LCD_systemMenuOpened = true;
-		SYSMENU_RX_NB_HOTKEY();
+		if (TRX.NOISE_BLANKER2) {
+			SYSMENU_RX_NB2_HOTKEY();
+		} else {
+			SYSMENU_RX_NB1_HOTKEY();
+		}
 	} else {
 		SYSMENU_eventCloseAllSystemMenu();
 	}
@@ -2554,10 +2578,12 @@ void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter) {
 	LCD_UpdateQuery.FreqInfoRedraw = true;
 
 	resetVAD();
-	TRX_ScanMode = false;
-	LCD_closeWindow();
-	TRX_DXCluster_UpdateTime = 0;
-	TRX_WOLF_Cluster_UpdateTime = 0;
+	if (TRX.ENC2_func_mode != ENC_FUNC_SET_MEM || !TRX_ScanMode) {
+		TRX_ScanMode = false;
+		LCD_closeWindow();
+		TRX_DXCluster_UpdateTime = 0;
+		TRX_WOLF_Cluster_UpdateTime = 0;
+	}
 }
 
 void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
@@ -2711,6 +2737,15 @@ void BUTTONHANDLER_CESSB(uint32_t parameter) {
 
 	LCD_UpdateQuery.TopButtons = true;
 	NeedSaveSettings = true;
+}
+
+void BUTTONHANDLER_CESSB_HOLD(uint32_t parameter) {
+	if (!LCD_systemMenuOpened) {
+		LCD_systemMenuOpened = true;
+		SYSMENU_TX_CESSB_HOTKEY();
+	} else {
+		SYSMENU_eventCloseAllSystemMenu();
+	}
 }
 
 void BUTTONHANDLER_DPD(uint32_t parameter) {

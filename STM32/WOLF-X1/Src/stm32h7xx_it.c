@@ -596,25 +596,18 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi) {
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-	if (GPIO_Pin == GPIO_PIN_10) // FPGA BUS
-	{
-		FPGA_fpgadata_iqclock();         // IQ data
-		FPGA_fpgadata_stuffclock();      // parameters and other services
-	} else if (GPIO_Pin == GPIO_PIN_2) // Main encoder
-	{
-		if (TRX_Inited) {
-			FRONTPANEL_ENCODER_checkRotate();
-		}
-	} else if (GPIO_Pin == GPIO_PIN_7) // PTT
-	{
+	if (GPIO_Pin == GPIO_PIN_10) {       // FPGA BUS
+		FPGA_fpgadata_iqclock();           // IQ data
+		FPGA_fpgadata_stuffclock();        // parameters and other services
+	} else if (GPIO_Pin == GPIO_PIN_2) { // Main encoder
+		EVENTS_do_ENC();
+	} else if (GPIO_Pin == GPIO_PIN_7) { // PTT
 		if (TRX_Inited) {
 			TRX_ptt_change();
 		}
-	} else if (GPIO_Pin == GPIO_PIN_1) // KEY DOT
-	{
+	} else if (GPIO_Pin == GPIO_PIN_1) { // KEY DOT
 		CW_key_change();
-	} else if (GPIO_Pin == GPIO_PIN_0) // KEY DASH
-	{
+	} else if (GPIO_Pin == GPIO_PIN_0) { // KEY DASH
 		CW_key_change();
 	}
 }
