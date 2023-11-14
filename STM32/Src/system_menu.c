@@ -9446,8 +9446,13 @@ static void drawSystemMenuElement(const struct sysmenu_item_handler *menuElement
 #if !SYSMENU_TOUCHPAD_STYLE
 	// old style
 	if (!onlyVal) {
+		#if defined(FRONTPANEL_MINI)
+		strncpy(ctmp, (char *)menuElement->title, 18);
+		#else
+		strncpy(ctmp, (char *)menuElement->title, sizeof(ctmp) - 1);
+		#endif
 		LCDDriver_Fill_RectXY(0, sysmenu_draw_y, LAYOUT->SYSMENU_W, sysmenu_draw_y + 17, BG_COLOR);
-		LCDDriver_printText((char *)menuElement->title, LAYOUT->SYSMENU_X1, sysmenu_draw_y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		LCDDriver_printText(ctmp, LAYOUT->SYSMENU_X1, sysmenu_draw_y, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
 	}
 #endif
 

@@ -23,7 +23,7 @@
 +STM32: Отлючена компрессия в CESSB, оставил только контроль огибающей квадратуры
 +STM32: W-Mini: управление NB выведено в нижнюю карусель функциональных кнопок, Tnx R7KBI
 +STM32: Вернул сборку для дисплея ST7796S, Tnx RA9UCN, R3MBJ
-+STM32: Устанение ошибок, Tnx RV9CT, UN7FHS, SP7MFR, UZ5DM, BD6MM, Adi, Vit
++STM32: Устанение ошибок, Tnx RV9CT, UN7FHS, SP7MFR, UZ5DM, BD6MM, R7KBI, Adi, Vit
 
 ----Version 8.5.1----
 +STM32: Устранение ошибок
