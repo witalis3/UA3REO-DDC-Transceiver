@@ -2428,12 +2428,12 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 
 void APROC_doVOX(void) {
 	static bool VOX_applied = false;
-	
+
 	if (!TRX.VOX && VOX_applied) {
 		TRX_ptt_soft = false;
 		VOX_applied = false;
 	}
-	
+
 	if (!TRX.VOX || !TRX_Inited || SYSMENU_FT8_DECODER_opened) {
 		return;
 	}
