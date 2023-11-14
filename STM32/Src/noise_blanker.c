@@ -13,8 +13,8 @@ void NB_Init(void) {
 	NB_RX1.NB1_delbuf_inptr = 0;
 	NB_RX1.NB1_delbuf_outptr = NB1_DELAY_STAGE;
 	NB_RX1.NB1_edge_strength = 1.0f;
-	// NB3
-	arm_lms_norm_init_f32(&NB_RX1.NB3_lms2_Norm_instance, NB3_TAPS, NB_RX1.NB3_lms2_normCoeff_f32, NB_RX1.NB3_lms2_stateF32, NB3_STEP, 1);
+	// NB2
+	arm_lms_norm_init_f32(&NB_RX1.NB2_lms2_Norm_instance, NB2_TAPS, NB_RX1.NB2_lms2_normCoeff_f32, NB_RX1.NB2_lms2_stateF32, NB2_STEP, 1);
 
 #if HRDW_HAS_DUAL_RX
 	dma_memset(&NB_RX2, 0x00, sizeof NB_RX2);
@@ -22,8 +22,8 @@ void NB_Init(void) {
 	NB_RX2.NB1_delbuf_inptr = 0;
 	NB_RX2.NB1_delbuf_outptr = NB1_DELAY_STAGE;
 	NB_RX2.NB1_edge_strength = 1.0f;
-	// NB3
-	arm_lms_norm_init_f32(&NB_RX2.NB3_lms2_Norm_instance, NB3_TAPS, NB_RX2.NB3_lms2_normCoeff_f32, NB_RX2.NB3_lms2_stateF32, NB3_STEP, 1);
+	// NB2
+	arm_lms_norm_init_f32(&NB_RX2.NB2_lms2_Norm_instance, NB2_TAPS, NB_RX2.NB2_lms2_normCoeff_f32, NB_RX2.NB2_lms2_stateF32, NB2_STEP, 1);
 #endif
 }
 
@@ -73,37 +73,20 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 		}
 	}
 
-	// NB2 with averaging
+	// NB2 with LMS
 	if (TRX.NOISE_BLANKER2) {
-		float32_t cmag;
+		static float32_t last_value_in_buffer = 0.0f;
 		float32_t d_thld_nb2 = (float32_t)(20 - TRX.NOISE_BLANKER2_THRESHOLD) / 5.0f;
 
 		for (int i = 0; i < NB_BLOCK_SIZE; i++) {
-			cmag = fabsf(buffer[i]);
-			instance->NB2_d_avgsig = NB2_c1 * instance->NB2_d_avgsig + NB2_c2 * buffer[i];
-			instance->NB2_d_avgmag_nb2 = NB2_c3 * instance->NB2_d_avgmag_nb2 + NB2_c4 * cmag;
-
-			if (cmag > d_thld_nb2 * instance->NB2_d_avgmag_nb2) {
-				buffer[i] = instance->NB2_d_avgsig;
-			}
-		}
-	}
-
-	// NB3 with LMS
-	if (TRX.NOISE_BLANKER3) {
-		static float32_t last_value_in_buffer = 0.0f;
-		float32_t cmag;
-		float32_t d_thld_nb2 = (float32_t)(20 - TRX.NOISE_BLANKER3_THRESHOLD) / 5.0f;
-		for (int i = 0; i < NB_BLOCK_SIZE; i++) {
-			cmag = fabsf(buffer[i]);
-			instance->NB2_d_avgsig = NB2_c1 * instance->NB2_d_avgsig + NB2_c2 * buffer[i];
+			float32_t cmag = fabsf(buffer[i]);
 			instance->NB2_d_avgmag_nb2 = NB2_c3 * instance->NB2_d_avgmag_nb2 + NB2_c4 * cmag;
 
 			if (cmag > d_thld_nb2 * instance->NB2_d_avgmag_nb2) {
 				if (i > 0) {
-					arm_lms_norm_f32(&instance->NB3_lms2_Norm_instance, &buffer[i], &buffer[i - 1], &buffer[i], &instance->NB3_lms2_err, 1);
+					arm_lms_norm_f32(&instance->NB2_lms2_Norm_instance, &buffer[i], &buffer[i - 1], &buffer[i], &instance->NB2_lms2_err, 1);
 				} else {
-					arm_lms_norm_f32(&instance->NB3_lms2_Norm_instance, &buffer[i], &last_value_in_buffer, &buffer[i], &instance->NB3_lms2_err, 1);
+					arm_lms_norm_f32(&instance->NB2_lms2_Norm_instance, &buffer[i], &last_value_in_buffer, &buffer[i], &instance->NB2_lms2_err, 1);
 				}
 
 				if (isnanf(buffer[i]) || isinff(buffer[i])) {
@@ -115,7 +98,7 @@ void processNoiseBlanking(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id) {
 
 		// overflow protect
 		float32_t maxValOut;
-		arm_max_no_idx_f32(instance->NB3_lms2_Norm_instance.pCoeffs, NB3_TAPS, &maxValOut);
+		arm_max_no_idx_f32(instance->NB2_lms2_Norm_instance.pCoeffs, NB2_TAPS, &maxValOut);
 		if (maxValOut > 1.0f) {
 			NB_Init();
 		}

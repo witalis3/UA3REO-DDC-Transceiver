@@ -108,10 +108,8 @@ static void SYSMENU_HANDL_RX_FM_Stereo_Modulation(int8_t direction);
 static void SYSMENU_HANDL_RX_IFGain(int8_t direction);
 static void SYSMENU_HANDL_RX_NOISE_BLANKER1(int8_t direction);
 static void SYSMENU_HANDL_RX_NOISE_BLANKER2(int8_t direction);
-static void SYSMENU_HANDL_RX_NOISE_BLANKER3(int8_t direction);
 static void SYSMENU_HANDL_RX_NOISE_BLANKER1_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_RX_NOISE_BLANKER2_THRESHOLD(int8_t direction);
-static void SYSMENU_HANDL_RX_NOISE_BLANKER3_THRESHOLD(int8_t direction);
 static void SYSMENU_HANDL_RX_RFFilters(int8_t direction);
 static void SYSMENU_HANDL_RX_SAMPLERATE_FM(int8_t direction);
 static void SYSMENU_HANDL_RX_SAMPLERATE_MAIN(int8_t direction);
@@ -801,8 +799,6 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"NB1 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER1_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER1_THRESHOLD},
     {"Noise blanker 2", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER2, SYSMENU_HANDL_RX_NOISE_BLANKER2},
     {"NB2 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER2_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER2_THRESHOLD},
-    {"Noise blanker 3", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER3, SYSMENU_HANDL_RX_NOISE_BLANKER3},
-    {"NB3 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER3_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER3_THRESHOLD},
 #if !defined(FRONTPANEL_LITE)
     {"RF Filters", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS, (uint32_t *)&TRX.RF_Filters, SYSMENU_HANDL_RX_RFFilters},
 #endif
@@ -2624,15 +2620,6 @@ static void SYSMENU_HANDL_RX_NOISE_BLANKER2(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_RX_NOISE_BLANKER3(int8_t direction) {
-	if (direction > 0) {
-		TRX.NOISE_BLANKER3 = true;
-	}
-	if (direction < 0) {
-		TRX.NOISE_BLANKER3 = false;
-	}
-}
-
 static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction) {
 	if (direction > 0) {
 		TRX.FREE_Tune = true;
@@ -2726,16 +2713,6 @@ static void SYSMENU_HANDL_RX_NOISE_BLANKER2_THRESHOLD(int8_t direction) {
 	}
 	if (TRX.NOISE_BLANKER2_THRESHOLD > 19) {
 		TRX.NOISE_BLANKER2_THRESHOLD = 19;
-	}
-}
-
-static void SYSMENU_HANDL_RX_NOISE_BLANKER3_THRESHOLD(int8_t direction) {
-	TRX.NOISE_BLANKER3_THRESHOLD += direction;
-	if (TRX.NOISE_BLANKER3_THRESHOLD < 1) {
-		TRX.NOISE_BLANKER3_THRESHOLD = 1;
-	}
-	if (TRX.NOISE_BLANKER3_THRESHOLD > 19) {
-		TRX.NOISE_BLANKER3_THRESHOLD = 19;
 	}
 }
 
