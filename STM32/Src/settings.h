@@ -545,7 +545,6 @@ extern struct TRX_SETTINGS {
 	float32_t MIC_Gain_SSB_DB;
 	float32_t MIC_Gain_AM_DB;
 	float32_t MIC_Gain_FM_DB;
-	float32_t TX_CESSB_COMPRESS_DB;
 	float32_t CW_DotToDashRate;
 
 	uint32_t FRQ_STEP;
