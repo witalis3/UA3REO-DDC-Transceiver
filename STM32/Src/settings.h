@@ -273,6 +273,13 @@ static char ota_config_lcd[] = "ILI9486";
 #endif
 #endif
 
+#if defined(LCD_ST7796S)
+static char ota_config_lcd[] = "ST7796S";
+#ifdef STM32H743xx
+#define FT8_SUPPORT true
+#endif
+#endif
+
 #if defined(LCD_ILI9341)
 #if defined(FRONTPANEL_MINI)
 static char ota_config_lcd[] = "WOLF-Mini-ILI9341";

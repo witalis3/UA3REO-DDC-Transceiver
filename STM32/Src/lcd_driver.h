@@ -13,7 +13,7 @@
 #if (defined(LCD_ILI9341))
 #include "lcd_driver_ILI9341.h"
 #endif
-#if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486))
+#if (defined(LCD_ILI9481) || defined(LCD_ILI9481_IPS) || defined(LCD_HX8357B) || defined(LCD_HX8357C) || defined(LCD_ILI9486) || defined(LCD_ST7796S))
 #include "lcd_driver_ILI9481.h"
 #endif
 #if (defined(LCD_ST7735S))

@@ -1546,6 +1546,12 @@ static void MX_FMC_Init(void) {
 	Timing.BusTurnAroundDuration = 3;
 	Timing.AccessMode = FMC_ACCESS_MODE_A;
 #endif
+#if defined(LCD_ST7796S)
+	Timing.AddressSetupTime = 5;
+	Timing.DataSetupTime = 5;
+	Timing.BusTurnAroundDuration = 3;
+	Timing.AccessMode = FMC_ACCESS_MODE_A;
+#endif
 #if (defined(LCD_RA8875))
 	Timing.AddressSetupTime = 30;
 	Timing.DataSetupTime = 30;
