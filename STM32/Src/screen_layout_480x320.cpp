@@ -543,7 +543,7 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] = {
         .BW_TRAPEZ_POS_X = 420,
         .BW_TRAPEZ_POS_Y = 30,
         .BW_TRAPEZ_HEIGHT = 20,
-        .BW_TRAPEZ_WIDTH = 54,   //60,
+        .BW_TRAPEZ_WIDTH = 54, // 60,
         // Touch buttons layout
         .BUTTON_PADDING = 1,
         .BUTTON_LIGHTER_WIDTH = 0.4f,

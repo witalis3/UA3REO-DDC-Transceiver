@@ -261,7 +261,7 @@ void ATU_Process(void) {
 
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
-	
+
 	ATU_Save_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq, TRX.ATU_I, TRX.ATU_C, TRX.ATU_T);
 }
 

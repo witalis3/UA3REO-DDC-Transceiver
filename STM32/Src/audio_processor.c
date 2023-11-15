@@ -1011,18 +1011,14 @@ void processTxAudio(void) {
 			DECODER_PutSamples(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE); // отправляем данные в цифровой декодер
 			break;
 		case TRX_MODE_USB:
-			doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
-			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
-			break;
 		case TRX_MODE_RTTY:
 		case TRX_MODE_DIGI_U:
+			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
 			doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_LSB:
-			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
-			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
-			break;
 		case TRX_MODE_DIGI_L:
+			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
 			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_AM:
