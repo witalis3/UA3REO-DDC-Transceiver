@@ -386,15 +386,15 @@ void ua3reo_dev_cat_parseCommand(void) {
 	// OI // OPPOSITE BAND INFORMATION
 	// FA // FREQUENCY VFO-A
 	// FB // FREQUENCY VFO-B
-	// RA // RF ATTENUATOR
-	// PA // PRE-AMP
+	// RA // RF ATTENUATOR  ??
+	// PA // PRE-AMP        ??
 	// PS // POWER-SWITCH
 	// GT // AGC FUNCTION
 	// MD // MODE
 	// PC // POWER CONTROL
 	// SH // WIDTH
-	// NB // NOISE BLANKER
-	// NR // NOISE REDUCTION
+	// NB // NOISE BLANKER   ??
+	// NR // NOISE REDUCTION ??
 	// VX // VOX STATUS
 	// CT // CTCSS
 	// ML // MONITOR LEVEL
@@ -711,33 +711,53 @@ void ua3reo_dev_cat_parseCommand(void) {
 		return;
 	}
 
-	if (strcmp(command, "RA") == 0) // RF ATTENUATOR
+	if (strcmp(command, "PA") == 0) // PRE-AMP
 	{
 		if (!has_args) {
-			println("Unknown CAT arguments: ", _command);
+		if (!TRX.LNA) {
+			CAT_Transmit("PA0;");
+		      } else { CAT_Transmit("PA1;");
+		    }
 		} else {
 			if (strcmp(arguments, "0") == 0) {
-				CAT_Transmit("RA00;");
+						if (!TRX.LNA) {
+			      CAT_Transmit("PA0;");
+						} else{ 
+				    CAT_Transmit("PA0;");
+            BUTTONHANDLER_PRE(0);
+						}						
 			} else {
-				println("Unknown CAT arguments: ", _command);
+				if (TRX.LNA) {
+					CAT_Transmit("PA1;");
+				} else {
+					CAT_Transmit("PA1;");
+				  BUTTONHANDLER_PRE(0);					
+				}				
 			}
 		}
 		return;
 	}
 
-	if (strcmp(command, "PA") == 0) // PRE-AMP
+	if (strcmp(command, "RA") == 0) // RF ATTENUATOR
 	{
 		if (!has_args) {
-			println("Unknown CAT arguments: ", _command);
-		} else {
-			if (strcmp(arguments, "0") == 0) {
-				if (TRX.LNA) {
-					CAT_Transmit("PA01;");
+			    if (!TRX.ATT) CAT_Transmit("RA00;");
+			    if (TRX.ATT)  CAT_Transmit("RA11;");
+		    } else {
+			if ((strcmp(arguments, "0") == 0) || (strcmp(arguments, "00") == 0))  {
+				if (!TRX.ATT) {
+					CAT_Transmit("RA00;");
 				} else {
-					CAT_Transmit("PA00;");
+					CAT_Transmit("RA00;");
+				  BUTTONHANDLER_ATT(0);					
 				}
 			} else {
-				println("Unknown CAT arguments: ", _command);
+				if (TRX.ATT) {
+					CAT_Transmit("RA11;");
+				} else {
+					CAT_Transmit("RA11;");
+				  BUTTONHANDLER_ATT(0);					
+				}
 			}
 		}
 		return;
@@ -857,27 +877,75 @@ void ua3reo_dev_cat_parseCommand(void) {
 	if (strcmp(command, "NB") == 0) // NOISE BLANKER
 	{
 		if (!has_args) {
-			println("Unknown CAT arguments: ", _command);
+	if (!TRX.NOISE_BLANKER1 && !TRX.NOISE_BLANKER2) {
+    CAT_Transmit("NB0;");
+	} else {
+    CAT_Transmit("NB1;");
+	}	
 		} else {
 			if (strcmp(arguments, "0") == 0) {
-				CAT_Transmit("NB00;");
+    CAT_Transmit("NB0;");
+		TRX.NOISE_BLANKER1 = false;
+		TRX.NOISE_BLANKER2 = false;	
 			} else {
-				println("Unknown CAT arguments: ", _command);
+    CAT_Transmit("NB1;");	
+		TRX.NOISE_BLANKER1 = true;
+		TRX.NOISE_BLANKER2 = true;
 			}
+	  LCD_UpdateQuery.TopButtons = true;
+	  NeedSaveSettings = true;				
 		}
 		return;
 	}
 
 	if (strcmp(command, "NR") == 0) // NOISE REDUCTION
 	{
-		if (!has_args) {
-			println("Unknown CAT arguments: ", _command);
+		if (!has_args) {			      //querry about NOISE REDUCTION
+		if(CurrentVFO->DNR_Type == 0) CAT_Transmit("NR0;"); 
+		else CAT_Transmit("NR1;");
 		} else {
 			if (strcmp(arguments, "0") == 0) {
-				CAT_Transmit("NR00;");
-			} else {
-				println("Unknown CAT arguments: ", _command);
+				if (CurrentVFO->DNR_Type == 0) CAT_Transmit("NR0;");
+				
+        if (CurrentVFO->DNR_Type == 1) {
+					CAT_Transmit("NR0;");
+					BUTTONHANDLER_DNR(0);
+				}
 			}
+			if (strcmp(arguments, "1") == 0) {
+				if (CurrentVFO->DNR_Type == 1) CAT_Transmit("NR1;");
+				
+        if (CurrentVFO->DNR_Type == 0) {
+					CAT_Transmit("NR1;");
+					BUTTONHANDLER_DNR(0);
+				}
+			}			
+		}
+		return;
+	}
+	
+		if (strcmp(command, "NT") == 0) // NOISE REDUCTION
+	{
+		if (!has_args) {			      //querry about NOISE REDUCTION
+		if(CurrentVFO->AutoNotchFilter == true) CAT_Transmit("NT1;"); 
+		else CAT_Transmit("NT0;");
+		} else {
+			if (strcmp(arguments, "0") == 0) {
+				if (CurrentVFO->AutoNotchFilter == false) CAT_Transmit("NT0;");
+				
+        if (CurrentVFO->AutoNotchFilter == true) {
+					CAT_Transmit("NT0;");
+					BUTTONHANDLER_NOTCH(0);
+				}
+			}
+			if (strcmp(arguments, "1") == 0) {
+				if (CurrentVFO->AutoNotchFilter == true) CAT_Transmit("NT1;");
+				
+        if (CurrentVFO->AutoNotchFilter == false) {
+					CAT_Transmit("NT1;");
+					BUTTONHANDLER_NOTCH(0);
+				}
+			}			
 		}
 		return;
 	}
