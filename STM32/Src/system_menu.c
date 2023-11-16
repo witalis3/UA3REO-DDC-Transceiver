@@ -368,6 +368,7 @@ static void SYSMENU_HANDL_CALIB_ENABLE_marine_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENABLE_70cm_band(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER2_INVERT(int8_t direction);
+static void SYSMENU_HANDL_CALIB_ENCODER2_ON_FALLING(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_ACCELERATION(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_DEBOUNCE(int8_t direction);
 static void SYSMENU_HANDL_CALIB_ENCODER_INVERT(int8_t direction);
@@ -1234,6 +1235,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"Encoder slow rate", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_HANDL_CALIB_ENCODER_SLOW_RATE},
     {"Encoder2 debounce", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.ENCODER2_DEBOUNCE, SYSMENU_HANDL_CALIB_ENCODER2_DEBOUNCE},
     {"Encoder2 invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER2_INVERT, SYSMENU_HANDL_CALIB_ENCODER2_INVERT},
+    {"Encoder2 on fall", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ENCODER2_ON_FALLING, SYSMENU_HANDL_CALIB_ENCODER2_ON_FALLING},
 #if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_KT_100S) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2) || \
     defined(FRONTPANEL_X1)
     {"FAN Full start", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.FAN_FULL_START, SYSMENU_HANDL_CALIB_FAN_FULL_START},
@@ -1268,7 +1270,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #ifdef LAY_320x240
     {"Max ChargePump", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq},
 #else
-    {"Max ChargePump, kHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq},
+    {"Max ChargePump,kHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.MAX_ChargePump_Freq, SYSMENU_HANDL_CALIB_MAX_ChargePump_Freq},
 #endif
 #endif
     {"Max PWR on Meter", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.MAX_RF_POWER_ON_METER, SYSMENU_HANDL_CALIB_MAX_RF_POWER_ON_METER},
@@ -5816,6 +5818,15 @@ static void SYSMENU_HANDL_CALIB_ENCODER2_INVERT(int8_t direction) {
 	}
 	if (direction < 0) {
 		CALIBRATE.ENCODER2_INVERT = false;
+	}
+}
+
+static void SYSMENU_HANDL_CALIB_ENCODER2_ON_FALLING(int8_t direction) {
+	if (direction > 0) {
+		CALIBRATE.ENCODER2_ON_FALLING = true;
+	}
+	if (direction < 0) {
+		CALIBRATE.ENCODER2_ON_FALLING = false;
 	}
 }
 

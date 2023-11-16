@@ -169,12 +169,18 @@ static int8_t EVENTS_get_encoderDirection(uint8_t state) {
 static int8_t EVENTS_get_encoder2Direction(uint8_t state) {
 	switch (state) {
 	// case 0b0001:
-	// case 0b1000:
+	case 0b1000:
+		if (CALIBRATE.ENCODER2_ON_FALLING) {
+			return 0;
+		}
 	// case 0b1110:
 	case 0b0111:
 		return CALIBRATE.ENCODER2_INVERT ? 1 : -1;
 	// case 0b0010:
-	// case 0b0100:
+	case 0b0100:
+		if (CALIBRATE.ENCODER2_ON_FALLING) {
+			return 0;
+		}
 	// case 0b1101:
 	case 0b1011:
 		return CALIBRATE.ENCODER2_INVERT ? -1 : 1;

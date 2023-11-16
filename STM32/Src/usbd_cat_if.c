@@ -714,25 +714,26 @@ void ua3reo_dev_cat_parseCommand(void) {
 	if (strcmp(command, "PA") == 0) // PRE-AMP
 	{
 		if (!has_args) {
-		if (!TRX.LNA) {
-			CAT_Transmit("PA0;");
-		      } else { CAT_Transmit("PA1;");
-		    }
+			if (!TRX.LNA) {
+				CAT_Transmit("PA0;");
+			} else {
+				CAT_Transmit("PA1;");
+			}
 		} else {
 			if (strcmp(arguments, "0") == 0) {
-						if (!TRX.LNA) {
-			      CAT_Transmit("PA0;");
-						} else{ 
-				    CAT_Transmit("PA0;");
-            BUTTONHANDLER_PRE(0);
-						}						
+				if (!TRX.LNA) {
+					CAT_Transmit("PA0;");
+				} else {
+					CAT_Transmit("PA0;");
+					BUTTONHANDLER_PRE(0);
+				}
 			} else {
 				if (TRX.LNA) {
 					CAT_Transmit("PA1;");
 				} else {
 					CAT_Transmit("PA1;");
-				  BUTTONHANDLER_PRE(0);					
-				}				
+					BUTTONHANDLER_PRE(0);
+				}
 			}
 		}
 		return;
@@ -741,22 +742,26 @@ void ua3reo_dev_cat_parseCommand(void) {
 	if (strcmp(command, "RA") == 0) // RF ATTENUATOR
 	{
 		if (!has_args) {
-			    if (!TRX.ATT) CAT_Transmit("RA00;");
-			    if (TRX.ATT)  CAT_Transmit("RA11;");
-		    } else {
-			if ((strcmp(arguments, "0") == 0) || (strcmp(arguments, "00") == 0))  {
+			if (!TRX.ATT) {
+				CAT_Transmit("RA00;");
+			}
+			if (TRX.ATT) {
+				CAT_Transmit("RA11;");
+			}
+		} else {
+			if ((strcmp(arguments, "0") == 0) || (strcmp(arguments, "00") == 0)) {
 				if (!TRX.ATT) {
 					CAT_Transmit("RA00;");
 				} else {
 					CAT_Transmit("RA00;");
-				  BUTTONHANDLER_ATT(0);					
+					BUTTONHANDLER_ATT(0);
 				}
 			} else {
 				if (TRX.ATT) {
 					CAT_Transmit("RA11;");
 				} else {
 					CAT_Transmit("RA11;");
-				  BUTTONHANDLER_ATT(0);					
+					BUTTONHANDLER_ATT(0);
 				}
 			}
 		}
@@ -877,75 +882,89 @@ void ua3reo_dev_cat_parseCommand(void) {
 	if (strcmp(command, "NB") == 0) // NOISE BLANKER
 	{
 		if (!has_args) {
-	if (!TRX.NOISE_BLANKER1 && !TRX.NOISE_BLANKER2) {
-    CAT_Transmit("NB0;");
-	} else {
-    CAT_Transmit("NB1;");
-	}	
+			if (!TRX.NOISE_BLANKER1 && !TRX.NOISE_BLANKER2) {
+				CAT_Transmit("NB0;");
+			} else {
+				CAT_Transmit("NB1;");
+			}
 		} else {
 			if (strcmp(arguments, "0") == 0) {
-    CAT_Transmit("NB0;");
-		TRX.NOISE_BLANKER1 = false;
-		TRX.NOISE_BLANKER2 = false;	
+				CAT_Transmit("NB0;");
+				TRX.NOISE_BLANKER1 = false;
+				TRX.NOISE_BLANKER2 = false;
 			} else {
-    CAT_Transmit("NB1;");	
-		TRX.NOISE_BLANKER1 = true;
-		TRX.NOISE_BLANKER2 = true;
+				CAT_Transmit("NB1;");
+				TRX.NOISE_BLANKER1 = true;
+				TRX.NOISE_BLANKER2 = true;
 			}
-	  LCD_UpdateQuery.TopButtons = true;
-	  NeedSaveSettings = true;				
+			LCD_UpdateQuery.TopButtons = true;
+			NeedSaveSettings = true;
 		}
 		return;
 	}
 
 	if (strcmp(command, "NR") == 0) // NOISE REDUCTION
 	{
-		if (!has_args) {			      //querry about NOISE REDUCTION
-		if(CurrentVFO->DNR_Type == 0) CAT_Transmit("NR0;"); 
-		else CAT_Transmit("NR1;");
+		if (!has_args) { // querry about NOISE REDUCTION
+			if (CurrentVFO->DNR_Type == 0) {
+				CAT_Transmit("NR0;");
+			} else {
+				CAT_Transmit("NR1;");
+			}
 		} else {
 			if (strcmp(arguments, "0") == 0) {
-				if (CurrentVFO->DNR_Type == 0) CAT_Transmit("NR0;");
-				
-        if (CurrentVFO->DNR_Type == 1) {
+				if (CurrentVFO->DNR_Type == 0) {
+					CAT_Transmit("NR0;");
+				}
+
+				if (CurrentVFO->DNR_Type == 1) {
 					CAT_Transmit("NR0;");
 					BUTTONHANDLER_DNR(0);
 				}
 			}
 			if (strcmp(arguments, "1") == 0) {
-				if (CurrentVFO->DNR_Type == 1) CAT_Transmit("NR1;");
-				
-        if (CurrentVFO->DNR_Type == 0) {
+				if (CurrentVFO->DNR_Type == 1) {
+					CAT_Transmit("NR1;");
+				}
+
+				if (CurrentVFO->DNR_Type == 0) {
 					CAT_Transmit("NR1;");
 					BUTTONHANDLER_DNR(0);
 				}
-			}			
+			}
 		}
 		return;
 	}
-	
-		if (strcmp(command, "NT") == 0) // NOISE REDUCTION
+
+	if (strcmp(command, "NT") == 0) // NOISE REDUCTION
 	{
-		if (!has_args) {			      //querry about NOISE REDUCTION
-		if(CurrentVFO->AutoNotchFilter == true) CAT_Transmit("NT1;"); 
-		else CAT_Transmit("NT0;");
+		if (!has_args) { // querry about NOISE REDUCTION
+			if (CurrentVFO->AutoNotchFilter == true) {
+				CAT_Transmit("NT1;");
+			} else {
+				CAT_Transmit("NT0;");
+			}
 		} else {
 			if (strcmp(arguments, "0") == 0) {
-				if (CurrentVFO->AutoNotchFilter == false) CAT_Transmit("NT0;");
-				
-        if (CurrentVFO->AutoNotchFilter == true) {
+				if (CurrentVFO->AutoNotchFilter == false) {
+					CAT_Transmit("NT0;");
+				}
+
+				if (CurrentVFO->AutoNotchFilter == true) {
 					CAT_Transmit("NT0;");
 					BUTTONHANDLER_NOTCH(0);
 				}
 			}
 			if (strcmp(arguments, "1") == 0) {
-				if (CurrentVFO->AutoNotchFilter == true) CAT_Transmit("NT1;");
-				
-        if (CurrentVFO->AutoNotchFilter == false) {
+				if (CurrentVFO->AutoNotchFilter == true) {
+					CAT_Transmit("NT1;");
+				}
+
+				if (CurrentVFO->AutoNotchFilter == false) {
 					CAT_Transmit("NT1;");
 					BUTTONHANDLER_NOTCH(0);
 				}
-			}			
+			}
 		}
 		return;
 	}

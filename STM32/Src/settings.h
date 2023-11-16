@@ -19,7 +19,7 @@
 #endif
 
 #define SETT_VERSION 134        // Settings config version
-#define CALIB_VERSION 84        // Calibration config version
+#define CALIB_VERSION 85        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -906,6 +906,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t ENCODER_DEBOUNCE;
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
+	uint8_t ENCODER2_ON_FALLING;
 	uint8_t CICFIR_GAINER_48K_val;
 	uint8_t CICFIR_GAINER_96K_val;
 	uint8_t CICFIR_GAINER_192K_val;

@@ -349,6 +349,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Encoder slow rate** - Deceleration rate of the main encoder
 * **Encoder2 debounce** - Time of debouncing contacts of the additional encoder
 * **Encoder2 invert** - Invert the rotation of the additional encoder
+* **Encoder2 on fall** - Mode of operation of the secondary encoder (some encoders skip a step or make an extra one)
 * **FAN Full start** - Temperature of the PA for starting the fan at full speed
 * **FAN Medium start** - Temperature of the PA for starting the fan at medium speed
 * **FAN Medium stop** - Temperature of the PA for stopping the fan

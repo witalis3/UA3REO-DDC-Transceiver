@@ -575,6 +575,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER2_INVERT = false;     // invert left-right rotation of the optional encoder
 		CALIBRATE.ENCODER_DEBOUNCE = 0;        // time to eliminate contact bounce at the main encoder, ms
 		CALIBRATE.ENCODER2_DEBOUNCE = 5;       // time to eliminate contact bounce at the additional encoder, ms
+		CALIBRATE.ENCODER2_ON_FALLING = true;  // skip one step on ENC2
 		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
@@ -875,6 +876,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;     // Max TRX Power for indication
 #elif defined(FRONTPANEL_LITE)
 		CALIBRATE.ENCODER_SLOW_RATE = 10;
+		CALIBRATE.ENCODER2_ON_FALLING = false;
 		CALIBRATE.smeter_calibration_hf = 15;
 		CALIBRATE.TUNE_MAX_POWER = 5;         // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 15; // Max TRX Power for indication
