@@ -19,7 +19,7 @@
 #endif
 
 #define SETT_VERSION 134        // Settings config version
-#define CALIB_VERSION 85        // Calibration config version
+#define CALIB_VERSION 86        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
