@@ -25,8 +25,8 @@
 #define HRDW_DEBUG_ON_CAT_PORT false //********************************************************************
 
 // settings
-#define ADC_CLOCK 61440000ULL                 // ADC generator frequency
-#define DAC_CLOCK (ADC_CLOCK * 85ULL / 32ULL) // DAC generator frequency (163.200.000)
+#define ADC_CLOCK 61440000LL                 // ADC generator frequency
+#define DAC_CLOCK (ADC_CLOCK * 85LL / 32LL) // DAC generator frequency (163.200.000)
 #define MAX_RX_FREQ_HZ 750000000              // Maximum receive frequency (from the ADC datasheet)
 #define MAX_TX_FREQ_HZ (DAC_CLOCK / 2)        // Maximum transmission frequency
 #define ADC_FULL_SCALE 4096                   // maximum signal amplitude in the ADC // powf (2, ADC_BITS)

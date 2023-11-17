@@ -24,8 +24,8 @@
 #define HRDW_HAS_LNA_VHF true
 
 // settings
-#define ADC_CLOCK (122880000ULL + CALIBRATE.VCXO_correction) // ADC generator frequency
-#define DAC_CLOCK (ADC_CLOCK * 115ULL / 128ULL)              // DAC generator frequency (110.400.000)
+#define ADC_CLOCK (122880000LL + CALIBRATE.VCXO_correction) // ADC generator frequency
+#define DAC_CLOCK (ADC_CLOCK * 115LL / 128LL)              // DAC generator frequency (110.400.000)
 #define MAX_RX_FREQ_HZ 750000000                             // Maximum receive frequency (from the ADC datasheet)
 #define MAX_TX_FREQ_HZ (DAC_CLOCK * 2)                       // Maximum transmission frequency
 #define ADC_FULL_SCALE 65536                                 // maximum signal amplitude in the ADC // powf (2, ADC_BITS)
