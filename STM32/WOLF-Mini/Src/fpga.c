@@ -416,7 +416,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 		TCXO_frequency_calculated = CALIBRATE.TCXO_frequency;
 		MAX_ChargePump_Freq_calculated = CALIBRATE.MAX_ChargePump_Freq;
 
-		const uint32_t VCXO_Freq_kHz = ADC_CLOCK / 1000;
+		const uint32_t VCXO_Freq_kHz = (ADC_CLOCK - CALIBRATE.VCXO_correction) / 1000;
 
 		for (uint16_t divider = 2; divider < 4096; divider++) {
 			uint16_t mod_tcxo = CALIBRATE.TCXO_frequency % divider;
