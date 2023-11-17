@@ -1440,7 +1440,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	strncpy(name, (char *)line, name_len);
 	strcpy(value, (char *)line + name_len + 3);
 
-	uint32_t uint64val = atoll(value);
+	uint64_t uint64val = atoll(value);
 	uint32_t uintval = atol(value);
 	int32_t intval = atol(value);
 	float32_t floatval = atof(value);
