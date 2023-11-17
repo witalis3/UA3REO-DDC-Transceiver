@@ -460,7 +460,7 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] = {
         .STATUS_LABEL_S_VAL_FONT = &FreeSans7pt7b,
         .STATUS_LABEL_DBM_X_OFFSET = 1,
         .STATUS_LABEL_DBM_Y_OFFSET = 15,
-        .STATUS_LABEL_BW_X_OFFSET = 430,
+        .STATUS_LABEL_BW_X_OFFSET = 425,
         .STATUS_LABEL_BW_Y_OFFSET = -58,
         .STATUS_LABEL_RIT_X_OFFSET = 160,
         .STATUS_LABEL_RIT_Y_OFFSET = 36,
@@ -543,7 +543,7 @@ extern "C" constexpr STRUCT_LAYOUT_THEME LAYOUT_THEMES[LAYOUT_THEMES_COUNT] = {
         .BW_TRAPEZ_POS_X = 420,
         .BW_TRAPEZ_POS_Y = 30,
         .BW_TRAPEZ_HEIGHT = 20,
-        .BW_TRAPEZ_WIDTH = 60,
+        .BW_TRAPEZ_WIDTH = 54, // 60,
         // Touch buttons layout
         .BUTTON_PADDING = 1,
         .BUTTON_LIGHTER_WIDTH = 0.4f,

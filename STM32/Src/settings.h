@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "8.6.0" // current STM32 version
+#define STM32_VERSION_STR "8.6.4-dev" // current STM32 version
 
 #if defined(FRONTPANEL_MINI)
 #define FPGA_VERSION_STR "6.8.0" // needed FPGA version Wolf-Mini
@@ -18,8 +18,8 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 134        // Settings config version
-#define CALIB_VERSION 84        // Calibration config version
+#define SETT_VERSION 136        // Settings config version
+#define CALIB_VERSION 87        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -553,6 +553,7 @@ extern struct TRX_SETTINGS {
 	float32_t MIC_Gain_AM_DB;
 	float32_t MIC_Gain_FM_DB;
 	float32_t CW_DotToDashRate;
+	float32_t TX_CESSB_COMPRESS_DB;
 
 	uint32_t FRQ_STEP;
 	uint32_t FRQ_FAST_STEP;
@@ -727,6 +728,7 @@ extern struct TRX_SETTINGS {
 	bool ATU_Enabled;
 	bool ATU_T;
 	bool Custom_Transverter_Enabled;
+	bool Transverter_2m;
 	bool Transverter_70cm;
 	bool Transverter_23cm;
 	bool Transverter_13cm;
@@ -861,6 +863,8 @@ extern struct TRX_CALIBRATE {
 	uint16_t MAX_ChargePump_Freq;
 	uint16_t TX_StartDelay;
 	uint16_t Transverter_Custom_Offset_MHz;
+	uint16_t Transverter_2m_RF_MHz;
+	uint16_t Transverter_2m_IF_MHz;
 	uint16_t Transverter_70cm_RF_MHz;
 	uint16_t Transverter_70cm_IF_MHz;
 	uint16_t Transverter_23cm_RF_MHz;
@@ -906,6 +910,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t ENCODER_DEBOUNCE;
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
+	uint8_t ENCODER2_ON_FALLING;
 	uint8_t CICFIR_GAINER_48K_val;
 	uint8_t CICFIR_GAINER_96K_val;
 	uint8_t CICFIR_GAINER_192K_val;
@@ -941,6 +946,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t EXT_FM;
 	uint8_t EXT_2m;
 	uint8_t EXT_70cm;
+	uint8_t EXT_TRANSV_2m;
 	uint8_t EXT_TRANSV_70cm;
 	uint8_t EXT_TRANSV_23cm;
 	uint8_t EXT_TRANSV_13cm;

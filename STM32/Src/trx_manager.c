@@ -384,7 +384,7 @@ bool TRX_TX_Disabled(uint64_t freq) {
 		break;
 	case BANDID_2m:
 	case BANDID_Marine:
-		if (CALIBRATE.NOTX_2m) {
+		if (CALIBRATE.NOTX_2m && !TRX.Transverter_2m) {
 			notx = true;
 		}
 		break;
@@ -433,7 +433,7 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 
 	bool transverter_enabled = false;
-	if (TRX.Transverter_70cm || TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm || TRX.Transverter_QO100) {
+	if (TRX.Transverter_2m || TRX.Transverter_70cm || TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm || TRX.Transverter_QO100) {
 		transverter_enabled = true;
 	}
 
@@ -474,6 +474,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	int64_t cur_vfo_freq = CurrentVFO->SpectrumCenterFreq + (TRX.RIT_Enabled ? TRX_RIT : 0);
 	int8_t cur_vfo_band = getBandFromFreq(cur_vfo_freq, true);
 
+	if (TRX.Transverter_2m && cur_vfo_band == BANDID_2m) {
+		cur_vfo_freq = ((int64_t)CALIBRATE.Transverter_2m_IF_MHz * HZ_IN_MHZ) + (cur_vfo_freq - (int64_t)CALIBRATE.Transverter_2m_RF_MHz * HZ_IN_MHZ);
+	}
 	if (TRX.Transverter_70cm && cur_vfo_band == BANDID_70cm) {
 		cur_vfo_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * HZ_IN_MHZ) + (cur_vfo_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * HZ_IN_MHZ);
 	}
@@ -496,6 +499,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	int64_t sec_vfo_freq = SecondaryVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
 	int8_t sec_vfo_band = getBandFromFreq(sec_vfo_freq, true);
 
+	if (TRX.Transverter_2m && sec_vfo_band == BANDID_2m) {
+		sec_vfo_freq = ((int64_t)CALIBRATE.Transverter_2m_IF_MHz * HZ_IN_MHZ) + (sec_vfo_freq - (int64_t)CALIBRATE.Transverter_2m_RF_MHz * HZ_IN_MHZ);
+	}
 	if (TRX.Transverter_70cm && sec_vfo_band == BANDID_70cm) {
 		sec_vfo_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * HZ_IN_MHZ) + (sec_vfo_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * HZ_IN_MHZ);
 	}
@@ -519,6 +525,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	TRX_MAX_TX_Amplitude = getMaxTXAmplitudeOnFreq(vfo_tx_freq);
 	int8_t tx_vfo_band = getBandFromFreq(vfo_tx_freq, true);
 
+	if (TRX.Transverter_2m && tx_vfo_band == BANDID_2m) {
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_2m_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_2m_RF_MHz * HZ_IN_MHZ);
+	}
 	if (TRX.Transverter_70cm && tx_vfo_band == BANDID_70cm) {
 		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_70cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_70cm_RF_MHz * HZ_IN_MHZ);
 	}

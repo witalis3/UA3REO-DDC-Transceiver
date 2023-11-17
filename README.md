@@ -29,6 +29,7 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 * Supply voltage: 13.8V (overvoltage and polarity reversal protection)
 * Consumption current when receiving: ~0.7А (3'2 QRP), 0.9A (7' BIG)
 * Current consumption during transmission: ~2.5А+ (QRP), 15A+ (BIG)
+* Support for different displays: RA8875/HX8357B/HX8357C/ST7789/ST7796S/ST7735S/ILI9341/ILI9481/ILI9486
 
 ## Transceiver Features
 
@@ -217,7 +218,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **ATU T** - Tuner capacitive arm position
 * **Auto Input Switch** - Auto input switch (PTT - mix, CAT - USB)
 * **CESSB** - Enable controlled-envelope single-sideband modulation
-* **CESSB Compress, dB** - Level of signal compression in CESSB
+* **CESSB Compress, dB** - Signal pre-amplification level before compression in CESSB
 * **Compressor MaxGain** - Maximum comressor gain
 * **Compressor Speed** - TX compressor response speed for transmission (more-faster)
 * **CTCSS Frequency** - Transmit FM CTCSS sub-tone frequency
@@ -349,6 +350,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Encoder slow rate** - Deceleration rate of the main encoder
 * **Encoder2 debounce** - Time of debouncing contacts of the additional encoder
 * **Encoder2 invert** - Invert the rotation of the additional encoder
+* **Encoder2 on fall** - Mode of operation of the secondary encoder (some encoders skip a step or make an extra one)
 * **FAN Full start** - Temperature of the PA for starting the fan at full speed
 * **FAN Medium start** - Temperature of the PA for starting the fan at medium speed
 * **FAN Medium stop** - Temperature of the PA for stopping the fan

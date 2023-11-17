@@ -92,9 +92,9 @@ void ATU_Process(void) {
 			LCD_showTooltip(buff);
 			ATU_Finished = true;
 			delay_stages_count = 0;
-			BUTTONHANDLER_TUNE(0);
 
 			ATU_Save_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq, TRX.ATU_I, TRX.ATU_C, TRX.ATU_T);
+			BUTTONHANDLER_TUNE(0);
 			ATU_Flush_Memory();
 			return;
 		}
@@ -261,6 +261,8 @@ void ATU_Process(void) {
 
 		LCD_UpdateQuery.StatusInfoBar = true;
 	}
+
+	ATU_Save_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq, TRX.ATU_I, TRX.ATU_C, TRX.ATU_T);
 }
 
 void ATU_Flush_Memory() {

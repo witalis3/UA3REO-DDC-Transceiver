@@ -954,6 +954,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.Custom_Transverter_Enabled", (uint64_t *)&TRX.Custom_Transverter_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ATU_Enabled", (uint64_t *)&TRX.ATU_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.TUNER_Enabled", (uint64_t *)&TRX.TUNER_Enabled, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.Transverter_2m", (uint64_t *)&TRX.Transverter_2m, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Transverter_70cm", (uint64_t *)&TRX.Transverter_70cm, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Transverter_23cm", (uint64_t *)&TRX.Transverter_23cm, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Transverter_13cm", (uint64_t *)&TRX.Transverter_13cm, SYSMENU_BOOLEAN);
@@ -1032,6 +1033,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.AGC_Spectral", (uint64_t *)&TRX.AGC_Spectral, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.AGC_Threshold", (uint64_t *)&TRX.AGC_Threshold, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.TX_CESSB", (uint64_t *)&TRX.TX_CESSB, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.TX_CESSB_COMPRESS_DB", (uint64_t *)&TRX.TX_CESSB_COMPRESS_DB, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.VAD_THRESHOLD", (uint64_t *)&TRX.VAD_THRESHOLD, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VOX", (uint64_t *)&TRX.VOX, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VOX_TIMEOUT", (uint64_t *)&TRX.VOX_TIMEOUT, SYSMENU_UINT16);
@@ -1236,6 +1238,7 @@ static void SDCOMM_EXPORT_CALIBRATIONS_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER2_INVERT", (uint64_t *)&CALIBRATE.ENCODER2_INVERT, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_DEBOUNCE", (uint64_t *)&CALIBRATE.ENCODER_DEBOUNCE, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER2_DEBOUNCE", (uint64_t *)&CALIBRATE.ENCODER2_DEBOUNCE, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER2_ON_FALLING", (uint64_t *)&CALIBRATE.ENCODER2_ON_FALLING, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_SLOW_RATE", (uint64_t *)&CALIBRATE.ENCODER_SLOW_RATE, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENCODER_ACCELERATION", (uint64_t *)&CALIBRATE.ENCODER_ACCELERATION, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.RF_unit_type_2", (uint64_t *)&CALIBRATE.RF_unit_type, SYSMENU_UINT8);
@@ -1329,6 +1332,7 @@ static void SDCOMM_EXPORT_CALIBRATIONS_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.EXT_FM", (uint64_t *)&CALIBRATE.EXT_FM, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.EXT_2m", (uint64_t *)&CALIBRATE.EXT_2m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.EXT_70cm", (uint64_t *)&CALIBRATE.EXT_70cm, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("CALIBRATE.EXT_TRANSV_2m", (uint64_t *)&CALIBRATE.EXT_TRANSV_2m, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.EXT_TRANSV_70cm", (uint64_t *)&CALIBRATE.EXT_TRANSV_70cm, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.EXT_TRANSV_23cm", (uint64_t *)&CALIBRATE.EXT_TRANSV_23cm, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("CALIBRATE.EXT_TRANSV_13cm", (uint64_t *)&CALIBRATE.EXT_TRANSV_13cm, SYSMENU_UINT8);
@@ -1363,6 +1367,8 @@ static void SDCOMM_EXPORT_CALIBRATIONS_handler(void) {
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_marine_band", (uint64_t *)&CALIBRATE.ENABLE_marine_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.ENABLE_70cm_band", (uint64_t *)&CALIBRATE.ENABLE_70cm_band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_Custom_Offset_MHz", (uint64_t *)&CALIBRATE.Transverter_Custom_Offset_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_2m_RF_MHz", (uint64_t *)&CALIBRATE.Transverter_2m_RF_MHz, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_2m_IF_MHz", (uint64_t *)&CALIBRATE.Transverter_2m_IF_MHz, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_70cm_RF_MHz", (uint64_t *)&CALIBRATE.Transverter_70cm_RF_MHz, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_70cm_IF_MHz", (uint64_t *)&CALIBRATE.Transverter_70cm_IF_MHz, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("CALIBRATE.Transverter_23cm_RF_MHz", (uint64_t *)&CALIBRATE.Transverter_23cm_RF_MHz, SYSMENU_UINT16);
@@ -1439,7 +1445,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	strncpy(name, (char *)line, name_len);
 	strcpy(value, (char *)line + name_len + 3);
 
-	uint32_t uint64val = atoll(value);
+	uint64_t uint64val = atoll(value);
 	uint32_t uintval = atol(value);
 	int32_t intval = atol(value);
 	float32_t floatval = atof(value);
@@ -1772,6 +1778,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.TUNER_Enabled") == 0) {
 		TRX.TUNER_Enabled = bval;
 	}
+	if (strcmp(name, "TRX.Transverter_2m") == 0) {
+		TRX.Transverter_2m = bval;
+	}
 	if (strcmp(name, "TRX.Transverter_70cm") == 0) {
 		TRX.Transverter_70cm = bval;
 	}
@@ -2003,6 +2012,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.TX_CESSB") == 0) {
 		TRX.TX_CESSB = bval;
+	}
+	if (strcmp(name, "TRX.TX_CESSB_COMPRESS_DB") == 0) {
+		TRX.TX_CESSB_COMPRESS_DB = floatval;
 	}
 	if (strcmp(name, "TRX.VAD_THRESHOLD") == 0) {
 		TRX.VAD_THRESHOLD = (uint8_t)uintval;
@@ -2428,6 +2440,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "CALIBRATE.ENCODER2_DEBOUNCE") == 0) {
 		CALIBRATE.ENCODER2_DEBOUNCE = (uint8_t)uintval;
 	}
+	if (strcmp(name, "CALIBRATE.ENCODER2_ON_FALLING") == 0) {
+		CALIBRATE.ENCODER2_ON_FALLING = bval;
+	}
 	if (strcmp(name, "CALIBRATE.ENCODER_SLOW_RATE") == 0) {
 		CALIBRATE.ENCODER_SLOW_RATE = (uint8_t)uintval;
 	}
@@ -2708,6 +2723,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "CALIBRATE.EXT_70cm") == 0) {
 		CALIBRATE.EXT_70cm = (uint8_t)uintval;
 	}
+	if (strcmp(name, "CALIBRATE.EXT_TRANSV_2m") == 0) {
+		CALIBRATE.EXT_TRANSV_2m = (uint8_t)uintval;
+	}
 	if (strcmp(name, "CALIBRATE.EXT_TRANSV_70cm") == 0) {
 		CALIBRATE.EXT_TRANSV_70cm = (uint8_t)uintval;
 	}
@@ -2806,6 +2824,12 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "CALIBRATE.Transverter_Custom_Offset_MHz") == 0) {
 		CALIBRATE.Transverter_Custom_Offset_MHz = (uint16_t)uintval;
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_2m_RF_MHz") == 0) {
+		CALIBRATE.Transverter_2m_RF_MHz = (uint16_t)uintval;
+	}
+	if (strcmp(name, "CALIBRATE.Transverter_2m_IF_MHz") == 0) {
+		CALIBRATE.Transverter_2m_IF_MHz = (uint16_t)uintval;
 	}
 	if (strcmp(name, "CALIBRATE.Transverter_70cm_RF_MHz") == 0) {
 		CALIBRATE.Transverter_70cm_RF_MHz = (uint16_t)uintval;

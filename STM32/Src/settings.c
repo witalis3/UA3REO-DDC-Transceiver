@@ -211,6 +211,7 @@ void LoadSettings(bool clear) {
 		TRX.ATU_T = false;                         // ATU default state
 		TRX.ATU_Enabled = true;                    // ATU enabled state
 		TRX.TUNER_Enabled = true;                  // TUNER enabled state
+		TRX.Transverter_2m = false;                // Transvertrs enable
 		TRX.Transverter_70cm = false;              // Transvertrs enable
 		TRX.Transverter_23cm = false;              // Transvertrs enable
 		TRX.Transverter_13cm = false;              // Transvertrs enable
@@ -282,6 +283,7 @@ void LoadSettings(bool clear) {
 		TRX.NOISE_BLANKER1_THRESHOLD = 6;                              // threshold for noise blanker 1
 		TRX.NOISE_BLANKER2_THRESHOLD = 16;                             // threshold for noise blanker 2
 		TRX.TX_CESSB = true;                                           // Controlled-envelope single-sideband modulation
+		TRX.TX_CESSB_COMPRESS_DB = 0.1f;                               // CESSB additional gain
 		TRX.RX_AGC_SSB_speed = 10;                                     // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;                                       // AGC receive rate on CW
 		TRX.RX_AGC_Max_gain = 30;                                      // Maximum AGC gain
@@ -574,7 +576,8 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER_INVERT = false;      // invert left-right rotation of the main encoder
 		CALIBRATE.ENCODER2_INVERT = false;     // invert left-right rotation of the optional encoder
 		CALIBRATE.ENCODER_DEBOUNCE = 0;        // time to eliminate contact bounce at the main encoder, ms
-		CALIBRATE.ENCODER2_DEBOUNCE = 5;       // time to eliminate contact bounce at the additional encoder, ms
+		CALIBRATE.ENCODER2_DEBOUNCE = 2;       // time to eliminate contact bounce at the additional encoder, ms
+		CALIBRATE.ENCODER2_ON_FALLING = true;  // skip one step on ENC2
 		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
@@ -875,6 +878,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;     // Max TRX Power for indication
 #elif defined(FRONTPANEL_LITE)
 		CALIBRATE.ENCODER_SLOW_RATE = 10;
+		CALIBRATE.ENCODER2_ON_FALLING = false;
 		CALIBRATE.smeter_calibration_hf = 15;
 		CALIBRATE.TUNE_MAX_POWER = 5;         // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 15; // Max TRX Power for indication
@@ -963,6 +967,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.EXT_FM = 11;                  // External port by band
 		CALIBRATE.EXT_2m = 11;                  // External port by band
 		CALIBRATE.EXT_70cm = 8;                 // External port by band
+		CALIBRATE.EXT_TRANSV_2m = 11;           // External port by band
 		CALIBRATE.EXT_TRANSV_70cm = 8;          // External port by band
 		CALIBRATE.EXT_TRANSV_23cm = 9;          // External port by band
 		CALIBRATE.EXT_TRANSV_13cm = 13;         // External port by band
@@ -996,6 +1001,8 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENABLE_marine_band = false;
 		CALIBRATE.ENABLE_70cm_band = true;
 		CALIBRATE.Transverter_Custom_Offset_MHz = 100; // Offset from VFO
+		CALIBRATE.Transverter_2m_RF_MHz = 144;
+		CALIBRATE.Transverter_2m_IF_MHz = 28;
 		CALIBRATE.Transverter_70cm_RF_MHz = 432;
 		CALIBRATE.Transverter_70cm_IF_MHz = 144;
 		CALIBRATE.Transverter_23cm_RF_MHz = 1296;
@@ -1015,6 +1022,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENABLE_FM_band = false;
 		CALIBRATE.ENABLE_2m_band = false;
 		CALIBRATE.ENABLE_70cm_band = false;
+		CALIBRATE.Transverter_2m_IF_MHz = 28;
 		CALIBRATE.Transverter_70cm_IF_MHz = 28;
 		CALIBRATE.Transverter_23cm_IF_MHz = 28;
 		CALIBRATE.Transverter_13cm_IF_MHz = 28;

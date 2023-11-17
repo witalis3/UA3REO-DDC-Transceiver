@@ -169,12 +169,18 @@ static int8_t EVENTS_get_encoderDirection(uint8_t state) {
 static int8_t EVENTS_get_encoder2Direction(uint8_t state) {
 	switch (state) {
 	// case 0b0001:
-	// case 0b1000:
+	case 0b1000:
+		if (CALIBRATE.ENCODER2_ON_FALLING) {
+			return 0;
+		}
 	// case 0b1110:
 	case 0b0111:
 		return CALIBRATE.ENCODER2_INVERT ? 1 : -1;
 	// case 0b0010:
-	// case 0b0100:
+	case 0b0100:
+		if (CALIBRATE.ENCODER2_ON_FALLING) {
+			return 0;
+		}
 	// case 0b1101:
 	case 0b1011:
 		return CALIBRATE.ENCODER2_INVERT ? -1 : 1;
@@ -200,94 +206,117 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 	static int16_t ENCticksInInterval = 0;
 	static uint32_t ENCstartMeasureTime = 0;
 	static float32_t ENCAcceleration = 0;
+	static uint8_t ENCODER_DTVal_prevState = 0;
+	static uint8_t ENCODER_CLKVal_prevState = 0;
 
 	if ((HAL_GetTick() - ENCODER_AValDeb) >= CALIBRATE.ENCODER_DEBOUNCE) {
 		uint8_t ENCODER_DTVal = HAL_GPIO_ReadPin(ENC_DT_GPIO_Port, ENC_DT_Pin);
 		uint8_t ENCODER_CLKVal = HAL_GPIO_ReadPin(ENC_CLK_GPIO_Port, ENC_CLK_Pin);
-		ENCODER_state = ((ENCODER_state << 2) | (ENCODER_DTVal << 1) | ENCODER_CLKVal) & 0xF;
-		int8_t direction = EVENTS_get_encoderDirection(ENCODER_state);
-		uint8_t ENCODER_SLOW_RATE = LCD_systemMenuOpened ? (CALIBRATE.ENCODER_SLOW_RATE * 5) : CALIBRATE.ENCODER_SLOW_RATE;
+		if (ENCODER_DTVal == ENCODER_DTVal_prevState && ENCODER_CLKVal == ENCODER_CLKVal_prevState || CALIBRATE.ENCODER_DEBOUNCE == 0) {
+			ENCODER_state = ((ENCODER_state << 2) | (ENCODER_DTVal << 1) | ENCODER_CLKVal) & 0xF;
+			int8_t direction = EVENTS_get_encoderDirection(ENCODER_state);
+			uint8_t ENCODER_SLOW_RATE = LCD_systemMenuOpened ? (CALIBRATE.ENCODER_SLOW_RATE * 5) : CALIBRATE.ENCODER_SLOW_RATE;
 
-		if (direction < 0) {
-			ENCODER_slowler--;
-			if (ENCODER_slowler <= -ENCODER_SLOW_RATE) {
-				// acceleration
-				ENCticksInInterval++;
-				if ((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION) {
-					ENCstartMeasureTime = HAL_GetTick();
-					ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
-					ENCticksInInterval = 0;
+			if (direction < 0) {
+				ENCODER_slowler--;
+				if (ENCODER_slowler <= -ENCODER_SLOW_RATE) {
+					// acceleration
+					ENCticksInInterval++;
+					if ((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION) {
+						ENCstartMeasureTime = HAL_GetTick();
+						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
+						ENCticksInInterval = 0;
+					}
+					// do rotate
+					FRONTPANEL_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? ENCAcceleration : -ENCAcceleration);
+					ENCODER_slowler = 0;
+					TRX_ScanMode = false;
 				}
-				// do rotate
-				FRONTPANEL_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? ENCAcceleration : -ENCAcceleration);
-				ENCODER_slowler = 0;
-				TRX_ScanMode = false;
 			}
-			ENCODER_AValDeb = HAL_GetTick();
-		}
-		if (direction > 0) {
-			ENCODER_slowler++;
-			if (ENCODER_slowler >= ENCODER_SLOW_RATE) {
-				// acceleration
-				ENCticksInInterval++;
-				if ((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION) {
-					ENCstartMeasureTime = HAL_GetTick();
-					ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
-					ENCticksInInterval = 0;
+			if (direction > 0) {
+				ENCODER_slowler++;
+				if (ENCODER_slowler >= ENCODER_SLOW_RATE) {
+					// acceleration
+					ENCticksInInterval++;
+					if ((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION) {
+						ENCstartMeasureTime = HAL_GetTick();
+						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
+						ENCticksInInterval = 0;
+					}
+					// do rotate
+					FRONTPANEL_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? -ENCAcceleration : ENCAcceleration);
+					ENCODER_slowler = 0;
+					TRX_ScanMode = false;
 				}
-				// do rotate
-				FRONTPANEL_ENCODER_Rotated(CALIBRATE.ENCODER_INVERT ? -ENCAcceleration : ENCAcceleration);
-				ENCODER_slowler = 0;
-				TRX_ScanMode = false;
 			}
-			ENCODER_AValDeb = HAL_GetTick();
 		}
+		ENCODER_AValDeb = HAL_GetTick();
+		ENCODER_DTVal_prevState = ENCODER_DTVal;
+		ENCODER_CLKVal_prevState = ENCODER_CLKVal;
 	}
 
 	// ENC2
 	static uint8_t ENCODER2_state = 0;
 	static uint32_t ENCODER2_AValDeb = 0;
+	static uint8_t ENCODER2_DTVal_prevState = 0;
+	static uint8_t ENCODER2_CLKVal_prevState = 0;
 
 	if ((HAL_GetTick() - ENCODER2_AValDeb) >= CALIBRATE.ENCODER2_DEBOUNCE) {
 		uint8_t ENCODER2_DTVal = HAL_GPIO_ReadPin(ENC2_DT_GPIO_Port, ENC2_DT_Pin);
 		uint8_t ENCODER2_CLKVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
-		ENCODER2_state = ((ENCODER2_state << 2) | (ENCODER2_DTVal << 1) | ENCODER2_CLKVal) & 0xF;
-		int8_t direction = EVENTS_get_encoder2Direction(ENCODER2_state);
-		if (direction != 0) {
-			FRONTPANEL_ProcessEncoder2 = direction;
-			ENCODER2_AValDeb = HAL_GetTick();
+		if (ENCODER2_DTVal == ENCODER2_DTVal_prevState && ENCODER2_CLKVal == ENCODER2_CLKVal_prevState || CALIBRATE.ENCODER2_DEBOUNCE == 0) {
+			ENCODER2_state = ((ENCODER2_state << 2) | (ENCODER2_DTVal << 1) | ENCODER2_CLKVal) & 0xF;
+			int8_t direction = EVENTS_get_encoder2Direction(ENCODER2_state);
+			if (direction != 0) {
+				FRONTPANEL_ProcessEncoder2 = direction;
+			}
 		}
+		ENCODER2_AValDeb = HAL_GetTick();
+		ENCODER2_DTVal_prevState = ENCODER2_DTVal;
+		ENCODER2_CLKVal_prevState = ENCODER2_CLKVal;
 	}
 
 #ifdef HRDW_HAS_ENC3
 	static uint8_t ENCODER3_state = 0;
 	static uint32_t ENCODER3_AValDeb = 0;
+	static uint8_t ENCODER3_DTVal_prevState = 0;
+	static uint8_t ENCODER3_CLKVal_prevState = 0;
 
 	if ((HAL_GetTick() - ENCODER3_AValDeb) >= CALIBRATE.ENCODER2_DEBOUNCE) {
 		uint8_t ENCODER3_DTVal = HAL_GPIO_ReadPin(ENC3_DT_GPIO_Port, ENC3_DT_Pin);
 		uint8_t ENCODER3_CLKVal = HAL_GPIO_ReadPin(ENC3_CLK_GPIO_Port, ENC3_CLK_Pin);
-		ENCODER3_state = ((ENCODER3_state << 2) | (ENCODER3_DTVal << 1) | ENCODER3_CLKVal) & 0xF;
-		int8_t direction = EVENTS_get_encoder2Direction(ENCODER3_state);
-		if (direction != 0) {
-			FRONTPANEL_ProcessEncoder3 = direction;
-			ENCODER3_AValDeb = HAL_GetTick();
+		if (ENCODER3_DTVal == ENCODER3_DTVal_prevState && ENCODER3_CLKVal == ENCODER3_CLKVal_prevState || CALIBRATE.ENCODER2_DEBOUNCE == 0) {
+			ENCODER3_state = ((ENCODER3_state << 2) | (ENCODER3_DTVal << 1) | ENCODER3_CLKVal) & 0xF;
+			int8_t direction = EVENTS_get_encoder2Direction(ENCODER3_state);
+			if (direction != 0) {
+				FRONTPANEL_ProcessEncoder3 = direction;
+			}
 		}
+		ENCODER3_AValDeb = HAL_GetTick();
+		ENCODER3_DTVal_prevState = ENCODER3_DTVal;
+		ENCODER3_CLKVal_prevState = ENCODER3_CLKVal;
 	}
 #endif
 
 #ifdef HRDW_HAS_ENC4
 	static uint8_t ENCODER4_state = 0;
 	static uint32_t ENCODER4_AValDeb = 0;
+	static uint8_t ENCODER4_DTVal_prevState = 0;
+	static uint8_t ENCODER4_CLKVal_prevState = 0;
 
 	if ((HAL_GetTick() - ENCODER4_AValDeb) >= CALIBRATE.ENCODER2_DEBOUNCE) {
 		uint8_t ENCODER4_DTVal = HAL_GPIO_ReadPin(ENC4_DT_GPIO_Port, ENC4_DT_Pin);
 		uint8_t ENCODER4_CLKVal = HAL_GPIO_ReadPin(ENC4_CLK_GPIO_Port, ENC4_CLK_Pin);
-		ENCODER4_state = ((ENCODER4_state << 2) | (ENCODER4_DTVal << 1) | ENCODER4_CLKVal) & 0xF;
-		int8_t direction = EVENTS_get_encoder2Direction(ENCODER4_state);
-		if (direction != 0) {
-			FRONTPANEL_ProcessEncoder4 = direction;
-			ENCODER4_AValDeb = HAL_GetTick();
+		if (ENCODER4_DTVal == ENCODER4_DTVal_prevState && ENCODER4_CLKVal == ENCODER4_CLKVal_prevState || CALIBRATE.ENCODER2_DEBOUNCE == 0) {
+			ENCODER4_state = ((ENCODER4_state << 2) | (ENCODER4_DTVal << 1) | ENCODER4_CLKVal) & 0xF;
+			int8_t direction = EVENTS_get_encoder2Direction(ENCODER4_state);
+			if (direction != 0) {
+				FRONTPANEL_ProcessEncoder4 = direction;
+			}
 		}
+		ENCODER4_AValDeb = HAL_GetTick();
+		ENCODER4_DTVal_prevState = ENCODER4_DTVal;
+		ENCODER4_CLKVal_prevState = ENCODER4_CLKVal;
 	}
 #endif
 
