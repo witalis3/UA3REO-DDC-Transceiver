@@ -130,6 +130,7 @@ static void SYSMENU_HANDL_TX_ATU_I(int8_t direction);
 static void SYSMENU_HANDL_TX_ATU_T(int8_t direction);
 static void SYSMENU_HANDL_TX_Auto_Input_Switch(int8_t direction);
 static void SYSMENU_HANDL_TX_CESSB(int8_t direction);
+static void SYSMENU_HANDL_TX_CESSB_COMPRESS_DB(int8_t direction);
 static void SYSMENU_HANDL_TX_CTCSS_Freq(int8_t direction);
 static void SYSMENU_HANDL_TX_CompressorMaxGain_AMFM(int8_t direction);
 static void SYSMENU_HANDL_TX_CompressorMaxGain_SSB(int8_t direction);
@@ -835,6 +836,7 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"RF Power", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.RF_Gain, SYSMENU_HANDL_TX_RFPower},
     {"CESSB", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.TX_CESSB, SYSMENU_HANDL_TX_CESSB},
+    {"CESSB Compress", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.TX_CESSB_COMPRESS_DB, SYSMENU_HANDL_TX_CESSB_COMPRESS_DB},
     {"Compr. MxGa AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_AMFM, SYSMENU_HANDL_TX_CompressorMaxGain_AMFM},
     {"Compr. Speed AMFM", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_speed_AMFM, SYSMENU_HANDL_TX_CompressorSpeed_AMFM},
     {"Compr. MxGa SSB", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.TX_Compressor_maxgain_SSB, SYSMENU_HANDL_TX_CompressorMaxGain_SSB},
@@ -3287,6 +3289,16 @@ static void SYSMENU_HANDL_TX_CESSB(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.TX_CESSB = false;
+	}
+}
+
+static void SYSMENU_HANDL_TX_CESSB_COMPRESS_DB(int8_t direction) {
+	TRX.TX_CESSB_COMPRESS_DB += direction * 0.1f;
+	if (TRX.TX_CESSB_COMPRESS_DB < 0.1f) {
+		TRX.TX_CESSB_COMPRESS_DB = 0.1f;
+	}
+	if (TRX.TX_CESSB_COMPRESS_DB > 20.0f) {
+		TRX.TX_CESSB_COMPRESS_DB = 20.0f;
 	}
 }
 
