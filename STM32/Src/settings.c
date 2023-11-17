@@ -211,6 +211,7 @@ void LoadSettings(bool clear) {
 		TRX.ATU_T = false;                         // ATU default state
 		TRX.ATU_Enabled = true;                    // ATU enabled state
 		TRX.TUNER_Enabled = true;                  // TUNER enabled state
+		TRX.Transverter_2m = false;                // Transvertrs enable
 		TRX.Transverter_70cm = false;              // Transvertrs enable
 		TRX.Transverter_23cm = false;              // Transvertrs enable
 		TRX.Transverter_13cm = false;              // Transvertrs enable
@@ -966,6 +967,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.EXT_FM = 11;                  // External port by band
 		CALIBRATE.EXT_2m = 11;                  // External port by band
 		CALIBRATE.EXT_70cm = 8;                 // External port by band
+		CALIBRATE.EXT_TRANSV_2m = 11;           // External port by band
 		CALIBRATE.EXT_TRANSV_70cm = 8;          // External port by band
 		CALIBRATE.EXT_TRANSV_23cm = 9;          // External port by band
 		CALIBRATE.EXT_TRANSV_13cm = 13;         // External port by band
@@ -999,6 +1001,8 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENABLE_marine_band = false;
 		CALIBRATE.ENABLE_70cm_band = true;
 		CALIBRATE.Transverter_Custom_Offset_MHz = 100; // Offset from VFO
+		CALIBRATE.Transverter_2m_RF_MHz = 144;
+		CALIBRATE.Transverter_2m_IF_MHz = 28;
 		CALIBRATE.Transverter_70cm_RF_MHz = 432;
 		CALIBRATE.Transverter_70cm_IF_MHz = 144;
 		CALIBRATE.Transverter_23cm_RF_MHz = 1296;
@@ -1018,6 +1022,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENABLE_FM_band = false;
 		CALIBRATE.ENABLE_2m_band = false;
 		CALIBRATE.ENABLE_70cm_band = false;
+		CALIBRATE.Transverter_2m_IF_MHz = 28;
 		CALIBRATE.Transverter_70cm_IF_MHz = 28;
 		CALIBRATE.Transverter_23cm_IF_MHz = 28;
 		CALIBRATE.Transverter_13cm_IF_MHz = 28;

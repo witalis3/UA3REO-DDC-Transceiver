@@ -18,8 +18,8 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 135        // Settings config version
-#define CALIB_VERSION 86        // Calibration config version
+#define SETT_VERSION 136        // Settings config version
+#define CALIB_VERSION 87        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -728,6 +728,7 @@ extern struct TRX_SETTINGS {
 	bool ATU_Enabled;
 	bool ATU_T;
 	bool Custom_Transverter_Enabled;
+	bool Transverter_2m;
 	bool Transverter_70cm;
 	bool Transverter_23cm;
 	bool Transverter_13cm;
@@ -862,6 +863,8 @@ extern struct TRX_CALIBRATE {
 	uint16_t MAX_ChargePump_Freq;
 	uint16_t TX_StartDelay;
 	uint16_t Transverter_Custom_Offset_MHz;
+	uint16_t Transverter_2m_RF_MHz;
+	uint16_t Transverter_2m_IF_MHz;
 	uint16_t Transverter_70cm_RF_MHz;
 	uint16_t Transverter_70cm_IF_MHz;
 	uint16_t Transverter_23cm_RF_MHz;
@@ -943,6 +946,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t EXT_FM;
 	uint8_t EXT_2m;
 	uint8_t EXT_70cm;
+	uint8_t EXT_TRANSV_2m;
 	uint8_t EXT_TRANSV_70cm;
 	uint8_t EXT_TRANSV_23cm;
 	uint8_t EXT_TRANSV_13cm;

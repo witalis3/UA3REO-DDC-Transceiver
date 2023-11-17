@@ -128,11 +128,14 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	if (TRX.Transverter_70cm && band == BANDID_70cm) { // 70cm
 		band_out = CALIBRATE.EXT_TRANSV_70cm;
 	}
+	if (TRX.Transverter_2m && band == BANDID_2m) { // 2cm
+		band_out = CALIBRATE.EXT_TRANSV_2m;
+	}
 
 	if (!TRX.Transverter_70cm && band == BANDID_70cm) { // 70cm
 		band_out = CALIBRATE.EXT_70cm;
 	}
-	if (band < BANDID_70cm) { // 2m
+	if (!TRX.Transverter_2m && band < BANDID_70cm) { // 2m
 		band_out = CALIBRATE.EXT_2m;
 	}
 	if (band < BANDID_2m) { // FM
