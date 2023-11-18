@@ -10,8 +10,6 @@
 
 #include "traffic_manager.h"
 
-#define M_PI 3.14159265358979323846264338
-
 extern uint16_t cursor_line;
 extern int num_decoded_msg;
 
@@ -87,8 +85,7 @@ float ft_blackman_i(int i, int N) {
 	const float a1 = 1.0f / 2;
 	const float a2 = alpha / 2;
 
-	float x1 = cosf(2 * (float)M_PI * i / (N - 1));
-	// float x2 = cosf(4 * (float)M_PI * i / (N - 1));
+	float x1 = cosf(2 * F_PI * i / (N - 1));
 	float x2 = 2 * x1 * x1 - 1; // Use double angle formula
 	return a0 - a1 * x1 + a2 * x2;
 }

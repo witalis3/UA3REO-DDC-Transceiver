@@ -3,6 +3,7 @@
 
 __asm(".global __use_no_heap\n\t");
 
+#include "fast_sin.h"
 #include "print.h"
 #include "profiler.h"
 #include "settings.h"

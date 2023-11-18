@@ -28,7 +28,7 @@ void InitNoiseReduction(void) {
 #endif
 
 	for (uint16_t idx = 0; idx < NOISE_REDUCTION_FFT_SIZE; idx++) {
-		arm_sqrt_f32(0.5f * (1.0f - arm_cos_f32((2.0f * F_PI * idx) / (float32_t)NOISE_REDUCTION_FFT_SIZE)), &NR_von_Hann[idx]);
+		arm_sqrt_f32(0.5f * (1.0f - cosf((2.0f * F_PI * idx) / (float32_t)NOISE_REDUCTION_FFT_SIZE)), &NR_von_Hann[idx]);
 	}
 
 	CleanNoiseReduction();

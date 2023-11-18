@@ -885,6 +885,11 @@
               <FilePath>..\..\Src\events.h</FilePath>
             </File>
             <File>
+              <FileName>fast_sin.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\fast_sin.h</FilePath>
+            </File>
+            <File>
               <FileName>fft.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\fft.c</FilePath>

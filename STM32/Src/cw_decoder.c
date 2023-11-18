@@ -63,9 +63,9 @@ void CWDecoder_Init(void) {
 	arm_fir_decimate_init_f32(&CWDEC_DECIMATE, CW_DEC_FirDecimate.numTaps, CWDECODER_MAGNIFY, CW_DEC_FirDecimate.pCoeffs, CWDEC_decimState, DECODER_PACKET_SIZE);
 	// Blackman-Harris window function
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++) {
-		CWDEC_window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFTSIZE - 1.0f)) +
-		                              0.14128f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFTSIZE - 1.0f)) -
-		                              0.01168f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFTSIZE - 1.0f));
+		CWDEC_window_multipliers[i] = 0.35875f - 0.48829f * cosf(2.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFTSIZE - 1.0f)) +
+		                              0.14128f * cosf(4.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFTSIZE - 1.0f)) -
+		                              0.01168f * cosf(6.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFTSIZE - 1.0f));
 	}
 }
 

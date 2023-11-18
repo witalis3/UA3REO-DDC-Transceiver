@@ -380,7 +380,7 @@ void FFT_PreInit(void) {
 			float64_t sum = 0.0;
 			for (uint32_t i = 1; i <= M; i++) {
 				float64_t cheby_poly = 0.0;
-				float64_t cp_x = x0 * (float64_t)arm_cos_f32(D_PI * i / (float64_t)FFT_SIZE);
+				float64_t cp_x = x0 * cos(D_PI * i / (float64_t)FFT_SIZE);
 				float64_t cp_n = FFT_SIZE - 1;
 				if (fabs(cp_x) <= 1) {
 					cheby_poly = cos(cp_n * acos(cp_x));
@@ -404,29 +404,26 @@ void FFT_PreInit(void) {
 	for (uint_fast16_t i = 0; i < FFT_SIZE; i++) {
 		// Blackman-Harris
 		if (TRX.FFT_Window == 3) {
-			window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
-			                        0.14128f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) -
-			                        0.01168f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
+			window_multipliers[i] = 0.35875f - 0.48829f * cosf(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
+			                        0.14128f * cosf(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) - 0.01168f * cosf(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
 		}
 		// Nuttall
 		else if (TRX.FFT_Window == 4) {
-			window_multipliers[i] = 0.355768f - 0.487396f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
-			                        0.144232f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) -
-			                        0.012604f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
+			window_multipliers[i] = 0.355768f - 0.487396f * cosf(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
+			                        0.144232f * cosf(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) - 0.012604f * cosf(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
 		}
 		// Blackman-Nutall
 		else if (TRX.FFT_Window == 5) {
-			window_multipliers[i] = 0.3635819f - 0.4891775f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
-			                        0.1365995f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) -
-			                        0.0106411f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
+			window_multipliers[i] = 0.3635819f - 0.4891775f * cosf(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
+			                        0.1365995f * cosf(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) - 0.0106411f * cosf(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
 		}
 		// Hann
 		else if (TRX.FFT_Window == 6) {
-			window_multipliers[i] = 0.5f * (1.0f - arm_cos_f32(2.0f * F_PI * (float32_t)i / (float32_t)FFT_SIZE));
+			window_multipliers[i] = 0.5f * (1.0f - cosf(2.0f * F_PI * (float32_t)i / (float32_t)FFT_SIZE));
 		}
 		// Hamming
 		else if (TRX.FFT_Window == 7) {
-			window_multipliers[i] = 0.54f - 0.46f * arm_cos_f32((2.0f * F_PI * (float32_t)i) / ((float32_t)FFT_SIZE - 1.0f));
+			window_multipliers[i] = 0.54f - 0.46f * cosf((2.0f * F_PI * (float32_t)i) / ((float32_t)FFT_SIZE - 1.0f));
 		}
 		// No window
 		else if (TRX.FFT_Window == 8) {

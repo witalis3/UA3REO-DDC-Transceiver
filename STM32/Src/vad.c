@@ -41,8 +41,7 @@ void InitVAD(void) {
 #endif
 	// Blackman window function
 	for (uint_fast16_t i = 0; i < VAD_FFT_SIZE; i++) {
-		VAD_window_multipliers[i] =
-		    ((1.0f - 0.16f) / 2) - 0.5f * arm_cos_f32((2.0f * PI * i) / ((float32_t)VAD_FFT_SIZE - 1.0f)) + (0.16f / 2) * arm_cos_f32(4.0f * PI * i / ((float32_t)VAD_FFT_SIZE - 1.0f));
+		VAD_window_multipliers[i] = ((1.0f - 0.16f) / 2) - 0.5f * cosf((2.0f * PI * i) / ((float32_t)VAD_FFT_SIZE - 1.0f)) + (0.16f / 2) * cosf(4.0f * PI * i / ((float32_t)VAD_FFT_SIZE - 1.0f));
 	}
 }
 

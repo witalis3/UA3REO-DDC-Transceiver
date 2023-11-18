@@ -1774,18 +1774,18 @@ void BUTTONHANDLER_STEP(uint32_t parameter) {
 void BUTTONHANDLER_DNR(uint32_t parameter) {
 	TRX_TemporaryMute();
 	CleanNoiseReduction();
-		if (parameter >0) {
-	CurrentVFO->DNR_Type = (uint8_t) parameter-1; 
-		} else {
-	
-	if (CurrentVFO->DNR_Type == 0) {
-		CurrentVFO->DNR_Type = 1;
-	} else if (CurrentVFO->DNR_Type == 1) {
-		CurrentVFO->DNR_Type = 2;
+	if (parameter > 0) {
+		CurrentVFO->DNR_Type = (uint8_t)parameter - 1;
 	} else {
-		CurrentVFO->DNR_Type = 0;
+
+		if (CurrentVFO->DNR_Type == 0) {
+			CurrentVFO->DNR_Type = 1;
+		} else if (CurrentVFO->DNR_Type == 1) {
+			CurrentVFO->DNR_Type = 2;
+		} else {
+			CurrentVFO->DNR_Type = 0;
+		}
 	}
-}
 #ifdef STM32F407xx
 	if (CurrentVFO->DNR_Type == 2) {
 		CurrentVFO->DNR_Type = 0;
