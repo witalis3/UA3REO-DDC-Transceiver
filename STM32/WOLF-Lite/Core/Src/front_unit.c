@@ -249,8 +249,8 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .prev_state = false,
      .work_in_menu = true,
      .parameter = 0,
-     .clickHandler = BUTTONHANDLER_BW,
-     .holdHandler = BUTTONHANDLER_BW}, // SB9
+     .clickHandler = BUTTONHANDLER_MODE_P,
+     .holdHandler = BUTTONHANDLER_MODE_N}, // SB9
 };
 #endif
 
