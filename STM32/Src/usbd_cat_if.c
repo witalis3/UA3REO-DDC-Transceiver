@@ -905,34 +905,30 @@ void ua3reo_dev_cat_parseCommand(void) {
 
 	if (strcmp(command, "NR") == 0) // NOISE REDUCTION
 	{
+		char answer[30] = {0};
 		if (!has_args) { // querry about NOISE REDUCTION
-			if (CurrentVFO->DNR_Type == 0) {
-				CAT_Transmit("NR0;");
-			} else {
-				CAT_Transmit("NR1;");
-			}
-		} else {
-			if (strcmp(arguments, "0") == 0) {
-				if (CurrentVFO->DNR_Type == 0) {
-					CAT_Transmit("NR0;");
-				}
-
-				if (CurrentVFO->DNR_Type == 1) {
-					CAT_Transmit("NR0;");
-					BUTTONHANDLER_DNR(0);
-				}
-			}
-			if (strcmp(arguments, "1") == 0) {
-				if (CurrentVFO->DNR_Type == 1) {
-					CAT_Transmit("NR1;");
-				}
-
-				if (CurrentVFO->DNR_Type == 0) {
-					CAT_Transmit("NR1;");
-					BUTTONHANDLER_DNR(0);
-				}
-			}
+					strcat(answer, "NR");	
+			    sprintf(ctmp, "%d", CurrentVFO->DNR_Type);
+					strcat(answer, ctmp); // type
+			    strcat(answer, ";");
+					CAT_Transmit(answer);
 		}
+		
+			if (strcmp(arguments, "0") == 0) {
+					CAT_Transmit("NR0;"); 
+				  BUTTONHANDLER_DNR(1);   // DNR0
+				}
+
+			if (strcmp(arguments, "1") == 0) {
+				  CAT_Transmit("NR1;");
+				  BUTTONHANDLER_DNR(2);   // DNR1
+				}
+
+			if (strcmp(arguments, "2") == 0) {
+					CAT_Transmit("NR2;");
+				  BUTTONHANDLER_DNR(3);   // DNR2
+
+				}
 		return;
 	}
 
