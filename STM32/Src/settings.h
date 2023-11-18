@@ -10,9 +10,7 @@
 
 #define STM32_VERSION_STR "8.7.0-dev" // current STM32 version
 
-#if defined(FRONTPANEL_MINI)
-#define FPGA_VERSION_STR "6.8.0" // needed FPGA version Wolf-Mini
-#elif defined(FRONTPANEL_LITE)
+#if defined(FRONTPANEL_LITE)
 #define FPGA_VERSION_STR "8.0.0" // needed FPGA version Wolf-Lite
 #else
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1

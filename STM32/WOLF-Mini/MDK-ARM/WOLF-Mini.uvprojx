@@ -410,11 +410,6 @@
               <FilePath>..\Src\system_stm32h7xx.c</FilePath>
             </File>
             <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\fpga.c</FilePath>
-            </File>
-            <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
@@ -458,6 +453,11 @@
               <FileName>stm32h7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\WOLF\Src\fpga.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1950,11 +1950,6 @@
               <FilePath>..\Src\system_stm32h7xx.c</FilePath>
             </File>
             <File>
-              <FileName>fpga.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\fpga.c</FilePath>
-            </File>
-            <File>
               <FileName>front_unit.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\front_unit.c</FilePath>
@@ -1998,6 +1993,11 @@
               <FileName>stm32h7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\stm32h7xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>fpga.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\WOLF\Src\fpga.c</FilePath>
             </File>
           </Files>
         </Group>

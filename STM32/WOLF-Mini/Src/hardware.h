@@ -25,7 +25,9 @@
 
 // settings
 #define ADC_CLOCK (122880000LL + CALIBRATE.VCXO_correction) // ADC generator frequency
-#define DAC_CLOCK (ADC_CLOCK * 115LL / 128LL)               // DAC generator frequency (110.400.000)
+#define DAC_CLOCK (HRDW_DAC_PLL_selected ? DAC_CLOCK_PLL2 : DAC_CLOCK_PLL1) // DAC generator frequency
+#define DAC_CLOCK_PLL1 (ADC_CLOCK * 5LL / 8LL)                              // DAC generator frequency PLL 1 (76.800.000)
+#define DAC_CLOCK_PLL2 (ADC_CLOCK * 7LL / 8LL)                              // DAC generator frequency PLL 2 (107.520.000)
 #define MAX_RX_FREQ_HZ 750000000                            // Maximum receive frequency (from the ADC datasheet)
 #define MAX_TX_FREQ_HZ (DAC_CLOCK * 2)                      // Maximum transmission frequency
 #define ADC_FULL_SCALE 65536                                // maximum signal amplitude in the ADC // powf (2, ADC_BITS)
@@ -89,6 +91,7 @@ extern volatile bool HRDW_SPI_Locked;
 extern bool dma_memset32_busy;
 extern bool dma_memcpy32_busy;
 extern CPULOAD_t CPU_LOAD;
+extern bool HRDW_DAC_PLL_selected;
 
 // methods
 extern void CPULOAD_Init(void);
