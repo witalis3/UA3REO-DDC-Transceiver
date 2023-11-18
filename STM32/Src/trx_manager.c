@@ -2604,11 +2604,26 @@ void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
 
 	if (CALIBRATE.MEMORY_CHANNELS[channel].freq == CurrentVFO->Freq) {
 		CALIBRATE.MEMORY_CHANNELS[channel].freq = 0;
+#ifndef FRONTPANEL_LITE
+		sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "Ch %d", channel + 1);
+#endif
 
 		LCD_showTooltip("Channel removed");
 	} else {
 		CALIBRATE.MEMORY_CHANNELS[channel].freq = CurrentVFO->Freq;
 		CALIBRATE.MEMORY_CHANNELS[channel].mode = CurrentVFO->Mode;
+
+#ifndef FRONTPANEL_LITE
+		if (CurrentVFO->Freq < 1000000) {                                                                 // < 1mhz
+			sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "%.2f", CurrentVFO->Freq / 1000.0);            // 3k.2h
+		} else if (CurrentVFO->Freq < 100000000) {                                                        // < 100mhz
+			sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "%.3f", CurrentVFO->Freq / 1000000.0);         // 2m.3k
+		} else if (CurrentVFO->Freq < 1000000000) {                                                       // < 1000mhz
+			sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "%.2f", CurrentVFO->Freq / 1000000.0);         // 3m.2k
+		} else {                                                                                          // >= 1000mhz
+			sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "%u", (uint32_t)(CurrentVFO->Freq / 1000000)); // 3m
+		}
+#endif
 
 		LCD_showTooltip("Channel saved");
 	}

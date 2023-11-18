@@ -1278,7 +1278,7 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, u
 	uint8_t inData[3] = {0};
 	uint32_t mcp3008_value = 0;
 
-	const uint8_t max_signal_diff = 50;
+	const uint8_t max_signal_diff = 30;
 	const uint8_t max_retry = 3;
 	uint8_t retry = 0;
 	uint32_t value_first = 0;
