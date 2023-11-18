@@ -555,6 +555,9 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_VOLUME) {
 		sprintf(enc2_state_str, "VOL");
 	}
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_IF) {
+		sprintf(enc2_state_str, "IF");
+	}
 
 	printInfoSmall(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET), LAYOUT->STATUS_ANT_BLOCK_WIDTH, LAYOUT->STATUS_ANT_BLOCK_HEIGHT, enc2_state_str,
 	               BG_COLOR, COLOR->STATUS_RX, COLOR->STATUS_RX, true);

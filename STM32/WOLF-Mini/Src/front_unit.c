@@ -460,6 +460,26 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		sprintf(sbuff, "Vol: %u%%", TRX.Volume);
 		LCD_showTooltip(sbuff);
 	}
+	
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_IF) // IF
+	{
+		if (TRX.IF_Gain > 0 || direction > 0) {
+			TRX.IF_Gain += direction * 1;
+		}
+		if (TRX.IF_Gain < CALIBRATE.IF_GAIN_MIN) {
+			TRX.IF_Gain = CALIBRATE.IF_GAIN_MIN;
+		}
+		if (TRX.IF_Gain > CALIBRATE.IF_GAIN_MAX) {
+			TRX.IF_Gain = CALIBRATE.IF_GAIN_MAX;
+		}
+
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+		if (band > 0) {
+			TRX.BANDS_SAVED_SETTINGS[band].IF_Gain = TRX.IF_Gain;
+		}
+
+		LCD_UpdateQuery.StatusInfoBar = true;
+	}
 }
 
 void FRONTPANEL_check_ENC2SW(bool state) {
@@ -547,7 +567,7 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 			TRX.ENC2_func_mode++;
 		}
 
-		if (TRX.ENC2_func_mode > ENC_FUNC_SET_VOLUME) {
+		if (TRX.ENC2_func_mode > ENC_FUNC_SET_IF) {
 			TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 		}
 
@@ -579,6 +599,9 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_VOLUME) {
 			LCD_showTooltip("VOLUME");
+		}
+		if (TRX.ENC2_func_mode == ENC_FUNC_SET_IF) {
+			LCD_showTooltip("SET IF");
 		}
 	} else {
 		if (LCD_systemMenuOpened) {
