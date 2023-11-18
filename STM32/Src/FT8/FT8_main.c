@@ -293,7 +293,23 @@ static void update_synchronization(void) {
 
 // analyzer events to the encoder
 void FT8_EncRotate(int8_t direction) {
-	if (LCD_busy || TRX_on_TX) {
+	if (TRX_on_TX) {
+		if (direction > 0 || TRX.RF_Gain > 0) {
+			TRX.RF_Gain += direction;
+		}
+		if (TRX.RF_Gain > 100) {
+			TRX.RF_Gain = 100;
+		}
+
+		int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
+		if (band >= 0) {
+			TRX.BANDS_SAVED_SETTINGS[band].RF_Gain = TRX.RF_Gain;
+		}
+
+		return;
+	}
+
+	if (LCD_busy) {
 		return;
 	}
 	LCD_busy = true;
