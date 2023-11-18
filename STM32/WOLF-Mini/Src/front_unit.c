@@ -460,7 +460,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		sprintf(sbuff, "Vol: %u%%", TRX.Volume);
 		LCD_showTooltip(sbuff);
 	}
-	
+
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_IF) // IF
 	{
 		if (TRX.IF_Gain > 0 || direction > 0) {

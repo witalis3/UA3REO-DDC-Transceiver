@@ -16,8 +16,8 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 136        // Settings config version
-#define CALIB_VERSION 87        // Calibration config version
+#define SETT_VERSION 137        // Settings config version
+#define CALIB_VERSION 88        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -500,6 +500,7 @@ typedef struct {
 // Save memory channels
 typedef struct {
 	uint64_t freq;
+	float32_t CTCSS_Freq;
 	uint8_t mode;
 	char name[MAX_CHANNEL_MEMORY_NAME_LENGTH];
 } CHANNEL_SAVED_SETTINGS_TYPE;
