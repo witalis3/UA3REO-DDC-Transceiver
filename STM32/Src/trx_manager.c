@@ -1942,12 +1942,16 @@ void BUTTONHANDLER_NOTCH_SWITCH(uint32_t parameter) {
 
 void BUTTONHANDLER_RIT(uint32_t parameter) {
 	TRX.RIT_Enabled = !TRX.RIT_Enabled;
+
+#ifndef FRONTPANEL_WOLF_2
 	if (TRX.RIT_Enabled) {
 		TRX.ENC2_func_mode = ENC_FUNC_SET_RIT;
 	}
 	if (!TRX.XIT_Enabled && !TRX.RIT_Enabled && TRX.ENC2_func_mode == ENC_FUNC_SET_RIT) {
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	}
+#endif
+
 	TRX.SPLIT_Enabled = false;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
@@ -1958,12 +1962,16 @@ void BUTTONHANDLER_RIT(uint32_t parameter) {
 
 void BUTTONHANDLER_XIT(uint32_t parameter) {
 	TRX.XIT_Enabled = !TRX.XIT_Enabled;
+
+#ifndef FRONTPANEL_WOLF_2
 	if (TRX.XIT_Enabled) {
 		TRX.ENC2_func_mode = ENC_FUNC_SET_RIT;
 	}
 	if (!TRX.XIT_Enabled && !TRX.RIT_Enabled && TRX.ENC2_func_mode == ENC_FUNC_SET_RIT) {
 		TRX.ENC2_func_mode = ENC_FUNC_FAST_STEP;
 	}
+#endif
+
 	TRX.SPLIT_Enabled = false;
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setFrequency(SecondaryVFO->Freq, SecondaryVFO);
