@@ -2022,6 +2022,8 @@ static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction) {
 	if (direction < 0) {
 		TRX.Custom_Transverter_Enabled = false;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_2M(int8_t direction) {
@@ -2031,6 +2033,8 @@ static void SYSMENU_HANDL_TRX_TRANSV_2M(int8_t direction) {
 	if (direction < 0) {
 		TRX.Transverter_2m = false;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_70CM(int8_t direction) {
@@ -2040,6 +2044,8 @@ static void SYSMENU_HANDL_TRX_TRANSV_70CM(int8_t direction) {
 	if (direction < 0) {
 		TRX.Transverter_70cm = false;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_23CM(int8_t direction) {
@@ -2051,6 +2057,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_23CM(int8_t direction) {
 	}
 
 	BAND_SELECTABLE[BANDID_23cm] = TRX.Transverter_23cm;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_13CM(int8_t direction) {
@@ -2062,6 +2069,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_13CM(int8_t direction) {
 	}
 
 	BAND_SELECTABLE[BANDID_13cm] = TRX.Transverter_13cm;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction) {
@@ -2073,6 +2081,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction) {
 	}
 
 	BAND_SELECTABLE[BANDID_6cm] = TRX.Transverter_6cm;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction) {
@@ -2084,6 +2093,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction) {
 	}
 
 	BAND_SELECTABLE[BANDID_3cm] = TRX.Transverter_3cm;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_QO100(int8_t direction) {
@@ -2095,6 +2105,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_QO100(int8_t direction) {
 	}
 
 	BAND_SELECTABLE[BANDID_QO100] = TRX.Transverter_QO100;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_Beeper(int8_t direction) {
@@ -7529,6 +7540,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom(int8_t direction) {
 	if (CALIBRATE.Transverter_Custom_Offset_MHz > 750) {
 		CALIBRATE.Transverter_Custom_Offset_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_2m(int8_t direction) {
@@ -7539,6 +7552,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_2m(int8_t direction) {
 	if (CALIBRATE.Transverter_2m_RF_MHz > 15000) {
 		CALIBRATE.Transverter_2m_RF_MHz = 15000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_2m(int8_t direction) {
@@ -7549,6 +7564,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_2m(int8_t direction) {
 	if (CALIBRATE.Transverter_2m_IF_MHz > 750) {
 		CALIBRATE.Transverter_2m_IF_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_70cm(int8_t direction) {
@@ -7559,6 +7576,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_70cm(int8_t direction) {
 	if (CALIBRATE.Transverter_70cm_RF_MHz > 15000) {
 		CALIBRATE.Transverter_70cm_RF_MHz = 15000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_70cm(int8_t direction) {
@@ -7569,6 +7588,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_70cm(int8_t direction) {
 	if (CALIBRATE.Transverter_70cm_IF_MHz > 750) {
 		CALIBRATE.Transverter_70cm_IF_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_23cm(int8_t direction) {
@@ -7579,6 +7600,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_23cm(int8_t direction) {
 	if (CALIBRATE.Transverter_23cm_RF_MHz > 15000) {
 		CALIBRATE.Transverter_23cm_RF_MHz = 15000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_23cm(int8_t direction) {
@@ -7589,6 +7612,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_23cm(int8_t direction) {
 	if (CALIBRATE.Transverter_23cm_IF_MHz > 750) {
 		CALIBRATE.Transverter_23cm_IF_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_13cm(int8_t direction) {
@@ -7599,6 +7624,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_13cm(int8_t direction) {
 	if (CALIBRATE.Transverter_13cm_RF_MHz > 15000) {
 		CALIBRATE.Transverter_13cm_RF_MHz = 15000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_13cm(int8_t direction) {
@@ -7609,6 +7636,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_13cm(int8_t direction) {
 	if (CALIBRATE.Transverter_13cm_IF_MHz > 750) {
 		CALIBRATE.Transverter_13cm_IF_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_6cm(int8_t direction) {
@@ -7619,6 +7648,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_6cm(int8_t direction) {
 	if (CALIBRATE.Transverter_6cm_RF_MHz > 15000) {
 		CALIBRATE.Transverter_6cm_RF_MHz = 15000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_6cm(int8_t direction) {
@@ -7629,6 +7660,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_6cm(int8_t direction) {
 	if (CALIBRATE.Transverter_6cm_IF_MHz > 750) {
 		CALIBRATE.Transverter_6cm_IF_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_3cm(int8_t direction) {
@@ -7639,6 +7672,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_3cm(int8_t direction) {
 	if (CALIBRATE.Transverter_3cm_RF_MHz > 15000) {
 		CALIBRATE.Transverter_3cm_RF_MHz = 15000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_3cm(int8_t direction) {
@@ -7649,6 +7684,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_3cm(int8_t direction) {
 	if (CALIBRATE.Transverter_3cm_IF_MHz > 750) {
 		CALIBRATE.Transverter_3cm_IF_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_QO100(int8_t direction) {
@@ -7659,6 +7696,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_QO100(int8_t direction) {
 	if (CALIBRATE.Transverter_QO100_RF_kHz > 15000000) {
 		CALIBRATE.Transverter_QO100_RF_kHz = 15000000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100(int8_t direction) {
@@ -7669,6 +7708,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100(int8_t direction) {
 	if (CALIBRATE.Transverter_QO100_IF_RX_kHz > 750000) {
 		CALIBRATE.Transverter_QO100_IF_RX_kHz = 750000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100(int8_t direction) {
@@ -7679,6 +7720,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100(int8_t direction) {
 	if (CALIBRATE.Transverter_QO100_IF_TX_MHz > 750) {
 		CALIBRATE.Transverter_QO100_IF_TX_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction) {
