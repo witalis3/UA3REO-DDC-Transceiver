@@ -1278,6 +1278,11 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, u
 	uint8_t inData[3] = {0};
 	uint32_t mcp3008_value = 0;
 
+	const uint8_t max_signal_diff = 50;
+	const uint8_t max_retry = 3;
+	uint8_t retry = 0;
+	uint32_t value_first = 0;
+
 	for (uint8_t i = 0; i < count; i++) {
 		outData[0] = 0x18 | channel;
 		bool res = false;
@@ -1294,7 +1299,18 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, u
 			HRDW_SPI_Locked = false;
 			return 65535;
 		}
-		mcp3008_value += (uint16_t)(((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
+		uint32_t value_now = (uint16_t)(((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
+		mcp3008_value += value_now;
+
+		if (i > 0 && retry < max_retry && abs((int32_t)value_now - (int32_t)value_first) > max_signal_diff) { // value not stabilized, reload
+			retry++;
+			i = 0;
+			mcp3008_value = 0;
+			// println(retry, " ", (int32_t)value_now - (int32_t)value_first);
+		}
+		if (i == 0) {
+			value_first = value_now;
+		}
 	}
 	mcp3008_value /= count;
 
