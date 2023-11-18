@@ -2854,6 +2854,7 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 		}
 	}
 	selectable_bands_count++; // memory bank
+	selectable_bands_count++; // manual enter
 
 	const uint8_t buttons_lines_selectable = ceilf((float32_t)selectable_bands_count / (float32_t)buttons_in_line);
 	const uint8_t buttons_lines_broadcast = ceilf((float32_t)broadcast_bands_count / (float32_t)buttons_in_line);
@@ -2876,23 +2877,30 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 			continue;
 		}
 
-		if (!secondary_vfo) {
-			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
-			            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT,
-			            (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, BUTTONHANDLER_SET_VFOA_BAND, BUTTONHANDLER_SET_VFOA_BAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
-			            COLOR->BUTTON_BORDER, COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
-		} else {
-			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
-			            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT,
-			            (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, BUTTONHANDLER_SET_VFOB_BAND, BUTTONHANDLER_SET_VFOB_BAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
-			            COLOR->BUTTON_BORDER, COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
-		}
+		void *band_function = secondary_vfo ? BUTTONHANDLER_SET_VFOB_BAND : BUTTONHANDLER_SET_VFOA_BAND;
+
+		printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
+		            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT,
+		            (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, band_function, band_function, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER,
+		            COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
 
 		xi++;
 		if (xi >= buttons_in_line) {
 			yi++;
 			xi = 0;
 		}
+	}
+
+	// manual enter
+	void *band_function = secondary_vfo ? BUTTONHANDLER_SET_VFOB_FREQ_MANUAL : BUTTONHANDLER_SET_VFOA_FREQ_MANUAL;
+	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
+	            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "Manual",
+	            false, true, true, 0, band_function, band_function, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_SWITCH_BACKGROUND,
+	            LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
+	xi++;
+	if (xi >= buttons_in_line) {
+		yi++;
+		xi = 0;
 	}
 
 	// memory bank

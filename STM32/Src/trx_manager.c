@@ -2241,23 +2241,31 @@ void BUTTONHANDLER_SET_CUR_VFO_BAND(uint32_t parameter) {
 #endif
 }
 
+void BUTTONHANDLER_SET_VFOA_FREQ_MANUAL(uint32_t parameter) {
+	TRX_Temporary_Stop_BandMap = false;
+	resetVAD();
+	TRX_ScanMode = false;
+	LCD_closeWindow();
+	LCD_redraw(true);
+	LCD_showManualFreqWindow(false);
+	return;
+}
+
+void BUTTONHANDLER_SET_VFOB_FREQ_MANUAL(uint32_t parameter) {
+	TRX_Temporary_Stop_BandMap = false;
+	resetVAD();
+	TRX_ScanMode = false;
+	LCD_closeWindow();
+	LCD_redraw(true);
+	LCD_showManualFreqWindow(true);
+	return;
+}
+
 void BUTTONHANDLER_SET_VFOA_BAND(uint32_t parameter) {
 	int8_t band = parameter;
 	if (band >= BANDS_COUNT) {
 		band = 0;
 	}
-
-	// manual freq enter
-	if (LCD_window.opened && TRX.BANDS_SAVED_SETTINGS[band].Freq == TRX.VFO_A.Freq) {
-		TRX_Temporary_Stop_BandMap = false;
-		resetVAD();
-		TRX_ScanMode = false;
-		LCD_closeWindow();
-		LCD_redraw(true);
-		LCD_showManualFreqWindow(false);
-		return;
-	}
-	//
 
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, &TRX.VFO_A);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, &TRX.VFO_A);
@@ -2274,18 +2282,6 @@ void BUTTONHANDLER_SET_VFOB_BAND(uint32_t parameter) {
 	if (band >= BANDS_COUNT) {
 		band = 0;
 	}
-
-	// manual freq enter
-	if (TRX.BANDS_SAVED_SETTINGS[band].Freq == TRX.VFO_B.Freq) {
-		TRX_Temporary_Stop_BandMap = false;
-		resetVAD();
-		TRX_ScanMode = false;
-		LCD_closeWindow();
-		LCD_redraw(true);
-		LCD_showManualFreqWindow(true);
-		return;
-	}
-	//
 
 	TRX_setFrequency(TRX.BANDS_SAVED_SETTINGS[band].Freq, &TRX.VFO_B);
 	TRX_setMode(TRX.BANDS_SAVED_SETTINGS[band].Mode, &TRX.VFO_B);

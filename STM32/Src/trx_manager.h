@@ -128,6 +128,8 @@ extern void BUTTONHANDLER_DPD(uint32_t parameter);
 extern void BUTTONHANDLER_DPD_CALIBRATE(uint32_t parameter);
 extern void BUTTONHANDLER_MEMO_WRITE(uint32_t parameter);
 extern void BUTTONHANDLER_MEMO_READ(uint32_t parameter);
+extern void BUTTONHANDLER_SET_VFOA_FREQ_MANUAL(uint32_t parameter);
+extern void BUTTONHANDLER_SET_VFOB_FREQ_MANUAL(uint32_t parameter);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_soft;

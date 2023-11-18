@@ -667,7 +667,7 @@ const static struct sysmenu_item_handler sysmenu_handlers[] = {
     {"SD Card", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SDMENU},
 #endif
 #if MEMORY_CHANNELS_COUNT > 0
-    {"Memory Channels", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_MENU},
+    {"Channels Name", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_MENU},
 #endif
     {"Set Clock Time", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SETTIME},
     {"DFU Mode", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Bootloader},
