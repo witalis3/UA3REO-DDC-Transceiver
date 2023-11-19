@@ -43,7 +43,7 @@
 #define ENCODER_MIN_RATE_ACCELERATION 2.0f   // encoder enable rounding if lower than value
 #define DXCLUSTER_UPDATE_TIME (1000 * 60)    // interval to get cluster info, 1min
 #define WOLF_CLUSTER_UPDATE_TIME (1000 * 30) // interval to get WOLF cluster info, 30sec
-#define SAT_UPDATE_TIME (1000 * 1)    			 // interval to calculate SAT info, 1sec
+#define SAT_UPDATE_TIME (1000 * 1)           // interval to calculate SAT info, 1sec
 #define NORMAL_SWR_SAVED 1.5f                // ATU SWR target for saved settings
 #define NORMAL_SWR_TUNE 1.2f                 // ATU SWR target for new tune
 #define IDLE_LCD_BRIGHTNESS 5                // Low brightness for IDLE mode (dimmer)

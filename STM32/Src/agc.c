@@ -257,7 +257,7 @@ void DoTxAGC(float32_t *agcBuffer_i, uint_fast16_t blockSize, float32_t target_r
 	float32_t target_dB = rate2dbV(target_rate);
 
 	// CESSB AGC from power
-	if (TRX.TX_CESSB) {
+	if (TRX.TX_CESSB && (mode == TRX_MODE_LSB || mode == TRX_MODE_USB || mode == TRX_MODE_LOOPBACK)) {
 		target_dB = rate2dbP(target_rate);
 
 		arm_rms_f32(agcBuffer_i, blockSize, &AGC_TX_I_magnitude);

@@ -166,7 +166,7 @@ void SAT_init() {
 
 	// Sattelite data
 	SATTELITE.jul_epoch = SAT_Julian_Date_of_Epoch(SATTELITE.epoch);
-	
+
 	// Calc data for current timestamp
 	SAT_calc(SAT_unix2daynum(getUTCTimestamp(), 0));
 }

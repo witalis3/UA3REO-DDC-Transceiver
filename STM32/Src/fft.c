@@ -1806,7 +1806,7 @@ bool FFT_printFFT(void) {
 		sprintf(tmp, "%.2fHz", (double)SAM_Carrier_offset);
 		LCDDriver_printTextInMemory(tmp, 5, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 	}
-	
+
 	// Print SAT info
 	if (TRX.SatMode) {
 		char tmp[128] = {0};

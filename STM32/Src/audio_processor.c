@@ -108,7 +108,7 @@ static void APROC_SD_Play(void);
 static bool APROC_SD_PlayTX(void);
 static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize, TRX_MODE mode);
 static void doTX_HILBERT(bool swap_iq, uint16_t size);
-static void doTX_CESSB(uint16_t size);
+static void doTX_CESSB(uint16_t size, TRX_MODE mode);
 static void APROC_ProcessCodecMuting(void);
 
 // initialize audio processor
@@ -1013,12 +1013,12 @@ void processTxAudio(void) {
 		case TRX_MODE_USB:
 		case TRX_MODE_RTTY:
 		case TRX_MODE_DIGI_U:
-			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
+			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE, mode);
 			doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_LSB:
 		case TRX_MODE_DIGI_L:
-			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
+			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE, mode);
 			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_AM:
@@ -1479,14 +1479,16 @@ static void doTX_HILBERT(bool swap_iq, uint16_t size) {
 	}
 }
 
-static void doTX_CESSB(uint16_t size) {
+static void doTX_CESSB(uint16_t size, TRX_MODE mode) {
 	if (!TRX.TX_CESSB) {
 		return;
 	}
 
 	// additional gain
-	arm_scale_f32(APROC_Audio_Buffer_TX_I, db2rateP(TRX.TX_CESSB_COMPRESS_DB), APROC_Audio_Buffer_TX_I, size);
-	arm_scale_f32(APROC_Audio_Buffer_TX_Q, db2rateP(TRX.TX_CESSB_COMPRESS_DB), APROC_Audio_Buffer_TX_Q, size);
+	if (mode == TRX_MODE_LSB || mode == TRX_MODE_USB || mode == TRX_MODE_LOOPBACK) {
+		arm_scale_f32(APROC_Audio_Buffer_TX_I, db2rateP(TRX.TX_CESSB_COMPRESS_DB), APROC_Audio_Buffer_TX_I, size);
+		arm_scale_f32(APROC_Audio_Buffer_TX_Q, db2rateP(TRX.TX_CESSB_COMPRESS_DB), APROC_Audio_Buffer_TX_Q, size);
+	}
 
 	// clipping
 	for (uint32_t sample = 0; sample < size; sample++) {

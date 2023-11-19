@@ -263,7 +263,7 @@ static void SDCOMM_IMPORT_TLE_INFO_handler(void) {
 		f_close(&File);
 		sysmenu_sat_selectsat_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
-		
+
 		SAT_init();
 	} else {
 		LCD_showTooltip("SD error");
