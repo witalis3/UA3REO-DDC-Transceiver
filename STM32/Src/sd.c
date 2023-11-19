@@ -230,7 +230,7 @@ static void SDCOMM_IMPORT_TLE_INFO_handler(void) {
 							memset(TRX.SAT_Name, 0x00, sizeof(TRX.SAT_Name));
 							strncpy(TRX.SAT_Name, (char *)(SD_workbuffer_B + prevNpos), size > SAT_NAME_MAXLEN ? SAT_NAME_MAXLEN : size);
 						}
-						
+
 						nameIndex++;
 					}
 					if (linesCount % 3 == 1 && (nameIndex == sysmenu_sat_selected_index + 1)) {
@@ -259,7 +259,7 @@ static void SDCOMM_IMPORT_TLE_INFO_handler(void) {
 		println(TRX.SAT_TLE_Line1);
 		println(TRX.SAT_TLE_Line2);
 		NeedSaveSettings = true;
-		
+
 		f_close(&File);
 		sysmenu_sat_selectsat_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -1027,6 +1027,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Band", (uint64_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Mode", (uint64_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ChannelMode", (uint64_t *)&TRX.ChannelMode, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.SatMode", (uint64_t *)&TRX.SatMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.REPEATER_Offset", (uint64_t *)&TRX.REPEATER_Offset, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.RIT_Enabled", (uint64_t *)&TRX.RIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.XIT_Enabled", (uint64_t *)&TRX.XIT_Enabled, SYSMENU_BOOLEAN);
@@ -1759,6 +1760,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.ChannelMode") == 0) {
 		TRX.ChannelMode = bval;
+	}
+	if (strcmp(name, "TRX.SatMode") == 0) {
+		TRX.SatMode = bval;
 	}
 	if (strcmp(name, "TRX.REPEATER_Offset") == 0) {
 		TRX.REPEATER_Offset = intval;

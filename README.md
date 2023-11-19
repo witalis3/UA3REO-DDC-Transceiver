@@ -327,6 +327,13 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Import Settings** - Import settings and calibration data from SD card
 * **Format SD card** - Format media drive
 
+### Satellites
+
+* **SAT Mode** - Enable satellite mode
+* **Download TLE** - Download current satellite data
+* **Select SAT** - Select a satellite from the downloaded TLE file
+* **QTH xxx** - Setting the Latitude\Longitude\Altitude of your location
+
 ### Calibration [appears by long pressing the MENU button in the settings menu]
 
 * **ALC Port Enabled** - Activation of transceiver power control by an external amplifier via the ALC line: up to 1 volt - ALC is disabled and the power set in the transceiver is used. from 1.0v to 3.0v - power adjustment from 0 to 100%

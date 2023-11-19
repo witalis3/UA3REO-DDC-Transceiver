@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "8.7.0-dev" // current STM32 version
+#define STM32_VERSION_STR "9.0.0-dev" // current STM32 version
 
 #if defined(FRONTPANEL_LITE)
 #define FPGA_VERSION_STR "8.0.0" // needed FPGA version Wolf-Lite
@@ -16,7 +16,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 138        // Settings config version
+#define SETT_VERSION 139        // Settings config version
 #define CALIB_VERSION 88        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -801,6 +801,7 @@ extern struct TRX_SETTINGS {
 	bool FREE_Tune;
 	bool Auto_CW_Mode;
 	bool CW_In_SSB;
+	bool SatMode;
 #if HRDW_HAS_DUAL_RX
 	bool Dual_RX;
 #endif

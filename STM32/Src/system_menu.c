@@ -319,8 +319,12 @@ static void SYSMENU_HANDL_SD_ImportCalibrations3(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportSettingsDialog(int8_t direction);
 static void SYSMENU_HANDL_SD_USB(int8_t direction);
 
+static void SYSMENU_HANDL_SAT_SatMode(int8_t direction);
 static void SYSMENU_HANDL_SAT_DownloadTLE(int8_t direction);
 static void SYSMENU_HANDL_SAT_SelectSAT(int8_t direction);
+static void SYSMENU_HANDL_SAT_QTHLat(int8_t direction);
+static void SYSMENU_HANDL_SAT_QTHLon(int8_t direction);
+static void SYSMENU_HANDL_SAT_QTHAlt(int8_t direction);
 #endif
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
@@ -1152,8 +1156,12 @@ const static struct sysmenu_item_handler sysmenu_sd_format_handlers[] = {
 };
 
 const static struct sysmenu_item_handler sysmenu_sat_handlers[] = {
+    {"SAT Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SatMode, SYSMENU_HANDL_SAT_SatMode},
     {"Download TLE", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_DownloadTLE},
     {"Select SAT", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_SelectSAT},
+    {"QTH Lat", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_QTHLat},
+    {"QTH Lon", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_QTHLon},
+    {"QTH Alt", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_QTHAlt},
 };
 #endif
 
@@ -1583,6 +1591,9 @@ static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw);
 #if HRDW_HAS_SD
 static void SYSMENU_SAT_DrawSelectSATMenu(bool full_redraw);
 static void SYSMENU_SAT_SelectSATMenuMove(int8_t dir);
+static void SYSMENU_SAT_DrawSAT_QTHLatMenu(bool full_redraw);
+static void SYSMENU_SAT_DrawSAT_QTHLonMenu(bool full_redraw);
+static void SYSMENU_SAT_DrawSAT_QTHAltMenu(bool full_redraw);
 #endif
 static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw);
 static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw);
@@ -1635,6 +1646,9 @@ static bool sysmenu_wifi_setALLQSO_LOGID_menu_opened = false;
 static bool sysmenu_trx_setCallsign_menu_opened = false;
 static bool sysmenu_trx_setLocator_menu_opened = false;
 static bool sysmenu_trx_setURSICode_menu_opened = false;
+static bool sysmenu_trx_setSAT_QTHLat_menu_opened = false;
+static bool sysmenu_trx_setSAT_QTHLon_menu_opened = false;
+static bool sysmenu_trx_setSAT_QTHAlt_menu_opened = false;
 static bool sysmenu_trx_setCWMacros1_menu_opened = false;
 static bool sysmenu_trx_setCWMacros2_menu_opened = false;
 static bool sysmenu_trx_setCWMacros3_menu_opened = false;
@@ -5406,6 +5420,15 @@ static void SYSMENU_HANDL_SATMENU(int8_t direction) {
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
+static void SYSMENU_HANDL_SAT_SatMode(int8_t direction) {
+	if (direction > 0) {
+		TRX.SatMode = true;
+	}
+	if (direction < 0) {
+		TRX.SatMode = false;
+	}
+}
+
 static void SYSMENU_HANDL_SAT_DownloadTLE(int8_t direction) {
 	f_unlink("tle.txt");
 
@@ -5449,6 +5472,69 @@ static void SYSMENU_HANDL_SAT_SelectSAT(int8_t direction) {
 	sysmenu_sat_selectsat_menu_opened = true;
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 	SD_doCommand(SDCOMM_IMPORT_TLE_SATNAMES, false);
+}
+
+static void SYSMENU_HANDL_SAT_QTHLat(int8_t direction) {
+	sysmenu_selected_char_index = 0;
+	sysmenu_trx_setSAT_QTHLat_menu_opened = true;
+	SYSMENU_SAT_DrawSAT_QTHLatMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_SAT_QTHLon(int8_t direction) {
+	sysmenu_selected_char_index = 0;
+	sysmenu_trx_setSAT_QTHLon_menu_opened = true;
+	SYSMENU_SAT_DrawSAT_QTHLonMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_SAT_QTHAlt(int8_t direction) {
+	sysmenu_selected_char_index = 0;
+	sysmenu_trx_setSAT_QTHAlt_menu_opened = true;
+	SYSMENU_SAT_DrawSAT_QTHAltMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_SAT_DrawSAT_QTHLatMenu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("QTH Latitude:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.SAT_QTH_Lat, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.SAT_QTH_Lat, SAT_QTH_LINE_MAXLEN - 1, false);
+#endif
+}
+
+static void SYSMENU_SAT_DrawSAT_QTHLonMenu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("QTH Longitude:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.SAT_QTH_Lon, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.SAT_QTH_Lon, SAT_QTH_LINE_MAXLEN - 1, false);
+#endif
+}
+
+static void SYSMENU_SAT_DrawSAT_QTHAltMenu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("QTH Altitude:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.SAT_QTH_Alt, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.SAT_QTH_Alt, SAT_QTH_LINE_MAXLEN - 1, false);
+#endif
 }
 #endif
 
@@ -8563,6 +8649,21 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 			return;
 		}
 		SYSMENU_SAT_DrawSelectSATMenu(draw_background);
+	} else if (sysmenu_trx_setSAT_QTHLat_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_SAT_DrawSAT_QTHLatMenu(draw_background);
+	} else if (sysmenu_trx_setSAT_QTHLon_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_SAT_DrawSAT_QTHLonMenu(draw_background);
+	} else if (sysmenu_trx_setSAT_QTHAlt_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_SAT_DrawSAT_QTHAltMenu(draw_background);
 	} else
 #endif
 	    if (sysmenu_trx_setCallsign_menu_opened) {
@@ -8878,6 +8979,20 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction) {
 		SYSMENU_RotateChar(TRX.URSI_CODE, direction);
 		return;
 	}
+#if HRDW_HAS_SD
+	if (sysmenu_trx_setSAT_QTHLat_menu_opened) {
+		SYSMENU_RotateChar(TRX.SAT_QTH_Lat, direction);
+		return;
+	}
+	if (sysmenu_trx_setSAT_QTHLon_menu_opened) {
+		SYSMENU_RotateChar(TRX.SAT_QTH_Lon, direction);
+		return;
+	}
+	if (sysmenu_trx_setSAT_QTHAlt_menu_opened) {
+		SYSMENU_RotateChar(TRX.SAT_QTH_Alt, direction);
+		return;
+	}
+#endif
 	if (sysmenu_trx_setCWMacros1_menu_opened) {
 		SYSMENU_RotateChar(TRX.CW_Macros_1, direction);
 		return;
@@ -9016,6 +9131,15 @@ void SYSMENU_eventCloseSystemMenu(void) {
 #if HRDW_HAS_SD
 	    if (sysmenu_sat_selectsat_menu_opened) {
 		sysmenu_sat_selectsat_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setSAT_QTHLat_menu_opened) {
+		sysmenu_trx_setSAT_QTHLat_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setSAT_QTHLon_menu_opened) {
+		sysmenu_trx_setSAT_QTHLon_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setSAT_QTHAlt_menu_opened) {
+		sysmenu_trx_setSAT_QTHAlt_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	} else
 #endif
@@ -9324,6 +9448,36 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 			SYSMENU_SAT_SelectSATMenuMove(-1);
 		} else {
 			SYSMENU_SAT_SelectSATMenuMove(1);
+		}
+		return;
+	}
+	if (sysmenu_trx_setSAT_QTHLat_menu_opened) {
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
+			SYSMENU_SAT_DrawSAT_QTHLatMenu(true);
+		} else if (sysmenu_selected_char_index < (SAT_QTH_LINE_MAXLEN - 1)) {
+			sysmenu_selected_char_index++;
+			SYSMENU_SAT_DrawSAT_QTHLatMenu(true);
+		}
+		return;
+	}
+	if (sysmenu_trx_setSAT_QTHLon_menu_opened) {
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
+			SYSMENU_SAT_DrawSAT_QTHLonMenu(true);
+		} else if (sysmenu_selected_char_index < (SAT_QTH_LINE_MAXLEN - 1)) {
+			sysmenu_selected_char_index++;
+			SYSMENU_SAT_DrawSAT_QTHLonMenu(true);
+		}
+		return;
+	}
+	if (sysmenu_trx_setSAT_QTHAlt_menu_opened) {
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
+			SYSMENU_SAT_DrawSAT_QTHAltMenu(true);
+		} else if (sysmenu_selected_char_index < (SAT_QTH_LINE_MAXLEN - 1)) {
+			sysmenu_selected_char_index++;
+			SYSMENU_SAT_DrawSAT_QTHAltMenu(true);
 		}
 		return;
 	}
