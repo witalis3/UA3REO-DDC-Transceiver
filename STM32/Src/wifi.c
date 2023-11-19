@@ -1666,7 +1666,8 @@ static char WIFI_downloadFileToSD_url[128] = {0};
 static uint32_t WIFI_downloadFileToSD_startIndex = 0;
 #define WIFI_downloadFileToSD_part_size 2000
 static void WIFI_WIFI_downloadFileToSD_callback_writed(void) {
-	if (!sysmenu_ota_opened) {
+	bool isTLE = strstr(WIFI_downloadFileToSD_url, "get_ham_tle") != NULL;
+	if (!isTLE && !sysmenu_ota_opened) {
 		println("OTA cancelled");
 		return;
 	}
@@ -1747,9 +1748,9 @@ static void WIFI_downloadFileToSD_callback(void) {
 	}
 }
 
-void WIFI_downloadFileToSD(char *url, char *filename) {
+bool WIFI_downloadFileToSD(char *url, char *filename) {
 	if (WIFI_connected && WIFI_State != WIFI_READY) {
-		return;
+		return false;
 	}
 	get_HTTP_tryes = 0;
 	WIFI_download_inprogress = true;
@@ -1759,6 +1760,8 @@ void WIFI_downloadFileToSD(char *url, char *filename) {
 	strcpy(WIFI_downloadFileToSD_url, url);
 	sprintf(url, "%s&start=%d&count=%d", url, WIFI_downloadFileToSD_startIndex, WIFI_downloadFileToSD_part_size);
 	WIFI_getHTTPpage("wolf-sdr.com", url, WIFI_downloadFileToSD_callback, false, false);
+
+	return true;
 }
 
 void WIFI_postQSOtoAllQSO(char *call, char *note, char *date, char *time, char *rsts, char *rstr, char *mode, char *band, char *name, char *qth) {

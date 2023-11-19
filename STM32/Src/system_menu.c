@@ -317,6 +317,8 @@ static void SYSMENU_HANDL_SD_ImportCalibrations2(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportCalibrations3(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportSettingsDialog(int8_t direction);
 static void SYSMENU_HANDL_SD_USB(int8_t direction);
+
+static void SYSMENU_HANDL_SAT_DownloadTLE(int8_t direction);
 #endif
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
@@ -537,6 +539,8 @@ static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
 #if HRDW_HAS_SD
 static void SYSMENU_HANDL_SDMENU(int8_t direction);
 static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction);
+
+static void SYSMENU_HANDL_SATMENU(int8_t direction);
 #endif
 static void SYSMENU_HANDL_FT8_Decoder(int8_t direction);     // Tisho
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); // Tisho
@@ -665,6 +669,7 @@ const static struct sysmenu_item_handler sysmenu_handlers[] = {
 #endif
 #if HRDW_HAS_SD
     {"SD Card", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SDMENU},
+    {"Satellites", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SATMENU},
 #endif
 #if MEMORY_CHANNELS_COUNT > 0
     {"Channels Name", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_MENU},
@@ -1143,6 +1148,10 @@ const static struct sysmenu_item_handler sysmenu_sd_format_handlers[] = {
     {"Yes, Format SD Card", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_Format},
 #endif
 };
+
+const static struct sysmenu_item_handler sysmenu_sat_handlers[] = {
+    {"Download TLE", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_DownloadTLE},
+};
 #endif
 
 const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
@@ -1543,6 +1552,7 @@ static struct sysmenu_menu_wrapper sysmenu_wrappers[] = {
     {.menu_handler = sysmenu_sd_export_handlers, .currentIndex = 0},
     {.menu_handler = sysmenu_sd_import_handlers, .currentIndex = 0},
     {.menu_handler = sysmenu_sd_format_handlers, .currentIndex = 0},
+    {.menu_handler = sysmenu_sat_handlers, .currentIndex = 0},
 #endif
     {.menu_handler = sysmenu_calibration_handlers, .currentIndex = 0},
     {.menu_handler = sysmenu_swr_analyser_handlers, .currentIndex = 0},
@@ -5372,6 +5382,26 @@ static void SYSMENU_HANDL_SD_ImportCalibrations3(int8_t direction) {
 static void SYSMENU_HANDL_SD_Format(int8_t direction) {
 	if (direction > 0 && SD_isIdle() && !LCD_busy) {
 		SD_doCommand(SDCOMM_FORMAT, false);
+	}
+}
+#endif
+
+// SATTELITE MENU
+#if HRDW_HAS_SD
+static void SYSMENU_HANDL_SATMENU(int8_t direction) {
+	sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_sat_handlers[0];
+	sysmenu_item_count = sizeof(sysmenu_sat_handlers) / sizeof(sysmenu_sat_handlers[0]);
+	sysmenu_onroot = false;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_SAT_DownloadTLE(int8_t direction) {
+	char url[128] = "/services/radiosat/get_ham_tle.php?wolf";
+	bool res = WIFI_downloadFileToSD(url, "tle.txt");
+	if (res) {
+		LCD_showInfo("Downloading TLE to SD", false);
+	} else {
+		LCD_showInfo("Downloading error", true);
 	}
 }
 #endif
