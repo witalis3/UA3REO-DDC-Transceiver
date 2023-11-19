@@ -7,6 +7,7 @@
 #include "main.h"
 #include "pre_distortion.h"
 #include "rds_decoder.h"
+#include "satellite.h"
 #include "screen_layout.h"
 #include "snap.h"
 #include "trx_manager.h"
@@ -1804,6 +1805,13 @@ bool FFT_printFFT(void) {
 		char tmp[32] = {0};
 		sprintf(tmp, "%.2fHz", (double)SAM_Carrier_offset);
 		LCDDriver_printTextInMemory(tmp, 5, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+	}
+	
+	// Print SAT info
+	if (TRX.SatMode) {
+		char tmp[128] = {0};
+		sprintf(tmp, "SAT: %s, Az: %.1f El: %.1f", TRX.SAT_Name, SATTELITE.az, SATTELITE.el);
+		LCDDriver_printTextInMemory(tmp, 15, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 	}
 
 	// Print Stereo FM RDS Label

@@ -148,10 +148,6 @@ typedef struct {
 } SAT_DeepArg;
 
 typedef struct {
-	// TLE strings
-	char *name;
-	char *tle_line1;
-	char *tle_line2;
 	// TLE parsed data
 	uint32_t catnr;      // Satellite's catalogue number
 	char idesg[9];       // International Designator for satellite
@@ -273,6 +269,7 @@ typedef struct {
 #define SAT_EPOCH_RESTART_FLAG 0x001000
 
 extern char SAT_TLE_NAMES[SAT_TLE_MAXCOUNT][SAT_NAME_MAXLEN + 1];
+extern SAT_Instance SATTELITE;
 
 extern void SAT_init();
 extern void SAT_calc(float64_t t);

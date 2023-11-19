@@ -1,17 +1,7 @@
 #include "satellite.h"
 #include <stdlib.h>
 
-SAT_Instance SATTELITE = {
-    .name = "AO-109",
-    .tle_line1 = "1 47311U 21002C   23321.77110831  .00037516  00000-0  61786-3 0  9993",
-    .tle_line2 = "2 47311  60.6744 183.4612 0021210  35.3055 324.9446 15.51856683158012",
-};
-
-SAT_Geodetic QTH = {
-    .lat = 52.7,
-    .lon = 41.4,
-    .alt = 174,
-};
+SAT_Instance SATTELITE = {0};
 
 SRAM4 char SAT_TLE_NAMES[SAT_TLE_MAXCOUNT][SAT_NAME_MAXLEN + 1] = {0};
 
@@ -42,15 +32,15 @@ void SAT_init() {
 	char tmp3[16];
 
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line1 + 2, 5);
+	strncpy(tmp, TRX.SAT_TLE_Line1 + 2, 5);
 	SATTELITE.catnr = atol(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(SATTELITE.idesg, SATTELITE.tle_line1 + 9, 8);
+	strncpy(SATTELITE.idesg, TRX.SAT_TLE_Line1 + 9, 8);
 
 	// Replace spaces with 0 before casting, as leading spaces are allowed
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line1 + 18, 14);
+	strncpy(tmp, TRX.SAT_TLE_Line1 + 18, 14);
 	for (uint8_t i = 0; i < 14; i++) {
 		if (tmp[i] == ' ') {
 			tmp[i] = '0';
@@ -61,7 +51,7 @@ void SAT_init() {
 	// Now, convert the epoch time into year, day and fraction of day, according to YYDDD.FFFFFFFF
 	// Adjust for 2 digit year through 2056
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line1 + 18, 2);
+	strncpy(tmp, TRX.SAT_TLE_Line1 + 18, 2);
 	SATTELITE.epoch_year = atol(tmp);
 	if (SATTELITE.epoch_year > 56) {
 		SATTELITE.epoch_year = SATTELITE.epoch_year + 1900;
@@ -70,73 +60,73 @@ void SAT_init() {
 	}
 
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line1 + 20, 3);
+	strncpy(tmp, TRX.SAT_TLE_Line1 + 20, 3);
 	SATTELITE.epoch_day = atol(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line1 + 23, 9);
+	strncpy(tmp, TRX.SAT_TLE_Line1 + 23, 9);
 	SATTELITE.epoch_fod = atof(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line1 + 33, 10);
+	strncpy(tmp, TRX.SAT_TLE_Line1 + 33, 10);
 	SATTELITE.xndt2o = atof(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
 	memset(tmp2, 0, sizeof(tmp));
 	memset(tmp3, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line1 + 44, 1);
+	strncpy(tmp, TRX.SAT_TLE_Line1 + 44, 1);
 	strcat(tmp, ".");
-	strncpy(tmp2, SATTELITE.tle_line1 + 45, 5);
+	strncpy(tmp2, TRX.SAT_TLE_Line1 + 45, 5);
 	strcat(tmp, tmp2);
 	strcat(tmp, "E");
-	strncpy(tmp3, SATTELITE.tle_line1 + 50, 2);
+	strncpy(tmp3, TRX.SAT_TLE_Line1 + 50, 2);
 	strcat(tmp, tmp3);
 	SATTELITE.xndd6o = atof(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
 	memset(tmp2, 0, sizeof(tmp));
 	memset(tmp3, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line1 + 53, 1);
+	strncpy(tmp, TRX.SAT_TLE_Line1 + 53, 1);
 	strcat(tmp, ".");
-	strncpy(tmp2, SATTELITE.tle_line1 + 54, 5);
+	strncpy(tmp2, TRX.SAT_TLE_Line1 + 54, 5);
 	strcat(tmp, tmp2);
 	strcat(tmp, "E");
-	strncpy(tmp3, SATTELITE.tle_line1 + 59, 2);
+	strncpy(tmp3, TRX.SAT_TLE_Line1 + 59, 2);
 	strcat(tmp, tmp3);
 	SATTELITE.bstar = atof(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line1 + 64, 4);
+	strncpy(tmp, TRX.SAT_TLE_Line1 + 64, 4);
 	SATTELITE.elset = atol(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line2 + 8, 8);
+	strncpy(tmp, TRX.SAT_TLE_Line2 + 8, 8);
 	SATTELITE.xincl = atof(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line2 + 17, 8);
+	strncpy(tmp, TRX.SAT_TLE_Line2 + 17, 8);
 	SATTELITE.xnodeo = atof(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
 	strcpy(tmp, "0.");
-	strncpy(tmp2, SATTELITE.tle_line2 + 26, 7);
+	strncpy(tmp2, TRX.SAT_TLE_Line2 + 26, 7);
 	strcat(tmp, tmp2);
 	SATTELITE.eo = atof(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line2 + 34, 8);
+	strncpy(tmp, TRX.SAT_TLE_Line2 + 34, 8);
 	SATTELITE.omegao = atof(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line2 + 43, 8);
+	strncpy(tmp, TRX.SAT_TLE_Line2 + 43, 8);
 	SATTELITE.xmo = atof(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line2 + 52, 11);
+	strncpy(tmp, TRX.SAT_TLE_Line2 + 52, 11);
 	SATTELITE.xno = atof(tmp);
 
 	memset(tmp, 0, sizeof(tmp));
-	strncpy(tmp, SATTELITE.tle_line2 + 63, 5);
+	strncpy(tmp, TRX.SAT_TLE_Line2 + 63, 5);
 	SATTELITE.revnum = atol(tmp);
 
 	// Process ephemeris data
@@ -176,15 +166,18 @@ void SAT_init() {
 
 	// Sattelite data
 	SATTELITE.jul_epoch = SAT_Julian_Date_of_Epoch(SATTELITE.epoch);
+	
+	// Calc data for current timestamp
+	SAT_calc(SAT_unix2daynum(getUTCTimestamp(), 0));
 }
 
 void SAT_calc(float64_t t) {
 	SAT_ObsSet obs_set;
 	SAT_Geodetic sat_geodetic;
 	SAT_Geodetic obs_geodetic;
-	obs_geodetic.lon = QTH.lon * SAT_de2ra;
-	obs_geodetic.lat = QTH.lat * SAT_de2ra;
-	obs_geodetic.alt = QTH.alt / 1000.0;
+	obs_geodetic.lon = atof(TRX.SAT_QTH_Lon) * SAT_de2ra;
+	obs_geodetic.lat = atof(TRX.SAT_QTH_Lat) * SAT_de2ra;
+	obs_geodetic.alt = atof(TRX.SAT_QTH_Alt) / 1000.0;
 	obs_geodetic.theta = 0;
 
 	SATTELITE.jul_utc = t;
@@ -229,10 +222,8 @@ void SAT_calc(float64_t t) {
 	float64_t age = SATTELITE.jul_utc - SATTELITE.jul_epoch;
 	SATTELITE.orbit = floor((SATTELITE.xno * SAT_xmnpda / SAT_twopi + age * SATTELITE.bstar * SAT_ae) * age + SATTELITE.xmo / SAT_twopi) + SATTELITE.revnum - 1;
 
-	// debug output
-	// SAT_init();
-	// SAT_calc(SAT_unix2daynum(getUTCTimestamp(), 0));
-	// println("SAT currept pos LAT: ", SATTELITE.ssplat, " LON: ", SATTELITE.ssplon, " ALT: ", SATTELITE.alt);
+	// some output
+	println("SAT currept pos LAT: ", SATTELITE.ssplat, " LON: ", SATTELITE.ssplon, " ALT: ", SATTELITE.alt);
 }
 
 /* SGP4 */

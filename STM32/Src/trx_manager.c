@@ -18,6 +18,7 @@
 #include "noise_reduction.h"
 #include "pre_distortion.h"
 #include "rf_unit.h"
+#include "satellite.h"
 #include "sd.h"
 #include "self_test.h"
 #include "settings.h"
@@ -83,6 +84,7 @@ uint32_t TRX_TX_StartTime = 0;
 uint32_t TRX_TX_EndTime = 0;
 uint32_t TRX_Inactive_Time = 0;
 uint32_t TRX_DXCluster_UpdateTime = 0;
+uint32_t TRX_SAT_UpdateTime = 0;
 uint32_t TRX_WOLF_Cluster_UpdateTime = 0;
 volatile float32_t TRX_PWR_Voltage = 12.0f;
 volatile float32_t TRX_PWR_Current = 0.0f;
@@ -109,6 +111,9 @@ void TRX_Init() {
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setMode(saved_mode, CurrentVFO);
 	HRDW_Init();
+#if HRDW_HAS_SD
+	SAT_init();
+#endif
 }
 
 void TRX_Restart_Mode() {
