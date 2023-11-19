@@ -1674,9 +1674,13 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void) {
 
 	static int32_t downloaded_kb_prev = 0;
 	if (WIFI_downloadFileToSD_compleated) {
-		LCD_busy = false;
-		LCD_UpdateQuery.SystemMenuRedraw = true;
+		if (!isTLE) {
+			LCD_busy = false;
+		} else {
+			LCD_showInfo("Download completed", true);
+		}
 		WIFI_download_inprogress = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
 	} else {
 		char url[128] = {0};
 		sprintf(url, "%s&start=%d&count=%d", WIFI_downloadFileToSD_url, WIFI_downloadFileToSD_startIndex, WIFI_downloadFileToSD_part_size);
@@ -1699,6 +1703,8 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void) {
 }
 
 static void WIFI_downloadFileToSD_callback(void) {
+	bool isTLE = strstr(WIFI_downloadFileToSD_url, "get_ham_tle") != NULL;
+
 	static uint8_t WIFI_HTTP_error_retryes = 0;
 	if (WIFI_HTTP_Response_Status == 200) {
 		WIFI_HTTP_error_retryes = 0;
@@ -1742,14 +1748,18 @@ static void WIFI_downloadFileToSD_callback(void) {
 			WIFI_getHTTPpage(WIFI_HOSTuri, WIFI_GETuri, WIFI_downloadFileToSD_callback, false, false);
 		} else {
 			sysmenu_ota_opened = false;
-			LCD_busy = false;
-			LCD_redraw(false);
+			if (!isTLE) {
+				LCD_busy = false;
+				LCD_redraw(false);
+			} else {
+				LCD_showInfo("Downloading error", true);
+			}
 		}
 	}
 }
 
 bool WIFI_downloadFileToSD(char *url, char *filename) {
-	if (WIFI_connected && WIFI_State != WIFI_READY) {
+	if (!WIFI_connected || WIFI_State != WIFI_READY) {
 		return false;
 	}
 	get_HTTP_tryes = 0;

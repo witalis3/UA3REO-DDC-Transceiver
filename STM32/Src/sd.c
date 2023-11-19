@@ -9,6 +9,7 @@
 #include "functions.h"
 #include "lcd.h"
 #include "main.h"
+#include "satellite.h"
 #include "sd.h"
 #include "system_menu.h"
 #include "user_diskio.h"
@@ -70,6 +71,7 @@ static void SDCOMM_WRITE_TO_FILE_handler(void);
 static void SDCOMM_GET_LINES_COUNT_handler(void);
 static bool SDCOMM_CREATE_RECORD_FILE_main(char *filename, bool audio_rec);
 static bool SDCOMM_CREATE_CQ_MESSAGE_FILE_handler(void);
+static void SDCOMM_IMPORT_TLE_SATNAMES_handler(void);
 
 bool SD_isIdle(void) {
 	if (SD_currentCommand == SDCOMM_IDLE) {
@@ -195,9 +197,55 @@ void SD_Process(void) {
 		case SDCOMM_GET_LINES_COUNT:
 			SDCOMM_GET_LINES_COUNT_handler();
 			break;
+		case SDCOMM_IMPORT_TLE_SATNAMES:
+			SDCOMM_IMPORT_TLE_SATNAMES_handler();
+			break;
 		}
 		SD_CommandInProcess = false;
 		SD_currentCommand = SDCOMM_IDLE;
+	}
+}
+
+static void SDCOMM_IMPORT_TLE_SATNAMES_handler(void) {
+	if (f_open(&File, "tle.txt", FA_READ | FA_OPEN_EXISTING) == FR_OK) {
+
+		uint32_t bytesreaded;
+		uint32_t linesCount = 0;
+		uint32_t nameIndex = 0;
+		uint32_t lastSeek = 0;
+		memset(SAT_TLE_NAMES, 0x00, sizeof(SAT_TLE_NAMES));
+		FRESULT res;
+		do {
+			f_read(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&bytesreaded);
+			uint32_t prevNpos = 0;
+			for (uint32_t i = 0; i < bytesreaded; i++) {
+				if (SD_workbuffer_B[i] == '\n') {
+					if (linesCount % 3 == 0 && nameIndex < SAT_TLE_MAXCOUNT) {
+						uint32_t size = i - prevNpos;
+						strncpy(SAT_TLE_NAMES[nameIndex], (char *)(SD_workbuffer_B + prevNpos), size > SAT_NAME_MAXLEN ? SAT_NAME_MAXLEN : size);
+						println(nameIndex, " ", SAT_TLE_NAMES[nameIndex], size);
+						nameIndex++;
+					}
+
+					linesCount++;
+					prevNpos = i + 1;
+				}
+			}
+			if (bytesreaded == sizeof(SD_workbuffer_B)) { // read new block from last line
+				lastSeek += prevNpos;
+				println("Seek: ", lastSeek);
+				f_lseek(&File, lastSeek);
+			}
+		} while (bytesreaded > 0 && res == FR_OK);
+
+		f_close(&File);
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else {
+		LCD_showTooltip("SD error");
+		SD_PlayInProcess = false;
+		SD_Present = false;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 }
 

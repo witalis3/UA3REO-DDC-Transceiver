@@ -1899,8 +1899,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Src\sattelite.c</PathWithFileName>
-      <FilenameWithoutPath>sattelite.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\Src\satellite.c</PathWithFileName>
+      <FilenameWithoutPath>satellite.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1911,8 +1911,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\Src\sattelite.h</PathWithFileName>
-      <FilenameWithoutPath>sattelite.h</FilenameWithoutPath>
+      <PathWithFileName>..\..\Src\satellite.h</PathWithFileName>
+      <FilenameWithoutPath>satellite.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

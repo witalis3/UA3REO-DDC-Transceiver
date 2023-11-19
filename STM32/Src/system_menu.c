@@ -19,6 +19,7 @@
 #include "noise_blanker.h"
 #include "rf_unit.h"
 #include "rtty_decoder.h"
+#include "satellite.h"
 #include "screen_layout.h"
 #include "sd.h"
 #include "self_test.h"
@@ -319,6 +320,7 @@ static void SYSMENU_HANDL_SD_ImportSettingsDialog(int8_t direction);
 static void SYSMENU_HANDL_SD_USB(int8_t direction);
 
 static void SYSMENU_HANDL_SAT_DownloadTLE(int8_t direction);
+static void SYSMENU_HANDL_SAT_SelectSAT(int8_t direction);
 #endif
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
@@ -1151,6 +1153,7 @@ const static struct sysmenu_item_handler sysmenu_sd_format_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_sat_handlers[] = {
     {"Download TLE", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_DownloadTLE},
+    {"Select SAT", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_SelectSAT},
 };
 #endif
 
@@ -1577,6 +1580,10 @@ static void SYSMENU_WIFI_DrawSelectAP3Menu(bool full_redraw);
 static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir);
 static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw);
 #endif
+#if HRDW_HAS_SD
+static void SYSMENU_SAT_DrawSelectSATMenu(bool full_redraw);
+static void SYSMENU_SAT_SelectSATMenuMove(int8_t dir);
+#endif
 static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw);
 static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw);
 static void SYSMENU_TRX_DrawURSICodeMenu(bool full_redraw);
@@ -1642,6 +1649,10 @@ static bool sysmenu_trx_setMemoryChannelName_menu_opened = false;
 static uint8_t sysmenu_wifi_selected_ap_index = 0;
 static uint8_t sysmenu_selected_char_index = 0;
 static uint8_t sysmenu_selected_memory_channel_index = 0;
+
+// SAT
+static bool sysmenu_sat_selectsat_menu_opened = false;
+static uint8_t sysmenu_sat_selected_index = 0;
 
 // Time menu
 static bool sysmenu_timeMenuOpened = false;
@@ -5396,6 +5407,8 @@ static void SYSMENU_HANDL_SATMENU(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_SAT_DownloadTLE(int8_t direction) {
+	f_unlink("tle.txt");
+
 	char url[128] = "/services/radiosat/get_ham_tle.php?wolf";
 	bool res = WIFI_downloadFileToSD(url, "tle.txt");
 	if (res) {
@@ -5403,6 +5416,41 @@ static void SYSMENU_HANDL_SAT_DownloadTLE(int8_t direction) {
 	} else {
 		LCD_showInfo("Downloading error", true);
 	}
+}
+
+static void SYSMENU_SAT_DrawSelectSATMenu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		uint16_t curr_y = 5;
+		LCDDriver_printText("Sats in TLE:", curr_y, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		curr_y += Y_SPAN + 5;
+		for (uint8_t i = 0; i < SAT_TLE_MAXCOUNT; i++) {
+			LCDDriver_printText((char *)SAT_TLE_NAMES[i], 10, curr_y + i * Y_SPAN, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		}
+		LCDDriver_drawFastHLine(0, 10 + Y_SPAN * 2 + sysmenu_sat_selected_index * Y_SPAN, LAYOUT->SYSMENU_W, FG_COLOR);
+	}
+}
+
+static void SYSMENU_SAT_SelectSATMenuMove(int8_t dir) {
+	if (dir < 0 && sysmenu_sat_selected_index > 0) {
+		sysmenu_sat_selected_index--;
+	}
+	if (dir > 0 && sysmenu_sat_selected_index < SAT_TLE_MAXCOUNT - 1) {
+		sysmenu_sat_selected_index++;
+	}
+	SYSMENU_SAT_DrawSelectSATMenu(true);
+	if (dir == 0) {
+		// strcpy(WIFI.AP_1, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
+		sysmenu_sat_selectsat_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	}
+}
+
+static void SYSMENU_HANDL_SAT_SelectSAT(int8_t direction) {
+	sysmenu_sat_selected_index = 0;
+	sysmenu_sat_selectsat_menu_opened = true;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+	SD_doCommand(SDCOMM_IMPORT_TLE_SATNAMES, false);
 }
 #endif
 
@@ -8511,6 +8559,14 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 		SYSMENU_WIFI_DrawALLQSO_LOGIDMenu(draw_background);
 	} else
 #endif
+#if HRDW_HAS_SD
+	    if (sysmenu_sat_selectsat_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_SAT_DrawSelectSATMenu(draw_background);
+	} else
+#endif
 	    if (sysmenu_trx_setCallsign_menu_opened) {
 		if (only_infolines) {
 			return;
@@ -8959,6 +9015,12 @@ void SYSMENU_eventCloseSystemMenu(void) {
 		NeedSaveWiFi = true;
 	} else
 #endif
+#if HRDW_HAS_SD
+	    if (sysmenu_sat_selectsat_menu_opened) {
+		sysmenu_sat_selectsat_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else
+#endif
 	    if (sysmenu_trx_setCallsign_menu_opened) {
 		sysmenu_trx_setCallsign_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -9160,6 +9222,12 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 		return;
 	}
 #endif
+#if HRDW_HAS_SD
+	if (sysmenu_sat_selectsat_menu_opened) {
+		SYSMENU_SAT_SelectSATMenuMove(0);
+		return;
+	}
+#endif
 
 	if (sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_MENU || sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_RUN ||
 	    sysmenu_handlers_selected[getCurrentMenuIndex()].type == SYSMENU_INFOLINE) {
@@ -9252,7 +9320,16 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 		return;
 	}
 #endif
-
+#if HRDW_HAS_SD
+	if (sysmenu_sat_selectsat_menu_opened) {
+		if (direction < 0) {
+			SYSMENU_SAT_SelectSATMenuMove(-1);
+		} else {
+			SYSMENU_SAT_SelectSATMenuMove(1);
+		}
+		return;
+	}
+#endif
 	// Callsign menu
 	if (sysmenu_trx_setCallsign_menu_opened) {
 		if (direction < 0 && sysmenu_selected_char_index > 0) {

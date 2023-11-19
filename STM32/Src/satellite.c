@@ -1,4 +1,4 @@
-#include "sattelite.h"
+#include "satellite.h"
 #include <stdlib.h>
 
 SAT_Instance SATTELITE = {
@@ -12,6 +12,8 @@ SAT_Geodetic QTH = {
     .lon = 41.4,
     .alt = 174,
 };
+
+SRAM4 char SAT_TLE_NAMES[SAT_TLE_MAXCOUNT][SAT_NAME_MAXLEN + 1] = {0};
 
 static void SAT_SGP4(SAT_Instance *sat, float64_t tsince);
 static void SAT_SDP4(SAT_Instance *sat, float64_t tsince);
