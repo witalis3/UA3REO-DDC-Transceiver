@@ -1085,6 +1085,16 @@
               <FilePath>..\..\Src\rtty_decoder.h</FilePath>
             </File>
             <File>
+              <FileName>sattelite.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\sattelite.c</FilePath>
+            </File>
+            <File>
+              <FileName>sattelite.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\sattelite.h</FilePath>
+            </File>
+            <File>
               <FileName>screen_layout.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\screen_layout.h</FilePath>
