@@ -445,6 +445,13 @@ void LoadSettings(bool clear) {
 		TRX.WSPR_BANDS_10 = true;
 		TRX.WSPR_BANDS_6 = false;
 		TRX.WSPR_BANDS_2 = false;
+		//SAT
+		strcpy(TRX.SAT_Name, "QO-100");
+		strcpy(TRX.SAT_TLE_Line1, "1 43700U 18090A   23320.50049146  .00000163  00000-0  00000-0 0  9991");
+		strcpy(TRX.SAT_TLE_Line2, "2 43700   0.0142 283.2286 0001422 345.1641 352.9695  1.00273483 18216");
+		strcpy(TRX.SAT_QTH_Lat, "52.7");
+		strcpy(TRX.SAT_QTH_Lon, "41.4");
+		strcpy(TRX.SAT_QTH_Alt, "174.0");
 		//
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 

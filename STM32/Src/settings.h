@@ -16,7 +16,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 137        // Settings config version
+#define SETT_VERSION 138        // Settings config version
 #define CALIB_VERSION 88        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -69,6 +69,10 @@
 #define MAX_CW_MACROS_NAME_LENGTH 6
 #define ALLQSO_TOKEN_SIZE 16
 #define MAX_CHANNEL_MEMORY_NAME_LENGTH 10
+#define SAT_NAME_MAXLEN 20
+#define SAT_TLE_MAXCOUNT 28
+#define SAT_TLE_LINE_MAXLEN 70
+#define SAT_QTH_LINE_MAXLEN 12
 
 #define ATU_MAX_FREQ_KHZ 60000
 #define ATU_MEM_STEP_KHZ 50
@@ -814,6 +818,12 @@ extern struct TRX_SETTINGS {
 	char CW_Macros_Name_3[MAX_CW_MACROS_NAME_LENGTH + 1];
 	char CW_Macros_Name_4[MAX_CW_MACROS_NAME_LENGTH + 1];
 	char CW_Macros_Name_5[MAX_CW_MACROS_NAME_LENGTH + 1];
+	char SAT_Name[SAT_NAME_MAXLEN + 1];
+	char SAT_TLE_Line1[SAT_TLE_LINE_MAXLEN + 1];
+	char SAT_TLE_Line2[SAT_TLE_LINE_MAXLEN + 1];
+	char SAT_QTH_Lat[SAT_QTH_LINE_MAXLEN + 1];
+	char SAT_QTH_Lon[SAT_QTH_LINE_MAXLEN + 1];
+	char SAT_QTH_Alt[SAT_QTH_LINE_MAXLEN + 1];
 
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 

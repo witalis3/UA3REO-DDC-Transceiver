@@ -1651,8 +1651,8 @@ static uint8_t sysmenu_selected_char_index = 0;
 static uint8_t sysmenu_selected_memory_channel_index = 0;
 
 // SAT
-static bool sysmenu_sat_selectsat_menu_opened = false;
-static uint8_t sysmenu_sat_selected_index = 0;
+bool sysmenu_sat_selectsat_menu_opened = false;
+uint8_t sysmenu_sat_selected_index = 0;
 
 // Time menu
 static bool sysmenu_timeMenuOpened = false;
@@ -5440,9 +5440,7 @@ static void SYSMENU_SAT_SelectSATMenuMove(int8_t dir) {
 	}
 	SYSMENU_SAT_DrawSelectSATMenu(true);
 	if (dir == 0) {
-		// strcpy(WIFI.AP_1, (char *)&WIFI_FoundedAP[sysmenu_wifi_selected_ap_index - 1]);
-		sysmenu_sat_selectsat_menu_opened = false;
-		LCD_UpdateQuery.SystemMenuRedraw = true;
+		SD_doCommand(SDCOMM_IMPORT_TLE_INFO, false);
 	}
 }
 

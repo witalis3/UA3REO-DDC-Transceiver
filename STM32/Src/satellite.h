@@ -272,9 +272,6 @@ typedef struct {
 #define SAT_DO_LOOP_FLAG 0x000200
 #define SAT_EPOCH_RESTART_FLAG 0x001000
 
-#define SAT_NAME_MAXLEN 20
-#define SAT_TLE_MAXCOUNT 28
-
 extern char SAT_TLE_NAMES[SAT_TLE_MAXCOUNT][SAT_NAME_MAXLEN + 1];
 
 extern void SAT_init();
