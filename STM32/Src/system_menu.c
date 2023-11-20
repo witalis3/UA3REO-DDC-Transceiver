@@ -1935,7 +1935,7 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_NOTCH_STEP_Hz(int8_t direction) {
-	const float32_t notch_freq_steps[] = {1, 5, 10, 12.5, 25, 50, 100};
+	const float32_t notch_freq_steps[] = {10, 12.5, 25, 50, 100};
 
 	for (uint8_t i = 0; i < ARRLENTH(notch_freq_steps); i++) {
 		if (TRX.NOTCH_STEP_Hz == notch_freq_steps[i]) {
