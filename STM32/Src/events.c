@@ -434,7 +434,8 @@ void EVENTS_do_EVERY_10ms(void) // 100 Hz
 	// transmission release time after key signal
 	if (CW_Key_Timeout_est > 0 && !CW_key_serial && !CW_key_dot_hard && !CW_key_dash_hard) {
 		CW_Key_Timeout_est -= 10;
-		if (CW_Key_Timeout_est == 0) {
+		if (CW_Key_Timeout_est < 10) {
+			CW_Key_Timeout_est = 0;
 			FPGA_NeedSendParams = true;
 			TRX_Restart_Mode();
 		}

@@ -208,40 +208,52 @@ void CWDecoder_Process(float32_t *bufferIn) {
 
 static void CWDecoder_Recognise(void) {
 	if (filteredstate == false) {
-		if (dash_time < highduration) {
-			dash_time = dash_time * 0.5f + highduration * 0.5f; // averaging
+		if (dash_time < highduration) { // wpm down
+			dash_time = dash_time * 0.2f + highduration * 0.8f;
 			dot_time = dash_time / 3.0f;
-			char_time = dash_time;
-			word_time = dot_time * 7.0f;
+			if (CWDECODER_DEBUG) {
+				print("d");
+			}
 		}
 
-		if (highduration > (dot_time * CWDECODER_ERROR_DIFF) && highduration < (dot_time * (2.0f - CWDECODER_ERROR_DIFF))) {
-			dot_time = dot_time * 0.7f + highduration * 0.3f; // averaging
+		if (highduration > (dot_time * CWDECODER_ERROR_DIFF) && highduration < (dot_time * (2.0f - CWDECODER_ERROR_DIFF))) { // dot
+			dot_time = dot_time * 0.7f + highduration * 0.3f;
 			dash_time = dot_time * 3.0f;
-			char_time = dash_time;
-			word_time = dot_time * 7.0f;
 			strcat(code, ".");
 			if (CWDECODER_DEBUG) {
 				print(".");
 			}
-		} else if (highduration >= (dash_time * CWDECODER_ERROR_DIFF)) {
-			dash_time = dash_time * 0.7f + highduration * 0.3f; // averaging
+		} else if (highduration >= (dash_time * CWDECODER_ERROR_DIFF)) { // dash
+			dash_time = dash_time * 0.7f + highduration * 0.3f;
 			dot_time = dash_time / 3.0f;
-			char_time = dash_time;
-			word_time = dot_time * 7.0f;
 			strcat(code, "-");
 			if (CWDECODER_DEBUG) {
 				print("-");
 			}
-		} else {
-			dash_time *= CWDECODER_WPM_UP_SPEED;
-			// if(CWDECODER_DEBUG)
-			// sendToDebug_strln("e");
+		} else { // wpm up
+			dash_time -= CWDECODER_WPM_UP_SPEED;
+			dot_time = dash_time / 3.0f;
+			if (CWDECODER_DEBUG) {
+				print("u");
+			}
 		}
 
+		char_time = dash_time;
+		word_time = dot_time * 7.0f;
 		CW_Decoder_WPM = CW_Decoder_WPM * 0.8f + (CWDECODER_DOT_TO_WPM_COEFF / (float32_t)dot_time) * 0.2f; //// the most precise we can do ;o)
-		if (CW_Decoder_WPM > CWDECODER_MAX_WPM) {                                                           // limiter
+
+		// limiter
+		if (CW_Decoder_WPM > CWDECODER_MAX_WPM) {
 			CWDecoder_SetWPM(CWDECODER_MAX_WPM);
+			if (CWDECODER_DEBUG) {
+				print("m");
+			}
+		}
+
+		static float32_t CW_Decoder_WPM_updated = 0;
+		if (fabsf(CW_Decoder_WPM_updated - CW_Decoder_WPM) >= 1.0f) {
+			CW_Decoder_WPM_updated = CW_Decoder_WPM;
+			LCD_UpdateQuery.TextBar = true;
 		}
 	}
 	if (filteredstate == true) {
@@ -282,10 +294,12 @@ static void CWDecoder_Recognise(void) {
 
 void CWDecoder_SetWPM(uint8_t wpm) {
 	CW_Decoder_WPM = (float32_t)wpm;
-	dot_time = CW_Decoder_WPM * CWDECODER_DOT_TO_WPM_COEFF;
+	dot_time = CWDECODER_DOT_TO_WPM_COEFF / CW_Decoder_WPM;
 	dash_time = dot_time * 3.0f;
 	char_time = dash_time;
 	word_time = dot_time * 7.0f;
+
+	LCD_UpdateQuery.TextBar = true;
 }
 
 // decode from morse to symbols
@@ -437,7 +451,6 @@ static void CWDecoder_Decode(void) {
 		CWDecoder_PrintChar("*");
 	} else {
 		CWDecoder_PrintChar("*");
-		// dash_time *= CWDECODER_WPM_UP_SPEED;
 	}
 
 	code[0] = '\0';
