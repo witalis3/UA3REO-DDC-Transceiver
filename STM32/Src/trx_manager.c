@@ -2500,7 +2500,7 @@ void BUTTONHANDLER_SAMPLE_N(uint32_t parameter) {
 	FFT_Init();
 	NeedReinitAudioFilters = true;
 	LCD_UpdateQuery.StatusInfoBar = true;
-	
+
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
@@ -2520,7 +2520,7 @@ void BUTTONHANDLER_SAMPLE_P(uint32_t parameter) {
 	FFT_Init();
 	NeedReinitAudioFilters = true;
 	LCD_UpdateQuery.StatusInfoBar = true;
-	
+
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
@@ -2553,7 +2553,7 @@ void BUTTONHANDLER_ZOOM_N(uint32_t parameter) {
 
 	FFT_Init();
 	LCD_UpdateQuery.StatusInfoBar = true;
-	
+
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
@@ -2586,7 +2586,7 @@ void BUTTONHANDLER_ZOOM_P(uint32_t parameter) {
 
 	FFT_Init();
 	LCD_UpdateQuery.StatusInfoBar = true;
-	
+
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
