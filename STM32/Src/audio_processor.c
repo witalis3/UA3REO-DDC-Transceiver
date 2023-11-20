@@ -1038,6 +1038,7 @@ void processTxAudio(void) {
 			ModulateFM(AUDIO_BUFFER_HALF_SIZE, 1.0f);
 			break;
 		case TRX_MODE_LOOPBACK:
+			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE, mode);
 			DECODER_PutSamples(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE); // отправляем данные в цифровой декодер
 			break;
 		default:
@@ -1483,12 +1484,13 @@ static void doTX_CESSB(uint16_t size, TRX_MODE mode) {
 	if (!TRX.TX_CESSB) {
 		return;
 	}
+	if (mode != TRX_MODE_LSB && mode != TRX_MODE_USB) { //  && mode != TRX_MODE_LOOPBACK
+		return;
+	}
 
 	// additional gain
-	if (mode == TRX_MODE_LSB || mode == TRX_MODE_USB || mode == TRX_MODE_LOOPBACK) {
-		arm_scale_f32(APROC_Audio_Buffer_TX_I, db2rateP(TRX.TX_CESSB_COMPRESS_DB), APROC_Audio_Buffer_TX_I, size);
-		arm_scale_f32(APROC_Audio_Buffer_TX_Q, db2rateP(TRX.TX_CESSB_COMPRESS_DB), APROC_Audio_Buffer_TX_Q, size);
-	}
+	arm_scale_f32(APROC_Audio_Buffer_TX_I, db2rateP(TRX.TX_CESSB_COMPRESS_DB), APROC_Audio_Buffer_TX_I, size);
+	arm_scale_f32(APROC_Audio_Buffer_TX_Q, db2rateP(TRX.TX_CESSB_COMPRESS_DB), APROC_Audio_Buffer_TX_Q, size);
 
 	// clipping
 	for (uint32_t sample = 0; sample < size; sample++) {
