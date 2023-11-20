@@ -67,6 +67,8 @@ void CWDecoder_Init(void) {
 		                              0.14128f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f)) -
 		                              0.01168f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)CWDECODER_FFT_SAMPLES - 1.0f));
 	}
+	// start WPM
+	CWDecoder_SetWPM(25);
 }
 
 // start CW decoder for the data block
@@ -237,9 +239,9 @@ static void CWDecoder_Recognise(void) {
 			// sendToDebug_strln("e");
 		}
 
-		CW_Decoder_WPM = CW_Decoder_WPM * 0.7f + (1220.0f / (float32_t)dot_time) * 0.3f; //// the most precise we can do ;o)
-		if (CW_Decoder_WPM > CWDECODER_MAX_WPM) {
-			CW_Decoder_WPM = CWDECODER_MAX_WPM;
+		CW_Decoder_WPM = CW_Decoder_WPM * 0.8f + (CWDECODER_DOT_TO_WPM_COEFF / (float32_t)dot_time) * 0.2f; //// the most precise we can do ;o)
+		if (CW_Decoder_WPM > CWDECODER_MAX_WPM) {                                                           // limiter
+			CWDecoder_SetWPM(CWDECODER_MAX_WPM);
 		}
 	}
 	if (filteredstate == true) {
@@ -276,6 +278,14 @@ static void CWDecoder_Recognise(void) {
 	if (strlen(code) >= (CWDECODER_MAX_CODE_SIZE - 1)) {
 		code[0] = '\0';
 	}
+}
+
+void CWDecoder_SetWPM(uint8_t wpm) {
+	CW_Decoder_WPM = wpm;
+	dot_time = (float32_t)wpm * CWDECODER_DOT_TO_WPM_COEFF;
+	dash_time = dot_time * 3.0f;
+	char_time = dash_time;
+	word_time = dot_time * 7.0f;
 }
 
 // decode from morse to symbols

@@ -36,11 +36,13 @@
 #define CWDECODER_MAX_CODE_SIZE 10                       // maximum character code size
 #define CWDECODER_MAX_WPM 36                             // maximum WPM
 #define CWDECODER_DEBUG false                            // Show Debug
+#define CWDECODER_DOT_TO_WPM_COEFF 1390.0f
 
 // Public variables
 // extern float32_t CWDEC_FFTBuffer_Export[CWDECODER_FFTSIZE];
 extern volatile float32_t CW_Decoder_WPM;
 extern char CW_Decoder_Text[CWDECODER_STRLEN + 1];
+extern void CWDecoder_SetWPM(uint8_t wpm);
 
 // Public methods
 extern void CWDecoder_Init(void);                   // initialize the CW decoder

@@ -230,6 +230,7 @@ static void TRX_Start_TX() {
 	TRX_SPLIT_Applied = false;
 	TRX_REPEATER_Applied = false;
 	TRX_TXRXMode = 2;
+	CWDecoder_SetWPM(TRX.CW_KEYER_WPM);
 
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;
