@@ -281,8 +281,8 @@ static void CWDecoder_Recognise(void) {
 }
 
 void CWDecoder_SetWPM(uint8_t wpm) {
-	CW_Decoder_WPM = wpm;
-	dot_time = (float32_t)wpm * CWDECODER_DOT_TO_WPM_COEFF;
+	CW_Decoder_WPM = (float32_t)wpm;
+	dot_time = CW_Decoder_WPM * CWDECODER_DOT_TO_WPM_COEFF;
 	dash_time = dot_time * 3.0f;
 	char_time = dash_time;
 	word_time = dot_time * 7.0f;
