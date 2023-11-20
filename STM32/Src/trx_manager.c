@@ -18,6 +18,7 @@
 #include "noise_reduction.h"
 #include "pre_distortion.h"
 #include "rf_unit.h"
+#include "satellite.h"
 #include "sd.h"
 #include "self_test.h"
 #include "settings.h"
@@ -83,6 +84,7 @@ uint32_t TRX_TX_StartTime = 0;
 uint32_t TRX_TX_EndTime = 0;
 uint32_t TRX_Inactive_Time = 0;
 uint32_t TRX_DXCluster_UpdateTime = 0;
+uint32_t TRX_SAT_UpdateTime = 0;
 uint32_t TRX_WOLF_Cluster_UpdateTime = 0;
 volatile float32_t TRX_PWR_Voltage = 12.0f;
 volatile float32_t TRX_PWR_Current = 0.0f;
@@ -109,6 +111,9 @@ void TRX_Init() {
 	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	TRX_setMode(saved_mode, CurrentVFO);
 	HRDW_Init();
+#if HRDW_HAS_SD
+	SAT_init();
+#endif
 }
 
 void TRX_Restart_Mode() {
@@ -225,6 +230,7 @@ static void TRX_Start_TX() {
 	TRX_SPLIT_Applied = false;
 	TRX_REPEATER_Applied = false;
 	TRX_TXRXMode = 2;
+	CWDecoder_SetWPM(TRX.CW_KEYER_WPM);
 
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;
@@ -2495,6 +2501,8 @@ void BUTTONHANDLER_SAMPLE_N(uint32_t parameter) {
 	FFT_Init();
 	NeedReinitAudioFilters = true;
 	LCD_UpdateQuery.StatusInfoBar = true;
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 void BUTTONHANDLER_SAMPLE_P(uint32_t parameter) {
@@ -2513,6 +2521,8 @@ void BUTTONHANDLER_SAMPLE_P(uint32_t parameter) {
 	FFT_Init();
 	NeedReinitAudioFilters = true;
 	LCD_UpdateQuery.StatusInfoBar = true;
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 void BUTTONHANDLER_ZOOM_N(uint32_t parameter) {
@@ -2544,6 +2554,8 @@ void BUTTONHANDLER_ZOOM_N(uint32_t parameter) {
 
 	FFT_Init();
 	LCD_UpdateQuery.StatusInfoBar = true;
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 void BUTTONHANDLER_ZOOM_P(uint32_t parameter) {
@@ -2575,6 +2587,8 @@ void BUTTONHANDLER_ZOOM_P(uint32_t parameter) {
 
 	FFT_Init();
 	LCD_UpdateQuery.StatusInfoBar = true;
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter) {

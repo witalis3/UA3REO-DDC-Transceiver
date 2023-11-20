@@ -17,6 +17,7 @@
 #include "main.h"
 #include "profiler.h"
 #include "rf_unit.h"
+#include "satellite.h"
 #include "sd.h"
 #include "settings.h"
 #include "snap.h"
@@ -630,6 +631,14 @@ void EVENTS_do_EVERY_1000ms(void) // 1 Hz
 			}
 			maySendIQ = false;
 		}
+#if HRDW_HAS_SD
+		if (TRX.SatMode && ((HAL_GetTick() - TRX_SAT_UpdateTime) > SAT_UPDATE_TIME || TRX_SAT_UpdateTime == 0)) // get satelite propagination
+		{
+			SAT_calc(SAT_unix2daynum(getUTCTimestamp(), 0));
+			TRX_SAT_UpdateTime = HAL_GetTick();
+			maySendIQ = false;
+		}
+#endif
 		WIFI_maySendIQ = maySendIQ;
 	}
 #endif

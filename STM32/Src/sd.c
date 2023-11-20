@@ -72,6 +72,7 @@ static void SDCOMM_GET_LINES_COUNT_handler(void);
 static bool SDCOMM_CREATE_RECORD_FILE_main(char *filename, bool audio_rec);
 static bool SDCOMM_CREATE_CQ_MESSAGE_FILE_handler(void);
 static void SDCOMM_IMPORT_TLE_SATNAMES_handler(void);
+static void SDCOMM_IMPORT_TLE_INFO_handler(void);
 
 bool SD_isIdle(void) {
 	if (SD_currentCommand == SDCOMM_IDLE) {
@@ -200,9 +201,76 @@ void SD_Process(void) {
 		case SDCOMM_IMPORT_TLE_SATNAMES:
 			SDCOMM_IMPORT_TLE_SATNAMES_handler();
 			break;
+		case SDCOMM_IMPORT_TLE_INFO:
+			SDCOMM_IMPORT_TLE_INFO_handler();
+			break;
 		}
 		SD_CommandInProcess = false;
 		SD_currentCommand = SDCOMM_IDLE;
+	}
+}
+
+static void SDCOMM_IMPORT_TLE_INFO_handler(void) {
+	if (f_open(&File, "tle.txt", FA_READ | FA_OPEN_EXISTING) == FR_OK) {
+
+		uint32_t bytesreaded;
+		uint32_t linesCount = 0;
+		uint32_t nameIndex = 0;
+		uint32_t lastSeek = 0;
+		memset(SAT_TLE_NAMES, 0x00, sizeof(SAT_TLE_NAMES));
+		FRESULT res;
+		do {
+			f_read(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&bytesreaded);
+			uint32_t prevNpos = 0;
+			for (uint32_t i = 0; i < bytesreaded; i++) {
+				if (SD_workbuffer_B[i] == '\n') {
+					if (linesCount % 3 == 0 && nameIndex < SAT_TLE_MAXCOUNT) {
+						if (nameIndex == sysmenu_sat_selected_index) {
+							uint32_t size = i - prevNpos;
+							memset(TRX.SAT_Name, 0x00, sizeof(TRX.SAT_Name));
+							strncpy(TRX.SAT_Name, (char *)(SD_workbuffer_B + prevNpos), size > SAT_NAME_MAXLEN ? SAT_NAME_MAXLEN : size);
+						}
+
+						nameIndex++;
+					}
+					if (linesCount % 3 == 1 && (nameIndex == sysmenu_sat_selected_index + 1)) {
+						uint32_t size = i - prevNpos;
+						memset(TRX.SAT_TLE_Line1, 0x00, sizeof(TRX.SAT_TLE_Line1));
+						strncpy(TRX.SAT_TLE_Line1, (char *)(SD_workbuffer_B + prevNpos), size > SAT_TLE_LINE_MAXLEN ? SAT_TLE_LINE_MAXLEN : size);
+					}
+					if (linesCount % 3 == 2 && (nameIndex == sysmenu_sat_selected_index + 1)) {
+						uint32_t size = i - prevNpos;
+						memset(TRX.SAT_TLE_Line2, 0x00, sizeof(TRX.SAT_TLE_Line2));
+						strncpy(TRX.SAT_TLE_Line2, (char *)(SD_workbuffer_B + prevNpos), size > SAT_TLE_LINE_MAXLEN ? SAT_TLE_LINE_MAXLEN : size);
+					}
+
+					linesCount++;
+					prevNpos = i + 1;
+				}
+			}
+			if (bytesreaded == sizeof(SD_workbuffer_B)) { // read new block from last line
+				lastSeek += prevNpos;
+				println("Seek: ", lastSeek);
+				f_lseek(&File, lastSeek);
+			}
+		} while (bytesreaded > 0 && res == FR_OK);
+
+		println(TRX.SAT_Name);
+		println(TRX.SAT_TLE_Line1);
+		println(TRX.SAT_TLE_Line2);
+		NeedSaveSettings = true;
+
+		f_close(&File);
+		sysmenu_sat_selectsat_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+
+		SAT_init();
+	} else {
+		LCD_showTooltip("SD error");
+		SD_PlayInProcess = false;
+		SD_Present = false;
+		LCD_UpdateQuery.StatusInfoGUI = true;
+		LCD_UpdateQuery.StatusInfoBar = true;
 	}
 }
 
@@ -961,6 +1029,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Band", (uint64_t *)&TRX.RF_Gain_For_Each_Band, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.RF_Gain_For_Each_Mode", (uint64_t *)&TRX.RF_Gain_For_Each_Mode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ChannelMode", (uint64_t *)&TRX.ChannelMode, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.SatMode", (uint64_t *)&TRX.SatMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.REPEATER_Offset", (uint64_t *)&TRX.REPEATER_Offset, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.RIT_Enabled", (uint64_t *)&TRX.RIT_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.XIT_Enabled", (uint64_t *)&TRX.XIT_Enabled, SYSMENU_BOOLEAN);
@@ -999,6 +1068,12 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_STRING("TRX.CALLSIGN", TRX.CALLSIGN);
 			SD_WRITE_SETT_STRING("TRX.LOCATOR", TRX.LOCATOR);
 			SD_WRITE_SETT_STRING("TRX.URSI_CODE", TRX.URSI_CODE);
+			SD_WRITE_SETT_STRING("TRX.SAT_Name", TRX.SAT_Name);
+			SD_WRITE_SETT_STRING("TRX.SAT_TLE_Line1", TRX.SAT_TLE_Line1);
+			SD_WRITE_SETT_STRING("TRX.SAT_TLE_Line2", TRX.SAT_TLE_Line2);
+			SD_WRITE_SETT_STRING("TRX.SAT_QTH_Lat", TRX.SAT_QTH_Lat);
+			SD_WRITE_SETT_STRING("TRX.SAT_QTH_Lon", TRX.SAT_QTH_Lon);
+			SD_WRITE_SETT_STRING("TRX.SAT_QTH_Alt", TRX.SAT_QTH_Alt);
 			SD_WRITE_SETT_LINE("TRX.Custom_Transverter_Enabled", (uint64_t *)&TRX.Custom_Transverter_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ATU_Enabled", (uint64_t *)&TRX.ATU_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.TUNER_Enabled", (uint64_t *)&TRX.TUNER_Enabled, SYSMENU_BOOLEAN);
@@ -1688,6 +1763,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.ChannelMode") == 0) {
 		TRX.ChannelMode = bval;
 	}
+	if (strcmp(name, "TRX.SatMode") == 0) {
+		TRX.SatMode = bval;
+	}
 	if (strcmp(name, "TRX.REPEATER_Offset") == 0) {
 		TRX.REPEATER_Offset = intval;
 	}
@@ -1818,6 +1896,54 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 			lens = sizeof(TRX.URSI_CODE) - 1;
 		}
 		strncpy(TRX.URSI_CODE, value, lens);
+	}
+	if (strcmp(name, "TRX.SAT_Name") == 0) {
+		dma_memset(TRX.SAT_Name, 0x00, sizeof(TRX.SAT_Name));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(TRX.SAT_Name) - 1) {
+			lens = sizeof(TRX.SAT_Name) - 1;
+		}
+		strncpy(TRX.SAT_Name, value, lens);
+	}
+	if (strcmp(name, "TRX.SAT_TLE_Line1") == 0) {
+		dma_memset(TRX.SAT_TLE_Line1, 0x00, sizeof(TRX.SAT_TLE_Line1));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(TRX.SAT_TLE_Line1) - 1) {
+			lens = sizeof(TRX.SAT_TLE_Line1) - 1;
+		}
+		strncpy(TRX.SAT_TLE_Line1, value, lens);
+	}
+	if (strcmp(name, "TRX.SAT_TLE_Line2") == 0) {
+		dma_memset(TRX.SAT_TLE_Line2, 0x00, sizeof(TRX.SAT_TLE_Line2));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(TRX.SAT_TLE_Line2) - 1) {
+			lens = sizeof(TRX.SAT_TLE_Line2) - 1;
+		}
+		strncpy(TRX.SAT_TLE_Line2, value, lens);
+	}
+	if (strcmp(name, "TRX.SAT_QTH_Lat") == 0) {
+		dma_memset(TRX.SAT_QTH_Lat, 0x00, sizeof(TRX.SAT_QTH_Lat));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(TRX.SAT_QTH_Lat) - 1) {
+			lens = sizeof(TRX.SAT_QTH_Lat) - 1;
+		}
+		strncpy(TRX.SAT_QTH_Lat, value, lens);
+	}
+	if (strcmp(name, "TRX.SAT_QTH_Lon") == 0) {
+		dma_memset(TRX.SAT_QTH_Lon, 0x00, sizeof(TRX.SAT_QTH_Lon));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(TRX.SAT_QTH_Lon) - 1) {
+			lens = sizeof(TRX.SAT_QTH_Lon) - 1;
+		}
+		strncpy(TRX.SAT_QTH_Lon, value, lens);
+	}
+	if (strcmp(name, "TRX.SAT_QTH_Alt") == 0) {
+		dma_memset(TRX.SAT_QTH_Alt, 0x00, sizeof(TRX.SAT_QTH_Alt));
+		uint32_t lens = strlen(value);
+		if (lens > sizeof(TRX.SAT_QTH_Alt) - 1) {
+			lens = sizeof(TRX.SAT_QTH_Alt) - 1;
+		}
+		strncpy(TRX.SAT_QTH_Alt, value, lens);
 	}
 	if (strcmp(name, "TRX.Custom_Transverter_Enabled") == 0) {
 		TRX.Custom_Transverter_Enabled = bval;

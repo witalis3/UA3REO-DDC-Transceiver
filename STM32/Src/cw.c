@@ -24,6 +24,7 @@ volatile bool CW_key_dash_hard = false;
 volatile uint_fast8_t KEYER_symbol_status = 0; // status (signal or period) of the automatic key symbol
 volatile bool CW_Process_Macros = false;
 volatile uint8_t CW_In_SSB_applyed = 0; // 0 - unapplied, 1 - old LSB, 2 - old USB
+static bool CW_first_symbol_processed = true;
 
 static uint32_t KEYER_symbol_start_time = 0; // start time of the automatic key character
 
@@ -42,12 +43,24 @@ static uint8_t CW_SymbolMemory = 0; // 0 - no char, 1 - dot, 2 - dash
 
 static char *CW_CharToDots(char chr);
 static void CW_do_Process_Macros(void);
+static float32_t CW_GenerateKeyer(float32_t power, bool prepareBeforeDelay);
+static void CW_updateEstimateTimeout(void);
 
 void CW_key_change(void) {
+	bool TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
+	bool TRX_new_key_dash_hard = !HAL_GPIO_ReadPin(KEY_IN_DASH_GPIO_Port, KEY_IN_DASH_Pin);
+	if (TRX.CW_Invert) {
+		bool tmp = TRX_new_key_dot_hard;
+		TRX_new_key_dot_hard = TRX_new_key_dash_hard;
+		TRX_new_key_dash_hard = tmp;
+	}
+
 	TRX_Inactive_Time = 0;
 	if (TRX_Tune || !TRX_Inited) {
 		return;
 	}
+
+	bool onTx = TRX_on_TX;
 
 	bool notx = TRX_TX_Disabled(CurrentVFO->Freq);
 	if (notx) {
@@ -56,14 +69,10 @@ void CW_key_change(void) {
 		return;
 	}
 
-	bool TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
-	if (TRX.CW_Invert) {
-		TRX_new_key_dot_hard = !HAL_GPIO_ReadPin(KEY_IN_DASH_GPIO_Port, KEY_IN_DASH_Pin);
-	}
-
 	if (CW_key_dot_hard != TRX_new_key_dot_hard) {
 		CW_key_dot_hard = TRX_new_key_dot_hard;
 
+		// auto CW
 		if (CW_key_dot_hard && (TRX.Auto_CW_Mode || TRX.CW_In_SSB) && CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited) {
 			if (TRX.CW_In_SSB && CurrentVFO->Mode == TRX_MODE_LSB) {
 				TRX_setFrequency(CurrentVFO->Freq - TRX.CW_Pitch, CurrentVFO);
@@ -84,6 +93,7 @@ void CW_key_change(void) {
 			LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		}
 
+		// like PTT
 		if (CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited) {
 			CW_key_dash_hard = false;
 			KEYER_symbol_status = 0;
@@ -96,21 +106,21 @@ void CW_key_change(void) {
 			return;
 		}
 
+		// do tx
 		if (CW_key_dot_hard == true && (KEYER_symbol_status == 0 || !TRX.CW_KEYER)) {
-			CW_Key_Timeout_est = TRX.CW_Key_timeout;
+			CW_updateEstimateTimeout();
 			FPGA_NeedSendParams = true;
 			TRX_Restart_Mode();
+			if (!onTx) {
+				CW_GenerateKeyer(0, true);
+			}
 		}
-	}
-
-	bool TRX_new_key_dash_hard = !HAL_GPIO_ReadPin(KEY_IN_DASH_GPIO_Port, KEY_IN_DASH_Pin);
-	if (TRX.CW_Invert) {
-		TRX_new_key_dash_hard = !HAL_GPIO_ReadPin(KEY_IN_DOT_GPIO_Port, KEY_IN_DOT_Pin);
 	}
 
 	if (CW_key_dash_hard != TRX_new_key_dash_hard) {
 		CW_key_dash_hard = TRX_new_key_dash_hard;
 
+		// auto CW
 		if (CW_key_dash_hard && (TRX.Auto_CW_Mode || TRX.CW_In_SSB) && CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited) {
 			if (TRX.CW_In_SSB && CurrentVFO->Mode == TRX_MODE_LSB) {
 				TRX_setFrequency(CurrentVFO->Freq - TRX.CW_Pitch, CurrentVFO);
@@ -131,6 +141,7 @@ void CW_key_change(void) {
 			LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 		}
 
+		// like PTT
 		if (CurrentVFO->Mode != TRX_MODE_CW && TRX_Inited) {
 			CW_key_dot_hard = false;
 			KEYER_symbol_status = 0;
@@ -143,20 +154,29 @@ void CW_key_change(void) {
 			return;
 		}
 
+		// do tx
 		if (CW_key_dash_hard == true && (KEYER_symbol_status == 0 || !TRX.CW_KEYER)) {
-			CW_Key_Timeout_est = TRX.CW_Key_timeout;
+			CW_updateEstimateTimeout();
 			FPGA_NeedSendParams = true;
 			TRX_Restart_Mode();
+			if (!onTx) {
+				CW_GenerateKeyer(0, true);
+			}
 		}
 	}
 
+	// USB\Macros mode
 	if (CW_key_serial != CW_old_key_serial) {
 		CW_old_key_serial = CW_key_serial;
-		if (CW_key_serial == true) {
-			CW_Key_Timeout_est = TRX.CW_Key_timeout;
-		}
+		CW_updateEstimateTimeout();
 		FPGA_NeedSendParams = true;
 		TRX_Restart_Mode();
+	}
+}
+
+static void CW_updateEstimateTimeout(void) {
+	if (CW_Key_Timeout_est < TRX.CW_Key_timeout) {
+		CW_Key_Timeout_est = TRX.CW_Key_timeout;
 	}
 }
 
@@ -204,10 +224,19 @@ float32_t CW_GenerateSignal(float32_t power) {
 	}
 
 	// Keyer
+	return CW_GenerateKeyer(power, false);
+}
+
+static float32_t CW_GenerateKeyer(float32_t power, bool prepareBeforeDelay) {
+	// Keyer
 	uint32_t dot_length_ms = 1200 / TRX.CW_KEYER_WPM;
 	uint32_t dash_length_ms = (float32_t)dot_length_ms * TRX.CW_DotToDashRate;
 	uint32_t sim_space_length_ms = dot_length_ms;
 	uint32_t curTime = HAL_GetTick();
+	if (prepareBeforeDelay) {
+		curTime += CALIBRATE.TX_StartDelay;
+		CW_Key_Timeout_est = TRX.CW_Key_timeout + CALIBRATE.TX_StartDelay;
+	}
 
 	// Iambic keyer start mode
 	if (!iambic_sequence_started) {
@@ -249,7 +278,7 @@ float32_t CW_GenerateSignal(float32_t power) {
 		KEYER_symbol_status = 1;
 	}
 	if (KEYER_symbol_status == 1 && (KEYER_symbol_start_time + dot_length_ms) > curTime) {
-		CW_Key_Timeout_est = TRX.CW_Key_timeout;
+		CW_updateEstimateTimeout();
 		return CW_generateRiseSignal(power);
 	}
 	if (KEYER_symbol_status == 1 && (KEYER_symbol_start_time + dot_length_ms) < curTime) {
@@ -264,7 +293,7 @@ float32_t CW_GenerateSignal(float32_t power) {
 		KEYER_symbol_status = 2;
 	}
 	if (KEYER_symbol_status == 2 && (KEYER_symbol_start_time + dash_length_ms) > curTime) {
-		CW_Key_Timeout_est = TRX.CW_Key_timeout;
+		CW_updateEstimateTimeout();
 		return CW_generateRiseSignal(power);
 	}
 	if (KEYER_symbol_status == 2 && (KEYER_symbol_start_time + dash_length_ms) < curTime) {
@@ -275,7 +304,7 @@ float32_t CW_GenerateSignal(float32_t power) {
 
 	// SPACE
 	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) > curTime) {
-		CW_Key_Timeout_est = TRX.CW_Key_timeout;
+		CW_updateEstimateTimeout();
 		return CW_generateFallSignal(power);
 	}
 	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) < curTime) {
