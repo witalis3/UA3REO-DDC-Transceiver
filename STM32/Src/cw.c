@@ -229,7 +229,8 @@ float32_t CW_GenerateSignal(float32_t power) {
 
 static float32_t CW_GenerateKeyer(float32_t power, bool prepareBeforeDelay) {
 	// Keyer
-	uint32_t dot_length_samples = TRX_SAMPLERATE / 1000 * (1200 / TRX.CW_KEYER_WPM - CW_EDGES_SMOOTH_MS);
+	uint32_t fall_length_samples = TRX_SAMPLERATE / 1000 * CW_EDGES_SMOOTH_MS;
+	uint32_t dot_length_samples = TRX_SAMPLERATE / 1000 * (1200 / TRX.CW_KEYER_WPM);
 	uint32_t dash_length_samples = dot_length_samples * TRX.CW_DotToDashRate;
 	uint32_t sim_space_length_samples = dot_length_samples;
 	KEYER_symbol_counter++;
@@ -276,6 +277,10 @@ static float32_t CW_GenerateKeyer(float32_t power, bool prepareBeforeDelay) {
 		KEYER_symbol_counter = 0;
 		KEYER_symbol_status = 1;
 	}
+	if (KEYER_symbol_status == 1 && KEYER_symbol_counter <= dot_length_samples && KEYER_symbol_counter > (dot_length_samples - fall_length_samples)) {
+		CW_updateEstimateTimeout();
+		return CW_generateFallSignal(power);
+	}
 	if (KEYER_symbol_status == 1 && KEYER_symbol_counter <= dot_length_samples) {
 		CW_updateEstimateTimeout();
 		return CW_generateRiseSignal(power);
@@ -290,6 +295,10 @@ static float32_t CW_GenerateKeyer(float32_t power, bool prepareBeforeDelay) {
 	if (KEYER_symbol_status == 0 && CW_key_dash_hard) {
 		KEYER_symbol_counter = 0;
 		KEYER_symbol_status = 2;
+	}
+	if (KEYER_symbol_status == 1 && KEYER_symbol_counter <= dash_length_samples && KEYER_symbol_counter > (dash_length_samples - fall_length_samples)) {
+		CW_updateEstimateTimeout();
+		return CW_generateFallSignal(power);
 	}
 	if (KEYER_symbol_status == 2 && KEYER_symbol_counter <= dash_length_samples) {
 		CW_updateEstimateTimeout();
