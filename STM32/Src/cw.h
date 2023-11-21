@@ -5,7 +5,8 @@
 #include "settings.h"
 #include <stdbool.h>
 
-#define CW_EDGES_SMOOTH (1.0f / ((float32_t)TRX_SAMPLERATE / 1000.0f * 5.0f)) // 5 msec
+#define CW_EDGES_SMOOTH_MS 5.0f
+#define CW_EDGES_SMOOTH (1.0f / ((float32_t)TRX_SAMPLERATE / 1000.0f * CW_EDGES_SMOOTH_MS)) // 5 msec
 
 #define CW_DOT_LENGTH_MS (1200 / TRX.CW_KEYER_WPM)
 #define CW_DASH_LENGTH_MS ((float)CW_DOT_LENGTH_MS * TRX.CW_DotToDashRate)

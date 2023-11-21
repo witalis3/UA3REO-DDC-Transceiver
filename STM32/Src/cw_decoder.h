@@ -36,7 +36,7 @@
 #define CWDECODER_MAX_CODE_SIZE 10                       // maximum character code size
 #define CWDECODER_MAX_WPM 36                             // maximum WPM
 #define CWDECODER_DEBUG false                            // Show Debug
-#define CWDECODER_DOT_TO_WPM_COEFF 1350.0f
+#define CWDECODER_DOT_TO_WPM_COEFF 1200.0f
 
 // Public variables
 // extern float32_t CWDEC_FFTBuffer_Export[CWDECODER_FFTSIZE];

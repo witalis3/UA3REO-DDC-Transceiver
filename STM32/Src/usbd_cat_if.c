@@ -767,35 +767,35 @@ void ua3reo_dev_cat_parseCommand(void) {
 		}
 		return;
 	}
-	
-		if (strcmp(command, "UP") == 0) // Freq 1 step UP
+
+	if (strcmp(command, "UP") == 0) // Freq 1 step UP
 	{
 		if (!has_args) {
 			CAT_Transmit("UP;");
 		} else {
 			if (strcmp(arguments, "0") == 0) {
-			CAT_Transmit("UP0;");
+				CAT_Transmit("UP0;");
 			} else if (strcmp(arguments, "1") == 0) {
-			CAT_Transmit("UP1;");				
-      BUTTONHANDLER_UP(0);
-			} 
-		return;
+				CAT_Transmit("UP1;");
+				BUTTONHANDLER_UP(0);
+			}
+			return;
+		}
 	}
-}
-		if (strcmp(command, "DN") == 0) // Freq 1 step DOWN
+	if (strcmp(command, "DN") == 0) // Freq 1 step DOWN
 	{
 		if (!has_args) {
 			CAT_Transmit("DN;");
 		} else {
 			if (strcmp(arguments, "0") == 0) {
-			CAT_Transmit("DN0;");
+				CAT_Transmit("DN0;");
 			} else if (strcmp(arguments, "1") == 0) {
-			CAT_Transmit("DN1;");				
-      BUTTONHANDLER_DOWN(0);
-			} 
-		return;
+				CAT_Transmit("DN1;");
+				BUTTONHANDLER_DOWN(0);
+			}
+			return;
+		}
 	}
-}
 	if (strcmp(command, "PS") == 0) // POWER-SWITCH
 	{
 		if (!has_args) {

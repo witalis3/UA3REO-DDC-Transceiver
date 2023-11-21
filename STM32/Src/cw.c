@@ -26,7 +26,7 @@ volatile bool CW_Process_Macros = false;
 volatile uint8_t CW_In_SSB_applyed = 0; // 0 - unapplied, 1 - old LSB, 2 - old USB
 static bool CW_first_symbol_processed = true;
 
-static uint32_t KEYER_symbol_start_time = 0; // start time of the automatic key character
+static uint32_t KEYER_symbol_counter = 0; // samples counter of the automatic key character
 
 static float32_t current_cw_power = 0.0f;        // current amplitude (for rise/fall)
 static bool iambic_first_button_pressed = false; // start symbol | false - dot, true - dash
@@ -229,12 +229,11 @@ float32_t CW_GenerateSignal(float32_t power) {
 
 static float32_t CW_GenerateKeyer(float32_t power, bool prepareBeforeDelay) {
 	// Keyer
-	uint32_t dot_length_ms = 1200 / TRX.CW_KEYER_WPM;
-	uint32_t dash_length_ms = (float32_t)dot_length_ms * TRX.CW_DotToDashRate;
-	uint32_t sim_space_length_ms = dot_length_ms;
-	uint32_t curTime = HAL_GetTick();
+	uint32_t dot_length_samples = TRX_SAMPLERATE / 1000 * (1200 / TRX.CW_KEYER_WPM - CW_EDGES_SMOOTH_MS);
+	uint32_t dash_length_samples = dot_length_samples * TRX.CW_DotToDashRate;
+	uint32_t sim_space_length_samples = dot_length_samples;
+	KEYER_symbol_counter++;
 	if (prepareBeforeDelay) {
-		curTime += CALIBRATE.TX_StartDelay;
 		CW_Key_Timeout_est = TRX.CW_Key_timeout + CALIBRATE.TX_StartDelay;
 	}
 
@@ -274,44 +273,44 @@ static float32_t CW_GenerateKeyer(float32_t power, bool prepareBeforeDelay) {
 
 	// DOT .
 	if (KEYER_symbol_status == 0 && CW_key_dot_hard) {
-		KEYER_symbol_start_time = curTime;
+		KEYER_symbol_counter = 0;
 		KEYER_symbol_status = 1;
 	}
-	if (KEYER_symbol_status == 1 && (KEYER_symbol_start_time + dot_length_ms) > curTime) {
+	if (KEYER_symbol_status == 1 && KEYER_symbol_counter <= dot_length_samples) {
 		CW_updateEstimateTimeout();
 		return CW_generateRiseSignal(power);
 	}
-	if (KEYER_symbol_status == 1 && (KEYER_symbol_start_time + dot_length_ms) < curTime) {
+	if (KEYER_symbol_status == 1 && KEYER_symbol_counter > dot_length_samples) {
 		iambic_last_symbol = false;
-		KEYER_symbol_start_time = curTime;
+		KEYER_symbol_counter = 0;
 		KEYER_symbol_status = 3;
 	}
 
 	// DASH -
 	if (KEYER_symbol_status == 0 && CW_key_dash_hard) {
-		KEYER_symbol_start_time = curTime;
+		KEYER_symbol_counter = 0;
 		KEYER_symbol_status = 2;
 	}
-	if (KEYER_symbol_status == 2 && (KEYER_symbol_start_time + dash_length_ms) > curTime) {
+	if (KEYER_symbol_status == 2 && KEYER_symbol_counter <= dash_length_samples) {
 		CW_updateEstimateTimeout();
 		return CW_generateRiseSignal(power);
 	}
-	if (KEYER_symbol_status == 2 && (KEYER_symbol_start_time + dash_length_ms) < curTime) {
+	if (KEYER_symbol_status == 2 && KEYER_symbol_counter > dash_length_samples) {
 		iambic_last_symbol = true;
-		KEYER_symbol_start_time = curTime;
+		KEYER_symbol_counter = 0;
 		KEYER_symbol_status = 3;
 	}
 
 	// SPACE
-	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) > curTime) {
+	if (KEYER_symbol_status == 3 && KEYER_symbol_counter <= sim_space_length_samples) {
 		CW_updateEstimateTimeout();
 		return CW_generateFallSignal(power);
 	}
-	if (KEYER_symbol_status == 3 && (KEYER_symbol_start_time + sim_space_length_ms) < curTime) {
+	if (KEYER_symbol_status == 3 && KEYER_symbol_counter > sim_space_length_samples) {
 		if (!TRX.CW_Iambic) { // classic keyer
 
 			if (TRX.CW_OneSymbolMemory && CW_SymbolMemory != 0) { // memory symbol sequence
-				KEYER_symbol_start_time = curTime;
+				KEYER_symbol_counter = 0;
 				KEYER_symbol_status = CW_SymbolMemory;
 				CW_SymbolMemory = 0;
 			} else { // no symbol in memory, classic mode
@@ -330,7 +329,7 @@ static float32_t CW_GenerateKeyer(float32_t power, bool prepareBeforeDelay) {
 			if (iambic_sequence_started) {
 				if (!iambic_last_symbol) // iambic dot . , next dash -
 				{
-					KEYER_symbol_start_time = curTime;
+					KEYER_symbol_counter = 0;
 					KEYER_symbol_status = 2;
 					if (iambic_first_button_pressed && (!CW_key_dot_hard || !CW_key_dash_hard)) // iambic dash-dot sequence compleated
 					{
@@ -339,7 +338,7 @@ static float32_t CW_GenerateKeyer(float32_t power, bool prepareBeforeDelay) {
 					}
 				} else // iambic dash - , next dot .
 				{
-					KEYER_symbol_start_time = curTime;
+					KEYER_symbol_counter = 0;
 					KEYER_symbol_status = 1;
 					if (!iambic_first_button_pressed && (!CW_key_dot_hard || !CW_key_dash_hard)) // iambic dot-dash sequence compleated
 					{
