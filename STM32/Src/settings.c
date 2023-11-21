@@ -324,6 +324,7 @@ void LoadSettings(bool clear) {
 		TRX.Auto_CW_Mode = false;                                       // Switch to CW mode if key pressed
 		TRX.CW_In_SSB = false;                                          // CW manipulation on SSB mode
 		TRX.CW_PTT_Type = KEY_AND_EXT_PTT;                              // CW PTT type (Key / External tangent ptt)
+		TRX.CW_EDGES_SMOOTH_MS = 5;                                     // CW Signal edges smooting
 		strcpy(TRX.CW_Macros_1, "CQ CQ CQ");                            // CW Macros 1
 		strcpy(TRX.CW_Macros_2, "CQ TEST");                             // CW Macros 2
 		strcpy(TRX.CW_Macros_3, "TNX RST 599 599 NAME QTH K");          // CW Macros 3

@@ -16,7 +16,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 139        // Settings config version
+#define SETT_VERSION 140        // Settings config version
 #define CALIB_VERSION 88        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -696,6 +696,7 @@ extern struct TRX_SETTINGS {
 	uint8_t FRONTPANEL_funcbuttons_page;
 	uint8_t ANT_RX;
 	uint8_t ANT_TX;
+	uint8_t CW_EDGES_SMOOTH_MS;
 	uint8_t FuncButtons[(FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE)];
 
 	DX_CLUSTER_TYPE DXCluster_Type;

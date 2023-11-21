@@ -247,6 +247,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Auto CW Mode** - Automatic transition to CW mode when the key is pressed
 * **CW In SSB** - Allow CW TX manipulation in SSB mode
 * **DotToDash Rate** - Keyer dash to dot length rate
+* **Edges smooth, ms** - Smoothing signal edges
 * **Iambic Keyer** - Enable Iambic mode keyer
 * **Iambic Type** - Type of Iambic keyer (A/B)
 * **Key Invert** - Invert dash/dot on key

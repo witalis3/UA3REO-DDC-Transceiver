@@ -183,6 +183,7 @@ static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
 static void SYSMENU_HANDL_CW_OneSymbolMemory(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
 static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction);
+static void SYSMENU_HANDL_CW_EDGES_SMOOTH_MS(int8_t direction);
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction);
 static void SYSMENU_HANDL_CW_SelfHear(int8_t direction);
 static void SYSMENU_HANDL_CW_SetCWMacros1(int8_t direction);
@@ -910,6 +911,7 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
     {"Auto CW Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_CW_Mode, SYSMENU_HANDL_CW_Auto_CW_Mode},
     {"CW In SSB", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_In_SSB, SYSMENU_HANDL_CW_In_SSB},
     {"DotToDash Rate", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CW_DotToDashRate, SYSMENU_HANDL_CW_DotToDashRate},
+    {"Edges smooth, ms", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_EDGES_SMOOTH_MS, SYSMENU_HANDL_CW_EDGES_SMOOTH_MS},
     {"Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
     {"Iambic Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_Iambic_Type, SYSMENU_HANDL_CW_Iambic_Type, (const enumerate_item[2]){"A", "B"}},
     {"Key Invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Invert, SYSMENU_HANDL_CW_Invert},
@@ -3706,8 +3708,8 @@ static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction) {
 	if (TRX.CW_KEYER_WPM < 1) {
 		TRX.CW_KEYER_WPM = 1;
 	}
-	if (TRX.CW_KEYER_WPM > 200) {
-		TRX.CW_KEYER_WPM = 200;
+	if (TRX.CW_KEYER_WPM > 50) {
+		TRX.CW_KEYER_WPM = 50;
 	}
 }
 
@@ -3784,6 +3786,15 @@ static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction) {
 	}
 
 	KEYER_symbol_status = 0;
+}
+
+static void SYSMENU_HANDL_CW_EDGES_SMOOTH_MS(int8_t direction) {
+	if (direction > 0 || TRX.CW_EDGES_SMOOTH_MS > 0) {
+		TRX.CW_EDGES_SMOOTH_MS += direction;
+	}
+	if (TRX.CW_EDGES_SMOOTH_MS > 30) {
+		TRX.CW_EDGES_SMOOTH_MS = 30;
+	}
 }
 
 static void SYSMENU_HANDL_CW_SetCWMacros1(int8_t direction) {
