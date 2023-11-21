@@ -1173,7 +1173,7 @@ bool FFT_printFFT(void) {
 		}
 		bw_rx1_line_start = rx1_line_pos - bw_rx1_line_width - (cur_hpf_width / Hz_in_pixel * fft_zoom);
 		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
-		rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
+		rx1_notch_line_pos = rx1_line_pos - (float32_t)CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_USB:
 	case TRX_MODE_RTTY:
@@ -1188,7 +1188,7 @@ bool FFT_printFFT(void) {
 		}
 		bw_rx1_line_start = rx1_line_pos + (cur_hpf_width / Hz_in_pixel * fft_zoom);
 		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
-		rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
+		rx1_notch_line_pos = rx1_line_pos + CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
@@ -1201,16 +1201,16 @@ bool FFT_printFFT(void) {
 		bw_rx1_line_start = rx1_line_pos - (bw_rx1_line_width / 2);
 		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
+			rx1_notch_line_pos = rx1_line_pos - ((float32_t)TRX.CW_Pitch / Hz_in_pixel * fft_zoom) + (float32_t)CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		} else {
-			rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
+			rx1_notch_line_pos = rx1_line_pos + (float32_t)CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		}
 		break;
 	case TRX_MODE_WFM:
 		bw_rx1_line_width = 0;
 		bw_rx1_line_start = rx1_line_pos - (bw_rx1_line_width / 2);
 		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
-		rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
+		rx1_notch_line_pos = rx1_line_pos + (float32_t)CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	default:
 		break;
@@ -1229,7 +1229,7 @@ bool FFT_printFFT(void) {
 		}
 		bw_rx2_line_start = rx2_line_pos - bw_rx2_line_width;
 		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
-		rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
+		rx2_notch_line_pos = rx2_line_pos - SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_USB:
 	case TRX_MODE_RTTY:
@@ -1244,7 +1244,7 @@ bool FFT_printFFT(void) {
 		}
 		bw_rx2_line_start = rx2_line_pos;
 		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
-		rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
+		rx2_notch_line_pos = rx2_line_pos + (float32_t)SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
@@ -1257,16 +1257,16 @@ bool FFT_printFFT(void) {
 		bw_rx2_line_start = rx2_line_pos - (bw_rx2_line_width / 2);
 		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
 		if (SecondaryVFO->Mode == TRX_MODE_CW) {
-			rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
+			rx2_notch_line_pos = rx2_line_pos - ((float32_t)TRX.CW_Pitch / Hz_in_pixel * fft_zoom) + (float32_t)SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		} else {
-			rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
+			rx2_notch_line_pos = rx2_line_pos + (float32_t)SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		}
 		break;
 	case TRX_MODE_WFM:
 		bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE;
 		bw_rx2_line_start = rx2_line_pos - (bw_rx2_line_width / 2);
 		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
-		rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
+		rx2_notch_line_pos = rx2_line_pos + (float32_t)SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	default:
 		break;

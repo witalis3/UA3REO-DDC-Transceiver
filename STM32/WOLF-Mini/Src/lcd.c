@@ -1041,11 +1041,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	if (CurrentVFO->AutoNotchFilter) {
 		sprintf(buff, "NH:AUTO");
 	} else if (CurrentVFO->ManualNotchFilter) {
-		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			sprintf(buff, "NH:%uHz", TRX.CW_Pitch + CurrentVFO->NotchFC - CurrentVFO->LPF_RX_Filter_Width / 2);
-		} else {
-			sprintf(buff, "NH:%uHz", CurrentVFO->NotchFC);
-		}
+		sprintf(buff, "NH:%uHz", CurrentVFO->NotchFC);
 	} else {
 		sprintf(buff, "NH:OFF");
 	}

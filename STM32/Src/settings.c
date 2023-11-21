@@ -584,7 +584,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER_INVERT = false;      // invert left-right rotation of the main encoder
 		CALIBRATE.ENCODER2_INVERT = false;     // invert left-right rotation of the optional encoder
 		CALIBRATE.ENCODER_DEBOUNCE = 0;        // time to eliminate contact bounce at the main encoder, ms
-		CALIBRATE.ENCODER2_DEBOUNCE = 0;       // time to eliminate contact bounce at the additional encoder, ms
+		CALIBRATE.ENCODER2_DEBOUNCE = 1;       // time to eliminate contact bounce at the additional encoder, ms
 		CALIBRATE.ENCODER2_ON_FALLING = true;  // skip one step on ENC2
 		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
