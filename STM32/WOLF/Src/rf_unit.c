@@ -186,6 +186,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 
 	uint8_t currentAnt = TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX;
 
+#if !defined(FRONTPANEL_WF_100D) && !defined(FRONTPANEL_KT_100S)
 	// QRP Version RF Unit ///////////////////////////////////////////////////////////////////////
 	if (CALIBRATE.RF_unit_type == RF_UNIT_QRP) {
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_RESET); // latch
@@ -980,7 +981,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(RFUNIT_OE_GPIO_Port, RFUNIT_OE_Pin, GPIO_PIN_RESET);
 	}
-
+#endif
+#if defined(FRONTPANEL_WF_100D)
 	// WF-100D RF Unit ///////////////////////////////////////////////////////////////////////
 	if (CALIBRATE.RF_unit_type == RF_UNIT_WF_100D) {
 		if (TRX_Tune && CurrentVFO->RXFreqAfterTransverters <= 70000000) {
@@ -1156,7 +1158,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(RFUNIT_OE_GPIO_Port, RFUNIT_OE_Pin, GPIO_PIN_RESET);
 	}
-
+#endif
+#if defined(FRONTPANEL_KT_100S)
 	// KT-100S RF Unit ///////////////////////////////////////////////////////////////////////
 	if (CALIBRATE.RF_unit_type == RF_UNIT_KT_100S) {
 		if (TRX_Tune && CurrentVFO->RXFreqAfterTransverters <= 70000000) {
@@ -1261,6 +1264,7 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		HAL_GPIO_WritePin(RFUNIT_RCLK_GPIO_Port, RFUNIT_RCLK_Pin, GPIO_PIN_SET);
 		HAL_GPIO_WritePin(RFUNIT_OE_GPIO_Port, RFUNIT_OE_Pin, GPIO_PIN_RESET);
 	}
+#endif
 }
 
 void RF_UNIT_ProcessSensors(void) {
