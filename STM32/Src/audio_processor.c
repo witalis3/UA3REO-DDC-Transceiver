@@ -1070,11 +1070,20 @@ void processTxAudio(void) {
 		}
 	}
 
+	float32_t selfhear_amplitude = volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+
 #if HRDW_HAS_SD
 	// SD card send
 	if (SD_RecordInProcess) {
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 			arm_float_to_q15(&APROC_Audio_Buffer_TX_I[i], &VOCODER_Buffer[VOCODER_Buffer_Index], 1); // left channel
+
+			if (mode == TRX_MODE_CW) { // CW generator
+				static float32_t sdrecord_cwgen_index = 0;
+				float32_t point = generateSin(selfhear_amplitude * APROC_Audio_Buffer_TX_I[i], &sdrecord_cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
+				arm_float_to_q15(&point, &VOCODER_Buffer[VOCODER_Buffer_Index], 1);
+			}
+
 			VOCODER_Buffer_Index++;
 			if (VOCODER_Buffer_Index == SIZE_ADPCM_BLOCK) {
 				VOCODER_Buffer_Index = 0;
@@ -1088,10 +1097,10 @@ void processTxAudio(void) {
 	float32_t volume_gain_tx = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);
 #if HRDW_HAS_SD
 	if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess) {
-		volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+		volume_gain_tx *= selfhear_amplitude;
 	}
 #else
-	volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+	volume_gain_tx *= selfhear_amplitude;
 #endif
 
 	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
@@ -1165,9 +1174,8 @@ void processTxAudio(void) {
 	if (!LISTEN_RX_AUDIO_ON_TX) {
 		if (TRX.CW_SelfHear && (TRX.CW_KEYER || CW_key_serial || CW_key_dot_hard || CW_key_dash_hard) && mode == TRX_MODE_CW && !TRX_Tune) {
 			static float32_t cwgen_index = 0;
-			float32_t amplitude = volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
-				float32_t point = generateSin(amplitude * APROC_Audio_Buffer_TX_I[i], &cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
+				float32_t point = generateSin(selfhear_amplitude * APROC_Audio_Buffer_TX_I[i], &cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
 				int32_t sample = 0;
 				arm_float_to_q31(&point, &sample, 1);
 				int32_t data = convertToSPIBigEndian(sample);

@@ -233,7 +233,7 @@ static void TRX_Start_TX() {
 #if !defined(FRONTPANEL_LITE)
 	CWDecoder_SetWPM(TRX.CW_KEYER_WPM);
 #endif
-	
+
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;
 	NeedFFTReinit = true;
