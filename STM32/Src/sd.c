@@ -318,8 +318,7 @@ static void SDCOMM_IMPORT_TLE_SATNAMES_handler(void) {
 }
 
 static void SDCOMM_GET_LINES_COUNT_handler(void) {
-	if (f_open(&File, (TCHAR *)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK) {
-
+	if (f_open(&File, (TCHAR *)SD_workbuffer_A, FA_READ | FA_OPEN_ALWAYS) == FR_OK) {
 		uint32_t bytesreaded;
 		uint32_t linesCount = 0;
 		FRESULT res;

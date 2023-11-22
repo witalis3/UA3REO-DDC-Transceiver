@@ -12,6 +12,7 @@ extern bool FT8_ColectDataFlg;   // Flag indicating the FT8 data colection
 extern int DSP_Flag;
 
 extern void InitFT8_Decoder(void);
+extern void DeInitFT8_Decoder(void);
 extern void MenagerFT8(void);
 extern void FT8_EncRotate(int8_t direction);
 extern void FT8_Enc2Rotate(int8_t direction);

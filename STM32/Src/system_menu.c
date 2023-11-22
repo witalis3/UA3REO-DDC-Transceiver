@@ -9231,7 +9231,7 @@ void SYSMENU_eventCloseSystemMenu(void) {
 	}
 #if FT8_SUPPORT
 	else if (SYSMENU_FT8_DECODER_opened) {
-		FT8_DecodeActiveFlg = false;
+		DeInitFT8_Decoder();
 		SYSMENU_FT8_DECODER_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
@@ -9310,7 +9310,7 @@ void SYSMENU_eventCloseAllSystemMenu(void) {
 #if FT8_SUPPORT
 	if (SYSMENU_FT8_DECODER_opened) // Tisho
 	{
-		FT8_DecodeActiveFlg = false;
+		DeInitFT8_Decoder();
 		SYSMENU_FT8_DECODER_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}

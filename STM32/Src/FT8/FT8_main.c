@@ -23,6 +23,9 @@ bool FT8_ColectDataFlg;
 bool FT8_QSO_Count_needUpdate = true;
 uint32_t FT8_QSO_Count = 0;
 
+static uint64_t Lastfreq = 0;
+static uint_fast8_t Lastmode = 0;
+
 // Function prototypes
 static void process_data(void);
 static void update_synchronization(void);
@@ -33,6 +36,12 @@ void InitFT8_Decoder(void) {
 		return;
 	}
 	LCD_busy = true; //
+
+	// save prev TRX data
+	if (Lastfreq == 0) {
+		Lastfreq = CurrentVFO->Freq;
+		Lastmode = CurrentVFO->Mode;
+	}
 
 	// draw the GUI
 	LCDDriver_Fill(COLOR_BLACK);
@@ -106,6 +115,14 @@ void InitFT8_Decoder(void) {
 
 	Set_Data_Colection(0); // Disable the data colection
 	LCD_busy = false;
+}
+
+void DeInitFT8_Decoder(void) {
+	FT8_DecodeActiveFlg = false;
+
+	TRX_setFrequency(Lastfreq, CurrentVFO);
+	TRX_setMode(Lastmode, CurrentVFO);
+	Lastfreq = 0;
 }
 
 void MenagerFT8(void) {
