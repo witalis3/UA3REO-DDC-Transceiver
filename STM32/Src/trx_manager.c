@@ -230,8 +230,10 @@ static void TRX_Start_TX() {
 	TRX_SPLIT_Applied = false;
 	TRX_REPEATER_Applied = false;
 	TRX_TXRXMode = 2;
+#if !defined(FRONTPANEL_LITE)
 	CWDecoder_SetWPM(TRX.CW_KEYER_WPM);
-
+#endif
+	
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;
 	NeedFFTReinit = true;
@@ -248,7 +250,9 @@ static void TRX_Start_TXRX() {
 	TRX_SPLIT_Applied = false;
 	TRX_REPEATER_Applied = false;
 	TRX_TXRXMode = 3;
+#if !defined(FRONTPANEL_LITE)
 	CWDecoder_SetWPM(TRX.CW_KEYER_WPM);
+#endif
 
 	LCD_UpdateQuery.StatusInfoGUIRedraw = true;
 	NeedReinitReverber = true;
