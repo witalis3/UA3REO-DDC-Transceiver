@@ -768,6 +768,34 @@ void ua3reo_dev_cat_parseCommand(void) {
 		return;
 	}
 
+	if (strcmp(command, "UP") == 0) // Freq 1 step UP
+	{
+		if (!has_args) {
+			CAT_Transmit("UP;");
+		} else {
+			if (strcmp(arguments, "0") == 0) {
+				CAT_Transmit("UP0;");
+			} else if (strcmp(arguments, "1") == 0) {
+				CAT_Transmit("UP1;");
+				BUTTONHANDLER_UP(0);
+			}
+			return;
+		}
+	}
+	if (strcmp(command, "DN") == 0) // Freq 1 step DOWN
+	{
+		if (!has_args) {
+			CAT_Transmit("DN;");
+		} else {
+			if (strcmp(arguments, "0") == 0) {
+				CAT_Transmit("DN0;");
+			} else if (strcmp(arguments, "1") == 0) {
+				CAT_Transmit("DN1;");
+				BUTTONHANDLER_DOWN(0);
+			}
+			return;
+		}
+	}
 	if (strcmp(command, "PS") == 0) // POWER-SWITCH
 	{
 		if (!has_args) {
@@ -905,33 +933,28 @@ void ua3reo_dev_cat_parseCommand(void) {
 
 	if (strcmp(command, "NR") == 0) // NOISE REDUCTION
 	{
+		char answer[30] = {0};
 		if (!has_args) { // querry about NOISE REDUCTION
-			if (CurrentVFO->DNR_Type == 0) {
-				CAT_Transmit("NR0;");
-			} else {
-				CAT_Transmit("NR1;");
-			}
-		} else {
-			if (strcmp(arguments, "0") == 0) {
-				if (CurrentVFO->DNR_Type == 0) {
-					CAT_Transmit("NR0;");
-				}
+			strcat(answer, "NR");
+			sprintf(ctmp, "%d", CurrentVFO->DNR_Type);
+			strcat(answer, ctmp); // type
+			strcat(answer, ";");
+			CAT_Transmit(answer);
+		}
 
-				if (CurrentVFO->DNR_Type == 1) {
-					CAT_Transmit("NR0;");
-					BUTTONHANDLER_DNR(0);
-				}
-			}
-			if (strcmp(arguments, "1") == 0) {
-				if (CurrentVFO->DNR_Type == 1) {
-					CAT_Transmit("NR1;");
-				}
+		if (strcmp(arguments, "0") == 0) {
+			CAT_Transmit("NR0;");
+			BUTTONHANDLER_DNR(1); // DNR0
+		}
 
-				if (CurrentVFO->DNR_Type == 0) {
-					CAT_Transmit("NR1;");
-					BUTTONHANDLER_DNR(0);
-				}
-			}
+		if (strcmp(arguments, "1") == 0) {
+			CAT_Transmit("NR1;");
+			BUTTONHANDLER_DNR(2); // DNR1
+		}
+
+		if (strcmp(arguments, "2") == 0) {
+			CAT_Transmit("NR2;");
+			BUTTONHANDLER_DNR(3); // DNR2
 		}
 		return;
 	}

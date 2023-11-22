@@ -7,6 +7,7 @@
 #include "main.h"
 #include "pre_distortion.h"
 #include "rds_decoder.h"
+#include "satellite.h"
 #include "screen_layout.h"
 #include "snap.h"
 #include "trx_manager.h"
@@ -380,7 +381,7 @@ void FFT_PreInit(void) {
 			float64_t sum = 0.0;
 			for (uint32_t i = 1; i <= M; i++) {
 				float64_t cheby_poly = 0.0;
-				float64_t cp_x = x0 * (float64_t)arm_cos_f32(D_PI * i / (float64_t)FFT_SIZE);
+				float64_t cp_x = x0 * cos(D_PI * i / (float64_t)FFT_SIZE);
 				float64_t cp_n = FFT_SIZE - 1;
 				if (fabs(cp_x) <= 1) {
 					cheby_poly = cos(cp_n * acos(cp_x));
@@ -404,29 +405,26 @@ void FFT_PreInit(void) {
 	for (uint_fast16_t i = 0; i < FFT_SIZE; i++) {
 		// Blackman-Harris
 		if (TRX.FFT_Window == 3) {
-			window_multipliers[i] = 0.35875f - 0.48829f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
-			                        0.14128f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) -
-			                        0.01168f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
+			window_multipliers[i] = 0.35875f - 0.48829f * cosf(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
+			                        0.14128f * cosf(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) - 0.01168f * cosf(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
 		}
 		// Nuttall
 		else if (TRX.FFT_Window == 4) {
-			window_multipliers[i] = 0.355768f - 0.487396f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
-			                        0.144232f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) -
-			                        0.012604f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
+			window_multipliers[i] = 0.355768f - 0.487396f * cosf(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
+			                        0.144232f * cosf(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) - 0.012604f * cosf(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
 		}
 		// Blackman-Nutall
 		else if (TRX.FFT_Window == 5) {
-			window_multipliers[i] = 0.3635819f - 0.4891775f * arm_cos_f32(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
-			                        0.1365995f * arm_cos_f32(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) -
-			                        0.0106411f * arm_cos_f32(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
+			window_multipliers[i] = 0.3635819f - 0.4891775f * cosf(2.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) +
+			                        0.1365995f * cosf(4.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f)) - 0.0106411f * cosf(6.0f * F_PI * (float32_t)i / ((float32_t)FFT_SIZE - 1.0f));
 		}
 		// Hann
 		else if (TRX.FFT_Window == 6) {
-			window_multipliers[i] = 0.5f * (1.0f - arm_cos_f32(2.0f * F_PI * (float32_t)i / (float32_t)FFT_SIZE));
+			window_multipliers[i] = 0.5f * (1.0f - cosf(2.0f * F_PI * (float32_t)i / (float32_t)FFT_SIZE));
 		}
 		// Hamming
 		else if (TRX.FFT_Window == 7) {
-			window_multipliers[i] = 0.54f - 0.46f * arm_cos_f32((2.0f * F_PI * (float32_t)i) / ((float32_t)FFT_SIZE - 1.0f));
+			window_multipliers[i] = 0.54f - 0.46f * cosf((2.0f * F_PI * (float32_t)i) / ((float32_t)FFT_SIZE - 1.0f));
 		}
 		// No window
 		else if (TRX.FFT_Window == 8) {
@@ -641,10 +639,10 @@ void FFT_doFFT(void) {
 	/*dma_memset(FFTInput, 0x00, sizeof(FFTInput));
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++)
 	{
-	  FFTInput[i * 4] = CWDEC_FFTBuffer_Export[i];
-	  FFTInput[i * 4 + 1] = CWDEC_FFTBuffer_Export[i];
-	  FFTInput[i * 4 + 2] = CWDEC_FFTBuffer_Export[i];
-	  FFTInput[i * 4 + 3] = CWDEC_FFTBuffer_Export[i];
+	  FFTInput[i] = CWDEC_FFTBuffer_Export[i];
+	  FFTInput[i + CWDECODER_FFTSIZE] = CWDEC_FFTBuffer_Export[i];
+	  FFTInput[i + CWDECODER_FFTSIZE * 2] = CWDEC_FFTBuffer_Export[i];
+	  FFTInput[i + CWDECODER_FFTSIZE * 3] = CWDEC_FFTBuffer_Export[i];
 	}*/
 
 	// dBm scale
@@ -1175,7 +1173,7 @@ bool FFT_printFFT(void) {
 		}
 		bw_rx1_line_start = rx1_line_pos - bw_rx1_line_width - (cur_hpf_width / Hz_in_pixel * fft_zoom);
 		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
-		rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
+		rx1_notch_line_pos = rx1_line_pos - (float32_t)CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_USB:
 	case TRX_MODE_RTTY:
@@ -1190,7 +1188,7 @@ bool FFT_printFFT(void) {
 		}
 		bw_rx1_line_start = rx1_line_pos + (cur_hpf_width / Hz_in_pixel * fft_zoom);
 		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
-		rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
+		rx1_notch_line_pos = rx1_line_pos + CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
@@ -1203,16 +1201,16 @@ bool FFT_printFFT(void) {
 		bw_rx1_line_start = rx1_line_pos - (bw_rx1_line_width / 2);
 		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			rx1_notch_line_pos = bw_rx1_line_start + bw_rx1_line_width - CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
+			rx1_notch_line_pos = rx1_line_pos - ((float32_t)TRX.CW_Pitch / Hz_in_pixel * fft_zoom) + (float32_t)CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		} else {
-			rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
+			rx1_notch_line_pos = rx1_line_pos + (float32_t)CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		}
 		break;
 	case TRX_MODE_WFM:
 		bw_rx1_line_width = 0;
 		bw_rx1_line_start = rx1_line_pos - (bw_rx1_line_width / 2);
 		bw_rx1_line_end = bw_rx1_line_start + bw_rx1_line_width;
-		rx1_notch_line_pos = bw_rx1_line_start + CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
+		rx1_notch_line_pos = rx1_line_pos + (float32_t)CurrentVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	default:
 		break;
@@ -1231,7 +1229,7 @@ bool FFT_printFFT(void) {
 		}
 		bw_rx2_line_start = rx2_line_pos - bw_rx2_line_width;
 		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
-		rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
+		rx2_notch_line_pos = rx2_line_pos - SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_USB:
 	case TRX_MODE_RTTY:
@@ -1246,7 +1244,7 @@ bool FFT_printFFT(void) {
 		}
 		bw_rx2_line_start = rx2_line_pos;
 		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
-		rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
+		rx2_notch_line_pos = rx2_line_pos + (float32_t)SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	case TRX_MODE_NFM:
 	case TRX_MODE_AM:
@@ -1259,16 +1257,16 @@ bool FFT_printFFT(void) {
 		bw_rx2_line_start = rx2_line_pos - (bw_rx2_line_width / 2);
 		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
 		if (SecondaryVFO->Mode == TRX_MODE_CW) {
-			rx2_notch_line_pos = bw_rx2_line_start + bw_rx2_line_width - SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
+			rx2_notch_line_pos = rx2_line_pos - ((float32_t)TRX.CW_Pitch / Hz_in_pixel * fft_zoom) + (float32_t)SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		} else {
-			rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
+			rx2_notch_line_pos = rx2_line_pos + (float32_t)SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		}
 		break;
 	case TRX_MODE_WFM:
 		bw_rx2_line_width = LAYOUT->FFT_PRINT_SIZE;
 		bw_rx2_line_start = rx2_line_pos - (bw_rx2_line_width / 2);
 		bw_rx2_line_end = bw_rx2_line_start + bw_rx2_line_width;
-		rx2_notch_line_pos = bw_rx2_line_start + SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
+		rx2_notch_line_pos = rx2_line_pos + (float32_t)SecondaryVFO->NotchFC / Hz_in_pixel * fft_zoom;
 		break;
 	default:
 		break;
@@ -1807,6 +1805,13 @@ bool FFT_printFFT(void) {
 		char tmp[32] = {0};
 		sprintf(tmp, "%.2fHz", (double)SAM_Carrier_offset);
 		LCDDriver_printTextInMemory(tmp, 5, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
+	}
+
+	// Print SAT info
+	if (TRX.SatMode) {
+		char tmp[128] = {0};
+		sprintf(tmp, "SAT: %s, Az: %.1f El: %.1f", TRX.SAT_Name, SATTELITE.az, SATTELITE.el);
+		LCDDriver_printTextInMemory(tmp, 15, 20, FG_COLOR, BG_COLOR, 1, (uint16_t *)print_output_buffer, LAYOUT->FFT_PRINT_SIZE, FFT_AND_WTF_HEIGHT);
 	}
 
 	// Print Stereo FM RDS Label

@@ -128,6 +128,8 @@ extern void BUTTONHANDLER_DPD(uint32_t parameter);
 extern void BUTTONHANDLER_DPD_CALIBRATE(uint32_t parameter);
 extern void BUTTONHANDLER_MEMO_WRITE(uint32_t parameter);
 extern void BUTTONHANDLER_MEMO_READ(uint32_t parameter);
+extern void BUTTONHANDLER_SET_VFOA_FREQ_MANUAL(uint32_t parameter);
+extern void BUTTONHANDLER_SET_VFOB_FREQ_MANUAL(uint32_t parameter);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_soft;
@@ -185,6 +187,7 @@ extern bool TRX_phase_restarted;
 extern uint32_t TRX_TX_StartTime;
 extern uint32_t TRX_TX_EndTime;
 extern uint32_t TRX_DXCluster_UpdateTime;
+extern uint32_t TRX_SAT_UpdateTime;
 extern uint32_t TRX_WOLF_Cluster_UpdateTime;
 volatile extern float32_t TRX_PWR_Voltage;
 volatile extern float32_t TRX_PWR_Current;

@@ -17,6 +17,7 @@
 #include "main.h"
 #include "profiler.h"
 #include "rf_unit.h"
+#include "satellite.h"
 #include "sd.h"
 #include "settings.h"
 #include "snap.h"
@@ -198,6 +199,8 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 		return;
 	}
 
+	uint32_t currentTick = HAL_GetTick();
+
 	// Poll encoders by timer
 	// Main Encoder
 	static uint8_t ENCODER_state = 0;
@@ -209,7 +212,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 	static uint8_t ENCODER_DTVal_prevState = 0;
 	static uint8_t ENCODER_CLKVal_prevState = 0;
 
-	if ((HAL_GetTick() - ENCODER_AValDeb) >= CALIBRATE.ENCODER_DEBOUNCE) {
+	if ((currentTick - ENCODER_AValDeb) >= CALIBRATE.ENCODER_DEBOUNCE) {
 		uint8_t ENCODER_DTVal = HAL_GPIO_ReadPin(ENC_DT_GPIO_Port, ENC_DT_Pin);
 		uint8_t ENCODER_CLKVal = HAL_GPIO_ReadPin(ENC_CLK_GPIO_Port, ENC_CLK_Pin);
 		if (ENCODER_DTVal == ENCODER_DTVal_prevState && ENCODER_CLKVal == ENCODER_CLKVal_prevState || CALIBRATE.ENCODER_DEBOUNCE == 0) {
@@ -222,8 +225,8 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 				if (ENCODER_slowler <= -ENCODER_SLOW_RATE) {
 					// acceleration
 					ENCticksInInterval++;
-					if ((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION) {
-						ENCstartMeasureTime = HAL_GetTick();
+					if ((currentTick - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION) {
+						ENCstartMeasureTime = currentTick;
 						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
 						ENCticksInInterval = 0;
 					}
@@ -238,8 +241,8 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 				if (ENCODER_slowler >= ENCODER_SLOW_RATE) {
 					// acceleration
 					ENCticksInInterval++;
-					if ((HAL_GetTick() - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION) {
-						ENCstartMeasureTime = HAL_GetTick();
+					if ((currentTick - ENCstartMeasureTime) > CALIBRATE.ENCODER_ACCELERATION) {
+						ENCstartMeasureTime = currentTick;
 						ENCAcceleration = (10.0f + ENCticksInInterval - 1.0f) / 10.0f;
 						ENCticksInInterval = 0;
 					}
@@ -250,7 +253,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 				}
 			}
 		}
-		ENCODER_AValDeb = HAL_GetTick();
+		ENCODER_AValDeb = currentTick;
 		ENCODER_DTVal_prevState = ENCODER_DTVal;
 		ENCODER_CLKVal_prevState = ENCODER_CLKVal;
 	}
@@ -261,7 +264,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 	static uint8_t ENCODER2_DTVal_prevState = 0;
 	static uint8_t ENCODER2_CLKVal_prevState = 0;
 
-	if ((HAL_GetTick() - ENCODER2_AValDeb) >= CALIBRATE.ENCODER2_DEBOUNCE) {
+	if ((currentTick - ENCODER2_AValDeb) >= CALIBRATE.ENCODER2_DEBOUNCE) {
 		uint8_t ENCODER2_DTVal = HAL_GPIO_ReadPin(ENC2_DT_GPIO_Port, ENC2_DT_Pin);
 		uint8_t ENCODER2_CLKVal = HAL_GPIO_ReadPin(ENC2_CLK_GPIO_Port, ENC2_CLK_Pin);
 		if (ENCODER2_DTVal == ENCODER2_DTVal_prevState && ENCODER2_CLKVal == ENCODER2_CLKVal_prevState || CALIBRATE.ENCODER2_DEBOUNCE == 0) {
@@ -271,7 +274,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 				FRONTPANEL_ProcessEncoder2 = direction;
 			}
 		}
-		ENCODER2_AValDeb = HAL_GetTick();
+		ENCODER2_AValDeb = currentTick;
 		ENCODER2_DTVal_prevState = ENCODER2_DTVal;
 		ENCODER2_CLKVal_prevState = ENCODER2_CLKVal;
 	}
@@ -282,7 +285,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 	static uint8_t ENCODER3_DTVal_prevState = 0;
 	static uint8_t ENCODER3_CLKVal_prevState = 0;
 
-	if ((HAL_GetTick() - ENCODER3_AValDeb) >= CALIBRATE.ENCODER2_DEBOUNCE) {
+	if ((currentTick - ENCODER3_AValDeb) >= CALIBRATE.ENCODER2_DEBOUNCE) {
 		uint8_t ENCODER3_DTVal = HAL_GPIO_ReadPin(ENC3_DT_GPIO_Port, ENC3_DT_Pin);
 		uint8_t ENCODER3_CLKVal = HAL_GPIO_ReadPin(ENC3_CLK_GPIO_Port, ENC3_CLK_Pin);
 		if (ENCODER3_DTVal == ENCODER3_DTVal_prevState && ENCODER3_CLKVal == ENCODER3_CLKVal_prevState || CALIBRATE.ENCODER2_DEBOUNCE == 0) {
@@ -292,7 +295,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 				FRONTPANEL_ProcessEncoder3 = direction;
 			}
 		}
-		ENCODER3_AValDeb = HAL_GetTick();
+		ENCODER3_AValDeb = currentTick;
 		ENCODER3_DTVal_prevState = ENCODER3_DTVal;
 		ENCODER3_CLKVal_prevState = ENCODER3_CLKVal;
 	}
@@ -304,7 +307,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 	static uint8_t ENCODER4_DTVal_prevState = 0;
 	static uint8_t ENCODER4_CLKVal_prevState = 0;
 
-	if ((HAL_GetTick() - ENCODER4_AValDeb) >= CALIBRATE.ENCODER2_DEBOUNCE) {
+	if ((currentTick - ENCODER4_AValDeb) >= CALIBRATE.ENCODER2_DEBOUNCE) {
 		uint8_t ENCODER4_DTVal = HAL_GPIO_ReadPin(ENC4_DT_GPIO_Port, ENC4_DT_Pin);
 		uint8_t ENCODER4_CLKVal = HAL_GPIO_ReadPin(ENC4_CLK_GPIO_Port, ENC4_CLK_Pin);
 		if (ENCODER4_DTVal == ENCODER4_DTVal_prevState && ENCODER4_CLKVal == ENCODER4_CLKVal_prevState || CALIBRATE.ENCODER2_DEBOUNCE == 0) {
@@ -314,7 +317,7 @@ void EVENTS_do_ENC(void) // 20 0000 Hz
 				FRONTPANEL_ProcessEncoder4 = direction;
 			}
 		}
-		ENCODER4_AValDeb = HAL_GetTick();
+		ENCODER4_AValDeb = currentTick;
 		ENCODER4_DTVal_prevState = ENCODER4_DTVal;
 		ENCODER4_CLKVal_prevState = ENCODER4_CLKVal;
 	}
@@ -433,7 +436,8 @@ void EVENTS_do_EVERY_10ms(void) // 100 Hz
 	// transmission release time after key signal
 	if (CW_Key_Timeout_est > 0 && !CW_key_serial && !CW_key_dot_hard && !CW_key_dash_hard) {
 		CW_Key_Timeout_est -= 10;
-		if (CW_Key_Timeout_est == 0) {
+		if (CW_Key_Timeout_est < 10) {
+			CW_Key_Timeout_est = 0;
 			FPGA_NeedSendParams = true;
 			TRX_Restart_Mode();
 		}
@@ -630,6 +634,14 @@ void EVENTS_do_EVERY_1000ms(void) // 1 Hz
 			}
 			maySendIQ = false;
 		}
+#if HRDW_HAS_SD
+		if (TRX.SatMode && ((HAL_GetTick() - TRX_SAT_UpdateTime) > SAT_UPDATE_TIME || TRX_SAT_UpdateTime == 0)) // get satelite propagination
+		{
+			SAT_calc(SAT_unix2daynum(getUTCTimestamp(), 0));
+			TRX_SAT_UpdateTime = HAL_GetTick();
+			maySendIQ = false;
+		}
+#endif
 		WIFI_maySendIQ = maySendIQ;
 	}
 #endif

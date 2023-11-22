@@ -350,7 +350,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		if (CurrentVFO->ManualNotchFilter) {
 			if (CurrentVFO->NotchFC > step && direction < 0) {
 				CurrentVFO->NotchFC -= step;
-			} else if (CurrentVFO->NotchFC < CurrentVFO->LPF_RX_Filter_Width && direction > 0) {
+			} else if (direction > 0) {
 				CurrentVFO->NotchFC += step;
 			}
 
@@ -358,10 +358,6 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 			if (CurrentVFO->NotchFC < step) {
 				CurrentVFO->NotchFC = step;
-			}
-
-			if (CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width) {
-				CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
 			}
 
 			LCD_UpdateQuery.StatusInfoGUI = true;

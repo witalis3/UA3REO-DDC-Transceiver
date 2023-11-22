@@ -412,7 +412,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .channel = 7,
      .type = FUNIT_CTRL_BUTTON,
      .tres_min = 636,
-     .tres_max = 729,
+     .tres_max = 720,
      .state = false,
      .prev_state = false,
      .work_in_menu = true,
@@ -422,7 +422,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     {.port = 1,
      .channel = 7,
      .type = FUNIT_CTRL_BUTTON,
-     .tres_min = 729,
+     .tres_min = 720,
      .tres_max = 822,
      .state = false,
      .prev_state = false,
@@ -731,7 +731,7 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 		if (CurrentVFO->ManualNotchFilter) {
 			if (CurrentVFO->NotchFC > step && direction < 0) {
 				CurrentVFO->NotchFC -= step;
-			} else if (CurrentVFO->NotchFC < CurrentVFO->LPF_RX_Filter_Width && direction > 0) {
+			} else if (direction > 0) {
 				CurrentVFO->NotchFC += step;
 			}
 
@@ -739,10 +739,6 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 			if (CurrentVFO->NotchFC < step) {
 				CurrentVFO->NotchFC = step;
-			}
-
-			if (CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width) {
-				CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
 			}
 
 			LCD_UpdateQuery.StatusInfoGUI = true;
@@ -940,7 +936,7 @@ static void FRONTPANEL_ENCODER4_Rotated(int8_t direction) // rotated encoder, ha
 			if (CurrentVFO->Mode == TRX_MODE_CW) {
 				SYSMENU_HANDL_FILTER_CW_LPF_pass(direction);
 			}
-			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB) {
 				SYSMENU_HANDL_FILTER_SSB_LPF_RX_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
@@ -949,14 +945,14 @@ static void FRONTPANEL_ENCODER4_Rotated(int8_t direction) // rotated encoder, ha
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
 				SYSMENU_HANDL_FILTER_FM_LPF_RX_pass(direction);
 			}
-			if (CurrentVFO->Mode == TRX_MODE_DIGI_L) {
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U) {
 				SYSMENU_HANDL_FILTER_DIGI_LPF_pass(direction);
 			}
 		} else {
 			if (CurrentVFO->Mode == TRX_MODE_CW) {
 				SYSMENU_HANDL_FILTER_CW_LPF_pass(direction);
 			}
-			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB) {
 				SYSMENU_HANDL_FILTER_SSB_LPF_TX_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
@@ -965,7 +961,7 @@ static void FRONTPANEL_ENCODER4_Rotated(int8_t direction) // rotated encoder, ha
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
 				SYSMENU_HANDL_FILTER_FM_LPF_TX_pass(direction);
 			}
-			if (CurrentVFO->Mode == TRX_MODE_DIGI_L) {
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U) {
 				SYSMENU_HANDL_FILTER_DIGI_LPF_pass(direction);
 			}
 		}
@@ -1278,6 +1274,11 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, u
 	uint8_t inData[3] = {0};
 	uint32_t mcp3008_value = 0;
 
+	const uint8_t max_signal_diff = 30;
+	const uint8_t max_retry = 3;
+	uint8_t retry = 0;
+	uint32_t value_first = 0;
+
 	for (uint8_t i = 0; i < count; i++) {
 		outData[0] = 0x18 | channel;
 		bool res = false;
@@ -1294,7 +1295,18 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, u
 			HRDW_SPI_Locked = false;
 			return 65535;
 		}
-		mcp3008_value += (uint16_t)(((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
+		uint32_t value_now = (uint16_t)(((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
+		mcp3008_value += value_now;
+
+		if (i > 0 && retry < max_retry && abs((int32_t)value_now - (int32_t)value_first) > max_signal_diff) { // value not stabilized, reload
+			retry++;
+			i = 0;
+			mcp3008_value = 0;
+			// println(retry, " ", (int32_t)value_now - (int32_t)value_first);
+		}
+		if (i == 0) {
+			value_first = value_now;
+		}
 	}
 	mcp3008_value /= count;
 

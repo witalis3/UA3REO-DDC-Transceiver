@@ -885,6 +885,11 @@
               <FilePath>..\..\Src\events.h</FilePath>
             </File>
             <File>
+              <FileName>fast_sin.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\fast_sin.h</FilePath>
+            </File>
+            <File>
               <FileName>fft.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\Src\fft.c</FilePath>
@@ -1078,6 +1083,16 @@
               <FileName>rtty_decoder.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\rtty_decoder.h</FilePath>
+            </File>
+            <File>
+              <FileName>satellite.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\satellite.c</FilePath>
+            </File>
+            <File>
+              <FileName>satellite.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\satellite.h</FilePath>
             </File>
             <File>
               <FileName>screen_layout.h</FileName>

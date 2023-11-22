@@ -555,6 +555,9 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_VOLUME) {
 		sprintf(enc2_state_str, "VOL");
 	}
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_IF) {
+		sprintf(enc2_state_str, "IF");
+	}
 
 	printInfoSmall(LAYOUT->STATUS_ANT_X_OFFSET, (LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_ANT_Y_OFFSET), LAYOUT->STATUS_ANT_BLOCK_WIDTH, LAYOUT->STATUS_ANT_BLOCK_HEIGHT, enc2_state_str,
 	               BG_COLOR, COLOR->STATUS_RX, COLOR->STATUS_RX, true);
@@ -1038,11 +1041,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	if (CurrentVFO->AutoNotchFilter) {
 		sprintf(buff, "NH:AUTO");
 	} else if (CurrentVFO->ManualNotchFilter) {
-		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			sprintf(buff, "NH:%uHz", TRX.CW_Pitch + CurrentVFO->NotchFC - CurrentVFO->LPF_RX_Filter_Width / 2);
-		} else {
-			sprintf(buff, "NH:%uHz", CurrentVFO->NotchFC);
-		}
+		sprintf(buff, "NH:%uHz", CurrentVFO->NotchFC);
 	} else {
 		sprintf(buff, "NH:OFF");
 	}
@@ -1153,7 +1152,7 @@ static void LCD_displayTextBar(void) {
 
 	if (TRX.CW_Decoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK)) {
 		char ctmp[70];
-		sprintf(ctmp, "WPM:%d %s", (uint16_t)CW_Decoder_WPM, (char *)&CW_Decoder_Text);
+		sprintf(ctmp, "WPM:%d %s", (uint8_t)roundf(CW_Decoder_WPM), CW_Decoder_Text);
 		LCDDriver_printText(ctmp, 2, (LCD_HEIGHT - LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET + 1), COLOR->CLOCK, BG_COLOR, LAYOUT->TEXTBAR_FONT);
 	} else if (NeedProcessDecoder && CurrentVFO->Mode == TRX_MODE_WFM) {
 		LCDDriver_printText(RDS_Decoder_Text, 2, (LCD_HEIGHT - LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT - LAYOUT->FFT_CWDECODER_OFFSET + 1), COLOR->CLOCK, BG_COLOR, LAYOUT->TEXTBAR_FONT);

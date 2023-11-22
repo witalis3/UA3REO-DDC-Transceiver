@@ -8,18 +8,16 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "8.6.4-dev" // current STM32 version
+#define STM32_VERSION_STR "9.0.0" // current STM32 version
 
-#if defined(FRONTPANEL_MINI)
-#define FPGA_VERSION_STR "6.8.0" // needed FPGA version Wolf-Mini
-#elif defined(FRONTPANEL_LITE)
+#if defined(FRONTPANEL_LITE)
 #define FPGA_VERSION_STR "8.0.0" // needed FPGA version Wolf-Lite
 #else
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 136        // Settings config version
-#define CALIB_VERSION 87        // Calibration config version
+#define SETT_VERSION 140        // Settings config version
+#define CALIB_VERSION 88        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -45,6 +43,7 @@
 #define ENCODER_MIN_RATE_ACCELERATION 2.0f   // encoder enable rounding if lower than value
 #define DXCLUSTER_UPDATE_TIME (1000 * 60)    // interval to get cluster info, 1min
 #define WOLF_CLUSTER_UPDATE_TIME (1000 * 30) // interval to get WOLF cluster info, 30sec
+#define SAT_UPDATE_TIME (1000 * 1)           // interval to calculate SAT info, 1sec
 #define NORMAL_SWR_SAVED 1.5f                // ATU SWR target for saved settings
 #define NORMAL_SWR_TUNE 1.2f                 // ATU SWR target for new tune
 #define IDLE_LCD_BRIGHTNESS 5                // Low brightness for IDLE mode (dimmer)
@@ -71,6 +70,10 @@
 #define MAX_CW_MACROS_NAME_LENGTH 6
 #define ALLQSO_TOKEN_SIZE 16
 #define MAX_CHANNEL_MEMORY_NAME_LENGTH 10
+#define SAT_NAME_MAXLEN 20
+#define SAT_TLE_MAXCOUNT 28
+#define SAT_TLE_LINE_MAXLEN 70
+#define SAT_QTH_LINE_MAXLEN 12
 
 #define ATU_MAX_FREQ_KHZ 60000
 #define ATU_MEM_STEP_KHZ 50
@@ -502,6 +505,7 @@ typedef struct {
 // Save memory channels
 typedef struct {
 	uint64_t freq;
+	float32_t CTCSS_Freq;
 	uint8_t mode;
 	char name[MAX_CHANNEL_MEMORY_NAME_LENGTH];
 } CHANNEL_SAVED_SETTINGS_TYPE;
@@ -692,6 +696,7 @@ extern struct TRX_SETTINGS {
 	uint8_t FRONTPANEL_funcbuttons_page;
 	uint8_t ANT_RX;
 	uint8_t ANT_TX;
+	uint8_t CW_EDGES_SMOOTH_MS;
 	uint8_t FuncButtons[(FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE)];
 
 	DX_CLUSTER_TYPE DXCluster_Type;
@@ -798,6 +803,7 @@ extern struct TRX_SETTINGS {
 	bool FREE_Tune;
 	bool Auto_CW_Mode;
 	bool CW_In_SSB;
+	bool SatMode;
 #if HRDW_HAS_DUAL_RX
 	bool Dual_RX;
 #endif
@@ -815,6 +821,12 @@ extern struct TRX_SETTINGS {
 	char CW_Macros_Name_3[MAX_CW_MACROS_NAME_LENGTH + 1];
 	char CW_Macros_Name_4[MAX_CW_MACROS_NAME_LENGTH + 1];
 	char CW_Macros_Name_5[MAX_CW_MACROS_NAME_LENGTH + 1];
+	char SAT_Name[SAT_NAME_MAXLEN + 1];
+	char SAT_TLE_Line1[SAT_TLE_LINE_MAXLEN + 1];
+	char SAT_TLE_Line2[SAT_TLE_LINE_MAXLEN + 1];
+	char SAT_QTH_Lat[SAT_QTH_LINE_MAXLEN + 1];
+	char SAT_QTH_Lon[SAT_QTH_LINE_MAXLEN + 1];
+	char SAT_QTH_Alt[SAT_QTH_LINE_MAXLEN + 1];
 
 	BAND_SAVED_SETTINGS_TYPE BANDS_SAVED_SETTINGS[BANDS_COUNT];
 

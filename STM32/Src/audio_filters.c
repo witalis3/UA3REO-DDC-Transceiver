@@ -799,24 +799,10 @@ void ReinitAudioFilters(void) {
 
 // initialize the manual Notch filter
 void InitNotchFilter(void) {
-	if (CurrentVFO->NotchFC > CurrentVFO->LPF_RX_Filter_Width) {
-		CurrentVFO->NotchFC = CurrentVFO->LPF_RX_Filter_Width;
-	}
-	if (SecondaryVFO->NotchFC > SecondaryVFO->LPF_RX_Filter_Width) {
-		SecondaryVFO->NotchFC = SecondaryVFO->LPF_RX_Filter_Width;
-	}
-
 	int16_t rx1_notch_width_Hz = 100;
 	int16_t rx2_notch_width_Hz = 100;
 	int16_t rx1_notch_pos = CurrentVFO->NotchFC;
 	int16_t rx2_notch_pos = SecondaryVFO->NotchFC;
-
-	if (CurrentVFO->Mode == TRX_MODE_CW) {
-		rx1_notch_pos = (TRX.CW_Pitch + CurrentVFO->NotchFC - CurrentVFO->LPF_RX_Filter_Width / 2);
-	}
-	if (SecondaryVFO->Mode == TRX_MODE_CW) {
-		rx2_notch_pos = (TRX.CW_Pitch + SecondaryVFO->NotchFC - SecondaryVFO->LPF_RX_Filter_Width / 2);
-	}
 
 	int16_t rx1_notch_pos_f1 = rx1_notch_pos - rx1_notch_width_Hz / 2;
 	int16_t rx1_notch_pos_f2 = rx1_notch_pos + rx1_notch_width_Hz / 2;

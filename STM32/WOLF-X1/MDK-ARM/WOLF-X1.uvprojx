@@ -830,6 +830,16 @@
               <FilePath>..\..\Src\rtty_decoder.h</FilePath>
             </File>
             <File>
+              <FileName>satellite.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\satellite.c</FilePath>
+            </File>
+            <File>
+              <FileName>satellite.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\Src\satellite.h</FilePath>
+            </File>
+            <File>
               <FileName>screen_layout.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\screen_layout.h</FilePath>

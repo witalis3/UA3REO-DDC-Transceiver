@@ -393,7 +393,7 @@ float32_t getMaxTXAmplitudeOnFreq(uint64_t freq) {
 }
 
 float32_t generateSin(float32_t amplitude, float32_t *index, float32_t samplerate, float32_t freq) {
-	float32_t ret = amplitude * sinf(*index * F_2PI); // arm_sin_f32
+	float32_t ret = amplitude * fast_sin(*index * F_2PI);
 	*index += freq / samplerate;
 	while (*index >= 1.0f) {
 		*index -= 1.0f;
@@ -402,7 +402,7 @@ float32_t generateSin(float32_t amplitude, float32_t *index, float32_t samplerat
 }
 
 float32_t generateSinWithZeroCrossing(float32_t amplitude, float32_t *index, float32_t samplerate, float32_t *prev_freq, float32_t freq) {
-	float32_t ret = amplitude * sinf(*index * F_2PI); // arm_sin_f32
+	float32_t ret = amplitude * fast_sin(*index * F_2PI);
 
 	*index += *prev_freq / samplerate;
 
@@ -1200,6 +1200,26 @@ void getUTCDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime) {
 
 	// println("UTC Date: ", sDate->Year, "-", sDate->Month, "-", sDate->Date);
 	// println("UTC Time: ", sTime->Hours, "-", sTime->Minutes, "-", sTime->Seconds);
+}
+
+uint32_t getUTCTimestamp() {
+	RTC_DateTypeDef sDate = {0};
+	RTC_TimeTypeDef sTime = {0};
+	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+
+	time_t timestamp;
+	struct tm currTime;
+
+	currTime.tm_year = sDate.Year + 100;
+	currTime.tm_mon = sDate.Month - 1;
+	currTime.tm_mday = sDate.Date;
+
+	currTime.tm_hour = sTime.Hours;
+	currTime.tm_min = sTime.Minutes;
+	currTime.tm_sec = sTime.Seconds;
+
+	return mktime(&currTime);
 }
 
 void getLocalDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime) {

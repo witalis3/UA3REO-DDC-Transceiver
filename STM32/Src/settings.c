@@ -324,6 +324,7 @@ void LoadSettings(bool clear) {
 		TRX.Auto_CW_Mode = false;                                       // Switch to CW mode if key pressed
 		TRX.CW_In_SSB = false;                                          // CW manipulation on SSB mode
 		TRX.CW_PTT_Type = KEY_AND_EXT_PTT;                              // CW PTT type (Key / External tangent ptt)
+		TRX.CW_EDGES_SMOOTH_MS = 5;                                     // CW Signal edges smooting
 		strcpy(TRX.CW_Macros_1, "CQ CQ CQ");                            // CW Macros 1
 		strcpy(TRX.CW_Macros_2, "CQ TEST");                             // CW Macros 2
 		strcpy(TRX.CW_Macros_3, "TNX RST 599 599 NAME QTH K");          // CW Macros 3
@@ -445,6 +446,13 @@ void LoadSettings(bool clear) {
 		TRX.WSPR_BANDS_10 = true;
 		TRX.WSPR_BANDS_6 = false;
 		TRX.WSPR_BANDS_2 = false;
+		// SAT
+		strcpy(TRX.SAT_Name, "QO-100");
+		strcpy(TRX.SAT_TLE_Line1, "1 43700U 18090A   23320.50049146  .00000163  00000-0  00000-0 0  9991");
+		strcpy(TRX.SAT_TLE_Line2, "2 43700   0.0142 283.2286 0001422 345.1641 352.9695  1.00273483 18216");
+		strcpy(TRX.SAT_QTH_Lat, "52.7");
+		strcpy(TRX.SAT_QTH_Lon, "41.4");
+		strcpy(TRX.SAT_QTH_Alt, "174.0");
 		//
 		TRX.ENDBit = 100; // Bit for the end of a successful write to eeprom
 
@@ -576,7 +584,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER_INVERT = false;      // invert left-right rotation of the main encoder
 		CALIBRATE.ENCODER2_INVERT = false;     // invert left-right rotation of the optional encoder
 		CALIBRATE.ENCODER_DEBOUNCE = 0;        // time to eliminate contact bounce at the main encoder, ms
-		CALIBRATE.ENCODER2_DEBOUNCE = 2;       // time to eliminate contact bounce at the additional encoder, ms
+		CALIBRATE.ENCODER2_DEBOUNCE = 1;       // time to eliminate contact bounce at the additional encoder, ms
 		CALIBRATE.ENCODER2_ON_FALLING = true;  // skip one step on ENC2
 		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
@@ -1072,6 +1080,7 @@ void LoadCalibration(bool clear) {
 		for (uint8_t i = 0; i < MEMORY_CHANNELS_COUNT; i++) {
 			CALIBRATE.MEMORY_CHANNELS[i].freq = 0;
 			CALIBRATE.MEMORY_CHANNELS[i].mode = TRX_MODE_LSB;
+			CALIBRATE.MEMORY_CHANNELS[i].CTCSS_Freq = 0;
 			sprintf(CALIBRATE.MEMORY_CHANNELS[i].name, "Ch %d", i + 1);
 		}
 		for (uint8_t i = 0; i < BANDS_COUNT; i++) {

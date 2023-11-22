@@ -19,6 +19,7 @@
 #include "noise_blanker.h"
 #include "rf_unit.h"
 #include "rtty_decoder.h"
+#include "satellite.h"
 #include "screen_layout.h"
 #include "sd.h"
 #include "self_test.h"
@@ -182,6 +183,7 @@ static void SYSMENU_HANDL_CW_Keyer(int8_t direction);
 static void SYSMENU_HANDL_CW_OneSymbolMemory(int8_t direction);
 static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction);
 static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction);
+static void SYSMENU_HANDL_CW_EDGES_SMOOTH_MS(int8_t direction);
 static void SYSMENU_HANDL_CW_Pitch(int8_t direction);
 static void SYSMENU_HANDL_CW_SelfHear(int8_t direction);
 static void SYSMENU_HANDL_CW_SetCWMacros1(int8_t direction);
@@ -317,6 +319,13 @@ static void SYSMENU_HANDL_SD_ImportCalibrations2(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportCalibrations3(int8_t direction);
 static void SYSMENU_HANDL_SD_ImportSettingsDialog(int8_t direction);
 static void SYSMENU_HANDL_SD_USB(int8_t direction);
+
+static void SYSMENU_HANDL_SAT_SatMode(int8_t direction);
+static void SYSMENU_HANDL_SAT_DownloadTLE(int8_t direction);
+static void SYSMENU_HANDL_SAT_SelectSAT(int8_t direction);
+static void SYSMENU_HANDL_SAT_QTHLat(int8_t direction);
+static void SYSMENU_HANDL_SAT_QTHLon(int8_t direction);
+static void SYSMENU_HANDL_SAT_QTHAlt(int8_t direction);
 #endif
 
 static void SYSMENU_HANDL_SETTIME(int8_t direction);
@@ -537,6 +546,8 @@ static void SYSMENU_HANDL_WSPRMENU(int8_t direction);
 #if HRDW_HAS_SD
 static void SYSMENU_HANDL_SDMENU(int8_t direction);
 static void SYSMENU_HANDL_RECORD_CQ_WAV(int8_t direction);
+
+static void SYSMENU_HANDL_SATMENU(int8_t direction);
 #endif
 static void SYSMENU_HANDL_FT8_Decoder(int8_t direction);     // Tisho
 static void SYSMENU_HANDL_SWR_Tandem_Ctrl(int8_t direction); // Tisho
@@ -665,9 +676,10 @@ const static struct sysmenu_item_handler sysmenu_handlers[] = {
 #endif
 #if HRDW_HAS_SD
     {"SD Card", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SDMENU},
+    {"Satellites", SYSMENU_MENU, NULL, 0, SYSMENU_HANDL_SATMENU},
 #endif
 #if MEMORY_CHANNELS_COUNT > 0
-    {"Memory Channels", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_MENU},
+    {"Channels Name", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_MEMORY_CHANNELS_MENU},
 #endif
     {"Set Clock Time", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SETTIME},
     {"DFU Mode", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Bootloader},
@@ -899,6 +911,7 @@ const static struct sysmenu_item_handler sysmenu_cw_handlers[] = {
     {"Auto CW Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Auto_CW_Mode, SYSMENU_HANDL_CW_Auto_CW_Mode},
     {"CW In SSB", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_In_SSB, SYSMENU_HANDL_CW_In_SSB},
     {"DotToDash Rate", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.CW_DotToDashRate, SYSMENU_HANDL_CW_DotToDashRate},
+    {"Edges smooth, ms", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_EDGES_SMOOTH_MS, SYSMENU_HANDL_CW_EDGES_SMOOTH_MS},
     {"Iambic Keyer", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Iambic, SYSMENU_HANDL_CW_Iambic},
     {"Iambic Type", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.CW_Iambic_Type, SYSMENU_HANDL_CW_Iambic_Type, (const enumerate_item[2]){"A", "B"}},
     {"Key Invert", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Invert, SYSMENU_HANDL_CW_Invert},
@@ -1142,6 +1155,15 @@ const static struct sysmenu_item_handler sysmenu_sd_format_handlers[] = {
 #else
     {"Yes, Format SD Card", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_Format},
 #endif
+};
+
+const static struct sysmenu_item_handler sysmenu_sat_handlers[] = {
+    {"SAT Mode", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SatMode, SYSMENU_HANDL_SAT_SatMode},
+    {"Download TLE", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_DownloadTLE},
+    {"Select SAT", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_SelectSAT},
+    {"QTH Lat", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_QTHLat},
+    {"QTH Lon", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_QTHLon},
+    {"QTH Alt", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SAT_QTHAlt},
 };
 #endif
 
@@ -1543,6 +1565,7 @@ static struct sysmenu_menu_wrapper sysmenu_wrappers[] = {
     {.menu_handler = sysmenu_sd_export_handlers, .currentIndex = 0},
     {.menu_handler = sysmenu_sd_import_handlers, .currentIndex = 0},
     {.menu_handler = sysmenu_sd_format_handlers, .currentIndex = 0},
+    {.menu_handler = sysmenu_sat_handlers, .currentIndex = 0},
 #endif
     {.menu_handler = sysmenu_calibration_handlers, .currentIndex = 0},
     {.menu_handler = sysmenu_swr_analyser_handlers, .currentIndex = 0},
@@ -1566,6 +1589,13 @@ static void SYSMENU_WIFI_DrawAP2passwordMenu(bool full_redraw);
 static void SYSMENU_WIFI_DrawSelectAP3Menu(bool full_redraw);
 static void SYSMENU_WIFI_SelectAP3MenuMove(int8_t dir);
 static void SYSMENU_WIFI_DrawAP3passwordMenu(bool full_redraw);
+#endif
+#if HRDW_HAS_SD
+static void SYSMENU_SAT_DrawSelectSATMenu(bool full_redraw);
+static void SYSMENU_SAT_SelectSATMenuMove(int8_t dir);
+static void SYSMENU_SAT_DrawSAT_QTHLatMenu(bool full_redraw);
+static void SYSMENU_SAT_DrawSAT_QTHLonMenu(bool full_redraw);
+static void SYSMENU_SAT_DrawSAT_QTHAltMenu(bool full_redraw);
 #endif
 static void SYSMENU_TRX_DrawCallsignMenu(bool full_redraw);
 static void SYSMENU_TRX_DrawLocatorMenu(bool full_redraw);
@@ -1618,6 +1648,9 @@ static bool sysmenu_wifi_setALLQSO_LOGID_menu_opened = false;
 static bool sysmenu_trx_setCallsign_menu_opened = false;
 static bool sysmenu_trx_setLocator_menu_opened = false;
 static bool sysmenu_trx_setURSICode_menu_opened = false;
+static bool sysmenu_trx_setSAT_QTHLat_menu_opened = false;
+static bool sysmenu_trx_setSAT_QTHLon_menu_opened = false;
+static bool sysmenu_trx_setSAT_QTHAlt_menu_opened = false;
 static bool sysmenu_trx_setCWMacros1_menu_opened = false;
 static bool sysmenu_trx_setCWMacros2_menu_opened = false;
 static bool sysmenu_trx_setCWMacros3_menu_opened = false;
@@ -1632,6 +1665,10 @@ static bool sysmenu_trx_setMemoryChannelName_menu_opened = false;
 static uint8_t sysmenu_wifi_selected_ap_index = 0;
 static uint8_t sysmenu_selected_char_index = 0;
 static uint8_t sysmenu_selected_memory_channel_index = 0;
+
+// SAT
+bool sysmenu_sat_selectsat_menu_opened = false;
+uint8_t sysmenu_sat_selected_index = 0;
 
 // Time menu
 static bool sysmenu_timeMenuOpened = false;
@@ -1900,7 +1937,7 @@ static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_NOTCH_STEP_Hz(int8_t direction) {
-	const float32_t notch_freq_steps[] = {1, 5, 10, 12.5, 25, 50, 100};
+	const float32_t notch_freq_steps[] = {10, 12.5, 25, 50, 100};
 
 	for (uint8_t i = 0; i < ARRLENTH(notch_freq_steps); i++) {
 		if (TRX.NOTCH_STEP_Hz == notch_freq_steps[i]) {
@@ -2022,6 +2059,8 @@ static void SYSMENU_HANDL_TRX_TRANSV_ENABLE(int8_t direction) {
 	if (direction < 0) {
 		TRX.Custom_Transverter_Enabled = false;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_2M(int8_t direction) {
@@ -2031,6 +2070,8 @@ static void SYSMENU_HANDL_TRX_TRANSV_2M(int8_t direction) {
 	if (direction < 0) {
 		TRX.Transverter_2m = false;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_70CM(int8_t direction) {
@@ -2040,6 +2081,8 @@ static void SYSMENU_HANDL_TRX_TRANSV_70CM(int8_t direction) {
 	if (direction < 0) {
 		TRX.Transverter_70cm = false;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_23CM(int8_t direction) {
@@ -2051,6 +2094,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_23CM(int8_t direction) {
 	}
 
 	BAND_SELECTABLE[BANDID_23cm] = TRX.Transverter_23cm;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_13CM(int8_t direction) {
@@ -2062,6 +2106,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_13CM(int8_t direction) {
 	}
 
 	BAND_SELECTABLE[BANDID_13cm] = TRX.Transverter_13cm;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction) {
@@ -2073,6 +2118,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_6CM(int8_t direction) {
 	}
 
 	BAND_SELECTABLE[BANDID_6cm] = TRX.Transverter_6cm;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction) {
@@ -2084,6 +2130,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_3CM(int8_t direction) {
 	}
 
 	BAND_SELECTABLE[BANDID_3cm] = TRX.Transverter_3cm;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_TRANSV_QO100(int8_t direction) {
@@ -2095,6 +2142,7 @@ static void SYSMENU_HANDL_TRX_TRANSV_QO100(int8_t direction) {
 	}
 
 	BAND_SELECTABLE[BANDID_QO100] = TRX.Transverter_QO100;
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_TRX_Beeper(int8_t direction) {
@@ -3660,8 +3708,8 @@ static void SYSMENU_HANDL_CW_Keyer_WPM(int8_t direction) {
 	if (TRX.CW_KEYER_WPM < 1) {
 		TRX.CW_KEYER_WPM = 1;
 	}
-	if (TRX.CW_KEYER_WPM > 200) {
-		TRX.CW_KEYER_WPM = 200;
+	if (TRX.CW_KEYER_WPM > 50) {
+		TRX.CW_KEYER_WPM = 50;
 	}
 }
 
@@ -3738,6 +3786,15 @@ static void SYSMENU_HANDL_CW_PTT_Type(int8_t direction) {
 	}
 
 	KEYER_symbol_status = 0;
+}
+
+static void SYSMENU_HANDL_CW_EDGES_SMOOTH_MS(int8_t direction) {
+	if (direction > 0 || TRX.CW_EDGES_SMOOTH_MS > 0) {
+		TRX.CW_EDGES_SMOOTH_MS += direction;
+	}
+	if (TRX.CW_EDGES_SMOOTH_MS > 30) {
+		TRX.CW_EDGES_SMOOTH_MS = 30;
+	}
 }
 
 static void SYSMENU_HANDL_CW_SetCWMacros1(int8_t direction) {
@@ -5362,6 +5419,133 @@ static void SYSMENU_HANDL_SD_Format(int8_t direction) {
 	if (direction > 0 && SD_isIdle() && !LCD_busy) {
 		SD_doCommand(SDCOMM_FORMAT, false);
 	}
+}
+#endif
+
+// SATTELITE MENU
+#if HRDW_HAS_SD
+static void SYSMENU_HANDL_SATMENU(int8_t direction) {
+	sysmenu_handlers_selected = (const struct sysmenu_item_handler *)&sysmenu_sat_handlers[0];
+	sysmenu_item_count = sizeof(sysmenu_sat_handlers) / sizeof(sysmenu_sat_handlers[0]);
+	sysmenu_onroot = false;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_SAT_SatMode(int8_t direction) {
+	if (direction > 0) {
+		TRX.SatMode = true;
+	}
+	if (direction < 0) {
+		TRX.SatMode = false;
+	}
+}
+
+static void SYSMENU_HANDL_SAT_DownloadTLE(int8_t direction) {
+	f_unlink("tle.txt");
+
+	char url[128] = "/services/radiosat/get_ham_tle.php?wolf";
+	bool res = WIFI_downloadFileToSD(url, "tle.txt");
+	if (res) {
+		LCD_showInfo("Downloading TLE to SD", false);
+	} else {
+		LCD_showInfo("Downloading error", true);
+	}
+}
+
+static void SYSMENU_SAT_DrawSelectSATMenu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		uint16_t curr_y = 5;
+		LCDDriver_printText("Sats in TLE:", curr_y, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		curr_y += Y_SPAN + 5;
+		for (uint8_t i = 0; i < SAT_TLE_MAXCOUNT; i++) {
+			LCDDriver_printText((char *)SAT_TLE_NAMES[i], 10, curr_y + i * Y_SPAN, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+		}
+		LCDDriver_drawFastHLine(0, 10 + Y_SPAN * 2 + sysmenu_sat_selected_index * Y_SPAN, LAYOUT->SYSMENU_W, FG_COLOR);
+	}
+}
+
+static void SYSMENU_SAT_SelectSATMenuMove(int8_t dir) {
+	if (dir < 0 && sysmenu_sat_selected_index > 0) {
+		sysmenu_sat_selected_index--;
+	}
+	if (dir > 0 && sysmenu_sat_selected_index < SAT_TLE_MAXCOUNT - 1) {
+		sysmenu_sat_selected_index++;
+	}
+	SYSMENU_SAT_DrawSelectSATMenu(true);
+	if (dir == 0) {
+		SD_doCommand(SDCOMM_IMPORT_TLE_INFO, false);
+	}
+}
+
+static void SYSMENU_HANDL_SAT_SelectSAT(int8_t direction) {
+	sysmenu_sat_selected_index = 0;
+	sysmenu_sat_selectsat_menu_opened = true;
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+	SD_doCommand(SDCOMM_IMPORT_TLE_SATNAMES, false);
+}
+
+static void SYSMENU_HANDL_SAT_QTHLat(int8_t direction) {
+	sysmenu_selected_char_index = 0;
+	sysmenu_trx_setSAT_QTHLat_menu_opened = true;
+	SYSMENU_SAT_DrawSAT_QTHLatMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_SAT_QTHLon(int8_t direction) {
+	sysmenu_selected_char_index = 0;
+	sysmenu_trx_setSAT_QTHLon_menu_opened = true;
+	SYSMENU_SAT_DrawSAT_QTHLonMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_HANDL_SAT_QTHAlt(int8_t direction) {
+	sysmenu_selected_char_index = 0;
+	sysmenu_trx_setSAT_QTHAlt_menu_opened = true;
+	SYSMENU_SAT_DrawSAT_QTHAltMenu(true);
+	LCD_UpdateQuery.SystemMenuRedraw = true;
+}
+
+static void SYSMENU_SAT_DrawSAT_QTHLatMenu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("QTH Latitude:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.SAT_QTH_Lat, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.SAT_QTH_Lat, SAT_QTH_LINE_MAXLEN - 1, false);
+#endif
+}
+
+static void SYSMENU_SAT_DrawSAT_QTHLonMenu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("QTH Longitude:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.SAT_QTH_Lon, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.SAT_QTH_Lon, SAT_QTH_LINE_MAXLEN - 1, false);
+#endif
+}
+
+static void SYSMENU_SAT_DrawSAT_QTHAltMenu(bool full_redraw) {
+	if (full_redraw) {
+		LCDDriver_Fill(BG_COLOR);
+		LCDDriver_printText("QTH Altitude:", 5, 5, FG_COLOR, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	}
+
+	LCDDriver_printText(TRX.SAT_QTH_Alt, 10, 37, COLOR_GREEN, BG_COLOR, LAYOUT->SYSMENU_FONT_SIZE);
+	LCDDriver_drawFastHLine(8 + sysmenu_selected_char_index * RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, interactive_menu_top, RASTR_FONT_W * LAYOUT->SYSMENU_FONT_SIZE, COLOR_RED);
+
+#if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	LCD_printKeyboard(SYSMENU_KeyboardHandler, TRX.SAT_QTH_Alt, SAT_QTH_LINE_MAXLEN - 1, false);
+#endif
 }
 #endif
 
@@ -7529,6 +7713,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom(int8_t direction) {
 	if (CALIBRATE.Transverter_Custom_Offset_MHz > 750) {
 		CALIBRATE.Transverter_Custom_Offset_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_2m(int8_t direction) {
@@ -7539,6 +7725,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_2m(int8_t direction) {
 	if (CALIBRATE.Transverter_2m_RF_MHz > 15000) {
 		CALIBRATE.Transverter_2m_RF_MHz = 15000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_2m(int8_t direction) {
@@ -7549,6 +7737,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_2m(int8_t direction) {
 	if (CALIBRATE.Transverter_2m_IF_MHz > 750) {
 		CALIBRATE.Transverter_2m_IF_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_70cm(int8_t direction) {
@@ -7559,6 +7749,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_70cm(int8_t direction) {
 	if (CALIBRATE.Transverter_70cm_RF_MHz > 15000) {
 		CALIBRATE.Transverter_70cm_RF_MHz = 15000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_70cm(int8_t direction) {
@@ -7569,6 +7761,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_70cm(int8_t direction) {
 	if (CALIBRATE.Transverter_70cm_IF_MHz > 750) {
 		CALIBRATE.Transverter_70cm_IF_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_23cm(int8_t direction) {
@@ -7579,6 +7773,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_23cm(int8_t direction) {
 	if (CALIBRATE.Transverter_23cm_RF_MHz > 15000) {
 		CALIBRATE.Transverter_23cm_RF_MHz = 15000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_23cm(int8_t direction) {
@@ -7589,6 +7785,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_23cm(int8_t direction) {
 	if (CALIBRATE.Transverter_23cm_IF_MHz > 750) {
 		CALIBRATE.Transverter_23cm_IF_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_13cm(int8_t direction) {
@@ -7599,6 +7797,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_13cm(int8_t direction) {
 	if (CALIBRATE.Transverter_13cm_RF_MHz > 15000) {
 		CALIBRATE.Transverter_13cm_RF_MHz = 15000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_13cm(int8_t direction) {
@@ -7609,6 +7809,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_13cm(int8_t direction) {
 	if (CALIBRATE.Transverter_13cm_IF_MHz > 750) {
 		CALIBRATE.Transverter_13cm_IF_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_6cm(int8_t direction) {
@@ -7619,6 +7821,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_6cm(int8_t direction) {
 	if (CALIBRATE.Transverter_6cm_RF_MHz > 15000) {
 		CALIBRATE.Transverter_6cm_RF_MHz = 15000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_6cm(int8_t direction) {
@@ -7629,6 +7833,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_6cm(int8_t direction) {
 	if (CALIBRATE.Transverter_6cm_IF_MHz > 750) {
 		CALIBRATE.Transverter_6cm_IF_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_3cm(int8_t direction) {
@@ -7639,6 +7845,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_3cm(int8_t direction) {
 	if (CALIBRATE.Transverter_3cm_RF_MHz > 15000) {
 		CALIBRATE.Transverter_3cm_RF_MHz = 15000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_3cm(int8_t direction) {
@@ -7649,6 +7857,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_3cm(int8_t direction) {
 	if (CALIBRATE.Transverter_3cm_IF_MHz > 750) {
 		CALIBRATE.Transverter_3cm_IF_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_RF_QO100(int8_t direction) {
@@ -7659,6 +7869,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_RF_QO100(int8_t direction) {
 	if (CALIBRATE.Transverter_QO100_RF_kHz > 15000000) {
 		CALIBRATE.Transverter_QO100_RF_kHz = 15000000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100(int8_t direction) {
@@ -7669,6 +7881,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100(int8_t direction) {
 	if (CALIBRATE.Transverter_QO100_IF_RX_kHz > 750000) {
 		CALIBRATE.Transverter_QO100_IF_RX_kHz = 750000;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100(int8_t direction) {
@@ -7679,6 +7893,8 @@ static void SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100(int8_t direction) {
 	if (CALIBRATE.Transverter_QO100_IF_TX_MHz > 750) {
 		CALIBRATE.Transverter_QO100_IF_TX_MHz = 750;
 	}
+
+	TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 }
 
 static void SYSMENU_HANDL_CALIB_OTA_update(int8_t direction) {
@@ -8438,6 +8654,29 @@ void SYSMENU_drawSystemMenu(bool draw_background, bool only_infolines) {
 		SYSMENU_WIFI_DrawALLQSO_LOGIDMenu(draw_background);
 	} else
 #endif
+#if HRDW_HAS_SD
+	    if (sysmenu_sat_selectsat_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_SAT_DrawSelectSATMenu(draw_background);
+	} else if (sysmenu_trx_setSAT_QTHLat_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_SAT_DrawSAT_QTHLatMenu(draw_background);
+	} else if (sysmenu_trx_setSAT_QTHLon_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_SAT_DrawSAT_QTHLonMenu(draw_background);
+	} else if (sysmenu_trx_setSAT_QTHAlt_menu_opened) {
+		if (only_infolines) {
+			return;
+		}
+		SYSMENU_SAT_DrawSAT_QTHAltMenu(draw_background);
+	} else
+#endif
 	    if (sysmenu_trx_setCallsign_menu_opened) {
 		if (only_infolines) {
 			return;
@@ -8751,6 +8990,20 @@ void SYSMENU_eventRotateSystemMenu(int8_t direction) {
 		SYSMENU_RotateChar(TRX.URSI_CODE, direction);
 		return;
 	}
+#if HRDW_HAS_SD
+	if (sysmenu_trx_setSAT_QTHLat_menu_opened) {
+		SYSMENU_RotateChar(TRX.SAT_QTH_Lat, direction);
+		return;
+	}
+	if (sysmenu_trx_setSAT_QTHLon_menu_opened) {
+		SYSMENU_RotateChar(TRX.SAT_QTH_Lon, direction);
+		return;
+	}
+	if (sysmenu_trx_setSAT_QTHAlt_menu_opened) {
+		SYSMENU_RotateChar(TRX.SAT_QTH_Alt, direction);
+		return;
+	}
+#endif
 	if (sysmenu_trx_setCWMacros1_menu_opened) {
 		SYSMENU_RotateChar(TRX.CW_Macros_1, direction);
 		return;
@@ -8886,6 +9139,21 @@ void SYSMENU_eventCloseSystemMenu(void) {
 		NeedSaveWiFi = true;
 	} else
 #endif
+#if HRDW_HAS_SD
+	    if (sysmenu_sat_selectsat_menu_opened) {
+		sysmenu_sat_selectsat_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setSAT_QTHLat_menu_opened) {
+		sysmenu_trx_setSAT_QTHLat_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setSAT_QTHLon_menu_opened) {
+		sysmenu_trx_setSAT_QTHLon_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else if (sysmenu_trx_setSAT_QTHAlt_menu_opened) {
+		sysmenu_trx_setSAT_QTHAlt_menu_opened = false;
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+	} else
+#endif
 	    if (sysmenu_trx_setCallsign_menu_opened) {
 		sysmenu_trx_setCallsign_menu_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
@@ -8963,7 +9231,7 @@ void SYSMENU_eventCloseSystemMenu(void) {
 	}
 #if FT8_SUPPORT
 	else if (SYSMENU_FT8_DECODER_opened) {
-		FT8_DecodeActiveFlg = false;
+		DeInitFT8_Decoder();
 		SYSMENU_FT8_DECODER_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
@@ -9042,7 +9310,7 @@ void SYSMENU_eventCloseAllSystemMenu(void) {
 #if FT8_SUPPORT
 	if (SYSMENU_FT8_DECODER_opened) // Tisho
 	{
-		FT8_DecodeActiveFlg = false;
+		DeInitFT8_Decoder();
 		SYSMENU_FT8_DECODER_opened = false;
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
@@ -9084,6 +9352,12 @@ void SYSMENU_eventSecEncoderClickSystemMenu(void) {
 	}
 	if (sysmenu_wifi_selectap3_menu_opened) {
 		SYSMENU_WIFI_SelectAP3MenuMove(0);
+		return;
+	}
+#endif
+#if HRDW_HAS_SD
+	if (sysmenu_sat_selectsat_menu_opened) {
+		SYSMENU_SAT_SelectSATMenuMove(0);
 		return;
 	}
 #endif
@@ -9179,7 +9453,46 @@ void SYSMENU_eventSecRotateSystemMenu(int8_t direction) {
 		return;
 	}
 #endif
-
+#if HRDW_HAS_SD
+	if (sysmenu_sat_selectsat_menu_opened) {
+		if (direction < 0) {
+			SYSMENU_SAT_SelectSATMenuMove(-1);
+		} else {
+			SYSMENU_SAT_SelectSATMenuMove(1);
+		}
+		return;
+	}
+	if (sysmenu_trx_setSAT_QTHLat_menu_opened) {
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
+			SYSMENU_SAT_DrawSAT_QTHLatMenu(true);
+		} else if (sysmenu_selected_char_index < (SAT_QTH_LINE_MAXLEN - 1)) {
+			sysmenu_selected_char_index++;
+			SYSMENU_SAT_DrawSAT_QTHLatMenu(true);
+		}
+		return;
+	}
+	if (sysmenu_trx_setSAT_QTHLon_menu_opened) {
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
+			SYSMENU_SAT_DrawSAT_QTHLonMenu(true);
+		} else if (sysmenu_selected_char_index < (SAT_QTH_LINE_MAXLEN - 1)) {
+			sysmenu_selected_char_index++;
+			SYSMENU_SAT_DrawSAT_QTHLonMenu(true);
+		}
+		return;
+	}
+	if (sysmenu_trx_setSAT_QTHAlt_menu_opened) {
+		if (direction < 0 && sysmenu_selected_char_index > 0) {
+			sysmenu_selected_char_index--;
+			SYSMENU_SAT_DrawSAT_QTHAltMenu(true);
+		} else if (sysmenu_selected_char_index < (SAT_QTH_LINE_MAXLEN - 1)) {
+			sysmenu_selected_char_index++;
+			SYSMENU_SAT_DrawSAT_QTHAltMenu(true);
+		}
+		return;
+	}
+#endif
 	// Callsign menu
 	if (sysmenu_trx_setCallsign_menu_opened) {
 		if (direction < 0 && sysmenu_selected_char_index > 0) {

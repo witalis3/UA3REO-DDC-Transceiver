@@ -108,7 +108,7 @@ static void APROC_SD_Play(void);
 static bool APROC_SD_PlayTX(void);
 static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_t *q_buffer, float32_t *out_buffer_l, float32_t *out_buffer_r, int16_t blockSize, TRX_MODE mode);
 static void doTX_HILBERT(bool swap_iq, uint16_t size);
-static void doTX_CESSB(uint16_t size);
+static void doTX_CESSB(uint16_t size, TRX_MODE mode);
 static void APROC_ProcessCodecMuting(void);
 
 // initialize audio processor
@@ -1013,12 +1013,12 @@ void processTxAudio(void) {
 		case TRX_MODE_USB:
 		case TRX_MODE_RTTY:
 		case TRX_MODE_DIGI_U:
-			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
+			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE, mode);
 			doTX_HILBERT(true, AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_LSB:
 		case TRX_MODE_DIGI_L:
-			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE);
+			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE, mode);
 			doTX_HILBERT(false, AUDIO_BUFFER_HALF_SIZE);
 			break;
 		case TRX_MODE_AM:
@@ -1038,6 +1038,7 @@ void processTxAudio(void) {
 			ModulateFM(AUDIO_BUFFER_HALF_SIZE, 1.0f);
 			break;
 		case TRX_MODE_LOOPBACK:
+			doTX_CESSB(AUDIO_BUFFER_HALF_SIZE, mode);
 			DECODER_PutSamples(APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE); // отправляем данные в цифровой декодер
 			break;
 		default:
@@ -1069,11 +1070,20 @@ void processTxAudio(void) {
 		}
 	}
 
+	float32_t selfhear_amplitude = volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+
 #if HRDW_HAS_SD
 	// SD card send
 	if (SD_RecordInProcess) {
 		for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 			arm_float_to_q15(&APROC_Audio_Buffer_TX_I[i], &VOCODER_Buffer[VOCODER_Buffer_Index], 1); // left channel
+
+			if (mode == TRX_MODE_CW) { // CW generator
+				static float32_t sdrecord_cwgen_index = 0;
+				float32_t point = generateSin(selfhear_amplitude * APROC_Audio_Buffer_TX_I[i], &sdrecord_cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
+				arm_float_to_q15(&point, &VOCODER_Buffer[VOCODER_Buffer_Index], 1);
+			}
+
 			VOCODER_Buffer_Index++;
 			if (VOCODER_Buffer_Index == SIZE_ADPCM_BLOCK) {
 				VOCODER_Buffer_Index = 0;
@@ -1087,10 +1097,10 @@ void processTxAudio(void) {
 	float32_t volume_gain_tx = volume2rate((float32_t)TRX.Volume / MAX_VOLUME_VALUE);
 #if HRDW_HAS_SD
 	if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess) {
-		volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+		volume_gain_tx *= selfhear_amplitude;
 	}
 #else
-	volume_gain_tx *= volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
+	volume_gain_tx *= selfhear_amplitude;
 #endif
 
 	for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
@@ -1164,9 +1174,8 @@ void processTxAudio(void) {
 	if (!LISTEN_RX_AUDIO_ON_TX) {
 		if (TRX.CW_SelfHear && (TRX.CW_KEYER || CW_key_serial || CW_key_dot_hard || CW_key_dash_hard) && mode == TRX_MODE_CW && !TRX_Tune) {
 			static float32_t cwgen_index = 0;
-			float32_t amplitude = volume2rate((float32_t)TRX.SELFHEAR_Volume / 100.0f);
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
-				float32_t point = generateSin(amplitude * APROC_Audio_Buffer_TX_I[i], &cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
+				float32_t point = generateSin(selfhear_amplitude * APROC_Audio_Buffer_TX_I[i], &cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
 				int32_t sample = 0;
 				arm_float_to_q31(&point, &sample, 1);
 				int32_t data = convertToSPIBigEndian(sample);
@@ -1479,8 +1488,11 @@ static void doTX_HILBERT(bool swap_iq, uint16_t size) {
 	}
 }
 
-static void doTX_CESSB(uint16_t size) {
+static void doTX_CESSB(uint16_t size, TRX_MODE mode) {
 	if (!TRX.TX_CESSB) {
+		return;
+	}
+	if (mode != TRX_MODE_LSB && mode != TRX_MODE_USB) { //  && mode != TRX_MODE_LOOPBACK
 		return;
 	}
 
@@ -2016,7 +2028,7 @@ static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM
 			prev_sfm_pilot_sample = DFM->stereo_fm_pilot_out[i];
 
 			// get stereo sample from decoded wfm
-			float32_t stereo_sample = DFM->stereo_fm_audio_out[i] * arm_sin_f32(angle) * (100.0f / (float32_t)TRX.FM_Stereo_Modulation);
+			float32_t stereo_sample = DFM->stereo_fm_audio_out[i] * fast_sin(angle) * (100.0f / (float32_t)TRX.FM_Stereo_Modulation);
 			if (isnanf(stereo_sample) || isinff(stereo_sample)) {
 				continue;
 			}
@@ -2067,8 +2079,11 @@ static void ModulateFM(uint16_t size, float32_t amplitude) {
 		while (fm_mod_accum < -(2.0f * PI)) {
 			fm_mod_accum += (2.0f * PI); // limit range
 		}
-		APROC_Audio_Buffer_TX_I[i] = amplitude * arm_sin_f32(fm_mod_accum);
-		APROC_Audio_Buffer_TX_Q[i] = amplitude * arm_cos_f32(fm_mod_accum);
+		float32_t sin_result;
+		float32_t cos_result;
+		fast_sin_cos(fm_mod_accum, &sin_result, &cos_result);
+		APROC_Audio_Buffer_TX_I[i] = amplitude * sin_result;
+		APROC_Audio_Buffer_TX_Q[i] = amplitude * cos_result;
 	}
 }
 
@@ -2252,18 +2267,19 @@ static bool APROC_SD_PlayTX(void) {
 static void doRX_RXFreqTransition(float32_t *in_i, float32_t *in_q, uint16_t size, int32_t freq_diff) {
 	static float32_t gen_position_fft = 0.0;
 	float32_t step = (float32_t)freq_diff / (float32_t)TRX_GetRXSampleRate;
+	float32_t sin_result;
+	float32_t cos_result;
 
 	for (uint16_t i = 0; i < size; i++) {
 		float32_t position = gen_position_fft * F_2PI;
 
-		float32_t coeff_sin = sinf(position);
-		float32_t coeff_cos = cosf(position);
+		fast_sin_cos(position, &sin_result, &cos_result);
 
 		float32_t sample_i = in_i[i];
 		float32_t sample_q = in_q[i];
 
-		in_i[i] = (sample_i * coeff_cos - sample_q * coeff_sin);
-		in_q[i] = (sample_i * coeff_sin + sample_q * coeff_cos);
+		in_i[i] = (sample_i * cos_result - sample_q * sin_result);
+		in_q[i] = (sample_i * sin_result + sample_q * cos_result);
 
 		gen_position_fft += step;
 		if (gen_position_fft >= 1.0f) {
@@ -2281,8 +2297,11 @@ static void doRX_CWFreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float3
 
 	if (rx_id == AUDIO_RX1) {
 		for (uint16_t i = 0; i < size; i++) {
-			APROC_Audio_Buffer_RX1_I[i] *= arm_sin_f32(gen_position_rx1 * F_2PI);
-			APROC_Audio_Buffer_RX1_Q[i] *= arm_cos_f32(gen_position_rx1 * F_2PI);
+			float32_t sin_result;
+			float32_t cos_result;
+			fast_sin_cos((gen_position_rx1 * F_2PI), &sin_result, &cos_result);
+			APROC_Audio_Buffer_RX1_I[i] *= sin_result;
+			APROC_Audio_Buffer_RX1_Q[i] *= cos_result;
 
 			gen_position_rx1 += freq_diff / (float32_t)TRX_SAMPLERATE;
 			while (gen_position_rx1 >= 1.0f) {
@@ -2293,8 +2312,11 @@ static void doRX_CWFreqTransition(AUDIO_PROC_RX_NUM rx_id, uint16_t size, float3
 #if HRDW_HAS_DUAL_RX
 	else {
 		for (uint16_t i = 0; i < size; i++) {
-			APROC_Audio_Buffer_RX2_I[i] *= arm_sin_f32(gen_position_rx2 * F_2PI);
-			APROC_Audio_Buffer_RX2_Q[i] *= arm_cos_f32(gen_position_rx2 * F_2PI);
+			float32_t sin_result;
+			float32_t cos_result;
+			fast_sin_cos((gen_position_rx2 * F_2PI), &sin_result, &cos_result);
+			APROC_Audio_Buffer_RX2_I[i] *= sin_result;
+			APROC_Audio_Buffer_RX2_Q[i] *= cos_result;
 
 			gen_position_rx2 += freq_diff / (float32_t)TRX_SAMPLERATE;
 			while (gen_position_rx2 >= 1.0f) {
@@ -2361,8 +2383,8 @@ static void doRX_DemodSAM(AUDIO_PROC_RX_NUM rx_id, float32_t *i_buffer, float32_
 		float32_t ai, bi, aq, bq;
 		float32_t Sin, Cos;
 
-		Sin = arm_sin_f32(sam_data->phs);
-		Cos = arm_cos_f32(sam_data->phs);
+		fast_sin_cos(sam_data->phs, &Sin, &Cos);
+
 		ai = Cos * i_buffer[i];
 		bi = Sin * i_buffer[i];
 		aq = Cos * q_buffer[i];

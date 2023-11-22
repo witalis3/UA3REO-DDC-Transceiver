@@ -3,6 +3,7 @@
 
 __asm(".global __use_no_heap\n\t");
 
+#include "fast_sin.h"
 #include "print.h"
 #include "profiler.h"
 #include "settings.h"
@@ -196,6 +197,7 @@ extern void *alloc_to_wtf(uint32_t size, bool reset);
 extern float fast_sqrt(const float x);
 extern int8_t getPowerFromALC();
 extern void getUTCDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime);
+extern uint32_t getUTCTimestamp();
 extern void getLocalDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime);
 
 #endif

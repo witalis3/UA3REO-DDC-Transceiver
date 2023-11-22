@@ -1849,11 +1849,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	if (CurrentVFO->AutoNotchFilter) {
 		sprintf(buff, "NOTCH:AUTO");
 	} else if (CurrentVFO->ManualNotchFilter) {
-		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			sprintf(buff, "NOTCH:%uHz", TRX.CW_Pitch + CurrentVFO->NotchFC - CurrentVFO->LPF_RX_Filter_Width / 2);
-		} else {
-			sprintf(buff, "NOTCH:%uHz", CurrentVFO->NotchFC);
-		}
+		sprintf(buff, "NOTCH:%uHz", CurrentVFO->NotchFC);
 	} else {
 		sprintf(buff, "NOTCH:OFF");
 	}
@@ -1984,7 +1980,7 @@ static void LCD_displayTextBar(void) {
 
 	if (TRX.CW_Decoder && (CurrentVFO->Mode == TRX_MODE_CW || CurrentVFO->Mode == TRX_MODE_LOOPBACK)) {
 		char ctmp[70];
-		sprintf(ctmp, "WPM:%d %s", (uint16_t)CW_Decoder_WPM, (char *)&CW_Decoder_Text);
+		sprintf(ctmp, "WPM:%d %s", (uint8_t)roundf(CW_Decoder_WPM), CW_Decoder_Text);
 		LCDDriver_printText(ctmp, 2, (LAYOUT->FFT_FFTWTF_BOTTOM - LAYOUT->FFT_CWDECODER_OFFSET + 1), COLOR->CLOCK, BG_COLOR, LAYOUT->TEXTBAR_FONT);
 	} else if (NeedProcessDecoder && CurrentVFO->Mode == TRX_MODE_WFM) {
 		LCDDriver_printText(RDS_Decoder_Text, 2, (LAYOUT->FFT_FFTWTF_BOTTOM - LAYOUT->FFT_CWDECODER_OFFSET + 1), COLOR->CLOCK, BG_COLOR, LAYOUT->TEXTBAR_FONT);
@@ -2854,6 +2850,7 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 		}
 	}
 	selectable_bands_count++; // memory bank
+	selectable_bands_count++; // manual enter
 
 	const uint8_t buttons_lines_selectable = ceilf((float32_t)selectable_bands_count / (float32_t)buttons_in_line);
 	const uint8_t buttons_lines_broadcast = ceilf((float32_t)broadcast_bands_count / (float32_t)buttons_in_line);
@@ -2876,23 +2873,30 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 			continue;
 		}
 
-		if (!secondary_vfo) {
-			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
-			            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT,
-			            (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, BUTTONHANDLER_SET_VFOA_BAND, BUTTONHANDLER_SET_VFOA_BAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
-			            COLOR->BUTTON_BORDER, COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
-		} else {
-			printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
-			            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT,
-			            (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, BUTTONHANDLER_SET_VFOB_BAND, BUTTONHANDLER_SET_VFOB_BAND, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
-			            COLOR->BUTTON_BORDER, COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
-		}
+		void *band_function = secondary_vfo ? BUTTONHANDLER_SET_VFOB_BAND : BUTTONHANDLER_SET_VFOA_BAND;
+
+		printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
+		            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT,
+		            (char *)BANDS[bindx].name, (curband == bindx), true, true, bindx, band_function, band_function, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER,
+		            COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
 
 		xi++;
 		if (xi >= buttons_in_line) {
 			yi++;
 			xi = 0;
 		}
+	}
+
+	// manual enter
+	void *band_function = secondary_vfo ? BUTTONHANDLER_SET_VFOB_FREQ_MANUAL : BUTTONHANDLER_SET_VFOA_FREQ_MANUAL;
+	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + xi * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
+	            LAYOUT->WINDOWS_BUTTON_MARGIN + yi * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "Manual",
+	            false, true, true, 0, band_function, band_function, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_SWITCH_BACKGROUND,
+	            LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
+	xi++;
+	if (xi >= buttons_in_line) {
+		yi++;
+		xi = 0;
 	}
 
 	// memory bank

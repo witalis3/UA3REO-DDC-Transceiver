@@ -14,9 +14,8 @@ When transmitting, the process occurs in the opposite order, only at the end of 
 
 ## Specifications
 
-* Receiving frequencies: 0 MHz - 750 MHz with fading each 61.44 MHz
-* Transmission frequencies: 0 MHz - 200 MHz with fading on 110, 165 MHz
-* Transmission frequencies in harmonics mode (CW, FM): 360 MHz - 480 MHz
+* Receiving frequencies: 0 MHz - 750 MHz with fading each 61.44 MHz (above 145 MHz - without input filters)
+* Transmission frequencies: 0 MHz - 150 MHz with fading on 110 MHz
 * TX power (QRP version): 7W+ (HF), 5W (VHF)
 * TX power (QRP++ DB5AT version): 20W (HF), 7W (VHF)
 * TX power (RU4PN/WF-100D version): 100W (HF), 50W+ (VHF)
@@ -247,6 +246,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Auto CW Mode** - Automatic transition to CW mode when the key is pressed
 * **CW In SSB** - Allow CW TX manipulation in SSB mode
 * **DotToDash Rate** - Keyer dash to dot length rate
+* **Edges smooth, ms** - Smoothing signal edges
 * **Iambic Keyer** - Enable Iambic mode keyer
 * **Iambic Type** - Type of Iambic keyer (A/B)
 * **Key Invert** - Invert dash/dot on key
@@ -326,6 +326,13 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **Export Settings** - Export settings and calibration data to SD card
 * **Import Settings** - Import settings and calibration data from SD card
 * **Format SD card** - Format media drive
+
+### Satellites
+
+* **SAT Mode** - Enable satellite mode
+* **Download TLE** - Download current satellite data
+* **Select SAT** - Select a satellite from the downloaded TLE file
+* **QTH xxx** - Setting the Latitude\Longitude\Altitude of your location
 
 ### Calibration [appears by long pressing the MENU button in the settings menu]
 
