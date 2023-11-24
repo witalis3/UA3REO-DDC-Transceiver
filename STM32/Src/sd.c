@@ -1076,6 +1076,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.Custom_Transverter_Enabled", (uint64_t *)&TRX.Custom_Transverter_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ATU_Enabled", (uint64_t *)&TRX.ATU_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.TUNER_Enabled", (uint64_t *)&TRX.TUNER_Enabled, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.ATU_MEM_STEP_KHZ", (uint64_t *)&TRX.TUNER_Enabled, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.Transverter_2m", (uint64_t *)&TRX.Transverter_2m, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Transverter_70cm", (uint64_t *)&TRX.Transverter_70cm, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Transverter_23cm", (uint64_t *)&TRX.Transverter_23cm, SYSMENU_BOOLEAN);
@@ -1953,6 +1954,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.TUNER_Enabled") == 0) {
 		TRX.TUNER_Enabled = bval;
+	}
+	if (strcmp(name, "TRX.ATU_MEM_STEP_KHZ") == 0) {
+		TRX.ATU_MEM_STEP_KHZ = (uint16_t)uintval;
 	}
 	if (strcmp(name, "TRX.Transverter_2m") == 0) {
 		TRX.Transverter_2m = bval;
@@ -3282,7 +3286,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 }
 
 static void SDCOMM_IMPORT_SETTINGS_handler(void) {
-	char readedLine[83] = {0};
+	static char readedLine[123] = {0};
 	LCD_showInfo("Importing...", false);
 	if (f_open(&File, (char *)SD_workbuffer_A, FA_READ) == FR_OK) {
 		uint32_t bytesread = 1;
@@ -3314,7 +3318,7 @@ static void SDCOMM_IMPORT_SETTINGS_handler(void) {
 				char *istr = strstr((char *)SD_workbuffer_A + start_index, "\r\n"); // look for the end of the line
 				while (istr != NULL && start_index < sizeof(SD_workbuffer_A)) {
 					uint16_t len = (uint16_t)((uint32_t)istr - ((uint32_t)SD_workbuffer_A + start_index));
-					if (len <= 80) {
+					if (len <= 120) {
 						dma_memset(readedLine, 0x00, sizeof(readedLine));
 						strncpy(readedLine, (char *)SD_workbuffer_A + start_index, len);
 						start_index += len + 2;

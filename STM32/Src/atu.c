@@ -322,7 +322,7 @@ void ATU_Save_Memory(uint8_t ant, uint64_t frequency, uint8_t I, uint8_t C, bool
 		return;
 	}
 
-	uint32_t blockIndex = frequency / (ATU_MEM_STEP_KHZ * 1000);
+	uint32_t blockIndex = frequency / (TRX.ATU_MEM_STEP_KHZ * 1000);
 	if (blockIndex >= ATU_MEM_COUNT) {
 		return;
 	}
@@ -356,7 +356,7 @@ ATU_MEMORY_STATE ATU_Get_State(uint8_t ant, uint64_t frequency) {
 		return emptyState;
 	}
 
-	uint32_t blockIndex = frequency / (ATU_MEM_STEP_KHZ * 1000);
+	uint32_t blockIndex = frequency / (TRX.ATU_MEM_STEP_KHZ * 1000);
 	if (blockIndex >= ATU_MEM_COUNT) {
 		ATU_MEMORY_STATE emptyState = {
 		    .I = 0,

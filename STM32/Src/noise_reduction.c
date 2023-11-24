@@ -264,12 +264,19 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					instance->need_gain_dB = gain_target - AGC_RX_dBFS;
 				}
 
+				if (isnanf(instance->need_gain_dB) || instance->need_gain_dB < -200.0f) {
+					instance->need_gain_dB = -200.0f;
+				}
+
 				// println("HOLD: ", instance->hold_time, " GAIN: ", instance->need_gain_dB, " DIFF: ", diff);
 				AGC_SCREEN_maxGain = (float32_t)TRX.RX_AGC_Max_gain;
 				AGC_SCREEN_currentGain = instance->need_gain_dB > AGC_SCREEN_maxGain ? AGC_SCREEN_maxGain : current_gain_dB;
 
 				// appy gain
 				float32_t rateV = db2rateV(current_gain_dB);
+				if (isnanf(rateV)) {
+					rateV = db2rateV(-200.0f);
+				}
 
 				// Muting if need
 				bool VAD_Muting = VAD_RX1_Muting;
