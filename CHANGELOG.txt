@@ -1,3 +1,6 @@
+----Version 9.0.1----
++STM32: Исправлена ошибка "Line length error", Tnx SP7MFR
+
 ----Version 9.0.0----
 +FPGA: W-Mini: Добавлены прошивки с поддержкой новых плат
 +STM32: W-Lite: Добавлены команды САТ интерфейса DN,UP. Автор RA3RBE

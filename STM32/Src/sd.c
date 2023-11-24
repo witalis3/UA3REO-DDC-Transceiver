@@ -3282,7 +3282,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 }
 
 static void SDCOMM_IMPORT_SETTINGS_handler(void) {
-	char readedLine[83] = {0};
+	static char readedLine[123] = {0};
 	LCD_showInfo("Importing...", false);
 	if (f_open(&File, (char *)SD_workbuffer_A, FA_READ) == FR_OK) {
 		uint32_t bytesread = 1;
@@ -3314,7 +3314,7 @@ static void SDCOMM_IMPORT_SETTINGS_handler(void) {
 				char *istr = strstr((char *)SD_workbuffer_A + start_index, "\r\n"); // look for the end of the line
 				while (istr != NULL && start_index < sizeof(SD_workbuffer_A)) {
 					uint16_t len = (uint16_t)((uint32_t)istr - ((uint32_t)SD_workbuffer_A + start_index));
-					if (len <= 80) {
+					if (len <= 120) {
 						dma_memset(readedLine, 0x00, sizeof(readedLine));
 						strncpy(readedLine, (char *)SD_workbuffer_A + start_index, len);
 						start_index += len + 2;
