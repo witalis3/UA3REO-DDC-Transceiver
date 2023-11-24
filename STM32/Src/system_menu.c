@@ -166,6 +166,7 @@ static void SYSMENU_HANDL_TX_RF_Gain_For_Each_Mode(int8_t direction);
 static void SYSMENU_HANDL_TX_RepeaterMode(int8_t direction);
 static void SYSMENU_HANDL_TX_SELFHEAR_Volume(int8_t direction);
 static void SYSMENU_HANDL_TX_TUNER_Enabled(int8_t direction);
+static void SYSMENU_HANDL_TX_ATU_MEM_STEP_KHZ(int8_t direction);
 static void SYSMENU_HANDL_TX_TWO_SIGNAL_TUNE(int8_t direction);
 static void SYSMENU_HANDL_TX_VOX(int8_t direction);
 static void SYSMENU_HANDL_TX_VOX_THRESHOLD(int8_t direction);
@@ -871,6 +872,7 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"ATU Ind", SYSMENU_ATU_I, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_I, SYSMENU_HANDL_TX_ATU_I},
     {"ATU T", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_T, SYSMENU_HANDL_TX_ATU_T},
     {TRX_SWR_SMOOTHED_STR, SYSMENU_INFOLINE, SYSMENU_HANDL_CHECK_HAS_ATU, 0},
+    {"ATU Mem step, kHz", SYSMENU_UINT16, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_MEM_STEP_KHZ, SYSMENU_HANDL_TX_ATU_MEM_STEP_KHZ},
     {"LINE Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LINE_Volume, SYSMENU_HANDL_TX_LINE_Volume},
     {"MIC Boost", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.MIC_Boost, SYSMENU_HANDL_TX_MIC_Boost},
     {"MIC Gain SSB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_Gain_SSB_DB, SYSMENU_HANDL_TX_MIC_Gain_SSB_DB},
@@ -3209,6 +3211,34 @@ static void SYSMENU_HANDL_TX_TUNER_Enabled(int8_t direction) {
 	if (direction < 0) {
 		TRX.TUNER_Enabled = false;
 	}
+}
+
+static void SYSMENU_HANDL_TX_ATU_MEM_STEP_KHZ(int8_t direction) {
+	const uint16_t atu_freq_steps[] = {50, 100, 200, 500, 1000};
+
+	for (uint8_t i = 0; i < ARRLENTH(atu_freq_steps); i++) {
+		if (TRX.ATU_MEM_STEP_KHZ == atu_freq_steps[i]) {
+			if (direction < 0) {
+				if (i > 0) {
+					TRX.ATU_MEM_STEP_KHZ = atu_freq_steps[i - 1];
+				} else {
+					TRX.ATU_MEM_STEP_KHZ = atu_freq_steps[0];
+				}
+				return;
+			} else {
+				if (i < (ARRLENTH(atu_freq_steps) - 1)) {
+					TRX.ATU_MEM_STEP_KHZ = atu_freq_steps[i + 1];
+				} else {
+					TRX.ATU_MEM_STEP_KHZ = atu_freq_steps[ARRLENTH(atu_freq_steps) - 1];
+				}
+				return;
+			}
+		}
+	}
+
+	TRX.ATU_MEM_STEP_KHZ = atu_freq_steps[0];
+
+	ATU_Load_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_TX_INPUT_TYPE_MAIN(int8_t direction) {

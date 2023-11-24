@@ -16,7 +16,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 140        // Settings config version
+#define SETT_VERSION 141        // Settings config version
 #define CALIB_VERSION 88        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -76,8 +76,8 @@
 #define SAT_QTH_LINE_MAXLEN 12
 
 #define ATU_MAX_FREQ_KHZ 60000
-#define ATU_MEM_STEP_KHZ 50
-#define ATU_MEM_COUNT (ATU_MAX_FREQ_KHZ / ATU_MEM_STEP_KHZ) // 1200 positions * 3byte = 3600 bytes for each ANT
+#define ATU_MEM_STEP_MIN_KHZ 50
+#define ATU_MEM_COUNT (ATU_MAX_FREQ_KHZ / ATU_MEM_STEP_MIN_KHZ) // 1200 positions * 3byte = 3600 bytes for each ANT
 
 #define W25Q16_COMMAND_Write_Disable 0x04
 #define W25Q16_COMMAND_Write_Enable 0x06
@@ -603,6 +603,7 @@ extern struct TRX_SETTINGS {
 	uint16_t FM_LPF_RX_Filter_shadow;
 	uint16_t FM_LPF_TX_Filter_shadow;
 	uint16_t FM_HPF_RX_Filter_shadow;
+	uint16_t ATU_MEM_STEP_KHZ;
 
 	int8_t MIC_NOISE_GATE;
 	int8_t RX_EQ_P1;

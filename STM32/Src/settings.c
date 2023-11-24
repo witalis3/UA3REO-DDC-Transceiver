@@ -211,6 +211,7 @@ void LoadSettings(bool clear) {
 		TRX.ATU_T = false;                         // ATU default state
 		TRX.ATU_Enabled = true;                    // ATU enabled state
 		TRX.TUNER_Enabled = true;                  // TUNER enabled state
+		TRX.ATU_MEM_STEP_KHZ = 50;                 // ATU save step
 		TRX.Transverter_2m = false;                // Transvertrs enable
 		TRX.Transverter_70cm = false;              // Transvertrs enable
 		TRX.Transverter_23cm = false;              // Transvertrs enable

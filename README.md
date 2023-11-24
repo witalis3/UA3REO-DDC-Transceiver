@@ -215,6 +215,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **ATU Enabled** - Turning on the automatic antenna tuner
 * **ATU Ind** - Combination of tuner inductances
 * **ATU T** - Tuner capacitive arm position
+* **ATU Mem step, kHz** - Step of saving tuner values for frequencies into memory
 * **Auto Input Switch** - Auto input switch (PTT - mix, CAT - USB)
 * **CESSB** - Enable controlled-envelope single-sideband modulation
 * **CESSB Compress, dB** - Signal pre-amplification level before compression in CESSB
