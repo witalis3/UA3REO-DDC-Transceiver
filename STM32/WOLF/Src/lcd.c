@@ -2672,12 +2672,12 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 		TRX_ScanMode = false;
 
 		const uint8_t slowler = 4;
-		float64_t step = TRX.FRQ_STEP;
-		if (TRX.Fast) {
-			step = TRX.FRQ_FAST_STEP;
-		}
+		float64_t step = TRX.FRQ_STEP_SSB_Hz;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
+			step = (float64_t)TRX.FRQ_STEP_CW_Hz;
+		}
+		if (TRX.Fast) {
+			step *= (float64_t)TRX.FAST_STEP_Multiplier;
 		}
 		if (step < 1.0) {
 			step = 1.0;

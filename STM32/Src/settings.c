@@ -177,15 +177,15 @@ void LoadSettings(bool clear) {
 		TRX.SAMPLERATE_MAIN = TRX_SAMPLERATE_K48; // Samplerate for ssb/cw/digi/nfm/etc modes
 		TRX.SAMPLERATE_FM = TRX_SAMPLERATE_K48;   // Samplerate for FM mode
 #endif
-		TRX.FRQ_STEP = 10;                  // frequency tuning step by the main encoder
-		TRX.FRQ_FAST_STEP = 100;            // frequency tuning step by the main encoder in FAST mode
-		TRX.FRQ_ENC_STEP = 25000;           // frequency tuning step by main add. encoder
-		TRX.FRQ_ENC_FAST_STEP = 50000;      // frequency tuning step by main add. encoder in FAST mode
-		TRX.FRQ_ENC_WFM_STEP_kHz = 20;      // frequency WFM tuning step by the main encoder
-		TRX.FRQ_ENC_FM_STEP_kHz = 1;        // frequency FM tuning step by the main encoder
-		TRX.FRQ_ENC_AM_STEP_kHz = 1;        // frequency AM tuning step by the main encoder
+		TRX.FRQ_STEP_CW_Hz = 2;             // frequency tuning step CW
+		TRX.FRQ_STEP_SSB_Hz = 10;           // frequency tuning step SSB
+		TRX.FRQ_STEP_DIGI_Hz = 10;          // frequency tuning step DIGI
+		TRX.FRQ_STEP_AM_Hz = 1000;          // frequency tuning step AM
+		TRX.FRQ_STEP_FM_Hz = 1000;          // frequency tuning step FM
+		TRX.FRQ_STEP_WFM_Hz = 10000;        // frequency tuning step WFM
+		TRX.FAST_STEP_Multiplier = 10;      // Multiplier for FAST mode
+		TRX.ENC2_STEP_Multiplier = 50;      // Multiplier for ENC2 rotate
 		TRX.NOTCH_STEP_Hz = 50;             // Manual NOTCH tuning step
-		TRX.FRQ_CW_STEP_DIVIDER = 4;        // Step divider for CW mode
 		TRX.Debug_Type = TRX_DEBUG_OFF;     // Debug output to DEBUG / UART port
 		TRX.BandMapEnabled = true;          // automatic change of mode according to the range map
 		TRX.InputType_MAIN = TRX_INPUT_MIC; // type of input to transfer (SSB/FM/AM)

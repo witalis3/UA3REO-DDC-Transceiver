@@ -16,7 +16,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 142        // Settings config version
+#define SETT_VERSION 143        // Settings config version
 #define CALIB_VERSION 89        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -550,8 +550,6 @@ extern struct TRX_SETTINGS {
 	VFO VFO_B;
 
 	float32_t ATT_DB;
-	float32_t FRQ_ENC_FM_STEP_kHz;
-	float32_t FRQ_ENC_AM_STEP_kHz;
 	float32_t NOTCH_STEP_Hz;
 	float32_t CTCSS_Freq;
 	float32_t MIC_Gain_SSB_DB;
@@ -560,11 +558,12 @@ extern struct TRX_SETTINGS {
 	float32_t CW_DotToDashRate;
 	float32_t TX_CESSB_COMPRESS_DB;
 
-	uint32_t FRQ_STEP;
-	uint32_t FRQ_FAST_STEP;
-	uint32_t FRQ_ENC_STEP;
-	uint32_t FRQ_ENC_FAST_STEP;
-	uint32_t FRQ_ENC_WFM_STEP_kHz;
+	uint32_t FRQ_STEP_CW_Hz;
+	uint32_t FRQ_STEP_SSB_Hz;
+	uint32_t FRQ_STEP_DIGI_Hz;
+	uint32_t FRQ_STEP_AM_Hz;
+	uint32_t FRQ_STEP_FM_Hz;
+	uint32_t FRQ_STEP_WFM_Hz;
 	uint32_t SWR_CUSTOM_Begin;
 	uint32_t SWR_CUSTOM_End;
 	uint32_t SPEC_Begin;
@@ -646,7 +645,8 @@ extern struct TRX_SETTINGS {
 	uint8_t RF_Gain_By_Mode_FM;
 	uint8_t RF_Gain_By_Mode_AM;
 	uint8_t RF_Gain_By_Mode_DIGI;
-	uint8_t FRQ_CW_STEP_DIVIDER;
+	uint8_t FAST_STEP_Multiplier;
+	uint8_t ENC2_STEP_Multiplier;
 	uint8_t ATU_I;
 	uint8_t ATU_C;
 	uint8_t CW_LPF_Stages;

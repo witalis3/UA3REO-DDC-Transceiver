@@ -1040,15 +1040,15 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.TWO_SIGNAL_TUNE", (uint64_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.SAMPLERATE_MAIN", (uint64_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.SAMPLERATE_FM", (uint64_t *)&TRX.SAMPLERATE_FM, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.FRQ_STEP", (uint64_t *)&TRX.FRQ_STEP, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_FAST_STEP", (uint64_t *)&TRX.FRQ_FAST_STEP, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_STEP", (uint64_t *)&TRX.FRQ_ENC_STEP, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_FAST_STEP", (uint64_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_WFM_STEP_kHz", (uint64_t *)&TRX.FRQ_ENC_WFM_STEP_kHz, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_FM_STEP_kHz", (uint64_t *)&TRX.FRQ_ENC_FM_STEP_kHz, SYSMENU_FLOAT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_AM_STEP_kHz", (uint64_t *)&TRX.FRQ_ENC_AM_STEP_kHz, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_STEP_CW_Hz", (uint64_t *)&TRX.FRQ_STEP_CW_Hz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_STEP_SSB_Hz", (uint64_t *)&TRX.FRQ_STEP_SSB_Hz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_STEP_DIGI_Hz", (uint64_t *)&TRX.FRQ_STEP_DIGI_Hz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_STEP_AM_Hz", (uint64_t *)&TRX.FRQ_STEP_AM_Hz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_STEP_FM_Hz", (uint64_t *)&TRX.FRQ_STEP_FM_Hz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_STEP_WFM_Hz", (uint64_t *)&TRX.FRQ_STEP_WFM_Hz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FAST_STEP_Multiplier", (uint64_t *)&TRX.FAST_STEP_Multiplier, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.ENC2_STEP_Multiplier", (uint64_t *)&TRX.ENC2_STEP_Multiplier, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.NOTCH_STEP_Hz", (uint64_t *)&TRX.NOTCH_STEP_Hz, SYSMENU_FLOAT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_CW_STEP_DIVIDER", (uint64_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.Debug_Type", (uint64_t *)&TRX.Debug_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.DXCluster_Type", (uint64_t *)&TRX.DXCluster_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.BandMapEnabled", (uint64_t *)&TRX.BandMapEnabled, SYSMENU_BOOLEAN);
@@ -1814,29 +1814,29 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.SAMPLERATE_FM") == 0) {
 		TRX.SAMPLERATE_FM = (uint8_t)uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_STEP") == 0) {
-		TRX.FRQ_STEP = uintval;
+	if (strcmp(name, "TRX.FRQ_STEP_CW_Hz") == 0) {
+		TRX.FRQ_STEP_CW_Hz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_FAST_STEP") == 0) {
-		TRX.FRQ_FAST_STEP = uintval;
+	if (strcmp(name, "TRX.FRQ_STEP_SSB_Hz") == 0) {
+		TRX.FRQ_STEP_SSB_Hz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_STEP") == 0) {
-		TRX.FRQ_ENC_STEP = uintval;
+	if (strcmp(name, "TRX.FRQ_STEP_DIGI_Hz") == 0) {
+		TRX.FRQ_STEP_DIGI_Hz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_FAST_STEP") == 0) {
-		TRX.FRQ_ENC_FAST_STEP = uintval;
+	if (strcmp(name, "TRX.FRQ_STEP_AM_Hz") == 0) {
+		TRX.FRQ_STEP_AM_Hz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_WFM_STEP_kHz") == 0) {
-		TRX.FRQ_ENC_WFM_STEP_kHz = uintval;
+	if (strcmp(name, "TRX.FRQ_STEP_FM_Hz") == 0) {
+		TRX.FRQ_STEP_FM_Hz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_FM_STEP_kHz") == 0) {
-		TRX.FRQ_ENC_FM_STEP_kHz = floatval;
+	if (strcmp(name, "TRX.FRQ_STEP_WFM_Hz") == 0) {
+		TRX.FRQ_STEP_WFM_Hz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_AM_STEP_kHz") == 0) {
-		TRX.FRQ_ENC_AM_STEP_kHz = floatval;
+	if (strcmp(name, "TRX.FAST_STEP_Multiplier") == 0) {
+		TRX.FAST_STEP_Multiplier = (uint8_t)uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_CW_STEP_DIVIDER") == 0) {
-		TRX.FRQ_CW_STEP_DIVIDER = (uint8_t)uintval;
+	if (strcmp(name, "TRX.ENC2_STEP_Multiplier") == 0) {
+		TRX.ENC2_STEP_Multiplier = (uint8_t)uintval;
 	}
 	if (strcmp(name, "TRX.Debug_Type") == 0) {
 		TRX.Debug_Type = (uint8_t)uintval;
