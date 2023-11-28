@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "9.0.1" // current STM32 version
+#define STM32_VERSION_STR "9.1.0" // current STM32 version
 
 #if defined(FRONTPANEL_LITE)
 #define FPGA_VERSION_STR "8.0.0" // needed FPGA version Wolf-Lite
@@ -16,7 +16,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 141        // Settings config version
+#define SETT_VERSION 142        // Settings config version
 #define CALIB_VERSION 88        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -48,7 +48,6 @@
 #define NORMAL_SWR_TUNE 1.2f                 // ATU SWR target for new tune
 #define IDLE_LCD_BRIGHTNESS 5                // Low brightness for IDLE mode (dimmer)
 #define CW_ADD_GAIN_IF 20.0f                 // additional IF gain in CW
-#define CW_ADD_GAIN_AF 10.0f                 // additional AF gain in CW
 #define TX_LPF_TIMEOUT (180 * 1000)          // TX LPF On Timeout, millisec (3 min)
 #define SWR_PROTECTOR_MAX_POWER 20.0f        // drop down to PWR %, if SWR high
 
@@ -522,6 +521,7 @@ typedef struct {
 	uint16_t LPF_TX_Filter_Width; // current width
 	uint16_t CW_LPF_Filter;
 	uint16_t DIGI_LPF_Filter;
+	uint16_t DIGI_HPF_Filter;
 	uint16_t SSB_LPF_RX_Filter;
 	uint16_t SSB_LPF_TX_Filter;
 	uint16_t SSB_HPF_RX_Filter;
@@ -594,6 +594,7 @@ extern struct TRX_SETTINGS {
 	uint16_t RTTY_Freq;
 	uint16_t CW_LPF_Filter_shadow;
 	uint16_t DIGI_LPF_Filter_shadow;
+	uint16_t DIGI_HPF_Filter_shadow;
 	uint16_t SSB_LPF_RX_Filter_shadow;
 	uint16_t SSB_LPF_TX_Filter_shadow;
 	uint16_t SSB_HPF_RX_Filter_shadow;
@@ -630,7 +631,8 @@ extern struct TRX_SETTINGS {
 	int8_t MIC_EQ_P4_AMFM;
 	int8_t MIC_EQ_P5_AMFM;
 	int8_t MIC_EQ_P6_AMFM;
-	int8_t AGC_GAIN_TARGET;
+	int8_t AGC_Gain_target_SSB;
+	int8_t AGC_Gain_target_CW;
 	int8_t VOX_THRESHOLD;
 	int8_t FFT_FreqGrid;
 	int8_t Dual_RX_AB_Balance;

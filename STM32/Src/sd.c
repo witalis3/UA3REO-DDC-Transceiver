@@ -979,6 +979,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VFO_A.RepeaterMode", (uint64_t *)&TRX.VFO_A.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.CW_LPF_Filter", (uint64_t *)&TRX.VFO_A.CW_LPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.DIGI_LPF_Filter", (uint64_t *)&TRX.VFO_A.DIGI_LPF_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.DIGI_HPF_Filter", (uint64_t *)&TRX.VFO_A.DIGI_HPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SSB_LPF_RX_Filter", (uint64_t *)&TRX.VFO_A.SSB_LPF_RX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SSB_LPF_TX_Filter", (uint64_t *)&TRX.VFO_A.SSB_LPF_TX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SSB_HPF_RX_Filter", (uint64_t *)&TRX.VFO_A.SSB_HPF_RX_Filter, SYSMENU_UINT16);
@@ -1004,6 +1005,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VFO_B.RepeaterMode", (uint64_t *)&TRX.VFO_B.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.CW_LPF_Filter", (uint64_t *)&TRX.VFO_B.CW_LPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.DIGI_LPF_Filter", (uint64_t *)&TRX.VFO_B.DIGI_LPF_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.DIGI_HPF_Filter", (uint64_t *)&TRX.VFO_B.DIGI_HPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.SSB_LPF_RX_Filter", (uint64_t *)&TRX.VFO_B.SSB_LPF_RX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.SSB_LPF_TX_Filter", (uint64_t *)&TRX.VFO_B.SSB_LPF_TX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.SSB_HPF_RX_Filter", (uint64_t *)&TRX.VFO_B.SSB_HPF_RX_Filter, SYSMENU_UINT16);
@@ -1092,7 +1094,8 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.Volume", (uint64_t *)&TRX.Volume, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.Volume_Step", (uint64_t *)&TRX.Volume_Step, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.IF_Gain", (uint64_t *)&TRX.IF_Gain, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.AGC_GAIN_TARGET2", (uint64_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.AGC_Gain_target_SSB", (uint64_t *)&TRX.AGC_Gain_target_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.AGC_Gain_target_CW", (uint64_t *)&TRX.AGC_Gain_target_CW, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_Gain_SSB_DB", (uint64_t *)&TRX.MIC_Gain_SSB_DB, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.MIC_Gain_AM_DB", (uint64_t *)&TRX.MIC_Gain_AM_DB, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.MIC_Gain_FM_DB", (uint64_t *)&TRX.MIC_Gain_FM_DB, SYSMENU_FLOAT32);
@@ -1632,6 +1635,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.VFO_A.DIGI_LPF_Filter") == 0) {
 		TRX.VFO_A.DIGI_LPF_Filter = (uint16_t)uintval;
 	}
+	if (strcmp(name, "TRX.VFO_A.DIGI_HPF_Filter") == 0) {
+		TRX.VFO_A.DIGI_HPF_Filter = (uint16_t)uintval;
+	}
 	if (strcmp(name, "TRX.VFO_A.SSB_LPF_RX_Filter") == 0) {
 		TRX.VFO_A.SSB_LPF_RX_Filter = (uint16_t)uintval;
 	}
@@ -1706,6 +1712,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.VFO_B.DIGI_LPF_Filter") == 0) {
 		TRX.VFO_B.DIGI_LPF_Filter = (uint16_t)uintval;
+	}
+	if (strcmp(name, "TRX.VFO_B.DIGI_HPF_Filter") == 0) {
+		TRX.VFO_B.DIGI_HPF_Filter = (uint16_t)uintval;
 	}
 	if (strcmp(name, "TRX.VFO_B.SSB_LPF_RX_Filter") == 0) {
 		TRX.VFO_B.SSB_LPF_RX_Filter = (uint16_t)uintval;
@@ -2001,8 +2010,11 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.IF_Gain") == 0) {
 		TRX.IF_Gain = (uint8_t)uintval;
 	}
-	if (strcmp(name, "TRX.AGC_GAIN_TARGET2") == 0) {
-		TRX.AGC_GAIN_TARGET = (int8_t)intval;
+	if (strcmp(name, "TRX.AGC_Gain_target_SSB") == 0) {
+		TRX.AGC_Gain_target_SSB = (int8_t)intval;
+	}
+	if (strcmp(name, "TRX.AGC_Gain_target_CW") == 0) {
+		TRX.AGC_Gain_target_CW = (int8_t)intval;
 	}
 	if (strcmp(name, "TRX.MIC_Gain_SSB_DB") == 0) {
 		TRX.MIC_Gain_SSB_DB = floatval;

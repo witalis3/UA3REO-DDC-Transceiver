@@ -211,9 +211,9 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					AGC_RX_dBFS -= 12.0f; // DNR compensation
 				}
 
-				float32_t gain_target = (float32_t)TRX.AGC_GAIN_TARGET;
+				float32_t gain_target = (float32_t)TRX.AGC_Gain_target_SSB;
 				if (mode == TRX_MODE_CW) {
-					gain_target += CW_ADD_GAIN_AF;
+					gain_target = (float32_t)TRX.AGC_Gain_target_CW;
 				}
 				float32_t diff = (gain_target - (AGC_RX_dBFS + instance->need_gain_dB));
 

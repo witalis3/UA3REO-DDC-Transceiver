@@ -786,19 +786,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	// Info labels
 	char buff[32] = "";
 	// BW HPF-LPF
-	float32_t lpf_width = 0;
-	if (CurrentVFO->Mode == TRX_MODE_CW) {
-		lpf_width = CurrentVFO->CW_LPF_Filter;
-	} else if ((CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY)) {
-		lpf_width = CurrentVFO->DIGI_LPF_Filter;
-	} else if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB) {
-		lpf_width = TRX_on_TX ? CurrentVFO->SSB_LPF_TX_Filter : CurrentVFO->SSB_LPF_RX_Filter;
-	} else if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
-		lpf_width = TRX_on_TX ? CurrentVFO->AM_LPF_TX_Filter : CurrentVFO->AM_LPF_RX_Filter;
-	} else if (CurrentVFO->Mode == TRX_MODE_NFM) {
-		lpf_width = TRX_on_TX ? CurrentVFO->FM_LPF_TX_Filter : CurrentVFO->FM_LPF_RX_Filter;
-	}
-
+	float32_t lpf_width = TRX_on_TX ? CurrentVFO->LPF_TX_Filter_Width : CurrentVFO->LPF_RX_Filter_Width;
 	if (lpf_width == 0) {
 		sprintf(buff, "FULL");
 	} else {

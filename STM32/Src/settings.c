@@ -103,6 +103,7 @@ void LoadSettings(bool clear) {
 		TRX.VFO_A.FM_SQL_threshold_dBm = -90;                            // FM noise squelch
 		TRX.VFO_A.CW_LPF_Filter = 600;                                   // default value of CW filter width
 		TRX.VFO_A.DIGI_LPF_Filter = 3000;                                // default value of DIGI filter width
+		TRX.VFO_A.DIGI_HPF_Filter = 0;                                   // default value of DIGI filter width
 		TRX.VFO_A.SSB_LPF_RX_Filter = 2700;                              // default value of SSB filter width
 		TRX.VFO_A.SSB_LPF_TX_Filter = 2700;                              // default value of SSB filter width
 		TRX.VFO_A.SSB_HPF_RX_Filter = 200;                               // default value of SSB filter width
@@ -129,6 +130,7 @@ void LoadSettings(bool clear) {
 		TRX.VFO_B.RepeaterMode = TRX.VFO_A.RepeaterMode;                 // Repeater mode
 		TRX.VFO_B.CW_LPF_Filter = TRX.VFO_A.CW_LPF_Filter;               // default value of CW filter width
 		TRX.VFO_B.DIGI_LPF_Filter = TRX.VFO_A.DIGI_LPF_Filter;           // default value of DIGI filter width
+		TRX.VFO_B.DIGI_HPF_Filter = TRX.VFO_A.DIGI_HPF_Filter;           // default value of DIGI filter width
 		TRX.VFO_B.SSB_LPF_RX_Filter = TRX.VFO_A.SSB_LPF_RX_Filter;       // default value of SSB filter width
 		TRX.VFO_B.SSB_LPF_TX_Filter = TRX.VFO_A.SSB_LPF_TX_Filter;       // default value of SSB filter width
 		TRX.VFO_B.SSB_HPF_RX_Filter = TRX.VFO_A.SSB_HPF_RX_Filter;       // default value of SSB filter width
@@ -191,7 +193,7 @@ void LoadSettings(bool clear) {
 #ifdef FRONTPANEL_KT_100S
 		TRX.AutoGain = false; // auto-control preamp and attenuator
 #else
-		TRX.AutoGain = true;     // auto-control preamp and attenuator
+		TRX.AutoGain = true;    // auto-control preamp and attenuator
 #endif
 		TRX.Locked = false;        // Lock control
 		TRX.SPLIT_Enabled = false; // Split frequency mode (receive one VFO, transmit another)
@@ -231,56 +233,53 @@ void LoadSettings(bool clear) {
 		TRX.WOLF_Cluster = true;                   // Enable WOLF cluster
 		TRX.FREE_Tune = false;                     // Enable free tune on spectrum bandwidth
 		// AUDIO
-		TRX.Volume = 25;                    // AF Volume
-		TRX.Volume_Step = 5;                // AF Volume step by sec encoder
-		TRX.Mute = false;                   // AF Mute
-		TRX.AFAmp_Mute = false;             // AF Amp Mute
-		TRX.IF_Gain = 20;                   // IF gain, dB (before all processing and AGC)
-		TRX.AGC_GAIN_TARGET = -30;          // Maximum (target) AGC gain
-		TRX.MIC_Gain_SSB_DB = 9.0f;         // Microphone gain, dB SSB modes
-		TRX.MIC_Gain_AM_DB = 9.0f;          // Microphone gain, dB AM mode
-		TRX.MIC_Gain_FM_DB = 9.0f;          // Microphone gain, dB FM mode
-		TRX.MIC_Boost = false;              // +20dB mic amplifier
-		TRX.LINE_Volume = 23;               // Line input level
-		TRX.CODEC_Out_Volume = 121;         // Codec headphone level
-		TRX.BluetoothAudio_Enabled = false; // Bluetooth audio on/off
-		TRX.MIC_NOISE_GATE = -120;          // Mic noise gate
-		TRX.RX_EQ_P1 = 0;                   // Receiver Equalizer 300Hz
-		TRX.RX_EQ_P2 = 0;                   // Receiver Equalizer 700Hz
-		TRX.RX_EQ_P3 = 0;                   // Receiver Equalizer 1200Hz
-		TRX.RX_EQ_P4 = 0;                   // Receiver Equalizer 1800Hz
-		TRX.RX_EQ_P5 = 0;                   // Receiver Equalizer 2000Hz
-		TRX.RX_EQ_P6 = 0;                   // Receiver Equalizer 2500Hz
-		TRX.RX_EQ_P1_WFM = 0;               // Receiver WFM Equalizer 50Hz
-		TRX.RX_EQ_P2_WFM = 0;               // Receiver WFM Equalizer 300Hz
-		TRX.RX_EQ_P3_WFM = 0;               // Receiver WFM Equalizer 1500Hz
-		TRX.RX_EQ_P4_WFM = 0;               // Receiver WFM Equalizer 5000Hz
-		TRX.RX_EQ_P5_WFM = 0;               // Receiver WFM Equalizer 8000Hz
-		TRX.RX_EQ_P6_WFM = 0;               // Receiver WFM Equalizer 12000Hz
-		TRX.MIC_EQ_P1_SSB = 0;              // Mic EQ SSB
-		TRX.MIC_EQ_P2_SSB = 0;              // Mic EQ SSB
-		TRX.MIC_EQ_P3_SSB = 0;              // Mic EQ SSB
-		TRX.MIC_EQ_P4_SSB = 0;              // Mic EQ SSB
-		TRX.MIC_EQ_P5_SSB = 0;              // Mic EQ SSB
-		TRX.MIC_EQ_P6_SSB = 0;              // Mic EQ SSB
-		TRX.MIC_EQ_P1_AMFM = 0;             // Mic EQ AM/FM
-		TRX.MIC_EQ_P2_AMFM = 0;             // Mic EQ AM/FM
-		TRX.MIC_EQ_P3_AMFM = 0;             // Mic EQ AM/FM
-		TRX.MIC_EQ_P4_AMFM = 0;             // Mic EQ AM/FM
-		TRX.MIC_EQ_P5_AMFM = 0;             // Mic EQ AM/FM
-		TRX.MIC_EQ_P6_AMFM = 0;             // Mic EQ AM/FM
-		TRX.MIC_REVERBER = 0;               // Mic Reveerber
-		TRX.DNR1_SNR_THRESHOLD = 50;        // Digital noise reduction 1 level
-		TRX.DNR2_SNR_THRESHOLD = 35;        // Digital noise reduction 2 level
-		TRX.DNR_AVERAGE = 2;                // DNR averaging when looking for average magnitude
-		TRX.DNR_MINIMAL = 99;               // DNR averaging when searching for minimum magnitude
-		TRX.NOISE_BLANKER1 = false;         // suppressor of short impulse noise NOISE BLANKER 1
-		TRX.NOISE_BLANKER2 = false;         // suppressor of short impulse noise NOISE BLANKER 2
-#ifdef STM32F407xx
-		TRX.AGC_Spectral = false; // Spectral AGC mode
-#else
-		TRX.AGC_Spectral = true; // Spectral AGC mode
-#endif
+		TRX.Volume = 25;                                               // AF Volume
+		TRX.Volume_Step = 5;                                           // AF Volume step by sec encoder
+		TRX.Mute = false;                                              // AF Mute
+		TRX.AFAmp_Mute = false;                                        // AF Amp Mute
+		TRX.IF_Gain = 20;                                              // IF gain, dB (before all processing and AGC)
+		TRX.AGC_Gain_target_SSB = -27;                                 // Maximum (target) AGC gain SSB
+		TRX.AGC_Gain_target_CW = -27;                                  // Maximum (target) AGC gain CW
+		TRX.MIC_Gain_SSB_DB = 9.0f;                                    // Microphone gain, dB SSB modes
+		TRX.MIC_Gain_AM_DB = 9.0f;                                     // Microphone gain, dB AM mode
+		TRX.MIC_Gain_FM_DB = 9.0f;                                     // Microphone gain, dB FM mode
+		TRX.MIC_Boost = false;                                         // +20dB mic amplifier
+		TRX.LINE_Volume = 23;                                          // Line input level
+		TRX.CODEC_Out_Volume = 121;                                    // Codec headphone level
+		TRX.BluetoothAudio_Enabled = false;                            // Bluetooth audio on/off
+		TRX.MIC_NOISE_GATE = -120;                                     // Mic noise gate
+		TRX.RX_EQ_P1 = 0;                                              // Receiver Equalizer 300Hz
+		TRX.RX_EQ_P2 = 0;                                              // Receiver Equalizer 700Hz
+		TRX.RX_EQ_P3 = 0;                                              // Receiver Equalizer 1200Hz
+		TRX.RX_EQ_P4 = 0;                                              // Receiver Equalizer 1800Hz
+		TRX.RX_EQ_P5 = 0;                                              // Receiver Equalizer 2000Hz
+		TRX.RX_EQ_P6 = 0;                                              // Receiver Equalizer 2500Hz
+		TRX.RX_EQ_P1_WFM = 0;                                          // Receiver WFM Equalizer 50Hz
+		TRX.RX_EQ_P2_WFM = 0;                                          // Receiver WFM Equalizer 300Hz
+		TRX.RX_EQ_P3_WFM = 0;                                          // Receiver WFM Equalizer 1500Hz
+		TRX.RX_EQ_P4_WFM = 0;                                          // Receiver WFM Equalizer 5000Hz
+		TRX.RX_EQ_P5_WFM = 0;                                          // Receiver WFM Equalizer 8000Hz
+		TRX.RX_EQ_P6_WFM = 0;                                          // Receiver WFM Equalizer 12000Hz
+		TRX.MIC_EQ_P1_SSB = 0;                                         // Mic EQ SSB
+		TRX.MIC_EQ_P2_SSB = 0;                                         // Mic EQ SSB
+		TRX.MIC_EQ_P3_SSB = 0;                                         // Mic EQ SSB
+		TRX.MIC_EQ_P4_SSB = 0;                                         // Mic EQ SSB
+		TRX.MIC_EQ_P5_SSB = 0;                                         // Mic EQ SSB
+		TRX.MIC_EQ_P6_SSB = 0;                                         // Mic EQ SSB
+		TRX.MIC_EQ_P1_AMFM = 0;                                        // Mic EQ AM/FM
+		TRX.MIC_EQ_P2_AMFM = 0;                                        // Mic EQ AM/FM
+		TRX.MIC_EQ_P3_AMFM = 0;                                        // Mic EQ AM/FM
+		TRX.MIC_EQ_P4_AMFM = 0;                                        // Mic EQ AM/FM
+		TRX.MIC_EQ_P5_AMFM = 0;                                        // Mic EQ AM/FM
+		TRX.MIC_EQ_P6_AMFM = 0;                                        // Mic EQ AM/FM
+		TRX.MIC_REVERBER = 0;                                          // Mic Reveerber
+		TRX.DNR1_SNR_THRESHOLD = 50;                                   // Digital noise reduction 1 level
+		TRX.DNR2_SNR_THRESHOLD = 35;                                   // Digital noise reduction 2 level
+		TRX.DNR_AVERAGE = 2;                                           // DNR averaging when looking for average magnitude
+		TRX.DNR_MINIMAL = 99;                                          // DNR averaging when searching for minimum magnitude
+		TRX.NOISE_BLANKER1 = false;                                    // suppressor of short impulse noise NOISE BLANKER 1
+		TRX.NOISE_BLANKER2 = false;                                    // suppressor of short impulse noise NOISE BLANKER 2
+		TRX.AGC_Spectral = false;                                      // Spectral AGC mode
 		TRX.NOISE_BLANKER1_THRESHOLD = 6;                              // threshold for noise blanker 1
 		TRX.NOISE_BLANKER2_THRESHOLD = 16;                             // threshold for noise blanker 2
 		TRX.TX_CESSB = true;                                           // Controlled-envelope single-sideband modulation
@@ -288,10 +287,10 @@ void LoadSettings(bool clear) {
 		TRX.RX_AGC_SSB_speed = 10;                                     // AGC receive rate on SSB
 		TRX.RX_AGC_CW_speed = 1;                                       // AGC receive rate on CW
 		TRX.RX_AGC_Max_gain = 30;                                      // Maximum AGC gain
-		TRX.RX_AGC_Hold_Time = 700;                                    // AGC Hold time on peaks
+		TRX.RX_AGC_Hold_Time = 300;                                    // AGC Hold time on peaks
 		TRX.RX_AGC_Hold_Limiter = 5;                                   // AGC Hold time limiter for skip peaks
-		TRX.RX_AGC_Hold_Step_Up = 4;                                   // AGC Hold step for increase holding
-		TRX.RX_AGC_Hold_Step_Down = 30;                                // AGC Hold step for decrease holding
+		TRX.RX_AGC_Hold_Step_Up = 95;                                  // AGC Hold step for increase holding
+		TRX.RX_AGC_Hold_Step_Down = 60;                                // AGC Hold step for decrease holding
 		TRX.TX_Compressor_speed_SSB = 3;                               // TX compressor speed SSB
 		TRX.TX_Compressor_maxgain_SSB = 10;                            // TX compressor max gain SSB
 		TRX.TX_Compressor_speed_AMFM = 3;                              // TX compressor speed AM/FM
@@ -387,8 +386,8 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Height = 4;         // FFT display height
 		TRX.FFT_Background = false; // FFT gradient background
 #elif defined LAY_320x240
-		TRX.FFT_FreqGrid = 0;    // FFT freq grid style
-		TRX.FFT_Height = 3;      // FFT display height
+		TRX.FFT_FreqGrid = 0;   // FFT freq grid style
+		TRX.FFT_Height = 3;     // FFT display height
 #else
 		TRX.FFT_FreqGrid = 1;                          // FFT freq grid style
 		TRX.FFT_Height = 2;                            // FFT display height
@@ -415,7 +414,7 @@ void LoadSettings(bool clear) {
 #ifdef STM32F407xx
 		TRX.RDS_Decoder = false; // RDS Decoder panel
 #else
-		TRX.RDS_Decoder = true;  // RDS Decoder panel
+		TRX.RDS_Decoder = true; // RDS Decoder panel
 #endif
 		TRX.RTTY_Speed = 45;         // RTTY decoder speed
 		TRX.RTTY_Shift = 170;        // RTTY decoder shift
@@ -519,6 +518,7 @@ void LoadSettings(bool clear) {
 #endif
 		TRX.CW_LPF_Filter_shadow = TRX.VFO_A.CW_LPF_Filter;
 		TRX.DIGI_LPF_Filter_shadow = TRX.VFO_A.DIGI_LPF_Filter;
+		TRX.DIGI_HPF_Filter_shadow = TRX.VFO_A.DIGI_HPF_Filter;
 		TRX.SSB_LPF_RX_Filter_shadow = TRX.VFO_A.SSB_LPF_RX_Filter;
 		TRX.SSB_LPF_TX_Filter_shadow = TRX.VFO_A.SSB_LPF_TX_Filter;
 		TRX.SSB_HPF_RX_Filter_shadow = TRX.VFO_A.SSB_HPF_RX_Filter;

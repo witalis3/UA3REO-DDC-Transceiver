@@ -74,7 +74,8 @@ static void SYSMENU_HANDL_RX_ADC_RAND(int8_t direction);
 static void SYSMENU_HANDL_RX_ADC_SHDN(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_CW_Speed(int8_t direction);
-static void SYSMENU_HANDL_RX_AGC_GAIN_TARGET(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_Gain_target_SSB(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_Gain_target_CW(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_Hold_Time(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_Hold_Limiter(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_Hold_Step_Up(int8_t direction);
@@ -755,6 +756,7 @@ const static struct sysmenu_item_handler sysmenu_filter_handlers[] = {
     {"CW LPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_LPF_Filter_shadow, SYSMENU_HANDL_FILTER_CW_LPF_pass},
     {"CW LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_LPF_Stages, SYSMENU_HANDL_FILTER_CW_LPF_Stages},
     {"DIGI LPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.DIGI_LPF_Filter_shadow, SYSMENU_HANDL_FILTER_DIGI_LPF_pass},
+    {"DIGI HPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.DIGI_HPF_Filter_shadow, SYSMENU_HANDL_FILTER_DIGI_HPF_pass},
     {"FM HPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_HPF_RX_Filter_shadow, SYSMENU_HANDL_FILTER_FM_HPF_RX_pass},
     {"FM LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_RX_Filter_shadow, SYSMENU_HANDL_FILTER_FM_LPF_RX_pass},
     {"FM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_TX_Filter_shadow, SYSMENU_HANDL_FILTER_FM_LPF_TX_pass},
@@ -781,9 +783,11 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"ADC Shutdown", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_RX_ADC_SHDN},
     {"AGC", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_shadow, SYSMENU_HANDL_RX_AGC},
 #ifdef LAY_320x240
-    {"AGC Gain tr, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_RX_AGC_GAIN_TARGET},
+    {"AGC Gain tr SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_Gain_target_SSB, SYSMENU_HANDL_RX_AGC_Gain_target_SSB},
+    {"AGC Gain tr CW", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_Gain_target_CW, SYSMENU_HANDL_RX_AGC_Gain_target_CW},
 #else
-    {"AGC Gain targ, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_RX_AGC_GAIN_TARGET},
+    {"AGC Gain targ SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_Gain_target_SSB, SYSMENU_HANDL_RX_AGC_Gain_target_SSB},
+    {"AGC Gain targ CW", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_Gain_target_CW, SYSMENU_HANDL_RX_AGC_Gain_target_CW},
 #endif
     {"AGC Spectral", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Spectral, SYSMENU_HANDL_RX_AGC_Spectral},
     {"AGC Threshold", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Threshold, SYSMENU_HANDL_RX_AGC_Threshold},
@@ -2298,6 +2302,21 @@ void SYSMENU_HANDL_FILTER_DIGI_LPF_pass(int8_t direction) {
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
+void SYSMENU_HANDL_FILTER_DIGI_HPF_pass(int8_t direction) {
+	if (CurrentVFO->DIGI_HPF_Filter > 0 || direction > 0) {
+		CurrentVFO->DIGI_HPF_Filter += direction * 50;
+	}
+	if (CurrentVFO->DIGI_HPF_Filter > MAX_HPF_WIDTH) {
+		CurrentVFO->DIGI_HPF_Filter = MAX_HPF_WIDTH;
+	}
+	if (CurrentVFO->DIGI_HPF_Filter > CurrentVFO->DIGI_LPF_Filter) {
+		CurrentVFO->DIGI_HPF_Filter = CurrentVFO->DIGI_LPF_Filter;
+	}
+
+	TRX.DIGI_HPF_Filter_shadow = CurrentVFO->DIGI_HPF_Filter;
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
+}
+
 void SYSMENU_HANDL_FILTER_SSB_LPF_RX_pass(int8_t direction) {
 	if (CurrentVFO->SSB_LPF_RX_Filter > 100 || direction > 0) {
 		CurrentVFO->SSB_LPF_RX_Filter += direction * 100;
@@ -2717,13 +2736,23 @@ static void SYSMENU_HANDL_RX_IFGain(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_RX_AGC_GAIN_TARGET(int8_t direction) {
-	TRX.AGC_GAIN_TARGET += direction;
-	if (TRX.AGC_GAIN_TARGET < -80) {
-		TRX.AGC_GAIN_TARGET = -80;
+static void SYSMENU_HANDL_RX_AGC_Gain_target_SSB(int8_t direction) {
+	TRX.AGC_Gain_target_SSB += direction;
+	if (TRX.AGC_Gain_target_SSB < -80) {
+		TRX.AGC_Gain_target_SSB = -80;
 	}
-	if (TRX.AGC_GAIN_TARGET > -10) {
-		TRX.AGC_GAIN_TARGET = -10;
+	if (TRX.AGC_Gain_target_SSB > -10) {
+		TRX.AGC_Gain_target_SSB = -10;
+	}
+}
+
+static void SYSMENU_HANDL_RX_AGC_Gain_target_CW(int8_t direction) {
+	TRX.AGC_Gain_target_CW += direction;
+	if (TRX.AGC_Gain_target_CW < -80) {
+		TRX.AGC_Gain_target_CW = -80;
+	}
+	if (TRX.AGC_Gain_target_CW > -10) {
+		TRX.AGC_Gain_target_CW = -10;
 	}
 }
 

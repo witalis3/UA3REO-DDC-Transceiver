@@ -696,8 +696,8 @@ void TRX_setMode(TRX_MODE _mode, VFO *vfo) {
 	case TRX_MODE_DIGI_U:
 		vfo->LPF_RX_Filter_Width = vfo->DIGI_LPF_Filter;
 		vfo->LPF_TX_Filter_Width = vfo->DIGI_LPF_Filter;
-		vfo->HPF_RX_Filter_Width = 0;
-		vfo->HPF_TX_Filter_Width = 0;
+		vfo->HPF_RX_Filter_Width = vfo->DIGI_HPF_Filter;
+		vfo->HPF_TX_Filter_Width = vfo->DIGI_HPF_Filter;
 		break;
 	case TRX_MODE_RTTY:
 		vfo->LPF_RX_Filter_Width = TRX.RTTY_Freq + TRX.RTTY_Shift * 2;
@@ -930,6 +930,7 @@ void TRX_RestoreBandSettings(int8_t band) {
 	TRX.RepeaterMode_shadow = TRX.BANDS_SAVED_SETTINGS[band].RepeaterMode;
 	TRX.CW_LPF_Filter_shadow = CurrentVFO->CW_LPF_Filter;
 	TRX.DIGI_LPF_Filter_shadow = CurrentVFO->DIGI_LPF_Filter;
+	TRX.DIGI_HPF_Filter_shadow = CurrentVFO->DIGI_HPF_Filter;
 	TRX.SSB_LPF_RX_Filter_shadow = CurrentVFO->SSB_LPF_RX_Filter;
 	TRX.SSB_LPF_TX_Filter_shadow = CurrentVFO->SSB_LPF_TX_Filter;
 	TRX.SSB_HPF_RX_Filter_shadow = CurrentVFO->SSB_HPF_RX_Filter;
