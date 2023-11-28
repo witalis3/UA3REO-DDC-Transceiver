@@ -2606,6 +2606,8 @@ void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter) {
 	TRX_setFrequency(CALIBRATE.MEMORY_CHANNELS[channel].freq, CurrentVFO);
 	TRX_setMode(CALIBRATE.MEMORY_CHANNELS[channel].mode, CurrentVFO);
 	TRX.CTCSS_Freq = CALIBRATE.MEMORY_CHANNELS[channel].CTCSS_Freq;
+	CurrentVFO->RepeaterMode = CALIBRATE.MEMORY_CHANNELS[channel].RepeaterMode;
+	TRX.RepeaterMode_shadow = CurrentVFO->RepeaterMode;
 
 	TRX.SQL_shadow = CurrentVFO->SQL;
 	TRX.FM_SQL_threshold_dBm_shadow = CurrentVFO->FM_SQL_threshold_dBm;
@@ -2642,6 +2644,7 @@ void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
 		CALIBRATE.MEMORY_CHANNELS[channel].freq = CurrentVFO->Freq;
 		CALIBRATE.MEMORY_CHANNELS[channel].mode = CurrentVFO->Mode;
 		CALIBRATE.MEMORY_CHANNELS[channel].CTCSS_Freq = TRX.CTCSS_Freq;
+		CALIBRATE.MEMORY_CHANNELS[channel].RepeaterMode = CurrentVFO->RepeaterMode;
 
 #ifndef FRONTPANEL_LITE
 		if (CurrentVFO->Freq < 1000000) {                                                                 // < 1mhz

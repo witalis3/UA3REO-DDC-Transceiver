@@ -1340,6 +1340,8 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&CALIBRATE.MEMORY_CHANNELS[i].mode, SYSMENU_UINT8);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].CTCSS_Freq", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&CALIBRATE.MEMORY_CHANNELS[i].CTCSS_Freq, SYSMENU_FLOAT32);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].RepeaterMode", i);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&CALIBRATE.MEMORY_CHANNELS[i].RepeaterMode, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].name", i);
 				SD_WRITE_SETT_STRING(buff, CALIBRATE.MEMORY_CHANNELS[i].name);
 			}
@@ -3278,6 +3280,10 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].CTCSS_Freq", i);
 		if (strcmp(name, buff) == 0) {
 			CALIBRATE.MEMORY_CHANNELS[i].CTCSS_Freq = floatval;
+		}
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].RepeaterMode", i);
+		if (strcmp(name, buff) == 0) {
+			CALIBRATE.MEMORY_CHANNELS[i].RepeaterMode = bval;
 		}
 		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].name", i);
 		if (strcmp(name, buff) == 0) {

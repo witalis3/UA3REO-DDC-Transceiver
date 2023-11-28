@@ -17,7 +17,7 @@
 #endif
 
 #define SETT_VERSION 142        // Settings config version
-#define CALIB_VERSION 88        // Calibration config version
+#define CALIB_VERSION 89        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -506,6 +506,7 @@ typedef struct {
 	uint64_t freq;
 	float32_t CTCSS_Freq;
 	uint8_t mode;
+	bool RepeaterMode;
 	char name[MAX_CHANNEL_MEMORY_NAME_LENGTH];
 } CHANNEL_SAVED_SETTINGS_TYPE;
 

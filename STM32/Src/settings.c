@@ -1082,6 +1082,7 @@ void LoadCalibration(bool clear) {
 			CALIBRATE.MEMORY_CHANNELS[i].freq = 0;
 			CALIBRATE.MEMORY_CHANNELS[i].mode = TRX_MODE_LSB;
 			CALIBRATE.MEMORY_CHANNELS[i].CTCSS_Freq = 0;
+			CALIBRATE.MEMORY_CHANNELS[i].RepeaterMode = false;
 			sprintf(CALIBRATE.MEMORY_CHANNELS[i].name, "Ch %d", i + 1);
 		}
 		for (uint8_t i = 0; i < BANDS_COUNT; i++) {

@@ -4,6 +4,7 @@
 +STM32: Обновлены настройки АРУ по умолчанию, Tnx R3RM, RU4PN
 +STM32: Разделены настройки "AGC Gain target" для CW и SSB, Tnx R3RM
 +STM32: Добавлена настройка HPF фильтра для DIGI мод, Tnx SP3JDZ
++STM32: Repiter mode сохраняется в память частот, Tnx SP7MFR
 
 ----Version 9.0.1----
 +STM32: Исправлена ошибка "Line length error", Tnx SP7MFR
