@@ -318,7 +318,7 @@ static void LCD_displayFreqInfo(bool redraw) { // display the frequency on the s
 	}
 
 	if ((MHz_x_offset - LAYOUT->FREQ_LEFT_MARGIN) > 0) {
-		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN + 20, LAYOUT->FREQ_Y_TOP - 21, MHz_x_offset - LAYOUT->FREQ_LEFT_MARGIN - 20, LAYOUT->FREQ_BLOCK_HEIGHT, BG_COLOR);
+		LCDDriver_Fill_RectWH(LAYOUT->FREQ_LEFT_MARGIN, LAYOUT->FREQ_Y_TOP - 21, MHz_x_offset - LAYOUT->FREQ_LEFT_MARGIN , LAYOUT->FREQ_BLOCK_HEIGHT-5, BG_COLOR);
 	}
 
 	// add spaces to output the frequency
