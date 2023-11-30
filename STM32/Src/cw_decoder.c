@@ -243,11 +243,11 @@ static void CWDecoder_Recognise(void) {
 		CW_Decoder_WPM = CW_Decoder_WPM * 0.8f + (CWDECODER_DOT_TO_WPM_COEFF / (float32_t)dot_time) * 0.2f; //// the most precise we can do ;o)
 
 		// limiter
+		if (CW_Decoder_WPM < CWDECODER_MIN_WPM) {
+			CWDecoder_SetWPM(CWDECODER_MIN_WPM);
+		}
 		if (CW_Decoder_WPM > CWDECODER_MAX_WPM) {
 			CWDecoder_SetWPM(CWDECODER_MAX_WPM);
-			if (CWDECODER_DEBUG) {
-				print("m");
-			}
 		}
 
 		static float32_t CW_Decoder_WPM_updated = 0;
