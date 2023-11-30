@@ -90,6 +90,7 @@ volatile float32_t TRX_PWR_Voltage = 12.0f;
 volatile float32_t TRX_PWR_Current = 0.0f;
 volatile float32_t TRX_RF_Current = 0.0f;
 volatile float32_t TRX_VBAT_Voltage = 0.0f;
+volatile float32_t TRX_NoiseFloor = -150.0f;
 volatile uint_fast16_t CW_Key_Timeout_est = 0;
 uint32_t dbg_FPGA_samples = 0;
 uint8_t TRX_TX_Harmonic = 1;
