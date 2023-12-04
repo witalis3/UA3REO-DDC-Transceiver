@@ -34,6 +34,7 @@
 #define CWDECODER_ERROR_DIFF 0.5f                        // error factor when determining the point and dash
 #define CWDECODER_ERROR_SPACE_DIFF 0.6f                  // error factor when determining the character and space
 #define CWDECODER_MAX_CODE_SIZE 10                       // maximum character code size
+#define CWDECODER_MIN_WPM 10                             // minimum WPM
 #define CWDECODER_MAX_WPM 36                             // maximum WPM
 #define CWDECODER_DEBUG false                            // Show Debug
 #define CWDECODER_DOT_TO_WPM_COEFF 1250.0f

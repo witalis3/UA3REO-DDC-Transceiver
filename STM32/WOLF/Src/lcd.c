@@ -1015,24 +1015,18 @@ static void LCD_displayStatusInfoGUI(bool redraw) {
 	float32_t bw_trapez_bw_right_width = 1.0f;
 	float32_t bw_trapez_bw_hpf_margin = 0.0f;
 	switch (CurrentVFO->Mode) {
+	case TRX_MODE_DIGI_L:
 	case TRX_MODE_LSB:
 		bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * (TRX_on_TX ? CurrentVFO->HPF_TX_Filter_Width : CurrentVFO->HPF_RX_Filter_Width);
 		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * (TRX_on_TX ? CurrentVFO->LPF_TX_Filter_Width : CurrentVFO->LPF_RX_Filter_Width);
 		bw_trapez_bw_right_width = 0.0f;
 		break;
-	case TRX_MODE_DIGI_L:
-		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * CurrentVFO->DIGI_LPF_Filter;
-		bw_trapez_bw_right_width = 0.0f;
-		break;
 	case TRX_MODE_RTTY:
+	case TRX_MODE_DIGI_U:
 	case TRX_MODE_USB:
 		bw_trapez_bw_left_width = 0.0f;
 		bw_trapez_bw_hpf_margin = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * (TRX_on_TX ? CurrentVFO->HPF_TX_Filter_Width : CurrentVFO->HPF_RX_Filter_Width);
 		bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * (TRX_on_TX ? CurrentVFO->LPF_TX_Filter_Width : CurrentVFO->LPF_RX_Filter_Width);
-		break;
-	case TRX_MODE_DIGI_U:
-		bw_trapez_bw_left_width = 0.0f;
-		bw_trapez_bw_right_width = 1.0f / (float32_t)MAX_LPF_WIDTH_SSB * CurrentVFO->LPF_RX_Filter_Width;
 		break;
 	case TRX_MODE_CW:
 		bw_trapez_bw_left_width = 1.0f / (float32_t)MAX_LPF_WIDTH_CW * CurrentVFO->LPF_RX_Filter_Width;
@@ -1701,13 +1695,14 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			/**********************************************/
 
 			// FWD
-			if (TRX_PWR_Forward_SMOOTHED >= 100.0f) {
-				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Forward_SMOOTHED);
-			} else if (TRX_PWR_Forward_SMOOTHED >= 10.0f) {
-				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward_SMOOTHED);
+			if (TRX_PWR_Forward_SMOOTHED >= 99.9f) {
+				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Forward_SMOOTHED);
+			} else if (TRX_PWR_Forward_SMOOTHED >= 9.9f) {
+				sprintf(ctmp, "%2.1fW", (double)TRX_PWR_Forward_SMOOTHED);
 			} else {
-				sprintf(ctmp, "%.1fW ", (double)TRX_PWR_Forward_SMOOTHED);
+				sprintf(ctmp, "%1.1fW", (double)TRX_PWR_Forward_SMOOTHED);
 			}
+			addSymbols(ctmp, ctmp, 5, " ", true);
 			/**********************************************/
 			if (CN_Theme) {
 				LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET + 5, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET + 13, COLOR->STATUS_LABEL_DBM, BG_COLOR,
@@ -1776,7 +1771,7 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	// BW HPF-LPF
 	if (CurrentVFO->Mode == TRX_MODE_WFM) {
 		sprintf(buff, "BW:FULL");
-	} else if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_RTTY) {
+	} else if ((TRX_on_TX ? CurrentVFO->HPF_TX_Filter_Width : CurrentVFO->HPF_RX_Filter_Width) > 0) {
 		sprintf(buff, "BW:%d-%d", TRX_on_TX ? CurrentVFO->HPF_TX_Filter_Width : CurrentVFO->HPF_RX_Filter_Width, TRX_on_TX ? CurrentVFO->LPF_TX_Filter_Width : CurrentVFO->LPF_RX_Filter_Width);
 	} else {
 		sprintf(buff, "BW:%d", TRX_on_TX ? CurrentVFO->LPF_TX_Filter_Width : CurrentVFO->LPF_RX_Filter_Width);
@@ -2678,12 +2673,12 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 		TRX_ScanMode = false;
 
 		const uint8_t slowler = 4;
-		float64_t step = TRX.FRQ_STEP;
-		if (TRX.Fast) {
-			step = TRX.FRQ_FAST_STEP;
-		}
+		float64_t step = TRX.FRQ_STEP_SSB_Hz;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
+			step = (float64_t)TRX.FRQ_STEP_CW_Hz;
+		}
+		if (TRX.Fast) {
+			step *= (float64_t)TRX.FAST_STEP_Multiplier;
 		}
 		if (step < 1.0) {
 			step = 1.0;

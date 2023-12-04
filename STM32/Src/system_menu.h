@@ -107,6 +107,7 @@ extern void SYSMENU_HANDL_FILTER_SSB_HPF_RX_pass(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_SSB_HPF_TX_pass(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_CW_LPF_pass(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_DIGI_LPF_pass(int8_t direction);
+extern void SYSMENU_HANDL_FILTER_DIGI_HPF_pass(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_SSB_LPF_RX_pass(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_SSB_LPF_TX_pass(int8_t direction);
 extern void SYSMENU_HANDL_FILTER_AM_LPF_RX_pass(int8_t direction);

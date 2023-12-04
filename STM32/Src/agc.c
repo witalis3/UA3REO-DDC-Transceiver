@@ -86,9 +86,9 @@ void DoRxAGC(float32_t *agcBuffer_i, float32_t *agcBuffer_q, uint_fast16_t block
 	AGC->AGC_RX_dBFS_old = rate2dbV(full_scale_rate);
 
 	// gain target
-	float32_t gain_target = (float32_t)TRX.AGC_GAIN_TARGET;
+	float32_t gain_target = (float32_t)TRX.AGC_Gain_target_SSB;
 	if (mode == TRX_MODE_CW) {
-		gain_target += CW_ADD_GAIN_AF;
+		gain_target = (float32_t)TRX.AGC_Gain_target_CW;
 	}
 
 	// move the gain one step

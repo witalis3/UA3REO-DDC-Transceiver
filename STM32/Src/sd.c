@@ -979,6 +979,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VFO_A.RepeaterMode", (uint64_t *)&TRX.VFO_A.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.CW_LPF_Filter", (uint64_t *)&TRX.VFO_A.CW_LPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.DIGI_LPF_Filter", (uint64_t *)&TRX.VFO_A.DIGI_LPF_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.DIGI_HPF_Filter", (uint64_t *)&TRX.VFO_A.DIGI_HPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SSB_LPF_RX_Filter", (uint64_t *)&TRX.VFO_A.SSB_LPF_RX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SSB_LPF_TX_Filter", (uint64_t *)&TRX.VFO_A.SSB_LPF_TX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SSB_HPF_RX_Filter", (uint64_t *)&TRX.VFO_A.SSB_HPF_RX_Filter, SYSMENU_UINT16);
@@ -1004,6 +1005,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VFO_B.RepeaterMode", (uint64_t *)&TRX.VFO_B.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.CW_LPF_Filter", (uint64_t *)&TRX.VFO_B.CW_LPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.DIGI_LPF_Filter", (uint64_t *)&TRX.VFO_B.DIGI_LPF_Filter, SYSMENU_UINT16);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.DIGI_HPF_Filter", (uint64_t *)&TRX.VFO_B.DIGI_HPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.SSB_LPF_RX_Filter", (uint64_t *)&TRX.VFO_B.SSB_LPF_RX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.SSB_LPF_TX_Filter", (uint64_t *)&TRX.VFO_B.SSB_LPF_TX_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.SSB_HPF_RX_Filter", (uint64_t *)&TRX.VFO_B.SSB_HPF_RX_Filter, SYSMENU_UINT16);
@@ -1038,15 +1040,15 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.TWO_SIGNAL_TUNE", (uint64_t *)&TRX.TWO_SIGNAL_TUNE, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.SAMPLERATE_MAIN", (uint64_t *)&TRX.SAMPLERATE_MAIN, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.SAMPLERATE_FM", (uint64_t *)&TRX.SAMPLERATE_FM, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.FRQ_STEP", (uint64_t *)&TRX.FRQ_STEP, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_FAST_STEP", (uint64_t *)&TRX.FRQ_FAST_STEP, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_STEP", (uint64_t *)&TRX.FRQ_ENC_STEP, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_FAST_STEP", (uint64_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_WFM_STEP_kHz", (uint64_t *)&TRX.FRQ_ENC_WFM_STEP_kHz, SYSMENU_UINT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_FM_STEP_kHz", (uint64_t *)&TRX.FRQ_ENC_FM_STEP_kHz, SYSMENU_FLOAT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_ENC_AM_STEP_kHz", (uint64_t *)&TRX.FRQ_ENC_AM_STEP_kHz, SYSMENU_FLOAT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_STEP_CW_Hz", (uint64_t *)&TRX.FRQ_STEP_CW_Hz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_STEP_SSB_Hz", (uint64_t *)&TRX.FRQ_STEP_SSB_Hz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_STEP_DIGI_Hz", (uint64_t *)&TRX.FRQ_STEP_DIGI_Hz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_STEP_AM_Hz", (uint64_t *)&TRX.FRQ_STEP_AM_Hz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_STEP_FM_Hz", (uint64_t *)&TRX.FRQ_STEP_FM_Hz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FRQ_STEP_WFM_Hz", (uint64_t *)&TRX.FRQ_STEP_WFM_Hz, SYSMENU_UINT32);
+			SD_WRITE_SETT_LINE("TRX.FAST_STEP_Multiplier", (uint64_t *)&TRX.FAST_STEP_Multiplier, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.ENC2_STEP_Multiplier", (uint64_t *)&TRX.ENC2_STEP_Multiplier, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.NOTCH_STEP_Hz", (uint64_t *)&TRX.NOTCH_STEP_Hz, SYSMENU_FLOAT32);
-			SD_WRITE_SETT_LINE("TRX.FRQ_CW_STEP_DIVIDER", (uint64_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.Debug_Type", (uint64_t *)&TRX.Debug_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.DXCluster_Type", (uint64_t *)&TRX.DXCluster_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.BandMapEnabled", (uint64_t *)&TRX.BandMapEnabled, SYSMENU_BOOLEAN);
@@ -1076,6 +1078,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.Custom_Transverter_Enabled", (uint64_t *)&TRX.Custom_Transverter_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.ATU_Enabled", (uint64_t *)&TRX.ATU_Enabled, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.TUNER_Enabled", (uint64_t *)&TRX.TUNER_Enabled, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.ATU_MEM_STEP_KHZ", (uint64_t *)&TRX.TUNER_Enabled, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.Transverter_2m", (uint64_t *)&TRX.Transverter_2m, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Transverter_70cm", (uint64_t *)&TRX.Transverter_70cm, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Transverter_23cm", (uint64_t *)&TRX.Transverter_23cm, SYSMENU_BOOLEAN);
@@ -1091,7 +1094,8 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.Volume", (uint64_t *)&TRX.Volume, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.Volume_Step", (uint64_t *)&TRX.Volume_Step, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.IF_Gain", (uint64_t *)&TRX.IF_Gain, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.AGC_GAIN_TARGET2", (uint64_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.AGC_Gain_target_SSB", (uint64_t *)&TRX.AGC_Gain_target_SSB, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.AGC_Gain_target_CW", (uint64_t *)&TRX.AGC_Gain_target_CW, SYSMENU_INT8);
 			SD_WRITE_SETT_LINE("TRX.MIC_Gain_SSB_DB", (uint64_t *)&TRX.MIC_Gain_SSB_DB, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.MIC_Gain_AM_DB", (uint64_t *)&TRX.MIC_Gain_AM_DB, SYSMENU_FLOAT32);
 			SD_WRITE_SETT_LINE("TRX.MIC_Gain_FM_DB", (uint64_t *)&TRX.MIC_Gain_FM_DB, SYSMENU_FLOAT32);
@@ -1336,6 +1340,8 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&CALIBRATE.MEMORY_CHANNELS[i].mode, SYSMENU_UINT8);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].CTCSS_Freq", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&CALIBRATE.MEMORY_CHANNELS[i].CTCSS_Freq, SYSMENU_FLOAT32);
+				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].RepeaterMode", i);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&CALIBRATE.MEMORY_CHANNELS[i].RepeaterMode, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.MEMORY_CHANNELS[%d].name", i);
 				SD_WRITE_SETT_STRING(buff, CALIBRATE.MEMORY_CHANNELS[i].name);
 			}
@@ -1631,6 +1637,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.VFO_A.DIGI_LPF_Filter") == 0) {
 		TRX.VFO_A.DIGI_LPF_Filter = (uint16_t)uintval;
 	}
+	if (strcmp(name, "TRX.VFO_A.DIGI_HPF_Filter") == 0) {
+		TRX.VFO_A.DIGI_HPF_Filter = (uint16_t)uintval;
+	}
 	if (strcmp(name, "TRX.VFO_A.SSB_LPF_RX_Filter") == 0) {
 		TRX.VFO_A.SSB_LPF_RX_Filter = (uint16_t)uintval;
 	}
@@ -1705,6 +1714,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.VFO_B.DIGI_LPF_Filter") == 0) {
 		TRX.VFO_B.DIGI_LPF_Filter = (uint16_t)uintval;
+	}
+	if (strcmp(name, "TRX.VFO_B.DIGI_HPF_Filter") == 0) {
+		TRX.VFO_B.DIGI_HPF_Filter = (uint16_t)uintval;
 	}
 	if (strcmp(name, "TRX.VFO_B.SSB_LPF_RX_Filter") == 0) {
 		TRX.VFO_B.SSB_LPF_RX_Filter = (uint16_t)uintval;
@@ -1802,29 +1814,29 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.SAMPLERATE_FM") == 0) {
 		TRX.SAMPLERATE_FM = (uint8_t)uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_STEP") == 0) {
-		TRX.FRQ_STEP = uintval;
+	if (strcmp(name, "TRX.FRQ_STEP_CW_Hz") == 0) {
+		TRX.FRQ_STEP_CW_Hz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_FAST_STEP") == 0) {
-		TRX.FRQ_FAST_STEP = uintval;
+	if (strcmp(name, "TRX.FRQ_STEP_SSB_Hz") == 0) {
+		TRX.FRQ_STEP_SSB_Hz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_STEP") == 0) {
-		TRX.FRQ_ENC_STEP = uintval;
+	if (strcmp(name, "TRX.FRQ_STEP_DIGI_Hz") == 0) {
+		TRX.FRQ_STEP_DIGI_Hz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_FAST_STEP") == 0) {
-		TRX.FRQ_ENC_FAST_STEP = uintval;
+	if (strcmp(name, "TRX.FRQ_STEP_AM_Hz") == 0) {
+		TRX.FRQ_STEP_AM_Hz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_WFM_STEP_kHz") == 0) {
-		TRX.FRQ_ENC_WFM_STEP_kHz = uintval;
+	if (strcmp(name, "TRX.FRQ_STEP_FM_Hz") == 0) {
+		TRX.FRQ_STEP_FM_Hz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_FM_STEP_kHz") == 0) {
-		TRX.FRQ_ENC_FM_STEP_kHz = floatval;
+	if (strcmp(name, "TRX.FRQ_STEP_WFM_Hz") == 0) {
+		TRX.FRQ_STEP_WFM_Hz = uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_ENC_AM_STEP_kHz") == 0) {
-		TRX.FRQ_ENC_AM_STEP_kHz = floatval;
+	if (strcmp(name, "TRX.FAST_STEP_Multiplier") == 0) {
+		TRX.FAST_STEP_Multiplier = (uint8_t)uintval;
 	}
-	if (strcmp(name, "TRX.FRQ_CW_STEP_DIVIDER") == 0) {
-		TRX.FRQ_CW_STEP_DIVIDER = (uint8_t)uintval;
+	if (strcmp(name, "TRX.ENC2_STEP_Multiplier") == 0) {
+		TRX.ENC2_STEP_Multiplier = (uint8_t)uintval;
 	}
 	if (strcmp(name, "TRX.Debug_Type") == 0) {
 		TRX.Debug_Type = (uint8_t)uintval;
@@ -1954,6 +1966,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.TUNER_Enabled") == 0) {
 		TRX.TUNER_Enabled = bval;
 	}
+	if (strcmp(name, "TRX.ATU_MEM_STEP_KHZ") == 0) {
+		TRX.ATU_MEM_STEP_KHZ = (uint16_t)uintval;
+	}
 	if (strcmp(name, "TRX.Transverter_2m") == 0) {
 		TRX.Transverter_2m = bval;
 	}
@@ -1997,8 +2012,11 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.IF_Gain") == 0) {
 		TRX.IF_Gain = (uint8_t)uintval;
 	}
-	if (strcmp(name, "TRX.AGC_GAIN_TARGET2") == 0) {
-		TRX.AGC_GAIN_TARGET = (int8_t)intval;
+	if (strcmp(name, "TRX.AGC_Gain_target_SSB") == 0) {
+		TRX.AGC_Gain_target_SSB = (int8_t)intval;
+	}
+	if (strcmp(name, "TRX.AGC_Gain_target_CW") == 0) {
+		TRX.AGC_Gain_target_CW = (int8_t)intval;
 	}
 	if (strcmp(name, "TRX.MIC_Gain_SSB_DB") == 0) {
 		TRX.MIC_Gain_SSB_DB = floatval;
@@ -3263,6 +3281,10 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		if (strcmp(name, buff) == 0) {
 			CALIBRATE.MEMORY_CHANNELS[i].CTCSS_Freq = floatval;
 		}
+		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].RepeaterMode", i);
+		if (strcmp(name, buff) == 0) {
+			CALIBRATE.MEMORY_CHANNELS[i].RepeaterMode = bval;
+		}
 		sprintf(buff, "TRX.MEMORY_CHANNELS[%d].name", i);
 		if (strcmp(name, buff) == 0) {
 			dma_memset(CALIBRATE.MEMORY_CHANNELS[i].name, 0x00, sizeof(CALIBRATE.MEMORY_CHANNELS[i].name));
@@ -3282,7 +3304,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 }
 
 static void SDCOMM_IMPORT_SETTINGS_handler(void) {
-	char readedLine[83] = {0};
+	static char readedLine[123] = {0};
 	LCD_showInfo("Importing...", false);
 	if (f_open(&File, (char *)SD_workbuffer_A, FA_READ) == FR_OK) {
 		uint32_t bytesread = 1;
@@ -3314,7 +3336,7 @@ static void SDCOMM_IMPORT_SETTINGS_handler(void) {
 				char *istr = strstr((char *)SD_workbuffer_A + start_index, "\r\n"); // look for the end of the line
 				while (istr != NULL && start_index < sizeof(SD_workbuffer_A)) {
 					uint16_t len = (uint16_t)((uint32_t)istr - ((uint32_t)SD_workbuffer_A + start_index));
-					if (len <= 80) {
+					if (len <= 120) {
 						dma_memset(readedLine, 0x00, sizeof(readedLine));
 						strncpy(readedLine, (char *)SD_workbuffer_A + start_index, len);
 						start_index += len + 2;

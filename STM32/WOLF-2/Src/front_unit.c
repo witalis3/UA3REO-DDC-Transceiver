@@ -724,11 +724,9 @@ static void FRONTPANEL_ENCODER2_Rotated(int8_t direction) // rotated encoder, ha
 
 	if (TRX.ENC2_func_mode == ENC_FUNC_SET_NOTCH) // Manual Notch
 	{
-		float64_t step = (float64_t)TRX.NOTCH_STEP_Hz;
-		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			step /= (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-		}
 		if (CurrentVFO->ManualNotchFilter) {
+			float64_t step = (float64_t)TRX.NOTCH_STEP_Hz;
+
 			if (CurrentVFO->NotchFC > step && direction < 0) {
 				CurrentVFO->NotchFC -= step;
 			} else if (direction > 0) {
@@ -970,15 +968,21 @@ static void FRONTPANEL_ENCODER4_Rotated(int8_t direction) // rotated encoder, ha
 	// HPF
 	if (PERIPH_FrontPanel_Buttons[0].state == true) { // enc4_sw button
 		if (!TRX_on_TX) {
-			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB) {
 				SYSMENU_HANDL_FILTER_SSB_HPF_RX_pass(direction);
 			}
 			if (CurrentVFO->Mode == TRX_MODE_NFM) {
 				SYSMENU_HANDL_FILTER_FM_HPF_RX_pass(direction);
 			}
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U) {
+				SYSMENU_HANDL_FILTER_DIGI_HPF_pass(direction);
+			}
 		} else {
-			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
+			if (CurrentVFO->Mode == TRX_MODE_LSB || CurrentVFO->Mode == TRX_MODE_USB) {
 				SYSMENU_HANDL_FILTER_SSB_HPF_TX_pass(direction);
+			}
+			if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U) {
+				SYSMENU_HANDL_FILTER_DIGI_HPF_pass(direction);
 			}
 		}
 	}

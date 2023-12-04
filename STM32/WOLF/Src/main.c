@@ -334,7 +334,7 @@ int main(void) {
 
 #if (defined(LAY_800x480))
 		LCDDriver_Fill(rgb888torgb565(255, 255, 255));
-		LCDDriver_printImage_JPEGCompressed(0, 0, IMAGES_logo800_jpeg, sizeof(IMAGES_logo800_jpeg));
+		LCDDriver_printImage_JPEGCompressed(0, 0, IMAGES_logo800_NY_jpeg, sizeof(IMAGES_logo800_NY_jpeg));
 		LCDDriver_printTextFont(greetings_buff, 30, (LCD_HEIGHT - 30), COLOR_BLACK, rgb888torgb565(255, 255, 255), &FreeSans12pt7b);
 #else
 		LCDDriver_Fill(rgb888torgb565(243, 243, 243));

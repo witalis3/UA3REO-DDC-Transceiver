@@ -90,6 +90,7 @@ volatile float32_t TRX_PWR_Voltage = 12.0f;
 volatile float32_t TRX_PWR_Current = 0.0f;
 volatile float32_t TRX_RF_Current = 0.0f;
 volatile float32_t TRX_VBAT_Voltage = 0.0f;
+volatile float32_t TRX_NoiseFloor = -150.0f;
 volatile uint_fast16_t CW_Key_Timeout_est = 0;
 uint32_t dbg_FPGA_samples = 0;
 uint8_t TRX_TX_Harmonic = 1;
@@ -696,8 +697,8 @@ void TRX_setMode(TRX_MODE _mode, VFO *vfo) {
 	case TRX_MODE_DIGI_U:
 		vfo->LPF_RX_Filter_Width = vfo->DIGI_LPF_Filter;
 		vfo->LPF_TX_Filter_Width = vfo->DIGI_LPF_Filter;
-		vfo->HPF_RX_Filter_Width = 0;
-		vfo->HPF_TX_Filter_Width = 0;
+		vfo->HPF_RX_Filter_Width = vfo->DIGI_HPF_Filter;
+		vfo->HPF_TX_Filter_Width = vfo->DIGI_HPF_Filter;
 		break;
 	case TRX_MODE_RTTY:
 		vfo->LPF_RX_Filter_Width = TRX.RTTY_Freq + TRX.RTTY_Shift * 2;
@@ -930,6 +931,7 @@ void TRX_RestoreBandSettings(int8_t band) {
 	TRX.RepeaterMode_shadow = TRX.BANDS_SAVED_SETTINGS[band].RepeaterMode;
 	TRX.CW_LPF_Filter_shadow = CurrentVFO->CW_LPF_Filter;
 	TRX.DIGI_LPF_Filter_shadow = CurrentVFO->DIGI_LPF_Filter;
+	TRX.DIGI_HPF_Filter_shadow = CurrentVFO->DIGI_HPF_Filter;
 	TRX.SSB_LPF_RX_Filter_shadow = CurrentVFO->SSB_LPF_RX_Filter;
 	TRX.SSB_LPF_TX_Filter_shadow = CurrentVFO->SSB_LPF_TX_Filter;
 	TRX.SSB_HPF_RX_Filter_shadow = CurrentVFO->SSB_HPF_RX_Filter;
@@ -1163,99 +1165,43 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		LCD_UpdateQuery.FreqInfoRedraw = true;
 		LCD_UpdateQuery.StatusInfoGUI = true;
 		LCD_UpdateQuery.StatusInfoBarRedraw = true;
-	} else if (TRX.Fast) {
-		step = TRX.FRQ_FAST_STEP;
+	} else {
+		bool air_step = false;
+		bool has_enc2_multiplier = true;
+		step = TRX.FRQ_STEP_SSB_Hz;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
+			step = (float64_t)TRX.FRQ_STEP_CW_Hz;
+		}
+		if (CurrentVFO->Mode == TRX_MODE_DIGI_L || CurrentVFO->Mode == TRX_MODE_DIGI_U || CurrentVFO->Mode == TRX_MODE_RTTY) {
+			step = (float64_t)TRX.FRQ_STEP_DIGI_Hz;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_WFM) {
-			step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0 * 5.0;
+			step = (float64_t)TRX.FRQ_STEP_WFM_Hz;
+			has_enc2_multiplier = false;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_NFM) {
-			step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0 * 5.0;
+			step = (float64_t)TRX.FRQ_STEP_FM_Hz;
+			has_enc2_multiplier = false;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
-			step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0 * 5.0;
+			step = (float64_t)TRX.FRQ_STEP_AM_Hz;
+			air_step = step == 8333;
+			has_enc2_multiplier = false;
 		}
 
-		if (secondary_encoder) {
-			step = TRX.FRQ_ENC_FAST_STEP;
-			if (CurrentVFO->Mode == TRX_MODE_WFM) {
-				step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0 * 10.0;
-			}
-			if (CurrentVFO->Mode == TRX_MODE_NFM) {
-				step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0 * 10.0;
-			}
-			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
-				step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0 * 10.0;
-			}
-			if (CurrentVFO->Mode == TRX_MODE_CW) {
-				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-			}
+		if (TRX.Fast) {
+			step *= (float64_t)TRX.FAST_STEP_Multiplier;
+		}
+
+		if (secondary_encoder && has_enc2_multiplier) {
+			step *= (float64_t)TRX.ENC2_STEP_Multiplier;
 		}
 
 		step = roundl(step);
 		if (step < 1.0) {
 			step = 1.0;
 		}
-		bool air_step = (step == 8333 * 5 || step == 8333 * 10);
-		if (air_step) {
-			step = 8333;
-		}
 
-		if (direction == -1.0f && !air_step) {
-			newfreq = ceill(newfreq / step) * step;
-		}
-		if (direction == 1.0f && !air_step) {
-			newfreq = floorl(newfreq / step) * step;
-		}
-
-		newfreq = newfreq + step * (float64_t)direction;
-		if (air_step) {
-			float64_t mod = fmodl(newfreq, 1000);
-			if (mod == 999) {
-				newfreq += 1;
-			}
-			if (mod == 334 || mod == 667 || mod == 1) {
-				newfreq -= 1;
-			}
-		}
-	} else { // not TRX.Fast
-		step = TRX.FRQ_STEP;
-		if (CurrentVFO->Mode == TRX_MODE_CW) {
-			step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-		}
-		if (CurrentVFO->Mode == TRX_MODE_WFM) {
-			step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0;
-		}
-		if (CurrentVFO->Mode == TRX_MODE_NFM) {
-			step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0;
-		}
-		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
-			step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0;
-		}
-
-		if (secondary_encoder) {
-			step = TRX.FRQ_ENC_STEP;
-			if (CurrentVFO->Mode == TRX_MODE_WFM) {
-				step = (float64_t)TRX.FRQ_ENC_WFM_STEP_kHz * 1000.0 * 5.0;
-			}
-			if (CurrentVFO->Mode == TRX_MODE_NFM) {
-				step = (float64_t)TRX.FRQ_ENC_FM_STEP_kHz * 1000.0 * 5.0;
-			}
-			if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
-				step = (float64_t)TRX.FRQ_ENC_AM_STEP_kHz * 1000.0 * 5.0;
-			}
-			if (CurrentVFO->Mode == TRX_MODE_CW) {
-				step = step / (float64_t)TRX.FRQ_CW_STEP_DIVIDER;
-			}
-		}
-
-		step = roundl(step);
-		if (step < 1.0) {
-			step = 1.0;
-		}
-		bool air_step = (step == 8333 * 1 || step == 8333 * 5);
 		if (air_step) {
 			step = 8333;
 		}
@@ -1315,8 +1261,15 @@ void BUTTONHANDLER_DOUBLEMODE(uint32_t parameter) {
 
 void BUTTONHANDLER_PTT_TOGGLE(uint32_t parameter) { TRX_ptt_soft = !TRX_ptt_soft; }
 
-void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
+void BUTTONHANDLER_AsB(uint32_t parameter) // A<>B
 {
+	// Block for LITE and MINI in MEMO mode
+#if defined(FRONTPANEL_MINI) || defined(FRONTPANEL_FRONTPANEL_LITE)
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
+		return;
+	}
+#endif
+
 	// TX block
 	if (TRX_on_TX) {
 		return;
@@ -1882,6 +1835,13 @@ void BUTTONHANDLER_HPF(uint32_t parameter) {
 
 void BUTTONHANDLER_ArB(uint32_t parameter) // A=B
 {
+	// Block for LITE and MINI in MEMO mode
+#if defined(FRONTPANEL_MINI) || defined(FRONTPANEL_FRONTPANEL_LITE)
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
+		return;
+	}
+#endif
+
 	if (TRX.selected_vfo) {
 		dma_memcpy(&TRX.VFO_A, &TRX.VFO_B, sizeof TRX.VFO_B);
 	} else {
@@ -2605,6 +2565,8 @@ void BUTTONHANDLER_SelectMemoryChannels(uint32_t parameter) {
 	TRX_setFrequency(CALIBRATE.MEMORY_CHANNELS[channel].freq, CurrentVFO);
 	TRX_setMode(CALIBRATE.MEMORY_CHANNELS[channel].mode, CurrentVFO);
 	TRX.CTCSS_Freq = CALIBRATE.MEMORY_CHANNELS[channel].CTCSS_Freq;
+	CurrentVFO->RepeaterMode = CALIBRATE.MEMORY_CHANNELS[channel].RepeaterMode;
+	TRX.RepeaterMode_shadow = CurrentVFO->RepeaterMode;
 
 	TRX.SQL_shadow = CurrentVFO->SQL;
 	TRX.FM_SQL_threshold_dBm_shadow = CurrentVFO->FM_SQL_threshold_dBm;
@@ -2632,7 +2594,8 @@ void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
 
 	if (CALIBRATE.MEMORY_CHANNELS[channel].freq == CurrentVFO->Freq) {
 		CALIBRATE.MEMORY_CHANNELS[channel].freq = 0;
-#ifndef FRONTPANEL_LITE
+
+#if (!defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_MINI))
 		sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "Ch %d", channel + 1);
 #endif
 
@@ -2641,14 +2604,13 @@ void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
 		CALIBRATE.MEMORY_CHANNELS[channel].freq = CurrentVFO->Freq;
 		CALIBRATE.MEMORY_CHANNELS[channel].mode = CurrentVFO->Mode;
 		CALIBRATE.MEMORY_CHANNELS[channel].CTCSS_Freq = TRX.CTCSS_Freq;
+		CALIBRATE.MEMORY_CHANNELS[channel].RepeaterMode = CurrentVFO->RepeaterMode;
 
-#ifndef FRONTPANEL_LITE
+#if (!defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_MINI))
 		if (CurrentVFO->Freq < 1000000) {                                                                 // < 1mhz
 			sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "%.2f", CurrentVFO->Freq / 1000.0);            // 3k.2h
-		} else if (CurrentVFO->Freq < 100000000) {                                                        // < 100mhz
-			sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "%.3f", CurrentVFO->Freq / 1000000.0);         // 2m.3k
 		} else if (CurrentVFO->Freq < 1000000000) {                                                       // < 1000mhz
-			sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "%.2f", CurrentVFO->Freq / 1000000.0);         // 3m.2k
+			sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "%.3f", CurrentVFO->Freq / 1000000.0);         // 3m.3k
 		} else {                                                                                          // >= 1000mhz
 			sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "%u", (uint32_t)(CurrentVFO->Freq / 1000000)); // 3m
 		}

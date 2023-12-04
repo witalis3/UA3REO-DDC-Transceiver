@@ -35,14 +35,14 @@ static void SYSMENU_HANDL_TRX_Beeper(int8_t direction);
 static void SYSMENU_HANDL_TRX_ChannelMode(int8_t direction);
 static void SYSMENU_HANDL_TRX_DEBUG_TYPE(int8_t direction);
 static void SYSMENU_HANDL_TRX_ENC_ACCELERATE(int8_t direction);
-static void SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER(int8_t direction);
-static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz(int8_t direction);
-static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction);
-static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_kHz(int8_t direction);
-static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction);
-static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_kHz(int8_t direction);
-static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction);
-static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction);
+static void SYSMENU_HANDL_TRX_FAST_STEP_Multiplier(int8_t direction);
+static void SYSMENU_HANDL_TRX_ENC2_STEP_Multiplier(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_STEP_CW_Hz(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_STEP_SSB_Hz(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_STEP_DIGI_Hz(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_STEP_AM_Hz(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_STEP_FM_Hz(int8_t direction);
+static void SYSMENU_HANDL_TRX_FRQ_STEP_WFM_Hz(int8_t direction);
 static void SYSMENU_HANDL_TRX_NOTCH_STEP_Hz(int8_t direction);
 static void SYSMENU_HANDL_TRX_FineRITTune(int8_t direction);
 static void SYSMENU_HANDL_TRX_Full_Duplex(int8_t direction);
@@ -74,7 +74,8 @@ static void SYSMENU_HANDL_RX_ADC_RAND(int8_t direction);
 static void SYSMENU_HANDL_RX_ADC_SHDN(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_CW_Speed(int8_t direction);
-static void SYSMENU_HANDL_RX_AGC_GAIN_TARGET(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_Gain_target_SSB(int8_t direction);
+static void SYSMENU_HANDL_RX_AGC_Gain_target_CW(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_Hold_Time(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_Hold_Limiter(int8_t direction);
 static void SYSMENU_HANDL_RX_AGC_Hold_Step_Up(int8_t direction);
@@ -166,6 +167,7 @@ static void SYSMENU_HANDL_TX_RF_Gain_For_Each_Mode(int8_t direction);
 static void SYSMENU_HANDL_TX_RepeaterMode(int8_t direction);
 static void SYSMENU_HANDL_TX_SELFHEAR_Volume(int8_t direction);
 static void SYSMENU_HANDL_TX_TUNER_Enabled(int8_t direction);
+static void SYSMENU_HANDL_TX_ATU_MEM_STEP_KHZ(int8_t direction);
 static void SYSMENU_HANDL_TX_TWO_SIGNAL_TUNE(int8_t direction);
 static void SYSMENU_HANDL_TX_VOX(int8_t direction);
 static void SYSMENU_HANDL_TX_VOX_THRESHOLD(int8_t direction);
@@ -701,27 +703,15 @@ const static struct sysmenu_item_handler sysmenu_trx_handlers[] = {
     {"Debug console", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.Debug_Type, SYSMENU_HANDL_TRX_DEBUG_TYPE, (const enumerate_item[7]){"OFF", "SYSTEM", "WIFI", "BUTTONS", "TOUCH", "CAT", "I2C"}},
 #endif
     {"Encoder Accelerate", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Encoder_Accelerate, SYSMENU_HANDL_TRX_ENC_ACCELERATE},
-#ifdef LAY_320x240
-    {"Fr Step", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
-    {"Fr Step FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
-    {"Fr Step ENC2", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
-    {"Fr Step ENC2 FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
-    {"Fr Step WFM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_WFM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_kHz},
-    {"Fr Step FM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_FM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_kHz},
-    {"Fr Step AM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz},
+    {"Freq Step CW", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP_CW_Hz, SYSMENU_HANDL_TRX_FRQ_STEP_CW_Hz},
+    {"Freq Step SSB", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP_SSB_Hz, SYSMENU_HANDL_TRX_FRQ_STEP_SSB_Hz},
+    {"Freq Step DIGI", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP_DIGI_Hz, SYSMENU_HANDL_TRX_FRQ_STEP_DIGI_Hz},
+    {"Freq Step AM", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP_AM_Hz, SYSMENU_HANDL_TRX_FRQ_STEP_AM_Hz},
+    {"Freq Step FM", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP_FM_Hz, SYSMENU_HANDL_TRX_FRQ_STEP_FM_Hz},
+    {"Freq Step WFM", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP_WFM_Hz, SYSMENU_HANDL_TRX_FRQ_STEP_WFM_Hz},
+    {"FAST Step Mult", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FAST_STEP_Multiplier, SYSMENU_HANDL_TRX_FAST_STEP_Multiplier},
+    {"ENC2 Step Mult", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.ENC2_STEP_Multiplier, SYSMENU_HANDL_TRX_ENC2_STEP_Multiplier},
     {"Notch Step, Hz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.NOTCH_STEP_Hz, SYSMENU_HANDL_TRX_NOTCH_STEP_Hz},
-    {"CW Fr Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
-#else
-    {"Freq Step", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_STEP, SYSMENU_HANDL_TRX_FRQ_STEP},
-    {"Freq Step FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_FAST_STEP},
-    {"Freq Step ENC2", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_STEP},
-    {"Freq Step ENC2 FAST", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_FAST_STEP, SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP},
-    {"Freq Step WFM, kHz", SYSMENU_UINT32R, NULL, (uint32_t *)&TRX.FRQ_ENC_WFM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_kHz},
-    {"Freq Step FM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_FM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_kHz},
-    {"Freq Step AM, kHz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.FRQ_ENC_AM_STEP_kHz, SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz},
-    {"Notch Step, Hz", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.NOTCH_STEP_Hz, SYSMENU_HANDL_TRX_NOTCH_STEP_Hz},
-    {"CW Freq Step divider", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FRQ_CW_STEP_DIVIDER, SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER},
-#endif
     {"Full Duplex", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.Full_Duplex, SYSMENU_HANDL_TRX_Full_Duplex},
     {"Locator", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TRX_SetLocator},
     {"RIT Interval", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RIT_INTERVAL, SYSMENU_HANDL_TRX_RIT_INTERVAL},
@@ -754,6 +744,7 @@ const static struct sysmenu_item_handler sysmenu_filter_handlers[] = {
     {"CW LPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.CW_LPF_Filter_shadow, SYSMENU_HANDL_FILTER_CW_LPF_pass},
     {"CW LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_LPF_Stages, SYSMENU_HANDL_FILTER_CW_LPF_Stages},
     {"DIGI LPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.DIGI_LPF_Filter_shadow, SYSMENU_HANDL_FILTER_DIGI_LPF_pass},
+    {"DIGI HPF Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.DIGI_HPF_Filter_shadow, SYSMENU_HANDL_FILTER_DIGI_HPF_pass},
     {"FM HPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_HPF_RX_Filter_shadow, SYSMENU_HANDL_FILTER_FM_HPF_RX_pass},
     {"FM LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_RX_Filter_shadow, SYSMENU_HANDL_FILTER_FM_LPF_RX_pass},
     {"FM LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.FM_LPF_TX_Filter_shadow, SYSMENU_HANDL_FILTER_FM_LPF_TX_pass},
@@ -780,9 +771,11 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"ADC Shutdown", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.ADC_SHDN, SYSMENU_HANDL_RX_ADC_SHDN},
     {"AGC", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_shadow, SYSMENU_HANDL_RX_AGC},
 #ifdef LAY_320x240
-    {"AGC Gain tr, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_RX_AGC_GAIN_TARGET},
+    {"AGC Gain tr SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_Gain_target_SSB, SYSMENU_HANDL_RX_AGC_Gain_target_SSB},
+    {"AGC Gain tr CW", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_Gain_target_CW, SYSMENU_HANDL_RX_AGC_Gain_target_CW},
 #else
-    {"AGC Gain targ, LKFS", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_GAIN_TARGET, SYSMENU_HANDL_RX_AGC_GAIN_TARGET},
+    {"AGC Gain targ SSB", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_Gain_target_SSB, SYSMENU_HANDL_RX_AGC_Gain_target_SSB},
+    {"AGC Gain targ CW", SYSMENU_INT8, NULL, (uint32_t *)&TRX.AGC_Gain_target_CW, SYSMENU_HANDL_RX_AGC_Gain_target_CW},
 #endif
     {"AGC Spectral", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Spectral, SYSMENU_HANDL_RX_AGC_Spectral},
     {"AGC Threshold", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.AGC_Threshold, SYSMENU_HANDL_RX_AGC_Threshold},
@@ -871,6 +864,7 @@ const static struct sysmenu_item_handler sysmenu_tx_handlers[] = {
     {"ATU Ind", SYSMENU_ATU_I, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_I, SYSMENU_HANDL_TX_ATU_I},
     {"ATU T", SYSMENU_BOOLEAN, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_T, SYSMENU_HANDL_TX_ATU_T},
     {TRX_SWR_SMOOTHED_STR, SYSMENU_INFOLINE, SYSMENU_HANDL_CHECK_HAS_ATU, 0},
+    {"ATU Mem step, kHz", SYSMENU_UINT16, SYSMENU_HANDL_CHECK_HAS_ATU, (uint32_t *)&TRX.ATU_MEM_STEP_KHZ, SYSMENU_HANDL_TX_ATU_MEM_STEP_KHZ},
     {"LINE Gain", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.LINE_Volume, SYSMENU_HANDL_TX_LINE_Volume},
     {"MIC Boost", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.MIC_Boost, SYSMENU_HANDL_TX_MIC_Boost},
     {"MIC Gain SSB", SYSMENU_FLOAT32, NULL, (uint32_t *)&TRX.MIC_Gain_SSB_DB, SYSMENU_HANDL_TX_MIC_Gain_SSB_DB},
@@ -1350,8 +1344,8 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"RF GAIN 12m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_12m, SYSMENU_HANDL_CALIB_RF_GAIN_12M},
     {"RF GAIN CB", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_cb, SYSMENU_HANDL_CALIB_RF_GAIN_CB},
     {"RF GAIN 10m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_10m, SYSMENU_HANDL_CALIB_RF_GAIN_10M},
-#if !defined(FRONTPANEL_LITE)
     {"RF GAIN 6m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_6m, SYSMENU_HANDL_CALIB_RF_GAIN_6M},
+#if !defined(FRONTPANEL_LITE)
     {"RF GAIN 4m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_4m, SYSMENU_HANDL_CALIB_RF_GAIN_4M},
     {"RF GAIN 2m", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_2m, SYSMENU_HANDL_CALIB_RF_GAIN_2M},
     {"RF GAIN 70cm", SYSMENU_UINT8, NULL, (uint32_t *)&CALIBRATE.rf_out_power_70cm, SYSMENU_HANDL_CALIB_RF_GAIN_70CM},
@@ -1768,172 +1762,154 @@ static void SYSMENU_HANDL_TRX_XIT_INTERVAL(int8_t direction) {
 	}
 }
 
-static const uint32_t freq_steps[] = {1, 10, 25, 50, 100, 500, 1000, 2500, 5000, 25000, 50000, 100000, 250000, 500000};
-static void SYSMENU_HANDL_TRX_FRQ_STEP(int8_t direction) {
-	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++) {
-		if (TRX.FRQ_STEP == freq_steps[i]) {
+static void SYSMENU_HANDL_TRX_FRQ_STEP_CW_Hz(int8_t direction) {
+	const float32_t cw_freq_steps[] = {1, 2, 5, 10, 15, 25, 50, 100, 250, 500, 1000, 2500, 5000, 25000, 50000};
+
+	for (uint8_t i = 0; i < ARRLENTH(cw_freq_steps); i++) {
+		if (TRX.FRQ_STEP_CW_Hz == cw_freq_steps[i]) {
 			if (direction < 0) {
 				if (i > 0) {
-					TRX.FRQ_STEP = freq_steps[i - 1];
+					TRX.FRQ_STEP_CW_Hz = cw_freq_steps[i - 1];
 				} else {
-					TRX.FRQ_STEP = freq_steps[0];
+					TRX.FRQ_STEP_CW_Hz = cw_freq_steps[0];
 				}
 				return;
 			} else {
-				if (i < (ARRLENTH(freq_steps) - 1)) {
-					TRX.FRQ_STEP = freq_steps[i + 1];
+				if (i < (ARRLENTH(cw_freq_steps) - 1)) {
+					TRX.FRQ_STEP_CW_Hz = cw_freq_steps[i + 1];
 				} else {
-					TRX.FRQ_STEP = freq_steps[ARRLENTH(freq_steps) - 1];
+					TRX.FRQ_STEP_CW_Hz = cw_freq_steps[ARRLENTH(cw_freq_steps) - 1];
 				}
 				return;
 			}
 		}
 	}
-	TRX.FRQ_STEP = freq_steps[0];
+	TRX.FRQ_STEP_CW_Hz = cw_freq_steps[0];
 }
 
-static void SYSMENU_HANDL_TRX_FRQ_FAST_STEP(int8_t direction) {
-	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++) {
-		if (TRX.FRQ_FAST_STEP == freq_steps[i]) {
+static void SYSMENU_HANDL_TRX_FRQ_STEP_SSB_Hz(int8_t direction) {
+	const float32_t ssb_freq_steps[] = {1, 2, 5, 10, 15, 25, 50, 100, 250, 500, 1000, 2500, 5000, 25000, 50000};
+
+	for (uint8_t i = 0; i < ARRLENTH(ssb_freq_steps); i++) {
+		if (TRX.FRQ_STEP_SSB_Hz == ssb_freq_steps[i]) {
 			if (direction < 0) {
 				if (i > 0) {
-					TRX.FRQ_FAST_STEP = freq_steps[i - 1];
+					TRX.FRQ_STEP_SSB_Hz = ssb_freq_steps[i - 1];
 				} else {
-					TRX.FRQ_FAST_STEP = freq_steps[0];
+					TRX.FRQ_STEP_SSB_Hz = ssb_freq_steps[0];
 				}
 				return;
 			} else {
-				if (i < (ARRLENTH(freq_steps) - 1)) {
-					TRX.FRQ_FAST_STEP = freq_steps[i + 1];
+				if (i < (ARRLENTH(ssb_freq_steps) - 1)) {
+					TRX.FRQ_STEP_SSB_Hz = ssb_freq_steps[i + 1];
 				} else {
-					TRX.FRQ_FAST_STEP = freq_steps[ARRLENTH(freq_steps) - 1];
+					TRX.FRQ_STEP_SSB_Hz = ssb_freq_steps[ARRLENTH(ssb_freq_steps) - 1];
 				}
 				return;
 			}
 		}
 	}
-	TRX.FRQ_FAST_STEP = freq_steps[0];
+	TRX.FRQ_STEP_SSB_Hz = ssb_freq_steps[0];
 }
 
-static void SYSMENU_HANDL_TRX_FRQ_ENC_STEP(int8_t direction) {
-	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++) {
-		if (TRX.FRQ_ENC_STEP == freq_steps[i]) {
+static void SYSMENU_HANDL_TRX_FRQ_STEP_DIGI_Hz(int8_t direction) {
+	const float32_t digi_freq_steps[] = {1, 2, 5, 10, 15, 25, 50, 100, 250, 500, 1000, 2500, 5000, 25000, 50000};
+
+	for (uint8_t i = 0; i < ARRLENTH(digi_freq_steps); i++) {
+		if (TRX.FRQ_STEP_DIGI_Hz == digi_freq_steps[i]) {
 			if (direction < 0) {
 				if (i > 0) {
-					TRX.FRQ_ENC_STEP = freq_steps[i - 1];
+					TRX.FRQ_STEP_DIGI_Hz = digi_freq_steps[i - 1];
 				} else {
-					TRX.FRQ_ENC_STEP = freq_steps[0];
+					TRX.FRQ_STEP_DIGI_Hz = digi_freq_steps[0];
 				}
 				return;
 			} else {
-				if (i < (ARRLENTH(freq_steps) - 1)) {
-					TRX.FRQ_ENC_STEP = freq_steps[i + 1];
+				if (i < (ARRLENTH(digi_freq_steps) - 1)) {
+					TRX.FRQ_STEP_DIGI_Hz = digi_freq_steps[i + 1];
 				} else {
-					TRX.FRQ_ENC_STEP = freq_steps[ARRLENTH(freq_steps) - 1];
+					TRX.FRQ_STEP_DIGI_Hz = digi_freq_steps[ARRLENTH(digi_freq_steps) - 1];
 				}
 				return;
 			}
 		}
 	}
-	TRX.FRQ_ENC_STEP = freq_steps[0];
+	TRX.FRQ_STEP_DIGI_Hz = digi_freq_steps[0];
 }
 
-static void SYSMENU_HANDL_TRX_FRQ_ENC_FAST_STEP(int8_t direction) {
-	for (uint8_t i = 0; i < ARRLENTH(freq_steps); i++) {
-		if (TRX.FRQ_ENC_FAST_STEP == freq_steps[i]) {
-			if (direction < 0) {
-				if (i > 0) {
-					TRX.FRQ_ENC_FAST_STEP = freq_steps[i - 1];
-				} else {
-					TRX.FRQ_ENC_FAST_STEP = freq_steps[0];
-				}
-				return;
-			} else {
-				if (i < (ARRLENTH(freq_steps) - 1)) {
-					TRX.FRQ_ENC_FAST_STEP = freq_steps[i + 1];
-				} else {
-					TRX.FRQ_ENC_FAST_STEP = freq_steps[ARRLENTH(freq_steps) - 1];
-				}
-				return;
-			}
-		}
-	}
-	TRX.FRQ_ENC_FAST_STEP = freq_steps[0];
-}
-
-static void SYSMENU_HANDL_TRX_FRQ_ENC_WFM_STEP_kHz(int8_t direction) {
-	const uint32_t wfm_freq_steps[] = {1, 2, 5, 10, 20, 25, 50, 100, 200, 500, 1000};
-
-	for (uint8_t i = 0; i < ARRLENTH(wfm_freq_steps); i++) {
-		if (TRX.FRQ_ENC_WFM_STEP_kHz == wfm_freq_steps[i]) {
-			if (direction < 0) {
-				if (i > 0) {
-					TRX.FRQ_ENC_WFM_STEP_kHz = wfm_freq_steps[i - 1];
-				} else {
-					TRX.FRQ_ENC_WFM_STEP_kHz = wfm_freq_steps[0];
-				}
-				return;
-			} else {
-				if (i < (ARRLENTH(wfm_freq_steps) - 1)) {
-					TRX.FRQ_ENC_WFM_STEP_kHz = wfm_freq_steps[i + 1];
-				} else {
-					TRX.FRQ_ENC_WFM_STEP_kHz = wfm_freq_steps[ARRLENTH(wfm_freq_steps) - 1];
-				}
-				return;
-			}
-		}
-	}
-	TRX.FRQ_ENC_WFM_STEP_kHz = wfm_freq_steps[0];
-}
-
-static void SYSMENU_HANDL_TRX_FRQ_ENC_FM_STEP_kHz(int8_t direction) {
-	const float32_t fm_freq_steps[] = {0.1, 0.25, 0.5, 1, 2, 2.5, 5, 7.5, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
-
-	for (uint8_t i = 0; i < ARRLENTH(fm_freq_steps); i++) {
-		if (TRX.FRQ_ENC_FM_STEP_kHz == fm_freq_steps[i]) {
-			if (direction < 0) {
-				if (i > 0) {
-					TRX.FRQ_ENC_FM_STEP_kHz = fm_freq_steps[i - 1];
-				} else {
-					TRX.FRQ_ENC_FM_STEP_kHz = fm_freq_steps[0];
-				}
-				return;
-			} else {
-				if (i < (ARRLENTH(fm_freq_steps) - 1)) {
-					TRX.FRQ_ENC_FM_STEP_kHz = fm_freq_steps[i + 1];
-				} else {
-					TRX.FRQ_ENC_FM_STEP_kHz = fm_freq_steps[ARRLENTH(fm_freq_steps) - 1];
-				}
-				return;
-			}
-		}
-	}
-	TRX.FRQ_ENC_FM_STEP_kHz = fm_freq_steps[0];
-}
-
-static void SYSMENU_HANDL_TRX_FRQ_ENC_AM_STEP_kHz(int8_t direction) {
-	const float32_t am_freq_steps[] = {0.1, 0.25, 0.5, 1, 2, 2.5, 5, 7.5, 8.333, 10, 12.5, 15, 17.5, 20, 22.5, 25, 50, 75};
+static void SYSMENU_HANDL_TRX_FRQ_STEP_AM_Hz(int8_t direction) {
+	const float32_t am_freq_steps[] = {100, 250, 500, 1000, 2000, 2500, 5000, 7500, 8333, 10000, 12500, 15000, 17500, 20000, 22500, 25000, 50000, 75000};
 
 	for (uint8_t i = 0; i < ARRLENTH(am_freq_steps); i++) {
-		if (TRX.FRQ_ENC_AM_STEP_kHz == am_freq_steps[i]) {
+		if (TRX.FRQ_STEP_AM_Hz == am_freq_steps[i]) {
 			if (direction < 0) {
 				if (i > 0) {
-					TRX.FRQ_ENC_AM_STEP_kHz = am_freq_steps[i - 1];
+					TRX.FRQ_STEP_AM_Hz = am_freq_steps[i - 1];
 				} else {
-					TRX.FRQ_ENC_AM_STEP_kHz = am_freq_steps[0];
+					TRX.FRQ_STEP_AM_Hz = am_freq_steps[0];
 				}
 				return;
 			} else {
 				if (i < (ARRLENTH(am_freq_steps) - 1)) {
-					TRX.FRQ_ENC_AM_STEP_kHz = am_freq_steps[i + 1];
+					TRX.FRQ_STEP_AM_Hz = am_freq_steps[i + 1];
 				} else {
-					TRX.FRQ_ENC_AM_STEP_kHz = am_freq_steps[ARRLENTH(am_freq_steps) - 1];
+					TRX.FRQ_STEP_AM_Hz = am_freq_steps[ARRLENTH(am_freq_steps) - 1];
 				}
 				return;
 			}
 		}
 	}
-	TRX.FRQ_ENC_AM_STEP_kHz = am_freq_steps[0];
+	TRX.FRQ_STEP_AM_Hz = am_freq_steps[0];
+}
+
+static void SYSMENU_HANDL_TRX_FRQ_STEP_FM_Hz(int8_t direction) {
+	const float32_t fm_freq_steps[] = {100, 250, 500, 1000, 2000, 2500, 5000, 7500, 10000, 12500, 15000, 17500, 20000, 22500, 25000, 50000, 75000};
+
+	for (uint8_t i = 0; i < ARRLENTH(fm_freq_steps); i++) {
+		if (TRX.FRQ_STEP_FM_Hz == fm_freq_steps[i]) {
+			if (direction < 0) {
+				if (i > 0) {
+					TRX.FRQ_STEP_FM_Hz = fm_freq_steps[i - 1];
+				} else {
+					TRX.FRQ_STEP_FM_Hz = fm_freq_steps[0];
+				}
+				return;
+			} else {
+				if (i < (ARRLENTH(fm_freq_steps) - 1)) {
+					TRX.FRQ_STEP_FM_Hz = fm_freq_steps[i + 1];
+				} else {
+					TRX.FRQ_STEP_FM_Hz = fm_freq_steps[ARRLENTH(fm_freq_steps) - 1];
+				}
+				return;
+			}
+		}
+	}
+	TRX.FRQ_STEP_FM_Hz = fm_freq_steps[0];
+}
+
+static void SYSMENU_HANDL_TRX_FRQ_STEP_WFM_Hz(int8_t direction) {
+	const uint32_t wfm_freq_steps[] = {1000, 2000, 5000, 10000, 20000, 25000, 50000, 100000, 200000, 500000, 1000000};
+
+	for (uint8_t i = 0; i < ARRLENTH(wfm_freq_steps); i++) {
+		if (TRX.FRQ_STEP_WFM_Hz == wfm_freq_steps[i]) {
+			if (direction < 0) {
+				if (i > 0) {
+					TRX.FRQ_STEP_WFM_Hz = wfm_freq_steps[i - 1];
+				} else {
+					TRX.FRQ_STEP_WFM_Hz = wfm_freq_steps[0];
+				}
+				return;
+			} else {
+				if (i < (ARRLENTH(wfm_freq_steps) - 1)) {
+					TRX.FRQ_STEP_WFM_Hz = wfm_freq_steps[i + 1];
+				} else {
+					TRX.FRQ_STEP_WFM_Hz = wfm_freq_steps[ARRLENTH(wfm_freq_steps) - 1];
+				}
+				return;
+			}
+		}
+	}
+	TRX.FRQ_STEP_WFM_Hz = wfm_freq_steps[0];
 }
 
 static void SYSMENU_HANDL_TRX_NOTCH_STEP_Hz(int8_t direction) {
@@ -1961,13 +1937,23 @@ static void SYSMENU_HANDL_TRX_NOTCH_STEP_Hz(int8_t direction) {
 	TRX.NOTCH_STEP_Hz = notch_freq_steps[0];
 }
 
-static void SYSMENU_HANDL_TRX_FRQ_CW_STEP_DIVIDER(int8_t direction) {
-	TRX.FRQ_CW_STEP_DIVIDER += direction;
-	if (TRX.FRQ_CW_STEP_DIVIDER < 1) {
-		TRX.FRQ_CW_STEP_DIVIDER = 1;
+static void SYSMENU_HANDL_TRX_FAST_STEP_Multiplier(int8_t direction) {
+	TRX.FAST_STEP_Multiplier += direction;
+	if (TRX.FAST_STEP_Multiplier < 1) {
+		TRX.FAST_STEP_Multiplier = 1;
 	}
-	if (TRX.FRQ_CW_STEP_DIVIDER > 100) {
-		TRX.FRQ_CW_STEP_DIVIDER = 100;
+	if (TRX.FAST_STEP_Multiplier > 250) {
+		TRX.FAST_STEP_Multiplier = 250;
+	}
+}
+
+static void SYSMENU_HANDL_TRX_ENC2_STEP_Multiplier(int8_t direction) {
+	TRX.ENC2_STEP_Multiplier += direction;
+	if (TRX.ENC2_STEP_Multiplier < 1) {
+		TRX.ENC2_STEP_Multiplier = 1;
+	}
+	if (TRX.ENC2_STEP_Multiplier > 250) {
+		TRX.ENC2_STEP_Multiplier = 250;
 	}
 }
 
@@ -2293,6 +2279,21 @@ void SYSMENU_HANDL_FILTER_DIGI_LPF_pass(int8_t direction) {
 	}
 
 	TRX.DIGI_LPF_Filter_shadow = CurrentVFO->DIGI_LPF_Filter;
+	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
+}
+
+void SYSMENU_HANDL_FILTER_DIGI_HPF_pass(int8_t direction) {
+	if (CurrentVFO->DIGI_HPF_Filter > 0 || direction > 0) {
+		CurrentVFO->DIGI_HPF_Filter += direction * 50;
+	}
+	if (CurrentVFO->DIGI_HPF_Filter > MAX_HPF_WIDTH) {
+		CurrentVFO->DIGI_HPF_Filter = MAX_HPF_WIDTH;
+	}
+	if (CurrentVFO->DIGI_HPF_Filter > CurrentVFO->DIGI_LPF_Filter) {
+		CurrentVFO->DIGI_HPF_Filter = CurrentVFO->DIGI_LPF_Filter;
+	}
+
+	TRX.DIGI_HPF_Filter_shadow = CurrentVFO->DIGI_HPF_Filter;
 	TRX_setMode(CurrentVFO->Mode, CurrentVFO);
 }
 
@@ -2715,13 +2716,23 @@ static void SYSMENU_HANDL_RX_IFGain(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_RX_AGC_GAIN_TARGET(int8_t direction) {
-	TRX.AGC_GAIN_TARGET += direction;
-	if (TRX.AGC_GAIN_TARGET < -80) {
-		TRX.AGC_GAIN_TARGET = -80;
+static void SYSMENU_HANDL_RX_AGC_Gain_target_SSB(int8_t direction) {
+	TRX.AGC_Gain_target_SSB += direction;
+	if (TRX.AGC_Gain_target_SSB < -80) {
+		TRX.AGC_Gain_target_SSB = -80;
 	}
-	if (TRX.AGC_GAIN_TARGET > -10) {
-		TRX.AGC_GAIN_TARGET = -10;
+	if (TRX.AGC_Gain_target_SSB > -10) {
+		TRX.AGC_Gain_target_SSB = -10;
+	}
+}
+
+static void SYSMENU_HANDL_RX_AGC_Gain_target_CW(int8_t direction) {
+	TRX.AGC_Gain_target_CW += direction;
+	if (TRX.AGC_Gain_target_CW < -80) {
+		TRX.AGC_Gain_target_CW = -80;
+	}
+	if (TRX.AGC_Gain_target_CW > -10) {
+		TRX.AGC_Gain_target_CW = -10;
 	}
 }
 
@@ -3209,6 +3220,34 @@ static void SYSMENU_HANDL_TX_TUNER_Enabled(int8_t direction) {
 	if (direction < 0) {
 		TRX.TUNER_Enabled = false;
 	}
+}
+
+static void SYSMENU_HANDL_TX_ATU_MEM_STEP_KHZ(int8_t direction) {
+	const uint16_t atu_freq_steps[] = {50, 100, 200, 500, 1000};
+
+	for (uint8_t i = 0; i < ARRLENTH(atu_freq_steps); i++) {
+		if (TRX.ATU_MEM_STEP_KHZ == atu_freq_steps[i]) {
+			if (direction < 0) {
+				if (i > 0) {
+					TRX.ATU_MEM_STEP_KHZ = atu_freq_steps[i - 1];
+				} else {
+					TRX.ATU_MEM_STEP_KHZ = atu_freq_steps[0];
+				}
+				return;
+			} else {
+				if (i < (ARRLENTH(atu_freq_steps) - 1)) {
+					TRX.ATU_MEM_STEP_KHZ = atu_freq_steps[i + 1];
+				} else {
+					TRX.ATU_MEM_STEP_KHZ = atu_freq_steps[ARRLENTH(atu_freq_steps) - 1];
+				}
+				return;
+			}
+		}
+	}
+
+	TRX.ATU_MEM_STEP_KHZ = atu_freq_steps[0];
+
+	ATU_Load_Memory(TRX_on_TX ? TRX.ANT_TX : TRX.ANT_RX, CurrentVFO->Freq);
 }
 
 static void SYSMENU_HANDL_TX_INPUT_TYPE_MAIN(int8_t direction) {

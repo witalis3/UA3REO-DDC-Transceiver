@@ -137,18 +137,15 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 
 * **Band Map** - Band Map, automatically switches mode depending on the frequency
 * **Beeper** - Beep on key press
-* **CW Freq Step divider** - Frequency step divider for CW mode
 * **Callsign** - User callsign
 * **Channel Mode** - Channel frequency mode (for LPD/PMR and etc.)
 * **Custom Transverter** - Enable external transverter on non-ham band (just offset display frequency)
 * **DEBUG Type** - Output of debug and service information to USB / UART ports
 * **Encoder Accelerate** - Accelerate encoder on fast rates
 * **Fine RIT Tune** - Fine or coarse tuning for RIT/XIT (encoder or resistor)
-* **Freq Step *, kHz** - Frequency step by main encoder in WFM/NFM/AM mode
-* **Freq Step ENC2 FAST** - Frequency step by main add. encoder in FAST mode
-* **Freq Step ENC2** - Frequency tuning step by main add. encoder
-* **Freq Step FAST** - Frequency step by the main encoder in FAST mode
-* **Freq Step** - Frequency step by the main encoder
+* **Freq Step xxx** - Frequency step by main encoder in each mode, Hz
+* **FAST Step Multiplier** - Frequency step multiplier for FAST mode
+* **ENC2 Step Mult** - Frequency step multiplier for ENC2 rotation (for CW/SSB)
 * **Notch Step** - Frequency step of manual notch filter
 * **Full Duplex** - Full duplex RX+TX mode
 * **Locator** - User QTH locator
@@ -215,6 +212,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **ATU Enabled** - Turning on the automatic antenna tuner
 * **ATU Ind** - Combination of tuner inductances
 * **ATU T** - Tuner capacitive arm position
+* **ATU Mem step, kHz** - Step of saving tuner values for frequencies into memory
 * **Auto Input Switch** - Auto input switch (PTT - mix, CAT - USB)
 * **CESSB** - Enable controlled-envelope single-sideband modulation
 * **CESSB Compress, dB** - Signal pre-amplification level before compression in CESSB

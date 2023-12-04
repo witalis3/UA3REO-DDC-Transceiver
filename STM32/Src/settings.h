@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "9.0.0" // current STM32 version
+#define STM32_VERSION_STR "9.1.0" // current STM32 version
 
 #if defined(FRONTPANEL_LITE)
 #define FPGA_VERSION_STR "8.0.0" // needed FPGA version Wolf-Lite
@@ -16,8 +16,8 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 140        // Settings config version
-#define CALIB_VERSION 88        // Calibration config version
+#define SETT_VERSION 143        // Settings config version
+#define CALIB_VERSION 89        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -48,7 +48,6 @@
 #define NORMAL_SWR_TUNE 1.2f                 // ATU SWR target for new tune
 #define IDLE_LCD_BRIGHTNESS 5                // Low brightness for IDLE mode (dimmer)
 #define CW_ADD_GAIN_IF 20.0f                 // additional IF gain in CW
-#define CW_ADD_GAIN_AF 10.0f                 // additional AF gain in CW
 #define TX_LPF_TIMEOUT (180 * 1000)          // TX LPF On Timeout, millisec (3 min)
 #define SWR_PROTECTOR_MAX_POWER 20.0f        // drop down to PWR %, if SWR high
 
@@ -69,15 +68,21 @@
 #define MAX_CW_MACROS_LENGTH 61
 #define MAX_CW_MACROS_NAME_LENGTH 6
 #define ALLQSO_TOKEN_SIZE 16
+
+#if defined(FRONTPANEL_MINI)
+#define MAX_CHANNEL_MEMORY_NAME_LENGTH 6
+#else
 #define MAX_CHANNEL_MEMORY_NAME_LENGTH 10
+#endif
+
 #define SAT_NAME_MAXLEN 20
 #define SAT_TLE_MAXCOUNT 28
 #define SAT_TLE_LINE_MAXLEN 70
 #define SAT_QTH_LINE_MAXLEN 12
 
 #define ATU_MAX_FREQ_KHZ 60000
-#define ATU_MEM_STEP_KHZ 50
-#define ATU_MEM_COUNT (ATU_MAX_FREQ_KHZ / ATU_MEM_STEP_KHZ) // 1200 positions * 3byte = 3600 bytes for each ANT
+#define ATU_MEM_STEP_MIN_KHZ 50
+#define ATU_MEM_COUNT (ATU_MAX_FREQ_KHZ / ATU_MEM_STEP_MIN_KHZ) // 1200 positions * 3byte = 3600 bytes for each ANT
 
 #define W25Q16_COMMAND_Write_Disable 0x04
 #define W25Q16_COMMAND_Write_Enable 0x06
@@ -104,7 +109,7 @@
 #define EEPROM_SECTOR_DPD 16   // + BANDS_COUNT sectors
 #define EEPROM_REPEAT_TRYES 10 // command tryes
 
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_X1) // || defined(FRONTPANEL_MINI)
 #define MEMORY_CHANNELS_COUNT 0
 #elif defined(LCD_RA8875)
 #define MEMORY_CHANNELS_COUNT 35
@@ -228,7 +233,7 @@ static char ota_config_frontpanel[] = "X1";
 #define MAX_VOLUME_VALUE 100.0f
 #define FUNCBUTTONS_ON_PAGE 4
 #define FUNCBUTTONS_PAGES 9
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 3)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5)
 static char ota_config_frontpanel[] = "Mini";
 #define ATU_MAXPOS ATU_6x6_MAXPOS
 #endif
@@ -507,6 +512,7 @@ typedef struct {
 	uint64_t freq;
 	float32_t CTCSS_Freq;
 	uint8_t mode;
+	bool RepeaterMode;
 	char name[MAX_CHANNEL_MEMORY_NAME_LENGTH];
 } CHANNEL_SAVED_SETTINGS_TYPE;
 
@@ -522,6 +528,7 @@ typedef struct {
 	uint16_t LPF_TX_Filter_Width; // current width
 	uint16_t CW_LPF_Filter;
 	uint16_t DIGI_LPF_Filter;
+	uint16_t DIGI_HPF_Filter;
 	uint16_t SSB_LPF_RX_Filter;
 	uint16_t SSB_LPF_TX_Filter;
 	uint16_t SSB_HPF_RX_Filter;
@@ -549,8 +556,6 @@ extern struct TRX_SETTINGS {
 	VFO VFO_B;
 
 	float32_t ATT_DB;
-	float32_t FRQ_ENC_FM_STEP_kHz;
-	float32_t FRQ_ENC_AM_STEP_kHz;
 	float32_t NOTCH_STEP_Hz;
 	float32_t CTCSS_Freq;
 	float32_t MIC_Gain_SSB_DB;
@@ -559,11 +564,12 @@ extern struct TRX_SETTINGS {
 	float32_t CW_DotToDashRate;
 	float32_t TX_CESSB_COMPRESS_DB;
 
-	uint32_t FRQ_STEP;
-	uint32_t FRQ_FAST_STEP;
-	uint32_t FRQ_ENC_STEP;
-	uint32_t FRQ_ENC_FAST_STEP;
-	uint32_t FRQ_ENC_WFM_STEP_kHz;
+	uint32_t FRQ_STEP_CW_Hz;
+	uint32_t FRQ_STEP_SSB_Hz;
+	uint32_t FRQ_STEP_DIGI_Hz;
+	uint32_t FRQ_STEP_AM_Hz;
+	uint32_t FRQ_STEP_FM_Hz;
+	uint32_t FRQ_STEP_WFM_Hz;
 	uint32_t SWR_CUSTOM_Begin;
 	uint32_t SWR_CUSTOM_End;
 	uint32_t SPEC_Begin;
@@ -594,6 +600,7 @@ extern struct TRX_SETTINGS {
 	uint16_t RTTY_Freq;
 	uint16_t CW_LPF_Filter_shadow;
 	uint16_t DIGI_LPF_Filter_shadow;
+	uint16_t DIGI_HPF_Filter_shadow;
 	uint16_t SSB_LPF_RX_Filter_shadow;
 	uint16_t SSB_LPF_TX_Filter_shadow;
 	uint16_t SSB_HPF_RX_Filter_shadow;
@@ -603,6 +610,7 @@ extern struct TRX_SETTINGS {
 	uint16_t FM_LPF_RX_Filter_shadow;
 	uint16_t FM_LPF_TX_Filter_shadow;
 	uint16_t FM_HPF_RX_Filter_shadow;
+	uint16_t ATU_MEM_STEP_KHZ;
 
 	int8_t MIC_NOISE_GATE;
 	int8_t RX_EQ_P1;
@@ -629,7 +637,8 @@ extern struct TRX_SETTINGS {
 	int8_t MIC_EQ_P4_AMFM;
 	int8_t MIC_EQ_P5_AMFM;
 	int8_t MIC_EQ_P6_AMFM;
-	int8_t AGC_GAIN_TARGET;
+	int8_t AGC_Gain_target_SSB;
+	int8_t AGC_Gain_target_CW;
 	int8_t VOX_THRESHOLD;
 	int8_t FFT_FreqGrid;
 	int8_t Dual_RX_AB_Balance;
@@ -642,7 +651,8 @@ extern struct TRX_SETTINGS {
 	uint8_t RF_Gain_By_Mode_FM;
 	uint8_t RF_Gain_By_Mode_AM;
 	uint8_t RF_Gain_By_Mode_DIGI;
-	uint8_t FRQ_CW_STEP_DIVIDER;
+	uint8_t FAST_STEP_Multiplier;
+	uint8_t ENC2_STEP_Multiplier;
 	uint8_t ATU_I;
 	uint8_t ATU_C;
 	uint8_t CW_LPF_Stages;
