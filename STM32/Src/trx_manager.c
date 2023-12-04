@@ -1260,10 +1260,17 @@ void BUTTONHANDLER_DOUBLEMODE(uint32_t parameter) {
 
 void BUTTONHANDLER_PTT_TOGGLE(uint32_t parameter) { TRX_ptt_soft = !TRX_ptt_soft; }
 
-void BUTTONHANDLER_AsB(uint32_t parameter) // A/B
+void BUTTONHANDLER_AsB(uint32_t parameter) // A<>B
 {
+	//Block for LITE and MINI in MEMO mode
+#if defined(FRONTPANEL_MINI) || defined (FRONTPANEL_FRONTPANEL_LITE)
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
+		return;
+	}
+#endif
+	
 	// TX block
-	if (TRX_on_TX) {
+	if (TRX_on_TX) { 
 		return;
 	}
 
@@ -1826,7 +1833,14 @@ void BUTTONHANDLER_HPF(uint32_t parameter) {
 }
 
 void BUTTONHANDLER_ArB(uint32_t parameter) // A=B
-{
+{	
+	//Block for LITE and MINI in MEMO mode
+#if defined(FRONTPANEL_MINI) || defined (FRONTPANEL_FRONTPANEL_LITE)
+	if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
+		return;
+	}
+#endif
+	
 	if (TRX.selected_vfo) {
 		dma_memcpy(&TRX.VFO_A, &TRX.VFO_B, sizeof TRX.VFO_B);
 	} else {
@@ -2579,7 +2593,8 @@ void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
 
 	if (CALIBRATE.MEMORY_CHANNELS[channel].freq == CurrentVFO->Freq) {
 		CALIBRATE.MEMORY_CHANNELS[channel].freq = 0;
-#ifndef FRONTPANEL_LITE
+		
+#if (!defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_MINI))
 		sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "Ch %d", channel + 1);
 #endif
 
@@ -2590,7 +2605,7 @@ void BUTTONHANDLER_SaveMemoryChannels(uint32_t parameter) {
 		CALIBRATE.MEMORY_CHANNELS[channel].CTCSS_Freq = TRX.CTCSS_Freq;
 		CALIBRATE.MEMORY_CHANNELS[channel].RepeaterMode = CurrentVFO->RepeaterMode;
 
-#ifndef FRONTPANEL_LITE
+#if (!defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_MINI))
 		if (CurrentVFO->Freq < 1000000) {                                                                 // < 1mhz
 			sprintf(CALIBRATE.MEMORY_CHANNELS[channel].name, "%.2f", CurrentVFO->Freq / 1000.0);            // 3k.2h
 		} else if (CurrentVFO->Freq < 1000000000) {                                                       // < 1000mhz

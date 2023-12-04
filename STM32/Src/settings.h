@@ -68,7 +68,13 @@
 #define MAX_CW_MACROS_LENGTH 61
 #define MAX_CW_MACROS_NAME_LENGTH 6
 #define ALLQSO_TOKEN_SIZE 16
+
+#if defined(FRONTPANEL_MINI) 
+#define MAX_CHANNEL_MEMORY_NAME_LENGTH 6
+#else
 #define MAX_CHANNEL_MEMORY_NAME_LENGTH 10
+#endif
+
 #define SAT_NAME_MAXLEN 20
 #define SAT_TLE_MAXCOUNT 28
 #define SAT_TLE_LINE_MAXLEN 70
@@ -103,7 +109,7 @@
 #define EEPROM_SECTOR_DPD 16   // + BANDS_COUNT sectors
 #define EEPROM_REPEAT_TRYES 10 // command tryes
 
-#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_X1) || defined(FRONTPANEL_MINI)
+#if defined(FRONTPANEL_NONE) || defined(FRONTPANEL_SMALL_V1) || defined(FRONTPANEL_X1) // || defined(FRONTPANEL_MINI)
 #define MEMORY_CHANNELS_COUNT 0
 #elif defined(LCD_RA8875)
 #define MEMORY_CHANNELS_COUNT 35
@@ -227,7 +233,7 @@ static char ota_config_frontpanel[] = "X1";
 #define MAX_VOLUME_VALUE 100.0f
 #define FUNCBUTTONS_ON_PAGE 4
 #define FUNCBUTTONS_PAGES 9
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 3)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5)
 static char ota_config_frontpanel[] = "Mini";
 #define ATU_MAXPOS ATU_6x6_MAXPOS
 #endif
