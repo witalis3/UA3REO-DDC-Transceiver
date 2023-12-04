@@ -602,24 +602,3 @@ void RF_UNIT_ProcessSensors(void) {
 
 	HAL_ADCEx_InjectedStart(&hadc1); // start next manual conversion
 }
-
-// used to controll the calibration of the FW and BW power measurments
-/*void RF_UNIT_MeasureVoltage(void) {
-#define B16_RANGE 65535.0f
-  // #define B14_RANGE 16383.0f
-
-  float32_t forward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_2)) * TRX_STM32_VREF / B16_RANGE;
-  float32_t backward = (float32_t)(HAL_ADCEx_InjectedGetValue(&hadc1, ADC_INJECTED_RANK_1)) * TRX_STM32_VREF / B16_RANGE;
-  // use the TRX_VLT_forward and TRX_VLT_backward global variables
-  // for the raw ADC input voltages
-  // in the TDM_Voltages() the other stuff will be calculated localy
-
-  static float32_t VLT_forward = 0.0f;
-  static float32_t VLT_backward = 0.0f;
-  VLT_forward = VLT_forward + (forward - VLT_forward) / 10;
-  VLT_backward = VLT_backward + (backward - VLT_backward) / 10;
-
-  TRX_VLT_forward = VLT_forward;
-  TRX_VLT_backward = VLT_backward;
-}
-*/
