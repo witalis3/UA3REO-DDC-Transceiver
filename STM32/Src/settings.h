@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "9.1.0-dev" // current STM32 version
+#define STM32_VERSION_STR "9.1.0" // current STM32 version
 
 #if defined(FRONTPANEL_LITE)
 #define FPGA_VERSION_STR "8.0.0" // needed FPGA version Wolf-Lite
@@ -69,7 +69,7 @@
 #define MAX_CW_MACROS_NAME_LENGTH 6
 #define ALLQSO_TOKEN_SIZE 16
 
-#if defined(FRONTPANEL_MINI) 
+#if defined(FRONTPANEL_MINI)
 #define MAX_CHANNEL_MEMORY_NAME_LENGTH 6
 #else
 #define MAX_CHANNEL_MEMORY_NAME_LENGTH 10
