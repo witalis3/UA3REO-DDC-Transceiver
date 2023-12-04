@@ -1695,13 +1695,14 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 			/**********************************************/
 
 			// FWD
-			if (TRX_PWR_Forward_SMOOTHED >= 100.0f) {
-				sprintf(ctmp, "%dW ", (uint16_t)TRX_PWR_Forward_SMOOTHED);
-			} else if (TRX_PWR_Forward_SMOOTHED >= 10.0f) {
-				sprintf(ctmp, "%.1fW", (double)TRX_PWR_Forward_SMOOTHED);
+			if (TRX_PWR_Forward_SMOOTHED >= 99.9f) {
+				sprintf(ctmp, "%dW", (uint16_t)TRX_PWR_Forward_SMOOTHED);
+			} else if (TRX_PWR_Forward_SMOOTHED >= 9.9f) {
+				sprintf(ctmp, "%2.1fW", (double)TRX_PWR_Forward_SMOOTHED);
 			} else {
-				sprintf(ctmp, "%.1fW ", (double)TRX_PWR_Forward_SMOOTHED);
+				sprintf(ctmp, "%1.1fW", (double)TRX_PWR_Forward_SMOOTHED);
 			}
+			addSymbols(ctmp, ctmp, 5, " ", true);
 			/**********************************************/
 			if (CN_Theme) {
 				LCDDriver_printText(ctmp, LAYOUT->STATUS_LABEL_DBM_X_OFFSET + 5, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_DBM_Y_OFFSET + 13, COLOR->STATUS_LABEL_DBM, BG_COLOR,

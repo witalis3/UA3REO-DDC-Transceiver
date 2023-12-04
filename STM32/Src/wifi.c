@@ -1639,7 +1639,7 @@ static void WIFI_checkFWUpdates_callback(void) {
 			LCD_showTooltip("New Firmware available");
 		} else if (strstr(WIFI_HTTResponseHTML, "new stm32") != NULL) {
 			WIFI_NewFW_STM32 = true;
-			LCD_showTooltip("New STM32 FW available");
+			LCD_showTooltip("New STM FW available");
 		} else if (strstr(WIFI_HTTResponseHTML, "new fpga") != NULL) {
 			WIFI_NewFW_FPGA = true;
 			LCD_showTooltip("New FPGA FW available");

@@ -618,6 +618,23 @@ void FFT_doFFT(void) {
 		arm_scale_f32(FFTInput, ((float32_t)FFT_SIZE / (float32_t)FFT_ChargeBuffer_collected / 2.0f), FFTInput, FFT_DOUBLE_SIZE_BUFFER);
 	}
 
+	// Zoom compensation
+	if (fft_zoom == 2) {
+		arm_scale_f32(FFTInput, 1.679f, FFTInput, FFT_DOUBLE_SIZE_BUFFER);
+	}
+	if (fft_zoom == 4) {
+		arm_scale_f32(FFTInput, 2.239f, FFTInput, FFT_DOUBLE_SIZE_BUFFER);
+	}
+	if (fft_zoom == 8) {
+		arm_scale_f32(FFTInput, 3.162f, FFTInput, FFT_DOUBLE_SIZE_BUFFER);
+	}
+	if (fft_zoom == 16) {
+		arm_scale_f32(FFTInput, 5.012f, FFTInput, FFT_DOUBLE_SIZE_BUFFER);
+	}
+	if (fft_zoom == 32) {
+		arm_scale_f32(FFTInput, 5.957f, FFTInput, FFT_DOUBLE_SIZE_BUFFER);
+	}
+
 	arm_cfft_f32(FFT_Inst, FFTInput, 0, 1);
 
 	// FFT scale
@@ -645,13 +662,6 @@ void FFT_doFFT(void) {
 	  FFTInput[i + CWDECODER_FFTSIZE * 3] = CWDEC_FFTBuffer_Export[i];
 	}*/
 
-	// dBm scale
-	if (FFT_SCALE_TYPE == 2) {
-		for (uint_fast16_t i = 0; i < FFT_SIZE; i++) {
-			FFTInput[i] = getDBFromFFTAmpl(FFTInput[i]);
-		}
-	}
-
 	// Swap fft parts
 	dma_memcpy(&FFTInput[FFT_SIZE], &FFTInput[0], sizeof(float32_t) * (FFT_SIZE / 2));            // left - > tmp
 	dma_memcpy(&FFTInput[0], &FFTInput[FFT_SIZE / 2], sizeof(float32_t) * (FFT_SIZE / 2));        // right - > left
@@ -665,6 +675,25 @@ void FFT_doFFT(void) {
 	float32_t fft_compress_rate = (float32_t)FFT_USEFUL_SIZE / (float32_t)LAYOUT->FFT_PRINT_SIZE;
 	float32_t fft_compress_rate_half = floorf(fft_compress_rate / 2.0f);       // full points
 	float32_t fft_compress_rate_parts = fmodf(fft_compress_rate / 2.0f, 1.0f); // partial points
+
+	// Noise floor calculator
+	float32_t noise_floor_calc_value = 0;
+	static uint32_t noise_floor_calc_index = 0;
+	static uint32_t noise_floor_calc_counter = 0;
+	if (noise_floor_calc_counter < 100) {
+		noise_floor_calc_value = FFTInput[noise_floor_calc_index];
+		TRX_NoiseFloor = TRX_NoiseFloor * 0.99f + getDBFromFFTAmpl(noise_floor_calc_value) * 0.01f;
+	} else {
+		noise_floor_calc_counter = 0;
+		arm_min_f32(FFTInput, FFT_USEFUL_SIZE, &noise_floor_calc_value, &noise_floor_calc_index); // -148
+	}
+
+	// dBm scale
+	if (FFT_SCALE_TYPE == 2) {
+		for (uint_fast16_t i = 0; i < FFT_SIZE; i++) {
+			FFTInput[i] = getDBFromFFTAmpl(FFTInput[i]);
+		}
+	}
 
 	if (!TRX.FFT_Lens) // normal compress
 	{
