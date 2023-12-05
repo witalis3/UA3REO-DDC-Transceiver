@@ -130,6 +130,7 @@ extern void BUTTONHANDLER_MEMO_WRITE(uint32_t parameter);
 extern void BUTTONHANDLER_MEMO_READ(uint32_t parameter);
 extern void BUTTONHANDLER_SET_VFOA_FREQ_MANUAL(uint32_t parameter);
 extern void BUTTONHANDLER_SET_VFOB_FREQ_MANUAL(uint32_t parameter);
+extern void BUTTONHANDLER_Free_tune(uint32_t parameter);
 
 volatile extern bool TRX_ptt_hard;
 volatile extern bool TRX_ptt_soft;
@@ -159,8 +160,8 @@ volatile extern float32_t TRX_PWR_Forward_SMOOTHED;
 volatile extern float32_t TRX_PWR_Backward_SMOOTHED;
 volatile extern float32_t TRX_SWR_SMOOTHED;
 extern char TRX_SWR_SMOOTHED_STR[12];
-volatile extern float32_t TRX_VLT_forward;  // Tisho
-volatile extern float32_t TRX_VLT_backward; // Tisho
+volatile extern float32_t TRX_VLT_forward;
+volatile extern float32_t TRX_VLT_backward;
 volatile extern float32_t TRX_ALC_IN;
 volatile extern float32_t TRX_ALC_OUT;
 volatile extern bool TRX_SWR_PROTECTOR;
@@ -200,5 +201,4 @@ extern uint32_t dbg_FPGA_samples;
 extern uint8_t TRX_TX_Harmonic;
 extern uint8_t TRX_TX_sendZeroes;
 extern int8_t TRX_MemoryChannelSelected;
-
 #endif

@@ -2826,3 +2826,11 @@ void BUTTONHANDLER_CW_MACROS(uint32_t parameter) {
 	TRX_ptt_soft = true;
 	CW_key_serial = true;
 }
+
+void BUTTONHANDLER_Free_tune(uint32_t parameter) {
+	// Free Tune or Center
+	TRX.FREE_Tune = !TRX.FREE_Tune;
+	TRX.FREE_Tune ? LCD_showTooltip("Free Tune") : LCD_showTooltip("Center");
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
+}
