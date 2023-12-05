@@ -111,7 +111,7 @@ void CW_key_change(void) {
 			CW_updateEstimateTimeout();
 			FPGA_NeedSendParams = true;
 			TRX_Restart_Mode();
-			if (!onTx) {
+			if (!onTx && (TRX.CW_PTT_Type == KEY_PTT || TRX.CW_PTT_Type == KEY_AND_EXT_PTT)) {
 				CW_GenerateKeyer(0, true);
 			}
 		}
@@ -159,7 +159,7 @@ void CW_key_change(void) {
 			CW_updateEstimateTimeout();
 			FPGA_NeedSendParams = true;
 			TRX_Restart_Mode();
-			if (!onTx) {
+			if (!onTx && (TRX.CW_PTT_Type == KEY_PTT || TRX.CW_PTT_Type == KEY_AND_EXT_PTT)) {
 				CW_GenerateKeyer(0, true);
 			}
 		}
