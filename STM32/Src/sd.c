@@ -3504,7 +3504,7 @@ uint8_t SD_cmd(uint8_t cmd, uint32_t arg) {
 		res = SPI_ReceiveByte();
 	} while ((res & 0x80) && --n);
 	if (n == 0 && SD_Present) {
-		println("SD CMD timeout");
+		println("SD CMD ", cmd, " timeout");
 	}
 
 #if SD_DEBUG
@@ -3531,7 +3531,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr) {
 		cnt++;
 	} while ((result != 0xFE) && (cnt < 0xFFFF));
 	if (cnt >= 0xFFFF) {
-		println("SD R Token Err", true);
+		println("SD R Token Err");
 		return 0;
 	}
 
@@ -3634,7 +3634,7 @@ uint8_t sd_ini(void) {
 	// hspi.Init.BaudRatePrescaler = temp;
 	// HAL_SPI_Init(&hspi);
 	//  HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
-	if (SD_cmd(CMD0, 0) == 1 || SD_cmd(CMD0, 0) == 1) // Enter Idle state (+repeat if error)
+	if (SD_cmd(CMD0, 0) == 1 || SD_cmd(CMD0, 0) == 1 || SD_cmd(CMD0, 0) == 63) // Enter Idle state (+repeat if error)
 	{
 		SPI_Release();
 		SD_cmd(ACMD42, 0); // disable pull-up on CD line
@@ -3722,7 +3722,7 @@ uint8_t sd_ini(void) {
 				uint32_t C_SIZE = (DWORD)csd[9] + ((DWORD)csd[8] << 8) + ((DWORD)(csd[7] & 0x3F) << 16) + 1;
 				sdinfo.SECTOR_COUNT = C_SIZE << 10;
 #if SD_DEBUG
-				println("C_SIZE: ", C_SIZE); // 7674 in 4gb, 15248 in 8gb
+				println("C_SIZE: ", C_SIZE); // 7674 in 4gb, 15248 in 8gb, 29823 in 16gb, 60014 in 32gb
 				println("SDHC sector count: ", sdinfo.SECTOR_COUNT);
 #endif
 			}

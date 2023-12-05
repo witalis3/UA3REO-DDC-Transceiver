@@ -27,15 +27,15 @@
 #define CMD1 (0x40 + 1)    // 65 SEND_OP_COND (MMC)
 #define CMD8 (0x40 + 8)    // 72 SEND_IF_COND
 #define CMD9 (0x40 + 9)    // 73 SEND_CSD
-#define CMD12 (0x40 + 12)  /* 76 STOP_TRANSMISSION */
+#define CMD12 (0x40 + 12)  // 76 STOP_TRANSMISSION
 #define CMD16 (0x40 + 16)  // 80 SET_BLOCKLEN
 #define CMD17 (0x40 + 17)  // 81 READ_SINGLE_BLOCK
-#define CMD18 (0x40 + 18)  /* 82 READ_MULTIPLE_BLOCK */
+#define CMD18 (0x40 + 18)  // 82 READ_MULTIPLE_BLOCK
 #define CMD24 (0x40 + 24)  // 88 WRITE_BLOCK
-#define CMD25 (0x40 + 25)  /* 89 WRITE_MULTIPLE_BLOCK */
+#define CMD25 (0x40 + 25)  // 89 WRITE_MULTIPLE_BLOCK
 #define CMD55 (0x40 + 55)  // 119 APP_CMD
 #define CMD58 (0x40 + 58)  // 122 READ_OCR
-#define ACMD23 (0xC0 + 23) /* 215 SET_WR_BLK_ERASE_COUNT (SDC) */
+#define ACMD23 (0xC0 + 23) // 215 SET_WR_BLK_ERASE_COUNT (SDC)
 #define ACMD41 (0xC0 + 41) // 233 SEND_OP_COND (SDC)
 #define ACMD42 (0xC0 + 42) // 234 SET_CLR_CARD_DETECT
 //--------------------------------------------------

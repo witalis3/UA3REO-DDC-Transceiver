@@ -145,6 +145,7 @@ DRESULT disk_read(BYTE pdrv,    /* Physical drive nmuber to identify the drive *
 			}
 		}
 		SPI_Release();
+		SPI_Release();
 	}
 	return _count ? RES_ERROR : RES_OK;
 	/* USER CODE END READ */
@@ -189,7 +190,8 @@ DRESULT disk_write(BYTE pdrv,        /* Physical drive nmuber to identify the dr
 
 		if (_count == 1) /* Single block write */
 		{
-			if ((SD_cmd(CMD24, sector) == 0) && SD_Write_Block(_buff, 0xFE, true)) { /* WRITE_BLOCK */
+			uint8_t cmd = SD_cmd(CMD24, sector);
+			if ((cmd < 5) && SD_Write_Block(_buff, 0xFE, true)) { /* WRITE_BLOCK */
 				_count = 0;
 			}
 		} else /* Multiple block write */
@@ -212,6 +214,7 @@ DRESULT disk_write(BYTE pdrv,        /* Physical drive nmuber to identify the dr
 				SPI_wait_ready();
 			}
 		}
+		SPI_Release();
 		SPI_Release();
 	}
 	return _count ? RES_ERROR : RES_OK;
