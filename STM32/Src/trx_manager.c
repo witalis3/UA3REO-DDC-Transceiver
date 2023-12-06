@@ -273,7 +273,7 @@ void TRX_ptt_change(void) {
 		TRX_Tune = false;
 	}
 
-	bool notx = TRX_TX_Disabled(CurrentVFO->Freq);
+	bool notx = TRX_TX_Disabled(CurrentVFO->Freq) && !TRX_REPEATER_Applied;
 	if (notx) {
 		TRX_ptt_soft = false;
 		TRX_ptt_hard = false;
