@@ -229,7 +229,7 @@ void LoadSettings(bool clear) {
 		TRX.Split_Mode_Sync_Freq = false;          // enable VFO freq syncronization in SPLIT mode
 		TRX.FT8_Auto_CQ = false;                   // Auto-CQ mode for FT8
 		TRX.DXCluster_Type = DX_CLUSTER_DX_SUMMIT; // DX cluster type
-		TRX.REPEATER_Offset = 600;                 // repeater mode custom offset
+		TRX.REPEATER_Offset = -600;                 // repeater mode custom offset
 		TRX.WOLF_Cluster = true;                   // Enable WOLF cluster
 		TRX.FREE_Tune = false;                     // Enable free tune on spectrum bandwidth
 		// AUDIO
