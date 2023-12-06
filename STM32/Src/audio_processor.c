@@ -1102,6 +1102,11 @@ void processTxAudio(void) {
 #if HRDW_HAS_SD
 	if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess) {
 		volume_gain_tx *= selfhear_amplitude;
+	} else {
+		// reduce power for SD play
+		volume_gain_tx *= 0.3f;
+		arm_scale_f32(APROC_Audio_Buffer_TX_I, 0.9f, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+		arm_scale_f32(APROC_Audio_Buffer_TX_Q, 0.9f, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 	}
 #else
 	volume_gain_tx *= selfhear_amplitude;
