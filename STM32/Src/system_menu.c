@@ -1125,7 +1125,7 @@ const static struct sysmenu_item_handler sysmenu_sd_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_sd_export_handlers[] = {
     {"Back", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Back},
-    {"Export Settings", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings1},
+    {"Export Settings 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings1},
     {"Export Settings 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings2},
     {"Export Settings 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings3},
     {"Export Calibration 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportCalibrations1},
@@ -1135,7 +1135,7 @@ const static struct sysmenu_item_handler sysmenu_sd_export_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_sd_import_handlers[] = {
     {"Back", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Back},
-    {"Import Settings", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings1},
+    {"Import Settings 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings1},
     {"Import Settings 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings2},
     {"Import Settings 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings3},
     {"Import Calibration 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportCalibrations1},
