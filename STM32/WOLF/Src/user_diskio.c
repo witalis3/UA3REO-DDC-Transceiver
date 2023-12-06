@@ -128,7 +128,7 @@ DRESULT disk_read(BYTE pdrv,    /* Physical drive nmuber to identify the drive *
 		BYTE *_buff = buff;
 		if (_count == 1) /* Single block read */
 		{
-			if ((SD_cmd(CMD17, sector) == 0) && SD_Read_Block(_buff, sdinfo.BLOCK_SIZE)) /* READ_SINGLE_BLOCK */
+			if ((SD_cmd(CMD17, sector) < 5) && SD_Read_Block(_buff, sdinfo.BLOCK_SIZE)) /* READ_SINGLE_BLOCK */
 			{
 				_count = 0;
 			}
@@ -190,8 +190,7 @@ DRESULT disk_write(BYTE pdrv,        /* Physical drive nmuber to identify the dr
 
 		if (_count == 1) /* Single block write */
 		{
-			uint8_t cmd = SD_cmd(CMD24, sector);
-			if ((cmd < 5) && SD_Write_Block(_buff, 0xFE, true)) { /* WRITE_BLOCK */
+			if ((SD_cmd(CMD24, sector) < 5) && SD_Write_Block(_buff, 0xFE, true)) { /* WRITE_BLOCK */
 				_count = 0;
 			}
 		} else /* Multiple block write */
