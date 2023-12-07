@@ -266,7 +266,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **DX Cluster Type** - Selecting a Data Source for a DX Cluster
 * **FFT 3D Mode** - Enable FFT 3D mode (0 - disabled, 1 - lines, 2 - pixels)
 * **FFT Automatic** - Automatic FFT scale
-* **FFT Averaging** - FFT burst averaging level
+* **FFT Averaging** - FFT burst averaging level. Full - automatic selection of upper and lower boundaries, Half - auto upper and manual lower, No - manual setting of the range of spectrum levels. (Remember to select the correct FFT Scale Type so that your range will fit on the screen)
 * **FFT BW Style** - FFT bandwidth style: high opacity, low opacity, lines
 * **FFT BW Position** - Position of the receiving band on FFT/WTF (everywhere \ at the top \ at the top + lines \ top + bottom with time delay)
 * **FFT Background** - Gradient FFT background

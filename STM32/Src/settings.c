@@ -363,13 +363,13 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Zoom = 1;   // approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif
-		TRX.LCD_Brightness = 60;  // LCD Brightness
-		TRX.LCD_SleepTimeout = 0; // LCD Sleep Timeout berfore idle
-		TRX.WTF_Moving = true;    // move WTF with frequency encoder
-		TRX.FFT_Automatic = true; // Automatic FFT Scale
-		TRX.FFT_Sensitivity = 8;  // Threshold of FFT autocalibrate
-		TRX.FFT_Speed = 3;        // FFT Speed
-		TRX.FFT_Averaging = 10;   // averaging the FFT to make it smoother
+		TRX.LCD_Brightness = 60;                     // LCD Brightness
+		TRX.LCD_SleepTimeout = 0;                    // LCD Sleep Timeout berfore idle
+		TRX.WTF_Moving = true;                       // move WTF with frequency encoder
+		TRX.FFT_Automatic_Type = FFT_AUTOMATIC_FULL; // Automatic FFT Scale type
+		TRX.FFT_Sensitivity = 8;                     // Threshold of FFT autocalibrate
+		TRX.FFT_Speed = 3;                           // FFT Speed
+		TRX.FFT_Averaging = 10;                      // averaging the FFT to make it smoother
 #ifdef STM32F407xx
 		TRX.FFT_Averaging = 6;
 #endif

@@ -201,7 +201,7 @@ static void SYSMENU_HANDL_CW_SetCWMacrosName5(int8_t direction);
 
 static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction);
-static void SYSMENU_HANDL_SCREEN_FFT_Automatic(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Automatic_Type(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_BW_Style(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_BW_Position(int8_t direction);
@@ -950,7 +950,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
 #if !defined(FRONTPANEL_LITE)
     {"FFT 3D Mode", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_3D, SYSMENU_HANDL_SCREEN_FFT_3D, (const enumerate_item[3]){"NO", "Lines", "Dots"}},
 #endif
-    {"FFT Automatic", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Automatic, SYSMENU_HANDL_SCREEN_FFT_Automatic},
+    {"FFT Automatic", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_Automatic_Type, SYSMENU_HANDL_SCREEN_FFT_Automatic_Type, (const enumerate_item[3]){"No", "Half", "Full"}},
     {"FFT Averaging", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 #if !defined(FRONTPANEL_LITE)
     {"FFT BW Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_BW_Style, SYSMENU_HANDL_SCREEN_FFT_BW_Style, (const enumerate_item[4]){"", "Fill", "LowOp", "Line"}},
@@ -4394,12 +4394,12 @@ static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_SCREEN_FFT_Automatic(int8_t direction) {
-	if (direction > 0) {
-		TRX.FFT_Automatic = true;
+static void SYSMENU_HANDL_SCREEN_FFT_Automatic_Type(int8_t direction) {
+	if (TRX.FFT_Automatic_Type > 0 || direction > 0) {
+		TRX.FFT_Automatic_Type += direction;
 	}
-	if (direction < 0) {
-		TRX.FFT_Automatic = false;
+	if (TRX.FFT_Automatic_Type > 2) {
+		TRX.FFT_Automatic_Type = 2;
 	}
 }
 

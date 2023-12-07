@@ -1222,7 +1222,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.FFT_Lens", (uint64_t *)&TRX.FFT_Lens, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_HoldPeaks", (uint64_t *)&TRX.FFT_HoldPeaks, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_3D", (uint64_t *)&TRX.FFT_3D, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.FFT_Automatic", (uint64_t *)&TRX.FFT_Automatic, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.FFT_Automatic_Type", (uint64_t *)&TRX.FFT_Automatic_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_ManualBottom", (uint64_t *)&TRX.FFT_ManualBottom, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.FFT_ManualTop", (uint64_t *)&TRX.FFT_ManualTop, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.FFT_DXCluster", (uint64_t *)&TRX.FFT_DXCluster, SYSMENU_BOOLEAN);
@@ -2432,8 +2432,8 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.FFT_3D") == 0) {
 		TRX.FFT_3D = (uint8_t)uintval;
 	}
-	if (strcmp(name, "TRX.FFT_Automatic") == 0) {
-		TRX.FFT_Automatic = uintval;
+	if (strcmp(name, "TRX.FFT_Automatic_Type") == 0) {
+		TRX.FFT_Automatic_Type = (uint8_t)uintval;
 	}
 	if (strcmp(name, "TRX.FFT_ManualBottom") == 0) {
 		TRX.FFT_ManualBottom = (int16_t)intval;

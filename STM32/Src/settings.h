@@ -16,7 +16,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 143        // Settings config version
+#define SETT_VERSION 144        // Settings config version
 #define CALIB_VERSION 89        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -464,6 +464,13 @@ typedef enum {
 	RX_AUDIO_MODE_RIGHT,
 } RX_AUDIO_MODE;
 
+// FFT Automatic type
+typedef enum {
+	FFT_AUTOMATIC_NONE,
+	FFT_AUTOMATIC_HALF,
+	FFT_AUTOMATIC_FULL,
+} FFT_AUTOMATIC_TYPE;
+
 // ANT select
 typedef enum {
 	TRX_ANT_1,
@@ -717,6 +724,7 @@ extern struct TRX_SETTINGS {
 	TRX_INPUT_TYPE InputType_DIGI;
 	CW_PTT_TYPE CW_PTT_Type;
 	ENC2_FUNC_MODE ENC2_func_mode;
+	FFT_AUTOMATIC_TYPE FFT_Automatic_Type;
 #if HRDW_HAS_DUAL_RX
 	DUAL_RX_TYPE Dual_RX_Type;
 #endif
@@ -775,7 +783,6 @@ extern struct TRX_SETTINGS {
 	bool CW_Invert;
 	bool FFT_Enabled;
 	bool WTF_Moving;
-	bool FFT_Automatic;
 	bool FFT_Compressor;
 	bool FFT_dBmGrid;
 	bool FFT_Background;
