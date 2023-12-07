@@ -238,7 +238,7 @@ void WIFI_Process(void) {
 			strcat(com, "AT+CWJAP_CUR=\"");
 			strcat(com, WIFI.AP_1);
 			strcat(com, "\",\"");
-			strcat(com, WIFI.Password_1);
+			strcat(com, trim(WIFI.Password_1));
 			strcat(com, "\"\r\n");
 			WIFI_SendCommand(com); // connect to AP
 			// WIFI_WaitForOk();
@@ -250,7 +250,7 @@ void WIFI_Process(void) {
 			strcat(com, "AT+CWJAP_CUR=\"");
 			strcat(com, WIFI.AP_2);
 			strcat(com, "\",\"");
-			strcat(com, WIFI.Password_2);
+			strcat(com, trim(WIFI.Password_2));
 			strcat(com, "\"\r\n");
 			WIFI_SendCommand(com); // connect to AP
 			// WIFI_WaitForOk();
@@ -262,7 +262,7 @@ void WIFI_Process(void) {
 			strcat(com, "AT+CWJAP_CUR=\"");
 			strcat(com, WIFI.AP_3);
 			strcat(com, "\",\"");
-			strcat(com, WIFI.Password_3);
+			strcat(com, trim(WIFI.Password_3));
 			strcat(com, "\"\r\n");
 			WIFI_SendCommand(com); // connect to AP
 			// WIFI_WaitForOk();

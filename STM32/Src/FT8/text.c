@@ -3,31 +3,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-const char *trim_front(const char *str) {
-	// Skip leading whitespace
-	while (*str == ' ') {
-		str++;
-	}
-	return str;
-}
-
-void trim_back(char *str) {
-	// Skip trailing whitespace by replacing it with '\0' characters
-	int idx = strlen(str) - 1;
-	while (idx >= 0 && str[idx] == ' ') {
-		str[idx--] = '\0';
-	}
-}
-
-// 1) trims a string from the back by changing whitespaces to '\0'
-// 2) trims a string from the front by skipping whitespaces
-char *trim(char *str) {
-	str = (char *)trim_front(str);
-	trim_back(str);
-	// return a pointer to the first non-whitespace character
-	return str;
-}
-
 char to_upper(char c) { return (c >= 'a' && c <= 'z') ? (c - 'a' + 'A') : c; }
 
 bool is_digit(char c) { return (c >= '0') && (c <= '9'); }

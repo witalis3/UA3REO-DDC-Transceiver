@@ -1256,3 +1256,23 @@ void getLocalDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime) {
 	// println("Local Date: ", sDate->Year, "-", sDate->Month, "-", sDate->Date);
 	// println("Local Time: ", sTime->Hours, "-", sTime->Minutes, "-", sTime->Seconds);
 }
+
+const char *trim_front(const char *str) {
+	while (*str == ' ') {
+		str++;
+	}
+	return str;
+}
+
+static void trim_back(char *str) {
+	int idx = strlen(str) - 1;
+	while (idx >= 0 && str[idx] == ' ') {
+		str[idx--] = '\0';
+	}
+}
+
+char *trim(char *str) {
+	str = (char *)trim_front(str);
+	trim_back(str);
+	return str;
+}

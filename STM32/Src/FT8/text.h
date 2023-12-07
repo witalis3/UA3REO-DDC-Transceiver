@@ -1,13 +1,10 @@
 #ifndef TEXT_H_
 #define TEXT_H_
 
+#include "functions.h"
 #include <stdbool.h>
 
 // Utility functions for characters and strings
-
-const char *trim_front(const char *str);
-void trim_back(char *str);
-char *trim(char *str);
 
 char to_upper(char c);
 bool is_digit(char c);
