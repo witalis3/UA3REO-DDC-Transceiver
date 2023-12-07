@@ -575,7 +575,7 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void) {
 
 void SDCOMM_FLASH_BIN_handler(void) {
 	if (f_open(&File, (TCHAR *)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK) {
-		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
+		dma_memset(SD_workbuffer_B, 0x00, sizeof(SD_workbuffer_B));
 		println("[FLASH] File Opened");
 		TRX.Mute = true;
 		CODEC_CleanBuffer();
@@ -620,28 +620,33 @@ void SDCOMM_FLASH_BIN_handler(void) {
 		uint32_t LastPGAddress = 0x08100000;    // second bank
 		const uint32_t flash_word_size = 8 * 4; // 8x 32bits words
 		while (read_flag == true) {
-			if (f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesreaded) != FR_OK) {
+			if (f_read(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&bytesreaded) != FR_OK) {
 				LCD_showInfo("File read error", true);
 				return;
 			}
 
 			if (bytesreaded > 0) {
-				for (uint32_t block_addr = 0; block_addr < bytesreaded; block_addr += flash_word_size) {
+				for (int32_t block_addr = 0; block_addr < bytesreaded; block_addr += flash_word_size) {
 					// println("[FLASH] Programming: ", LastPGAddress);
 					// print_flush();
-					uint8_t res = HAL_FLASH_Program(0, LastPGAddress, (uint32_t)&SD_workbuffer_A[block_addr]);
+
+					uint8_t res = HAL_FLASH_Program(0, LastPGAddress, (uint32_t)&SD_workbuffer_B[block_addr]);
 					if (res != HAL_OK) {
 						LCD_showInfo("Flashing error", true);
-						// println("[FLASH] Flashing error: ", res, " ", HAL_FLASH_GetError());
-						return;
+						println("[FLASH] Flashing error: ", res, " ", HAL_FLASH_GetError());
+						print_flush();
+						block_addr -= flash_word_size; // retry
+						LCD_showInfo("Programming...", false);
+						continue;
 					}
 
-					// Check the written value
-					// if (*(uint32_t *)LastPGAddress != *(uint32_t *)(SD_workbuffer_A + block_addr))
-					//{
-					// LCD_showInfo("Flash Verify error", true);
-					// return;
-					//}
+					// Check the first written value
+					if (*(uint32_t *)LastPGAddress != *(uint32_t *)(SD_workbuffer_B + block_addr)) {
+						LCD_showInfo("Flash Verify error", true);
+						block_addr -= flash_word_size; // retry
+						LCD_showInfo("Programming...", false);
+						continue;
+					}
 
 					// println("[FLASH] Block flashed: ", LastPGAddress);
 					// print_flush();
@@ -649,8 +654,8 @@ void SDCOMM_FLASH_BIN_handler(void) {
 					LastPGAddress += flash_word_size;
 				}
 
-				println("[FLASH] Flashed: ", LastPGAddress);
-				print_flush();
+				// println("[FLASH] Flashed: ", LastPGAddress);
+				// print_flush();
 			} else {
 				read_flag = false;
 			}

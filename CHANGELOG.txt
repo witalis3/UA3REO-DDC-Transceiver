@@ -3,6 +3,7 @@
 +STM32: Улучшена поддержка некоторых видов SD карт, Tnx UN7LAS
 +STM32: Обновлены параметры "Repeater offset, kHz" по умолчанию, Tnx SP7MFR
 +STM32: Уменьшен уровень передачи записанного WAV файла, Tnx UZ5DM
++STM32: Доработки процесса OTA и прошивки с SD, Tnx RV9CT, SQ7BCN
 +STM32: Устранение ошибок, Tnx SP7MFR, R4HID
 
 ----Version 9.1.0----
