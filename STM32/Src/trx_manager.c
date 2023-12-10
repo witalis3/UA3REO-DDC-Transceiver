@@ -1167,7 +1167,6 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		LCD_UpdateQuery.StatusInfoBarRedraw = true;
 	} else {
 		bool air_step = false;
-		bool has_enc2_multiplier = true;
 		step = TRX.FRQ_STEP_SSB_Hz;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
 			step = (float64_t)TRX.FRQ_STEP_CW_Hz;
@@ -1177,23 +1176,20 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		}
 		if (CurrentVFO->Mode == TRX_MODE_WFM) {
 			step = (float64_t)TRX.FRQ_STEP_WFM_Hz;
-			has_enc2_multiplier = false;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_NFM) {
 			step = (float64_t)TRX.FRQ_STEP_FM_Hz;
-			has_enc2_multiplier = false;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 			step = (float64_t)TRX.FRQ_STEP_AM_Hz;
 			air_step = step == 8333;
-			has_enc2_multiplier = false;
 		}
 
 		if (TRX.Fast) {
 			step *= (float64_t)TRX.FAST_STEP_Multiplier;
 		}
 
-		if (secondary_encoder && has_enc2_multiplier) {
+		if (secondary_encoder) {
 			step *= (float64_t)TRX.ENC2_STEP_Multiplier;
 		}
 
