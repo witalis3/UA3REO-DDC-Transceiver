@@ -1,4 +1,5 @@
 ----Version 9.2.0----
++HARDW: Wolf-2: Обновлена плата УКВ, Автор RU4PN
 +STM32: Долгое нажатие на водопад переключает режимы Free Tune / Center Tune. Автор BD6MM
 +STM32: Улучшена поддержка некоторых видов SD карт, Tnx UN7LAS
 +STM32: Обновлены параметры "Repeater offset, kHz" по умолчанию, Tnx SP7MFR
