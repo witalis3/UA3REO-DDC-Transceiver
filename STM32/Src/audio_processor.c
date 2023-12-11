@@ -1948,7 +1948,7 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm, float32_t dBm) {
 	demod_fm_instance *DFM = &DFM_RX1;
 	bool sql_enabled = CurrentVFO->SQL;
-	int8_t FM_SQL_threshold_dBm = CurrentVFO->FM_SQL_threshold_dBm;
+	int16_t FM_SQL_threshold_dBm = CurrentVFO->FM_SQL_threshold_dBm;
 	const arm_biquad_cascade_df2T_instance_f32 *SFM_Pilot_Filter = &SFM_RX1_Pilot_Filter;
 	const arm_biquad_cascade_df2T_instance_f32 *SFM_Audio_Filter = &SFM_RX1_Audio_Filter;
 

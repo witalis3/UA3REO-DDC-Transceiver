@@ -802,9 +802,9 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 #endif
     {"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SQL_shadow, SYSMENU_HANDL_RX_Squelch},
 #ifdef LAY_320x240
-    {"FM Squelch level", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
+    {"FM Squelch level", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
 #else
-    {"FM Squelch level, dBm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
+    {"FM Squelch level, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
 #endif
     {"Free tune", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FREE_Tune, SYSMENU_HANDL_RX_FREE_Tune},
     {"Noise blanker 1", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER1, SYSMENU_HANDL_RX_NOISE_BLANKER1},
@@ -3005,6 +3005,13 @@ static void SYSMENU_HANDL_RX_AGC_Hold_Step_Down(int8_t direction) {
 
 static void SYSMENU_HANDL_RX_FMSquelch(int8_t direction) {
 	CurrentVFO->FM_SQL_threshold_dBm += direction;
+	if (CurrentVFO->FM_SQL_threshold_dBm < -150) {
+		CurrentVFO->FM_SQL_threshold_dBm = -150;
+	}
+	if (CurrentVFO->FM_SQL_threshold_dBm > 100) {
+		CurrentVFO->FM_SQL_threshold_dBm = 100;
+	}
+
 	TRX.FM_SQL_threshold_dBm_shadow = CurrentVFO->FM_SQL_threshold_dBm;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);

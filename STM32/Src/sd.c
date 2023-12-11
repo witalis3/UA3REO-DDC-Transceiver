@@ -980,7 +980,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR_Type", (uint64_t *)&TRX.VFO_A.DNR_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint64_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SQL", (uint64_t *)&TRX.VFO_A.SQL, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold_dBm", (uint64_t *)&TRX.VFO_A.FM_SQL_threshold_dBm, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold_dBm", (uint64_t *)&TRX.VFO_A.FM_SQL_threshold_dBm, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.RepeaterMode", (uint64_t *)&TRX.VFO_A.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.CW_LPF_Filter", (uint64_t *)&TRX.VFO_A.CW_LPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.DIGI_LPF_Filter", (uint64_t *)&TRX.VFO_A.DIGI_LPF_Filter, SYSMENU_UINT16);
@@ -1006,7 +1006,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VFO_B.DNR_Type", (uint64_t *)&TRX.VFO_B.DNR_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.AGC", (uint64_t *)&TRX.VFO_B.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.SQL", (uint64_t *)&TRX.VFO_B.SQL, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold_dBm", (uint64_t *)&TRX.VFO_B.FM_SQL_threshold_dBm, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold_dBm", (uint64_t *)&TRX.VFO_B.FM_SQL_threshold_dBm, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.RepeaterMode", (uint64_t *)&TRX.VFO_B.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.CW_LPF_Filter", (uint64_t *)&TRX.VFO_B.CW_LPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.DIGI_LPF_Filter", (uint64_t *)&TRX.VFO_B.DIGI_LPF_Filter, SYSMENU_UINT16);
@@ -1306,7 +1306,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SQL", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].SQL, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dBm", i);
-				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm, SYSMENU_INT8);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm, SYSMENU_INT16);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Fast", i);
@@ -1634,7 +1634,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		TRX.VFO_A.SQL = bval;
 	}
 	if (strcmp(name, "TRX.VFO_A.FM_SQL_threshold_dBm") == 0) {
-		TRX.VFO_A.FM_SQL_threshold_dBm = (int8_t)intval;
+		TRX.VFO_A.FM_SQL_threshold_dBm = (int16_t)intval;
 	}
 	if (strcmp(name, "TRX.VFO_A.CW_LPF_Filter") == 0) {
 		TRX.VFO_A.CW_LPF_Filter = (uint16_t)uintval;
@@ -1712,7 +1712,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		TRX.VFO_B.SQL = bval;
 	}
 	if (strcmp(name, "TRX.VFO_B.FM_SQL_threshold_dBm") == 0) {
-		TRX.VFO_B.FM_SQL_threshold_dBm = (int8_t)intval;
+		TRX.VFO_B.FM_SQL_threshold_dBm = (int16_t)intval;
 	}
 	if (strcmp(name, "TRX.VFO_B.CW_LPF_Filter") == 0) {
 		TRX.VFO_B.CW_LPF_Filter = (uint16_t)uintval;
@@ -3212,7 +3212,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		}
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dBm", i);
 		if (strcmp(name, buff) == 0) {
-			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm = (int8_t)intval;
+			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm = (int16_t)intval;
 		}
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 		if (strcmp(name, buff) == 0) {

@@ -16,7 +16,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 144        // Settings config version
+#define SETT_VERSION 145        // Settings config version
 #define CALIB_VERSION 89        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -491,7 +491,7 @@ typedef struct {
 	uint16_t VFO_B_SSB_LPF_RX_Filter;
 	uint16_t VFO_B_AM_LPF_RX_Filter;
 	uint16_t VFO_B_FM_LPF_RX_Filter;
-	int8_t FM_SQL_threshold_dBm;
+	int16_t FM_SQL_threshold_dBm;
 	uint8_t ANT_RX;
 	uint8_t ANT_TX;
 	uint8_t Mode;
@@ -546,7 +546,7 @@ typedef struct {
 	uint16_t FM_LPF_TX_Filter;
 	uint16_t FM_HPF_RX_Filter;
 	uint16_t NotchFC;
-	int8_t FM_SQL_threshold_dBm;
+	int16_t FM_SQL_threshold_dBm;
 	uint8_t DNR_Type; // 0-disabled 1-dnr 2-dnr2
 	TRX_MODE Mode;
 	bool ManualNotchFilter;
@@ -588,6 +588,7 @@ extern struct TRX_SETTINGS {
 	int16_t SPEC_TopDBM;
 	int16_t SPEC_BottomDBM;
 	int16_t WSPR_FREQ_OFFSET;
+	int16_t FM_SQL_threshold_dBm_shadow;
 
 	uint16_t RIT_INTERVAL;
 	uint16_t XIT_INTERVAL;
@@ -649,7 +650,6 @@ extern struct TRX_SETTINGS {
 	int8_t VOX_THRESHOLD;
 	int8_t FFT_FreqGrid;
 	int8_t Dual_RX_AB_Balance;
-	int8_t FM_SQL_threshold_dBm_shadow;
 
 	uint8_t ATT_STEP;
 	uint8_t RF_Gain;
