@@ -631,11 +631,13 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 			TRX_LoadRFGain_Data(CurrentVFO->Mode, bandFromFreq);
 		}
 	}
-	if (TRX.BandMapEnabled && !TRX_Temporary_Stop_BandMap && bandFromFreq >= 0) {
+	if (TRX.BandMapEnabled && !TRX_Temporary_Stop_BandMap) {
 		uint_fast8_t mode_from_bandmap = getModeFromFreq(vfo->Freq);
 		if (vfo->Mode != mode_from_bandmap) {
 			TRX_setMode(mode_from_bandmap, vfo);
-			TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Mode = mode_from_bandmap;
+			if (bandFromFreq >= 0) {
+				TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Mode = mode_from_bandmap;
+			}
 			LCD_UpdateQuery.TopButtons = true;
 		}
 	}
