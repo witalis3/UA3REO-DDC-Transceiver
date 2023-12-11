@@ -299,6 +299,9 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	bool VHF_RXB = band == BANDID_2m || band == BANDID_23cm;
 	bool VHF_RXC = band == BANDID_FM || wideband;
 
+	// Tuner
+	bool TUNER_Enabled = TRX.TUNER_Enabled && CurrentVFO->RXFreqAfterTransverters < 60000000;
+
 	// Shift array
 #define SHIFT_ARRAY_SIZE 64
 	bool shift_array[SHIFT_ARRAY_SIZE];
@@ -322,14 +325,14 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	shift_array[49] = !(TRX.ATT && att_val_16);                                                                             // U20	VHF_ATT16
 	shift_array[48] = false;                                                                                                // U20	FAN (code in bottom)
 
-	shift_array[47] = currentAnt == TRX_ANT_2;        // U21 STPIC6C595TTR	ANT
-	shift_array[46] = TRX.TUNER_Enabled && TRX.ATU_T; // U21	TUNE T
-	shift_array[45] = false;                          // U21	Reserved
-	shift_array[44] = false;                          // U21	Reserved
-	shift_array[43] = false;                          // U21	Reserved
-	shift_array[42] = false;                          // U21	Reserved
-	shift_array[41] = false;                          // U21	Reserved
-	shift_array[40] = false;                          // U21	Reserved
+	shift_array[47] = currentAnt == TRX_ANT_2;    // U21 STPIC6C595TTR	ANT
+	shift_array[46] = TUNER_Enabled && TRX.ATU_T; // U21	TUNE T
+	shift_array[45] = false;                      // U21	Reserved
+	shift_array[44] = false;                      // U21	Reserved
+	shift_array[43] = false;                      // U21	Reserved
+	shift_array[42] = false;                      // U21	Reserved
+	shift_array[41] = false;                      // U21	Reserved
+	shift_array[40] = false;                      // U21	Reserved
 
 	shift_array[39] = false;                                              // U23 74HC595	Reserved
 	shift_array[38] = bitRead(band_out, 0);                               // U23	EXT BAND0
@@ -358,23 +361,23 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	shift_array[17] = BPF1_A1;              // U22	BPF1_A1
 	shift_array[16] = BPF1_A0;              // U22	BPF1_A0
 
-	shift_array[15] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3); // Tuner_U1 TUN_L4
-	shift_array[14] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4); // Tuner_U1	TUN_L5
-	shift_array[13] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 5); // Tuner_U1	TUN_L6
-	shift_array[12] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 6); // Tuner_U1	TUN_L7
-	shift_array[11] = false;                                      // Tuner_U1	Reserved
-	shift_array[10] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 2); // Tuner_U1	TUN_L3
-	shift_array[9] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 1);  // Tuner_U1	TUN_L2
-	shift_array[8] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0);  // Tuner_U1	TUN_L1
+	shift_array[15] = TUNER_Enabled && bitRead(TRX.ATU_I, 3); // Tuner_U1 TUN_L4
+	shift_array[14] = TUNER_Enabled && bitRead(TRX.ATU_I, 4); // Tuner_U1	TUN_L5
+	shift_array[13] = TUNER_Enabled && bitRead(TRX.ATU_I, 5); // Tuner_U1	TUN_L6
+	shift_array[12] = TUNER_Enabled && bitRead(TRX.ATU_I, 6); // Tuner_U1	TUN_L7
+	shift_array[11] = false;                                  // Tuner_U1	Reserved
+	shift_array[10] = TUNER_Enabled && bitRead(TRX.ATU_I, 2); // Tuner_U1	TUN_L3
+	shift_array[9] = TUNER_Enabled && bitRead(TRX.ATU_I, 1);  // Tuner_U1	TUN_L2
+	shift_array[8] = TUNER_Enabled && bitRead(TRX.ATU_I, 0);  // Tuner_U1	TUN_L1
 
-	shift_array[7] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3); // Tuner_U2 TUN_С4
-	shift_array[6] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2); // Tuner_U2	TUN_С3
-	shift_array[5] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1); // Tuner_U2	TUN_С2
-	shift_array[4] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0); // Tuner_U2	TUN_С1
-	shift_array[3] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4); // Tuner_U2	TUN_С5
-	shift_array[2] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 5); // Tuner_U2	TUN_С6
-	shift_array[1] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 6); // Tuner_U2	TUN_С7
-	shift_array[0] = false;                                      // Tuner_U2	Reserved
+	shift_array[7] = TUNER_Enabled && bitRead(TRX.ATU_C, 3); // Tuner_U2 TUN_С4
+	shift_array[6] = TUNER_Enabled && bitRead(TRX.ATU_C, 2); // Tuner_U2	TUN_С3
+	shift_array[5] = TUNER_Enabled && bitRead(TRX.ATU_C, 1); // Tuner_U2	TUN_С2
+	shift_array[4] = TUNER_Enabled && bitRead(TRX.ATU_C, 0); // Tuner_U2	TUN_С1
+	shift_array[3] = TUNER_Enabled && bitRead(TRX.ATU_C, 4); // Tuner_U2	TUN_С5
+	shift_array[2] = TUNER_Enabled && bitRead(TRX.ATU_C, 5); // Tuner_U2	TUN_С6
+	shift_array[1] = TUNER_Enabled && bitRead(TRX.ATU_C, 6); // Tuner_U2	TUN_С7
+	shift_array[0] = false;                                  // Tuner_U2	Reserved
 
 	static bool fan_pwm = false;
 	if (FAN_Active && TRX_RF_Temperature <= CALIBRATE.FAN_MEDIUM_STOP) { // Temperature at which the fan stops
