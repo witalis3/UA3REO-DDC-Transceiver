@@ -337,7 +337,7 @@ static void LCD_displayBottomButtons(bool redraw) {
 	const uint16_t bottomNavigationButtonsWidth = 48;
 	uint16_t curr_x = 0;
 
-	if (TRX.EnableBottomNavigationButtons) {
+	if (TRX.EnableBottomNavigationButtons && FUNCBUTTONS_ON_PAGE != 9) {
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<", false, false, false, 0, BUTTONHANDLER_LEFT_ARR,
 		            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND,
 		            LAYOUT->TOPBUTTONS_FONT);
@@ -367,6 +367,13 @@ static void LCD_displayBottomButtons(bool redraw) {
 			width += 1;
 		}
 
+		if (TRX.EnableBottomNavigationButtons && FUNCBUTTONS_ON_PAGE == 9 && i == 4) {
+			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<", false, false, false, 0, BUTTONHANDLER_LEFT_ARR,
+			            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND,
+			            LAYOUT->TOPBUTTONS_FONT);
+			curr_x += bottomNavigationButtonsWidth;
+		}
+
 		if (!dummyButton) {
 			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, width, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, (char *)PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].name,
 			            enabled, false, false, PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[menuPosition]].parameter,
@@ -377,9 +384,16 @@ static void LCD_displayBottomButtons(bool redraw) {
 			            COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
 		}
 		curr_x += width;
+
+		if (TRX.EnableBottomNavigationButtons && FUNCBUTTONS_ON_PAGE == 9 && i == 4) {
+			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, ">", false, false, false, 0, BUTTONHANDLER_RIGHT_ARR,
+			            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND,
+			            LAYOUT->TOPBUTTONS_FONT);
+			curr_x += bottomNavigationButtonsWidth;
+		}
 	}
 
-	if (TRX.EnableBottomNavigationButtons) {
+	if (TRX.EnableBottomNavigationButtons && FUNCBUTTONS_ON_PAGE != 9) {
 		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, ">", false, false, false, 0, BUTTONHANDLER_RIGHT_ARR,
 		            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND,
 		            LAYOUT->TOPBUTTONS_FONT);
