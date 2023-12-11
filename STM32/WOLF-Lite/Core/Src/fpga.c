@@ -490,26 +490,26 @@ static inline void FPGA_fpgadata_sendparam(void) {
 		BPF_OE2 = true;  // BPF_OE2
 	}
 
-	if (CurrentVFO->Freq >= 100000 && CurrentVFO->Freq < 2400000) // 160m      
+	if (CurrentVFO->Freq >= 100000 && CurrentVFO->Freq < 2400000) // 160m
 	{
-		LPF_1 = false;                                                       
-		LPF_2 = false;                                                       
-		LPF_3 = false;                                                       
+		LPF_1 = false;
+		LPF_2 = false;
+		LPF_3 = false;
 	} else if (CurrentVFO->Freq >= 2400000 && CurrentVFO->Freq < 4500000) // 80m
 	{
-		LPF_1 = true;                                                        
-		LPF_2 = false;                                                       
-		LPF_3 = false;                                                       
+		LPF_1 = true;
+		LPF_2 = false;
+		LPF_3 = false;
 	} else if (CurrentVFO->Freq >= 4500000 && CurrentVFO->Freq < 7500000) // 40m
 	{
-		LPF_1 = false;                                                        
-		LPF_2 = true;                                                         
-		LPF_3 = false;                                                        
+		LPF_1 = false;
+		LPF_2 = true;
+		LPF_3 = false;
 	} else if (CurrentVFO->Freq >= 7500000 && CurrentVFO->Freq < 15000000) // 30m,20m
 	{
-		LPF_1 = true;                          
-		LPF_2 = true;                          
-		LPF_3 = false;                         
+		LPF_1 = true;
+		LPF_2 = true;
+		LPF_3 = false;
 	} else if (CurrentVFO->Freq >= 15000000 && CurrentVFO->Freq < 32000000) // 17,15,12,10m
 	{
 		LPF_1 = false;
