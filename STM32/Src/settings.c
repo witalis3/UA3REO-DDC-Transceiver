@@ -180,9 +180,9 @@ void LoadSettings(bool clear) {
 		TRX.FRQ_STEP_CW_Hz = 2;             // frequency tuning step CW
 		TRX.FRQ_STEP_SSB_Hz = 10;           // frequency tuning step SSB
 		TRX.FRQ_STEP_DIGI_Hz = 10;          // frequency tuning step DIGI
-		TRX.FRQ_STEP_AM_Hz = 1000;          // frequency tuning step AM
-		TRX.FRQ_STEP_FM_Hz = 1000;          // frequency tuning step FM
-		TRX.FRQ_STEP_WFM_Hz = 10000;        // frequency tuning step WFM
+		TRX.FRQ_STEP_AM_Hz = 20;            // frequency tuning step AM
+		TRX.FRQ_STEP_FM_Hz = 25;            // frequency tuning step FM
+		TRX.FRQ_STEP_WFM_Hz = 1000;         // frequency tuning step WFM
 		TRX.FAST_STEP_Multiplier = 10;      // Multiplier for FAST mode
 		TRX.ENC2_STEP_Multiplier = 50;      // Multiplier for ENC2 rotate
 		TRX.NOTCH_STEP_Hz = 50;             // Manual NOTCH tuning step
@@ -229,7 +229,7 @@ void LoadSettings(bool clear) {
 		TRX.Split_Mode_Sync_Freq = false;          // enable VFO freq syncronization in SPLIT mode
 		TRX.FT8_Auto_CQ = false;                   // Auto-CQ mode for FT8
 		TRX.DXCluster_Type = DX_CLUSTER_DX_SUMMIT; // DX cluster type
-		TRX.REPEATER_Offset = 600;                 // repeater mode custom offset
+		TRX.REPEATER_Offset = -600;                // repeater mode custom offset
 		TRX.WOLF_Cluster = true;                   // Enable WOLF cluster
 		TRX.FREE_Tune = false;                     // Enable free tune on spectrum bandwidth
 		// AUDIO
@@ -363,13 +363,13 @@ void LoadSettings(bool clear) {
 		TRX.FFT_Zoom = 1;   // approximation of the FFT spectrum
 		TRX.FFT_ZoomCW = 8; // zoomfft for cw mode
 #endif
-		TRX.LCD_Brightness = 60;  // LCD Brightness
-		TRX.LCD_SleepTimeout = 0; // LCD Sleep Timeout berfore idle
-		TRX.WTF_Moving = true;    // move WTF with frequency encoder
-		TRX.FFT_Automatic = true; // Automatic FFT Scale
-		TRX.FFT_Sensitivity = 8;  // Threshold of FFT autocalibrate
-		TRX.FFT_Speed = 3;        // FFT Speed
-		TRX.FFT_Averaging = 10;   // averaging the FFT to make it smoother
+		TRX.LCD_Brightness = 60;                     // LCD Brightness
+		TRX.LCD_SleepTimeout = 0;                    // LCD Sleep Timeout berfore idle
+		TRX.WTF_Moving = true;                       // move WTF with frequency encoder
+		TRX.FFT_Automatic_Type = FFT_AUTOMATIC_FULL; // Automatic FFT Scale type
+		TRX.FFT_Sensitivity = 8;                     // Threshold of FFT autocalibrate
+		TRX.FFT_Speed = 3;                           // FFT Speed
+		TRX.FFT_Averaging = 10;                      // averaging the FFT to make it smoother
 #ifdef STM32F407xx
 		TRX.FFT_Averaging = 6;
 #endif

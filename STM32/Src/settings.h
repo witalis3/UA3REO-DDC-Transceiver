@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "9.1.0" // current STM32 version
+#define STM32_VERSION_STR "9.2.0" // current STM32 version
 
 #if defined(FRONTPANEL_LITE)
 #define FPGA_VERSION_STR "8.0.0" // needed FPGA version Wolf-Lite
@@ -16,7 +16,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 143        // Settings config version
+#define SETT_VERSION 145        // Settings config version
 #define CALIB_VERSION 89        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -464,6 +464,13 @@ typedef enum {
 	RX_AUDIO_MODE_RIGHT,
 } RX_AUDIO_MODE;
 
+// FFT Automatic type
+typedef enum {
+	FFT_AUTOMATIC_NONE,
+	FFT_AUTOMATIC_HALF,
+	FFT_AUTOMATIC_FULL,
+} FFT_AUTOMATIC_TYPE;
+
 // ANT select
 typedef enum {
 	TRX_ANT_1,
@@ -484,7 +491,7 @@ typedef struct {
 	uint16_t VFO_B_SSB_LPF_RX_Filter;
 	uint16_t VFO_B_AM_LPF_RX_Filter;
 	uint16_t VFO_B_FM_LPF_RX_Filter;
-	int8_t FM_SQL_threshold_dBm;
+	int16_t FM_SQL_threshold_dBm;
 	uint8_t ANT_RX;
 	uint8_t ANT_TX;
 	uint8_t Mode;
@@ -539,7 +546,7 @@ typedef struct {
 	uint16_t FM_LPF_TX_Filter;
 	uint16_t FM_HPF_RX_Filter;
 	uint16_t NotchFC;
-	int8_t FM_SQL_threshold_dBm;
+	int16_t FM_SQL_threshold_dBm;
 	uint8_t DNR_Type; // 0-disabled 1-dnr 2-dnr2
 	TRX_MODE Mode;
 	bool ManualNotchFilter;
@@ -581,6 +588,7 @@ extern struct TRX_SETTINGS {
 	int16_t SPEC_TopDBM;
 	int16_t SPEC_BottomDBM;
 	int16_t WSPR_FREQ_OFFSET;
+	int16_t FM_SQL_threshold_dBm_shadow;
 
 	uint16_t RIT_INTERVAL;
 	uint16_t XIT_INTERVAL;
@@ -642,7 +650,6 @@ extern struct TRX_SETTINGS {
 	int8_t VOX_THRESHOLD;
 	int8_t FFT_FreqGrid;
 	int8_t Dual_RX_AB_Balance;
-	int8_t FM_SQL_threshold_dBm_shadow;
 
 	uint8_t ATT_STEP;
 	uint8_t RF_Gain;
@@ -717,6 +724,7 @@ extern struct TRX_SETTINGS {
 	TRX_INPUT_TYPE InputType_DIGI;
 	CW_PTT_TYPE CW_PTT_Type;
 	ENC2_FUNC_MODE ENC2_func_mode;
+	FFT_AUTOMATIC_TYPE FFT_Automatic_Type;
 #if HRDW_HAS_DUAL_RX
 	DUAL_RX_TYPE Dual_RX_Type;
 #endif
@@ -775,7 +783,6 @@ extern struct TRX_SETTINGS {
 	bool CW_Invert;
 	bool FFT_Enabled;
 	bool WTF_Moving;
-	bool FFT_Automatic;
 	bool FFT_Compressor;
 	bool FFT_dBmGrid;
 	bool FFT_Background;

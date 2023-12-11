@@ -32,7 +32,7 @@ static void FRONTPANEL_ENC3SW_click_handler(uint32_t parameter);
 static void FRONTPANEL_ENC3SW_hold_handler(uint32_t parameter);
 static void FRONTPANEL_ENC4SW_click_handler(uint32_t parameter);
 static void FRONTPANEL_ENC4SW_hold_handler(uint32_t parameter);
-static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count);
+static int32_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count);
 
 PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     // buttons
@@ -206,7 +206,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .channel = 2,
      .type = FUNIT_CTRL_BUTTON,
      .tres_min = 729,
-     .tres_max = 822,
+     .tres_max = 800,
      .state = false,
      .prev_state = false,
      .work_in_menu = true,
@@ -216,7 +216,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     {.port = 1,
      .channel = 2,
      .type = FUNIT_CTRL_BUTTON,
-     .tres_min = 822,
+     .tres_min = 800,
      .tres_max = 884,
      .state = false,
      .prev_state = false,
@@ -312,7 +312,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
      .channel = 6,
      .type = FUNIT_CTRL_BUTTON,
      .tres_min = 729,
-     .tres_max = 822,
+     .tres_max = 800,
      .state = false,
      .prev_state = false,
      .work_in_menu = true,
@@ -322,7 +322,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     {.port = 1,
      .channel = 6,
      .type = FUNIT_CTRL_BUTTON,
-     .tres_min = 822,
+     .tres_min = 800,
      .tres_max = 884,
      .state = false,
      .prev_state = false,
@@ -433,7 +433,7 @@ PERIPH_FrontPanel_Button PERIPH_FrontPanel_Buttons[] = {
     {.port = 1,
      .channel = 7,
      .type = FUNIT_CTRL_BUTTON,
-     .tres_min = 822,
+     .tres_min = 800,
      .tres_max = 884,
      .state = false,
      .prev_state = false,
@@ -1036,7 +1036,7 @@ void FRONTPANEL_ENC2SW_validate() {
 
 void FRONTPANEL_Init(void) {
 #ifdef HRDW_MCP3008_1
-	uint16_t test_value = FRONTPANEL_ReadMCP3008_Value(0, 1, 1);
+	int32_t test_value = FRONTPANEL_ReadMCP3008_Value(0, 1, 1);
 	if (test_value == 65535) {
 		FRONTPanel_MCP3008_1_Enabled = false;
 		println("[ERR] Frontpanel MCP3008 - 1 not found, disabling... (FPGA SPI/I2S CLOCK ERROR?)");
@@ -1077,7 +1077,7 @@ void FRONTPANEL_Process(void) {
 
 	static uint32_t fu_debug_lasttime = 0;
 	uint16_t buttons_count = sizeof(PERIPH_FrontPanel_Buttons) / sizeof(PERIPH_FrontPanel_Button);
-	uint32_t mcp3008_value = 0;
+	int32_t mcp3008_value = 0;
 
 	// process buttons
 	for (uint16_t b = 0; b < buttons_count; b++) {
@@ -1097,6 +1097,10 @@ void FRONTPANEL_Process(void) {
 #ifdef HRDW_MCP3008_1
 		if (button->port == 1) {
 			mcp3008_value = FRONTPANEL_ReadMCP3008_Value(button->channel, 1, 5);
+			if (mcp3008_value < 0) {
+				// println("Skip");
+				continue;
+			}
 		} else
 #endif
 			continue;
@@ -1271,16 +1275,14 @@ void FRONTPANEL_CheckButton(PERIPH_FrontPanel_Button *button, uint16_t mcp3008_v
 	}
 }
 
-static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count) {
+static int32_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, uint8_t count) {
 	HRDW_SPI_Locked = true;
 
 	uint8_t outData[3] = {0};
 	uint8_t inData[3] = {0};
 	uint32_t mcp3008_value = 0;
 
-	const uint8_t max_signal_diff = 30;
-	const uint8_t max_retry = 3;
-	uint8_t retry = 0;
+	const uint8_t max_signal_diff = 10;
 	uint32_t value_first = 0;
 
 	for (uint8_t i = 0; i < count; i++) {
@@ -1302,11 +1304,10 @@ static uint16_t FRONTPANEL_ReadMCP3008_Value(uint8_t channel, uint8_t adc_num, u
 		uint32_t value_now = (uint16_t)(((inData[1] & 0x3F) << 4) | (inData[2] & 0xF0 >> 4));
 		mcp3008_value += value_now;
 
-		if (i > 0 && retry < max_retry && abs((int32_t)value_now - (int32_t)value_first) > max_signal_diff) { // value not stabilized, reload
-			retry++;
-			i = 0;
-			mcp3008_value = 0;
-			// println(retry, " ", (int32_t)value_now - (int32_t)value_first);
+		if (i > 0 && abs((int32_t)value_now - (int32_t)value_first) > max_signal_diff) { // value not stabilized, reload
+			// println(abs((int32_t)value_now - (int32_t)value_first));
+			HRDW_SPI_Locked = false;
+			return -1;
 		}
 		if (i == 0) {
 			value_first = value_now;

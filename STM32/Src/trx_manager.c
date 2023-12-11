@@ -273,7 +273,7 @@ void TRX_ptt_change(void) {
 		TRX_Tune = false;
 	}
 
-	bool notx = TRX_TX_Disabled(CurrentVFO->Freq);
+	bool notx = TRX_TX_Disabled(CurrentVFO->Freq) && !TRX_REPEATER_Applied;
 	if (notx) {
 		TRX_ptt_soft = false;
 		TRX_ptt_hard = false;
@@ -631,11 +631,13 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 			TRX_LoadRFGain_Data(CurrentVFO->Mode, bandFromFreq);
 		}
 	}
-	if (TRX.BandMapEnabled && !TRX_Temporary_Stop_BandMap && bandFromFreq >= 0) {
+	if (TRX.BandMapEnabled && !TRX_Temporary_Stop_BandMap) {
 		uint_fast8_t mode_from_bandmap = getModeFromFreq(vfo->Freq);
 		if (vfo->Mode != mode_from_bandmap) {
 			TRX_setMode(mode_from_bandmap, vfo);
-			TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Mode = mode_from_bandmap;
+			if (bandFromFreq >= 0) {
+				TRX.BANDS_SAVED_SETTINGS[bandFromFreq].Mode = mode_from_bandmap;
+			}
 			LCD_UpdateQuery.TopButtons = true;
 		}
 	}
@@ -1167,7 +1169,6 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		LCD_UpdateQuery.StatusInfoBarRedraw = true;
 	} else {
 		bool air_step = false;
-		bool has_enc2_multiplier = true;
 		step = TRX.FRQ_STEP_SSB_Hz;
 		if (CurrentVFO->Mode == TRX_MODE_CW) {
 			step = (float64_t)TRX.FRQ_STEP_CW_Hz;
@@ -1177,23 +1178,20 @@ void TRX_DoFrequencyEncoder(float32_t direction, bool secondary_encoder) {
 		}
 		if (CurrentVFO->Mode == TRX_MODE_WFM) {
 			step = (float64_t)TRX.FRQ_STEP_WFM_Hz;
-			has_enc2_multiplier = false;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_NFM) {
 			step = (float64_t)TRX.FRQ_STEP_FM_Hz;
-			has_enc2_multiplier = false;
 		}
 		if (CurrentVFO->Mode == TRX_MODE_AM || CurrentVFO->Mode == TRX_MODE_SAM_STEREO || CurrentVFO->Mode == TRX_MODE_SAM_LSB || CurrentVFO->Mode == TRX_MODE_SAM_USB) {
 			step = (float64_t)TRX.FRQ_STEP_AM_Hz;
 			air_step = step == 8333;
-			has_enc2_multiplier = false;
 		}
 
 		if (TRX.Fast) {
 			step *= (float64_t)TRX.FAST_STEP_Multiplier;
 		}
 
-		if (secondary_encoder && has_enc2_multiplier) {
+		if (secondary_encoder) {
 			step *= (float64_t)TRX.ENC2_STEP_Multiplier;
 		}
 
@@ -2825,4 +2823,12 @@ void BUTTONHANDLER_CW_MACROS(uint32_t parameter) {
 	CW_Process_Macros = true;
 	TRX_ptt_soft = true;
 	CW_key_serial = true;
+}
+
+void BUTTONHANDLER_Free_tune(uint32_t parameter) {
+	// Free Tune or Center
+	TRX.FREE_Tune = !TRX.FREE_Tune;
+	TRX.FREE_Tune ? LCD_showTooltip("Free Tune") : LCD_showTooltip("Center");
+	LCD_UpdateQuery.TopButtons = true;
+	NeedSaveSettings = true;
 }

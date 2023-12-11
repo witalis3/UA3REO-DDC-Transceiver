@@ -201,7 +201,7 @@ static void SYSMENU_HANDL_CW_SetCWMacrosName5(int8_t direction);
 
 static void SYSMENU_HANDL_SCREEN_COLOR_THEME(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction);
-static void SYSMENU_HANDL_SCREEN_FFT_Automatic(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_Automatic_Type(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_Averaging(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_BW_Style(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_FFT_BW_Position(int8_t direction);
@@ -802,9 +802,9 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
 #endif
     {"Squelch", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.SQL_shadow, SYSMENU_HANDL_RX_Squelch},
 #ifdef LAY_320x240
-    {"FM Squelch level", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
+    {"FM Squelch level", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
 #else
-    {"FM Squelch level, dBm", SYSMENU_INT8, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
+    {"FM Squelch level, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
 #endif
     {"Free tune", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FREE_Tune, SYSMENU_HANDL_RX_FREE_Tune},
     {"Noise blanker 1", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER1, SYSMENU_HANDL_RX_NOISE_BLANKER1},
@@ -950,7 +950,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
 #if !defined(FRONTPANEL_LITE)
     {"FFT 3D Mode", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_3D, SYSMENU_HANDL_SCREEN_FFT_3D, (const enumerate_item[3]){"NO", "Lines", "Dots"}},
 #endif
-    {"FFT Automatic", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Automatic, SYSMENU_HANDL_SCREEN_FFT_Automatic},
+    {"FFT Automatic", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.FFT_Automatic_Type, SYSMENU_HANDL_SCREEN_FFT_Automatic_Type, (const enumerate_item[3]){"No", "Half", "Full"}},
     {"FFT Averaging", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.FFT_Averaging, SYSMENU_HANDL_SCREEN_FFT_Averaging},
 #if !defined(FRONTPANEL_LITE)
     {"FFT BW Style", SYSMENU_ENUMR, NULL, (uint32_t *)&TRX.FFT_BW_Style, SYSMENU_HANDL_SCREEN_FFT_BW_Style, (const enumerate_item[4]){"", "Fill", "LowOp", "Line"}},
@@ -1125,7 +1125,7 @@ const static struct sysmenu_item_handler sysmenu_sd_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_sd_export_handlers[] = {
     {"Back", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Back},
-    {"Export Settings", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings1},
+    {"Export Settings 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings1},
     {"Export Settings 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings2},
     {"Export Settings 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportSettings3},
     {"Export Calibration 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ExportCalibrations1},
@@ -1135,7 +1135,7 @@ const static struct sysmenu_item_handler sysmenu_sd_export_handlers[] = {
 
 const static struct sysmenu_item_handler sysmenu_sd_import_handlers[] = {
     {"Back", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_Back},
-    {"Import Settings", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings1},
+    {"Import Settings 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings1},
     {"Import Settings 2", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings2},
     {"Import Settings 3", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportSettings3},
     {"Import Calibration 1", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_SD_ImportCalibrations1},
@@ -1838,7 +1838,7 @@ static void SYSMENU_HANDL_TRX_FRQ_STEP_DIGI_Hz(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_STEP_AM_Hz(int8_t direction) {
-	const float32_t am_freq_steps[] = {100, 250, 500, 1000, 2000, 2500, 5000, 7500, 8333, 10000, 12500, 15000, 17500, 20000, 22500, 25000, 50000, 75000};
+	const float32_t am_freq_steps[] = {1, 2, 5, 10, 15, 20, 25, 50, 100, 250, 500, 1000, 2000, 2500, 5000, 7500, 8333, 10000, 12500, 15000, 17500, 20000, 22500, 25000, 50000, 75000};
 
 	for (uint8_t i = 0; i < ARRLENTH(am_freq_steps); i++) {
 		if (TRX.FRQ_STEP_AM_Hz == am_freq_steps[i]) {
@@ -1863,7 +1863,7 @@ static void SYSMENU_HANDL_TRX_FRQ_STEP_AM_Hz(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_STEP_FM_Hz(int8_t direction) {
-	const float32_t fm_freq_steps[] = {100, 250, 500, 1000, 2000, 2500, 5000, 7500, 10000, 12500, 15000, 17500, 20000, 22500, 25000, 50000, 75000};
+	const float32_t fm_freq_steps[] = {1, 2, 5, 10, 15, 25, 50, 100, 250, 500, 1000, 2000, 2500, 5000, 7500, 10000, 12500, 15000, 17500, 20000, 22500, 25000, 50000, 75000};
 
 	for (uint8_t i = 0; i < ARRLENTH(fm_freq_steps); i++) {
 		if (TRX.FRQ_STEP_FM_Hz == fm_freq_steps[i]) {
@@ -1888,7 +1888,7 @@ static void SYSMENU_HANDL_TRX_FRQ_STEP_FM_Hz(int8_t direction) {
 }
 
 static void SYSMENU_HANDL_TRX_FRQ_STEP_WFM_Hz(int8_t direction) {
-	const uint32_t wfm_freq_steps[] = {1000, 2000, 5000, 10000, 20000, 25000, 50000, 100000, 200000, 500000, 1000000};
+	const uint32_t wfm_freq_steps[] = {1, 2, 5, 10, 15, 25, 50, 100, 250, 500, 1000, 2000, 5000, 10000, 20000, 25000, 50000, 100000, 200000, 500000, 1000000};
 
 	for (uint8_t i = 0; i < ARRLENTH(wfm_freq_steps); i++) {
 		if (TRX.FRQ_STEP_WFM_Hz == wfm_freq_steps[i]) {
@@ -3005,6 +3005,13 @@ static void SYSMENU_HANDL_RX_AGC_Hold_Step_Down(int8_t direction) {
 
 static void SYSMENU_HANDL_RX_FMSquelch(int8_t direction) {
 	CurrentVFO->FM_SQL_threshold_dBm += direction;
+	if (CurrentVFO->FM_SQL_threshold_dBm < -150) {
+		CurrentVFO->FM_SQL_threshold_dBm = -150;
+	}
+	if (CurrentVFO->FM_SQL_threshold_dBm > 100) {
+		CurrentVFO->FM_SQL_threshold_dBm = 100;
+	}
+
 	TRX.FM_SQL_threshold_dBm_shadow = CurrentVFO->FM_SQL_threshold_dBm;
 
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
@@ -4394,12 +4401,12 @@ static void SYSMENU_HANDL_SCREEN_FFT_3D(int8_t direction) {
 	}
 }
 
-static void SYSMENU_HANDL_SCREEN_FFT_Automatic(int8_t direction) {
-	if (direction > 0) {
-		TRX.FFT_Automatic = true;
+static void SYSMENU_HANDL_SCREEN_FFT_Automatic_Type(int8_t direction) {
+	if (TRX.FFT_Automatic_Type > 0 || direction > 0) {
+		TRX.FFT_Automatic_Type += direction;
 	}
-	if (direction < 0) {
-		TRX.FFT_Automatic = false;
+	if (TRX.FFT_Automatic_Type > 2) {
+		TRX.FFT_Automatic_Type = 2;
 	}
 }
 

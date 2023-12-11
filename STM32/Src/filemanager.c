@@ -592,18 +592,35 @@ void FILEMANAGER_OTAUpdate_handler(void) {
 		}
 		// delete old files
 		LCD_showInfo("Clean old files...", false);
-		strcpy((char *)SD_workbuffer_A, "firmware_stm32.bin");
-		f_unlink((TCHAR *)SD_workbuffer_A);
-		f_unlink((TCHAR *)SD_workbuffer_A);
-		strcpy((char *)SD_workbuffer_A, "firmware_stm32.crc");
-		f_unlink((TCHAR *)SD_workbuffer_A);
-		f_unlink((TCHAR *)SD_workbuffer_A);
-		strcpy((char *)SD_workbuffer_A, "firmware_fpga.jic");
-		f_unlink((TCHAR *)SD_workbuffer_A);
-		f_unlink((TCHAR *)SD_workbuffer_A);
-		strcpy((char *)SD_workbuffer_A, "firmware_fpga.crc");
-		f_unlink((TCHAR *)SD_workbuffer_A);
-		f_unlink((TCHAR *)SD_workbuffer_A);
+		FILINFO finfo;
+		FRESULT res = f_stat("firmware_stm32.bin", &finfo);
+		if (res != FR_NO_FILE && f_unlink("firmware_stm32.bin") != FR_OK) {
+			LCD_showInfo("Clean error", true);
+			sysmenu_ota_opened = false;
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+			return;
+		}
+		res = f_stat("firmware_stm32.crc", &finfo);
+		if (res != FR_NO_FILE && f_unlink("firmware_stm32.crc") != FR_OK) {
+			LCD_showInfo("Clean error", true);
+			sysmenu_ota_opened = false;
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+			return;
+		}
+		res = f_stat("firmware_fpga.jic", &finfo);
+		if (res != FR_NO_FILE && f_unlink("firmware_fpga.jic") != FR_OK) {
+			LCD_showInfo("Clean error", true);
+			sysmenu_ota_opened = false;
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+			return;
+		}
+		res = f_stat("firmware_fpga.crc", &finfo);
+		if (res != FR_NO_FILE && f_unlink("firmware_fpga.crc") != FR_OK) {
+			LCD_showInfo("Clean error", true);
+			sysmenu_ota_opened = false;
+			LCD_UpdateQuery.SystemMenuRedraw = true;
+			return;
+		}
 		downloaded_fpga_fw = false;
 		downloaded_fpga_crc = false;
 		downloaded_stm_fw = false;

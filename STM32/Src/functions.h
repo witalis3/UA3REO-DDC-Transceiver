@@ -199,5 +199,7 @@ extern int8_t getPowerFromALC();
 extern void getUTCDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime);
 extern uint32_t getUTCTimestamp();
 extern void getLocalDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime);
+extern const char *trim_front(const char *str);
+extern char *trim(char *str);
 
 #endif

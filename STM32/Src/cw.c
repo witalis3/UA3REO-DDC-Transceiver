@@ -111,7 +111,7 @@ void CW_key_change(void) {
 			CW_updateEstimateTimeout();
 			FPGA_NeedSendParams = true;
 			TRX_Restart_Mode();
-			if (!onTx) {
+			if (!onTx && (TRX.CW_PTT_Type == KEY_PTT || TRX.CW_PTT_Type == KEY_AND_EXT_PTT)) {
 				CW_GenerateKeyer(0, true);
 			}
 		}
@@ -159,7 +159,7 @@ void CW_key_change(void) {
 			CW_updateEstimateTimeout();
 			FPGA_NeedSendParams = true;
 			TRX_Restart_Mode();
-			if (!onTx) {
+			if (!onTx && (TRX.CW_PTT_Type == KEY_PTT || TRX.CW_PTT_Type == KEY_AND_EXT_PTT)) {
 				CW_GenerateKeyer(0, true);
 			}
 		}
@@ -207,7 +207,7 @@ float32_t CW_GenerateSignal(float32_t power) {
 
 	// Keyer disabled
 	if (!TRX.CW_KEYER) {
-		if (!CW_key_serial && !TRX_ptt_hard && !CW_key_dot_hard && !CW_key_dash_hard) {
+		if (!CW_key_serial && !CW_key_dot_hard && !CW_key_dash_hard) {
 			return CW_generateFallSignal(power);
 		}
 		return CW_generateRiseSignal(power);

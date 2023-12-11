@@ -1102,6 +1102,11 @@ void processTxAudio(void) {
 #if HRDW_HAS_SD
 	if (!SD_PlayCQMessageInProcess && !SD_PlayInProcess) {
 		volume_gain_tx *= selfhear_amplitude;
+	} else {
+		// reduce power for SD play
+		volume_gain_tx *= 0.3f;
+		arm_scale_f32(APROC_Audio_Buffer_TX_I, 0.9f, APROC_Audio_Buffer_TX_I, AUDIO_BUFFER_HALF_SIZE);
+		arm_scale_f32(APROC_Audio_Buffer_TX_Q, 0.9f, APROC_Audio_Buffer_TX_Q, AUDIO_BUFFER_HALF_SIZE);
 	}
 #else
 	volume_gain_tx *= selfhear_amplitude;
@@ -1176,7 +1181,7 @@ void processTxAudio(void) {
 
 	// CW SelfHear
 	if (!LISTEN_RX_AUDIO_ON_TX) {
-		if (TRX.CW_SelfHear && (TRX.CW_KEYER || CW_key_serial || CW_key_dot_hard || CW_key_dash_hard) && mode == TRX_MODE_CW && !TRX_Tune) {
+		if (TRX.CW_SelfHear && mode == TRX_MODE_CW && !TRX_Tune) {
 			static float32_t cwgen_index = 0;
 			for (uint_fast16_t i = 0; i < AUDIO_BUFFER_HALF_SIZE; i++) {
 				float32_t point = generateSin(selfhear_amplitude * APROC_Audio_Buffer_TX_I[i], &cwgen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
@@ -1943,7 +1948,7 @@ static void doRX_COPYCHANNEL(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 static void DemodulateFM(float32_t *data_i, float32_t *data_q, AUDIO_PROC_RX_NUM rx_id, uint16_t size, bool wfm, float32_t dBm) {
 	demod_fm_instance *DFM = &DFM_RX1;
 	bool sql_enabled = CurrentVFO->SQL;
-	int8_t FM_SQL_threshold_dBm = CurrentVFO->FM_SQL_threshold_dBm;
+	int16_t FM_SQL_threshold_dBm = CurrentVFO->FM_SQL_threshold_dBm;
 	const arm_biquad_cascade_df2T_instance_f32 *SFM_Pilot_Filter = &SFM_RX1_Pilot_Filter;
 	const arm_biquad_cascade_df2T_instance_f32 *SFM_Audio_Filter = &SFM_RX1_Audio_Filter;
 

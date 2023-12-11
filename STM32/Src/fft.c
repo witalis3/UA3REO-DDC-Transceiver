@@ -1007,7 +1007,7 @@ bool FFT_printFFT(void) {
 
 	// dBm scaling
 	if (FFT_SCALE_TYPE == 2) {
-		if (TRX.FFT_Automatic) {
+		if (TRX.FFT_Automatic_Type == FFT_AUTOMATIC_FULL || TRX.FFT_Automatic_Type == FFT_AUTOMATIC_HALF) {
 			if (minAmplValue_averaged > minAmplValue) {
 				minAmplValue_averaged = minAmplValue;
 			} else {
@@ -1026,7 +1026,7 @@ bool FFT_printFFT(void) {
 	}
 
 	// Auto-calibrate FFT levels
-	if (TRX_on_TX || (TRX.FFT_Automatic && TRX.FFT_Sensitivity == FFT_MAX_TOP_SCALE)) // Fit FFT to MAX
+	if (TRX_on_TX || (TRX.FFT_Automatic_Type == FFT_AUTOMATIC_FULL && TRX.FFT_Sensitivity == FFT_MAX_TOP_SCALE)) // Fit FFT to MAX
 	{
 		if (FFT_SCALE_TYPE == 2) {
 			float32_t newMaxAmplValue = maxAmplValue - minAmplValue_averaged;
@@ -1048,7 +1048,7 @@ bool FFT_printFFT(void) {
 
 		FFT_minDBM = minAmplValue_averaged;
 		FFT_maxDBM = maxAmplValue;
-	} else if (TRX.FFT_Automatic) // Fit by median (automatic)
+	} else if (TRX.FFT_Automatic_Type == FFT_AUTOMATIC_FULL) // Fit by median (automatic)
 	{
 		if (FFT_SCALE_TYPE == 2) {
 			medianValue -= minAmplValue_averaged;
@@ -1508,7 +1508,7 @@ bool FFT_printFFT(void) {
 	// clear old data
 	if (lastWTFFreq != currentFFTFreq || NeedWTFRedraw) {
 		uint16_t color = palette_wtf[fftHeight];
-		if (TRX.FFT_Automatic) {
+		if (TRX.FFT_Automatic_Type == FFT_AUTOMATIC_FULL || TRX.FFT_Automatic_Type == FFT_AUTOMATIC_HALF) {
 			color = palette_wtf[(uint32_t)(fftHeight * 0.9f)];
 		}
 		memset16(print_output_buffer[fftHeight], color, LAYOUT->FFT_PRINT_SIZE * (wtfHeight - decoder_offset));
@@ -1778,13 +1778,13 @@ bool FFT_printFFT(void) {
 	if (TRX.FFT_dBmGrid && FFT_SCALE_TYPE < 2) {
 		char tmp[64] = {0};
 		float32_t ampl_on_bin = maxValueFFT / (float32_t)fftHeight;
-		if (!TRX.FFT_Automatic) {
+		if (TRX.FFT_Automatic_Type != FFT_AUTOMATIC_FULL) {
 			ampl_on_bin = (maxValueFFT + minValueFFT) / (float32_t)fftHeight;
 		}
 
 		for (uint16_t y = FFT_DBM_GRID_TOP_MARGIN; y <= fftHeight - 4; y += FFT_DBM_GRID_INTERVAL) {
 			int16_t dBm = 0;
-			if (TRX.FFT_Automatic) {
+			if (TRX.FFT_Automatic_Type == FFT_AUTOMATIC_FULL) {
 				dBm = getDBFromFFTAmpl(maxValueFFT - ampl_on_bin * (float32_t)y);
 			} else {
 				dBm = getDBFromFFTAmpl((maxValueFFT + minValueFFT) - ampl_on_bin * (float32_t)y);

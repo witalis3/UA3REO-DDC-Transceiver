@@ -575,7 +575,7 @@ static bool SDCOMM_WRITE_PACKET_RECORD_FILE_handler(void) {
 
 void SDCOMM_FLASH_BIN_handler(void) {
 	if (f_open(&File, (TCHAR *)SD_workbuffer_A, FA_READ | FA_OPEN_EXISTING) == FR_OK) {
-		dma_memset(SD_workbuffer_A, 0x00, sizeof(SD_workbuffer_A));
+		dma_memset(SD_workbuffer_B, 0x00, sizeof(SD_workbuffer_B));
 		println("[FLASH] File Opened");
 		TRX.Mute = true;
 		CODEC_CleanBuffer();
@@ -620,28 +620,33 @@ void SDCOMM_FLASH_BIN_handler(void) {
 		uint32_t LastPGAddress = 0x08100000;    // second bank
 		const uint32_t flash_word_size = 8 * 4; // 8x 32bits words
 		while (read_flag == true) {
-			if (f_read(&File, SD_workbuffer_A, sizeof(SD_workbuffer_A), (void *)&bytesreaded) != FR_OK) {
+			if (f_read(&File, SD_workbuffer_B, sizeof(SD_workbuffer_B), (void *)&bytesreaded) != FR_OK) {
 				LCD_showInfo("File read error", true);
 				return;
 			}
 
 			if (bytesreaded > 0) {
-				for (uint32_t block_addr = 0; block_addr < bytesreaded; block_addr += flash_word_size) {
+				for (int32_t block_addr = 0; block_addr < bytesreaded; block_addr += flash_word_size) {
 					// println("[FLASH] Programming: ", LastPGAddress);
 					// print_flush();
-					uint8_t res = HAL_FLASH_Program(0, LastPGAddress, (uint32_t)&SD_workbuffer_A[block_addr]);
+
+					uint8_t res = HAL_FLASH_Program(0, LastPGAddress, (uint32_t)&SD_workbuffer_B[block_addr]);
 					if (res != HAL_OK) {
 						LCD_showInfo("Flashing error", true);
-						// println("[FLASH] Flashing error: ", res, " ", HAL_FLASH_GetError());
-						return;
+						println("[FLASH] Flashing error: ", res, " ", HAL_FLASH_GetError());
+						print_flush();
+						block_addr -= flash_word_size; // retry
+						LCD_showInfo("Programming...", false);
+						continue;
 					}
 
-					// Check the written value
-					// if (*(uint32_t *)LastPGAddress != *(uint32_t *)(SD_workbuffer_A + block_addr))
-					//{
-					// LCD_showInfo("Flash Verify error", true);
-					// return;
-					//}
+					// Check the first written value
+					if (*(uint32_t *)LastPGAddress != *(uint32_t *)(SD_workbuffer_B + block_addr)) {
+						LCD_showInfo("Flash Verify error", true);
+						block_addr -= flash_word_size; // retry
+						LCD_showInfo("Programming...", false);
+						continue;
+					}
 
 					// println("[FLASH] Block flashed: ", LastPGAddress);
 					// print_flush();
@@ -649,8 +654,8 @@ void SDCOMM_FLASH_BIN_handler(void) {
 					LastPGAddress += flash_word_size;
 				}
 
-				println("[FLASH] Flashed: ", LastPGAddress);
-				print_flush();
+				// println("[FLASH] Flashed: ", LastPGAddress);
+				// print_flush();
 			} else {
 				read_flag = false;
 			}
@@ -975,7 +980,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VFO_A.DNR_Type", (uint64_t *)&TRX.VFO_A.DNR_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.AGC", (uint64_t *)&TRX.VFO_A.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.SQL", (uint64_t *)&TRX.VFO_A.SQL, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold_dBm", (uint64_t *)&TRX.VFO_A.FM_SQL_threshold_dBm, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_A.FM_SQL_threshold_dBm", (uint64_t *)&TRX.VFO_A.FM_SQL_threshold_dBm, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.RepeaterMode", (uint64_t *)&TRX.VFO_A.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.CW_LPF_Filter", (uint64_t *)&TRX.VFO_A.CW_LPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_A.DIGI_LPF_Filter", (uint64_t *)&TRX.VFO_A.DIGI_LPF_Filter, SYSMENU_UINT16);
@@ -1001,7 +1006,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.VFO_B.DNR_Type", (uint64_t *)&TRX.VFO_B.DNR_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.AGC", (uint64_t *)&TRX.VFO_B.AGC, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.SQL", (uint64_t *)&TRX.VFO_B.SQL, SYSMENU_BOOLEAN);
-			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold_dBm", (uint64_t *)&TRX.VFO_B.FM_SQL_threshold_dBm, SYSMENU_INT8);
+			SD_WRITE_SETT_LINE("TRX.VFO_B.FM_SQL_threshold_dBm", (uint64_t *)&TRX.VFO_B.FM_SQL_threshold_dBm, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.RepeaterMode", (uint64_t *)&TRX.VFO_B.RepeaterMode, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.CW_LPF_Filter", (uint64_t *)&TRX.VFO_B.CW_LPF_Filter, SYSMENU_UINT16);
 			SD_WRITE_SETT_LINE("TRX.VFO_B.DIGI_LPF_Filter", (uint64_t *)&TRX.VFO_B.DIGI_LPF_Filter, SYSMENU_UINT16);
@@ -1217,7 +1222,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.FFT_Lens", (uint64_t *)&TRX.FFT_Lens, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_HoldPeaks", (uint64_t *)&TRX.FFT_HoldPeaks, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_3D", (uint64_t *)&TRX.FFT_3D, SYSMENU_UINT8);
-			SD_WRITE_SETT_LINE("TRX.FFT_Automatic", (uint64_t *)&TRX.FFT_Automatic, SYSMENU_BOOLEAN);
+			SD_WRITE_SETT_LINE("TRX.FFT_Automatic_Type", (uint64_t *)&TRX.FFT_Automatic_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.FFT_ManualBottom", (uint64_t *)&TRX.FFT_ManualBottom, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.FFT_ManualTop", (uint64_t *)&TRX.FFT_ManualTop, SYSMENU_INT16);
 			SD_WRITE_SETT_LINE("TRX.FFT_DXCluster", (uint64_t *)&TRX.FFT_DXCluster, SYSMENU_BOOLEAN);
@@ -1301,7 +1306,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].SQL", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].SQL, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dBm", i);
-				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm, SYSMENU_INT8);
+				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm, SYSMENU_INT16);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 				SD_WRITE_SETT_LINE(buff, (uint64_t *)&TRX.BANDS_SAVED_SETTINGS[i].ADC_PGA, SYSMENU_BOOLEAN);
 				sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].Fast", i);
@@ -1629,7 +1634,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		TRX.VFO_A.SQL = bval;
 	}
 	if (strcmp(name, "TRX.VFO_A.FM_SQL_threshold_dBm") == 0) {
-		TRX.VFO_A.FM_SQL_threshold_dBm = (int8_t)intval;
+		TRX.VFO_A.FM_SQL_threshold_dBm = (int16_t)intval;
 	}
 	if (strcmp(name, "TRX.VFO_A.CW_LPF_Filter") == 0) {
 		TRX.VFO_A.CW_LPF_Filter = (uint16_t)uintval;
@@ -1707,7 +1712,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		TRX.VFO_B.SQL = bval;
 	}
 	if (strcmp(name, "TRX.VFO_B.FM_SQL_threshold_dBm") == 0) {
-		TRX.VFO_B.FM_SQL_threshold_dBm = (int8_t)intval;
+		TRX.VFO_B.FM_SQL_threshold_dBm = (int16_t)intval;
 	}
 	if (strcmp(name, "TRX.VFO_B.CW_LPF_Filter") == 0) {
 		TRX.VFO_B.CW_LPF_Filter = (uint16_t)uintval;
@@ -2427,8 +2432,8 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	if (strcmp(name, "TRX.FFT_3D") == 0) {
 		TRX.FFT_3D = (uint8_t)uintval;
 	}
-	if (strcmp(name, "TRX.FFT_Automatic") == 0) {
-		TRX.FFT_Automatic = uintval;
+	if (strcmp(name, "TRX.FFT_Automatic_Type") == 0) {
+		TRX.FFT_Automatic_Type = (uint8_t)uintval;
 	}
 	if (strcmp(name, "TRX.FFT_ManualBottom") == 0) {
 		TRX.FFT_ManualBottom = (int16_t)intval;
@@ -3207,7 +3212,7 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 		}
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].FM_SQL_threshold_dBm", i);
 		if (strcmp(name, buff) == 0) {
-			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm = (int8_t)intval;
+			TRX.BANDS_SAVED_SETTINGS[i].FM_SQL_threshold_dBm = (int16_t)intval;
 		}
 		sprintf(buff, "TRX.BANDS_SAVED_SETTINGS[%d].ADC_PGA", i);
 		if (strcmp(name, buff) == 0) {
@@ -3451,6 +3456,9 @@ uint8_t SPI_wait_ready(void) {
 		cnt++;
 	} while ((res != 0xFF) && (cnt < 0xFFFF));
 	if (cnt >= 0xFFFF) {
+#if SD_DEBUG
+		println("SD wait timeout");
+#endif
 		return 1;
 	}
 	return res;
@@ -3501,9 +3509,13 @@ uint8_t SD_cmd(uint8_t cmd, uint32_t arg) {
 		res = SPI_ReceiveByte();
 	} while ((res & 0x80) && --n);
 	if (n == 0 && SD_Present) {
-		println("SD CMD timeout");
+		println("SD CMD ", cmd, " timeout");
 	}
-	// println("SD CMD ", cmd, " RES ", res);
+
+#if SD_DEBUG
+	println("SD CMD ", cmd, " RES ", res);
+#endif
+
 	return res;
 }
 
@@ -3511,7 +3523,10 @@ void SD_PowerOn(void) { HAL_Delay(20); }
 
 SRAM uint8_t SD_Read_Block_tmp[SD_MAXBLOCK_SIZE] = {0};
 uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr) {
-	// println("SD_Read_Block");
+#if SD_DEBUG
+	println("SD_Read_Block");
+#endif
+
 	uint8_t result;
 	uint16_t cnt;
 	SPI_Release(); // FF token
@@ -3521,7 +3536,7 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr) {
 		cnt++;
 	} while ((result != 0xFE) && (cnt < 0xFFFF));
 	if (cnt >= 0xFFFF) {
-		println("SD R Token Err", true);
+		println("SD R Token Err");
 		return 0;
 	}
 
@@ -3554,7 +3569,10 @@ uint8_t SD_Read_Block(uint8_t *buff, uint32_t btr) {
 
 SRAM uint8_t SD_Write_Block_tmp[SD_MAXBLOCK_SIZE] = {0};
 uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma) {
-	// println("SD_Write_Block");
+#if SD_DEBUG
+	println("SD_Write_Block");
+#endif
+
 	uint8_t result;
 	uint16_t cnt;
 	SPI_wait_ready(); /* Wait for card ready */
@@ -3594,6 +3612,7 @@ uint8_t SD_Write_Block(uint8_t *buff, uint8_t token, bool dma) {
 			return 0;
 		}
 	}
+
 	return 1;
 }
 
@@ -3603,20 +3622,24 @@ uint8_t sd_ini(void) {
 	uint32_t temp;
 	sd_crc_generate_table();
 
+#if SD_DEBUG
+	char sd_str_buff[60] = {0};
+#endif
+
 	sdinfo.type = 0;
 	uint8_t ocr[4];
 	uint8_t csd[16];
 	// temp = hspi.Init.BaudRatePrescaler;
 	// hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128; // 156.25 kbbs (96 kbps)
 	// HAL_SPI_Init(&hspi);
-	//  HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
+	// HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
 	for (i = 0; i < 10; i++) {
 		SPI_Release();
 	}
 	// hspi.Init.BaudRatePrescaler = temp;
 	// HAL_SPI_Init(&hspi);
 	//  HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
-	if (SD_cmd(CMD0, 0) == 1) // Enter Idle state
+	if (SD_cmd(CMD0, 0) == 1 || SD_cmd(CMD0, 0) == 1 || SD_cmd(CMD0, 0) == 63) // Enter Idle state (+repeat if error)
 	{
 		SPI_Release();
 		SD_cmd(ACMD42, 0); // disable pull-up on CD line
@@ -3627,9 +3650,11 @@ uint8_t sd_ini(void) {
 			for (i = 0; i < 4; i++) {
 				ocr[i] = SPI_ReceiveByte();
 			}
-			// sendToDebug_strln("SDv2");
-			// sprintf(sd_str_buff,"OCR: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",ocr[0],ocr[1],ocr[2],ocr[3]);
-			// sendToDebug_str(sd_str_buff);
+#if SD_DEBUG
+			println("SDv2");
+			sprintf(sd_str_buff, "OCR: 0x%02X 0x%02X 0x%02X 0x%02X", ocr[0], ocr[1], ocr[2], ocr[3]);
+			println(sd_str_buff);
+#endif
 			//  Get trailing return value of R7 resp
 			if (ocr[2] == 0x01 && ocr[3] == 0xAA) // The card can work at vdd range of 2.7-3.6V
 			{
@@ -3640,8 +3665,10 @@ uint8_t sd_ini(void) {
 					for (i = 0; i < 4; i++) {
 						ocr[i] = SPI_ReceiveByte();
 					}
-					// sprintf(sd_str_buff,"OCR: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",ocr[0],ocr[1],ocr[2],ocr[3]);
-					// sendToDebug_str(sd_str_buff);
+#if SD_DEBUG
+					sprintf(sd_str_buff, "OCR: 0x%02X 0x%02X 0x%02X 0x%02X", ocr[0], ocr[1], ocr[2], ocr[3]);
+					println(sd_str_buff);
+#endif
 					sdinfo.type = (ocr[0] & 0x40) ? CT_SD2 | CT_BLOCK : CT_SD2; // SDv2 (HC or SC)
 				}
 			}
@@ -3650,11 +3677,15 @@ uint8_t sd_ini(void) {
 			if (SD_cmd(ACMD41, 0) <= 1) {
 				sdinfo.type = CT_SD1;
 				cmd = ACMD41; // SDv1
-				              // sendToDebug_strln("SDv1");
+#if SD_DEBUG
+				println("SDv1");
+#endif
 			} else {
 				sdinfo.type = CT_MMC;
 				cmd = CMD1; // MMCv3
-				            // sendToDebug_strln("MMCv3");
+#if SD_DEBUG
+				println("MMCv3");
+#endif
 			}
 			for (tmr = 25000; tmr && SD_cmd(cmd, 0); tmr--) {
 				; // Wait for leaving idle state
@@ -3673,50 +3704,59 @@ uint8_t sd_ini(void) {
 
 			for (i = 0; i < 16; i++) {
 				csd[i] = SPI_ReceiveByte();
-				if (i == 0 && csd[i] >= 0xF0) {
+				for (uint8_t repeat = 0; i == 0 && csd[i] >= 0xF0 && repeat < 10; repeat++) {
 					csd[i] = SPI_ReceiveByte(); // repeat (clean buff)
 				}
 			}
 
-			/*char sd_str_buff[60]={0};
-			sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[0],csd[1],csd[2],csd[3]);
-			print(sd_str_buff);
-			sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[4],csd[5],csd[6],csd[7]);
-			print(sd_str_buff);
-			sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[8],csd[9],csd[10],csd[11]);
-			print(sd_str_buff);
-			sprintf(sd_str_buff,"CSD: 0x%02X 0x%02X 0x%02X 0x%02X\r\n",csd[12],csd[13],csd[14],csd[15]);
-			print(sd_str_buff);*/
+#if SD_DEBUG
+			sprintf(sd_str_buff, "CSD: 0x%02X 0x%02X 0x%02X 0x%02X", csd[0], csd[1], csd[2], csd[3]);
+			println(sd_str_buff);
+			sprintf(sd_str_buff, "CSD: 0x%02X 0x%02X 0x%02X 0x%02X", csd[4], csd[5], csd[6], csd[7]);
+			println(sd_str_buff);
+			sprintf(sd_str_buff, "CSD: 0x%02X 0x%02X 0x%02X 0x%02X", csd[8], csd[9], csd[10], csd[11]);
+			println(sd_str_buff);
+			sprintf(sd_str_buff, "CSD: 0x%02X 0x%02X 0x%02X 0x%02X", csd[12], csd[13], csd[14], csd[15]);
+			println(sd_str_buff);
+#endif
+
+			// println("DUMMY: ", SPI_ReceiveByte());
 
 			if ((csd[0] >> 6) == 1) // SDC ver 2.00 // High Capacity - CSD Version 2.0
 			{
 				uint32_t C_SIZE = (DWORD)csd[9] + ((DWORD)csd[8] << 8) + ((DWORD)(csd[7] & 0x3F) << 16) + 1;
-				// println(C_SIZE); //7674 in 4gb, 15248 in 8gb
 				sdinfo.SECTOR_COUNT = C_SIZE << 10;
-				// println("SDHC sector count: ", sdinfo.SECTOR_COUNT);
+#if SD_DEBUG
+				println("C_SIZE: ", C_SIZE); // 7674 in 4gb, 15248 in 8gb, 29823 in 16gb, 60014 in 32gb
+				println("SDHC sector count: ", sdinfo.SECTOR_COUNT);
+#endif
 			}
 			if (sdinfo.SECTOR_COUNT == 0) // Standard Capacity - CSD Version 1.0
 			{
 				uint32_t csize = ((csd[5] & 0x03) << 10) + ((WORD)csd[6] << 2) + ((WORD)(csd[7] & 0xC0) >> 6);
-				// println("csize: ", csize);
 				BYTE READ_BL_LEN = (csd[5] & 0xF0) >> 4;
 				uint32_t BLOCK_LEN = pow(2, READ_BL_LEN);
-				// println("BLOCK_LEN: ", BLOCK_LEN);
 				BYTE C_SIZE_MULT = (csd[9] & 0x03) | ((csd[10] & 0x80) >> 5);
 				uint32_t MULT = pow(2, (C_SIZE_MULT + 2));
-				// println("MULT: ", MULT);
 				uint32_t BLOCKNR = (csize + 1) * MULT;
-				// println("BLOCKNR: ", BLOCKNR);
 				uint32_t SECTOR_COUNT = BLOCKNR * BLOCK_LEN / sdinfo.BLOCK_SIZE;
-				// println("SECTOR_COUNT: ", SECTOR_COUNT);
 				sdinfo.SECTOR_COUNT = SECTOR_COUNT;
-				// println("SDSC sector count: ", sdinfo.SECTOR_COUNT);
+#if SD_DEBUG
+				println("csize: ", csize);
+				println("BLOCK_LEN: ", BLOCK_LEN);
+				println("MULT: ", MULT);
+				println("BLOCKNR: ", BLOCKNR);
+				println("SECTOR_COUNT: ", SECTOR_COUNT);
+				println("SDSC sector count: ", sdinfo.SECTOR_COUNT);
+#endif
 			}
 			if ((csd[0] >> 6) != 1 || sdinfo.SECTOR_COUNT == 0) { // SDC ver 1.XX or MMC ver 3
 				BYTE n = (BYTE)((csd[5] & 15) + ((csd[10] & 128) >> 7) + ((csd[9] & 3) << 1) + 2);
 				DWORD csize = (csd[8] >> 6) + ((WORD)csd[7] << 2) + ((WORD)(csd[6] & 3) << 10) + 1;
 				sdinfo.SECTOR_COUNT = csize << (n - 9);
-				// println("SDC1 sector count: ", sdinfo.SECTOR_COUNT);
+#if SD_DEBUG
+				println("SDC1 sector count: ", sdinfo.SECTOR_COUNT);
+#endif
 			}
 			sdinfo.CAPACITY = (uint64_t)sdinfo.SECTOR_COUNT * (uint64_t)sdinfo.BLOCK_SIZE;
 		}
@@ -3724,8 +3764,10 @@ uint8_t sd_ini(void) {
 	} else {
 		return 1;
 	}
-	// sprintf(sd_str_buff, "Type SD: 0x%02X\r\n",sdinfo.type);
-	// sendToDebug_str(sd_str_buff);
+#if SD_DEBUG
+	sprintf(sd_str_buff, "Type SD: 0x%02X", sdinfo.type);
+	println(sd_str_buff);
+#endif
 	return 0;
 }
 

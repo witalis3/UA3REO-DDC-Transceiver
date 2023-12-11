@@ -482,7 +482,7 @@ static inline void FPGA_fpgadata_sendparam(void) {
 		BPF_B = true;    // BPF_B
 		BPF_OE1 = false; // BPF_OE1
 		BPF_OE2 = true;  // BPF_OE2
-	} else             // 6m
+	} else             // LPF 0-53Mhz
 	{
 		BPF_A = true;    // BPF_A
 		BPF_B = true;    // BPF_B
@@ -490,31 +490,40 @@ static inline void FPGA_fpgadata_sendparam(void) {
 		BPF_OE2 = true;  // BPF_OE2
 	}
 
-	if (CurrentVFO->Freq >= 100000 && CurrentVFO->Freq <= 2400000) // 160m      1500000
+	if (CurrentVFO->Freq >= 100000 && CurrentVFO->Freq < 2400000) // 160m
 	{
-		LPF_1 = false;                                                       // LPF1
-		LPF_2 = false;                                                       // LPF2
-		LPF_3 = false;                                                       // LPF3
-	} else if (CurrentVFO->Freq >= 2400000 && CurrentVFO->Freq <= 4500000) // 80m
+		LPF_1 = false;
+		LPF_2 = false;
+		LPF_3 = false;
+	} else if (CurrentVFO->Freq >= 2400000 && CurrentVFO->Freq < 4500000) // 80m
 	{
-		LPF_1 = true;                                                        // LPF1
-		LPF_2 = false;                                                       // LPF2
-		LPF_3 = false;                                                       // LPF3
-	} else if (CurrentVFO->Freq >= 4500000 && CurrentVFO->Freq <= 7500000) // 40m
+		LPF_1 = true;
+		LPF_2 = false;
+		LPF_3 = false;
+	} else if (CurrentVFO->Freq >= 4500000 && CurrentVFO->Freq < 7500000) // 40m
 	{
-		LPF_1 = false;                                                        // LPF1
-		LPF_2 = true;                                                         // LPF2
-		LPF_3 = false;                                                        // LPF3
-	} else if (CurrentVFO->Freq >= 7500000 && CurrentVFO->Freq <= 14800000) // 30m,20m
+		LPF_1 = false;
+		LPF_2 = true;
+		LPF_3 = false;
+	} else if (CurrentVFO->Freq >= 7500000 && CurrentVFO->Freq < 15000000) // 30m,20m
 	{
-		LPF_1 = true;                          // LPF1
-		LPF_2 = true;                          // LPF2
-		LPF_3 = false;                         // LPF3
-	} else if (CurrentVFO->Freq >= 12000000) // 17,15m,12,10,6m
+		LPF_1 = true;
+		LPF_2 = true;
+		LPF_3 = false;
+	} else if (CurrentVFO->Freq >= 15000000 && CurrentVFO->Freq < 32000000) // 17,15,12,10m
 	{
-		LPF_1 = false; // LPF1
-		LPF_2 = false; // LPF2
-		LPF_3 = true;  // LPF3
+		LPF_1 = false;
+		LPF_2 = false;
+		LPF_3 = true;
+	} else if (CurrentVFO->Freq >= 32000000 && CurrentVFO->Freq < 70000000) // 6m
+	{
+		LPF_1 = true;
+		LPF_2 = false;
+		LPF_3 = true;
+	} else if (CurrentVFO->Freq >= 70000000) { // FM+
+		LPF_1 = false;
+		LPF_2 = true;
+		LPF_3 = true;
 	}
 
 	// STAGE 17
