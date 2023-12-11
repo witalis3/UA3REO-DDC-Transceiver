@@ -283,59 +283,59 @@ DocumentPath=Project Outputs for Wolf-Lite\NC Drill\WL-MAIN.DRR
 DItemRevisionGUID=
 
 [GeneratedDocument2]
-DocumentPath=Project Outputs for Wolf-Lite\GerberX2\WL-MAIN.EXTREP
+DocumentPath=Project Outputs for Wolf-Lite\Gerber\WL-MAIN.EXTREP
 DItemRevisionGUID=
 
 [GeneratedDocument3]
-DocumentPath=Project Outputs for Wolf-Lite\NC Drill\WL-MAIN.LDP
+DocumentPath=Project Outputs for Wolf-Lite\Gerber\WL-MAIN.G1
 DItemRevisionGUID=
 
 [GeneratedDocument4]
-DocumentPath=Project Outputs for Wolf-Lite\GerberX2\WL-MAIN.REP
+DocumentPath=Project Outputs for Wolf-Lite\Gerber\WL-MAIN.G2
 DItemRevisionGUID=
 
 [GeneratedDocument5]
-DocumentPath=Project Outputs for Wolf-Lite\GerberX2\WL-MAIN.RUL
+DocumentPath=Project Outputs for Wolf-Lite\Gerber\WL-MAIN.GBL
 DItemRevisionGUID=
 
 [GeneratedDocument6]
-DocumentPath=Project Outputs for Wolf-Lite\NC Drill\WL-MAIN.TXT
+DocumentPath=Project Outputs for Wolf-Lite\Gerber\WL-MAIN.GBO
 DItemRevisionGUID=
 
 [GeneratedDocument7]
-DocumentPath=Project Outputs for Wolf-Lite\GerberX2\WL-MAIN_Copper_Signal_1.gbr
+DocumentPath=Project Outputs for Wolf-Lite\Gerber\WL-MAIN.GBS
 DItemRevisionGUID=
 
 [GeneratedDocument8]
-DocumentPath=Project Outputs for Wolf-Lite\GerberX2\WL-MAIN_Copper_Signal_2.gbr
+DocumentPath=Project Outputs for Wolf-Lite\Gerber\WL-MAIN.GKO
 DItemRevisionGUID=
 
 [GeneratedDocument9]
-DocumentPath=Project Outputs for Wolf-Lite\GerberX2\WL-MAIN_Copper_Signal_Bot.gbr
+DocumentPath=Project Outputs for Wolf-Lite\Gerber\WL-MAIN.GTL
 DItemRevisionGUID=
 
 [GeneratedDocument10]
-DocumentPath=Project Outputs for Wolf-Lite\GerberX2\WL-MAIN_Copper_Signal_Top.gbr
+DocumentPath=Project Outputs for Wolf-Lite\Gerber\WL-MAIN.GTO
 DItemRevisionGUID=
 
 [GeneratedDocument11]
-DocumentPath=Project Outputs for Wolf-Lite\GerberX2\WL-MAIN_Keep-out.gbr
+DocumentPath=Project Outputs for Wolf-Lite\Gerber\WL-MAIN.GTS
 DItemRevisionGUID=
 
 [GeneratedDocument12]
-DocumentPath=Project Outputs for Wolf-Lite\GerberX2\WL-MAIN_Legend_Bot.gbr
+DocumentPath=Project Outputs for Wolf-Lite\NC Drill\WL-MAIN.LDP
 DItemRevisionGUID=
 
 [GeneratedDocument13]
-DocumentPath=Project Outputs for Wolf-Lite\GerberX2\WL-MAIN_Legend_Top.gbr
+DocumentPath=Project Outputs for Wolf-Lite\Gerber\WL-MAIN.REP
 DItemRevisionGUID=
 
 [GeneratedDocument14]
-DocumentPath=Project Outputs for Wolf-Lite\GerberX2\WL-MAIN_Soldermask_Bot.gbr
+DocumentPath=Project Outputs for Wolf-Lite\Gerber\WL-MAIN.RUL
 DItemRevisionGUID=
 
 [GeneratedDocument15]
-DocumentPath=Project Outputs for Wolf-Lite\GerberX2\WL-MAIN_Soldermask_Top.gbr
+DocumentPath=Project Outputs for Wolf-Lite\NC Drill\WL-MAIN.TXT
 DItemRevisionGUID=
 
 [Configuration1]
@@ -390,7 +390,7 @@ OutputDir=
 [OutputGroup1]
 Name=Netlist Outputs
 Description=
-TargetPrinter=Canon LBP223 UFR II
+TargetPrinter=Microsoft Print to PDF
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=CadnetixNetlist
 OutputName1=Cadnetix Netlist
@@ -496,7 +496,7 @@ OutputDefault20=0
 [OutputGroup2]
 Name=Simulator Outputs
 Description=
-TargetPrinter=Canon LBP223 UFR II
+TargetPrinter=Microsoft Print to PDF
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 
 [OutputGroup3]
@@ -574,7 +574,7 @@ PageOptions11=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|Print
 [OutputGroup4]
 Name=Assembly Outputs
 Description=
-TargetPrinter=Canon LBP223 UFR II
+TargetPrinter=Microsoft Print to PDF
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=Assembly
 OutputName1=Assembly Drawings
@@ -596,7 +596,7 @@ OutputDefault3=0
 [OutputGroup5]
 Name=Fabrication Outputs
 Description=
-TargetPrinter=Canon LBP223 UFR II
+TargetPrinter=Microsoft Print to PDF
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=Board Stack Report
 OutputName1=Report Board Stack
@@ -668,7 +668,7 @@ OutputDefault12=0
 [OutputGroup6]
 Name=Report Outputs
 Description=
-TargetPrinter=Canon LBP223 UFR II
+TargetPrinter=Microsoft Print to PDF
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=BOM_PartType
 OutputName1=Bill of Materials
@@ -717,7 +717,7 @@ PageOptions8=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|PrintS
 [OutputGroup7]
 Name=Other Outputs
 Description=
-TargetPrinter=Canon LBP223 UFR II
+TargetPrinter=Microsoft Print to PDF
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=Text Print
 OutputName1=Text Print
@@ -825,7 +825,7 @@ PageOptions17=Record=PageOptions|CenterHorizontal=True|CenterVertical=True|Print
 [OutputGroup8]
 Name=Validation Outputs
 Description=
-TargetPrinter=Canon LBP223 UFR II
+TargetPrinter=Microsoft Print to PDF
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=Component states check
 OutputName1=Server's components states check
@@ -869,7 +869,7 @@ OutputDefault7=0
 [OutputGroup9]
 Name=Export Outputs
 Description=
-TargetPrinter=Canon LBP223 UFR II
+TargetPrinter=Microsoft Print to PDF
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=AutoCAD dwg/dxf PCB
 OutputName1=AutoCAD dwg/dxf File PCB
@@ -930,7 +930,7 @@ OutputDefault11=0
 [OutputGroup10]
 Name=PostProcess Outputs
 Description=
-TargetPrinter=Canon LBP223 UFR II
+TargetPrinter=Microsoft Print to PDF
 PrinterOptions=Record=PrinterOptions|Copies=1|Duplex=1|TrueTypeOptions=3|Collate=1|PrintJobKind=1|PrintWhat=1
 OutputType1=Copy Files
 OutputName1=Copy Files
