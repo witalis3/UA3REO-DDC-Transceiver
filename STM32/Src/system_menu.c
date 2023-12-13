@@ -1166,6 +1166,9 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type,
      (const enumerate_item[7]){"NONE", "QRP", "BIG", "SPLIT", "RU4PN", "KT-100S", "WF-100D"}},
 #endif
+#if defined(FRONTPANEL_MINI)
+    {"RF-Unit Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.RF_unit_type, SYSMENU_HANDL_CALIB_RF_unit_type, (const enumerate_item[2]){"HF", "VHF"}},
+#endif
     {"ALC Port Enabled", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Port_Enabled, SYSMENU_HANDL_CALIB_ALC_Port_Enabled},
     {"ALC Inverted", SYSMENU_BOOLEAN, NULL, (uint32_t *)&CALIBRATE.ALC_Inverted_Logic, SYSMENU_HANDL_CALIB_ALC_Inverted_Logic},
 #ifdef LAY_320x240
@@ -6131,6 +6134,11 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 	if (CALIBRATE.RF_unit_type > 0 || direction > 0) {
 		CALIBRATE.RF_unit_type += direction;
 	}
+#ifdef FRONTPANEL_MINI
+	if (CALIBRATE.RF_unit_type > 1) {
+		CALIBRATE.RF_unit_type = 1;
+	}
+#else
 	if (CALIBRATE.RF_unit_type > 4) {
 		CALIBRATE.RF_unit_type = 4;
 	}
@@ -6310,6 +6318,7 @@ static void SYSMENU_HANDL_CALIB_RF_unit_type(int8_t direction) {
 		CALIBRATE.TUNE_MAX_POWER = 15;                 // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;         // Max TRX Power for indication
 	}
+#endif
 	LCD_UpdateQuery.SystemMenuRedraw = true;
 }
 
@@ -10060,6 +10069,9 @@ static uint8_t SYSTMENU_getPageFromRealIndex(uint8_t realIndex) {
 }
 
 static bool SYSMENU_HANDL_CHECK_HAS_LPF(void) {
+#if defined(FRONTPANEL_MINI)
+	return true;
+#else
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_NONE:
 		return true;
@@ -10078,13 +10090,15 @@ static bool SYSMENU_HANDL_CHECK_HAS_LPF(void) {
 	}
 
 	return false;
+#endif
 }
 
 static bool SYSMENU_HANDL_CHECK_HAS_HPF(void) {
-#ifdef FRONTPANEL_WOLF_2
+#if defined(FRONTPANEL_WOLF_2)
 	return false;
-#endif
-
+#elif defined(FRONTPANEL_MINI)
+	return true;
+#else
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_NONE:
 		return true;
@@ -10103,13 +10117,13 @@ static bool SYSMENU_HANDL_CHECK_HAS_HPF(void) {
 	}
 
 	return false;
+#endif
 }
 
 static bool SYSMENU_HANDL_CHECK_HAS_BPF_8(void) {
-#ifdef FRONTPANEL_WOLF_2
+#if defined(FRONTPANEL_WOLF_2) || defined(FRONTPANEL_MINI)
 	return false;
-#endif
-
+#else
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_NONE:
 		return false;
@@ -10128,13 +10142,13 @@ static bool SYSMENU_HANDL_CHECK_HAS_BPF_8(void) {
 	}
 
 	return false;
+#endif
 }
 
 static bool SYSMENU_HANDL_CHECK_HAS_BPF_9(void) {
-#ifdef FRONTPANEL_WOLF_2
+#if defined(FRONTPANEL_WOLF_2) || defined(FRONTPANEL_MINI)
 	return false;
-#endif
-
+#else
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_NONE:
 		return false;
@@ -10153,15 +10167,20 @@ static bool SYSMENU_HANDL_CHECK_HAS_BPF_9(void) {
 	}
 
 	return false;
+#endif
 }
 
 bool SYSMENU_HANDL_CHECK_HAS_ATU(void) {
-#ifdef FRONTPANEL_WOLF_2
+#if defined(FRONTPANEL_WOLF_2)
 	return true;
-#endif
-#ifdef FRONTPANEL_MINI
-	return true;
-#endif
+#elif defined(FRONTPANEL_MINI)
+	switch (CALIBRATE.RF_unit_type) {
+	case RF_UNIT_HF:
+		return true;
+	case RF_UNIT_VHF:
+		return false;
+	}
+#else
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_NONE:
 		return false;
@@ -10180,13 +10199,15 @@ bool SYSMENU_HANDL_CHECK_HAS_ATU(void) {
 	}
 
 	return false;
+#endif
 }
 
 static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void) {
-#ifdef FRONTPANEL_WOLF_2
+#if defined(FRONTPANEL_WOLF_2)
 	return true;
-#endif
-
+#elif defined(FRONTPANEL_MINI)
+	return false;
+#else
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_NONE:
 		return true;
@@ -10205,6 +10226,7 @@ static bool SYSMENU_HANDL_CHECK_HAS_RFFILTERS_BYPASS(void) {
 	}
 
 	return false;
+#endif
 }
 
 static bool SYSMENU_HANDL_CHECK_HIDDEN_ENABLED(void) { return SYSMENU_hiddenmenu_enabled; }

@@ -590,7 +590,6 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
-		CALIBRATE.RF_unit_type = RF_UNIT_NONE; // RF-unit type
 		CALIBRATE.CICFIR_GAINER_48K_val = 7;   // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_96K_val = 12;  // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_192K_val = 17; // Offset from the output of the CIC compensator
@@ -680,6 +679,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 8.5f; // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 5;             // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 15;     // Max TRX Power for indication
+		CALIBRATE.RF_unit_type = RF_UNIT_NONE;    // RF-unit type
 #elif defined(FRONTPANEL_BIG_V1)
 		CALIBRATE.RF_unit_type = RF_UNIT_QRP;          // RF-unit type
 		CALIBRATE.rf_out_power_2200m = 29;             // 2200m
@@ -731,6 +731,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 3.6f;      // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 2;                  // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 7;           // Max TRX Power for indication
+		CALIBRATE.RF_unit_type = RF_UNIT_NONE;         // RF-unit type
 #elif defined(FRONTPANEL_KT_100S)
 		CALIBRATE.RF_unit_type = RF_UNIT_KT_100S;      // RF-unit type
 		CALIBRATE.rf_out_power_2200m = 40;             // 2200m
@@ -782,6 +783,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 22.0f;     // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 10;                 // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;         // Max TRX Power for indication
+		CALIBRATE.RF_unit_type = RF_UNIT_KT_100S;      // RF-unit type
 #elif defined(FRONTPANEL_WF_100D)
 		CALIBRATE.ENCODER2_INVERT = true; // invert left-right rotation of the optional encoder
 		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;
@@ -834,6 +836,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 8.5f;      // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;                 // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;         // Max TRX Power for indication
+		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;      // RF-unit type
 #elif defined(FRONTPANEL_WOLF_2)
 		CALIBRATE.ENCODER2_INVERT = true;          // invert left-right rotation of the optional encoder
 		CALIBRATE.rf_out_power_2200m = 20;         // 2200m
@@ -885,12 +888,14 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 9.5f;  // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;             // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;     // Max TRX Power for indication
+		CALIBRATE.RF_unit_type = RF_UNIT_NONE;     // RF-unit type
 #elif defined(FRONTPANEL_LITE)
 		CALIBRATE.ENCODER_SLOW_RATE = 10;
 		CALIBRATE.ENCODER2_ON_FALLING = false;
 		CALIBRATE.smeter_calibration_hf = 15;
-		CALIBRATE.TUNE_MAX_POWER = 5;         // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER_ON_METER = 15; // Max TRX Power for indication
+		CALIBRATE.TUNE_MAX_POWER = 5;          // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER_ON_METER = 15;  // Max TRX Power for indication
+		CALIBRATE.RF_unit_type = RF_UNIT_NONE; // RF-unit type
 #elif defined(FRONTPANEL_MINI)
 		CALIBRATE.ENCODER_SLOW_RATE = 15;
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
@@ -919,6 +924,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_FWD_Calibration_HF = 21.0f; // SWR Transormator rate forward
 		CALIBRATE.SWR_BWD_Calibration_HF = 21.0f; // SWR Transormator rate return
 		CALIBRATE.PWR_VLT_Calibration = 1100.0f;  // VLT meter calibration
+		CALIBRATE.RF_unit_type = RF_UNIT_HF;      // RF-unit type
 #else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF U14-RF1
@@ -940,6 +946,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_7_END = 0;                   // disabled on qrp version
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled on qrp version
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled on qrp version
+		CALIBRATE.RF_unit_type = RF_UNIT_NONE;         // RF-unit type
 #endif
 #if defined(FRONTPANEL_MINI)
 		CALIBRATE.TCXO_frequency = 20000; // TCXO Frequency x1000

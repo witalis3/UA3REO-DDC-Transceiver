@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "9.2.1" // current STM32 version
+#define STM32_VERSION_STR "9.3.0-dev" // current STM32 version
 
 #if defined(FRONTPANEL_LITE)
 #define FPGA_VERSION_STR "8.0.0" // needed FPGA version Wolf-Lite
@@ -406,6 +406,12 @@ typedef enum {
 } TRX_IQ_SAMPLERATE_VALUE;
 
 // RF UNIT TYPE
+#ifdef FRONTPANEL_MINI
+typedef enum {
+	RF_UNIT_HF,
+	RF_UNIT_VHF,
+} TRX_RF_UNIT_TYPE;
+#else
 typedef enum {
 	RF_UNIT_NONE,
 	RF_UNIT_QRP,
@@ -415,6 +421,7 @@ typedef enum {
 	RF_UNIT_KT_100S,
 	RF_UNIT_WF_100D,
 } TRX_RF_UNIT_TYPE;
+#endif
 
 // TANGENT TYPE
 typedef enum {
