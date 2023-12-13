@@ -998,7 +998,7 @@ int8_t getBandFromFreq(uint64_t freq, bool nearest) {
 // mode from frequency
 uint_fast8_t getModeFromFreq(uint64_t freq) {
 	uint_fast8_t ret = 0;
-	ret = freq <= 30000000 ? TRX_MODE_AM : TRX_MODE_NFM;
+	ret = freq <= 30000000 ? TRX_MODE_SAM_STEREO : TRX_MODE_NFM;
 
 	for (uint_fast16_t b = 0; b < BANDS_COUNT; b++) {
 		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq) {
