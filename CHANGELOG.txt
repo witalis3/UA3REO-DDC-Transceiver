@@ -1,5 +1,5 @@
 ----Version 9.2.1----
-+STM32: Устранение ошибок, Tnx Martin AD
++STM32: Устранение ошибок, Tnx Martin AD, SP7MFR
 
 ----Version 9.2.0----
 +HARDW: Wolf-2: Обновлена плата УКВ, Автор RU4PN

@@ -96,10 +96,10 @@ uint32_t dbg_FPGA_samples = 0;
 uint8_t TRX_TX_Harmonic = 1;
 uint8_t TRX_TX_sendZeroes = 0;
 int8_t TRX_MemoryChannelSelected;
+volatile bool TRX_REPEATER_Applied = false;
 
 static uint_fast8_t TRX_TXRXMode = 0; // 0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static bool TRX_SPLIT_Applied = false;
-static bool TRX_REPEATER_Applied = false;
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
 static void TRX_Start_TXRX(void);

@@ -201,4 +201,6 @@ extern uint32_t dbg_FPGA_samples;
 extern uint8_t TRX_TX_Harmonic;
 extern uint8_t TRX_TX_sendZeroes;
 extern int8_t TRX_MemoryChannelSelected;
+volatile extern bool TRX_REPEATER_Applied;
+
 #endif
