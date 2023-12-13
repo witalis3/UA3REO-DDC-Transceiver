@@ -617,6 +617,8 @@ static void FRONTPANEL_ENC2SW_click_handler(uint32_t parameter) {
 		}
 		if (TRX.ENC2_func_mode == ENC_FUNC_SET_MEM) {
 			LCD_showTooltip("MEMORY");
+			TRX.FRONTPANEL_funcbuttons_page = 2;
+			LCD_UpdateQuery.BottomButtons = true;
 		}
 	} else {
 		if (LCD_systemMenuOpened) {

@@ -677,6 +677,13 @@ void TRX_setMode(TRX_MODE _mode, VFO *vfo) {
 		TRX_Start_TXRX();
 	}
 
+#if defined(FRONTPANEL_MINI)
+	if (old_mode != _mode && vfo->Mode == TRX_MODE_CW) {
+		TRX.FRONTPANEL_funcbuttons_page = 6;
+		LCD_UpdateQuery.BottomButtons = true;
+	}
+#endif
+
 	// get new mode filters
 	switch (_mode) {
 	case TRX_MODE_AM:
