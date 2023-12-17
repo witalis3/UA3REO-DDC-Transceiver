@@ -207,6 +207,8 @@ float32_t CW_GenerateSignal(float32_t power) {
 
 	// Keyer disabled
 	if (!TRX.CW_KEYER) {
+		KEYER_symbol_status = 0;
+
 		if (!CW_key_serial && !CW_key_dot_hard && !CW_key_dash_hard) {
 			return CW_generateFallSignal(power);
 		}
