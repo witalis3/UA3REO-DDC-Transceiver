@@ -309,6 +309,7 @@ void LoadSettings(bool clear) {
 		TRX.VOX_THRESHOLD = -27;                                       // VOX threshold in dbFS
 		TRX.RX_AUDIO_MODE = RX_AUDIO_MODE_STEREO;                      // OUT Lines mode stereo/left/right
 		TRX.AGC_Threshold = false;                                     // Disable AGC on noise signals
+		TRX.NOTCH_Filter_width = 100;                                  // Manual notch filter width
 		// CW
 		TRX.CW_Pitch = 600;                                             // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key

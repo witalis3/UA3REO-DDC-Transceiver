@@ -166,6 +166,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **FM LPF Pass** - LPF cutoff frequency when working in FM
 * **SSB HPF Pass** - HPF cutoff frequency when operating in SSB
 * **SSB LPF Pass** - LPF cutoff frequency when operating in SSB
+* **NOTCH Filter width** - Cutting width of Manual Notch filter
 
 ### RX Settings
 

@@ -16,7 +16,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 145        // Settings config version
+#define SETT_VERSION 146        // Settings config version
 #define CALIB_VERSION 89        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -625,6 +625,7 @@ extern struct TRX_SETTINGS {
 	uint16_t FM_LPF_RX_Filter_shadow;
 	uint16_t FM_LPF_TX_Filter_shadow;
 	uint16_t FM_HPF_RX_Filter_shadow;
+	uint16_t NOTCH_Filter_width;
 	uint16_t ATU_MEM_STEP_KHZ;
 
 	int8_t MIC_NOISE_GATE;

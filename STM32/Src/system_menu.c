@@ -66,6 +66,7 @@ static void SYSMENU_HANDL_FILTER_AMFM_LPF_Stages(int8_t direction);
 static void SYSMENU_HANDL_FILTER_CW_GaussFilter(int8_t direction);
 static void SYSMENU_HANDL_FILTER_CW_LPF_Stages(int8_t direction);
 static void SYSMENU_HANDL_FILTER_SSB_LPF_Stages(int8_t direction);
+static void SYSMENU_HANDL_FILTER_NOTCH_Filter_width(int8_t direction);
 
 static void SYSMENU_HANDL_RX_ADC_DITH(int8_t direction);
 static void SYSMENU_HANDL_RX_ADC_DRIVER(int8_t direction);
@@ -753,6 +754,7 @@ const static struct sysmenu_item_handler sysmenu_filter_handlers[] = {
     {"SSB LPF RX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_LPF_RX_Filter_shadow, SYSMENU_HANDL_FILTER_SSB_LPF_RX_pass},
     {"SSB LPF TX Pass", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.SSB_LPF_TX_Filter_shadow, SYSMENU_HANDL_FILTER_SSB_LPF_TX_pass},
     {"SSB LPF Stages", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.SSB_LPF_Stages, SYSMENU_HANDL_FILTER_SSB_LPF_Stages},
+    {"NOTCH Filter width", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.NOTCH_Filter_width, SYSMENU_HANDL_FILTER_NOTCH_Filter_width},
 };
 
 const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
@@ -2459,6 +2461,17 @@ static void SYSMENU_HANDL_FILTER_CW_GaussFilter(int8_t direction) {
 		TRX.CW_GaussFilter = false;
 	}
 	NeedReinitAudioFilters = true;
+}
+
+void SYSMENU_HANDL_FILTER_NOTCH_Filter_width(int8_t direction) {
+	if (TRX.NOTCH_Filter_width > 10 || direction > 0) {
+		TRX.NOTCH_Filter_width += direction;
+	}
+	if (TRX.NOTCH_Filter_width > 500) {
+		TRX.NOTCH_Filter_width = 500;
+	}
+
+	NeedReinitNotch = true;
 }
 
 // RX MENU
