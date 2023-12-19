@@ -63,6 +63,10 @@ static uint8_t Minutes;
 static uint8_t Last_showed_Minutes = 255;
 static uint8_t Seconds;
 static uint8_t Last_showed_Seconds = 255;
+static uint8_t Day;
+static uint8_t Last_showed_Day = 255;
+static uint8_t Month;
+static uint8_t Last_showed_Month = 255;
 
 static uint32_t Tooltip_DiplayStartTime = 0;
 static bool Tooltip_first_draw = true;
@@ -1901,16 +1905,17 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 #endif
 
 	// SD REC
-	if (SD_RecordInProcess) {
-		LCDDriver_printText("REC", LAYOUT->STATUS_LABEL_REC_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_REC_Y_OFFSET, COLOR_RED, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-	} else {
-		LCDDriver_printText("   ", LAYOUT->STATUS_LABEL_REC_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_REC_Y_OFFSET, COLOR_RED, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
-	}
+	LCDDriver_printText(SD_RecordInProcess ? "REC" : "   ", LAYOUT->STATUS_LABEL_REC_X_OFFSET, LAYOUT->STATUS_Y_OFFSET + LAYOUT->STATUS_LABEL_REC_Y_OFFSET, COLOR_RED, BG_COLOR,
+	                    LAYOUT->STATUS_LABELS_FONT_SIZE);
 
 	// ERRORS LABELS
+	bool has_error = false;
+#if !defined(LAY_800x480)
 	LCDDriver_Fill_RectWH(LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, LAYOUT->STATUS_ERR_WIDTH, LAYOUT->STATUS_ERR_HEIGHT, BG_COLOR);
+#endif
 	if (TRX_ADC_OTR && !TRX_on_TX && !TRX.ADC_SHDN) {
 		LCDDriver_printText("OVR", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		has_error = true;
 	} else if (TRX_ADC_MAXAMPLITUDE > (ADC_FULL_SCALE * 0.499f) || TRX_ADC_MINAMPLITUDE < -(ADC_FULL_SCALE * 0.499f)) {
 		if (ADCDAC_OVR_StatusLatency >= 10) {
 			TRX_ADC_OTR = true;
@@ -1921,48 +1926,72 @@ static void LCD_displayStatusInfoBar(bool redraw) {
 	// LAYOUT->STATUS_LABELS_FONT_SIZE);
 	if (APROC_IFGain_Overflow) {
 		LCDDriver_printText("IFO", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		has_error = true;
 	}
 	if (TRX_PWR_ALC_SWR_OVERFLOW) {
 		LCDDriver_printText("OVS", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		has_error = true;
 	}
 	if (TRX_DAC_OTR) {
 		LCDDriver_printText("OVR", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		has_error = true;
 	}
 	if (CODEC_Buffer_underrun && !TRX_on_TX) {
 		LCDDriver_printText("WBF", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		has_error = true;
 	}
 	if (FPGA_Buffer_underrun && TRX_on_TX) {
 		LCDDriver_printText("FBF", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		has_error = true;
 	}
 	if (RX_USB_AUDIO_underrun) {
 		LCDDriver_printText("UBF", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		has_error = true;
 	}
 	if (SD_underrun) {
 		LCDDriver_printText("SDF", LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->STATUS_ERR, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		has_error = true;
 	}
 
 	RTC_TimeTypeDef sTime = {0};
 	RTC_DateTypeDef sDate = {0};
 	getLocalDateTime(&sDate, &sTime);
+	Day = sDate.Date;
+	Month = sDate.Month;
 	Hours = sTime.Hours;
 	Minutes = sTime.Minutes;
 	Seconds = sTime.Seconds;
 
-	if (redraw || (Hours != Last_showed_Hours)) {
+#if (defined(LAY_800x480))
+	if (has_error) {
+		Last_showed_Day = 255;
+		Last_showed_Month = 255;
+		LCDDriver_printText("  ", LAYOUT->STATUS_ERR_OFFSET_X + LAYOUT->STATUS_LABELS_FONT_SIZE * RASTR_FONT_W * 3, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->CLOCK, BG_COLOR,
+		                    LAYOUT->STATUS_LABELS_FONT_SIZE);
+	}
+	if (!has_error && (redraw || Day != Last_showed_Day || Month != Last_showed_Month)) {
+		sprintf(ctmp, "%02d.%02d", Day, Month);
+		addSymbols(ctmp, ctmp, 2, "0", false);
+		LCDDriver_printText(ctmp, LAYOUT->STATUS_ERR_OFFSET_X, LAYOUT->STATUS_ERR_OFFSET_Y, COLOR->CLOCK, BG_COLOR, LAYOUT->STATUS_LABELS_FONT_SIZE);
+		Last_showed_Day = Day;
+		Last_showed_Month = Month;
+	}
+#endif
+	if (redraw || Hours != Last_showed_Hours) {
 		sprintf(ctmp, "%d", Hours);
 		addSymbols(ctmp, ctmp, 2, "0", false);
 		LCDDriver_printTextFont(ctmp, LAYOUT->CLOCK_POS_HRS_X, LAYOUT->CLOCK_POS_Y, COLOR->CLOCK, BG_COLOR, LAYOUT->CLOCK_FONT);
 		LCDDriver_printTextFont(":", LCDDriver_GetCurrentXOffset(), LAYOUT->CLOCK_POS_Y, COLOR->CLOCK, BG_COLOR, LAYOUT->CLOCK_FONT);
 		Last_showed_Hours = Hours;
 	}
-	if (redraw || (Minutes != Last_showed_Minutes)) {
+	if (redraw || Minutes != Last_showed_Minutes) {
 		sprintf(ctmp, "%d", Minutes);
 		addSymbols(ctmp, ctmp, 2, "0", false);
 		LCDDriver_printTextFont(ctmp, LAYOUT->CLOCK_POS_MIN_X, LAYOUT->CLOCK_POS_Y, COLOR->CLOCK, BG_COLOR, LAYOUT->CLOCK_FONT);
 		LCDDriver_printTextFont(":", LCDDriver_GetCurrentXOffset(), LAYOUT->CLOCK_POS_Y, COLOR->CLOCK, BG_COLOR, LAYOUT->CLOCK_FONT);
 		Last_showed_Minutes = Minutes;
 	}
-	if (redraw || (Seconds != Last_showed_Seconds)) {
+	if (redraw || Seconds != Last_showed_Seconds) {
 		sprintf(ctmp, "%d", Seconds);
 		addSymbols(ctmp, ctmp, 2, "0", false);
 		LCDDriver_printTextFont(ctmp, LAYOUT->CLOCK_POS_SEC_X, LAYOUT->CLOCK_POS_Y, COLOR->CLOCK, BG_COLOR, LAYOUT->CLOCK_FONT);
