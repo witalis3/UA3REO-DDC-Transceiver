@@ -50,7 +50,7 @@ static uint16_t LCD_last_showed_freq_MHz_B = 9999;
 static uint16_t LCD_last_showed_freq_kHz_B = 9999;
 static uint16_t LCD_last_showed_freq_Hz_B = 9999;
 #endif
-static uint64_t manualFreqEnter = 0;
+static char manualFreqEnterString[32] = "";
 static bool LCD_screenKeyboardOpened = false;
 
 static bool LCD_inited = false;
@@ -3126,17 +3126,18 @@ void LCD_showRFPowerWindow(void) {
 }
 
 void LCD_showManualFreqWindow(uint32_t parameter) {
+	if (LCD_busy) {
+		return;
+	}
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	manualFreqEnter = 0;
+	LCD_busy = true;
+	strcpy(manualFreqEnterString, "");
 	const uint8_t buttons_in_line = 3;
 	const uint8_t buttons_top_offset = 100;
-#define buttons_count 14 // 1,2,3,4,5,6,7,8,9,0,MHz,kHz,Hz
-	char *buttons[buttons_count] = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "<-", "MHz", "kHz", "Hz"};
-	const uint8_t buttons_lines = ceilf((float32_t)buttons_count / (float32_t)buttons_in_line);
+	const uint8_t buttons_lines = 5;
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
 	LCD_openWindow(window_width, window_height);
-	LCD_busy = true;
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 0 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
@@ -3181,6 +3182,10 @@ void LCD_showManualFreqWindow(uint32_t parameter) {
 	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 3 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
 	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "0", false, 0, true, 0, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
 	            COLOR->BUTTON_BORDER, COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
+	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + 2 * (LAYOUT->WINDOWS_BUTTON_WIDTH + LAYOUT->WINDOWS_BUTTON_MARGIN),
+	            buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN + 3 * (LAYOUT->WINDOWS_BUTTON_HEIGHT + LAYOUT->WINDOWS_BUTTON_MARGIN), LAYOUT->WINDOWS_BUTTON_WIDTH,
+	            LAYOUT->WINDOWS_BUTTON_HEIGHT, ".", false, 0, true, 10, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
+	            COLOR->BUTTON_BORDER, COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
 
 	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN + LAYOUT->WINDOWS_BUTTON_WIDTH * 2 + LAYOUT->WINDOWS_BUTTON_MARGIN * 2, 30, LAYOUT->WINDOWS_BUTTON_WIDTH, LAYOUT->WINDOWS_BUTTON_HEIGHT, "<-",
 	            false, 0, true, 11, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER,
@@ -3199,50 +3204,49 @@ void LCD_showManualFreqWindow(uint32_t parameter) {
 	            LAYOUT->WINDOWS_BUTTON_HEIGHT, "MHz", false, 0, true, 12, LCD_ManualFreqButtonHandler, LCD_ManualFreqButtonHandler, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT,
 	            COLOR->BUTTON_BORDER, COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
 
-	LCD_ManualFreqButtonHandler(0);
+	LCD_ManualFreqButtonHandler(99);
 	LCD_busy = false;
 #endif
 }
 
 void LCD_ManualFreqButtonHandler(uint32_t parameter) {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	char buff[50] = {0};
-	uint64_t newfreq = 0;
 	if (parameter < 10) {
-		if (manualFreqEnter < 100000000) {
-			manualFreqEnter *= 10;
-		} else {
-			manualFreqEnter /= 10;
-			manualFreqEnter *= 10;
+		if (strlen(manualFreqEnterString) < 11) {
+			char digit[2] = {parameter + '0', 0};
+			strncat(manualFreqEnterString, digit, 1);
 		}
+	}
+	if (parameter == 10) {
+		strncat(manualFreqEnterString, ".", 1);
+	}
+	if (parameter == 11 && strlen(manualFreqEnterString) > 0) {
+		manualFreqEnterString[strlen(manualFreqEnterString) - 1] = '\0';
+	}
 
-		manualFreqEnter += parameter;
-	}
-	if (parameter == 11) {
-		manualFreqEnter /= 10;
-	}
+	uint64_t newfreq = 0;
+	float64_t float64val = atof(manualFreqEnterString);
 	if (parameter == 12) // MHz
 	{
-		newfreq = manualFreqEnter * 1000000;
+		newfreq = round(float64val * 1000000.0);
 		LCD_closeWindow();
 	}
 	if (parameter == 13) // kHz
 	{
-		newfreq = manualFreqEnter * 1000;
+		newfreq = round(float64val * 1000.0);
 		LCD_closeWindow();
 	}
 	if (parameter == 14) // Hz
 	{
-		newfreq = manualFreqEnter * 1;
+		newfreq = round(float64val * 1.0);
 		LCD_closeWindow();
 	}
 	if (newfreq > 0) {
 		TRX_setFrequency(newfreq, CurrentVFO);
 	}
 
-	sprintf(buff, "%llu", manualFreqEnter);
-	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN, 30, LAYOUT->WINDOWS_BUTTON_WIDTH * 2 + LAYOUT->WINDOWS_BUTTON_MARGIN, LAYOUT->WINDOWS_BUTTON_HEIGHT, buff, false, false, true, 0, NULL, NULL,
-	            COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
+	printButton(LAYOUT->WINDOWS_BUTTON_MARGIN, 30, LAYOUT->WINDOWS_BUTTON_WIDTH * 2 + LAYOUT->WINDOWS_BUTTON_MARGIN, LAYOUT->WINDOWS_BUTTON_HEIGHT, manualFreqEnterString, false, false, true,
+	            0, NULL, NULL, COLOR->BUTTON_TEXT, COLOR->BUTTON_INACTIVE_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_SWITCH_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND, LAYOUT->TOPBUTTONS_FONT);
 #endif
 }
 

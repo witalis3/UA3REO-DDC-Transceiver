@@ -144,13 +144,13 @@ void print_bin26(uint32_t data, bool _inline) {
 	print(tmp);
 }
 
-uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num, bool invert_iq_by_mixer) // calculate the frequency from the phrase for FPGA (RX1 / RX2)
+uint32_t getRXPhraseFromFrequency(int64_t freq, uint8_t rx_num, bool invert_iq_by_mixer) // calculate the frequency from the phrase for FPGA (RX1 / RX2)
 {
 	if (freq < 0) {
 		return 0;
 	}
 	bool inverted = false;
-	int32_t _freq = freq;
+	int64_t _freq = freq;
 	if (_freq > ADC_CLOCK / 2) // Go Nyquist
 	{
 		while (_freq > (ADC_CLOCK / 2)) {
