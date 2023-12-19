@@ -329,6 +329,11 @@ bool TRX_TX_Disabled(uint64_t freq) {
 			notx = true;
 		}
 		break;
+	case BANDID_630m:
+		if (CALIBRATE.NOTX_630m) {
+			notx = true;
+		}
+		break;
 	case BANDID_160m:
 		if (CALIBRATE.NOTX_160m) {
 			notx = true;
@@ -396,17 +401,17 @@ bool TRX_TX_Disabled(uint64_t freq) {
 		break;
 	case BANDID_2m:
 	case BANDID_Marine:
-		if (CALIBRATE.NOTX_2m && !TRX.Transverter_2m) {
+		if (CALIBRATE.NOTX_2m) {
 			notx = true;
 		}
 		break;
 	case BANDID_70cm:
-		if (CALIBRATE.NOTX_70cm && !TRX.Transverter_70cm) {
+		if (CALIBRATE.NOTX_70cm) {
 			notx = true;
 		}
 		break;
 	case BANDID_23cm:
-		if (!TRX.Transverter_23cm) {
+		if (CALIBRATE.NOTX_23cm) {
 			notx = true;
 		}
 		break;
@@ -430,6 +435,11 @@ bool TRX_TX_Disabled(uint64_t freq) {
 			notx = true;
 		}
 		break;
+	case BANDID_1_2cm:
+		if (!TRX.Transverter_1_2cm) {
+			notx = true;
+		}
+		break;
 	default:
 		if (CALIBRATE.NOTX_NOTHAM) {
 			notx = true;
@@ -445,12 +455,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 
 	bool transverter_enabled = false;
-	if (TRX.Transverter_2m || TRX.Transverter_70cm || TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm || TRX.Transverter_QO100) {
+	if (TRX.Transverter_2m || TRX.Transverter_70cm || TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm || TRX.Transverter_QO100 ||
+	    TRX.Transverter_1_2cm) {
 		transverter_enabled = true;
-	}
-
-	if (!transverter_enabled && _freq >= MAX_RX_FREQ_HZ) {
-		_freq = MAX_RX_FREQ_HZ;
 	}
 
 	// save old band data
@@ -507,6 +514,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	if (TRX.Transverter_QO100 && cur_vfo_band == BANDID_QO100) {
 		cur_vfo_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_kHz * 1000) + (cur_vfo_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
 	}
+	if (TRX.Transverter_1_2cm && cur_vfo_band == BANDID_1_2cm) {
+		cur_vfo_freq = ((int64_t)CALIBRATE.Transverter_1_2cm_IF_MHz * HZ_IN_MHZ) + (cur_vfo_freq - (int64_t)CALIBRATE.Transverter_1_2cm_RF_MHz * HZ_IN_MHZ);
+	}
 
 	int64_t sec_vfo_freq = SecondaryVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
 	int8_t sec_vfo_band = getBandFromFreq(sec_vfo_freq, true);
@@ -531,6 +541,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 	if (TRX.Transverter_QO100 && sec_vfo_band == BANDID_QO100) {
 		sec_vfo_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_kHz * 1000) + (sec_vfo_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
+	}
+	if (TRX.Transverter_1_2cm && sec_vfo_band == BANDID_1_2cm) {
+		sec_vfo_freq = ((int64_t)CALIBRATE.Transverter_1_2cm_IF_MHz * HZ_IN_MHZ) + (sec_vfo_freq - (int64_t)CALIBRATE.Transverter_1_2cm_RF_MHz * HZ_IN_MHZ);
 	}
 
 	int64_t vfo_tx_freq = CurrentVFO->Freq + (TRX.XIT_Enabled ? TRX_XIT : 0);
@@ -557,6 +570,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 	if (TRX.Transverter_QO100 && tx_vfo_band == BANDID_QO100) {
 		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_TX_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
+	}
+	if (TRX.Transverter_1_2cm && tx_vfo_band == BANDID_1_2cm) {
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_1_2cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_1_2cm_RF_MHz * HZ_IN_MHZ);
 	}
 
 	bool rx1_invert_iq_by_mixer = false;

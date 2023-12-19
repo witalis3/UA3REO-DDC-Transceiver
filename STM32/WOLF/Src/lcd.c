@@ -2852,8 +2852,8 @@ static void LCD_showBandWindow(bool secondary_vfo) {
 	}
 
 	uint8_t buttons_in_line = 6;
-	if (TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm || BAND_SELECTABLE[BANDID_60m] || BAND_SELECTABLE[BANDID_4m] ||
-	    BAND_SELECTABLE[BANDID_AIR] || BAND_SELECTABLE[BANDID_Marine]) {
+	if (CALIBRATE.ENABLE_23cm_band || TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm || TRX.Transverter_QO100 || TRX.Transverter_1_2cm ||
+	    BAND_SELECTABLE[BANDID_60m] || BAND_SELECTABLE[BANDID_4m] || BAND_SELECTABLE[BANDID_AIR] || BAND_SELECTABLE[BANDID_Marine]) {
 		buttons_in_line = 7;
 	}
 

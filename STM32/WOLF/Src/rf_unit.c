@@ -110,32 +110,29 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 
 	// Transverters
+	if (TRX.Transverter_1_2cm && band == BANDID_1_2cm) { // 1.2cm
+		band_out = CALIBRATE.EXT_1_2cm;
+	}
 	if (TRX.Transverter_QO100 && band == BANDID_QO100) { // QO-100
-		band_out = CALIBRATE.EXT_TRANSV_QO100;
+		band_out = CALIBRATE.EXT_QO100;
 	}
 	if (TRX.Transverter_3cm && band == BANDID_3cm) { // 3cm
-		band_out = CALIBRATE.EXT_TRANSV_3cm;
+		band_out = CALIBRATE.EXT_3cm;
 	}
 	if (TRX.Transverter_6cm && band == BANDID_6cm) { // 6cm
-		band_out = CALIBRATE.EXT_TRANSV_6cm;
+		band_out = CALIBRATE.EXT_6cm;
 	}
 	if (TRX.Transverter_13cm && band == BANDID_13cm) { // 13cm
-		band_out = CALIBRATE.EXT_TRANSV_13cm;
-	}
-	if (TRX.Transverter_23cm && band == BANDID_23cm) { // 23cm
-		band_out = CALIBRATE.EXT_TRANSV_23cm;
-	}
-	if (TRX.Transverter_70cm && band == BANDID_70cm) { // 70cm
-		band_out = CALIBRATE.EXT_TRANSV_70cm;
-	}
-	if (TRX.Transverter_2m && band == BANDID_2m) { // 2cm
-		band_out = CALIBRATE.EXT_TRANSV_2m;
+		band_out = CALIBRATE.EXT_13cm;
 	}
 
-	if (!TRX.Transverter_70cm && band == BANDID_70cm) { // 70cm
+	if (band < BANDID_13cm) { // 23cm
+		band_out = CALIBRATE.EXT_23cm;
+	}
+	if (band < BANDID_23cm) { // 70cm
 		band_out = CALIBRATE.EXT_70cm;
 	}
-	if (!TRX.Transverter_2m && band < BANDID_70cm) { // 2m
+	if (band < BANDID_70cm) { // 2m
 		band_out = CALIBRATE.EXT_2m;
 	}
 	if (band < BANDID_2m) { // FM
@@ -180,7 +177,10 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	if (band < BANDID_80m) { // 160m
 		band_out = CALIBRATE.EXT_160m;
 	}
-	if (band < BANDID_160m) { // 2200m
+	if (band < BANDID_160m) { // 630m
+		band_out = CALIBRATE.EXT_630m;
+	}
+	if (band < BANDID_630m) { // 2200m
 		band_out = CALIBRATE.EXT_2200m;
 	}
 

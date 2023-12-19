@@ -323,8 +323,11 @@ void shiftTextLeft(char *string, uint_fast16_t shiftLength) {
 float32_t getMaxTXAmplitudeOnFreq(uint64_t freq) {
 	uint16_t calibrate_level = 0;
 
-	if (freq < 1.0 * 1000000) {
+	if (freq < 0.2 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_2200m;
+	}
+	if (freq < 1.0 * 1000000) {
+		calibrate_level = CALIBRATE.rf_out_power_630m;
 	} else if (freq < 2.5 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_160m;
 	} else if (freq < 4.0 * 1000000) {
@@ -363,8 +366,10 @@ float32_t getMaxTXAmplitudeOnFreq(uint64_t freq) {
 		calibrate_level = CALIBRATE.rf_out_power_6cm;
 	} else if (freq < 10489500000) {
 		calibrate_level = CALIBRATE.rf_out_power_3cm;
-	} else {
+	} else if (freq < 15000000000) {
 		calibrate_level = CALIBRATE.rf_out_power_QO100;
+	} else {
+		calibrate_level = CALIBRATE.rf_out_power_1_2cm;
 	}
 
 	if (calibrate_level > 100) {

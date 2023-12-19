@@ -16,8 +16,8 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 146        // Settings config version
-#define CALIB_VERSION 89        // Calibration config version
+#define SETT_VERSION 147        // Settings config version
+#define CALIB_VERSION 90        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -766,6 +766,7 @@ extern struct TRX_SETTINGS {
 	bool Transverter_6cm;
 	bool Transverter_3cm;
 	bool Transverter_QO100;
+	bool Transverter_1_2cm;
 	bool Auto_Input_Switch;
 	bool Auto_Snap;
 	bool Full_Duplex;
@@ -912,6 +913,8 @@ extern struct TRX_CALIBRATE {
 	uint16_t Transverter_6cm_IF_MHz;
 	uint16_t Transverter_3cm_RF_MHz;
 	uint16_t Transverter_3cm_IF_MHz;
+	uint16_t Transverter_1_2cm_RF_MHz;
+	uint16_t Transverter_1_2cm_IF_MHz;
 	uint32_t Transverter_QO100_RF_kHz;
 	uint32_t Transverter_QO100_IF_RX_kHz;
 	uint16_t Transverter_QO100_IF_TX_MHz;
@@ -924,6 +927,7 @@ extern struct TRX_CALIBRATE {
 	int8_t LNA_compensation;
 	uint8_t DAC_driver_mode;
 	uint8_t rf_out_power_2200m;
+	uint8_t rf_out_power_630m;
 	uint8_t rf_out_power_160m;
 	uint8_t rf_out_power_80m;
 	uint8_t rf_out_power_60m;
@@ -944,6 +948,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t rf_out_power_6cm;
 	uint8_t rf_out_power_3cm;
 	uint8_t rf_out_power_QO100;
+	uint8_t rf_out_power_1_2cm;
 	uint8_t ENCODER_DEBOUNCE;
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
@@ -967,6 +972,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t TUNE_MAX_POWER;
 	uint8_t RTC_Coarse_Calibration;
 	uint8_t EXT_2200m;
+	uint8_t EXT_630m;
 	uint8_t EXT_160m;
 	uint8_t EXT_80m;
 	uint8_t EXT_60m;
@@ -983,13 +989,12 @@ extern struct TRX_CALIBRATE {
 	uint8_t EXT_FM;
 	uint8_t EXT_2m;
 	uint8_t EXT_70cm;
-	uint8_t EXT_TRANSV_2m;
-	uint8_t EXT_TRANSV_70cm;
-	uint8_t EXT_TRANSV_23cm;
-	uint8_t EXT_TRANSV_13cm;
-	uint8_t EXT_TRANSV_6cm;
-	uint8_t EXT_TRANSV_3cm;
-	uint8_t EXT_TRANSV_QO100;
+	uint8_t EXT_23cm;
+	uint8_t EXT_13cm;
+	uint8_t EXT_6cm;
+	uint8_t EXT_3cm;
+	uint8_t EXT_QO100;
+	uint8_t EXT_1_2cm;
 	uint8_t ATU_AVERAGING;
 	uint8_t TwoSignalTune_Balance;
 	uint8_t IF_GAIN_MIN;
@@ -1006,6 +1011,7 @@ extern struct TRX_CALIBRATE {
 	bool ENCODER2_INVERT;
 	bool NOTX_NOTHAM;
 	bool NOTX_2200m;
+	bool NOTX_630m;
 	bool NOTX_160m;
 	bool NOTX_80m;
 	bool NOTX_60m;
@@ -1022,7 +1028,9 @@ extern struct TRX_CALIBRATE {
 	bool NOTX_FM;
 	bool NOTX_2m;
 	bool NOTX_70cm;
+	bool NOTX_23cm;
 	bool ENABLE_2200m_band;
+	bool ENABLE_630m_band;
 	bool ENABLE_60m_band;
 	bool ENABLE_6m_band;
 	bool ENABLE_4m_band;
@@ -1031,6 +1039,7 @@ extern struct TRX_CALIBRATE {
 	bool ENABLE_AIR_band;
 	bool ENABLE_marine_band;
 	bool ENABLE_70cm_band;
+	bool ENABLE_23cm_band;
 	bool OTA_update;
 	bool LCD_Rotate;
 	bool TOUCHPAD_horizontal_flip;
