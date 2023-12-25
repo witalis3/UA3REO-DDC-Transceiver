@@ -1846,7 +1846,7 @@ static void LCD_showBWWindow(void) {}
 
 void LCD_showRFPowerWindow(void) {}
 
-void LCD_showManualFreqWindow(bool secondary_vfo) {}
+void LCD_showManualFreqWindow(uint32_t parameter) {}
 
 void LCD_ManualFreqButtonHandler(uint32_t parameter) {}
 
