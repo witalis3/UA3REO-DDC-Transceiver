@@ -1012,7 +1012,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		bool wf_100d_shift_array[56];
 		static bool wf_100d_shift_array_old[56];
 
-		wf_100d_shift_array[0] = false; // U1-7 -
+		wf_100d_shift_array[0] = TRX.TUNER_Enabled && (TRX.ATU_I > 0 || TRX.ATU_C > 0); // U1-7 TU_BY
+
 		// U1-6 FAN_OUT
 		wf_100d_shift_array[1] = false;
 		static bool fan_pwm = false;
