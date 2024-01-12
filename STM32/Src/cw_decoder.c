@@ -74,6 +74,7 @@ void CWDecoder_Init(void) {
 // start CW decoder for the data block
 void CWDecoder_Process(float32_t *bufferIn) {
 	// clear the old FFT buffer
+
 	dma_memset(CWDEC_FFTBuffer, 0x00, sizeof(CWDEC_FFTBuffer));
 	// copy the incoming data for the next work
 	dma_memcpy(CWDEC_InputBuffer, bufferIn, sizeof(CWDEC_InputBuffer));
@@ -84,9 +85,8 @@ void CWDecoder_Process(float32_t *bufferIn) {
 			CWDEC_InputBuffer[i] *= generateSin(1.0f, &cw_decoder_signal_gen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
 		}
 	}
-	// Decimator
+	// Decimator 
 	arm_fir_decimate_f32(&CWDEC_DECIMATE, CWDEC_InputBuffer, CWDEC_InputBuffer, DECODER_PACKET_SIZE);
-	// Fill the unnecessary part of the buffer with zeros
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++) {
 		if (i < CWDECODER_FFT_SAMPLES) {
 			if (i < (CWDECODER_FFT_SAMPLES - CWDECODER_ZOOMED_SAMPLES)) { // offset old data
@@ -141,12 +141,12 @@ void CWDecoder_Process(float32_t *bufferIn) {
 		arm_scale_f32(&CWDEC_FFTBuffer[1], 1.0f / maxValueAvg, &CWDEC_FFTBuffer[1], (CWDECODER_SPEC_PART - 1));
 	}
 
-	// println(maxValue, " ", maxValueAvg, " ", CWDEC_FFTBuffer[maxIndex], " ", maxIndex);
+	// println((double)maxValue, " ", (double)maxValueAvg, " ", (double)CWDEC_FFTBuffer[maxIndex], " ", (double)maxIndex);
 
 	if (CWDEC_FFTBuffer[maxIndex] > CWDECODER_MAX_THRES && (maxValue > meanValue * (float32_t)TRX.CW_Decoder_Threshold)) // signal is active
 	{
-		// print("s");
-		// println(maxValue / meanValue);
+//		 print("s - ");
+//		 println((double)maxValue, " / ", (double) meanValue);
 		realstate = true;
 	} else // signal is not active
 	{

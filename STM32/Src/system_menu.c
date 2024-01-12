@@ -1074,9 +1074,9 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
 };
 
 const static struct sysmenu_item_handler sysmenu_decoders_handlers[] = {
-#if !defined(FRONTPANEL_LITE)
     {"CW Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CW_Decoder, SYSMENU_HANDL_DECODERS_CW_Decoder},
     {"CW Decod. Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.CW_Decoder_Threshold, SYSMENU_HANDL_DECODERS_CW_Decoder_Threshold},
+#if !defined(FRONTPANEL_LITE)
     {"RDS Decoder", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.RDS_Decoder, SYSMENU_HANDL_DECODERS_RDS_Decoder},
 #endif
     {"RTTY Speed", SYSMENU_UINT16, NULL, (uint32_t *)&TRX.RTTY_Speed, SYSMENU_HANDL_DECODERS_RTTY_Speed},
