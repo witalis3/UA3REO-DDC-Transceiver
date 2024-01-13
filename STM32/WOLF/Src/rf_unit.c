@@ -1179,14 +1179,14 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		shift_array[6] = currentAnt == TRX_ANT_2; // 7-1 ANT2
 		shift_array[7] = currentAnt == TRX_ANT_1; // 7-0 ANT1
 
-		shift_array[8] = false;                                       // 6-7 UNUSED
-		shift_array[9] = false;                                       // 6-6 UNUSED
-		shift_array[10] = false;                                      // 6-5 UNUSED
-		shift_array[11] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0); // 6-4 TunC1
-		shift_array[12] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1); // 6-3 TunC2
-		shift_array[13] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2); // 6-2 TunC3
-		shift_array[14] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3); // 6-1 TunC4
-		shift_array[15] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4); // 6-0 TunC5
+		shift_array[8] = false;                                                  // 6-7 UNUSED
+		shift_array[9] = false;                                                  // 6-6 UNUSED
+		shift_array[10] = TRX.TUNER_Enabled && (TRX.ATU_I > 0 || TRX.ATU_C > 0); // 6-5 TUN-BY
+		shift_array[11] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0);            // 6-4 TunC1
+		shift_array[12] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1);            // 6-3 TunC2
+		shift_array[13] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2);            // 6-2 TunC3
+		shift_array[14] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3);            // 6-1 TunC4
+		shift_array[15] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4);            // 6-0 TunC5
 
 		shift_array[16] = CurrentVFO->RXFreqAfterTransverters >= 70000000;    // 5-7 HF-VHF-SELECT
 		shift_array[17] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4);         // 5-6 TunL5
