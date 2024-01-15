@@ -1240,6 +1240,11 @@
               <FileType>5</FileType>
               <FilePath>..\..\Src\wspr.h</FilePath>
             </File>
+            <File>
+              <FileName>cw_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\cw_decoder.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -2566,6 +2571,11 @@
               <FileType>5</FileType>
               <FilePath>..\..\Src\wspr.h</FilePath>
             </File>
+            <File>
+              <FileName>cw_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\cw_decoder.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3891,6 +3901,11 @@
               <FileName>wspr.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\..\Src\wspr.h</FilePath>
+            </File>
+            <File>
+              <FileName>cw_decoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\Src\cw_decoder.c</FilePath>
             </File>
           </Files>
         </Group>
