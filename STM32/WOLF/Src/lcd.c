@@ -2722,10 +2722,11 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 		}
 
 		TRX_ScanMode = false;
+		VFO *vfo = TRX.SPLIT_Enabled ? SecondaryVFO : CurrentVFO;
 
 		const uint8_t slowler = 4;
 		float64_t step = TRX.FRQ_STEP_SSB_Hz;
-		if (CurrentVFO->Mode == TRX_MODE_CW) {
+		if (vfo->Mode == TRX_MODE_CW) {
 			step = (float64_t)TRX.FRQ_STEP_CW_Hz;
 		}
 		if (TRX.Fast) {
@@ -2735,7 +2736,7 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 			step = 1.0;
 		}
 
-		uint64_t newfreq = getFreqOnFFTPosition(getFreqPositionOnFFT(CurrentVFO->Freq, true) - dx / slowler);
+		uint64_t newfreq = getFreqOnFFTPosition(getFreqPositionOnFFT(vfo->Freq, true) + dx / slowler);
 		if (dx < 0.0f) {
 			newfreq = ceill(newfreq / step) * step;
 		}
@@ -2743,10 +2744,11 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 			newfreq = floorl(newfreq / step) * step;
 		}
 
-		TRX_setFrequency(newfreq, CurrentVFO);
+		TRX_setFrequency(newfreq, vfo);
 		LCD_UpdateQuery.FreqInfo = true;
 		return true;
 	}
+
 	// bottom buttons
 	if ((LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) < y) {
 		if (dx < -50) {
