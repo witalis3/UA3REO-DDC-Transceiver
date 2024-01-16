@@ -1248,7 +1248,7 @@ static void WIFI_printImage_Propagation_callback(void) {
 					LCDDriver_printImage_RLECompressed_StartStream(LCD_WIDTH / 2 - width / 2, LCD_HEIGHT / 2 - height / 2, width, height);
 					char buff[64] = {0};
 					sprintf(buff, "/trx_services/propagination.php?part=0&width=%u&height=%u", LCD_WIDTH, LCD_HEIGHT);
-					WIFI_getHTTPpage("wolf-sdr.com", buff, WIFI_printImage_stream_callback, false, false);
+					WIFI_getHTTPpage(WIFI_HOST, buff, WIFI_printImage_stream_callback, false, false);
 				}
 			}
 		}
@@ -1280,7 +1280,7 @@ static void WIFI_printImage_Tropo_callback(void) {
 					LCDDriver_printImage_RLECompressed_StartStream(LCD_WIDTH / 2 - width / 2, LCD_HEIGHT / 2 - height / 2, width, height);
 					char buff[64] = {0};
 					sprintf(buff, "/trx_services/tropo.php?region=%u&part=0&width=%u&height=%u", TRX.TROPO_Region, LCD_WIDTH, LCD_HEIGHT);
-					WIFI_getHTTPpage("wolf-sdr.com", buff, WIFI_printImage_stream_callback, false, false);
+					WIFI_getHTTPpage(WIFI_HOST, buff, WIFI_printImage_stream_callback, false, false);
 				}
 			}
 		}
@@ -1310,7 +1310,7 @@ static void WIFI_printImage_DayNight_callback(void) {
 
 				if (filesize > 0 && width > 0 && height > 0) {
 					LCDDriver_printImage_RLECompressed_StartStream(LCD_WIDTH / 2 - width / 2, LCD_HEIGHT / 2 - height / 2, width, height);
-					WIFI_getHTTPpage("wolf-sdr.com", "/trx_services/daynight.php?part=0", WIFI_printImage_stream_callback, false, false);
+					WIFI_getHTTPpage(WIFI_HOST, "/trx_services/daynight.php?part=0", WIFI_printImage_stream_callback, false, false);
 				}
 			}
 		}
@@ -1339,7 +1339,7 @@ static void WIFI_printImage_Ionogram_callback(void) {
 					LCDDriver_printImage_RLECompressed_StartStream(LCD_WIDTH / 2 - width / 2, LCD_HEIGHT / 2 - height / 2, width, height);
 					char buff[64] = {0};
 					sprintf(buff, "/trx_services/ionogram.php?part=0&ursiCode=%s", TRX.URSI_CODE);
-					WIFI_getHTTPpage("wolf-sdr.com", buff, WIFI_printImage_stream_callback, false, false);
+					WIFI_getHTTPpage(WIFI_HOST, buff, WIFI_printImage_stream_callback, false, false);
 				}
 			}
 		}
@@ -1367,7 +1367,7 @@ void WIFI_getRDA(void) {
 	}
 	char url[64] = "/trx_services/rda.php?callsign=";
 	strcat(url, TRX.CALLSIGN);
-	WIFI_getHTTPpage("wolf-sdr.com", url, WIFI_printText_callback, false, false);
+	WIFI_getHTTPpage(WIFI_HOST, url, WIFI_printText_callback, false, false);
 }
 
 static void WIFI_getDXCluster_background_callback(void) {
@@ -1506,7 +1506,7 @@ bool WIFI_getDXCluster_background(void) {
 
 	strcat(url, BANDS[band].name);
 	sprintf(url, "%s&timeout=%d", url, TRX.FFT_DXCluster_Timeout);
-	WIFI_getHTTPpage("wolf-sdr.com", url, WIFI_getDXCluster_background_callback, false, false);
+	WIFI_getHTTPpage(WIFI_HOST, url, WIFI_getDXCluster_background_callback, false, false);
 	return true;
 }
 
@@ -1522,7 +1522,7 @@ bool WIFI_getWOLFCluster_background(void) {
 
 	char url[150];
 	sprintf(url, "/trx_services/wolf_cluster.php?background&freq=%llu&callsign=%s&timeout=%d", CurrentVFO->Freq, TRX.CALLSIGN, TRX.FFT_DXCluster_Timeout);
-	WIFI_getHTTPpage("wolf-sdr.com", url, WIFI_getWOLFCluster_background_callback, false, false);
+	WIFI_getHTTPpage(WIFI_HOST, url, WIFI_getWOLFCluster_background_callback, false, false);
 	return true;
 }
 
@@ -1559,7 +1559,7 @@ void WIFI_getDXCluster(void) {
 	}
 
 	strcat(url, BANDS[band].name);
-	WIFI_getHTTPpage("wolf-sdr.com", url, WIFI_printText_callback, false, false);
+	WIFI_getHTTPpage(WIFI_HOST, url, WIFI_printText_callback, false, false);
 }
 
 void WIFI_getPropagation(void) {
@@ -1581,7 +1581,7 @@ void WIFI_getPropagation(void) {
 	}
 	char buff[64] = {0};
 	sprintf(buff, "/trx_services/propagination.php?width=%u&height=%u", LCD_WIDTH, LCD_HEIGHT);
-	WIFI_getHTTPpage("wolf-sdr.com", buff, WIFI_printImage_Propagation_callback, false, false);
+	WIFI_getHTTPpage(WIFI_HOST, buff, WIFI_printImage_Propagation_callback, false, false);
 }
 
 void WIFI_getTropo(void) {
@@ -1594,7 +1594,7 @@ void WIFI_getTropo(void) {
 	}
 	char buff[64] = {0};
 	sprintf(buff, "/trx_services/tropo.php?region=%u", TRX.TROPO_Region);
-	WIFI_getHTTPpage("wolf-sdr.com", "/trx_services/tropo.php", WIFI_printImage_Tropo_callback, false, false);
+	WIFI_getHTTPpage(WIFI_HOST, "/trx_services/tropo.php", WIFI_printImage_Tropo_callback, false, false);
 }
 
 void WIFI_getDayNightMap(void) {
@@ -1605,7 +1605,7 @@ void WIFI_getDayNightMap(void) {
 		LCDDriver_printTextFont("No connection", 10, 20, FG_COLOR, BG_COLOR, &FreeSans9pt7b);
 		return;
 	}
-	WIFI_getHTTPpage("wolf-sdr.com", "/trx_services/daynight.php", WIFI_printImage_DayNight_callback, false, false);
+	WIFI_getHTTPpage(WIFI_HOST, "/trx_services/daynight.php", WIFI_printImage_DayNight_callback, false, false);
 }
 
 void WIFI_getIonogram(void) {
@@ -1618,7 +1618,7 @@ void WIFI_getIonogram(void) {
 	}
 	char buff[64] = {0};
 	sprintf(buff, "/trx_services/ionogram.php?ursiCode=%s", TRX.URSI_CODE);
-	WIFI_getHTTPpage("wolf-sdr.com", buff, WIFI_printImage_Ionogram_callback, false, false);
+	WIFI_getHTTPpage(WIFI_HOST, buff, WIFI_printImage_Ionogram_callback, false, false);
 }
 
 bool WIFI_SW_Restart(void (*callback)(void)) {
@@ -1658,7 +1658,7 @@ void WIFI_checkFWUpdates(void) {
 	char url[128];
 	sprintf(url, "/trx_services/check_fw_updates_2.php?dev=0&stm32=%s&fpga=%d.%d.%d&lcd=%s&callsign=%s", STM32_VERSION_STR, FPGA_FW_Version[2], FPGA_FW_Version[1], FPGA_FW_Version[0],
 	        ota_config_lcd, TRX.CALLSIGN);
-	WIFI_getHTTPpage("wolf-sdr.com", url, WIFI_checkFWUpdates_callback, false, false);
+	WIFI_getHTTPpage(WIFI_HOST, url, WIFI_checkFWUpdates_callback, false, false);
 }
 
 static char *WIFI_downloadFileToSD_filename;
@@ -1685,7 +1685,7 @@ static void WIFI_WIFI_downloadFileToSD_callback_writed(void) {
 		char url[128] = {0};
 		sprintf(url, "%s&start=%d&count=%d", WIFI_downloadFileToSD_url, WIFI_downloadFileToSD_startIndex, WIFI_downloadFileToSD_part_size);
 		println("[WIFI] Get next file part");
-		WIFI_getHTTPpage("wolf-sdr.com", url, WIFI_downloadFileToSD_callback, false, false);
+		WIFI_getHTTPpage(WIFI_HOST, url, WIFI_downloadFileToSD_callback, false, false);
 
 		// progress
 		int32_t downloaded_kb = WIFI_downloadFileToSD_startIndex / 1024;
@@ -1769,7 +1769,7 @@ bool WIFI_downloadFileToSD(char *url, char *filename) {
 	WIFI_downloadFileToSD_startIndex = 0;
 	strcpy(WIFI_downloadFileToSD_url, url);
 	sprintf(url, "%s&start=%d&count=%d", url, WIFI_downloadFileToSD_startIndex, WIFI_downloadFileToSD_part_size);
-	WIFI_getHTTPpage("wolf-sdr.com", url, WIFI_downloadFileToSD_callback, false, false);
+	WIFI_getHTTPpage(WIFI_HOST, url, WIFI_downloadFileToSD_callback, false, false);
 
 	return true;
 }

@@ -96,10 +96,10 @@ uint32_t dbg_FPGA_samples = 0;
 uint8_t TRX_TX_Harmonic = 1;
 uint8_t TRX_TX_sendZeroes = 0;
 int8_t TRX_MemoryChannelSelected;
+volatile bool TRX_REPEATER_Applied = false;
 
 static uint_fast8_t TRX_TXRXMode = 0; // 0 - undef, 1 - rx, 2 - tx, 3 - txrx
 static bool TRX_SPLIT_Applied = false;
-static bool TRX_REPEATER_Applied = false;
 static void TRX_Start_RX(void);
 static void TRX_Start_TX(void);
 static void TRX_Start_TXRX(void);
@@ -329,6 +329,11 @@ bool TRX_TX_Disabled(uint64_t freq) {
 			notx = true;
 		}
 		break;
+	case BANDID_630m:
+		if (CALIBRATE.NOTX_630m) {
+			notx = true;
+		}
+		break;
 	case BANDID_160m:
 		if (CALIBRATE.NOTX_160m) {
 			notx = true;
@@ -396,17 +401,17 @@ bool TRX_TX_Disabled(uint64_t freq) {
 		break;
 	case BANDID_2m:
 	case BANDID_Marine:
-		if (CALIBRATE.NOTX_2m && !TRX.Transverter_2m) {
+		if (CALIBRATE.NOTX_2m) {
 			notx = true;
 		}
 		break;
 	case BANDID_70cm:
-		if (CALIBRATE.NOTX_70cm && !TRX.Transverter_70cm) {
+		if (CALIBRATE.NOTX_70cm) {
 			notx = true;
 		}
 		break;
 	case BANDID_23cm:
-		if (!TRX.Transverter_23cm) {
+		if (CALIBRATE.NOTX_23cm) {
 			notx = true;
 		}
 		break;
@@ -430,6 +435,11 @@ bool TRX_TX_Disabled(uint64_t freq) {
 			notx = true;
 		}
 		break;
+	case BANDID_1_2cm:
+		if (!TRX.Transverter_1_2cm) {
+			notx = true;
+		}
+		break;
 	default:
 		if (CALIBRATE.NOTX_NOTHAM) {
 			notx = true;
@@ -445,12 +455,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 
 	bool transverter_enabled = false;
-	if (TRX.Transverter_2m || TRX.Transverter_70cm || TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm || TRX.Transverter_QO100) {
+	if (TRX.Transverter_2m || TRX.Transverter_70cm || TRX.Transverter_23cm || TRX.Transverter_13cm || TRX.Transverter_6cm || TRX.Transverter_3cm || TRX.Transverter_QO100 ||
+	    TRX.Transverter_1_2cm) {
 		transverter_enabled = true;
-	}
-
-	if (!transverter_enabled && _freq >= MAX_RX_FREQ_HZ) {
-		_freq = MAX_RX_FREQ_HZ;
 	}
 
 	// save old band data
@@ -507,6 +514,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	if (TRX.Transverter_QO100 && cur_vfo_band == BANDID_QO100) {
 		cur_vfo_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_kHz * 1000) + (cur_vfo_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
 	}
+	if (TRX.Transverter_1_2cm && cur_vfo_band == BANDID_1_2cm) {
+		cur_vfo_freq = ((int64_t)CALIBRATE.Transverter_1_2cm_IF_MHz * HZ_IN_MHZ) + (cur_vfo_freq - (int64_t)CALIBRATE.Transverter_1_2cm_RF_MHz * HZ_IN_MHZ);
+	}
 
 	int64_t sec_vfo_freq = SecondaryVFO->Freq + (TRX.RIT_Enabled ? TRX_RIT : 0);
 	int8_t sec_vfo_band = getBandFromFreq(sec_vfo_freq, true);
@@ -531,6 +541,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 	if (TRX.Transverter_QO100 && sec_vfo_band == BANDID_QO100) {
 		sec_vfo_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_RX_kHz * 1000) + (sec_vfo_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
+	}
+	if (TRX.Transverter_1_2cm && sec_vfo_band == BANDID_1_2cm) {
+		sec_vfo_freq = ((int64_t)CALIBRATE.Transverter_1_2cm_IF_MHz * HZ_IN_MHZ) + (sec_vfo_freq - (int64_t)CALIBRATE.Transverter_1_2cm_RF_MHz * HZ_IN_MHZ);
 	}
 
 	int64_t vfo_tx_freq = CurrentVFO->Freq + (TRX.XIT_Enabled ? TRX_XIT : 0);
@@ -557,6 +570,9 @@ void TRX_setFrequency(uint64_t _freq, VFO *vfo) {
 	}
 	if (TRX.Transverter_QO100 && tx_vfo_band == BANDID_QO100) {
 		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_QO100_IF_TX_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_QO100_RF_kHz * 1000);
+	}
+	if (TRX.Transverter_1_2cm && tx_vfo_band == BANDID_1_2cm) {
+		vfo_tx_freq = ((int64_t)CALIBRATE.Transverter_1_2cm_IF_MHz * HZ_IN_MHZ) + (vfo_tx_freq - (int64_t)CALIBRATE.Transverter_1_2cm_RF_MHz * HZ_IN_MHZ);
 	}
 
 	bool rx1_invert_iq_by_mixer = false;
@@ -1133,12 +1149,15 @@ void TRX_setFrequencySlowly_Process(void) {
 	if (!setFreqSlowly_processing) {
 		return;
 	}
-	int64_t diff = CurrentVFO->Freq - setFreqSlowly_target;
+
+	VFO *vfo = TRX.SPLIT_Enabled ? SecondaryVFO : CurrentVFO;
+
+	int64_t diff = vfo->Freq - setFreqSlowly_target;
 	if (diff > TRX_SLOW_SETFREQ_MIN_STEPSIZE || diff < -TRX_SLOW_SETFREQ_MIN_STEPSIZE) {
-		TRX_setFrequency(CurrentVFO->Freq - diff / 4, CurrentVFO);
+		TRX_setFrequency(vfo->Freq - diff / 4, vfo);
 		LCD_UpdateQuery.FreqInfo = true;
 	} else {
-		TRX_setFrequency(setFreqSlowly_target, CurrentVFO);
+		TRX_setFrequency(setFreqSlowly_target, vfo);
 		LCD_UpdateQuery.FreqInfo = true;
 		setFreqSlowly_processing = false;
 	}
@@ -2147,6 +2166,10 @@ void BUTTONHANDLER_REC(uint32_t parameter) {
 void BUTTONHANDLER_FUNC(uint32_t parameter) {
 	if (!TRX.Locked) { // LOCK BUTTON
 		if (!LCD_systemMenuOpened || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu) {
+			if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].clickHandler == NULL) {
+				return;
+			}
+
 			PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].clickHandler(
 			    PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].parameter);
 		}
@@ -2160,6 +2183,10 @@ void BUTTONHANDLER_FUNCH(uint32_t parameter) {
 	} else if (!TRX.Locked ||
 	           PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler == BUTTONHANDLER_LOCK) { // LOCK BUTTON
 		if (!LCD_systemMenuOpened || PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].work_in_menu) {
+			if (PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler == NULL) {
+				return;
+			}
+
 			PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].holdHandler(
 			    PERIPH_FrontPanel_FuncButtonsList[TRX.FuncButtons[TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + parameter]].parameter);
 		}

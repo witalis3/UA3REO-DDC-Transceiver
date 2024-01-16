@@ -110,32 +110,29 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	int8_t band = getBandFromFreq(CurrentVFO->Freq, true);
 
 	// Transverters
+	if (TRX.Transverter_1_2cm && band == BANDID_1_2cm) { // 1.2cm
+		band_out = CALIBRATE.EXT_1_2cm;
+	}
 	if (TRX.Transverter_QO100 && band == BANDID_QO100) { // QO-100
-		band_out = CALIBRATE.EXT_TRANSV_QO100;
+		band_out = CALIBRATE.EXT_QO100;
 	}
 	if (TRX.Transverter_3cm && band == BANDID_3cm) { // 3cm
-		band_out = CALIBRATE.EXT_TRANSV_3cm;
+		band_out = CALIBRATE.EXT_3cm;
 	}
 	if (TRX.Transverter_6cm && band == BANDID_6cm) { // 6cm
-		band_out = CALIBRATE.EXT_TRANSV_6cm;
+		band_out = CALIBRATE.EXT_6cm;
 	}
 	if (TRX.Transverter_13cm && band == BANDID_13cm) { // 13cm
-		band_out = CALIBRATE.EXT_TRANSV_13cm;
-	}
-	if (TRX.Transverter_23cm && band == BANDID_23cm) { // 23cm
-		band_out = CALIBRATE.EXT_TRANSV_23cm;
-	}
-	if (TRX.Transverter_70cm && band == BANDID_70cm) { // 70cm
-		band_out = CALIBRATE.EXT_TRANSV_70cm;
-	}
-	if (TRX.Transverter_2m && band == BANDID_2m) { // 2cm
-		band_out = CALIBRATE.EXT_TRANSV_2m;
+		band_out = CALIBRATE.EXT_13cm;
 	}
 
-	if (!TRX.Transverter_70cm && band == BANDID_70cm) { // 70cm
+	if (band < BANDID_13cm) { // 23cm
+		band_out = CALIBRATE.EXT_23cm;
+	}
+	if (band < BANDID_23cm) { // 70cm
 		band_out = CALIBRATE.EXT_70cm;
 	}
-	if (!TRX.Transverter_2m && band < BANDID_70cm) { // 2m
+	if (band < BANDID_70cm) { // 2m
 		band_out = CALIBRATE.EXT_2m;
 	}
 	if (band < BANDID_2m) { // FM
@@ -180,7 +177,10 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	if (band < BANDID_80m) { // 160m
 		band_out = CALIBRATE.EXT_160m;
 	}
-	if (band < BANDID_160m) { // 2200m
+	if (band < BANDID_160m) { // 630m
+		band_out = CALIBRATE.EXT_630m;
+	}
+	if (band < BANDID_630m) { // 2200m
 		band_out = CALIBRATE.EXT_2200m;
 	}
 
@@ -1012,7 +1012,8 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		bool wf_100d_shift_array[56];
 		static bool wf_100d_shift_array_old[56];
 
-		wf_100d_shift_array[0] = false; // U1-7 -
+		wf_100d_shift_array[0] = TRX.TUNER_Enabled && (TRX.ATU_I > 0 || TRX.ATU_C > 0); // U1-7 TU_BY
+
 		// U1-6 FAN_OUT
 		wf_100d_shift_array[1] = false;
 		static bool fan_pwm = false;
@@ -1178,14 +1179,14 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		shift_array[6] = currentAnt == TRX_ANT_2; // 7-1 ANT2
 		shift_array[7] = currentAnt == TRX_ANT_1; // 7-0 ANT1
 
-		shift_array[8] = false;                                       // 6-7 UNUSED
-		shift_array[9] = false;                                       // 6-6 UNUSED
-		shift_array[10] = false;                                      // 6-5 UNUSED
-		shift_array[11] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0); // 6-4 TunC1
-		shift_array[12] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1); // 6-3 TunC2
-		shift_array[13] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2); // 6-2 TunC3
-		shift_array[14] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3); // 6-1 TunC4
-		shift_array[15] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4); // 6-0 TunC5
+		shift_array[8] = false;                                                  // 6-7 UNUSED
+		shift_array[9] = false;                                                  // 6-6 UNUSED
+		shift_array[10] = TRX.TUNER_Enabled && (TRX.ATU_I > 0 || TRX.ATU_C > 0); // 6-5 TUN-BY
+		shift_array[11] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0);            // 6-4 TunC1
+		shift_array[12] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1);            // 6-3 TunC2
+		shift_array[13] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2);            // 6-2 TunC3
+		shift_array[14] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3);            // 6-1 TunC4
+		shift_array[15] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4);            // 6-0 TunC5
 
 		shift_array[16] = CurrentVFO->RXFreqAfterTransverters >= 70000000;    // 5-7 HF-VHF-SELECT
 		shift_array[17] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4);         // 5-6 TunL5

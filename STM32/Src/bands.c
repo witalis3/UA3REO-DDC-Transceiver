@@ -4,8 +4,9 @@
 #include <stdlib.h>
 
 SRAM4 bool BAND_SELECTABLE[BANDS_COUNT] = {
-    false, // 2200METERS
+    false, // 2200m
     false, // LWBR
+    false, // 630m
     false, // MWBR
     true,  // 160m
     false, // BR 2.4
@@ -44,10 +45,11 @@ SRAM4 bool BAND_SELECTABLE[BANDS_COUNT] = {
     false, // 6cm
     false, // 3cm
     false, // QO-100
+    false, // 1.2cm
 };
 
 const BAND_MAP BANDS[BANDS_COUNT] = {
-    // 2200METERS
+    // 2200 METERS
     {
         .name = "2200m",
         .broadcast = false,
@@ -55,10 +57,12 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .endFreq = 137800,
         .defaultFreq = 135750,
         .regions =
-            (const REGION_MAP[1]){
-                {.startFreq = 135700, .endFreq = 137800, .mode = TRX_MODE_CW},
+            (const REGION_MAP[3]){
+                {.startFreq = 135700, .endFreq = 137400, .mode = TRX_MODE_CW},
+                {.startFreq = 137400, .endFreq = 137600, .mode = TRX_MODE_DIGI_U},
+                {.startFreq = 137600, .endFreq = 137800, .mode = TRX_MODE_CW},
             },
-        .regionsCount = 1,
+        .regionsCount = 3,
         .channels = NULL,
         .channelsCount = 0,
     },
@@ -72,6 +76,21 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .regions =
             (const REGION_MAP[1]){
                 {.startFreq = 148500, .endFreq = 283500, .mode = TRX_MODE_SAM_STEREO},
+            },
+        .regionsCount = 1,
+        .channels = NULL,
+        .channelsCount = 0,
+    },
+    // 630 METERS
+    {
+        .name = "630m",
+        .broadcast = false,
+        .startFreq = 472000,
+        .endFreq = 479000,
+        .defaultFreq = 475500,
+        .regions =
+            (const REGION_MAP[1]){
+                {.startFreq = 472000, .endFreq = 479000, .mode = TRX_MODE_CW},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -92,7 +111,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .channels = NULL,
         .channelsCount = 0,
     },
-    // 160METERS
+    // 160 METERS
     {
         .name = "160m",
         .broadcast = false,
@@ -139,7 +158,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .channels = NULL,
         .channelsCount = 0,
     },
-    // 80METERS
+    // 80 METERS
     {
         .name = "80m",
         .broadcast = false,
@@ -186,20 +205,21 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .channels = NULL,
         .channelsCount = 0,
     },
-    // 60METERS
+    // 60 METERS
     {
         .name = "60m",
         .broadcast = false,
-        .startFreq = 5330500,
-        .endFreq = 5403500,
+        .startFreq = 5258500,
+        .endFreq = 5406500,
         .defaultFreq = 5350000,
         .regions =
-            (const REGION_MAP[3]){
-                {.startFreq = 5330500, .endFreq = 5357000, .mode = TRX_MODE_USB},
-                {.startFreq = 5357000, .endFreq = 5360000, .mode = TRX_MODE_DIGI_U},
-                {.startFreq = 5360000, .endFreq = 5403500, .mode = TRX_MODE_USB},
+            (const REGION_MAP[4]){
+                {.startFreq = 5258500, .endFreq = 5276000, .mode = TRX_MODE_CW},
+                {.startFreq = 5276000, .endFreq = 5354000, .mode = TRX_MODE_USB},
+                {.startFreq = 5354000, .endFreq = 5374500, .mode = TRX_MODE_DIGI_U},
+                {.startFreq = 5374500, .endFreq = 5406500, .mode = TRX_MODE_USB},
             },
-        .regionsCount = 3,
+        .regionsCount = 4,
         .channels = NULL,
         .channelsCount = 0,
     },
@@ -218,7 +238,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .channels = NULL,
         .channelsCount = 0,
     },
-    // 40METERS
+    // 40 METERS
     {
         .name = "40m",
         .broadcast = false,
@@ -267,7 +287,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .channels = NULL,
         .channelsCount = 0,
     },
-    // 30METERS
+    // 30 METERS
     {
         .name = "30m",
         .broadcast = false,
@@ -313,7 +333,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .channels = NULL,
         .channelsCount = 0,
     },
-    // 20METERS
+    // 20 METERS
     {
         .name = "20m",
         .broadcast = false,
@@ -360,7 +380,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .channels = NULL,
         .channelsCount = 0,
     },
-    // 17METERS
+    // 17 METERS
     {
         .name = "17m",
         .broadcast = false,
@@ -392,7 +412,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .channels = NULL,
         .channelsCount = 0,
     },
-    // 15METERS
+    // 15 METERS
     {
         .name = "15m",
         .broadcast = false,
@@ -424,7 +444,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .channels = NULL,
         .channelsCount = 0,
     },
-    // 12METERS
+    // 12 METERS
     {
         .name = "12m",
         .broadcast = false,
@@ -531,7 +551,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
             },
         .channelsCount = 45 * 2 + 14,
     },
-    // 10METERS
+    // 10 METERS
     {
         .name = "10m",
         .broadcast = false,
@@ -579,12 +599,12 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
     {
         .name = "4m",
         .broadcast = false,
-        .startFreq = 70000000,
+        .startFreq = 69900000,
         .endFreq = 70500000,
         .defaultFreq = 70200000,
         .regions =
-            (const REGION_MAP[7]){
-                {.startFreq = 70000000, .endFreq = 70500000, .mode = TRX_MODE_USB},
+            (const REGION_MAP[1]){
+                {.startFreq = 69900000, .endFreq = 70500000, .mode = TRX_MODE_USB},
             },
         .regionsCount = 1,
         .channels = NULL,
@@ -898,7 +918,21 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .channels = NULL,
         .channelsCount = 0,
     },
-    //
+    // 1.2cm
+    {
+        .name = "1.2cm",
+        .broadcast = false,
+        .startFreq = 24000000000,
+        .endFreq = 24250000000,
+        .defaultFreq = 24048200000,
+        .regions =
+            (const REGION_MAP[1]){
+                {.startFreq = 24000000000, .endFreq = 24250000000, .mode = TRX_MODE_CW},
+            },
+        .regionsCount = 1,
+        .channels = NULL,
+        .channelsCount = 0,
+    },
 };
 
 const BEACON_FREQUENCY TIME_BEACONS[TIME_BEACONS_COUNT] = {
@@ -998,7 +1032,7 @@ int8_t getBandFromFreq(uint64_t freq, bool nearest) {
 // mode from frequency
 uint_fast8_t getModeFromFreq(uint64_t freq) {
 	uint_fast8_t ret = 0;
-	ret = freq <= 30000000 ? TRX_MODE_AM : TRX_MODE_NFM;
+	ret = freq <= 30000000 ? TRX_MODE_SAM_STEREO : TRX_MODE_NFM;
 
 	for (uint_fast16_t b = 0; b < BANDS_COUNT; b++) {
 		if (BANDS[b].startFreq <= freq && freq <= BANDS[b].endFreq) {

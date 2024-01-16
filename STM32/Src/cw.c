@@ -62,7 +62,7 @@ void CW_key_change(void) {
 
 	bool onTx = TRX_on_TX;
 
-	bool notx = TRX_TX_Disabled(CurrentVFO->Freq);
+	bool notx = TRX_TX_Disabled(CurrentVFO->Freq) && !TRX_REPEATER_Applied;
 	if (notx) {
 		TRX_ptt_soft = false;
 		TRX_ptt_hard = false;
@@ -207,6 +207,8 @@ float32_t CW_GenerateSignal(float32_t power) {
 
 	// Keyer disabled
 	if (!TRX.CW_KEYER) {
+		KEYER_symbol_status = 0;
+
 		if (!CW_key_serial && !CW_key_dot_hard && !CW_key_dash_hard) {
 			return CW_generateFallSignal(power);
 		}

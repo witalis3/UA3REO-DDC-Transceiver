@@ -100,59 +100,117 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 	bool shift_array[SHIFT_ARRAY_SIZE];
 	static bool shift_array_old[SHIFT_ARRAY_SIZE];
 
-	shift_array[47] = false;                                          // U17-D0 unused
-	shift_array[46] = TRX.BluetoothAudio_Enabled;                     // U17-D1 Bluetooth
-	shift_array[45] = TRX.LNA;                                        // U17-D2 LNA
-	shift_array[44] = !att_val_05;                                    // U17-D3 ATT_ON_05
-	shift_array[43] = (bpf == 5 || bpf == 6 || bpf == 7 || bpf == 8); // U17-D4 BPF_2_EN
-	shift_array[42] = (bpf == 1 || bpf == 2 || bpf == 3 || bpf == 4); // U17-D5 BPF_EN
-	shift_array[41] = (bpf == 1 || bpf == 2);                         // U17-D6 BPF_A1
-	shift_array[40] = (bpf == 1 || bpf == 3);                         // U17-D7 BPF_A0
+	if (CALIBRATE.RF_unit_type == RF_UNIT_HF) {
+		shift_array[47] = false;                                          // U17-D0 unused
+		shift_array[46] = TRX.BluetoothAudio_Enabled;                     // U17-D1 Bluetooth
+		shift_array[45] = TRX.LNA;                                        // U17-D2 LNA
+		shift_array[44] = !att_val_05;                                    // U17-D3 ATT_ON_05
+		shift_array[43] = (bpf == 5 || bpf == 6 || bpf == 7 || bpf == 8); // U17-D4 BPF_2_EN
+		shift_array[42] = (bpf == 1 || bpf == 2 || bpf == 3 || bpf == 4); // U17-D5 BPF_EN
+		shift_array[41] = (bpf == 1 || bpf == 2);                         // U17-D6 BPF_A1
+		shift_array[40] = (bpf == 1 || bpf == 3);                         // U17-D7 BPF_A0
 
-	shift_array[39] = TRX.LNA;                // U16-D0 Net_LNA
-	shift_array[38] = !att_val_2;             // U16-D1 ATT_ON_2
-	shift_array[37] = !att_val_1;             // U16-D2 ATT_ON_1
-	shift_array[36] = !att_val_16;            // U16-D3 ATT_ON_16
-	shift_array[35] = !att_val_8;             // U16-D4 ATT_ON_8
-	shift_array[34] = !att_val_4;             // U16-D5 ATT_ON_4
-	shift_array[33] = (bpf == 5 || bpf == 6); // U16-D6 BPF_2_A1
-	shift_array[32] = (bpf == 5 || bpf == 7); // U16-D7 BPF_2_A0
+		shift_array[39] = TRX.LNA;                // U16-D0 Net_LNA
+		shift_array[38] = !att_val_2;             // U16-D1 ATT_ON_2
+		shift_array[37] = !att_val_1;             // U16-D2 ATT_ON_1
+		shift_array[36] = !att_val_16;            // U16-D3 ATT_ON_16
+		shift_array[35] = !att_val_8;             // U16-D4 ATT_ON_8
+		shift_array[34] = !att_val_4;             // U16-D5 ATT_ON_4
+		shift_array[33] = (bpf == 5 || bpf == 6); // U16-D6 BPF_2_A1
+		shift_array[32] = (bpf == 5 || bpf == 7); // U16-D7 BPF_2_A0
 
-	shift_array[31] = lpf_index == 6;                                     // U3-D0 LPF_6
-	shift_array[30] = lpf_index == 5;                                     // U3-D1 LPF_5
-	shift_array[29] = lpf_index == 4;                                     // U3-D2 LPF_4
-	shift_array[28] = lpf_index == 3;                                     // U3-D3 LPF_3
-	shift_array[27] = lpf_index == 2;                                     // U3-D4 LPF_2
-	shift_array[26] = lpf_index == 1;                                     // U3-D5 LPF_1
-	shift_array[25] = false;                                              // U3-D6 unused
-	shift_array[24] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U3-D7 RX/TX
+		shift_array[31] = lpf_index == 6;                                     // U3-D0 LPF_6
+		shift_array[30] = lpf_index == 5;                                     // U3-D1 LPF_5
+		shift_array[29] = lpf_index == 4;                                     // U3-D2 LPF_4
+		shift_array[28] = lpf_index == 3;                                     // U3-D3 LPF_3
+		shift_array[27] = lpf_index == 2;                                     // U3-D4 LPF_2
+		shift_array[26] = lpf_index == 1;                                     // U3-D5 LPF_1
+		shift_array[25] = false;                                              // U3-D6 unused
+		shift_array[24] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U3-D7 RX/TX
 
-	shift_array[23] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 5);         // U4-D0 TUN_C6
-	shift_array[22] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4);         // U4-D1 TUN_C5
-	shift_array[21] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3);         // U4-D2 TUN_C4
-	shift_array[20] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2);         // U4-D3 TUN_C3
-	shift_array[19] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U4-D4 RX/TX
-	shift_array[18] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0);         // U4-D5 TUN_C1
-	shift_array[17] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1);         // U4-D6 TUN_C2
-	shift_array[16] = false;                                              // U4-D7 unused
+		shift_array[23] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 5);         // U4-D0 TUN_C6
+		shift_array[22] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 4);         // U4-D1 TUN_C5
+		shift_array[21] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 3);         // U4-D2 TUN_C4
+		shift_array[20] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 2);         // U4-D3 TUN_C3
+		shift_array[19] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U4-D4 RX/TX
+		shift_array[18] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 0);         // U4-D5 TUN_C1
+		shift_array[17] = TRX.TUNER_Enabled && bitRead(TRX.ATU_C, 1);         // U4-D6 TUN_C2
+		shift_array[16] = false;                                              // U4-D7 unused
 
-	shift_array[15] = false;                                      // U5-D0 unused
-	shift_array[14] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 5); // U5-D1 TUN_I6
-	shift_array[13] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4); // U5-D2 TUN_I5
-	shift_array[12] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3); // U5-D3 TUN_I4
-	shift_array[11] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 2); // U5-D4 TUN_I3
-	shift_array[10] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 1); // U5-D5 TUN_I2
-	shift_array[9] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0);  // U5-D6 TUN_I1
-	shift_array[8] = TRX.TUNER_Enabled && TRX.ATU_T;              // U5-D7 TUN_T
+		shift_array[15] = false;                                      // U5-D0 unused
+		shift_array[14] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 5); // U5-D1 TUN_I6
+		shift_array[13] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 4); // U5-D2 TUN_I5
+		shift_array[12] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 3); // U5-D3 TUN_I4
+		shift_array[11] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 2); // U5-D4 TUN_I3
+		shift_array[10] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 1); // U5-D5 TUN_I2
+		shift_array[9] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0);  // U5-D6 TUN_I1
+		shift_array[8] = TRX.TUNER_Enabled && TRX.ATU_T;              // U5-D7 TUN_T
 
-	shift_array[7] = false; // U7-D0 J1
-	shift_array[6] = false; // U7-D1 J2
-	shift_array[5] = false; // U7-D2 J3
-	shift_array[4] = false; // U7-D2 J4
-	shift_array[3] = false; // U7-D2 J5
-	shift_array[2] = false; // U7-D2 J6
-	shift_array[1] = false; // U7-D2 J7
-	shift_array[0] = false; // U7-D2 J8
+		shift_array[7] = TRX_on_TX; // U7-D0 J1
+		shift_array[6] = TRX_on_TX; // U7-D1 J2
+		shift_array[5] = TRX_on_TX; // U7-D2 J3
+		shift_array[4] = TRX_on_TX; // U7-D2 J4
+		shift_array[3] = TRX_on_TX; // U7-D2 J5
+		shift_array[2] = TRX_on_TX; // U7-D2 J6
+		shift_array[1] = TRX_on_TX; // U7-D2 J7
+		shift_array[0] = TRX_on_TX; // U7-D2 J8
+	}
+
+	if (CALIBRATE.RF_unit_type == RF_UNIT_VHF) {
+		shift_array[47] = false;                                          // U17-D0 unused
+		shift_array[46] = TRX.BluetoothAudio_Enabled;                     // U17-D1 Bluetooth
+		shift_array[45] = TRX.LNA;                                        // U17-D2 LNA
+		shift_array[44] = !att_val_05;                                    // U17-D3 ATT_ON_05
+		shift_array[43] = (bpf == 5 || bpf == 6 || bpf == 7 || bpf == 8); // U17-D4 BPF_2_EN
+		shift_array[42] = (bpf == 1 || bpf == 2 || bpf == 3 || bpf == 4); // U17-D5 BPF_EN
+		shift_array[41] = (bpf == 1 || bpf == 2);                         // U17-D6 BPF_A1
+		shift_array[40] = (bpf == 1 || bpf == 3);                         // U17-D7 BPF_A0
+
+		shift_array[39] = TRX.LNA;                // U16-D0 Net_LNA
+		shift_array[38] = !att_val_2;             // U16-D1 ATT_ON_2
+		shift_array[37] = !att_val_1;             // U16-D2 ATT_ON_1
+		shift_array[36] = !att_val_16;            // U16-D3 ATT_ON_16
+		shift_array[35] = !att_val_8;             // U16-D4 ATT_ON_8
+		shift_array[34] = !att_val_4;             // U16-D5 ATT_ON_4
+		shift_array[33] = (bpf == 5 || bpf == 6); // U16-D6 BPF_2_A1
+		shift_array[32] = (bpf == 5 || bpf == 7); // U16-D7 BPF_2_A0
+
+		shift_array[31] = lpf_index == 6;                                     // U3-D0 Net_B6
+		shift_array[30] = lpf_index == 5;                                     // U3-D1 Net_B5
+		shift_array[29] = lpf_index == 4;                                     // U3-D2 Net_B4
+		shift_array[28] = lpf_index == 3;                                     // U3-D3 Net_B3
+		shift_array[27] = lpf_index == 2;                                     // U3-D4 Net_B2
+		shift_array[26] = lpf_index == 1;                                     // U3-D5 Net_B1
+		shift_array[25] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U3-D6 Net_RX/TX
+		shift_array[24] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK; // U3-D7 RX/TX
+
+		shift_array[23] = false;                                                                                                 // U7-D0 unused
+		shift_array[22] = false;                                                                                                 // U7-D1 unused
+		shift_array[21] = false;                                                                                                 // U7-D2 unused
+		shift_array[20] = CurrentVFO->RXFreqAfterTransverters >= 60000000;                                                       // U7-D3 VHF_HF
+		shift_array[19] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK;                                                    // U7-D4 PTT_OUT
+		shift_array[18] = false;                                                                                                 // U7-D5 unused
+		shift_array[17] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RXFreqAfterTransverters >= 60000000; // U7-D6 TX_VHF_R
+		shift_array[16] = TRX_on_TX && CurrentVFO->Mode != TRX_MODE_LOOPBACK && CurrentVFO->RXFreqAfterTransverters >= 60000000; // U7-D7 TX_VHF
+
+		shift_array[15] = false; // unused
+		shift_array[14] = false; // unused
+		shift_array[13] = false; // unused
+		shift_array[12] = false; // unused
+		shift_array[11] = false; // unused
+		shift_array[10] = false; // unused
+		shift_array[9] = false;  // unused
+		shift_array[8] = false;  // unused
+
+		shift_array[7] = false; // unused
+		shift_array[6] = false; // unused
+		shift_array[5] = false; // unused
+		shift_array[4] = false; // unused
+		shift_array[3] = false; // unused
+		shift_array[2] = false; // unused
+		shift_array[1] = false; // unused
+		shift_array[0] = false; // unused
+	}
 
 	/// Set array
 	bool array_equal = true;

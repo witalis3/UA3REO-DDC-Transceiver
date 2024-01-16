@@ -144,13 +144,13 @@ void print_bin26(uint32_t data, bool _inline) {
 	print(tmp);
 }
 
-uint32_t getRXPhraseFromFrequency(int32_t freq, uint8_t rx_num, bool invert_iq_by_mixer) // calculate the frequency from the phrase for FPGA (RX1 / RX2)
+uint32_t getRXPhraseFromFrequency(int64_t freq, uint8_t rx_num, bool invert_iq_by_mixer) // calculate the frequency from the phrase for FPGA (RX1 / RX2)
 {
 	if (freq < 0) {
 		return 0;
 	}
 	bool inverted = false;
-	int32_t _freq = freq;
+	int64_t _freq = freq;
 	if (_freq > ADC_CLOCK / 2) // Go Nyquist
 	{
 		while (_freq > (ADC_CLOCK / 2)) {
@@ -323,8 +323,11 @@ void shiftTextLeft(char *string, uint_fast16_t shiftLength) {
 float32_t getMaxTXAmplitudeOnFreq(uint64_t freq) {
 	uint16_t calibrate_level = 0;
 
-	if (freq < 1.0 * 1000000) {
+	if (freq < 0.2 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_2200m;
+	}
+	if (freq < 1.0 * 1000000) {
+		calibrate_level = CALIBRATE.rf_out_power_630m;
 	} else if (freq < 2.5 * 1000000) {
 		calibrate_level = CALIBRATE.rf_out_power_160m;
 	} else if (freq < 4.0 * 1000000) {
@@ -363,8 +366,10 @@ float32_t getMaxTXAmplitudeOnFreq(uint64_t freq) {
 		calibrate_level = CALIBRATE.rf_out_power_6cm;
 	} else if (freq < 10489500000) {
 		calibrate_level = CALIBRATE.rf_out_power_3cm;
-	} else {
+	} else if (freq < 15000000000) {
 		calibrate_level = CALIBRATE.rf_out_power_QO100;
+	} else {
+		calibrate_level = CALIBRATE.rf_out_power_1_2cm;
 	}
 
 	if (calibrate_level > 100) {

@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "9.2.0" // current STM32 version
+#define STM32_VERSION_STR "9.3.0" // current STM32 version
 
 #if defined(FRONTPANEL_LITE)
 #define FPGA_VERSION_STR "8.0.0" // needed FPGA version Wolf-Lite
@@ -16,8 +16,8 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 145        // Settings config version
-#define CALIB_VERSION 89        // Calibration config version
+#define SETT_VERSION 147        // Settings config version
+#define CALIB_VERSION 90        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -176,7 +176,7 @@ static char ota_config_frontpanel[] = "LITE";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 8
 #define FUNCBUTTONS_PAGES 5
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 6)
 static char ota_config_frontpanel[] = "BIG";
 #define ATU_MAXPOS                                                                                                                 \
 	((CALIBRATE.RF_unit_type == RF_UNIT_BIG || CALIBRATE.RF_unit_type == RF_UNIT_RU4PN || CALIBRATE.RF_unit_type == RF_UNIT_KT_100S) \
@@ -190,7 +190,7 @@ static char ota_config_frontpanel[] = "BIG";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 9
 #define FUNCBUTTONS_PAGES 4
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 6)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 7)
 static char ota_config_frontpanel[] = "WF_100D";
 #define ATU_MAXPOS ATU_7x7_MAXPOS
 #endif
@@ -201,7 +201,7 @@ static char ota_config_frontpanel[] = "WF_100D";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 8
 #define FUNCBUTTONS_PAGES 5
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 6)
 static char ota_config_frontpanel[] = "KT_100S";
 #define ATU_MAXPOS ATU_5x5_MAXPOS
 #endif
@@ -212,7 +212,7 @@ static char ota_config_frontpanel[] = "KT_100S";
 #define MAX_VOLUME_VALUE 1024.0f
 #define FUNCBUTTONS_ON_PAGE 9
 #define FUNCBUTTONS_PAGES 4
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 6)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 7)
 static char ota_config_frontpanel[] = "WOLF-2";
 #define ATU_MAXPOS ATU_7x7_MAXPOS
 #endif
@@ -406,6 +406,12 @@ typedef enum {
 } TRX_IQ_SAMPLERATE_VALUE;
 
 // RF UNIT TYPE
+#ifdef FRONTPANEL_MINI
+typedef enum {
+	RF_UNIT_HF,
+	RF_UNIT_VHF,
+} TRX_RF_UNIT_TYPE;
+#else
 typedef enum {
 	RF_UNIT_NONE,
 	RF_UNIT_QRP,
@@ -415,6 +421,7 @@ typedef enum {
 	RF_UNIT_KT_100S,
 	RF_UNIT_WF_100D,
 } TRX_RF_UNIT_TYPE;
+#endif
 
 // TANGENT TYPE
 typedef enum {
@@ -618,6 +625,7 @@ extern struct TRX_SETTINGS {
 	uint16_t FM_LPF_RX_Filter_shadow;
 	uint16_t FM_LPF_TX_Filter_shadow;
 	uint16_t FM_HPF_RX_Filter_shadow;
+	uint16_t NOTCH_Filter_width;
 	uint16_t ATU_MEM_STEP_KHZ;
 
 	int8_t MIC_NOISE_GATE;
@@ -758,6 +766,7 @@ extern struct TRX_SETTINGS {
 	bool Transverter_6cm;
 	bool Transverter_3cm;
 	bool Transverter_QO100;
+	bool Transverter_1_2cm;
 	bool Auto_Input_Switch;
 	bool Auto_Snap;
 	bool Full_Duplex;
@@ -904,6 +913,8 @@ extern struct TRX_CALIBRATE {
 	uint16_t Transverter_6cm_IF_MHz;
 	uint16_t Transverter_3cm_RF_MHz;
 	uint16_t Transverter_3cm_IF_MHz;
+	uint16_t Transverter_1_2cm_RF_MHz;
+	uint16_t Transverter_1_2cm_IF_MHz;
 	uint32_t Transverter_QO100_RF_kHz;
 	uint32_t Transverter_QO100_IF_RX_kHz;
 	uint16_t Transverter_QO100_IF_TX_MHz;
@@ -916,6 +927,7 @@ extern struct TRX_CALIBRATE {
 	int8_t LNA_compensation;
 	uint8_t DAC_driver_mode;
 	uint8_t rf_out_power_2200m;
+	uint8_t rf_out_power_630m;
 	uint8_t rf_out_power_160m;
 	uint8_t rf_out_power_80m;
 	uint8_t rf_out_power_60m;
@@ -936,6 +948,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t rf_out_power_6cm;
 	uint8_t rf_out_power_3cm;
 	uint8_t rf_out_power_QO100;
+	uint8_t rf_out_power_1_2cm;
 	uint8_t ENCODER_DEBOUNCE;
 	uint8_t ENCODER2_DEBOUNCE;
 	uint8_t ENCODER_SLOW_RATE;
@@ -959,6 +972,7 @@ extern struct TRX_CALIBRATE {
 	uint8_t TUNE_MAX_POWER;
 	uint8_t RTC_Coarse_Calibration;
 	uint8_t EXT_2200m;
+	uint8_t EXT_630m;
 	uint8_t EXT_160m;
 	uint8_t EXT_80m;
 	uint8_t EXT_60m;
@@ -975,13 +989,12 @@ extern struct TRX_CALIBRATE {
 	uint8_t EXT_FM;
 	uint8_t EXT_2m;
 	uint8_t EXT_70cm;
-	uint8_t EXT_TRANSV_2m;
-	uint8_t EXT_TRANSV_70cm;
-	uint8_t EXT_TRANSV_23cm;
-	uint8_t EXT_TRANSV_13cm;
-	uint8_t EXT_TRANSV_6cm;
-	uint8_t EXT_TRANSV_3cm;
-	uint8_t EXT_TRANSV_QO100;
+	uint8_t EXT_23cm;
+	uint8_t EXT_13cm;
+	uint8_t EXT_6cm;
+	uint8_t EXT_3cm;
+	uint8_t EXT_QO100;
+	uint8_t EXT_1_2cm;
 	uint8_t ATU_AVERAGING;
 	uint8_t TwoSignalTune_Balance;
 	uint8_t IF_GAIN_MIN;
@@ -998,6 +1011,7 @@ extern struct TRX_CALIBRATE {
 	bool ENCODER2_INVERT;
 	bool NOTX_NOTHAM;
 	bool NOTX_2200m;
+	bool NOTX_630m;
 	bool NOTX_160m;
 	bool NOTX_80m;
 	bool NOTX_60m;
@@ -1014,7 +1028,9 @@ extern struct TRX_CALIBRATE {
 	bool NOTX_FM;
 	bool NOTX_2m;
 	bool NOTX_70cm;
+	bool NOTX_23cm;
 	bool ENABLE_2200m_band;
+	bool ENABLE_630m_band;
 	bool ENABLE_60m_band;
 	bool ENABLE_6m_band;
 	bool ENABLE_4m_band;
@@ -1023,6 +1039,7 @@ extern struct TRX_CALIBRATE {
 	bool ENABLE_AIR_band;
 	bool ENABLE_marine_band;
 	bool ENABLE_70cm_band;
+	bool ENABLE_23cm_band;
 	bool OTA_update;
 	bool LCD_Rotate;
 	bool TOUCHPAD_horizontal_flip;

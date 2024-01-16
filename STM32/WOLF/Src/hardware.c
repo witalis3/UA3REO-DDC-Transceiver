@@ -271,10 +271,11 @@ void HRDW_GoToInternalSPIClock(void) {
 }
 
 uint8_t HARDW_GetAntCount(void) {
-#ifdef FRONTPANEL_WOLF_2
+#if defined(FRONTPANEL_WOLF_2)
 	return 2;
-#endif
-
+#elif defined(FRONTPANEL_MINI)
+	return 1;
+#else
 	switch (CALIBRATE.RF_unit_type) {
 	case RF_UNIT_NONE:
 	case RF_UNIT_RU4PN:
@@ -288,4 +289,5 @@ uint8_t HARDW_GetAntCount(void) {
 	}
 
 	return 1;
+#endif
 }

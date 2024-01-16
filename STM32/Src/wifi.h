@@ -7,6 +7,7 @@
 #include "settings.h"
 #include <stdbool.h>
 
+#define WIFI_HOST "wolf-sdr.com"
 #define WIFI_ANSWER_BUFFER_SIZE (1024 * 8)
 #define WIFI_LINE_BUFFER_SIZE WIFI_ANSWER_BUFFER_SIZE
 #define WIFI_HTML_RESP_BUFFER_SIZE (1024 * 4 + 256)

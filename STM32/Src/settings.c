@@ -221,6 +221,7 @@ void LoadSettings(bool clear) {
 		TRX.Transverter_6cm = false;               // Transvertrs enable
 		TRX.Transverter_3cm = false;               // Transvertrs enable
 		TRX.Transverter_QO100 = false;             // Transvertrs enable
+		TRX.Transverter_1_2cm = false;             // Transvertrs enable
 		TRX.FineRITTune = true;                    // Fine or coarse tune for split/shift
 		TRX.Auto_Input_Switch = false;             // Auto Mic/USB Switch
 		TRX.Auto_Snap = false;                     // Auto track and snap to signal frequency
@@ -309,6 +310,7 @@ void LoadSettings(bool clear) {
 		TRX.VOX_THRESHOLD = -27;                                       // VOX threshold in dbFS
 		TRX.RX_AUDIO_MODE = RX_AUDIO_MODE_STEREO;                      // OUT Lines mode stereo/left/right
 		TRX.AGC_Threshold = false;                                     // Disable AGC on noise signals
+		TRX.NOTCH_Filter_width = 100;                                  // Manual notch filter width
 		// CW
 		TRX.CW_Pitch = 600;                                             // LO offset in CW mode
 		TRX.CW_Key_timeout = 200;                                       // time of releasing transmission after the last character on the key
@@ -544,11 +546,14 @@ void LoadSettings(bool clear) {
 		SecondaryVFO = &TRX.VFO_A;
 	}
 
-	BAND_SELECTABLE[BANDID_23cm] = TRX.Transverter_23cm;
+	BAND_SELECTABLE[BANDID_2m] = CALIBRATE.ENABLE_2m_band || TRX.Transverter_2m;
+	BAND_SELECTABLE[BANDID_70cm] = CALIBRATE.ENABLE_70cm_band || TRX.Transverter_70cm;
+	BAND_SELECTABLE[BANDID_23cm] = CALIBRATE.ENABLE_23cm_band || TRX.Transverter_23cm;
 	BAND_SELECTABLE[BANDID_13cm] = TRX.Transverter_13cm;
 	BAND_SELECTABLE[BANDID_6cm] = TRX.Transverter_6cm;
 	BAND_SELECTABLE[BANDID_3cm] = TRX.Transverter_3cm;
 	BAND_SELECTABLE[BANDID_QO100] = TRX.Transverter_QO100;
+	BAND_SELECTABLE[BANDID_1_2cm] = TRX.Transverter_1_2cm;
 }
 
 static void LoadSettingsFromEEPROM(void) {
@@ -590,7 +595,6 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENCODER_SLOW_RATE = 25;      // slow down the encoder for high resolutions
 		CALIBRATE.ENCODER_ACCELERATION = 75;   // acceleration rate if rotate
 		CALIBRATE.TangentType = TANGENT_MH48;  // Tangent type
-		CALIBRATE.RF_unit_type = RF_UNIT_NONE; // RF-unit type
 		CALIBRATE.CICFIR_GAINER_48K_val = 7;   // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_96K_val = 12;  // Offset from the output of the CIC compensator
 		CALIBRATE.CICFIR_GAINER_192K_val = 17; // Offset from the output of the CIC compensator
@@ -600,6 +604,7 @@ void LoadCalibration(bool clear) {
 		// Calibrate the maximum output power for each band
 		CALIBRATE.DAC_driver_mode = 2;            // OPA2673 bias mode
 		CALIBRATE.rf_out_power_2200m = 29;        // 2200m
+		CALIBRATE.rf_out_power_630m = 29;         // 630m
 		CALIBRATE.rf_out_power_160m = 29;         // 160m
 		CALIBRATE.rf_out_power_80m = 27;          // 80m
 		CALIBRATE.rf_out_power_60m = 27;          // 60m
@@ -620,6 +625,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6cm = 100;         // 6cm
 		CALIBRATE.rf_out_power_3cm = 100;         // 3cm
 		CALIBRATE.rf_out_power_QO100 = 100;       // QO-100
+		CALIBRATE.rf_out_power_1_2cm = 100;       // 1.2cm
 		CALIBRATE.smeter_calibration_hf = 10;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 10;    // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.SWR_FWD_Calibration_HF = 11.0f; // SWR Transormator rate forward
@@ -650,6 +656,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_6_START = 138000 * 1000;
 		CALIBRATE.RFU_BPF_6_END = 150000 * 1000;
 		CALIBRATE.rf_out_power_2200m = 20;        // 2200m
+		CALIBRATE.rf_out_power_630m = 20;         // 630m
 		CALIBRATE.rf_out_power_160m = 41;         // 160m
 		CALIBRATE.rf_out_power_80m = 29;          // 80m
 		CALIBRATE.rf_out_power_60m = 29;          // 60m
@@ -670,6 +677,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6cm = 20;          // 6cm
 		CALIBRATE.rf_out_power_3cm = 20;          // 3cm
 		CALIBRATE.rf_out_power_QO100 = 20;        // QO-100
+		CALIBRATE.rf_out_power_1_2cm = 20;        // 1.2cm
 		CALIBRATE.smeter_calibration_hf = 12;     // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) HF
 		CALIBRATE.smeter_calibration_vhf = 12;    // S-Meter calibration, set when calibrating the transceiver to S9 (ATT, PREAMP off) VHF
 		CALIBRATE.SWR_FWD_Calibration_HF = 10.0f; // SWR Transormator rate forward
@@ -680,9 +688,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 8.5f; // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 5;             // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 15;     // Max TRX Power for indication
+		CALIBRATE.RF_unit_type = RF_UNIT_NONE;    // RF-unit type
 #elif defined(FRONTPANEL_BIG_V1)
 		CALIBRATE.RF_unit_type = RF_UNIT_QRP;          // RF-unit type
 		CALIBRATE.rf_out_power_2200m = 29;             // 2200m
+		CALIBRATE.rf_out_power_630m = 29;              // 630m
 		CALIBRATE.rf_out_power_160m = 29;              // 160m
 		CALIBRATE.rf_out_power_80m = 27;               // 80m
 		CALIBRATE.rf_out_power_60m = 27;               // 60m
@@ -703,6 +713,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6cm = 100;              // 6cm
 		CALIBRATE.rf_out_power_3cm = 100;              // 3cm
 		CALIBRATE.rf_out_power_QO100 = 100;            // QO100
+		CALIBRATE.rf_out_power_1_2cm = 100;            // 1.2cm
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF U14-RF1
 		CALIBRATE.RFU_BPF_0_START = 138 * 1000 * 1000; // 2m U14-RF3
@@ -731,9 +742,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 3.6f;      // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 2;                  // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 7;           // Max TRX Power for indication
+		CALIBRATE.RF_unit_type = RF_UNIT_NONE;         // RF-unit type
 #elif defined(FRONTPANEL_KT_100S)
 		CALIBRATE.RF_unit_type = RF_UNIT_KT_100S;      // RF-unit type
 		CALIBRATE.rf_out_power_2200m = 40;             // 2200m
+		CALIBRATE.rf_out_power_630m = 40;              // 630m
 		CALIBRATE.rf_out_power_160m = 40;              // 160m
 		CALIBRATE.rf_out_power_80m = 40;               // 80m
 		CALIBRATE.rf_out_power_60m = 40;               // 60m
@@ -754,6 +767,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6cm = 50;               // 6cm
 		CALIBRATE.rf_out_power_3cm = 50;               // 3cm
 		CALIBRATE.rf_out_power_QO100 = 50;             // QO100
+		CALIBRATE.rf_out_power_1_2cm = 50;             // 1.2cm
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF
 		CALIBRATE.RFU_BPF_0_START = 138 * 1000 * 1000; // 2m U14-RF3
@@ -782,10 +796,12 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 22.0f;     // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 10;                 // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;         // Max TRX Power for indication
+		CALIBRATE.RF_unit_type = RF_UNIT_KT_100S;      // RF-unit type
 #elif defined(FRONTPANEL_WF_100D)
 		CALIBRATE.ENCODER2_INVERT = true; // invert left-right rotation of the optional encoder
 		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;
 		CALIBRATE.rf_out_power_2200m = 20;             // 2200m
+		CALIBRATE.rf_out_power_630m = 20;              // 630m
 		CALIBRATE.rf_out_power_160m = 27;              // 160m
 		CALIBRATE.rf_out_power_80m = 28;               // 80m
 		CALIBRATE.rf_out_power_60m = 29;               // 60m
@@ -806,6 +822,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6cm = 16;               // 6cm
 		CALIBRATE.rf_out_power_3cm = 17;               // 3cm
 		CALIBRATE.rf_out_power_QO100 = 15;             // QO-100
+		CALIBRATE.rf_out_power_1_2cm = 17;             // 1.2cm
 		CALIBRATE.RFU_LPF_END = 53 * 1000 * 1000;      // LPF
 		CALIBRATE.RFU_HPF_START = 60 * 1000 * 1000;    // HPF
 		CALIBRATE.RFU_BPF_0_START = 1600 * 1000;       // 1.6-2.5MHz
@@ -834,9 +851,11 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 8.5f;      // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;                 // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;         // Max TRX Power for indication
+		CALIBRATE.RF_unit_type = RF_UNIT_WF_100D;      // RF-unit type
 #elif defined(FRONTPANEL_WOLF_2)
 		CALIBRATE.ENCODER2_INVERT = true;          // invert left-right rotation of the optional encoder
 		CALIBRATE.rf_out_power_2200m = 20;         // 2200m
+		CALIBRATE.rf_out_power_630m = 20;          // 630m
 		CALIBRATE.rf_out_power_160m = 27;          // 160m
 		CALIBRATE.rf_out_power_80m = 28;           // 80m
 		CALIBRATE.rf_out_power_60m = 29;           // 60m
@@ -857,6 +876,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.rf_out_power_6cm = 15;           // 6cm
 		CALIBRATE.rf_out_power_3cm = 15;           // 3cm
 		CALIBRATE.rf_out_power_QO100 = 15;         // QO-100
+		CALIBRATE.rf_out_power_1_2cm = 15;         // 1.2cm
 		CALIBRATE.RFU_LPF_END = 60 * 1000 * 1000;  // LPF
 		CALIBRATE.RFU_HPF_START = 0;               // HPF disabled
 		CALIBRATE.RFU_BPF_0_START = 1700 * 1000;   // 1.6-2.5MHz
@@ -885,12 +905,14 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_BWD_Calibration_VHF = 9.5f;  // SWR Transormator rate return
 		CALIBRATE.TUNE_MAX_POWER = 15;             // Maximum RF power in Tune mode
 		CALIBRATE.MAX_RF_POWER_ON_METER = 100;     // Max TRX Power for indication
+		CALIBRATE.RF_unit_type = RF_UNIT_NONE;     // RF-unit type
 #elif defined(FRONTPANEL_LITE)
 		CALIBRATE.ENCODER_SLOW_RATE = 10;
 		CALIBRATE.ENCODER2_ON_FALLING = false;
 		CALIBRATE.smeter_calibration_hf = 15;
-		CALIBRATE.TUNE_MAX_POWER = 5;         // Maximum RF power in Tune mode
-		CALIBRATE.MAX_RF_POWER_ON_METER = 15; // Max TRX Power for indication
+		CALIBRATE.TUNE_MAX_POWER = 5;          // Maximum RF power in Tune mode
+		CALIBRATE.MAX_RF_POWER_ON_METER = 15;  // Max TRX Power for indication
+		CALIBRATE.RF_unit_type = RF_UNIT_NONE; // RF-unit type
 #elif defined(FRONTPANEL_MINI)
 		CALIBRATE.ENCODER_SLOW_RATE = 15;
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
@@ -919,6 +941,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.SWR_FWD_Calibration_HF = 21.0f; // SWR Transormator rate forward
 		CALIBRATE.SWR_BWD_Calibration_HF = 21.0f; // SWR Transormator rate return
 		CALIBRATE.PWR_VLT_Calibration = 1100.0f;  // VLT meter calibration
+		CALIBRATE.RF_unit_type = RF_UNIT_HF;      // RF-unit type
 #else
 		CALIBRATE.RFU_LPF_END = 60000 * 1000;          // LPF
 		CALIBRATE.RFU_HPF_START = 60000 * 1000;        // HPF U14-RF1
@@ -940,6 +963,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RFU_BPF_7_END = 0;                   // disabled on qrp version
 		CALIBRATE.RFU_BPF_8_START = 0;                 // disabled on qrp version
 		CALIBRATE.RFU_BPF_8_END = 0;                   // disabled on qrp version
+		CALIBRATE.RF_unit_type = RF_UNIT_NONE;         // RF-unit type
 #endif
 #if defined(FRONTPANEL_MINI)
 		CALIBRATE.TCXO_frequency = 20000; // TCXO Frequency x1000
@@ -960,6 +984,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.RTC_Coarse_Calibration = 127; // Coarse RTC calibration
 		CALIBRATE.RTC_Calibration = 0;          // Real Time Clock calibration
 		CALIBRATE.EXT_2200m = 0;                // External port by band
+		CALIBRATE.EXT_630m = 0;                 // External port by band
 		CALIBRATE.EXT_160m = 0;                 // External port by band
 		CALIBRATE.EXT_80m = 1;                  // External port by band
 		CALIBRATE.EXT_60m = 1;                  // External port by band
@@ -976,15 +1001,15 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.EXT_FM = 11;                  // External port by band
 		CALIBRATE.EXT_2m = 11;                  // External port by band
 		CALIBRATE.EXT_70cm = 8;                 // External port by band
-		CALIBRATE.EXT_TRANSV_2m = 11;           // External port by band
-		CALIBRATE.EXT_TRANSV_70cm = 8;          // External port by band
-		CALIBRATE.EXT_TRANSV_23cm = 9;          // External port by band
-		CALIBRATE.EXT_TRANSV_13cm = 13;         // External port by band
-		CALIBRATE.EXT_TRANSV_6cm = 14;          // External port by band
-		CALIBRATE.EXT_TRANSV_3cm = 15;          // External port by band
-		CALIBRATE.EXT_TRANSV_QO100 = 15;        // External port by band
+		CALIBRATE.EXT_23cm = 9;                 // External port by band
+		CALIBRATE.EXT_13cm = 13;                // External port by band
+		CALIBRATE.EXT_6cm = 14;                 // External port by band
+		CALIBRATE.EXT_3cm = 15;                 // External port by band
+		CALIBRATE.EXT_QO100 = 15;               // External port by band
+		CALIBRATE.EXT_1_2cm = 12;               // External port by band
 		CALIBRATE.NOTX_NOTHAM = true;           // disable TX on non-HAM bands
 		CALIBRATE.NOTX_2200m = false;           // disable TX on some bands
+		CALIBRATE.NOTX_630m = false;
 		CALIBRATE.NOTX_160m = false;
 		CALIBRATE.NOTX_80m = false;
 		CALIBRATE.NOTX_60m = false;
@@ -1000,7 +1025,9 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.NOTX_4m = false;
 		CALIBRATE.NOTX_2m = false;
 		CALIBRATE.NOTX_70cm = false;
+		CALIBRATE.NOTX_23cm = false;
 		CALIBRATE.ENABLE_2200m_band = false; // enable hidden bands
+		CALIBRATE.ENABLE_630m_band = false;
 		CALIBRATE.ENABLE_60m_band = false;
 		CALIBRATE.ENABLE_6m_band = true;
 		CALIBRATE.ENABLE_4m_band = false;
@@ -1008,7 +1035,8 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.ENABLE_2m_band = true;
 		CALIBRATE.ENABLE_AIR_band = false;
 		CALIBRATE.ENABLE_marine_band = false;
-		CALIBRATE.ENABLE_70cm_band = true;
+		CALIBRATE.ENABLE_70cm_band = false;
+		CALIBRATE.ENABLE_23cm_band = false;
 		CALIBRATE.Transverter_Custom_Offset_MHz = 100; // Offset from VFO
 		CALIBRATE.Transverter_2m_RF_MHz = 144;
 		CALIBRATE.Transverter_2m_IF_MHz = 28;
@@ -1025,6 +1053,8 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.Transverter_QO100_RF_kHz = 10489500;
 		CALIBRATE.Transverter_QO100_IF_RX_kHz = 739500;
 		CALIBRATE.Transverter_QO100_IF_TX_MHz = 144;
+		CALIBRATE.Transverter_1_2cm_RF_MHz = 24048;
+		CALIBRATE.Transverter_1_2cm_IF_MHz = 144;
 		CALIBRATE.KTY81_Calibration = 2000;
 #ifdef FRONTPANEL_LITE
 		CALIBRATE.ENABLE_6m_band = false;
@@ -1039,6 +1069,7 @@ void LoadCalibration(bool clear) {
 		CALIBRATE.Transverter_3cm_IF_MHz = 28;
 		CALIBRATE.Transverter_QO100_IF_RX_kHz = 28500;
 		CALIBRATE.Transverter_QO100_IF_TX_MHz = 28;
+		CALIBRATE.Transverter_1_2cm_IF_MHz = 28;
 #endif
 		CALIBRATE.OTA_update = true;           // enable OTA FW update over WiFi
 		CALIBRATE.TX_StartDelay = 5;           // Relay switch delay before RF signal ON, ms
@@ -1105,14 +1136,16 @@ void LoadCalibration(bool clear) {
 	EEPROM_PowerDown();
 	// enable bands
 	BAND_SELECTABLE[BANDID_2200m] = CALIBRATE.ENABLE_2200m_band;
+	BAND_SELECTABLE[BANDID_630m] = CALIBRATE.ENABLE_630m_band;
 	BAND_SELECTABLE[BANDID_60m] = CALIBRATE.ENABLE_60m_band;
 	BAND_SELECTABLE[BANDID_6m] = CALIBRATE.ENABLE_6m_band;
 	BAND_SELECTABLE[BANDID_4m] = CALIBRATE.ENABLE_4m_band;
 	BAND_SELECTABLE[BANDID_FM] = CALIBRATE.ENABLE_FM_band;
-	BAND_SELECTABLE[BANDID_2m] = CALIBRATE.ENABLE_2m_band;
+	BAND_SELECTABLE[BANDID_2m] = CALIBRATE.ENABLE_2m_band || TRX.Transverter_2m;
 	BAND_SELECTABLE[BANDID_AIR] = CALIBRATE.ENABLE_AIR_band;
 	BAND_SELECTABLE[BANDID_Marine] = CALIBRATE.ENABLE_marine_band;
-	BAND_SELECTABLE[BANDID_70cm] = CALIBRATE.ENABLE_70cm_band;
+	BAND_SELECTABLE[BANDID_70cm] = CALIBRATE.ENABLE_70cm_band || TRX.Transverter_70cm;
+	BAND_SELECTABLE[BANDID_23cm] = CALIBRATE.ENABLE_23cm_band || TRX.Transverter_23cm;
 
 	// load WiFi settings after calibrations
 	LoadWiFiSettings(false);

@@ -60,6 +60,8 @@
 	                       : ((TRX.FFT_Height == 2) ? LAYOUT->WTF_HEIGHT_STYLE2 \
 	                                                : ((TRX.FFT_Height == 3) ? LAYOUT->WTF_HEIGHT_STYLE3 : ((TRX.FFT_Height == 4) ? LAYOUT->WTF_HEIGHT_STYLE4 : LAYOUT->WTF_HEIGHT_STYLE5))))
 
+#define FFT_Show_Sec_VFO (TRX.Show_Sec_VFO || TRX.SPLIT_Enabled)
+
 #define ZOOMFFT_DECIM_STAGES_IIR 9
 #define ZOOMFFT_DECIM_STAGES_FIR 4
 

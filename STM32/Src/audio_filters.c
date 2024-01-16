@@ -799,20 +799,20 @@ void ReinitAudioFilters(void) {
 
 // initialize the manual Notch filter
 void InitNotchFilter(void) {
-	int16_t rx1_notch_width_Hz = 100;
-	int16_t rx2_notch_width_Hz = 100;
 	int16_t rx1_notch_pos = CurrentVFO->NotchFC;
 	int16_t rx2_notch_pos = SecondaryVFO->NotchFC;
 
-	int16_t rx1_notch_pos_f1 = rx1_notch_pos - rx1_notch_width_Hz / 2;
-	int16_t rx1_notch_pos_f2 = rx1_notch_pos + rx1_notch_width_Hz / 2;
-	int16_t rx2_notch_pos_f1 = rx2_notch_pos - rx2_notch_width_Hz / 2;
-	int16_t rx2_notch_pos_f2 = rx2_notch_pos + rx2_notch_width_Hz / 2;
-	if (rx1_notch_pos_f1 < 50) {
-		rx1_notch_pos_f1 = 50;
+	int16_t rx1_notch_pos_f1 = rx1_notch_pos - TRX.NOTCH_Filter_width / 2;
+	int16_t rx1_notch_pos_f2 = rx1_notch_pos + TRX.NOTCH_Filter_width / 2;
+	int16_t rx2_notch_pos_f1 = rx2_notch_pos - TRX.NOTCH_Filter_width / 2;
+	int16_t rx2_notch_pos_f2 = rx2_notch_pos + TRX.NOTCH_Filter_width / 2;
+	if (rx1_notch_pos_f1 < 100) {
+		rx1_notch_pos_f1 = 100;
+		rx1_notch_pos_f2 = rx1_notch_pos_f1 + TRX.NOTCH_Filter_width;
 	}
-	if (rx2_notch_pos_f1 < 50) {
-		rx2_notch_pos_f1 = 50;
+	if (rx2_notch_pos_f1 < 100) {
+		rx2_notch_pos_f1 = 100;
+		rx2_notch_pos_f2 = rx2_notch_pos_f1 + TRX.NOTCH_Filter_width;
 	}
 	if (rx1_notch_pos_f2 > TRX_SAMPLERATE / 2) {
 		rx1_notch_pos_f2 = TRX_SAMPLERATE / 2;
