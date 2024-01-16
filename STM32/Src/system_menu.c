@@ -1494,7 +1494,9 @@ const static struct sysmenu_item_handler sysmenu_time_beacons_handlers[] = {
 const static struct sysmenu_item_handler sysmenu_services_handlers[] = {
 #if HRDW_HAS_WIFI && !defined(FRONTPANEL_X1)
     {"DX Cluster", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DX_CLUSTER},
+#if LCD_WIDTH >= 480
     {"Propagation", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_PROPAGATION},
+#endif
 #if LCD_WIDTH >= 800
     {"Tropo", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_TROPO},
     {"DayNight Map", SYSMENU_RUN, NULL, 0, SYSMENU_HANDL_DAYNIGHT_MAP},

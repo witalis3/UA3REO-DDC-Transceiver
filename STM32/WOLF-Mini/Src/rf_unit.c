@@ -146,14 +146,14 @@ void RF_UNIT_UpdateState(bool clean) // pass values to RF-UNIT
 		shift_array[9] = TRX.TUNER_Enabled && bitRead(TRX.ATU_I, 0);  // U5-D6 TUN_I1
 		shift_array[8] = TRX.TUNER_Enabled && TRX.ATU_T;              // U5-D7 TUN_T
 
-		shift_array[7] = false; // U7-D0 J1
-		shift_array[6] = false; // U7-D1 J2
-		shift_array[5] = false; // U7-D2 J3
-		shift_array[4] = false; // U7-D2 J4
-		shift_array[3] = false; // U7-D2 J5
-		shift_array[2] = false; // U7-D2 J6
-		shift_array[1] = false; // U7-D2 J7
-		shift_array[0] = false; // U7-D2 J8
+		shift_array[7] = TRX_on_TX; // U7-D0 J1
+		shift_array[6] = TRX_on_TX; // U7-D1 J2
+		shift_array[5] = TRX_on_TX; // U7-D2 J3
+		shift_array[4] = TRX_on_TX; // U7-D2 J4
+		shift_array[3] = TRX_on_TX; // U7-D2 J5
+		shift_array[2] = TRX_on_TX; // U7-D2 J6
+		shift_array[1] = TRX_on_TX; // U7-D2 J7
+		shift_array[0] = TRX_on_TX; // U7-D2 J8
 	}
 
 	if (CALIBRATE.RF_unit_type == RF_UNIT_VHF) {
