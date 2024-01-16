@@ -85,7 +85,7 @@ void CWDecoder_Process(float32_t *bufferIn) {
 			CWDEC_InputBuffer[i] *= generateSin(1.0f, &cw_decoder_signal_gen_index, TRX_SAMPLERATE, TRX.CW_Pitch);
 		}
 	}
-	// Decimator 
+	// Decimator
 	arm_fir_decimate_f32(&CWDEC_DECIMATE, CWDEC_InputBuffer, CWDEC_InputBuffer, DECODER_PACKET_SIZE);
 	for (uint_fast16_t i = 0; i < CWDECODER_FFTSIZE; i++) {
 		if (i < CWDECODER_FFT_SAMPLES) {
@@ -145,8 +145,8 @@ void CWDecoder_Process(float32_t *bufferIn) {
 
 	if (CWDEC_FFTBuffer[maxIndex] > CWDECODER_MAX_THRES && (maxValue > meanValue * (float32_t)TRX.CW_Decoder_Threshold)) // signal is active
 	{
-//		 print("s - ");
-//		 println((double)maxValue, " / ", (double) meanValue);
+		//		 print("s - ");
+		//		 println((double)maxValue, " / ", (double) meanValue);
 		realstate = true;
 	} else // signal is not active
 	{

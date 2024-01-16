@@ -1412,7 +1412,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
 #if defined(FRONTPANEL_BIG_V1) || defined(FRONTPANEL_KT_100S) || defined(FRONTPANEL_WF_100D) || defined(FRONTPANEL_WOLF_2)
     {"Tangent Type", SYSMENU_ENUM, NULL, (uint32_t *)&CALIBRATE.TangentType, SYSMENU_HANDL_CALIB_TangentType, (const enumerate_item[2]){"MH-36", "MH-48"}},
 #endif
-//#if !defined(FRONTPANEL_LITE)
+    // #if !defined(FRONTPANEL_LITE)
     {"Transv Offset, MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_Custom_Offset_MHz, SYSMENU_HANDL_CALIB_TRANSV_OFFSET_Custom},
     {"Transv 2m RF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_2m_RF_MHz, SYSMENU_HANDL_CALIB_TRANSV_RF_2m},
     {"Transv 2m IF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_2m_IF_MHz, SYSMENU_HANDL_CALIB_TRANSV_IF_2m},
@@ -1431,7 +1431,7 @@ const static struct sysmenu_item_handler sysmenu_calibration_handlers[] = {
     {"Tr QO100 RF kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_RF_kHz, SYSMENU_HANDL_CALIB_TRANSV_RF_QO100},
     {"Tr QO100 RX IF kHz", SYSMENU_UINT32, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_RX_kHz, SYSMENU_HANDL_CALIB_TRANSV_IF_RX_QO100},
     {"Tr QO100 TX IF MHz", SYSMENU_UINT16, NULL, (uint32_t *)&CALIBRATE.Transverter_QO100_IF_TX_MHz, SYSMENU_HANDL_CALIB_TRANSV_IF_TX_QO100},
-//#endif
+    // #endif
     {"Settings reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_SETTINGS_RESET},
     {"Calibrate reset", SYSMENU_RUN, NULL, NULL, SYSMENU_HANDL_CALIB_CALIBRATION_RESET},
 #if HRDW_HAS_WIFI
