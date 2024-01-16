@@ -94,7 +94,6 @@ static void LCD_showModeWindow(bool secondary_vfo);
 static void LCD_showBWWindow(void);
 static void LCD_showATTWindow(uint32_t parameter);
 static void LCD_ManualFreqButtonHandler(uint32_t parameter);
-static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter);
 #if (defined(LAY_800x480))
 static void printButton(uint16_t x, uint16_t y, uint16_t width, uint16_t height, char *text, bool active, bool show_lighter, bool in_window, uint32_t parameter,
                         void (*clickHandler)(uint32_t parameter), void (*holdHandler)(uint32_t parameter), uint16_t active_color, uint16_t inactive_color, uint16_t border_color,
@@ -3256,8 +3255,12 @@ void LCD_ManualFreqButtonHandler(uint32_t parameter) {
 #endif
 }
 
-static void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter) {
+void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter) {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
+	if (LCD_busy) {
+		return;
+	}
+
 	const uint8_t buttons_in_line = 7;
 	const uint8_t buttons_lines = MEMORY_CHANNELS_COUNT / buttons_in_line;
 	const uint8_t buttons_top_offset = 0;

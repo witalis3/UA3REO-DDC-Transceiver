@@ -69,6 +69,7 @@ extern void LCD_printKeyboard(void (*keyboardHandler)(char *string, uint32_t max
 extern void LCD_hideKeyboard(void);
 #if HAS_TOUCHPAD
 extern void LCD_cleanTouchpadButtons(void);
+extern void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter);
 #endif
 
 #if (defined(LAY_800x480))
