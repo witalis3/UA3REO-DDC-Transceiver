@@ -2980,22 +2980,42 @@ static float32_t getDBFromFFTAmpl(float32_t ampl) {
 		dB += CALIBRATE.smeter_calibration_vhf;
 	}
 
+	if (TRX.LNA) {
+		dB += CALIBRATE.LNA_compensation;
+	}
+
+	if (CALIBRATE.ATT_compensation && TRX.ATT) {
+		dB += TRX.ATT_DB;
+	}
+
 	return dB;
 }
 
 static float32_t getFFTAmplFromDB(float32_t ampl) {
 	float32_t result;
 
+	float32_t dB = ampl - FFT_DBM_COMPENSATION;
+	if (TRX.ADC_Driver) {
+		dB += ADC_DRIVER_GAIN_DB;
+	}
+	if (CurrentVFO->SpectrumCenterFreq < 70000000) {
+		dB -= CALIBRATE.smeter_calibration_hf;
+	} else {
+		dB -= CALIBRATE.smeter_calibration_vhf;
+	}
+	if (TRX.LNA) {
+		dB -= CALIBRATE.LNA_compensation;
+	}
+	if (CALIBRATE.ATT_compensation && TRX.ATT) {
+		dB -= TRX.ATT_DB;
+	}
+
 	if (FFT_SCALE_TYPE == 0 || FFT_SCALE_TYPE == 2) { // ampl / dBm scale
-		float32_t power = db2rateP(ampl - FFT_DBM_COMPENSATION + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) -
-		                           ((CurrentVFO->SpectrumCenterFreq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) *
-		                  0.001f * 50.0f;
+		float32_t power = db2rateP(dB) * 0.001f * 50.0f;
 		arm_sqrt_f32(power, &result);
 	}
 	if (FFT_SCALE_TYPE == 1) { // squared scale
-		result = db2rateP(ampl - FFT_DBM_COMPENSATION + (TRX.ADC_Driver ? ADC_DRIVER_GAIN_DB : 0.0f) -
-		                  ((CurrentVFO->SpectrumCenterFreq < 70000000) ? CALIBRATE.smeter_calibration_hf : CALIBRATE.smeter_calibration_vhf)) *
-		         50.0f;
+		result = db2rateP(dB) * 50.0f;
 	}
 
 	return result * (float32_t)FFT_SIZE;
