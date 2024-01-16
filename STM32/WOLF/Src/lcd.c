@@ -2725,6 +2725,10 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 		VFO *vfo = TRX.SPLIT_Enabled ? SecondaryVFO : CurrentVFO;
 
 		const uint8_t slowler = 4;
+		if (dx > -slowler && dx < slowler) {
+			return false;
+		}
+		
 		float64_t step = TRX.FRQ_STEP_SSB_Hz;
 		if (vfo->Mode == TRX_MODE_CW) {
 			step = (float64_t)TRX.FRQ_STEP_CW_Hz;
@@ -2736,11 +2740,11 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 			step = 1.0;
 		}
 
-		uint64_t newfreq = getFreqOnFFTPosition(getFreqPositionOnFFT(vfo->Freq, true) + dx / slowler);
-		if (dx < 0.0f) {
+		uint64_t newfreq = getFreqOnFFTPosition(getFreqPositionOnFFT(vfo->Freq, true) + (float64_t)dx / slowler);
+		if (dx > 0) {
 			newfreq = ceill(newfreq / step) * step;
 		}
-		if (dx > 0.0f) {
+		if (dx < 0) {
 			newfreq = floorl(newfreq / step) * step;
 		}
 
