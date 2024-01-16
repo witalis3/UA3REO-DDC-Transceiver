@@ -907,7 +907,12 @@ bool FFT_printFFT(void) {
 	}
 	Hz_in_pixel = (TRX_on_TX && !SHOW_RX_FFT_ON_TX) ? FFT_TX_HZ_IN_PIXEL : FFT_HZ_IN_PIXEL;
 
-	if (CurrentVFO->SpectrumCenterFreq != currentFFTFreq || NeedWTFRedraw) {
+	uint64_t centerFreq = CurrentVFO->SpectrumCenterFreq;
+	if (TRX_on_TX && !SHOW_RX_FFT_ON_TX) {
+		centerFreq = CurrentVFO->Freq;
+	}
+
+	if (centerFreq != currentFFTFreq || NeedWTFRedraw) {
 		// calculate scale lines
 		dma_memset(grid_lines_pos, 0x00, sizeof(grid_lines_pos));
 		uint8_t index = 0;
@@ -919,7 +924,7 @@ bool FFT_printFFT(void) {
 
 		for (int8_t i = 0; i < FFT_MAX_GRID_NUMBER; i++) {
 			int64_t pos = -1;
-			int64_t grid_freq = (CurrentVFO->SpectrumCenterFreq / grid_step * grid_step) + ((i - 6) * grid_step);
+			int64_t grid_freq = (centerFreq / grid_step * grid_step) + ((i - 6) * grid_step);
 			pos = getFreqPositionOnFFT(grid_freq, false);
 			if (pos >= 0) {
 				grid_lines_pos[index] = pos;
@@ -929,7 +934,7 @@ bool FFT_printFFT(void) {
 		}
 
 		// offset the fft if needed
-		currentFFTFreq = CurrentVFO->SpectrumCenterFreq;
+		currentFFTFreq = centerFreq;
 	}
 
 	rx1_line_pos = getFreqPositionOnFFT(CurrentVFO->Freq, true);
@@ -2888,7 +2893,12 @@ static float32_t getMaxDBMFromFreq(uint64_t freq, uint8_t span) {
 }
 
 inline int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos) {
-	int32_t pos = (int32_t)((float64_t)LAYOUT->FFT_PRINT_SIZE / 2.0 + (float64_t)((float64_t)freq - (float64_t)CurrentVFO->SpectrumCenterFreq) / (float64_t)Hz_in_pixel * (float64_t)fft_zoom);
+	float64_t centerFreq = CurrentVFO->SpectrumCenterFreq;
+	if (TRX_on_TX && !SHOW_RX_FFT_ON_TX) {
+		centerFreq = CurrentVFO->Freq;
+	}
+
+	int32_t pos = (int32_t)((float64_t)LAYOUT->FFT_PRINT_SIZE / 2.0 + (float64_t)((float64_t)freq - centerFreq) / (float64_t)Hz_in_pixel * (float64_t)fft_zoom);
 	if (!full_pos && (pos < 0 || pos >= LAYOUT->FFT_PRINT_SIZE)) {
 		return -1;
 	}
@@ -2899,8 +2909,13 @@ inline int32_t getFreqPositionOnFFT(uint64_t freq, bool full_pos) {
 }
 
 uint64_t getFreqOnFFTPosition(uint16_t position) {
-	return (uint64_t)((int64_t)CurrentVFO->SpectrumCenterFreq + (int64_t)(-((float64_t)LAYOUT->FFT_PRINT_SIZE * ((float64_t)Hz_in_pixel / (float64_t)fft_zoom) / 2.0) +
-	                                                                      (float64_t)position * ((float64_t)Hz_in_pixel / (float64_t)fft_zoom)));
+	int64_t centerFreq = CurrentVFO->SpectrumCenterFreq;
+	if (TRX_on_TX && !SHOW_RX_FFT_ON_TX) {
+		centerFreq = CurrentVFO->Freq;
+	}
+
+	return (uint64_t)(centerFreq + (int64_t)(-((float64_t)LAYOUT->FFT_PRINT_SIZE * ((float64_t)Hz_in_pixel / (float64_t)fft_zoom) / 2.0) +
+	                                         (float64_t)position * ((float64_t)Hz_in_pixel / (float64_t)fft_zoom)));
 }
 
 static uint32_t FFT_getLensCorrection(uint32_t normal_distance_from_center) {

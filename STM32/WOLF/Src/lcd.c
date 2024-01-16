@@ -2728,7 +2728,7 @@ bool LCD_processSwipeTouch(uint16_t x, uint16_t y, int16_t dx, int16_t dy) {
 		if (dx > -slowler && dx < slowler) {
 			return false;
 		}
-		
+
 		float64_t step = TRX.FRQ_STEP_SSB_Hz;
 		if (vfo->Mode == TRX_MODE_CW) {
 			step = (float64_t)TRX.FRQ_STEP_CW_Hz;
