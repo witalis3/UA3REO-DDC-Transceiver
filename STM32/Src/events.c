@@ -520,12 +520,20 @@ void EVENTS_do_EVERY_10ms(void) // 100 Hz
 	}
 
 	static uint8_t needPrintFFT = 0;
+	#if defined(FRONTPANEL_LITE)
+	if (needPrintFFT < 10 && (ms10_10_counter >= (6-TRX.FFT_Speed) *2)) // every x msec
+	{
+		ms10_10_counter = 0;
+		needPrintFFT++;
+	}
+#else
 	if (needPrintFFT < 10 && (ms10_10_counter % (6 - TRX.FFT_Speed)) == 0) // every x msec
 	{
 		ms10_10_counter = 0;
 		needPrintFFT++;
 	}
-
+#endif 	
+	
 	if (needPrintFFT > 0 && !LCD_UpdateQuery.Background && FFT_printFFT()) { // draw FFT
 		needPrintFFT--;
 	}
