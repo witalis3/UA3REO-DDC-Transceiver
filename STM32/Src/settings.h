@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "9.3.0" // current STM32 version
+#define STM32_VERSION_STR "9.3.1-dev" // current STM32 version
 
 #if defined(FRONTPANEL_LITE)
 #define FPGA_VERSION_STR "8.0.0" // needed FPGA version Wolf-Lite
