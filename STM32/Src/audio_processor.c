@@ -2120,7 +2120,7 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 		if_gain_dB += CW_ADD_GAIN_IF;
 	}
 #endif
-	
+
 	float32_t if_gain = db2rateP(if_gain_dB);
 
 	float32_t *I_buff = APROC_Audio_Buffer_RX1_I;
