@@ -1153,7 +1153,7 @@ void LoadCalibration(bool clear) {
 
 	// reset ATU on Hard Reset
 	if (clear) {
-		ResetATUSettings();
+		ResetATUBanks();
 	}
 
 	// load ATU
@@ -1378,14 +1378,6 @@ bool SaveDPDSettings(uint8_t *in, uint32_t size, uint32_t sector_offset) {
 	}
 	EEPROM_PowerDown();
 	return true;
-}
-
-void ResetATUSettings(void) {
-	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_1, false);
-	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_2, false);
-	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_3, false);
-	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_4, false);
-	println("[OK] Erase ATU EEPROM settings");
 }
 
 bool LoadATUSettings(uint8_t *out, uint32_t size, uint32_t sector) {
