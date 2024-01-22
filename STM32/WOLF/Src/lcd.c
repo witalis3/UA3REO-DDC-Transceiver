@@ -339,13 +339,6 @@ static void LCD_displayBottomButtons(bool redraw) {
 	const uint16_t bottomNavigationButtonsWidth = 48;
 	uint16_t curr_x = 0;
 
-	if (TRX.EnableBottomNavigationButtons && FUNCBUTTONS_ON_PAGE != 9) {
-		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<", false, false, false, 0, BUTTONHANDLER_LEFT_ARR,
-		            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND,
-		            LAYOUT->TOPBUTTONS_FONT);
-		curr_x += bottomNavigationButtonsWidth;
-	}
-
 	for (uint8_t i = 0; i < FUNCBUTTONS_ON_PAGE; i++) {
 		uint16_t menuPosition = TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i;
 
@@ -369,7 +362,8 @@ static void LCD_displayBottomButtons(bool redraw) {
 			width += 1;
 		}
 
-		if (TRX.EnableBottomNavigationButtons && FUNCBUTTONS_ON_PAGE == 9 && i == 4) {
+		bool printLeftPutton = TRX.EnableBottomNavigationButtons && ((FUNCBUTTONS_ON_PAGE == 9 && i == 4) || (FUNCBUTTONS_ON_PAGE == 8 && i == 3));
+		if (printLeftPutton) {
 			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<", false, false, false, 0, BUTTONHANDLER_LEFT_ARR,
 			            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND,
 			            LAYOUT->TOPBUTTONS_FONT);
@@ -387,18 +381,13 @@ static void LCD_displayBottomButtons(bool redraw) {
 		}
 		curr_x += width;
 
-		if (TRX.EnableBottomNavigationButtons && FUNCBUTTONS_ON_PAGE == 9 && i == 4) {
+		bool printRightPutton = TRX.EnableBottomNavigationButtons && ((FUNCBUTTONS_ON_PAGE == 9 && i == 4) || (FUNCBUTTONS_ON_PAGE == 8 && i == 4));
+		if (printRightPutton) {
 			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, ">", false, false, false, 0, BUTTONHANDLER_RIGHT_ARR,
 			            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND,
 			            LAYOUT->TOPBUTTONS_FONT);
 			curr_x += bottomNavigationButtonsWidth;
 		}
-	}
-
-	if (TRX.EnableBottomNavigationButtons && FUNCBUTTONS_ON_PAGE != 9) {
-		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, ">", false, false, false, 0, BUTTONHANDLER_RIGHT_ARR,
-		            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND,
-		            LAYOUT->TOPBUTTONS_FONT);
 	}
 #endif
 
