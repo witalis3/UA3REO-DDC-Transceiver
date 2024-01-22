@@ -403,6 +403,7 @@ void LoadSettings(bool clear) {
 		TRX.FFT_DXCluster = true;                 // Show DX cluster over FFT
 		TRX.FFT_DXCluster_Azimuth = false;        // Add azimut to callsign
 		TRX.FFT_DXCluster_Timeout = 5;            // DXCluser timeout in minutes
+		TRX.FFT_CenterAfterIdle = false;          // Center FFT spectrum in free tune after idle delay
 		TRX.Show_Sec_VFO = false;                 // Show secondary VFO on FFT
 		TRX.FFT_Scale_Type = 0;                   // Scale type (0 - amplitude, 1 - squared, 2 - dBm)
 		TRX.AnalogMeterShowPWR = false;           // false - SWR, true - PWR

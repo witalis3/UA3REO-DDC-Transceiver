@@ -228,6 +228,7 @@ static void SYSMENU_HANDL_SCREEN_FFT_dBmGrid(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_LAYOUT_THEME(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_LCD_Brightness(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_LCD_SleepTimeout(int8_t direction);
+static void SYSMENU_HANDL_SCREEN_FFT_CenterAfterIdle(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_Show_Sec_VFO(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_EnableBottomNavigationButtons(int8_t direction);
 static void SYSMENU_HANDL_SCREEN_WTF_Color(int8_t direction);
@@ -975,6 +976,7 @@ const static struct sysmenu_item_handler sysmenu_screen_handlers[] = {
      (const enumerate_item[10]){"Blu>Y>R", "BlB>Y>R", "BlR>Y>R", "BGYRM", "Bla>Y>R", "Bla>Y>G", "Bla>R", "Bla>G", "Bla>Blu", "Bla>W"}},
     {"FFT Compressor", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_Compressor, SYSMENU_HANDL_SCREEN_FFT_Compressor},
 #if HRDW_HAS_WIFI
+    {"Center After Idle", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_CenterAfterIdle, SYSMENU_HANDL_SCREEN_FFT_CenterAfterIdle},
     {"DX Cluster type", SYSMENU_ENUM, NULL, (uint32_t *)&TRX.DXCluster_Type, SYSMENU_HANDL_SCREEN_DXCluster_Type, (const enumerate_item[2]){"RBN", "SUMMIT"}},
     {"FFT DXCluster", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster, SYSMENU_HANDL_SCREEN_FFT_DXCluster},
     {"FFT DXClus Azimuth", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_HANDL_SCREEN_FFT_DXCluster_Azimuth},
@@ -4364,6 +4366,15 @@ static void SYSMENU_HANDL_SCREEN_WOLF_Cluster(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.WOLF_Cluster = false;
+	}
+}
+
+static void SYSMENU_HANDL_SCREEN_FFT_CenterAfterIdle(int8_t direction) {
+	if (direction > 0) {
+		TRX.FFT_CenterAfterIdle = true;
+	}
+	if (direction < 0) {
+		TRX.FFT_CenterAfterIdle = false;
 	}
 }
 

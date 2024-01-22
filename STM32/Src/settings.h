@@ -16,8 +16,8 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 147        // Settings config version
-#define CALIB_VERSION 90        // Calibration config version
+#define SETT_VERSION 148        // Settings config version
+#define CALIB_VERSION 91        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -50,6 +50,7 @@
 #define CW_ADD_GAIN_IF 12.0f                 // additional IF gain in CW
 #define TX_LPF_TIMEOUT (180 * 1000)          // TX LPF On Timeout, millisec (3 min)
 #define SWR_PROTECTOR_MAX_POWER 20.0f        // drop down to PWR %, if SWR high
+#define FREE_TUNE_CENTER_ON_IDLE_SEC 20      // center spectrum on idle while in free tune mode
 
 #define FULL_DUPLEX TRX.Full_Duplex             // Enable duplex RX and TX
 #define SHOW_RX_FFT_ON_TX FULL_DUPLEX           // Show RX FFT channel on TX
@@ -799,6 +800,7 @@ extern struct TRX_SETTINGS {
 	bool FFT_HoldPeaks;
 	bool FFT_DXCluster;
 	bool FFT_DXCluster_Azimuth;
+	bool FFT_CenterAfterIdle;
 	bool Show_Sec_VFO;
 	bool AnalogMeterShowPWR;
 	bool EnableBottomNavigationButtons;
