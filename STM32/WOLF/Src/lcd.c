@@ -3257,15 +3257,14 @@ void LCD_ManualFreqButtonHandler(uint32_t parameter) {
 
 void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter) {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	if (LCD_busy) {
-		return;
-	}
-
 	const uint8_t buttons_in_line = 7;
 	const uint8_t buttons_lines = MEMORY_CHANNELS_COUNT / buttons_in_line;
 	const uint8_t buttons_top_offset = 0;
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
+	while (LCD_busy) {
+		;
+	}
 	LCD_openWindow(window_width, window_height);
 	LCD_busy = true;
 
