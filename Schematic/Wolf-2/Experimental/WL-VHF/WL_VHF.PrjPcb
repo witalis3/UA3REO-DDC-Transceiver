@@ -244,58 +244,6 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=YANGOQYP
 
-[GeneratedDocument1]
-DocumentPath=Project Outputs for WL_VHF\Design Rule Check - WL_RFFC.html
-DItemRevisionGUID=
-
-[GeneratedDocument2]
-DocumentPath=Project Outputs for WL_VHF\NC Drill\WL_RFFC.DRR
-DItemRevisionGUID=
-
-[GeneratedDocument3]
-DocumentPath=Project Outputs for WL_VHF\Gerber\WL_RFFC.EXTREP
-DItemRevisionGUID=
-
-[GeneratedDocument4]
-DocumentPath=Project Outputs for WL_VHF\Gerber\WL_RFFC.GBL
-DItemRevisionGUID=
-
-[GeneratedDocument5]
-DocumentPath=Project Outputs for WL_VHF\Gerber\WL_RFFC.GBO
-DItemRevisionGUID=
-
-[GeneratedDocument6]
-DocumentPath=Project Outputs for WL_VHF\Gerber\WL_RFFC.GBS
-DItemRevisionGUID=
-
-[GeneratedDocument7]
-DocumentPath=Project Outputs for WL_VHF\Gerber\WL_RFFC.GKO
-DItemRevisionGUID=
-
-[GeneratedDocument8]
-DocumentPath=Project Outputs for WL_VHF\Gerber\WL_RFFC.GTL
-DItemRevisionGUID=
-
-[GeneratedDocument9]
-DocumentPath=Project Outputs for WL_VHF\Gerber\WL_RFFC.GTO
-DItemRevisionGUID=
-
-[GeneratedDocument10]
-DocumentPath=Project Outputs for WL_VHF\Gerber\WL_RFFC.GTS
-DItemRevisionGUID=
-
-[GeneratedDocument11]
-DocumentPath=Project Outputs for WL_VHF\NC Drill\WL_RFFC.LDP
-DItemRevisionGUID=
-
-[GeneratedDocument12]
-DocumentPath=Project Outputs for WL_VHF\Gerber\WL_RFFC.REP
-DItemRevisionGUID=
-
-[GeneratedDocument13]
-DocumentPath=Project Outputs for WL_VHF\NC Drill\WL_RFFC.TXT
-DItemRevisionGUID=
-
 [Configuration1]
 Name=Sources
 ParameterCount=0
