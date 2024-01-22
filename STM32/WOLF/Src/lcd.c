@@ -2694,7 +2694,7 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y) {
 	}
 
 	// Free Tune / Center
-	if (y > LAYOUT->FFT_FFTWTF_POS_Y && y <= 430 && x > 0 && x < LCD_WIDTH) {
+	if (y > LAYOUT->FFT_FFTWTF_POS_Y && y <= (LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) && x > 0 && x < LCD_WIDTH && !TRX.SPLIT_Enabled) {
 		if (!LCD_systemMenuOpened) {
 			BUTTONHANDLER_Free_tune(0);
 			LCD_redraw(false);
