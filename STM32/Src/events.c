@@ -681,7 +681,7 @@ void EVENTS_do_EVERY_1000ms(void) // 1 Hz
 	}
 
 	// Free tune center spectrum on idle
-	if (TRX.FFT_CenterAfterIdle && TRX_Inactive_Time >= FREE_TUNE_CENTER_ON_IDLE_SEC && CurrentVFO->SpectrumCenterFreq != CurrentVFO->Freq) {
+	if (TRX.CenterSpectrumAfterIdle && TRX_Inactive_Time >= FREE_TUNE_CENTER_ON_IDLE_SEC && CurrentVFO->SpectrumCenterFreq != CurrentVFO->Freq) {
 		CurrentVFO->SpectrumCenterFreq = CurrentVFO->Freq;
 		TRX_setFrequency(CurrentVFO->Freq, CurrentVFO);
 	}

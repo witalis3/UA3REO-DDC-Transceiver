@@ -16,7 +16,7 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 148        // Settings config version
+#define SETT_VERSION 149        // Settings config version
 #define CALIB_VERSION 91        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
@@ -800,7 +800,6 @@ extern struct TRX_SETTINGS {
 	bool FFT_HoldPeaks;
 	bool FFT_DXCluster;
 	bool FFT_DXCluster_Azimuth;
-	bool FFT_CenterAfterIdle;
 	bool Show_Sec_VFO;
 	bool AnalogMeterShowPWR;
 	bool EnableBottomNavigationButtons;
@@ -829,6 +828,7 @@ extern struct TRX_SETTINGS {
 	bool RepeaterMode_shadow;
 	bool WOLF_Cluster;
 	bool FREE_Tune;
+	bool CenterSpectrumAfterIdle;
 	bool Auto_CW_Mode;
 	bool CW_In_SSB;
 	bool SatMode;

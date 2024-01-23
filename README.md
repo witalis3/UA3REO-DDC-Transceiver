@@ -190,6 +190,7 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **IF Gain, dB** - IF gain
 * **NB Threshold** - Threshold of Noise blanker
 * **Free tune** - Allows you to move the reception frequency across the spectrum without changing the center frequency of the spectrum itself
+* **Center After Idle** - Center the spectrum with Free Tune active after 20 seconds of inactivity
 * **Noise Blanker** - Activating the Surge Suppressor
 * **RX AUDIO Mode** - Audio lines control: Stereo\Left\Right
 * **RX AGC Hold time** - Time before release of AGC gain in signal peaks, ms
@@ -273,7 +274,6 @@ WiFi module ESP-01 must have fresh firmware with SDK 3.0.4 and higher, and AT co
 * **FFT Background** - Gradient FFT background
 * **FFT Color** - FFT colors: 1(blue -> yellow -> red), 2(black -> yellow -> red), 3(black -> yellow -> green), 4(black -> red), 5(black -> green), 6(black -> blue), 7(black -> white)
 * **FFT Compressor** - Enable FFT peak comressor
-* **Center After Idle** - Center the spectrum with Free Tune active after 20 seconds of inactivity
 * **FFT DXCluster Azimuth** - Add azimuth data to DX-cluster
 * **FFT DXCluster Timeout** - Timeout of DX-cluser spots in minutes
 * **FFT DXCluster** - Show DXCluster info over FFT
