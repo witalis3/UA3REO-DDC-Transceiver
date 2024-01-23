@@ -239,7 +239,7 @@ void LoadSettings(bool clear) {
 		TRX.AFAmp_Mute = false;                                        // AF Amp Mute
 		TRX.IF_Gain = 20;                                              // IF gain, dB (before all processing and AGC)
 		TRX.AGC_Gain_target_SSB = -30;                                 // Maximum (target) AGC gain SSB
-		TRX.AGC_Gain_target_CW = -38;                                  // Maximum (target) AGC gain CW
+		TRX.AGC_Gain_target_CW = -35;                                  // Maximum (target) AGC gain CW
 		TRX.MIC_Gain_SSB_DB = 9.0f;                                    // Microphone gain, dB SSB modes
 		TRX.MIC_Gain_AM_DB = 9.0f;                                     // Microphone gain, dB AM mode
 		TRX.MIC_Gain_FM_DB = 9.0f;                                     // Microphone gain, dB FM mode

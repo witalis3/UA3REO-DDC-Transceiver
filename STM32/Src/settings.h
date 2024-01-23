@@ -47,7 +47,7 @@
 #define NORMAL_SWR_SAVED 1.5f                // ATU SWR target for saved settings
 #define NORMAL_SWR_TUNE 1.2f                 // ATU SWR target for new tune
 #define IDLE_LCD_BRIGHTNESS 5                // Low brightness for IDLE mode (dimmer)
-#define CW_ADD_GAIN_IF 12.0f                 // additional IF gain in CW
+#define CW_ADD_GAIN_IF 18.0f                 // additional IF gain in CW
 #define TX_LPF_TIMEOUT (180 * 1000)          // TX LPF On Timeout, millisec (3 min)
 #define SWR_PROTECTOR_MAX_POWER 20.0f        // drop down to PWR %, if SWR high
 #define FREE_TUNE_CENTER_ON_IDLE_SEC 20      // center spectrum on idle while in free tune mode
