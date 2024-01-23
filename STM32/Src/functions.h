@@ -194,7 +194,6 @@ extern void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instanc
 extern char cleanASCIIgarbage(char chr);
 extern bool textStartsWith(const char *a, const char *b);
 extern void *alloc_to_wtf(uint32_t size, bool reset);
-extern float fast_sqrt(const float x);
 extern int8_t getPowerFromALC();
 extern void getUTCDateTime(RTC_DateTypeDef *sDate, RTC_TimeTypeDef *sTime);
 extern uint32_t getUTCTimestamp();

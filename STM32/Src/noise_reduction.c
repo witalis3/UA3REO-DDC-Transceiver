@@ -175,11 +175,7 @@ void processNoiseReduction(float32_t *buffer, AUDIO_PROC_RX_NUM rx_id, uint8_t n
 					float32_t prio = instance->SNR_prio[bindx];
 					float32_t post = instance->SNR_post[bindx];
 					float32_t v = prio / (prio + 1.0f) * post;
-#ifdef STM32F407xx
-					v = fast_sqrt(0.7212f * v + v * v);
-#else
 					arm_sqrt_f32((0.7212f * v + v * v), &v);
-#endif
 					instance->GAIN[bindx] = fmaxf(1.0f / post * v, 0.001f); // limit HK's to 0.001
 					float32_t mult = post * v;
 					instance->GAIN_old[bindx] = post * instance->GAIN[bindx] * instance->GAIN[bindx];

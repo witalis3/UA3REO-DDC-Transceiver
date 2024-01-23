@@ -1509,7 +1509,8 @@ static void doTX_CESSB(uint16_t size, TRX_MODE mode) {
 	for (uint32_t sample = 0; sample < size; sample++) {
 		float32_t i = APROC_Audio_Buffer_TX_I[sample];
 		float32_t q = APROC_Audio_Buffer_TX_Q[sample];
-		float32_t mag = fast_sqrt(i * i + q * q);
+		float32_t mag;
+		arm_sqrt_f32(i * i + q * q, &mag);
 
 		if (mag > 1.0f) {
 			float32_t divider = 1.0f + (mag - 1.0f) * 2.0f;
