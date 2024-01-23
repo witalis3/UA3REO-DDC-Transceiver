@@ -68,11 +68,11 @@ extern DMA_HandleTypeDef hdma_usart6_rx;
 
 extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
-extern MDMA_HandleTypeDef hmdma_mdma_channel40_sw_0;
-extern MDMA_HandleTypeDef hmdma_mdma_channel41_sw_0;
-extern MDMA_HandleTypeDef hmdma_mdma_channel42_sw_0;
-extern MDMA_HandleTypeDef hmdma_mdma_channel43_sw_0;
-extern MDMA_HandleTypeDef hmdma_mdma_channel44_sw_0;
+extern MDMA_HandleTypeDef hmdma_mdma_channel0_sw_0;
+extern MDMA_HandleTypeDef hmdma_mdma_channel1_sw_0;
+extern MDMA_HandleTypeDef hmdma_mdma_channel2_sw_0;
+extern MDMA_HandleTypeDef hmdma_mdma_channel3_sw_0;
+extern MDMA_HandleTypeDef hmdma_mdma_channel4_sw_0;
 
 extern CRC_HandleTypeDef hcrc;
 extern IWDG_HandleTypeDef hiwdg1;
