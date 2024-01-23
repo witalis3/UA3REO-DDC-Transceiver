@@ -151,10 +151,15 @@ const PERIPH_FrontPanel_FuncButton PERIPH_FrontPanel_FuncButtonsList[FUNCBUTTONS
     {.name = TRX.CW_Macros_Name_4, .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 4},
     // hidden entry for menu editor
     {.name = TRX.CW_Macros_Name_5, .work_in_menu = false, .clickHandler = BUTTONHANDLER_CW_MACROS, .holdHandler = BUTTONHANDLER_CW_MACROS, .parameter = 5},
+    {.name = "CESSB", .work_in_menu = false, .clickHandler = BUTTONHANDLER_CESSB, .holdHandler = BUTTONHANDLER_CESSB, .checkBool = (uint32_t *)&TRX.TX_CESSB},
+    {.name = "FT8", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FT8, .holdHandler = BUTTONHANDLER_FT8, .checkBool = NULL},
+    {.name = "VOX", .work_in_menu = true, .clickHandler = BUTTONHANDLER_VOX, .holdHandler = BUTTONHANDLER_VOX, .checkBool = (uint32_t *)&TRX.VOX},
+    {.name = "FILES", .work_in_menu = false, .clickHandler = BUTTONHANDLER_FILEMANAGER, .holdHandler = BUTTONHANDLER_FILEMANAGER, .checkBool = NULL},
+    {.name = "REPIT", .work_in_menu = false, .clickHandler = BUTTONHANDLER_REPEATER_MODE, .holdHandler = BUTTONHANDLER_REPEATER_MODE, .checkBool = (uint32_t *)&TRX.RepeaterMode_shadow},
     {.name = "DPD", .work_in_menu = true, .clickHandler = BUTTONHANDLER_DPD, .holdHandler = BUTTONHANDLER_DPD_CALIBRATE, .checkBool = (uint32_t *)&TRX.Digital_Pre_Distortion},
-    {.name = "NONE", .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL, .checkBool = NULL},
     {.name = "CESSB", .work_in_menu = true, .clickHandler = BUTTONHANDLER_CESSB, .holdHandler = BUTTONHANDLER_CESSB_HOLD, .checkBool = NULL},
     {.name = "BW", .work_in_menu = true, .clickHandler = BUTTONHANDLER_BW, .holdHandler = BUTTONHANDLER_BW, .checkBool = NULL},
+    {.name = "NONE", .work_in_menu = false, .clickHandler = NULL, .holdHandler = NULL, .checkBool = NULL},
 
 };
 

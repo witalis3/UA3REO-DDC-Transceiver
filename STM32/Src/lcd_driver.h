@@ -110,7 +110,8 @@ typedef struct {
 		a = b;                   \
 		b = t;                   \
 	}
-#define rgb888torgb565(r, g, b) ((uint16_t)((((r)&0xF8) << 8) | (((g)&0xFC) << 3) | (((b)&0xFF) >> 3)))
+
+#define rgb888torgb565(r, g, b) ((uint16_t)((((r)&0xF8) << 8) | (((g)&0xFC) << 3) | ((b) >> 3)))
 
 extern uint16_t addColor(uint16_t color, uint8_t add_r, uint8_t add_g, uint8_t add_b); // add opacity or mix colors
 extern uint16_t mixColors(uint16_t color1, uint16_t color2, float32_t opacity);        // mix two colors with opacity

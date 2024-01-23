@@ -646,7 +646,7 @@ const BAND_MAP BANDS[BANDS_COUNT] = {
         .broadcast = false,
         .startFreq = 144000000,
         .endFreq = 146000000,
-        .defaultFreq = 145000000,
+        .defaultFreq = 145500000,
         .regions =
             (const REGION_MAP[7]){
                 {.startFreq = 144000000, .endFreq = 144110000, .mode = TRX_MODE_CW},

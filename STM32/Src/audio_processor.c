@@ -2111,8 +2111,17 @@ static void doVAD(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 
 // Apply IF Gain IF Gain
 static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
-	float32_t if_gain = db2rateP(TRX.IF_Gain);
-	bool CW = false;
+	float32_t if_gain_dB = TRX.IF_Gain;
+	if (rx_id == AUDIO_RX1 && CurrentVFO->Mode == TRX_MODE_CW) {
+		if_gain_dB += CW_ADD_GAIN_IF;
+	}
+#if HRDW_HAS_DUAL_RX
+	if (rx_id == AUDIO_RX2 && SecondaryVFO->Mode == TRX_MODE_CW) {
+		if_gain_dB += CW_ADD_GAIN_IF;
+	}
+#endif
+
+	float32_t if_gain = db2rateP(if_gain_dB);
 
 	float32_t *I_buff = APROC_Audio_Buffer_RX1_I;
 	float32_t *Q_buff = APROC_Audio_Buffer_RX1_Q;
@@ -2122,18 +2131,6 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 		Q_buff = APROC_Audio_Buffer_RX2_Q;
 	}
 #endif
-
-	if (rx_id == AUDIO_RX1 && CurrentVFO->Mode == TRX_MODE_CW) {
-		CW = true;
-	}
-#if HRDW_HAS_DUAL_RX
-	if (rx_id == AUDIO_RX2 && SecondaryVFO->Mode == TRX_MODE_CW) {
-		CW = true;
-	}
-#endif
-	if (CW) {
-		if_gain += db2rateP(CW_ADD_GAIN_IF);
-	}
 
 	// overflow protect
 	if (!CurrentVFO->AGC) {
