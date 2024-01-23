@@ -41,7 +41,6 @@ volatile bool EEPROM_Busy = false;
 VFO *CurrentVFO = &TRX.VFO_A;
 VFO *SecondaryVFO = &TRX.VFO_B;
 
-static void ResetATUSettings(void);
 static void LoadSettingsFromEEPROM(void);
 static bool EEPROM_Sector_Erase(uint8_t sector, bool force);
 static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bool verify, bool force);
