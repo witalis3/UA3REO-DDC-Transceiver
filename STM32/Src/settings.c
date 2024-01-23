@@ -531,8 +531,9 @@ void LoadSettings(bool clear) {
 		TRX.FM_LPF_RX_Filter_shadow = TRX.VFO_A.FM_LPF_RX_Filter;
 		TRX.FM_LPF_TX_Filter_shadow = TRX.VFO_A.FM_LPF_TX_Filter;
 		TRX.FM_HPF_RX_Filter_shadow = TRX.VFO_A.FM_HPF_RX_Filter;
-
-		LCD_showError("Loaded default settings", true);
+		
+		LCD_showError("Loaded default settings", true);	
+	
 		SaveSettings(); // save to primary bank
 		SaveSettings(); // save to second bank
 		SaveSettingsToEEPROM();
@@ -1126,7 +1127,27 @@ void LoadCalibration(bool clear) {
 		}
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
-
+		
+#ifdef STM32F407xx
+volatile bool NeedRot = false;
+		uint8_t ii = 99;
+		char buf_rot[10];
+				LCD_showError("Push POWER to ROTATE or wait to SKIP", false);
+	while ( ii > 0) {	
+	sprintf(buf_rot, "%2d", ii);	
+	LCDDriver_printTextFont(buf_rot, 240 , 200 , COLOR_WHITE, COLOR_RED, (GFXfont *)&FreeSans12pt7b);
+		if (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, GPIO_PIN_7) == GPIO_PIN_RESET) {
+			NeedRot= !NeedRot;
+			CALIBRATE.LCD_Rotate = NeedRot;
+			LCD_Init();
+			LCD_showError("Push POWER to ROTATE or wait to SKIP", false);			
+			ii=99;
+		}
+		HAL_Delay(100);
+		ii--;
+	}
+#endif			
+		
 #ifdef LAY_160x128
 		LCD_showError("Load default calibrate", true);
 #else
