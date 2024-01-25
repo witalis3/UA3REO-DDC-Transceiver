@@ -98,7 +98,9 @@ static uint32_t ms10_counter = 0;
 /* External variables --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_spi2_rx;
 extern DMA_HandleTypeDef hdma_spi2_tx;
+extern DMA_HandleTypeDef hdma_spi4_tx;
 extern SPI_HandleTypeDef hspi2;
+extern SPI_HandleTypeDef hspi4;
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim4;
@@ -275,7 +277,7 @@ void EXTI0_IRQHandler(void) {
 	/* USER CODE BEGIN EXTI0_IRQn 0 */
 	CPULOAD_WakeUp();
 	/* USER CODE END EXTI0_IRQn 0 */
-	HAL_GPIO_EXTI_IRQHandler(SWR_BACKW_Pin);
+	HAL_GPIO_EXTI_IRQHandler(KEY_IN_DASH_Pin);
 	/* USER CODE BEGIN EXTI0_IRQn 1 */
 
 	/* USER CODE END EXTI0_IRQn 1 */
@@ -288,7 +290,7 @@ void EXTI1_IRQHandler(void) {
 	/* USER CODE BEGIN EXTI1_IRQn 0 */
 	CPULOAD_WakeUp();
 	/* USER CODE END EXTI1_IRQn 0 */
-	HAL_GPIO_EXTI_IRQHandler(SWR_FORW_Pin);
+	HAL_GPIO_EXTI_IRQHandler(KEY_IN_DOT_Pin);
 	/* USER CODE BEGIN EXTI1_IRQn 1 */
 
 	/* USER CODE END EXTI1_IRQn 1 */
@@ -353,7 +355,7 @@ void EXTI9_5_IRQHandler(void) {
 	/* USER CODE BEGIN EXTI9_5_IRQn 0 */
 	CPULOAD_WakeUp();
 	/* USER CODE END EXTI9_5_IRQn 0 */
-	HAL_GPIO_EXTI_IRQHandler(FPGA_BUS_D7_Pin);
+	HAL_GPIO_EXTI_IRQHandler(PTT_IN_Pin);
 	/* USER CODE BEGIN EXTI9_5_IRQn 1 */
 
 	/* USER CODE END EXTI9_5_IRQn 1 */
@@ -420,7 +422,7 @@ void EXTI15_10_IRQHandler(void) {
 	CPULOAD_WakeUp();
 	/* USER CODE END EXTI15_10_IRQn 0 */
 	HAL_GPIO_EXTI_IRQHandler(AUDIO_48K_CLOCK_Pin);
-	HAL_GPIO_EXTI_IRQHandler(LCD_CS_Pin);
+	HAL_GPIO_EXTI_IRQHandler(PWR_ON_Pin);
 	/* USER CODE BEGIN EXTI15_10_IRQn 1 */
 
 	/* USER CODE END EXTI15_10_IRQn 1 */

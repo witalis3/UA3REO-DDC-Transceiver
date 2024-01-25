@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define STM32_VERSION_STR "9.3.0" // current STM32 version
+#define STM32_VERSION_STR "9.3.1" // current STM32 version
 
 #if defined(FRONTPANEL_LITE)
 #define FPGA_VERSION_STR "8.0.0" // needed FPGA version Wolf-Lite
@@ -16,8 +16,8 @@
 #define FPGA_VERSION_STR "8.2.0" // needed FPGA version Wolf/Wolf-2/Wolf-X1
 #endif
 
-#define SETT_VERSION 147        // Settings config version
-#define CALIB_VERSION 90        // Calibration config version
+#define SETT_VERSION 149        // Settings config version
+#define CALIB_VERSION 91        // Calibration config version
 #define WIFI_SETTINGS_VERSION 5 // WiFi config version
 
 #define TRX_SAMPLERATE 48000                 // audio stream sampling rate during processing and TX (NOT RX!)
@@ -47,9 +47,10 @@
 #define NORMAL_SWR_SAVED 1.5f                // ATU SWR target for saved settings
 #define NORMAL_SWR_TUNE 1.2f                 // ATU SWR target for new tune
 #define IDLE_LCD_BRIGHTNESS 5                // Low brightness for IDLE mode (dimmer)
-#define CW_ADD_GAIN_IF 20.0f                 // additional IF gain in CW
+#define CW_ADD_GAIN_IF 18.0f                 // additional IF gain in CW
 #define TX_LPF_TIMEOUT (180 * 1000)          // TX LPF On Timeout, millisec (3 min)
 #define SWR_PROTECTOR_MAX_POWER 20.0f        // drop down to PWR %, if SWR high
+#define FREE_TUNE_CENTER_ON_IDLE_SEC 20      // center spectrum on idle while in free tune mode
 
 #define FULL_DUPLEX TRX.Full_Duplex             // Enable duplex RX and TX
 #define SHOW_RX_FFT_ON_TX FULL_DUPLEX           // Show RX FFT channel on TX
@@ -233,7 +234,7 @@ static char ota_config_frontpanel[] = "X1";
 #define MAX_VOLUME_VALUE 100.0f
 #define FUNCBUTTONS_ON_PAGE 4
 #define FUNCBUTTONS_PAGES 9
-#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 5)
+#define FUNCBUTTONS_COUNT (FUNCBUTTONS_PAGES * FUNCBUTTONS_ON_PAGE + 10)
 static char ota_config_frontpanel[] = "Mini";
 #define ATU_MAXPOS ATU_6x6_MAXPOS
 #endif
@@ -827,6 +828,7 @@ extern struct TRX_SETTINGS {
 	bool RepeaterMode_shadow;
 	bool WOLF_Cluster;
 	bool FREE_Tune;
+	bool CenterSpectrumAfterIdle;
 	bool Auto_CW_Mode;
 	bool CW_In_SSB;
 	bool SatMode;

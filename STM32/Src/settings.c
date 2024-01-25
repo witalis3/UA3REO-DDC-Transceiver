@@ -41,7 +41,6 @@ volatile bool EEPROM_Busy = false;
 VFO *CurrentVFO = &TRX.VFO_A;
 VFO *SecondaryVFO = &TRX.VFO_B;
 
-static void ResetATUSettings(void);
 static void LoadSettingsFromEEPROM(void);
 static bool EEPROM_Sector_Erase(uint8_t sector, bool force);
 static bool EEPROM_Write_Data(uint8_t *Buffer, uint16_t size, uint8_t sector, bool verify, bool force);
@@ -240,7 +239,7 @@ void LoadSettings(bool clear) {
 		TRX.AFAmp_Mute = false;                                        // AF Amp Mute
 		TRX.IF_Gain = 20;                                              // IF gain, dB (before all processing and AGC)
 		TRX.AGC_Gain_target_SSB = -30;                                 // Maximum (target) AGC gain SSB
-		TRX.AGC_Gain_target_CW = -38;                                  // Maximum (target) AGC gain CW
+		TRX.AGC_Gain_target_CW = -35;                                  // Maximum (target) AGC gain CW
 		TRX.MIC_Gain_SSB_DB = 9.0f;                                    // Microphone gain, dB SSB modes
 		TRX.MIC_Gain_AM_DB = 9.0f;                                     // Microphone gain, dB AM mode
 		TRX.MIC_Gain_FM_DB = 9.0f;                                     // Microphone gain, dB FM mode
@@ -403,6 +402,7 @@ void LoadSettings(bool clear) {
 		TRX.FFT_DXCluster = true;                 // Show DX cluster over FFT
 		TRX.FFT_DXCluster_Azimuth = false;        // Add azimut to callsign
 		TRX.FFT_DXCluster_Timeout = 5;            // DXCluser timeout in minutes
+		TRX.CenterSpectrumAfterIdle = false;      // Center FFT spectrum in free tune after idle delay
 		TRX.Show_Sec_VFO = false;                 // Show secondary VFO on FFT
 		TRX.FFT_Scale_Type = 0;                   // Scale type (0 - amplitude, 1 - squared, 2 - dBm)
 		TRX.AnalogMeterShowPWR = false;           // false - SWR, true - PWR
@@ -532,6 +532,7 @@ void LoadSettings(bool clear) {
 		TRX.FM_HPF_RX_Filter_shadow = TRX.VFO_A.FM_HPF_RX_Filter;
 
 		LCD_showError("Loaded default settings", true);
+
 		SaveSettings(); // save to primary bank
 		SaveSettings(); // save to second bank
 		SaveSettingsToEEPROM();
@@ -1126,6 +1127,26 @@ void LoadCalibration(bool clear) {
 
 		CALIBRATE.ENDBit = 100; // Bit for the end of a successful write to eeprom
 
+#ifdef STM32F407xx
+		volatile bool NeedRot = false;
+		uint8_t ii = 99;
+		char buf_rot[10];
+		LCD_showError("Push POWER to ROTATE or wait to SKIP", false);
+		while (ii > 0) {
+			sprintf(buf_rot, "%2d", ii);
+			LCDDriver_printTextFont(buf_rot, 240, 200, COLOR_WHITE, COLOR_RED, (GFXfont *)&FreeSans12pt7b);
+			if (HAL_GPIO_ReadPin(PWR_ON_GPIO_Port, GPIO_PIN_7) == GPIO_PIN_RESET) {
+				NeedRot = !NeedRot;
+				CALIBRATE.LCD_Rotate = NeedRot;
+				LCD_Init();
+				LCD_showError("Push POWER to ROTATE or wait to SKIP", false);
+				ii = 99;
+			}
+			HAL_Delay(100);
+			ii--;
+		}
+#endif
+
 #ifdef LAY_160x128
 		LCD_showError("Load default calibrate", true);
 #else
@@ -1152,7 +1173,7 @@ void LoadCalibration(bool clear) {
 
 	// reset ATU on Hard Reset
 	if (clear) {
-		ResetATUSettings();
+		ResetATUBanks();
 	}
 
 	// load ATU
@@ -1377,14 +1398,6 @@ bool SaveDPDSettings(uint8_t *in, uint32_t size, uint32_t sector_offset) {
 	}
 	EEPROM_PowerDown();
 	return true;
-}
-
-void ResetATUSettings(void) {
-	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_1, false);
-	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_2, false);
-	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_3, false);
-	EEPROM_Sector_Erase(EEPROM_SECTOR_ATU_4, false);
-	println("[OK] Erase ATU EEPROM settings");
 }
 
 bool LoadATUSettings(uint8_t *out, uint32_t size, uint32_t sector) {

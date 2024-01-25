@@ -339,13 +339,6 @@ static void LCD_displayBottomButtons(bool redraw) {
 	const uint16_t bottomNavigationButtonsWidth = 48;
 	uint16_t curr_x = 0;
 
-	if (TRX.EnableBottomNavigationButtons && FUNCBUTTONS_ON_PAGE != 9) {
-		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<", false, false, false, 0, BUTTONHANDLER_LEFT_ARR,
-		            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND,
-		            LAYOUT->TOPBUTTONS_FONT);
-		curr_x += bottomNavigationButtonsWidth;
-	}
-
 	for (uint8_t i = 0; i < FUNCBUTTONS_ON_PAGE; i++) {
 		uint16_t menuPosition = TRX.FRONTPANEL_funcbuttons_page * FUNCBUTTONS_ON_PAGE + i;
 
@@ -369,7 +362,8 @@ static void LCD_displayBottomButtons(bool redraw) {
 			width += 1;
 		}
 
-		if (TRX.EnableBottomNavigationButtons && FUNCBUTTONS_ON_PAGE == 9 && i == 4) {
+		bool printLeftPutton = TRX.EnableBottomNavigationButtons && ((FUNCBUTTONS_ON_PAGE == 9 && i == 4) || (FUNCBUTTONS_ON_PAGE == 8 && i == 3));
+		if (printLeftPutton) {
 			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, "<", false, false, false, 0, BUTTONHANDLER_LEFT_ARR,
 			            BUTTONHANDLER_LEFT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND,
 			            LAYOUT->TOPBUTTONS_FONT);
@@ -387,18 +381,13 @@ static void LCD_displayBottomButtons(bool redraw) {
 		}
 		curr_x += width;
 
-		if (TRX.EnableBottomNavigationButtons && FUNCBUTTONS_ON_PAGE == 9 && i == 4) {
+		bool printRightPutton = TRX.EnableBottomNavigationButtons && ((FUNCBUTTONS_ON_PAGE == 9 && i == 4) || (FUNCBUTTONS_ON_PAGE == 8 && i == 4));
+		if (printRightPutton) {
 			printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, ">", false, false, false, 0, BUTTONHANDLER_RIGHT_ARR,
 			            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND,
 			            LAYOUT->TOPBUTTONS_FONT);
 			curr_x += bottomNavigationButtonsWidth;
 		}
-	}
-
-	if (TRX.EnableBottomNavigationButtons && FUNCBUTTONS_ON_PAGE != 9) {
-		printButton(curr_x, LAYOUT->BOTTOM_BUTTONS_BLOCK_TOP, bottomNavigationButtonsWidth, LAYOUT->BOTTOM_BUTTONS_BLOCK_HEIGHT, ">", false, false, false, 0, BUTTONHANDLER_RIGHT_ARR,
-		            BUTTONHANDLER_RIGHT_ARR, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_PAGER_TEXT, COLOR->BUTTON_BORDER, COLOR->BUTTON_PAGER_BACKGROUND, LAYOUT->TOPBUTTONS_ROUND,
-		            LAYOUT->TOPBUTTONS_FONT);
 	}
 #endif
 
@@ -2694,7 +2683,7 @@ void LCD_processHoldTouch(uint16_t x, uint16_t y) {
 	}
 
 	// Free Tune / Center
-	if (y > LAYOUT->FFT_FFTWTF_POS_Y && y <= 430 && x > 0 && x < LCD_WIDTH) {
+	if (y > LAYOUT->FFT_FFTWTF_POS_Y && y <= (LAYOUT->FFT_FFTWTF_POS_Y + FFT_AND_WTF_HEIGHT - 50) && x > 0 && x < LCD_WIDTH && !TRX.SPLIT_Enabled) {
 		if (!LCD_systemMenuOpened) {
 			BUTTONHANDLER_Free_tune(0);
 			LCD_redraw(false);
@@ -3257,15 +3246,14 @@ void LCD_ManualFreqButtonHandler(uint32_t parameter) {
 
 void LCD_ShowMemoryChannelsButtonHandler(uint32_t parameter) {
 #if (defined(HAS_TOUCHPAD) && defined(LAY_800x480))
-	if (LCD_busy) {
-		return;
-	}
-
 	const uint8_t buttons_in_line = 7;
 	const uint8_t buttons_lines = MEMORY_CHANNELS_COUNT / buttons_in_line;
 	const uint8_t buttons_top_offset = 0;
 	uint16_t window_width = LAYOUT->WINDOWS_BUTTON_WIDTH * buttons_in_line + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_in_line + 1);
 	uint16_t window_height = LAYOUT->WINDOWS_BUTTON_HEIGHT * buttons_lines + buttons_top_offset + LAYOUT->WINDOWS_BUTTON_MARGIN * (buttons_lines + 1);
+	while (LCD_busy) {
+		;
+	}
 	LCD_openWindow(window_width, window_height);
 	LCD_busy = true;
 

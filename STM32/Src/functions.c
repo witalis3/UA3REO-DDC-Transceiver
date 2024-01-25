@@ -995,18 +995,15 @@ void arm_biquad_cascade_df2T_f32_IQ(const arm_biquad_cascade_df2T_instance_f32 *
 		uint32_t sample = blockSize;
 		while (sample > 0) {
 			float32_t Xn1_I = *pIn_I++;
-			float32_t Xn1_Q = *pIn_Q++;
-
 			float32_t acc1_I = b0 * Xn1_I + d1_I;
-			float32_t acc1_Q = b0 * Xn1_Q + d1_Q;
-
 			d1_I = b1 * Xn1_I + d2_I + a1 * acc1_I;
-			d1_Q = b1 * Xn1_Q + d2_Q + a1 * acc1_Q;
-
 			d2_I = b2 * Xn1_I + a2 * acc1_I;
-			d2_Q = b2 * Xn1_Q + a2 * acc1_Q;
-
 			*pOut_I++ = acc1_I;
+
+			float32_t Xn1_Q = *pIn_Q++;
+			float32_t acc1_Q = b0 * Xn1_Q + d1_Q;
+			d1_Q = b1 * Xn1_Q + d2_Q + a1 * acc1_Q;
+			d2_Q = b2 * Xn1_Q + a2 * acc1_Q;
 			*pOut_Q++ = acc1_Q;
 
 			sample--;
@@ -1142,20 +1139,6 @@ void *alloc_to_wtf(uint32_t size, bool reset) {
 #else
 void *alloc_to_wtf(uint32_t size, bool reset) { return NULL; }
 #endif
-
-float fast_sqrt(const float x) {
-#define SQRT_MAGIC_F 0x5f3759df
-	const float xhalf = 0.5f * x;
-
-	union // get bits for floating value
-	{
-		float x;
-		int i;
-	} u;
-	u.x = x;
-	u.i = SQRT_MAGIC_F - (u.i >> 1);             // gives initial guess y0
-	return x * u.x * (1.5f - xhalf * u.x * u.x); // Newton step, repeating increases accuracy
-}
 
 int8_t getPowerFromALC() {
 	if (!CALIBRATE.ALC_Port_Enabled) {

@@ -127,6 +127,7 @@ static void SYSMENU_HANDL_RX_CODEC_Out_Volume(int8_t direction);
 static void SYSMENU_HANDL_RX_BluetoothAudio_Enabled(int8_t direction);
 static void SYSMENU_HANDL_RX_AUDIO_MODE(int8_t direction);
 static void SYSMENU_HANDL_RX_FREE_Tune(int8_t direction);
+static void SYSMENU_HANDL_RX_CenterAfterIdle(int8_t direction);
 static void SYSMENU_HANDL_RX_Dual_RX_AB_Balance(int8_t direction);
 
 static void SYSMENU_HANDL_TX_ATU_C(int8_t direction);
@@ -819,6 +820,7 @@ const static struct sysmenu_item_handler sysmenu_rx_handlers[] = {
     {"FM Squelch level, dBm", SYSMENU_INT16, NULL, (uint32_t *)&TRX.FM_SQL_threshold_dBm_shadow, SYSMENU_HANDL_RX_FMSquelch},
 #endif
     {"Free tune", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.FREE_Tune, SYSMENU_HANDL_RX_FREE_Tune},
+    {"Center After Idle", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.CenterSpectrumAfterIdle, SYSMENU_HANDL_RX_CenterAfterIdle},
     {"Noise blanker 1", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER1, SYSMENU_HANDL_RX_NOISE_BLANKER1},
     {"NB1 Threshold", SYSMENU_UINT8, NULL, (uint32_t *)&TRX.NOISE_BLANKER1_THRESHOLD, SYSMENU_HANDL_RX_NOISE_BLANKER1_THRESHOLD},
     {"Noise blanker 2", SYSMENU_BOOLEAN, NULL, (uint32_t *)&TRX.NOISE_BLANKER2, SYSMENU_HANDL_RX_NOISE_BLANKER2},
@@ -2737,6 +2739,15 @@ static void SYSMENU_HANDL_RX_NOISE_BLANKER2(int8_t direction) {
 	}
 	if (direction < 0) {
 		TRX.NOISE_BLANKER2 = false;
+	}
+}
+
+static void SYSMENU_HANDL_RX_CenterAfterIdle(int8_t direction) {
+	if (direction > 0) {
+		TRX.CenterSpectrumAfterIdle = true;
+	}
+	if (direction < 0) {
+		TRX.CenterSpectrumAfterIdle = false;
 	}
 }
 

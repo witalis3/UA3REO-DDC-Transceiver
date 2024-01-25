@@ -21,6 +21,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+
 /* USER CODE BEGIN Includes */
 extern DMA_HandleTypeDef hdma_spi3_rx;
 /* USER CODE END Includes */
@@ -569,19 +570,12 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef *hspi) {
 		PE13     ------> SPI4_MISO
 		PE14     ------> SPI4_MOSI
 		*/
-		GPIO_InitStruct.Pin = LCD_CS_Pin | LCD_SCK_Pin | LCD_MOSI_Pin;
+		GPIO_InitStruct.Pin = LCD_CS_Pin | LCD_SCK_Pin | LCD_MISO_Pin | LCD_MOSI_Pin;
 		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
 		GPIO_InitStruct.Pull = GPIO_PULLUP;
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
 		GPIO_InitStruct.Alternate = GPIO_AF5_SPI4;
 		HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
-
-		GPIO_InitStruct.Pin = LCD_MISO_Pin;
-		GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-		GPIO_InitStruct.Pull = GPIO_PULLUP;
-		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-		GPIO_InitStruct.Alternate = GPIO_AF5_SPI4;
-		HAL_GPIO_Init(LCD_MISO_GPIO_Port, &GPIO_InitStruct);
 
 		/* SPI4 DMA Init */
 		/* SPI4_TX Init */

@@ -21,6 +21,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+
 /* USER CODE BEGIN Includes */
 extern DMA_HandleTypeDef hdma_spi3_rx;
 /* USER CODE END Includes */

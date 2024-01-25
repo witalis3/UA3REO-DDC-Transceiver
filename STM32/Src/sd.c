@@ -1230,6 +1230,7 @@ static void SDCOMM_EXPORT_SETTINGS_handler(void) {
 			SD_WRITE_SETT_LINE("TRX.FFT_DXCluster", (uint64_t *)&TRX.FFT_DXCluster, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_DXCluster_Azimuth", (uint64_t *)&TRX.FFT_DXCluster_Azimuth, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_DXCluster_Timeout", (uint64_t *)&TRX.FFT_DXCluster_Timeout, SYSMENU_UINT8);
+			SD_WRITE_SETT_LINE("TRX.CenterSpectrumAfterIdle", (uint64_t *)&TRX.CenterSpectrumAfterIdle, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.Show_Sec_VFO", (uint64_t *)&TRX.Show_Sec_VFO, SYSMENU_BOOLEAN);
 			SD_WRITE_SETT_LINE("TRX.FFT_Scale_Type", (uint64_t *)&TRX.FFT_Scale_Type, SYSMENU_UINT8);
 			SD_WRITE_SETT_LINE("TRX.EnableBottomNavigationButtons", (uint64_t *)&TRX.EnableBottomNavigationButtons, SYSMENU_BOOLEAN);
@@ -2465,6 +2466,9 @@ static void SDCOMM_PARSE_SETTINGS_LINE(char *line) {
 	}
 	if (strcmp(name, "TRX.FFT_DXCluster_Timeout") == 0) {
 		TRX.FFT_DXCluster_Timeout = (uint8_t)uintval;
+	}
+	if (strcmp(name, "TRX.CenterSpectrumAfterIdle") == 0) {
+		TRX.CenterSpectrumAfterIdle = bval;
 	}
 	if (strcmp(name, "TRX.Show_Sec_VFO") == 0) {
 		TRX.Show_Sec_VFO = bval;

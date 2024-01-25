@@ -591,6 +591,40 @@ void SELF_TEST_Draw(void) {
 		// redraw loop
 		LCD_UpdateQuery.SystemMenuRedraw = true;
 	}
+
+	if (SELF_TEST_current_page == 6) {
+		// redraw loop
+		LCD_UpdateQuery.SystemMenuRedraw = true;
+
+		static uint32_t current_test_start_time = 0;
+		if ((HAL_GetTick() - current_test_start_time) < SELF_TEST_adc_test_latency) {
+			// wait
+			LCD_busy = false;
+			return;
+		}
+		current_test_start_time = HAL_GetTick();
+
+		LCDDriver_printText("LCD Test", margin_left, pos_y, FG_COLOR, BG_COLOR, font_size);
+		pos_y += margin_bottom;
+
+		for (uint16_t x = 0; x < LCD_WIDTH / 3; x++) {
+			uint8_t color = roundf(255.0f * ((float32_t)((LCD_WIDTH / 3) - x) / (float32_t)(LCD_WIDTH / 3)));
+			LCDDriver_drawFastVLine(x, pos_y, margin_bottom, rgb888torgb565(color, 255 - color, 0));
+			LCDDriver_drawFastVLine(x + LCD_WIDTH / 3, pos_y, margin_bottom, rgb888torgb565(0, color, 255 - color));
+			LCDDriver_drawFastVLine(x + LCD_WIDTH / 3 * 2, pos_y, margin_bottom, rgb888torgb565(255 - color, 0, color));
+		}
+		pos_y += margin_bottom + 1;
+
+		// single colors brightness
+		for (uint16_t x = 0; x < LCD_WIDTH; x++) {
+			uint8_t color = roundf(255.0f * ((float32_t)(LCD_WIDTH - x) / (float32_t)LCD_WIDTH));
+			LCDDriver_drawFastVLine(x, pos_y, margin_bottom, rgb888torgb565(color, 0, 0));
+			LCDDriver_drawFastVLine(x, pos_y + margin_bottom, margin_bottom, rgb888torgb565(0, color, 0));
+			LCDDriver_drawFastVLine(x, pos_y + margin_bottom * 2, margin_bottom, rgb888torgb565(0, 0, color));
+		}
+		pos_y += margin_bottom * 3;
+	}
+
 #if defined(FRONTPANEL_MINI)
 	// Pager
 	pos_y += margin_bottom;

@@ -1509,7 +1509,8 @@ static void doTX_CESSB(uint16_t size, TRX_MODE mode) {
 	for (uint32_t sample = 0; sample < size; sample++) {
 		float32_t i = APROC_Audio_Buffer_TX_I[sample];
 		float32_t q = APROC_Audio_Buffer_TX_Q[sample];
-		float32_t mag = fast_sqrt(i * i + q * q);
+		float32_t mag;
+		arm_sqrt_f32(i * i + q * q, &mag);
 
 		if (mag > 1.0f) {
 			float32_t divider = 1.0f + (mag - 1.0f) * 2.0f;
@@ -2111,8 +2112,17 @@ static void doVAD(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 
 // Apply IF Gain IF Gain
 static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
-	float32_t if_gain = db2rateP(TRX.IF_Gain);
-	bool CW = false;
+	float32_t if_gain_dB = TRX.IF_Gain;
+	if (rx_id == AUDIO_RX1 && CurrentVFO->Mode == TRX_MODE_CW) {
+		if_gain_dB += CW_ADD_GAIN_IF;
+	}
+#if HRDW_HAS_DUAL_RX
+	if (rx_id == AUDIO_RX2 && SecondaryVFO->Mode == TRX_MODE_CW) {
+		if_gain_dB += CW_ADD_GAIN_IF;
+	}
+#endif
+
+	float32_t if_gain = db2rateP(if_gain_dB);
 
 	float32_t *I_buff = APROC_Audio_Buffer_RX1_I;
 	float32_t *Q_buff = APROC_Audio_Buffer_RX1_Q;
@@ -2122,18 +2132,6 @@ static void doRX_IFGain(AUDIO_PROC_RX_NUM rx_id, uint16_t size) {
 		Q_buff = APROC_Audio_Buffer_RX2_Q;
 	}
 #endif
-
-	if (rx_id == AUDIO_RX1 && CurrentVFO->Mode == TRX_MODE_CW) {
-		CW = true;
-	}
-#if HRDW_HAS_DUAL_RX
-	if (rx_id == AUDIO_RX2 && SecondaryVFO->Mode == TRX_MODE_CW) {
-		CW = true;
-	}
-#endif
-	if (CW) {
-		if_gain += db2rateP(CW_ADD_GAIN_IF);
-	}
 
 	// overflow protect
 	if (!CurrentVFO->AGC) {

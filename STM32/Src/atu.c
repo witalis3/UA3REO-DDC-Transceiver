@@ -316,6 +316,33 @@ void ATU_Load_ANT_Banks(void) {
 #endif
 }
 
+void ResetATUBanks(void) {
+#if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
+	for (uint8_t ant = 0; ant < ANT_MAX_COUNT; ant++) {
+		ATU_MEMORY_TYPE *memory = &ATU_MEMORY_1;
+		uint8_t sector = EEPROM_SECTOR_ATU_1;
+		if (ant == 1) {
+			memory = &ATU_MEMORY_2;
+			sector = EEPROM_SECTOR_ATU_2;
+		}
+		if (ant == 2) {
+			memory = &ATU_MEMORY_3;
+			sector = EEPROM_SECTOR_ATU_3;
+		}
+		if (ant == 3) {
+			memory = &ATU_MEMORY_4;
+			sector = EEPROM_SECTOR_ATU_4;
+		}
+
+		println("[ATU] reset ", ant);
+		dma_memset(memory, 0x00, sizeof(ATU_MEMORY_TYPE));
+		memory->loaded_ant = ant;
+		memory->saved = false;
+		ATU_Flush_Memory();
+	}
+#endif
+}
+
 void ATU_Save_Memory(uint8_t ant, uint64_t frequency, uint8_t I, uint8_t C, bool T) {
 #if !defined(FRONTPANEL_LITE) && !defined(FRONTPANEL_X1)
 	if (frequency >= (ATU_MAX_FREQ_KHZ * 1000)) {
